@@ -1,0 +1,90 @@
+---
+title: How to create a store
+description: How to create a store
+slug: /integration/create-store
+---
+
+import {
+    SupportedLanguage,
+    languageLabelMap,
+    DocumentationNotice,
+} from '@components/Docs';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# How to create a store
+
+<DocumentationNotice />
+
+A [store](../intro/openfga-concepts.mdx#what-is-a-store) is a OpenFGA entity that contains your authorization data. You will need to create a store in OpenFGA before adding an [authorization model](../intro/openfga-concepts.mdx#what-is-an-authorization-model) and [relationship tuples](../intro/openfga-concepts.mdx#what-is-a-relationship-tuple) to it.
+
+This article explains how to setup an OpenFGA store.
+
+## Step by step
+
+<Tabs groupId="languages">
+<TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
+
+```javascript
+const { OpenFgaApi } = require('@openfga/sdk'); // OR import { OpenFgaApi } from '@openfga/sdk';
+
+const openFga = new OpenFgaApi({
+    apiScheme: FGA_API_SCHEME, // optional, defaults to "https"
+    apiHost: FGA_API_HOST // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
+});
+
+openFga.createStore()
+```
+
+</TabItem>
+<TabItem value={SupportedLanguage.GO_SDK} label={languageLabelMap.get(SupportedLanguage.GO_SDK)}>
+
+```go
+import (
+    openfga "github.com/openfga/go-sdk"
+    "os"
+)
+
+func Main() {
+    configuration, err := openfga.NewConfiguration(openfga.Configuration{
+        ApiScheme:      os.Getenv("FGA_API_SCHEME"), // optional, defaults to "https"
+        ApiHost:        os.Getenv("FGA_API_HOST"), // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
+    })
+
+    if err != nil {
+        // .. Handle error
+    }
+
+    apiClient := openfga.NewAPIClient(configuration)
+
+    apiClient.CreateStore()
+}
+```
+
+</TabItem>
+
+<TabItem value={SupportedLanguage.DOTNET_SDK} label={languageLabelMap.get(SupportedLanguage.DOTNET_SDK)}>
+
+```dotnet
+using OpenFga.Sdk.Api;
+using OpenFga.Sdk.Configuration;
+using Environment = System.Environment;
+
+namespace ExampleApp;
+
+class MyProgram {
+    static async Task Main() {
+        var configuration = new Configuration(environment) {
+            ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // optional, defaults to "https"
+            ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST") // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
+        };
+        var fgaClient = new OpenFgaApi(configuration);
+
+        fgaClient.CreateStore();
+    }
+}
+```
+
+</TabItem>
+
+</Tabs>

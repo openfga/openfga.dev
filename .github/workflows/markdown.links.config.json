@@ -1,0 +1,21 @@
+{
+	"ignorePatterns": [
+	  {
+		"pattern": "^https://twitter.com/"
+	  },
+	  {
+		"pattern": "^/api/service#"
+	  },
+	  {
+		"pattern": "^http://localhost:3000"
+	  }
+	],
+	"httpHeaders": [
+		{
+		  "urls": ["https://docs.github.com/"],
+		  "headers": {
+			"Accept-Encoding": "zstd, br, gzip, deflate"
+		  }
+		}
+	  ]
+  }

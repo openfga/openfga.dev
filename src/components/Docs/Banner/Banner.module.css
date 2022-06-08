@@ -1,0 +1,90 @@
+.documentation-banner {
+  position: relative;
+  border-radius: 24px;
+  padding: 32px;
+  background-color: #f6f7fa;
+  border: none;
+  margin-top: 2rem;
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.documentation-banner * {
+  font-family: 'Inter';
+}
+.documentation-banner:hover {
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1), 0px 6px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+}
+.documentation-banner:not(:hover) {
+  transition: all 0.3s ease 0s;
+}
+.documentation-banner:focus {
+  box-shadow: 0 0 0 5px rgba(99, 93, 255, 0.25) !important;
+}
+.documentation-banner .documentation-banner-icon {
+  width: 94px;
+  height: 94px;
+  border-radius: 24px;
+  background-color: #fff;
+  margin-right: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.documentation-banner .documentation-banner-icon-slack {
+  background: url(/static/img/banner-slack-icon.svg) no-repeat;
+  height: 63px;
+  width: 62px;
+}
+.documentation-banner .documentation-banner-icon-drive {
+  background: url(/static/img/banner-drive-icon.svg) no-repeat;
+  height: 54px;
+  width: 60px;
+}
+.documentation-banner .documentation-banner-icon-github {
+  background: url(/static/img/banner-github-icon.svg) no-repeat;
+  height: 62px;
+  width: 62px;
+}
+.documentation-banner .documentation-banner-icon-iot {
+  background: url(/static/img/banner-iot-icon.svg) no-repeat;
+  height: 62px;
+  width: 90px;
+}
+.documentation-banner .documentation-banner-icon-playground {
+  background: url(/static/img/banner-playground-icon.svg) no-repeat;
+  height: 62px;
+  width: 62px;
+}
+.documentation-banner .documentation-banner-icon-entitlements {
+  background: url(/static/img/banner-entitlements-icon.svg) no-repeat;
+  height: 62px;
+  width: 62px;
+}
+.documentation-banner .documentation-banner-content {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  width: calc(100% - 165px);
+}
+.documentation-banner .documentation-banner-content .documentation-banner-title {
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 40px;
+  letter-spacing: -0.5px;
+  color: #1e212a;
+  margin-bottom: 8px;
+}
+.documentation-banner .documentation-banner-content .documentation-banner-description {
+  color: #42464d;
+}
+.documentation-banner .documentation-banner-content p {
+  margin: 0;
+}
+.documentation-banner .documentation-banner-chevron {
+  position: absolute;
+  top: calc(50% - 12px);
+  right: 32px;
+}

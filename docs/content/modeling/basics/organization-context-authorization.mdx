@@ -1,0 +1,657 @@
+---
+sidebar_position: 9
+slug: /modeling/basics/organization-context-authorization
+---
+
+import {
+  AuthzModelSnippetViewer,
+  CardBox,
+  CheckRequestViewer,
+  DocumentationNotice,
+  Playground,
+  ProductConcept,
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+  RelationshipTuplesViewer,
+  UpdateProductNameInLinks,
+  WriteRequestViewer,
+} from '@components/Docs';
+
+# Authorization Through Organization Context
+
+<DocumentationNotice />
+
+This section tackles cases where a user may have access to a particular resource through their presence in a particular organization, and they should have that access only when logged in within the context of that organization.
+
+<CardBox title="When to use" appearance="filled" description=<div>
+Contextual Tuples should be used when modeling cases where a user's access to an object depends on the context of their request. For example:
+
+- An employee’s ability to access a document when they are connected to the organization VPN or the api call is originating from an internal IP address.
+- A support engineer is only able to access a user's account during office hours.
+- If a user belongs to multiple organizations, they are only able to access a resource if they set a specific organization in their current context.
+
+</div> />
+
+## Before you start
+
+To follow this guide, you should be familiar with some <ProductConcept />.
+
+You also need to be familiar with:
+
+- **Modeling Object-to-Object Relationships**: You need to know how to create relationships between objects and how that might affect a user's relationships to those objects. [Learn more →](../concepts/object-to-object-relationships.mdx)
+- **Modeling Multiple Restrictions**: You need to know how to model requiring multiple authorizations before allowing users to perform certain actions. [Learn more →](./multiple-restrictions.mdx)
+
+<Playground />
+
+### Scenario
+
+For the scope of this guide, we are going to consider the following scenario.
+
+Consider you are building the authorization model for a multi-tenant project management system.
+
+In this particular system,
+
+- projects are owned and managed by companies
+- users can be members of multiple companies
+- project access is governed by the user's role in the organization that manages the project
+
+In order for a user to access a project:
+
+- The project needs to be managed by an organization the user is a member of
+- A project is owned by a single organization
+- A project can be shared with partner companies (that are able to view, edit but not perform admin actions, such as deletion, on the project)
+- The user should have a role that grants access to the project
+- The user should be logged in within the context of that organization
+
+We will start with the following authorization model:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'organization',
+        relations: {
+          member: {
+            this: {},
+          },
+          project_manager: {
+            this: {},
+          },
+          project_editor: {
+            this: {},
+          },
+        },
+      },
+      {
+        type: 'project',
+        relations: {
+          owner: {
+            this: {},
+          },
+          partner: {
+            this: {},
+          },
+          manager: {
+            tupleToUserset: {
+              tupleset: {
+                object: '',
+                relation: 'owner',
+              },
+              computedUserset: {
+                object: '',
+                relation: 'project_manager',
+              },
+            },
+          },
+          editor: {
+            union: {
+              child: [
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'owner',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'project_editor',
+                    },
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'partner',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'project_editor',
+                    },
+                  },
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'manager',
+                  },
+                },
+              ],
+            },
+          },
+          can_delete: {
+            computedUserset: {
+              object: '',
+              relation: 'manager',
+            },
+          },
+          can_edit: {
+            computedUserset: {
+              object: '',
+              relation: 'editor',
+            },
+          },
+          can_view: {
+            computedUserset: {
+              object: '',
+              relation: 'editor',
+            },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+<details>
+<summary>
+We are considering the case that:
+- Anne has a project manager role at organizations A, B and C
+- Beth has a project manager role at organization B
+- Carl has a project manager role at organization C
+- Project X is owned by organization A
+- Project X is shared with organization B
+
+</summary>
+
+The above state translates to the following relationship tuples:
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: 'Anne has a `project manager` role at organization A',
+      user: 'anne',
+      relation: 'project_manager',
+      object: 'organization:A',
+    },
+    {
+      _description: 'Anne has a `project manager` role at organization B',
+      user: 'anne',
+      relation: 'project_manager',
+      object: 'organization:B',
+    },
+    {
+      _description: 'Anne has a `project manager` role at organization C',
+      user: 'anne',
+      relation: 'project_manager',
+      object: 'organization:C',
+    },
+    {
+      _description: 'Beth has a `project manager` role at organization B',
+      user: 'anne',
+      relation: 'project_manager',
+      object: 'organization:B',
+    },
+    {
+      _description: 'Carl has a `project manager` role at organization C',
+      user: 'carl',
+      relation: 'project_manager',
+      object: 'organization:C',
+    },
+    {
+      _description: 'Organization A owns Project X',
+      user: 'organization:A',
+      relation: 'owner',
+      object: 'project:X',
+    },
+    {
+      _description: 'Project X is shared with Organization B',
+      user: 'organization:B',
+      relation: 'partner',
+      object: 'project:X',
+    },
+  ]}
+  skipSetup={true}
+/>
+
+</details>
+
+### Requirements
+
+- When logging in within the context of organization A, Anne should be able to view and delete project X.
+- When logging in within the context of organization B, Anne should be able to view, but not delete, project X.
+- When logging in within the context of organization C, Anne should not be able to view nor delete project X.
+- When logging in within the context of organization B, Beth should be able to view, but not delete, project X.
+- Carl should not be able to view nor delete project X
+
+## Step by Step
+
+In order to solve for the requirements above, we will break the problem down into three steps:
+
+1. Understand the authorization checks can be done with the existing model
+
+- Ensure that Anne can view and delete "Project X"
+
+2. Extend the authorization model to take time and ip address into consideration
+3. Use contextual tuples for context related checks
+
+### Checking Access (Excluding Contextual Data)
+
+With the authorization model and relationship tuples shown above, <ProductName format={ProductNameFormat.ShortForm}/> has all the information needed to ensure that Anne can view and delete "Project X".
+
+We can verify that using the following checks:
+
+- Anne can view Project X
+  <CheckRequestViewer user={'anne'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
+
+<details>
+  <summary>More checks</summary>
+  * Anne can delete Project X
+  <CheckRequestViewer user={'anne'} relation={'can_delete'} object={'project:X'} allowed={true} skipSetup={true} />
+  * Beth can view Project X
+  <CheckRequestViewer user={'beth'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
+  * Beth cannot delete Project X
+  <CheckRequestViewer user={'beth'} relation={'can_delete'} object={'project:X'} allowed={false} skipSetup={true} />
+  * Carl cannot view Project X
+  <CheckRequestViewer user={'carl'} relation={'can_view'} object={'project:X'} allowed={false} skipSetup={true} />
+  * Carl cannot delete Project X
+  <CheckRequestViewer user={'carl'} relation={'can_delete'} object={'project:X'} allowed={false} skipSetup={true} />
+</details>
+
+Note that so far, we have not prevented Anne from viewing "Project X" even if Anne is viewing it from the context of Organization C.
+
+### Take Organization Context into Consideration
+
+##### Extend the Authorization Model
+
+In order to add a restriction based on the current organization context, we will make use of <ProductName format={ProductNameFormat.ShortForm}/> configuration language's support for [intersection](../configuration-language.mdx#the-intersection-operator) to specify that a user has to both have access _and_ be in the correct context in order to be authorized.
+
+We can do that by introducing some new relations and updating existing relation definitions:
+
+1. On the "organization" type
+
+- Add "user_in_context" relation to mark that a user's access is being evaluated within that particular context
+- Update the "project_manager" relation to require that the user be in the correct context (by adding `and user_in_context` to the relation definition)
+- Considering that <ProductName format={ProductNameFormat.ShortForm}/> does not yet support multiple logical operations within the same definition, we will split "project_editor" into two:
+  - "base_project_editor" editor which will contain the original relation definition (`self or project_manager`)
+  - "project_editor" which will require that a user has both the "base_project_editor" and the "user_in_context" relations
+
+The "organization" type definition then becomes:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type: 'organization',
+    relations: {
+      member: {
+        this: {},
+      },
+      project_manager: {
+        intersection: {
+          child: [
+            {
+              this: {},
+            },
+            {
+              computedUserset: {
+                object: '',
+                relation: 'user_in_context',
+              },
+            },
+          ],
+        },
+      },
+      base_project_editor: {
+        union: {
+          child: [
+            {
+              this: {},
+            },
+            {
+              computedUserset: {
+                object: '',
+                relation: 'project_manager',
+              },
+            },
+          ],
+        },
+      },
+      project_editor: {
+        intersection: {
+          child: [
+            {
+              computedUserset: {
+                object: '',
+                relation: 'base_project_editor',
+              },
+            },
+            {
+              computedUserset: {
+                object: '',
+                relation: 'user_in_context',
+              },
+            },
+          ],
+        },
+      },
+      user_in_context: {
+        this: {},
+      },
+    },
+  }}
+/>
+
+:::note
+On the "project" type:
+
+- Nothing will need to be done, as it will inherit the updated "project_manager" and "project_editor" relation definitions from "organization"
+:::
+
+##### Add the required tuples to mark that anne is in an approved context
+
+Now that we have updated our authorization model to take the current user's organization context into consideration, you will notice that anne has lost access because nothing indicates that anne is authorizing from the context of an organization. You can verify that by issuing the following check:
+
+<CheckRequestViewer user={'anne'} relation={'can_view'} object={'project:X'} allowed={false} skipSetup={true} />
+
+In order for Anne to be authorized a tuple indicating Anne's current organization context will need to be present:
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: 'Anne is authorizing from the context of organization:A',
+      user: 'anne',
+      relation: 'user_in_context',
+      object: 'organization:A',
+    },
+  ]}
+/>
+
+<CheckRequestViewer user={'anne'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
+
+### Using contextual tuples
+
+Now that we know we can authorize based on present state, we have a different problem to solve. We are storing the tuples in the state in order for <ProductName format={ProductNameFormat.ShortForm}/> to evaluate them, which fails in certain use-cases where Anne can be connected to two different contexts in different browser windows at the same time, as each has a different context at the same time, so if they are written to the state, which will <ProductName format={ProductNameFormat.ShortForm}/> use to compute Anne's access to the project?
+
+For Check calls, <ProductName format={ProductNameFormat.ShortForm}/> has a concept called "<ProductConcept section="what-are-contextual-tuples" linkName="Contextual Tuples" />". Contextual Tuples are tuples that do **not** exist in the system state and are not written beforehand to <ProductName format={ProductNameFormat.ShortForm}/>. They are tuples that are sent alongside the Check request and will be treated as _if_ they already exist in the state for the context of that particular Check call. That means that Anne can be using two different sessions, each within a different organization context, and <ProductName format={ProductNameFormat.ShortForm}/> will correctly respond to each one with the correct authorization decision.
+
+When Anne is connecting from the context of organization A, <ProductName format={ProductNameFormat.ShortForm}/> will return `{"allowed":true}`:
+
+<CheckRequestViewer
+  user={'anne'}
+  relation={'can_view'}
+  object={'project:X'}
+  allowed={true}
+  skipSetup={true}
+  contextualTuples={[
+    {
+      _description: 'Anne is authorizing from the context of organization:A',
+      user: 'anne',
+      relation: 'user_in_context',
+      object: 'organization:A',
+    },
+  ]}
+/>
+
+When Anne is connecting from the context of organization C, <ProductName format={ProductNameFormat.ShortForm}/> will return `{"allowed":false}`:
+
+<CheckRequestViewer
+  user={'anne'}
+  relation={'can_view'}
+  object={'project:X'}
+  allowed={false}
+  skipSetup={true}
+  contextualTuples={[
+    {
+      _description: 'Anne is authorizing from the context of organization:A',
+      user: 'anne',
+      relation: 'user_in_context',
+      object: 'organization:C',
+    },
+  ]}
+/>
+
+Using this, you can check that the following requirements are satisfied:
+
+| User | Organization Context | Action | Allowed |
+| ---- | -------------------- | ------ | ------- |
+| Anne | Organization A       | View   | Yes     |
+| Anne | Organization B       | View   | Yes     |
+| Anne | Organization C       | View   | Yes     |
+| Anne | Organization A       | Delete | Yes     |
+| Anne | Organization B       | Delete | No      |
+| Anne | Organization C       | Delete | No      |
+| Beth | Organization B       | View   | Yes     |
+| Beth | Organization B       | Delete | No      |
+| Carl | Organization C       | View   | No      |
+| Carl | Organization C       | Delete | No      |
+
+## Summary
+
+<details>
+<summary>
+  Final version of the Authorization Model and Relationship tuples
+</summary>
+<AuthzModelSnippetViewer configuration={{
+  "type_definitions": [
+    {
+      "type": "organization",
+      "relations": {
+        "member": {
+          "this": {}
+        },
+        "project_manager": {
+          "intersection": {
+            "child": [
+              {
+                "this": {}
+              },
+              {
+                "computedUserset": {
+                  "object": "",
+                  "relation": "user_in_context"
+                }
+              }
+            ]
+          }
+        },
+        "base_project_editor": {
+          "union": {
+            "child": [
+              {
+                "this": {}
+              },
+              {
+                "computedUserset": {
+                  "object": "",
+                  "relation": "project_manager"
+                }
+              }
+            ]
+          }
+        },
+        "project_editor": {
+          "intersection": {
+            "child": [
+              {
+                "computedUserset": {
+                  "object": "",
+                  "relation": "base_project_editor"
+                }
+              },
+              {
+                "computedUserset": {
+                  "object": "",
+                  "relation": "user_in_context"
+                }
+              }
+            ]
+          }
+        },
+        "user_in_context": {
+          "this": {}
+        }
+      }
+    },
+    {
+      "type": "project",
+      "relations": {
+        "owner": {
+          "this": {}
+        },
+        "partner": {
+          "this": {}
+        },
+        "manager": {
+          "tupleToUserset": {
+            "tupleset": {
+              "object": "",
+              "relation": "owner"
+            },
+            "computedUserset": {
+              "object": "",
+              "relation": "project_manager"
+            }
+          }
+        },
+        "editor": {
+          "union": {
+            "child": [
+              {
+                "computedUserset": {
+                  "object": "",
+                  "relation": "manager"
+                }
+              },
+              {
+                "tupleToUserset": {
+                  "tupleset": {
+                    "object": "",
+                    "relation": "owner"
+                  },
+                  "computedUserset": {
+                    "object": "",
+                    "relation": "project_editor"
+                  }
+                }
+              },
+              {
+                "tupleToUserset": {
+                  "tupleset": {
+                    "object": "",
+                    "relation": "partner"
+                  },
+                  "computedUserset": {
+                    "object": "",
+                    "relation": "project_editor"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "can_delete": {
+          "computedUserset": {
+            "object": "",
+            "relation": "manager"
+          }
+        },
+        "can_edit": {
+          "computedUserset": {
+            "object": "",
+            "relation": "editor"
+          }
+        },
+        "can_view": {
+          "computedUserset": {
+            "object": "",
+            "relation": "editor"
+          }
+        }
+      }
+    }
+  ]
+}} />
+
+<WriteRequestViewer relationshipTuples={[
+  {
+    "_description": "Anne has a `project manager` role at organization A",
+    "user": "anne",
+    "relation": "project_manager",
+    "object": "organization:A"
+  }, {
+    "_description": "Anne has a `project manager` role at organization B",
+    "user": "anne",
+    "relation": "project_manager",
+    "object": "organization:B"
+  }, {
+    "_description": "Anne has a `project manager` role at organization C",
+    "user": "anne",
+    "relation": "project_manager",
+    "object": "organization:C"
+  }, {
+    "_description": "Beth has a `project manager` role at organization B",
+    "user": "beth",
+    "relation": "project_manager",
+    "object": "organization:B"
+  }, {
+    "_description": "Carl has a `project manager` role at organization C",
+    "user": "carl",
+    "relation": "project_manager",
+    "object": "organization:C"
+  }, {
+    "_description": "Organization A owns Project X",
+    "user": "organization:A",
+    "relation": "owner",
+    "object": "project:X"
+  }, {
+    "_description": "Project X is shared with Organization B",
+    "user": "organization:B",
+    "relation": "partner",
+    "object": "project:X"
+  },
+]} skipSetup={true} />
+</details>
+
+:::caution Warning
+Contextual tuples:
+
+- Are not persisted in the store.
+- Are only supported on the <UpdateProductNameInLinks link="/api/service#/Tuples/Check" name="Check API endpoint" />. They are not supported on read, expand and other endpoints.
+- If you are using the <UpdateProductNameInLinks link="/api/service#/Tuples/ReadChanges" name="Read Changes API endpoint" /> to build a permission aware search index, note that it will not be trivial to take contextual tuples into account.
+:::
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more on how user groups can be used."
+  relatedLinks={[
+    {
+      title: 'Modeling with Multiple Restrictions',
+      description:
+        'Learn how to model requiring multiple relationships before users are authorized to perform certain actions.',
+      link: '/modeling/basics/multiple-restrictions',
+      id: './multiple-restrictions.mdx',
+    },
+    {
+      title: 'Contextual and Time-Based Authorization',
+      description: 'Learn how to authorize access that depends on dynamic or contextual criteria.',
+      link: '/modeling/basics/contextual-time-based-authorization',
+      id: './contextual-time-based-authorization.mdx',
+    },
+    {
+      title: '{ProductName} Check API',
+      description: 'Details on the Check API in the {ProductName} reference guide.',
+      link: '/api/service#/Tuples/Check',
+    },
+  ]}
+/>

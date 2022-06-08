@@ -1,0 +1,202 @@
+---
+title: How to get tuple changes
+sidebar_position: 1
+slug: /integration/read-tuple-changes
+---
+
+import {
+  AuthzModelSnippetViewer,
+  SupportedLanguage,
+  languageLabelMap,
+  DocumentationNotice,
+  SdkSetupHeader,
+  ProductName,
+  ProductNameFormat,
+  ReadChangesRequestViewer,
+  SdkSetupPrerequisite,
+} from '@components/Docs';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# How to get tuple changes
+
+<DocumentationNotice />
+
+This section illustrates how to call the Read Changes API to get the list of relationship tuple changes that happened in your store, in the exact order that they happened. The API response includes tuples that have been added or removed in your store. It does not include other changes, like updates to your authorization model and adding new assertions.
+
+## Before you start
+
+<Tabs groupId="languages">
+<TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](./install-sdk.mdx).
+3. You have [configured the _authorization model_](../modeling) and [added some _relationship tuples_](./update-tuples.mdx#02-calling-write-api-to-add-new-relationship-tuples).
+4. You have loaded `FGA_ENVIRONMENT`, `FGA_STORE_ID`, `FGA_CLIENT_ID` and `FGA_CLIENT_SECRET` as environment variables.
+
+</TabItem>
+<TabItem value={SupportedLanguage.GO_SDK} label={languageLabelMap.get(SupportedLanguage.GO_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](./install-sdk.mdx).
+3. You have [configured the _authorization model_](../modeling) and [added some _relationship tuples_](./update-tuples.mdx#02-calling-write-api-to-add-new-relationship-tuples).
+4. You have loaded `FGA_ENVIRONMENT`, `FGA_STORE_ID`, `FGA_CLIENT_ID` and `FGA_CLIENT_SECRET` as environment variables.
+
+</TabItem>
+
+<TabItem value={SupportedLanguage.DOTNET_SDK} label={languageLabelMap.get(SupportedLanguage.DOTNET_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](./install-sdk.mdx).
+3. You have [configured the _authorization model_](../modeling).
+4. You have loaded `FGA_ENVIRONMENT`, `FGA_STORE_ID`, `FGA_CLIENT_ID` and `FGA_CLIENT_SECRET` as environment variables.
+
+</TabItem>
+<TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [configured the _authorization model_](../modeling) and and [added some _relationship tuples_](./update-tuples.mdx#02-calling-write-api-to-add-new-relationship-tuples).
+3. You have loaded `FGA_ENVIRONMENT`, `FGA_BEARER_TOKEN` and `FGA_STORE_ID` as environment variables.
+
+</TabItem>
+</Tabs>
+
+## Step by Step
+
+To get a chronologically ordered list of tuples that have been written or deleted in your store, you can do so by calling the Read Changes API.
+
+### 01. Configure the <ProductName format={ProductNameFormat.ShortForm}/> API client
+
+First you will need to configure the API client.
+
+<Tabs groupId="languages">
+<TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
+
+<SdkSetupHeader lang="js-sdk" />
+
+</TabItem>
+<TabItem value={SupportedLanguage.GO_SDK} label={languageLabelMap.get(SupportedLanguage.GO_SDK)}>
+
+<SdkSetupHeader lang="go-sdk" />
+
+</TabItem>
+
+<TabItem value={SupportedLanguage.DOTNET_SDK} label={languageLabelMap.get(SupportedLanguage.DOTNET_SDK)}>
+
+<SdkSetupHeader lang="dotnet-sdk" />
+
+</TabItem>
+
+<TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
+
+To obtain the [access token](https://auth0.com/docs/authorization/flows/call-your-api-using-the-client-credentials-flow):
+
+<SdkSetupHeader lang="curl" />
+
+</TabItem>
+
+</Tabs>
+
+### 02. Get changes for all object types
+
+To get a paginated list of changes that happened in your store:
+
+<ReadChangesRequestViewer
+  pageSize={25}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+The result will contain an array of up to 25 tuples, with the operation (`write` or `delete`), and the timestamp in which that operation took place. The result will also contain a continuation token. Save the continuation token in persistent storage between calls so that it is not lost and you do not have to restart from scratch on system restart or on error.
+
+You can then use this token to get the next set of changes:
+
+<ReadChangesRequestViewer
+  pageSize={25}
+  continuationToken={'eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ=='}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+Once there are no more changes to retrieve, the API will return the same token as the one you sent. Save the token in persistent storage to use at a later time.
+
+:::note
+
+- The default page size is 50. The maximum page size allowed is 100.
+- The API response will not return all the changes immediately. There will be a delay of one minute between the time that you add or delete a tuple and the time that you see it in the Read Changes API response.
+- The API response does not expand the tuples. If you wrote a tuple that includes a userset, like `{"user": "group:abc#member", "relation": "owner": "doc:budget"}`, the Read Changes API will return that exact tuple.
+:::
+
+### 03. Get changes for a specific object type
+
+Imagine you have the following authorization model:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'group',
+        relations: {
+          member: {
+            this: {},
+          },
+        },
+      },
+      {
+        type: 'folder',
+        relations: {
+          owner: {
+            this: {},
+          },
+        },
+      },
+      {
+        type: 'doc',
+        relations: {
+          owner: {
+            this: {},
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+It is possible to get a list of changes that happened in your store that relate only to one specific object type, like `folder`, by issuing a call like this:
+
+<ReadChangesRequestViewer
+  pageSize={25}
+  type={'folder'}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+The response will include a continuation token. In subsequent calls, you have to include the token and the `type`. (If you send this continuation token without the `type` parameter set, you will get an error).
+
+<ReadChangesRequestViewer
+  pageSize={25}
+  type={'folder'}
+  continuationToken={'eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ=='}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.CURL,
+  ]}
+/>

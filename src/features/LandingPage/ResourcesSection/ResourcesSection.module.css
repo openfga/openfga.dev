@@ -1,0 +1,134 @@
+.container {
+  background-color: var(--ofga-neutral-aluminium);
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  height: auto;
+  overflow: hidden;
+  display: grid;
+  /* disable grid template for now until we have updates */
+  /* grid-template-columns: 27.5rem 1fr; */
+  color: var(--ofga-neutral-darkest);
+}
+
+.container[data-theme='dark'] {
+  background-color: var(--ofga-neutral-darker);
+  color: var(--ofga-neutral-lighter);
+}
+
+.container > div {
+  display: grid;
+  /*grid-template-rows: repeat(9, 1fr);*/
+  grid-template-rows: repeat(1fr);
+  align-items: stretch;
+}
+
+/*
+since we only have 1 column, no need to have right border
+.container div:first-child {
+  border-right: 1px solid var(--ofga-neutral-dark);
+}
+
+.container[data-theme='dark'] div:first-child {
+  border-right: 1px solid var(--ofga-neutral-black);
+}
+*/
+
+.mainArea {
+  padding-left: 1rem;
+}
+
+.mainArea h2 {
+  font-weight: 500;
+  font-size: 1.75rem;
+  line-height: 1.3;
+
+  margin: 3rem 4rem 3rem 0;
+}
+
+.heading {
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+
+.links {
+  grid-row-start: 3;
+  grid-row-end: 8;
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 2.5rem;
+
+  display: grid;
+}
+
+.links li {
+  display: flex;
+  align-items: center;
+  grid-gap: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.links li svg {
+  width: 24px;
+  height: 24px;
+}
+
+.links a {
+  font-weight: 500;
+  color: var(--ofga-neutral-darkest);
+  text-decoration: none;
+  padding: 2px 8px;
+}
+
+.container[data-theme='dark'] .links a {
+  color: var(--ofga-neutral-lighter);
+}
+
+.updates > * {
+  display: flex;
+  align-items: center;
+  padding-left: 3rem;
+  border-top: 1px solid var(--ofga-neutral-dark);
+}
+
+.container[data-theme='dark'] .updates > * {
+  border-top: 1px solid var(--ofga-neutral-black);
+}
+
+.container .updates > *:first-child {
+  border-top: none;
+  grid-row-start: 1;
+  grid-row-end: 4;
+
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--ofga-neutral-black);
+}
+
+.container[data-theme='dark'] .updates > *:first-child {
+  color: var(--ofga-neutral-lighter);
+}
+
+.update {
+  display: flex;
+  grid-gap: 0.75rem;
+  font-weight: 500;
+}
+
+@media (min-width: 1200px) {
+  .container {
+    margin-bottom: 10rem;
+    height: auto;
+  }
+
+  .links {
+    margin-bottom: 3rem;
+  }
+
+  .mainArea {
+    padding-left: 3.5rem;
+  }
+
+  .mainArea h2 {
+    margin: 3rem 4rem 3rem 0;
+  }
+}
