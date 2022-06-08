@@ -1,0 +1,969 @@
+---
+sidebar_position: 8
+slug: /modeling/basics/contextual-time-based-authorization
+---
+
+import {
+  AuthzModelSnippetViewer,
+  CardBox,
+  CheckRequestViewer,
+  DocumentationNotice,
+  Playground,
+  ProductConcept,
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+  RelationshipTuplesViewer,
+  UpdateProductNameInLinks,
+  WriteRequestViewer,
+} from '@components/Docs';
+
+# Contextual and Time-Based Authorization
+
+<DocumentationNotice />
+
+This section explores some methods available to you to tackle some use-cases where the expected authorization check may depend on certain dynamic or contextual data (such as time, location, ip address, weather) that have not been written to the <ProductName format={ProductNameFormat.ShortForm}/> store.
+
+<CardBox title="When to use" appearance="filled" description=<div>
+Contextual Tuples should be used when modeling cases where a user's access to an object depends on the context of their request. For example:
+
+- An employee’s ability to access a document when they are connected to the company VPN or the api call is originating from an internal IP address.
+- A support engineer is only able to access a user's account during office hours.
+- If a user belongs to multiple organizations, they are only able to access a resource if they set a specific organization in their current context.
+
+</div> />
+
+## Before you start
+
+To follow this guide, you should be familiar with some <ProductConcept />.
+
+You also need to be familiar with:
+
+- **Modeling Object-to-Object Relationships**: You need to know how to create relationships between objects and how that might affect a user's relationships to those objects. [Learn more →](../concepts/object-to-object-relationships.mdx)
+- **Modeling Multiple Restrictions**: You need to know how to model requiring multiple authorizations before allowing users to perform certain actions. [Learn more →](./multiple-restrictions.mdx)
+
+<Playground />
+
+### Scenario
+
+For the scope of this guide, we are going to consider the following scenario.
+
+Consider you are building the authorization model for WeBank Inc.
+
+In order for an Account Manager at WeBank Inc. to be able to access a customer's account and its transactions, they would need to be:
+
+- An account manager at the same branch as the customer's account
+- Connected via the branch's internal network or through the branch's VPN
+- Connected during this particular branch's office hours
+
+We will start with the following Authorization Model
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'branch',
+        relations: {
+          account_manager: {
+            this: {},
+          },
+        },
+      },
+      {
+        type: 'account',
+        relations: {
+          branch: {
+            this: {},
+          },
+          account_manager: {
+            tupleToUserset: {
+              tupleset: {
+                object: '',
+                relation: 'branch',
+              },
+              computedUserset: {
+                object: '',
+                relation: 'account_manager',
+              },
+            },
+          },
+          customer: {
+            this: {},
+          },
+          viewer: {
+            union: {
+              child: [
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'customer',
+                  },
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'account_manager',
+                  },
+                },
+              ],
+            },
+          },
+          can_view: {
+            computedUserset: {
+              object: '',
+              relation: 'viewer',
+            },
+          },
+        },
+      },
+      {
+        type: 'transaction',
+        relations: {
+          account: {
+            this: {},
+          },
+          can_view: {
+            tupleToUserset: {
+              tupleset: {
+                object: '',
+                relation: 'account',
+              },
+              computedUserset: {
+                object: '',
+                relation: 'viewer',
+              },
+            },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+<details>
+<summary>
+We are considering the case that:
+
+- Anne is the Account Manager at the West-Side branch
+- Caroline is the customer for checking account number 526
+- The West-Side branch is the branch that the checking account number 526 has been created at
+- Checking account number 526 has a transaction, we'll call it transaction A
+- The West-Side branch branch’s office hours is from 8am-3pm UTC
+
+</summary>
+
+The above state translates to the following relationship tuples:
+
+<WriteRequestViewer relationshipTuples={[
+  {
+    "_description": "Anne is the Account Manager at the West-Side branch",
+    "user": "anne",
+    "relation": "account_manager",
+    "object": "branch:west-side"
+  },
+  {
+    "_description": "Caroline is the customer for checking account number 526",
+    "user": "caroline",
+    "relation": "customer",
+    "object": "account:checking-526"
+  },
+  {
+    "_description": "The West-Side branch is the branch that the Checking account number 526 has been created at",
+    "user": "branch:west-side",
+    "relation": "branch",
+    "object": "account:checking-526"
+  },
+  {
+    "_description": "Checking account number 526 is the account for transaction A",
+    "user": "account:checking-526",
+    "relation": "account",
+    "object": "transaction:A"
+  },
+]} />
+</details>
+
+### Requirements
+
+By the end of this guide we would like to validate that:
+
+- If Anne is at the branch, and it is 12pm UTC, Anne should be able to view transaction A
+- If Anne is connecting remotely at 12pm UTC but is not connected to the VPN, Anne should not be able to view transaction A
+- If Anne is connecting remotely and is connected to the VPN
+  - at 12pm UTC, should be able to view transaction A
+  - at 6pm UTC, should not be able to view transaction A
+
+## Step by Step
+
+In order to solve for the requirements above, we will break the problem down to three steps:
+
+1. Understand the authorization checks can be done with the existing model
+
+- Ensure that the customer can view a transaction tied to their account
+- Ensure that the account manager can view a transaction whose account is at the same branch
+
+2. Extend the Authorization Model to take time and ip address into consideration
+3. Use contextual tuples for context related checks
+
+### Checking Access (Excluding Contextual Data)
+
+With the Authorization Model and relationship tuples shown above, <ProductName format={ProductNameFormat.ShortForm}/> has all the information needed to
+
+- Ensure that the customer can view a transaction tied to their account
+- Ensure that the account manager can view a transaction whose account is at the same branch
+
+We can verify that using the following checks
+
+<CheckRequestViewer user={'anne'} relation={'can_view'} object={'transaction:A'} allowed={true} />
+<CheckRequestViewer user={'caroline'} relation={'can_view'} object={'transaction:A'} allowed={true} />
+
+Additionally, we will check that Mary, an account manager at a different branch _cannot_ view transaction A.
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: 'Mary is an account manager at the East-Side branch',
+      user: 'mary',
+      relation: 'account_manager',
+      object: 'branch:east-side',
+    },
+  ]}
+/>
+<CheckRequestViewer user={'mary'} relation={'can_view'} object={'transaction:A'} allowed={false} />
+
+Note that so far, we have not prevented Anne from viewing the transaction outside office hours, let's see if we can do better.
+
+### Take Time and IP Address into Consideration
+
+##### Extend the Authorization Model
+
+In order to add time and ip address to our authorization model, we will add appropriate types for them. We will have a "timeslot" and an "ip-address-range" as types, and each can have users related to it as a user.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type: 'timeslot',
+    relations: {
+      user: {
+        this: {},
+      },
+    },
+  }}
+/>
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type: 'ip-address-range',
+    relations: {
+      user: {
+        this: {},
+      },
+    },
+  }}
+/>
+
+We'll also need to introduce some new relations, and modify some others.
+
+1. On the "branch" type:
+
+- Add "approved_timeslot" relation to mark than a certain timeslot is approved to view transactions for accounts in this branch
+- Add "approved_ip_address_range" relation to mark than an ip address range is approved to view transactions for accounts in this branch
+- Add "approved_context" relation to combine the two authorizations above (`user from approved_timeslot and user from approved_ip_address_range`), and indicate that the user is in an approved context
+
+The branch type definition then becomes:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type: 'branch',
+    relations: {
+      account_manager: {
+        this: {},
+      },
+      approved_ip_address_range: {
+        this: {},
+      },
+      approved_timeslot: {
+        this: {},
+      },
+      approved_context: {
+        intersection: {
+          child: [
+            {
+              tupleToUserset: {
+                tupleset: {
+                  object: '',
+                  relation: 'approved_timeslot',
+                },
+                computedUserset: {
+                  object: '',
+                  relation: 'user',
+                },
+              },
+            },
+            {
+              tupleToUserset: {
+                tupleset: {
+                  object: '',
+                  relation: 'approved_ip_address_range',
+                },
+                computedUserset: {
+                  object: '',
+                  relation: 'user',
+                },
+              },
+            },
+          ],
+        },
+      },
+    },
+  }}
+/>
+
+2. On the "account" type:
+
+- Add "account_manager_viewer" relation to combine the "account_manager" relationship and the new "approved_context" relation from the branch
+- Update the "viewer" relation definition to point to "customer" (who can view without being subjected to contextual authorization) instead of "account_manager_viewer" (who needs to be within the branch allowed context to view)
+
+The account type definition then becomes:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type: 'account',
+    relations: {
+      branch: {
+        this: {},
+      },
+      account_manager: {
+        tupleToUserset: {
+          tupleset: {
+            object: '',
+            relation: 'branch',
+          },
+          computedUserset: {
+            object: '',
+            relation: 'account_manager',
+          },
+        },
+      },
+      customer: {
+        this: {},
+      },
+      account_manager_viewer: {
+        intersection: {
+          child: [
+            {
+              computedUserset: {
+                object: '',
+                relation: 'account_manager',
+              },
+            },
+            {
+              tupleToUserset: {
+                tupleset: {
+                  object: '',
+                  relation: 'branch',
+                },
+                computedUserset: {
+                  object: '',
+                  relation: 'approved_context',
+                },
+              },
+            },
+          ],
+        },
+      },
+      viewer: {
+        union: {
+          child: [
+            {
+              computedUserset: {
+                object: '',
+                relation: 'customer',
+              },
+            },
+            {
+              computedUserset: {
+                object: '',
+                relation: 'account_manager_viewer',
+              },
+            },
+          ],
+        },
+      },
+      can_view: {
+        computedUserset: {
+          object: '',
+          relation: 'viewer',
+        },
+      },
+    },
+  }}
+/>
+
+:::note
+On the "transaction" type:
+
+- Nothing will need to be done, as it will inherit the updated "viewer" relation definition from "account"
+:::
+
+##### Add the required tuples to mark that Anne is in an approved context
+
+Now that we have updated our authorization model to take time and ip address into consideration, you will notice that Anne has lost access because nothing indicates that Anne is connecting from an approved ip address and time. You can verify that by issuing the following check:
+
+<CheckRequestViewer user={'anne'} relation={'can_view'} object={'transaction:A'} allowed={false} />
+
+We need to add relationship tuples to mark some approved timeslots and ip address ranges:
+
+:::note
+
+- Here we added the time slots in increments of 1 hour periods, but this is not a requirement.
+- We did not add all the office hours to keep this guide shorter.
+:::
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: '11am to 12pm is within the office hours of the West-Side branch',
+      user: 'timeslot:11_12',
+      relation: 'approved_timeslot',
+      object: 'branch:west-side',
+    },
+    {
+      _description: '12pm to 1pm is within the office hours of the West-Side branch',
+      user: 'timeslot:12_13',
+      relation: 'approved_timeslot',
+      object: 'branch:west-side',
+    },
+    {
+      _description: 'The office VPN w/ the 10.0.0.0/16 address range is approved for the West-Side branch',
+      user: 'ip-address-range:10.0.0.0/16',
+      relation: 'approved_ip_address_range',
+      object: 'branch:west-side',
+    },
+  ]}
+/>
+
+Now that we have added the allowed timeslots and ip address ranges we need to add the following relationship tuples to give Anne access.
+
+<RelationshipTuplesViewer
+  relationshipTuples={[
+    {
+      _description: 'Anne is connecting from within the 10.0.0.0/16 ip address range',
+      user: 'anne',
+      relation: 'user',
+      object: 'ip-address-range:10.0.0.0/16',
+    },
+    {
+      _description: 'Anne is connecting between 12pm and 1pm',
+      user: 'anne',
+      relation: 'user',
+      object: 'timeslot:12_13',
+    },
+  ]}
+/>
+
+If we have the above two tuples in the system, when checking whether Anne can view transaction A we should get a response stating that Anne can view it.
+
+<CheckRequestViewer user={'anne'} relation={'can_view'} object={'transaction:A'} allowed={true} />
+
+### Using contextual tuples
+
+Now that we know we can authorize based on present state, we have a different problem to solve. We are storing the tuples in the state in order for <ProductName format={ProductNameFormat.ShortForm}/> to evaluate them, which means that:
+
+- For the case of the IP Address, we are not able to truly authorize based on the context of the request. E.g. if Anne was trying to connect from the phone and from the PC at the same time, and only the PC was connected to the VPN, how would <ProductName format={ProductNameFormat.ShortForm}/> know to deny one and allow the other if the data is stored in the state?
+- On every check call we have to first write the correct tuples, then call the Check api, then clean up those tuples. This causes a substantial increase in latency as well as incorrect answers for requests happening in parallel (they could write/delete each other's tuples).
+
+How do we solve this? How do we tie the above two tuples to the context of the request instead of the system state?
+
+For Check calls, <ProductName format={ProductNameFormat.ShortForm}/> has a concept called "<ProductConcept section="what-are-contextual-tuples" linkName="Contextual Tuples" />". Contextual Tuples are tuples that do **not** exist in the system state and are not written beforehand to <ProductName format={ProductNameFormat.ShortForm}/>. They are tuples that are sent alongside the Check request and will be treated as _if_ they already exist in the state for the context of that particular Check call.
+
+When Anne is connecting from an allowed ip address range and timeslot, <ProductName format={ProductNameFormat.ShortForm}/> will return `{"allowed":true}`:
+
+<CheckRequestViewer
+  user={'anne'}
+  relation={'can_view'}
+  object={'transaction:A'}
+  allowed={true}
+  contextualTuples={[
+    {
+      _description: 'Anne is connecting from within the 10.0.0.0/16 ip address range',
+      user: 'anne',
+      relation: 'user',
+      object: 'ip-address-range:10.0.0.0/16',
+    },
+    {
+      _description: 'Anne is connecting between 12pm and 1pm',
+      user: 'anne',
+      relation: 'user',
+      object: 'timeslot:12_13',
+    },
+  ]}
+/>
+
+When Anne is connecting from a denied ip address range or timeslot, <ProductName format={ProductNameFormat.ShortForm}/> will return `{"allowed":false}`:
+
+<CheckRequestViewer
+  user={'anne'}
+  relation={'can_view'}
+  object={'transaction:A'}
+  allowed={false}
+  contextualTuples={[
+    {
+      _description: 'Anne is connecting from within the 10.0.0.0/16 ip address range',
+      user: 'anne',
+      relation: 'user',
+      object: 'ip-address-range:10.0.0.0/16',
+    },
+    {
+      _description: 'Anne is connecting between 6pm and 7pm',
+      user: 'anne',
+      relation: 'user',
+      object: 'timeslot:18_19',
+    },
+  ]}
+/>
+
+## Summary
+
+<details>
+<summary>
+  Final version of the Authorization Model and Relationship tuples
+</summary>
+<AuthzModelSnippetViewer configuration={{
+  "type_definitions": [
+    {
+      "type": "branch",
+      "relations": {
+        "account_manager": {
+          "this": {}
+        },
+        "approved_ip_address_range": {
+          "this": {}
+        },
+        "approved_timeslot": {
+          "this": {}
+        },
+        "approved_context": {
+          "intersection": {
+            "child": [
+              {
+                "tupleToUserset": {
+                  "tupleset": {
+                    "object": "",
+                    "relation": "approved_timeslot"
+                  },
+                  "computedUserset": {
+                    "object": "",
+                    "relation": "user"
+                  }
+                }
+              },
+              {
+                "tupleToUserset": {
+                  "tupleset": {
+                    "object": "",
+                    "relation": "approved_ip_address_range"
+                  },
+                  "computedUserset": {
+                    "object": "",
+                    "relation": "user"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "account",
+      "relations": {
+        "branch": {
+          "this": {}
+        },
+        "account_manager": {
+          "tupleToUserset": {
+            "tupleset": {
+              "object": "",
+              "relation": "branch"
+            },
+            "computedUserset": {
+              "object": "",
+              "relation": "account_manager"
+            }
+          }
+        },
+        "customer": {
+          "this": {}
+        },
+        "account_manager_viewer": {
+          "intersection": {
+            "child": [
+              {
+                "computedUserset": {
+                  "object": "",
+                  "relation": "account_manager"
+                }
+              },
+              {
+                "tupleToUserset": {
+                  "tupleset": {
+                    "object": "",
+                    "relation": "branch"
+                  },
+                  "computedUserset": {
+                    "object": "",
+                    "relation": "approved_context"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "viewer": {
+          "union": {
+            "child": [
+              {
+                "computedUserset": {
+                  "object": "",
+                  "relation": "customer"
+                }
+              },
+              {
+                "computedUserset": {
+                  "object": "",
+                  "relation": "account_manager_viewer"
+                }
+              }
+            ]
+          }
+        },
+        "can_view": {
+          "computedUserset": {
+            "object": "",
+            "relation": "viewer"
+          }
+        }
+      }
+    },
+    {
+      "type": "transaction",
+      "relations": {
+        "account": {
+          "this": {}
+        },
+        "can_view": {
+          "tupleToUserset": {
+            "tupleset": {
+              "object": "",
+              "relation": "account"
+            },
+            "computedUserset": {
+              "object": "",
+              "relation": "viewer"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "timeslot",
+      "relations": {
+        "user": {
+          "this": {}
+        }
+      }
+    },
+    {
+      "type": "ip-address-range",
+      "relations": {
+        "user": {
+          "this": {}
+        }
+      }
+    }
+  ]
+}} />
+
+<WriteRequestViewer relationshipTuples={[
+  {
+    "_description": "Anne is the Account Manager at the West-Side branch",
+    "user": "anne",
+    "relation": "account_manager",
+    "object": "branch:west-side"
+  },
+  {
+    "_description": "Caroline is the customer for checking account number 526",
+    "user": "caroline",
+    "relation": "customer",
+    "object": "account:checking-526"
+  },
+  {
+    "_description": "The West-Side branch is the branch that the Checking account number 526 has been created at",
+    "user": "branch:west-side",
+    "relation": "branch",
+    "object": "account:checking-526"
+  },
+  {
+    "_description": "Checking account number 526 is the account for transaction A",
+    "user": "account:checking-526",
+    "relation": "account",
+    "object": "transaction:A"
+  },
+  {
+    "_description": "8am to 9am is within the office hours of the West-Side branch",
+    "user": "timeslot:8_9",
+    "relation": "approved_timeslot",
+    "object": "branch:west-side"
+  },
+  {
+    "_description": "9am to 10am is within the office hours of the West-Side branch",
+    "user": "timeslot:9_10",
+    "relation": "approved_timeslot",
+    "object": "branch:west-side"
+  },
+  {
+    "_description": "10am to 11am is within the office hours of the West-Side branch",
+    "user": "timeslot:10_11",
+    "relation": "approved_timeslot",
+    "object": "branch:west-side"
+  },
+  {
+    "_description": "11am to 12pm is within the office hours of the West-Side branch",
+    "user": "timeslot:11_12",
+    "relation": "approved_timeslot",
+    "object": "branch:west-side"
+  },
+  {
+    "_description": "12pm to 1pm is within the office hours of the West-Side branch",
+    "user": "timeslot:12_13",
+    "relation": "approved_timeslot",
+    "object": "branch:west-side"
+  },
+  {
+    "_description": "1pm to 2pm is within the office hours of the West-Side branch",
+    "user": "timeslot:13_14",
+    "relation": "approved_timeslot",
+    "object": "branch:west-side"
+  },
+  {
+    "_description": "2pm to 3pm is within the office hours of the West-Side branch",
+    "user": "timeslot:14_15",
+    "relation": "approved_timeslot",
+    "object": "branch:west-side"
+  },
+  {
+    "_description": "The office VPN w/ the 10.0.0.0/16 address range is approved for the West-Side branch",
+    "user": "ip-address-range:10.0.0.0/16",
+    "relation": "approved_ip_address_range",
+    "object": "branch:west-side"
+  },
+]} />
+</details>
+
+:::caution Warning
+Contextual tuples:
+
+- Are not persisted in the store.
+- Are only supported on the [Check API endpoint](/api/service#/Tuples/Check). They are not supported on read, expand and other endpoints.
+- If you are using the [ReadChanges API endpoint](/api/service#/Tuples/ReadChanges) to build a permission aware search index, note that it will not be trivial to take contextual tuples into account.
+:::
+
+### Taking it a step further: Banks as a Service Authorization
+
+In order to keep this guide concise, we assumed you were modeling for a single bank. What if you were offering a multi-tenant service where each bank is a single tenant?
+
+In that case, we can extend the model like so:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'bank',
+        relations: {
+          admin: {
+            this: {},
+          },
+        },
+      },
+      {
+        type: 'branch',
+        relations: {
+          bank: {
+            this: {},
+          },
+          account_manager: {
+            this: {},
+          },
+          approved_ip_address_range: {
+            this: {},
+          },
+          approved_timeslot: {
+            this: {},
+          },
+          approved_context: {
+            intersection: {
+              child: [
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'approved_timeslot',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'user',
+                    },
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'approved_ip_address_range',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'user',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+      {
+        type: 'account',
+        relations: {
+          branch: {
+            this: {},
+          },
+          account_manager: {
+            tupleToUserset: {
+              tupleset: {
+                object: '',
+                relation: 'branch',
+              },
+              computedUserset: {
+                object: '',
+                relation: 'account_manager',
+              },
+            },
+          },
+          customer: {
+            this: {},
+          },
+          account_manager_viewer: {
+            intersection: {
+              child: [
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'account_manager',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'branch',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'approved_context',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          viewer: {
+            union: {
+              child: [
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'customer',
+                  },
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'account_manager_viewer',
+                  },
+                },
+              ],
+            },
+          },
+          can_view: {
+            computedUserset: {
+              object: '',
+              relation: 'viewer',
+            },
+          },
+        },
+      },
+      {
+        type: 'transaction',
+        relations: {
+          account: {
+            this: {},
+          },
+          can_view: {
+            tupleToUserset: {
+              tupleset: {
+                object: '',
+                relation: 'account',
+              },
+              computedUserset: {
+                object: '',
+                relation: 'viewer',
+              },
+            },
+          },
+        },
+      },
+      {
+        type: 'timeslot',
+        relations: {
+          user: {
+            this: {},
+          },
+        },
+      },
+      {
+        type: 'ip-address-range',
+        relations: {
+          user: {
+            this: {},
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more on how user groups can be used."
+  relatedLinks={[
+    {
+      title: 'Object to Object Relationships',
+      description: "Learn how objects can relate to one another and how that can affect user's access.",
+      link: '/modeling/concepts/object-to-object-relationships',
+      id: '../concepts/object-to-object-relationships.mdx',
+    },
+    {
+      title: 'Modeling with Multiple Restrictions',
+      description:
+        'Learn how to model requiring multiple relationships before users are authorized to perform certain actions.',
+      link: '/modeling/basics/multiple-restrictions',
+      id: './multiple-restrictions.mdx',
+    },
+    {
+      title: '{ProductName} API',
+      description: 'Details on the Check API in the {ProductName} reference guide.',
+      link: '/api/service#/Tuples/Check',
+    },
+  ]}
+/>

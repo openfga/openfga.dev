@@ -1,0 +1,56 @@
+---
+id: overview
+title: 'Advanced Modeling'
+slug: /modeling/advanced
+sidebar_position: 0
+---
+
+import { CardGrid, DocumentationNotice, IntroCard, ProductName, ProductNameFormat } from '@components/Docs';
+
+<DocumentationNotice />
+
+This section will present advanced use cases and patterns for authorization modelling with <ProductName format={ProductNameFormat.LongForm}/>
+
+<IntroCard
+  title="When to use"
+  description="The content in this section is useful if you would like to follow an end-to-end tutorial on how to build an authorization model for a common use-case or pattern."
+/>
+
+## Use-cases
+
+<CardGrid
+  middle={[
+    {
+      title: 'Google Drive',
+      description: 'How to create an authorization model for your system starting from the requirements.',
+      to: '/modeling/advanced/use-cases/gdrive',
+    },
+    {
+      title: 'GitHub',
+      description: 'How to create an authorization model for your system starting from the requirements.',
+      to: '/modeling/advanced/use-cases/github',
+    },
+    {
+      title: 'IoT',
+      description: 'How to create an authorization model for your system starting from the requirements.',
+      to: '/modeling/advanced/use-cases/iot',
+    },
+    {
+      title: 'Slack',
+      description: 'How to create an authorization model for your system starting from the requirements.',
+      to: '/modeling/advanced/use-cases/slack',
+    },
+  ]}
+/>
+
+## Patterns
+
+<CardGrid
+  middle={[
+    {
+      title: 'Entitlements',
+      description: 'How to create an authorization model for your system starting from the requirements.',
+      to: '/modeling/advanced/patterns/entitlements',
+    },
+  ]}
+/>

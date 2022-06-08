@@ -1,0 +1,145 @@
+---
+sidebar_position: 3
+slug: /modeling/basics/public-access
+---
+
+import {
+  AuthzModelSnippetViewer,
+  CardBox,
+  CheckRequestViewer,
+  DocumentationNotice,
+  Playground,
+  ProductConcept,
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+  WriteRequestViewer,
+} from '@components/Docs';
+
+# Modeling Public Access
+
+<DocumentationNotice />
+
+In this guide you will learn how to grant public access to an <ProductConcept section="what-is-an-object" linkName="object" />, such as a certain document, using <ProductName format={ProductNameFormat.ProductLink}/>.
+
+<CardBox title="When to use" appearance="filled" description=<div>
+
+Public access allows your application to grant every user in the system access to an object. You would add a relationship tuple with a user as `*` when:
+
+- sharing a `document` publicly to indicate that everyone can `view` it
+- a public `poll` is created to indicate that anyone can `vote` on it
+- a blog `post` is published and anyone should be able to `read` it
+- a `video` is made public for anyone to `watch`
+
+</div> />
+
+## Before you start
+
+In order to understand this guide correctly you must be familiar with some <ProductConcept /> and know how to develop the things that we will list below.
+
+<details>
+<summary>
+
+Assume that you have the following <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />.<br />
+You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `document` that can have a `view` relation.
+
+</summary>
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          view: {
+            this: {},
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+<hr />
+
+In addition, you will need to know the following:
+
+### Modeling Basics
+
+You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](./modeling-basics.mdx)
+
+### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+
+- A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics
+- A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
+- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between objects of this type and other users in the system
+- An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
+- A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>
+- With <ProductConcept section="how-do-i-represent-everyone" linkName="Everyone" />: a `*` can be used in relationship tuples to represent every user
+
+</details>
+
+:::caution
+Make sure to use unique ids for each object and user within your application domain when creating relationship tuples for <ProductName format={ProductNameFormat.LongForm}/>. We are using first names and simple ids to just illustrate an easy-to-follow example.
+:::
+
+<Playground />
+
+## Step by Step
+
+In previous guides, we have shown how to indicate that objects are related to users or objects. In some cases, you might want to indicate that everyone is related to an object (for example when sharing a document publicly).
+
+### 01. Create a relationship tuple
+
+To do this we need to create a relationship tuple using the <ProductConcept section="how-do-i-represent-everyone" linkName="`*`" /> syntax. The `*` syntax is used to indicate that all users and objects have a relation) to a specific object.
+
+Let us create a relationship tuple that states: **anyone can view document:company-psa.doc**
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: '* denotes that the user is every user and object',
+      user: '*',
+      relation: 'view',
+      object: 'document:company-psa.doc',
+    },
+  ]}
+/>
+
+### 02. Check that the relationship exists
+
+Once the above _relationship tuple_ is added, we can <ProductConcept section="what-is-a-check-request" linkName="check" /> if **bob** cab `view` `document`:**company-psa.doc**. <ProductName format={ProductNameFormat.ShortForm}/> will return `{ "allowed": true }` even though no relationship tuple linking **bob** to the document was added. That is because the relationship tuple with `*` as the user made it so everyone can `view` the document, making it public.
+
+<CheckRequestViewer user={'bob'} relation={'view'} object={'document:company-psa.doc'} allowed={true} />
+
+:::caution Wildcard syntax usage
+Please note that `*` is a special <ProductName format={ProductNameFormat.ShortForm}/> syntax meaning **everyone** when used as a _user_ within a _relationship tuple_. It is not a wildcard or regex expression.
+
+**You cannot use it with a type to mean all objects in that type.** `workspace:*` does not mean all types; it means a single object with the type `workspace` and the `object_id` the string `*`.
+:::
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more on how to model with {ProductName}."
+  relatedLinks={[
+    {
+      title: 'Modeling: Getting Started',
+      description: 'Learn about how to get started with modeling.',
+      link: '/modeling/getting-started',
+      id: '../getting-started',
+    },
+    {
+      title: 'Configuration Language',
+      description: 'Learn about {ProductName} Configuration Language.',
+      link: '/modeling/configuration-language',
+      id: '../configuration-language',
+    },
+    {
+      title: 'Modeling Blocklists',
+      description: 'Learn about model block lists.',
+      link: '/modeling/basics/blocklists',
+      id: './blocklists',
+    },
+  ]}
+/>

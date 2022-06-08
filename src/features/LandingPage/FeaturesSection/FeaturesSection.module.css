@@ -1,0 +1,74 @@
+.section {
+  padding: 3rem 0;
+}
+
+.section p,
+.section h3 {
+  margin: 0;
+}
+
+.section h3 {
+  font-size: 2rem;
+  font-family: var(--ofga-font-highlight);
+  line-height: 1.25;
+  letter-spacing: -0.2px;
+  font-weight: 500;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 3rem;
+}
+
+@media (min-width: 1200px) {
+  .section {
+    padding: 10rem 0;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 5rem 15.5rem;
+  }
+}
+
+.icon {
+  height: 3rem;
+  width: 3rem;
+  background-color: var(--ofga-neutral-darker);
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.feature {
+  display: grid;
+
+  grid-template-rows: auto auto 1fr;
+  grid-gap: 1.5rem;
+}
+
+.feature a,
+.feature a:active,
+.feature a:visited {
+  color: var(--ofga-green-neon);
+}
+
+.feature a:hover {
+  background-color: var(--ofga-neutral-black);
+  color: var(--ofga-green-neon);
+}
+
+.highlight h3 {
+  font-size: 3.5rem;
+  font-weight: 600;
+  letter-spacing: -1.3px;
+  color: var(--ofga-green-neon);
+  line-height: 1.1;
+}
+
+.highlight p {
+  font-size: 1.25rem;
+}

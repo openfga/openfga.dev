@@ -1,0 +1,703 @@
+---
+title: IoT
+description: Modeling Fine Grained Authorization for an IoT Security Camera System
+sidebar_position: 3
+slug: /modeling/advanced/use-cases/iot
+---
+
+import {
+  AuthzModelSnippetViewer,
+  CardBox,
+  CheckRequestViewer,
+  DocumentationNotice,
+  IntroductionSection,
+  Playground,
+  ProductConcept,
+  ProductName,
+  ProductNameFormat,
+  WriteRequestViewer,
+} from '@components/Docs';
+
+# Modeling Authorization for an IoT Security System with <ProductName format={ProductNameFormat.ShortForm}/>
+
+<DocumentationNotice />
+
+This tutorial explains how to model permissions for an IoT system using <ProductName format={ProductNameFormat.ShortForm}/>.
+
+<CardBox title="What you will learn">
+
+- How to model a permission system using <ProductName format={ProductNameFormat.ProductLink}/>
+- How to see <ProductName format={ProductNameFormat.ShortForm}/> Authorization in action by modeling an IoT Security Camera System
+
+</CardBox>
+
+<Playground title="IoT" preset="iot" example="IoT" store="iot" />
+
+## Before You Start
+
+In order to understand this guide correctly you must be familiar with some <ProductName format={ProductNameFormat.LongForm}/> concepts and know how to develop the things that we will list below.
+
+<details>
+<summary>
+
+### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+
+It would be helpful to have an understanding of some concepts of <ProductName format={ProductNameFormat.ShortForm}/> before you start.
+
+</summary>
+
+#### Modeling Basics
+
+You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](../../basics/modeling-basics.mdx)
+
+#### Modeling Concentric Relationships
+
+You need to know how to update the authorization model to allow having nested relations such as all writers are readers. [Learn more →](../../concepts/concentric-relationships.mdx)
+Used here to indicate that both IT Admins and Security Guards can view live video.
+
+#### Direct Relationships
+
+You need to know how to disallow granting direct relation to an object and requiring the user to have a relation with another object that would imply a relation with the first one. [Learn more →](../../concepts/direct-relationships.mdx)
+Used here to indicate that "Rename Device" is a permission that cannot be assigned directly, but can only be granted through the "IT Admin" role.
+
+#### User Groups
+
+You need to know how to add users to groups and create relationships between groups of users and an object. [Learn more →](../../concepts/direct-relationships.mdx)
+
+Used here to indicate that security guards on a certain group are security guards on a device in that group.
+
+#### Concepts & Configuration Language
+
+- Some <ProductConcept />
+- [Configuration Language](../../configuration-language.mdx)
+
+</details>
+
+## What You Will You Be Modeling
+
+In this tutorial, you will build an authorization model for a sample IoT Security Camera System (detailed below) using <ProductName format={ProductNameFormat.LongForm}/>. You will use some scenarios to validate the model.
+
+The goal by the end of this post is to ask <ProductName format={ProductNameFormat.ShortForm}/>: Does person X have permission to perform action Y on device Z? In response, you want to either get a confirmation that person X can indeed do that, or a rejection that they cannot.
+
+### Requirements
+
+These are the requirements:
+
+- **Security guards** have access to **view live and recorded video** from **Devices**.
+- **IT Admins** can **view live and recorded videos**, as well as **rename** **Devices**.
+- To make access management easier, **Devices** can be grouped into **Device Groups**. **Security guards** with access to the **Device Group** are **Security Guards** with access to each **Device** in the group. Similarly for **IT Admins**.
+
+### Defined Scenarios
+
+Use the following scenarios to be able to validate whether the model of the requirements is correct.
+
+There will be the following users:
+
+- Anne
+- Beth
+- Charles
+- Dianne
+
+These users have the following roles and permissions:
+
+- Anne is a Security Guard with access to only Device 1
+- Beth is an IT Admin with access to only Device 1
+- Charles is a Security Guard with access to Device 1 and everything in Device Group 1 (which is Device 2 and Device 3)
+- Dianne is an IT Admin with access to Device 1 and everything in Device Group 1
+
+![Image showing requirements](./assets/iot-01.svg)
+
+:::caution
+
+In production, it is highly recommended to use unique, immutable identifiers. Names are used in this article to make it easier to read and follow.
+
+:::
+
+## Modeling Device Authorization
+
+The <ProductName format={ProductNameFormat.LongForm}/> service is based on [Zanzibar](https://zanzibar.academy), a Relationship Based Access Control system. This means it relies on <ProductConcept section="what-is-an-object" linkName="object" /> and <ProductConcept section="what-is-a-user" linkName="user" /> <ProductConcept section="what-is-a-relation" linkName="relations" /> to perform authorization <ProductConcept section="what-is-a-check-request" linkName="checks" />.
+
+Starting with devices, you will learn how to express the requirements in terms of relations you can feed into <ProductName format={ProductNameFormat.LongForm}/>.
+
+### 01. Writing the Initial Model for a Device
+
+The requirements stated:
+
+- **Security guards** have access to **view live and recorded video** from **Devices**.
+- **IT Admins** can **view live and recorded videos**, as well as **rename** **Devices**.
+
+The goal is to ask <ProductName format={ProductNameFormat.ShortForm}/> whether person X has permission to perform action Y on device Z. To start, you will set aside the Security Guard and IT Admin designations and focus on the actions a user can take.
+
+The actions users can take on a device are: _view live videos_, _view recorded videos_, and _rename devices_. Mapping them to relations, they become: _live_video_viewer_, _recorded_video_viewer_, _device_renamer_.
+
+In <ProductName format={ProductNameFormat.ShortForm}/>, the <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" /> for the device would be:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'device', // objects of type "device"
+        relations: {
+          // have users related to them as...
+          live_video_viewer: {
+            // "live_video_viewer": if they belong to the userset of all users related to the device as "live_video_viewer"
+            this: {},
+          },
+          recorded_video_viewer: {
+            // "recorded_video_viewer": if they belong to the userset of all users related to the device as "recorded_video_viewer"
+            this: {},
+          },
+          device_renamer: {
+            this: {}, // "device_renamer": if they belong to the userset of all users related to the device as "device_renamer"
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+### 02. Inserting some relationship tuples
+
+The requirements are:
+
+- **Anne** is a **Security Guard** with access to only **Device 1**
+- **Beth** is an **IT Admin** with access to only **Device 1**
+- **Security Guards** can **view live and recorded video**
+- **IT Admins** can **view live and recorded video** and **rename** devices
+
+Before we tackle the problem of users access to device based on their role, we will try to grant user access based on their view relationship directly.
+
+We will first focus on Anne and Beth's relationship with Device 1.
+
+To add Anne as live_video_viewer of device:1:
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'anne',
+      relation: 'live_video_viewer',
+      object: 'device:1',
+    },
+  ]}
+/>
+
+To add Anne as recorded_video_viewer of device:1
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'anne',
+      relation: 'recorded_video_viewer',
+      object: 'device:1',
+    },
+  ]}
+/>
+
+Likewise, we will add Beth's relationship with device:1.
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'beth',
+      relation: 'live_video_viewer',
+      object: 'device:1',
+    },
+    {
+      user: 'beth',
+      relation: 'recorded_video_viewer',
+      object: 'device:1',
+    },
+    {
+      user: 'beth',
+      relation: 'device_renamer',
+      object: 'device:1',
+    },
+  ]}
+/>
+
+#### Verification
+
+Now that you have some relationship tuples added, you can start using it to <ProductConcept section="what-is-a-check-request" linkName="ask" /> some questions, e.g., whether a person has access to rename a device.
+
+First, you will find out if `anne` has permission to `view the live video` on `device:1`, then you will see if `anne` can `rename` `device:1`.
+
+Anne has `live_video_viewer` relationship with device:1.
+
+<CheckRequestViewer user={'anne'} relation={'live_video_viewer'} object={'device:1'} allowed={true} />
+
+On the other hand, Anne does not have `device_renamer` relationship with device:1.
+
+<CheckRequestViewer user={'anne'} relation={'device_renamer'} object={'device:1'} allowed={false} />
+
+Now, check the other relationships fore Anne and Beth.
+
+| User   | Object     | Relation                | Query                                                   | Relation? |
+| ------ | ---------- | ----------------------- | ------------------------------------------------------- | --------- |
+| `anne` | `device:1` | `live_video_viewer`     | `is anne related to device:1 as live_video_viewer?`     | Yes       |
+| `beth` | `device:1` | `live_video_viewer`     | `is beth related to device:1 as live_video_viewer?`     | Yes       |
+| `anne` | `device:1` | `recorded_video_viewer` | `is anne related to device:1 as recorded_video_viewer?` | Yes       |
+| `beth` | `device:1` | `recorded_video_viewer` | `is beth related to device:1 as recorded_video_viewer?` | Yes       |
+| `anne` | `device:1` | `device_renamer`        | `is anne related to device:1 as device_renamer?`        | No        |
+| `beth` | `device:1` | `device_renamer`        | `is beth related to device:1 as device_renamer?`        | Yes       |
+
+### 03. Updating our Authorization Model to facilitate future changes
+
+Notice how you had to add the Anne and Beth as <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relations" /> to all the actions they can take on Device 1 instead of just stating that they are related as Security Guard or IT Admin, and having the other permissions implied? In practice this might have some disadvantages: if your authorization model changes, (e.g so that Security Guards can no longer view previously recorded videos), you would need to change relationship tuples in the system instead of just changing the configuration.
+
+We can address this by using [**concentric relation models**](../../concepts/concentric-relationships.mdx). It allows you to express that sets of users who have a relation X to the object also have relation Y. For example, anyone that is related to the device as a `security_guard` is also related as a `live_video_viewer` and `recorded_video_viewer`, and anyone who is related to the device as an `it_admin` is also related as a `live_video_viewer`, a `recorded_video_viewer`, and a `device_renamer`.
+
+At the end you want to make sure that <ProductConcept section="what-is-a-check-request" linkName="checking" /> if Anne, Beth, Charles, or Dianne have permission to view the live video or rename the device, will get you the correct answers back.
+
+The resulting authorization model is:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'device',
+        relations: {
+          it_admin: {
+            this: {},
+          },
+          security_guard: {
+            this: {},
+          },
+          live_video_viewer: {
+            // objects of type "device" have users related to them as "live_video_viewer", if they belong to:
+            union: {
+              // any of (the union of)
+              child: [
+                {
+                  this: {}, // the userset of all users related to the github-repo as "repo_reader"
+                },
+                {
+                  computedUserset: {
+                    //  The userset of all users who are related to the device as it_admin
+                    relation: 'it_admin',
+                  },
+                },
+                {
+                  computedUserset: {
+                    // The userset of all users who are related to the device as it_admin
+                    relation: 'security_guard',
+                  },
+                },
+              ],
+            },
+          },
+          recorded_video_viewer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'it_admin',
+                  },
+                },
+                {
+                  computedUserset: {
+                    relation: 'security_guard',
+                  },
+                },
+              ],
+            },
+          },
+          device_renamer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'it_admin',
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+The requirements are:
+
+- **Anne** and **Charles** are **Security Guards** with access **Device 1**
+- **Beth** and **Dianne** are **IT Admins** with access **Device 1**
+- **Security Guards** can **view live and recorded video**
+- **IT Admins** can **view live and recorded video** and **rename** devices
+
+Instead of adding different relationship tuples with direct relations to the actions they can take, as you did in the previous section, you will only add the relation to their role: `it_admin` or `security_guard`.
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'anne',
+      relation: 'security_guard',
+      object: 'device:1',
+    },
+    {
+      user: 'beth',
+      relation: 'it_admin',
+      object: 'device:1',
+    },
+    {
+      user: 'charles',
+      relation: 'security_guard',
+      object: 'device:1',
+    },
+    {
+      user: 'dianne',
+      relation: 'it_admin',
+      object: 'device:1',
+    },
+  ]}
+/>
+
+#### Verification
+
+We can now verify whether charles is related to device:1 as live_video_viewer.
+
+<CheckRequestViewer user={'charles'} relation={'live_video_viewer'} object={'device:1'} allowed={true} />
+
+Check the other relationships for anne, beth, charles and dianne.
+
+| User      | Object     | Relation                | Query                                                      | Relation? |
+| --------- | ---------- | ----------------------- | ---------------------------------------------------------- | --------- |
+| `anne`    | `device:1` | `live_video_viewer`     | `is anne related to device:1 as live_video_viewer?`        | Yes       |
+| `beth`    | `device:1` | `live_video_viewer`     | `is beth related to device:1 as live_video_viewer?`        | Yes       |
+| `anne`    | `device:1` | `recorded_video_viewer` | `is anne related to device:1 as recorded_video_viewer?`    | Yes       |
+| `beth`    | `device:1` | `recorded_video_viewer` | `is beth related to device:1 as recorded_video_viewer?`    | Yes       |
+| `anne`    | `device:1` | `device_renamer`        | `is anne related to device:1 as device_renamer?`           | No        |
+| `beth`    | `device:1` | `device_renamer`        | `is beth related to device:1 as device_renamer?`           | Yes       |
+| `charles` | `device:1` | `live_video_viewer`     | `is charles related to device:1 as live_video_viewer?`     | Yes       |
+| `dianne`  | `device:1` | `live_video_viewer`     | `is dianne related to device:1 as live_video_viewer?`      | Yes       |
+| `charles` | `device:1` | `recorded_video_viewer` | `is charles related to device:1 as recorded_video_viewer?` | Yes       |
+| `dianne`  | `device:1` | `recorded_video_viewer` | `is dianne related to device:1 as recorded_video_viewer?`  | Yes       |
+| `charles` | `device:1` | `device_renamer`        | `is charles related to device:1 as device_renamer?`        | No        |
+| `dianne`  | `device:1` | `device_renamer`        | `is dianne related to device:1 as device_renamer?`         | Yes       |
+
+### 04. Modeling Device Groups
+
+Now that you are done with devices. Let us tackle device groups.
+
+The requirements regarding device groups were:
+
+- **Devices** can be grouped into **Device Groups**
+- **Security guards** with access to the **Device Group** are **Security Guards** with access to the **Devices** within the **Device Group**. Similarly for **IT Admins**
+
+The <ProductConcept section="what-is-a-type-definition" linkName="type definition" /> for the device group:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type: 'device_group',
+    relations: {
+      it_admin: {
+        this: {},
+      },
+      security_guard: {
+        this: {},
+      },
+    },
+  }}
+/>
+
+With this change, the full <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" /> becomes:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'device',
+        relations: {
+          it_admin: {
+            this: {},
+          },
+          security_guard: {
+            this: {},
+          },
+          live_video_viewer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'it_admin',
+                  },
+                },
+                {
+                  computedUserset: {
+                    relation: 'security_guard',
+                  },
+                },
+              ],
+            },
+          },
+          recorded_video_viewer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'it_admin',
+                  },
+                },
+                {
+                  computedUserset: {
+                    relation: 'security_guard',
+                  },
+                },
+              ],
+            },
+          },
+          device_renamer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'it_admin',
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+      {
+        type: 'device_group',
+        relations: {
+          it_admin: {
+            this: {},
+          },
+          security_guard: {
+            this: {},
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+#### Updating relationship tuples on roles
+
+Remember that **Charles** is a **Security Guard**, and **Dianne** an **IT Admin** on **Group 1**, enter the <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" /> below to reflect that.
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'charles',
+      relation: 'security_guard',
+      object: 'device_group:group1',
+    },
+    {
+      user: 'dianne',
+      relation: 'it_admin',
+      object: 'device_group:group1',
+    },
+  ]}
+/>
+
+You still need to give all the security guards of group1 a `security_guard` relation to devices 2 and 3, and similarly for IT Admins. Add the following relationship tuples to do that.
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      // the userset of all users related to “device_group:group1” as “security_guard” are related to device:2 as “security_guard”
+      user: 'device_group:group1#security_guard',
+      relation: 'security_guard',
+      object: 'device:2',
+    },
+    {
+      user: 'device_group:group1#security_guard',
+      relation: 'security_guard',
+      object: 'device:3',
+    },
+    {
+      // the userset of all users related to “device_group:group1” as “it_admin” are related to device:2 as “it_admin”
+      user: 'device_group:group1#it_admin',
+      relation: 'it_admin',
+      object: 'device:2',
+    },
+    {
+      user: 'device_group:group1#it_admin',
+      relation: 'it_admin',
+      object: 'device:3',
+    },
+  ]}
+/>
+
+#### Verification
+
+Now that you have finalized the model and added the relationship tuples, you can start asking some queries. Try asking the same queries you did earlier but on device 2 instead of device 1.
+
+We can ask `is dianne related to device:2 as live_video_viewer?`
+
+<CheckRequestViewer user={'dianne'} relation={'live_video_viewer'} object={'device:2'} allowed={true} />
+
+Type any of the following queries in the **TUPLE QUERIES** section and press **ENTER** on your keyboard to see the results.
+
+| User      | Object     | Relation                | Query                                                      | Relation? |
+| --------- | ---------- | ----------------------- | ---------------------------------------------------------- | --------- |
+| `anne`    | `device:2` | `live_video_viewer`     | `is anne related to device:2 as live_video_viewer?`        | No        |
+| `beth`    | `device:2` | `live_video_viewer`     | `is beth related to device:2 as live_video_viewer?`        | No        |
+| `anne`    | `device:2` | `recorded_video_viewer` | `is anne related to device:2 as recorded_video_viewer?`    | No        |
+| `beth`    | `device:2` | `recorded_video_viewer` | `is beth related to device:2 as recorded_video_viewer?`    | No        |
+| `anne`    | `device:2` | `device_renamer`        | `is anne related to device:2 as device_renamer?`           | No        |
+| `beth`    | `device:2` | `device_renamer`        | `is beth related to device:2 as device_renamer?`           | No        |
+| `charles` | `device:2` | `live_video_viewer`     | `is charles related to device:2 as live_video_viewer?`     | Yes       |
+| `dianne`  | `device:2` | `live_video_viewer`     | `is dianne related to device:2 as live_video_viewer?`      | Yes       |
+| `charles` | `device:2` | `recorded_video_viewer` | `is charles related to device:2 as recorded_video_viewer?` | Yes       |
+| `dianne`  | `device:2` | `recorded_video_viewer` | `is dianne related to device:2 as recorded_video_viewer?`  | Yes       |
+| `charles` | `device:2` | `device_renamer`        | `is charles related to device:2 as device_renamer?`        | No        |
+| `dianne`  | `device:2` | `device_renamer`        | `is dianne related to device:2 as device_renamer?`         | Yes       |
+
+### 05. Disallow Direct Relationships to users
+
+Notice that despite following **[Step 03](./iot.mdx#03-updating-our-authorization-model-to-facilitate-future-changes)**, anne and beth still have direct relations to all the actions they can take on device:1.
+
+#### Updating the authorization model
+
+`anne` is a `live_video_viewer` by both her position as `security_guard` as well as her _<ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" />_ assignment. This is undesirable. Imagine `anne` left her position of `security_guard` and she will still have `live_video_viewer` access to `device:1`.
+
+To remedy this, remove `self` from `live_video_viewer`, `recorded_video_viewer` and `device_renamer`. This denies direct relations to `live_video_viewer`, `recorded_video_viewer` and `device_renamer` from having an effect. To do this:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'device',
+        relations: {
+          it_admin: {
+            this: {},
+          },
+          security_guard: {
+            this: {},
+          },
+          live_video_viewer: {
+            union: {
+              child: [
+                {
+                  computedUserset: {
+                    relation: 'it_admin',
+                  },
+                },
+                {
+                  computedUserset: {
+                    relation: 'security_guard',
+                  },
+                },
+              ],
+            },
+          },
+          recorded_video_viewer: {
+            union: {
+              child: [
+                {
+                  computedUserset: {
+                    relation: 'it_admin',
+                  },
+                },
+                {
+                  computedUserset: {
+                    relation: 'security_guard',
+                  },
+                },
+              ],
+            },
+          },
+          device_renamer: {
+            union: {
+              child: [
+                {
+                  computedUserset: {
+                    relation: 'it_admin',
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+      {
+        type: 'device_group',
+        relations: {
+          it_admin: {
+            this: {},
+          },
+          security_guard: {
+            this: {},
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+:::info
+
+Notice that any reference to the [**direct relationship keyword**](../../configuration-language.mdx#the-direct-relationship-keyword) (`self` in the friendly Syntax - or `this` in the api syntax) has been removed. That indicates that a user cannot have a <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" /> with an object in this type.
+
+With this change, `anne` can no longer have a `live_video_viewer` permission for `device:1` except through having a `security_guard` or `it_admin` role first, and when she loses access to that role, she will automatically lose access to the `live_video_viewer` permission.
+
+:::
+
+#### Verification
+
+Now that direct relationship is denied, we should see that `anne` has `live_video_viewer` relation to `device:1` solely based on her position as `security_guard` to `device:1`. Let's find out.
+
+To test this, we can add a new user `emily`. Emily is **not** a `security_guard` nor an `it_admin`. However, we attempt to access via direct relations by adding the following <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" />:
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'emily',
+      relation: 'live_video_viewer',
+      object: 'device:1',
+    },
+    {
+      user: 'emily',
+      relation: 'recorded_video_viewer',
+      object: 'device:1',
+    },
+    {
+      user: 'emily',
+      relation: 'device_renamer',
+      object: 'device:1',
+    },
+  ]}
+/>
+
+Now try to query `is emily related to device:1 as live_video_viewer?`. The returned result should be `emily is not related to device:1 as live_video_viewer`. This confirms that direct relations have no effect on the `live_video_viewer` relations, and that is because the [**direct relationship keyword**](../../configuration-language.mdx#the-direct-relationship-keyword) (`self`) was removed from the relation configuration.
+
+<CheckRequestViewer user={'emily'} relation={'live_video_viewer'} object={'device:1'} allowed={false} />
+
+Query on the other relationships and you will see:
+
+| User    | Object     | Relation                | Query                                                    | Relation? |
+| ------- | ---------- | ----------------------- | -------------------------------------------------------- | --------- |
+| `emily` | `device:1` | `recorded_video_viewer` | `is emily related to device:1 as recorded_video_viewer?` | No        |
+| `emily` | `device:1` | `device_renamer`        | `is emily related to device:1 as device_renamer?`        | No        |
+
+## Summary
+
+In this post, you were introduced to <IntroductionSection linkName="fine grain authentication" section="what-is-fine-grained-authorization-fga"/> and <ProductName format={ProductNameFormat.LongForm}/>.
+
+Upcoming posts will dive deeper into <ProductName format={ProductNameFormat.LongForm}/>, introducing concepts that will improve on the model you built today, and tackling more complex permission systems, with more relations and requirements that need to be met.
+
+<Playground title="IoT" preset="iot" example="IoT" store="iot" />
+
+### Exercises for You
+
+- Try adding a second group tied to devices 4 and 5. Add only Charles and Dianne to this group, then try to run queries that would validate your model.
+- Management has decided that Security Guards can only access live videos, and instituted a new position called Security Officer who can view both live and recorded videos. Can you update the authorization model to reflect that?

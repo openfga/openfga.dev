@@ -1,0 +1,186 @@
+---
+sidebar_position: 4
+description: 'Modeling Concepts: Concentric Relationships'
+slug: /modeling/concepts/concentric-relationships
+---
+
+import {
+  AuthzModelSnippetViewer,
+  CardBox,
+  CheckRequestViewer,
+  DocumentationNotice,
+  Playground,
+  ProductConcept,
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+  RelationshipTuplesViewer,
+} from '@components/Docs';
+
+# Concentric Relationships
+
+<DocumentationNotice />
+
+In this short guide, you'll learn how to represent a concentric <ProductConcept section="what-is-a-relationship" linkName="relationships" />.
+
+For example, if you want to have all editors of a document also be viewers of said document.
+
+<CardBox title="When to use" appearance="filled" description=<div>
+
+Concentric relations make the most sense when your domain logic has nested relations, where one having relation implies having another relation.
+
+For example:
+
+- all `editors` are `viewers`
+- all `managers` are `members`
+- all `device_managers` are `device_renamers`
+
+This allows you to only create a single _relationship tuple_ rather than creating n _relationship tuples_ for each relation.
+
+</div> />
+
+## Before you start
+
+To better understand this guide, you should be familiar with some <ProductConcept /> and know how to develop the things listed below.
+
+<details>
+<summary>
+
+You will start with the _<ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />_ below, it represents a `document` _<ProductConcept section="what-is-a-type" linkName="type" />_ that can have users **<ProductConcept section="what-is-a-relation" linkName="related" />** as `editor` and `viewer`.
+
+Let us also assume that we have a `document` called "meeting_notes.doc" and bob is assigned as editor to this document.
+
+</summary>
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          viewer: {
+            this: {},
+          },
+          editor: {
+            this: {},
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+The current state of the system is represented by the following relationship tuples being in the system already:
+
+<RelationshipTuplesViewer
+  relationshipTuples={[
+    {
+      user: 'bob',
+      relation: 'editor',
+      object: 'document:meeting_notes.doc',
+    },
+  ]}
+/>
+
+<hr />
+
+In addition, you will need to know the following:
+
+### Modeling User Groups
+
+You need to know how to add users to groups and grant groups access to resources. [Learn more →](../basics/user-groups.mdx)
+
+### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+
+- A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics
+- A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
+- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between objects of this type and other users in the system
+- An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
+- A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>
+
+</details>
+
+<Playground />
+
+## Step by Step
+
+With the current type definition, there isn't a way to indicate that all `editors` of a certain `document` are also automatically `viewers` of that document. So for a certain user, in order to indicate that they can both `edit` and `view` a certain `document`, two _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" />_ need to be created (one for `editor`, and another for `viewer`).
+
+### 01. Modify our model to imply editor as viewer
+
+Instead of creating two _relationship tuples_, we can leverage concentric relationships by defining editors are viewers.
+
+Our authorization model becomes the following:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          viewer: {
+            union: {
+              child: [
+                {
+                  // a user can be assigned a direct `viewer` relation, i.e., not implied through another relation
+                  this: {},
+                },
+                {
+                  // a user that is an editor is also implicitly a viewer
+                  computedUserset: {
+                    relation: 'editor',
+                  },
+                },
+              ],
+            },
+          },
+          editor: {
+            this: {},
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+:::info
+
+`viewer` of a `document` are any of:
+
+1. users that are directly assigned as `viewer`
+2. users that have `editor` of the document
+
+:::
+
+With this authorization model change, having an `editor` relationship with a certain document implies having a `viewer` relationship with that same document.
+
+### 02. Check that editors are viewers
+
+Since we had a _relationship tuple_ that indicates that **bob** is an `editor` of **document:meeting_notes.doc**, this means **bob** is now implicitly a `viewer` of **document:meeting_notes.doc**.
+If we now check: **is bob a viewer of document:meeting_notes.doc?** we would get the following:
+
+<CheckRequestViewer user={'bob'} relation={'viewer'} object={'document:meeting_notes.doc'} allowed={true} />
+
+:::caution Note
+When creating relationship tuples for <ProductName format={ProductNameFormat.ShortForm}/> make sure to use unique ids for each object and user within your application domain. We're using first names and simple ids to just illustrate an easy-to-follow example.
+:::
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more on how concentric relationships can be used."
+  relatedLinks={[
+    {
+      title: 'Modeling Google Drive',
+      description: 'See how to indicate that editors are commenters and viewers in Google Drive.',
+      link: '/modeling/advanced/use-cases/gdrive#01-individual-permissions',
+      id: '../advanced/use-cases/gdrive.mdx#01-individual-permissions',
+    },
+    {
+      title: 'Modeling GitHub',
+      description: 'See how to indicate that repository admins are writers and readers in GitHub.',
+      link: '/modeling/advanced/use-cases/github#01-permissions-for-individuals-in-an-org',
+      id: '../advanced/use-cases/github.mdx#01-permissions-for-individuals-in-an-org',
+    },
+  ]}
+/>

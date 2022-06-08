@@ -1,0 +1,60 @@
+---
+id: overview
+title: 'Add Authorization to Your API'
+slug: /integration
+sidebar_position: 0
+---
+
+import { DocumentationNotice, IntroCard, CardGrid } from '@components/Docs';
+
+<DocumentationNotice />
+
+The following will provide a step by step guide on how to add authorization to your API.
+
+<IntroCard
+  title="When to use"
+  description="This section is useful if you have defined an authorization model, understand how to write authorization data to {ProductName}, and want to learn how to update your code to start authorizing user requests."
+/>
+
+# Content
+
+<CardGrid
+  middle={[
+    {
+      title: 'Install the SDK',
+      description: 'Install and configure the SDK for the language of your choice.',
+      to: '/integration/install-sdk',
+    },
+    {
+      title: 'Update Relationship Tuples',
+      description: 'Programmatically write authorization data to an {ProductName} store.',
+      to: '/integration/update-tuples',
+    },
+    {
+      title: 'Perform a Check',
+      description: 'Programmatically perform an authorization check against an {ProductName} store.',
+      to: '/integration/perform-check',
+    },
+    {
+      title: 'Integrate with a Framework',
+      description: 'Integrate authorization checks with a framework.',
+      to: '/integration/framework',
+    },
+  ]}
+  bottom={[
+    {
+      title: 'Advanced Integration',
+      description: 'Learn how to handle cases such as honoring fine-grained access control checks while searching.',
+      to: [
+        {
+          to: '/integration/advanced/search-with-permissions',
+          label: 'Search with permissions',
+        },
+        {
+          to: '/integration/read-tuple-changes',
+          label: 'Read tuple changes',
+        },
+      ],
+    },
+  ]}
+/>

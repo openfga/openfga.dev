@@ -1,0 +1,60 @@
+/* Default Button */
+
+a.buttonLink {
+  border-radius: 12px;
+  background-color: var(--ofga-neutral-darker);
+  padding: 0.5rem 1rem;
+
+  color: var(--ofga-neutral-light);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  grid-gap: 0.5rem;
+  font-weight: 500;
+
+  justify-content: center;
+}
+
+a.buttonLink:hover {
+  text-decoration: none;
+  color: var(--ofga-neutral-light);
+  background-color: var(--ofga-neutral-black);
+}
+
+a.buttonLink svg > * {
+  fill: var(--ofga-neutral-light);
+  transition: all 0.2s ease;
+}
+
+a.buttonLink:hover svg > * {
+  fill: var(--ofga-neutral-light);
+}
+
+/* Primary variant */
+
+a.buttonLinkPrimary {
+  background-color: var(--ofga-green-neon);
+  color: var(--ofga-neutral-black);
+}
+
+a.buttonLinkPrimary svg > * {
+  fill: var(--ofga-neutral-black);
+}
+
+/* Secondary variant */
+
+a.buttonLinkSecondary {
+  background-color: var(--ofga-neutral-base);
+  color: var(--ofga-neutral-black);
+}
+
+a.buttonLinkSecondary svg > * {
+  fill: var(--ofga-neutral-black);
+}
+
+/* Outlined variant */
+
+a.buttonLinkOutlined {
+  border: 1px solid var(--ofga-neutral-base);
+  color: var(--ofga-neutral-lighter);
+}

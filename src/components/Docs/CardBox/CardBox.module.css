@@ -1,0 +1,184 @@
+.documentation-card-box {
+  border: 1px solid #bdc4cf;
+  border-radius: 24px;
+  padding: 32px;
+}
+.documentation-card-box-border {
+  border: 1px solid #bdc4cf !important;
+}
+.documentation-card-box-fitcontent {
+  height: fit-content;
+}
+.documentation-card-box-children {
+  margin: 0 !important;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 28px;
+  letter-spacing: -0.1px;
+}
+.documentation-card-box-children-small ul {
+  padding-left: 14px;
+}
+.documentation-card-box-children-small ul,
+.documentation-card-box-children-small li,
+.documentation-card-box-children-small p {
+  margin: 0 !important;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 18px;
+}
+.documentation-card-box-children-mono ul,
+.documentation-card-box-children-mono li,
+.documentation-card-box-children-mono p {
+  margin: 0 !important;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 1.5px;
+}
+.documentation-card-box-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background-color: #eff0f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.documentation-card-box-icon-large {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  background-color: #eff0f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.documentation-card-box-icon-label {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 28px;
+  letter-spacing: -0.05px;
+}
+.documentation-card-box-icon-title {
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 36px;
+  letter-spacing: -0.3px;
+}
+.documentation-card-box-alignment-left {
+  display: flex;
+  align-items: center;
+}
+.documentation-card-box-alignment-left p {
+  margin: 0 0 0 10px;
+}
+.documentation-card-box-alignment-left span {
+  margin: 0 0 0 24px;
+}
+.documentation-card-box-alignment-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.documentation-card-box-alignment-center p {
+  margin-top: 10px;
+}
+.documentation-card-box-gradient {
+  background: linear-gradient(90deg, #635dff 0.01%, #3885ff 100.01%);
+  border-radius: 24px;
+  padding: 32px;
+}
+.documentation-card-box-gradient * {
+  color: #fff !important;
+}
+.documentation-card-box-filled {
+  background-color: var(--ifm-color-emphasis-200);
+  border: 1px solid #bdc4cf;
+  border-radius: 24px;
+  padding: 32px;
+  border: none;
+}
+.documentation-card-box-filled .documentation-card-box-description {
+  color: var(--ofga-neutral-white);
+}
+.documentation-card-box-content {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+.documentation-card-box-content * {
+  font-family: 'Inter';
+}
+.documentation-card-box-content code {
+  background-color: var(--ifm-color-emphasis-300);
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+.documentation-card-box-links {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24.4px;
+  letter-spacing: 0;
+  margin-top: 16px;
+  color: var(--ifm-link-color);
+}
+.documentation-card-box-links .documentation-card-box-link:not(:last-child) {
+  margin-bottom: 4px;
+}
+.documentation-card-box-links-justify-start {
+  justify-content: start;
+}
+.documentation-card-box-links-bold a {
+  font-weight: 500;
+}
+.documentation-card-box-link {
+  transition: all 0.2s linear 0s;
+}
+
+.documentation-card-box-link:hover {
+  background-color: unset;
+}
+
+.documentation-card-box-link:hover:after {
+  content: '→';
+  margin-left: 0.5rem;
+  transition: all 0.2s linear 0s;
+  opacity: 1;
+  text-indent: 0px;
+  text-decoration: none;
+}
+
+.documentation-card-box-links-none ul,
+.documentation-card-box-links-none li {
+  list-style: none;
+  padding-left: 0rem;
+}
+.documentation-card-box-links-numbered ul {
+  list-style-type: decimal-leading-zero;
+}
+.documentation-card-box-title {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 26px;
+  letter-spacing: -0.1px;
+  margin-bottom: 16px;
+}
+.documentation-card-box-title-center {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 26px;
+  letter-spacing: -0.1px;
+  text-align: center;
+  margin-bottom: 0px;
+}
+.documentation-card-box-description {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0;
+  margin: 0;
+}

@@ -1,0 +1,18 @@
+{
+  "addons": [],
+  "env": {
+    "GIT_SSH_DEPLOY_KEY": {
+      "required": true
+    },
+    "KNOWN_HOSTS": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "name": "openfga-docs",
+  "scripts": {}
+}

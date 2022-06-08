@@ -1,0 +1,1375 @@
+---
+title: 'Modeling: Getting Started'
+description: An introduction to modeling
+sidebar_position: 1
+slug: /modeling/getting-started
+---
+
+import {
+  AuthzModelSnippetViewer,
+  CardBox,
+  CardGrid,
+  ColumnLayout,
+  DocumentationNotice,
+  IntroductionSection,
+  ProductConcept,
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+  RelationshipTuplesViewer,
+  SyntaxFormat,
+  UpdateProductNameInLinks,
+} from '@components/Docs';
+
+import DocIcon from '../../../static/img/getting-started-icon-doc.svg';
+import DirIcon from '../../../static/img/getting-started-icon-dir.svg';
+import OrgIcon from '../../../static/img/getting-started-icon-org.svg';
+import DriveIcon from '../../../static/img/getting-started-icon-drive.svg';
+import FGAIcon from '../../../static/img/getting-started-fga-logo.svg';
+
+# Modeling: Getting Started
+
+<DocumentationNotice />
+
+Creating a <IntroductionSection linkName="Relationship Based Access Control (ReBAC)" section="what-is-relationship-based-access-control-rebac"/> authorization model might feel odd at first. Most of us tend to think about authorization models in terms of roles and permissions. After all, most software works like that. Your existing systems are likely built on a model using roles and permissions.
+
+This guide outlines a process for defining your <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" /> with <ProductName format={ProductNameFormat.ProductLink}/>.
+
+## Introduction to modeling
+
+To define a ReBAC model in <ProductName format={ProductNameFormat.ShortForm}/> we recommend:
+
+- If you have an existing system: forget about how your system works today and start thinking about how you want it to work in the future.
+- Thinking about authorization starting from the resources, or objects as <ProductName format={ProductNameFormat.ShortForm}/> calls them.
+
+If that sounds hard, don't worry! We'll guide you through it.
+
+<ProductName format={ProductNameFormat.ShortForm}/> is built to quickly and reliably make <ProductConcept section="what-is-a-check-request" linkName="authorization checks" />. This means providing an answer to a question: "Can user U perform action A on object O?"
+
+ReBAC systems determine access from a <ProductConcept section="what-is-a-user" linkName="user's" /> <ProductConcept section="what-is-a-relation" linkName="relation" /> to an <ProductConcept section="what-is-an-object" linkName="object" />. Authorization decisions are then yes or no answers to the question: "Does user U have relation R with object O?".
+
+<ColumnLayout cols={2} style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+  <CardBox
+    title="General Authorization Check"
+    description={
+      <p>
+        "Can user <b>U</b> <u>perform an action</u> <b>A</b> on object <b>O</b>?"
+      </p>
+    }
+    appearance="filled"
+  />
+  <CardBox
+    title="{ProductName} (ReBAC) Authorization Check"
+    description={
+      <p>
+        "Does user <b>U</b> <u>have relation</u> <b>R</b> with object <b>O</b>?"
+      </p>
+    }
+  />
+</ColumnLayout>
+
+In the previous example, a relation R should be defined that implies permission to action A. For example:
+
+<ColumnLayout cols={2} style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+  <CardBox
+    title="General Authorization Check"
+    description={
+      <p>
+        "Can user <b>Jane</b> <u>perform action</u> <b>view</b> on object <b>project sandcastle</b>?"
+      </p>
+    }
+    appearance="filled"
+  />
+  <CardBox
+    title="{ProductName} (ReBAC) Authorization Check"
+    description={
+      <p>
+        "Can user <b>Jane</b> <u>have relation</u> <b>view</b> with object <b>project sandcastle</b>?"
+      </p>
+    }
+  />
+</ColumnLayout>
+
+We'll provide more detailed examples throughout this article.
+
+When you are modeling, you need to answer a more general question:
+
+<div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+  <CardBox
+    icon={{ icon: <FGAIcon />, alignment: 'left' }}
+    title="Why could user U perform an action A on an object O?"
+  />
+</div>
+
+If you can answer that question for all types of objects in your system, then you can codify that into an authorization model.
+
+Let's get started!
+
+---
+
+## A process for defining authorization models
+
+Defining an authorization model requires codifying an answer to the question "why could user U perform an action A on an object O?" for all use cases or actions in your system. This is an iterative process. For the purpose of this guide, we'll go through one iteration of this process using a simplified Google Drive like system as an example.
+
+Steps for defining your authorization model:
+
+1.  [Pick the most important feature](#01-pick-the-most-important-feature)
+2.  [List the object types](#02-list-the-object-types)
+3.  [List relations for those types](#03-list-relations-for-those-types)
+4.  [Define relations](#04-define-relations)
+5.  [Test the model](#05-test-the-model)
+6.  [Iterate](#06-iterate)
+
+![The starting point](./assets/getting-started-diagram-01.svg)
+
+### 01. Pick the most important feature
+
+![Pick the most important feature](./assets/getting-started-diagram-02.svg)
+
+A feature, in the context of this document, is an action or related set of actions your users can perform in your system. We'll introduce an example feature later in this section.
+
+Start with the most important feature. It doesn't have to be the most complex one, but it should be the most important one. You're probably more familiar with the authorization requirements for this feature than other less important use cases.
+
+:::caution Important
+
+- Requirement clarity is fundamental when defining an authorization model.
+- The scope of the feature is not important at this point. You can always iterate later.
+
+:::
+
+#### Write it in plain language
+
+Once you've picked a feature, describe its authorization related scope using simple language. Avoid using the word "roles", as this ties you to an RBAC way of thinking.
+
+:::info
+Roles don't "disappear" in ReBAC systems like <ProductName format={ProductNameFormat.ShortForm}/>. Your users might [have roles on a given object, rather than the entire system](./basics/roles-and-permissions.mdx). But starting from the term "role" might lead you down the wrong path. Instead it is better to discover roles while you are modeling.
+:::
+
+Your feature description should include the <ProductConcept section="what-is-an-object" linkName="objects" />, <ProductConcept section="what-is-a-user" linkName="users" /> and <ProductConcept section="what-is-a-user" linkName="groups of users" /> participating in the system. Sentences should look like this:
+
+<div style={{ marginBottom: '2rem' }}>
+  <CardBox
+    title="A user {user} can perform action {action} to/on/in {object types} ... IF {conditions}"
+    appearance="filled"
+    centerTitle
+  />
+</div>
+Let's look at an example of a simplified Google Drive like system. We'll focus on the feature allowing users to create, read,
+update, delete, and share documents with other users.
+
+<br />
+<br />
+
+This feature can be described with these sentences:
+
+<CardBox appearance='filled' monoFontChildren>
+
+- A user can create a document in a drive if they are the owner of the drive.
+- A user can create a folder in a drive if they are the owner of the drive.
+- A user can create a document in a folder if they are the owner of the folder. The folder is the parent of the document.
+- A user can create a folder in a folder if they are the owner of the folder. The existing folder is the parent of the new folder.
+
+---
+
+- A user can share a document with another user or an organization as either editor or viewer if they are an owner or editor of a document or if they are an owner of the folder/drive that is the parent of the document.
+
+---
+
+- A user can share a folder with another user or an organization as a viewer if they are an owner of the folder.
+
+---
+
+- A user can view a document if they are an owner, viewer or editor of the document or if they are a viewer or owner of the folder/drive that is the parent of the document.
+
+---
+
+- A user can edit a document if they are an owner or editor of the document or if they are an owner of the folder/drive that is the parent of the document.
+
+---
+
+- A user can change the owner of a document if they are an owner of the document.
+
+---
+
+- A user can change the owner of a folder if they are an owner of the folder.
+
+---
+
+- A user can be a member of an organization.
+
+  <span style={{ color: 'gray' }}>
+    How a user is added as a member to an organization is beyond the scope of the feature we picked to write down.
+  </span>
+
+---
+
+- A user can view a folder if they are the owner of the folder, or a viewer or owner of either the parent folder of the folder, or the parent drive of the folder.
+
+</CardBox>
+
+### 02. List the object types
+
+![List the object types](./assets/getting-started-diagram-03.svg)
+
+Next make a list of the <ProductConcept section="what-is-a-type" linkName="types" /> of objects in your system. You might be able to identify the objects in your system from your existing domain/database model.
+
+Find all the objects in the previous step using this template:
+
+<div style={{ marginBottom: '2rem' }}>
+  <CardBox
+    title="A user {user} can perform action {action} to/on/in {object type} ... IF {conditions}"
+    appearance="filled"
+    centerTitle
+  />
+</div>
+
+These are all the object types from the previous step (in order of appearance) based on that template:
+
+<ColumnLayout cols={3} style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+  <CardBox icon={{ icon: <DocIcon />, alignment: 'left', label: 'Document' }} />
+  <CardBox icon={{ icon: <DirIcon />, alignment: 'left', label: 'Folder' }} />
+  <CardBox icon={{ icon: <OrgIcon />, alignment: 'left', label: 'Organization' }} />
+</ColumnLayout>
+
+Let's highlight all object types in <span className="blue-highlight-text">blue</span>:
+
+<div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+<CardBox appearance='filled' monoFontChildren>
+
+- A user can create a <span className="blue-highlight-text">document</span> in a drive if they are the owner of the drive.
+- A user can create a <span className="blue-highlight-text">folder</span> in a drive if they are the owner of the drive.
+- A user can create a <span className="blue-highlight-text">document</span> in a folder if they are the owner of the folder.
+- A user can create a <span className="blue-highlight-text">folder</span> in a folder if they are the owner of the folder.
+
+---
+
+- A user can share a <span className="blue-highlight-text">document</span> with another user or an organization as either editor or viewer if they are an owner or editor of a document or if they are an owner of the folder/drive that is the parent of the document.
+
+---
+
+- A user can share a <span className="blue-highlight-text">folder</span> with another user or an organization as a viewer if they are an owner of the folder.
+
+---
+
+- A user can view a <span className="blue-highlight-text">document</span> if they are an owner, viewer or editor of the document or if they are a viewer, owner of the folder/drive that is the parent of the document.
+
+---
+
+- A user can edit a <span className="blue-highlight-text">document</span> if they are an owner or editor of the document or if they are an owner of the folder/drive that is the parent of the document.
+
+---
+
+- A user can change the owner of a <span className="blue-highlight-text">document</span> if they are an owner of the document.
+
+---
+
+- A user can change the owner of a <span className="blue-highlight-text">folder</span> if they are an owner of the folder.
+
+---
+
+- A user can be a member of an <span className="blue-highlight-text">organization</span>.
+
+  <span style={{ color: 'gray' }}>
+    How a user is added as a member to an organization is beyond the scope of the feature we picked to write down.
+  </span>
+
+---
+
+- A user can view a <span className="blue-highlight-text">folder</span> if they are the owner of the folder, or a viewer or owner of either the parent folder of the folder, or the parent drive of the folder.
+
+</CardBox>
+</div>
+
+However, the list of object types is not finished. To complete the list of object types you must also add all the second nouns that appear in conditions as part of expressions of this format: **"{first noun} of a/the {second noun}"**.
+
+<div style={{ marginBottom: '2rem' }}>
+  <CardBox centerTitle title="... IF {first noun} of a/the {second noun}" appearance="filled" />
+</div>
+
+Let's highlight those expressions in <span className="green-highlight-text">green</span>:
+
+<div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+<CardBox monoFontChildren appearance='filled'>
+
+- A user can create a document in a drive if they are the <span className="green-highlight-text">owner of the drive</span>.
+- A user can create a folder in a drive if they are the <span className="green-highlight-text">owner of the drive</span>.
+- A user can create a document in a folder if they are the <span className="green-highlight-text">owner of the folder</span>. The folder is the <span className="green-highlight-text">parent of the document</span>.
+- A user can create a folder in a folder if they are the <span className="green-highlight-text">owner of the folder</span>. The existing folder is the <span className="green-highlight-text">parent of the new folder</span> .
+
+---
+
+- A user can share a document with another user or an organization as either editor or viewer if they are an <span className="green-highlight-text">owner or editor of a document</span> or if they are an <span className="green-highlight-text">owner of the folder/drive</span> that is the <span className="green-highlight-text">parent of the document</span>.
+
+---
+
+- A user can share a folder with another user or an organization as a viewer if they are an <span className="green-highlight-text">owner of the folder</span>.
+
+---
+
+- A user can view a document if they are an <span className="green-highlight-text">owner, viewer or editor of the document</span> or if they are a <span className="green-highlight-text">viewer or owner of the folder/drive</span> that is the <span className="green-highlight-text">parent of the document</span>.
+
+---
+
+- A user can edit a document if they are an <span className="green-highlight-text">owner or editor of the document</span> or if they are an <span className="green-highlight-text">owner of the folder/drive</span> that is the <span className="green-highlight-text">parent of the document</span>.
+
+---
+
+- A user can change the owner of a document if they are an <span className="green-highlight-text">owner of the document</span>.
+
+---
+
+- A user can change the owner of a folder if they are an <span className="green-highlight-text">owner of the folder</span>.
+
+---
+
+- A user can be a member of an organization.
+
+  <span style={{ color: 'gray' }}>
+    How a user is added as a member to an organization is beyond the scope of the feature we picked to write down.
+  </span>
+
+---
+
+- A user can view a folder if they are the <span className="green-highlight-text">owner of the folder</span>, or a <span className="green-highlight-text">viewer or owner of either the parent folder of the folder, or the parent drive of the folder</span>.
+
+</CardBox>
+</div>
+
+The only second noun we didn't have in our object type list is "Drive", so we'll add it to the list:
+
+<ColumnLayout cols={4} style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+  <CardBox icon={{ icon: <DocIcon />, alignment: 'left', label: 'Document' }} />
+  <CardBox icon={{ icon: <DirIcon />, alignment: 'left', label: 'Folder' }} />
+  <CardBox icon={{ icon: <OrgIcon />, alignment: 'left', label: 'Organization' }} />
+  <CardBox icon={{ icon: <DriveIcon />, alignment: 'left', label: 'Drive' }} />
+</ColumnLayout>
+
+Now that we have a list of object types we can start defining them using the <UpdateProductNameInLinks link="./configuration-language" name="{ProductName} Configuration Language" />:
+
+<AuthzModelSnippetViewer
+  onlyShow={SyntaxFormat.Friendly2}
+  configuration={{
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {},
+      },
+      {
+        type: 'folder',
+        relations: {},
+      },
+      {
+        type: 'organization',
+        relations: {},
+      },
+      {
+        type: 'drive',
+        relations: {},
+      },
+    ],
+  }}
+/>
+
+:::info Caution
+You're now in the process of building a version you can use. The model above is not yet a valid authorization model accepted by <ProductName format={ProductNameFormat.ShortForm}/>.
+:::
+
+:::info Important
+In a few cases other users can be part of determining whether an action can be performed on an action or not. Social media is an example of this "a user can comment on a picture if they are a friend of the user that published it".
+
+In those cases [**User** should also be an object type](./concepts/object-to-object-relationships.mdx). Following the last recommendation, we would discover the User type because it is a second noun in an expression: "friend of the user".
+:::
+
+### 03. List relations for those types
+
+![List relations for those types](./assets/getting-started-diagram-04.svg)
+
+Each of the previously defined types has a set of relations. <ProductConcept section="what-is-a-relation" linkName="Relations" /> are an important component in your model. After all, <ProductName format={ProductNameFormat.ShortForm}/> is a <IntroductionSection linkName="Relationship Based Access Control (ReBAC)" section="what-is-relationship-based-access-control-rebac"/> system.
+
+To identify relations for a type we in the write-up we can perform an exercise similar to the one we did in [list the type of objects in your system](#02-list-the-object-types).
+
+Relations for a type {type} will be all of these:
+
+- any noun that is the {noun} of a "{noun} of a/an/the {type}" expression. **These are typically the Foreign Keys in a database.** We'll highlight these in <span className="green-highlight-text">green</span>.
+- any verb or action that is the {action} of a "can {action} (in) a/an {type}" expression. **These are typically the permissions for a type.** We'll highlight these in <span className="yellow-highlight-text">yellow</span>.
+
+<div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+<CardBox monoFontChildren appearance='filled'>
+
+- A user <span className="yellow-highlight-text">can create a document in a drive</span> if they are the <span className="green-highlight-text">owner of the drive</span>.
+- A user <span className="yellow-highlight-text">can create a folder in a drive</span> if they are the <span className="green-highlight-text">owner of the drive</span>.
+- A user <span className="yellow-highlight-text">can create a document in a folder</span> if they are the <span className="green-highlight-text">owner of the folder</span>. The folder is the <span className="green-highlight-text">parent of the document</span>.
+- A user <span className="yellow-highlight-text">can create a folder in a folder</span> if they are the <span className="green-highlight-text">owner of the folder</span>. The existing folder is the <span className="green-highlight-text">parent of the new folder</span>.
+
+---
+
+- A user <span className="yellow-highlight-text">can share a document with another user or an organization</span> as either editor or viewer if they are an <span className="green-highlight-text">owner or editor of a document</span> or if they are an <span className="green-highlight-text">owner of the folder/drive</span> that is the <span className="green-highlight-text">parent of the document</span>.
+
+---
+
+- A user <span className="yellow-highlight-text">can share a folder with another user or an organization</span> as a viewer if they are an <span className="green-highlight-text">owner of the folder</span>.
+
+---
+
+- A user <span className="yellow-highlight-text">can view a document</span> if they are an <span className="green-highlight-text">owner, viewer or editor of the document</span> or if they are a <span className="green-highlight-text">viewer or owner of the folder/drive</span> that is the <span className="green-highlight-text">parent of the document</span>.
+
+---
+
+- A user <span className="yellow-highlight-text">can edit a document</span> if they are an <span className="green-highlight-text">owner or editor of the document</span> or if they are an <span className="green-highlight-text">owner of the folder/drive</span> that is the <span className="green-highlight-text">parent of the document</span>.
+
+---
+
+- A user <span className="yellow-highlight-text">can change the owner of a document</span> if they are an <span className="green-highlight-text">owner of the document</span>.
+
+---
+
+- A user <span className="yellow-highlight-text">can change the owner of a folder</span> if they are an <span className="green-highlight-text">owner of the folder</span>.
+
+---
+
+- A user <span className="yellow-highlight-text">can be a member of an organization</span>.
+
+  <span style={{ color: 'gray' }}>
+    How a user is added as a member to an organization is beyond the scope of the feature we picked to write down.
+  </span>
+
+---
+
+- A user <span className="yellow-highlight-text">can view a folder</span> if they are the <span className="green-highlight-text">owner of the folder</span>, or a <span className="green-highlight-text">viewer or owner of either the parent folder of the folder, or the parent drive of the folder</span>.
+
+</CardBox>
+</div>
+
+The resulting list is:
+
+<ColumnLayout cols={4} equalWidth style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+<CardBox
+  smallFontChildren
+  icon={{ icon: <DocIcon />, alignment: 'middle', label: 'Document' }}
+>
+
+- parent
+- can_share
+- owner
+- editor
+- can_write
+- can_view
+- viewer
+- can_change_owner
+
+</CardBox>
+<CardBox
+  smallFontChildren
+  icon={{ icon: <DirIcon />, alignment: 'middle', label: 'Folder' }}
+>
+
+- can_create_document
+- owner
+- can_create_folder
+- can_view
+- viewer
+- parent
+
+</CardBox>
+<CardBox
+  smallFontChildren
+  icon={{ icon: <OrgIcon />, alignment: 'middle', label: 'Organization' }}
+>
+
+- member
+
+</CardBox>
+<CardBox
+  smallFontChildren
+  icon={{ icon: <DriveIcon />, alignment: 'middle', label: 'Drive' }}
+>
+
+- can_create_document
+- owner
+- can_create_folder
+
+</CardBox>
+</ColumnLayout>
+
+:::info
+In <ProductName format={ProductNameFormat.ShortForm}/>, relations can only have alphanumeric characters, underscores and hyphens. We recommend using underscore (\_) to separate words and removing prepositions. E.g.: "can create a document" can become "can_create_document" or "create_document" if you are into brevity.
+:::
+
+Using the <UpdateProductNameInLinks link="./configuration-language" name="{ProductName} Configuration Language" /> we can enumerate the relations for each type:
+
+<AuthzModelSnippetViewer
+  onlyShow={SyntaxFormat.Friendly2}
+  configuration={{
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          parent: {},
+          owner: {},
+          editor: {},
+          viewer: {},
+          can_share: {},
+          can_view: {},
+          can_write: {},
+          can_change_owner: {},
+        },
+      },
+      {
+        type: 'folder',
+        relations: {
+          owner: {},
+          parent: {},
+          viewer: {},
+          can_create_folder: {},
+          can_create_document: {},
+          can_view: {},
+        },
+      },
+      { type: 'organization', relations: { member: {} } },
+      {
+        type: 'drive',
+        relations: { owner: {}, can_create_document: {}, can_create_folder: {} },
+      },
+    ],
+  }}
+/>
+
+:::info Caution
+You're now in the process of building a version you can use. The model above is not yet a valid authorization model accepted by <ProductName format={ProductNameFormat.ShortForm}/>.
+:::
+
+### 04. Define relations
+
+![Define relations](./assets/getting-started-diagram-05.svg)
+
+We will use the <UpdateProductNameInLinks link="./configuration-language" name="{ProductName} Configuration Language" /> to create a <ProductConcept section="what-is-a-relation" linkName="relation definition" /> for each of the relations we identified. At this stage we will encode the answers to the question we asked at the beginning of the document:.
+
+<div style={{ marginBottom: '2rem' }}>
+  <CardBox
+    icon={{ icon: <FGAIcon />, alignment: 'left' }}
+    title="Why could a user U, perform an action A on an object O?"
+  />
+</div>
+
+We are going to go over each type and each of its relations and create a definition for it.
+
+<div style={{ display: 'inline-block' }}>
+<OrgIcon />
+<div style={{ float: 'right', marginLeft: '16px' }}>
+
+#### Type: Organization
+
+</div>
+</div>
+
+We recommend starting from objects that represent groups/containers of users. For features in most systems these are easy to define and help reason about the other types. Examples of type names for these are "team", "group", "organization", etc.
+
+##### Relation: member
+
+The member relation is used to tell <ProductName format={ProductNameFormat.ShortForm}/> about the members of an organization.
+
+:::info Important
+Relation names in <ProductName format={ProductNameFormat.ShortForm}/> are arbitrary strings. There are no reserved relation names. You can use "member" or "part_of" or anything else to refer to a user that is part of a team/organization.
+:::
+
+Remember _"How a user is added as a member to an organization is beyond the scope of this feature."_ For the purposes of this model the relation definition should be:
+
+<AuthzModelSnippetViewer
+  onlyShow={SyntaxFormat.Friendly2}
+  configuration={{
+    member: { this: '' },
+  }}
+/>
+
+Why? This relation definition states:
+
+- That organizations have members
+- That the members of an organization with id {id} are all users described by tuples of the form:
+
+  `{ user: {user-id}, relation: "member", object: "organization:{id}" }`
+
+:::info Important
+Relation definitions of the form “define {relation} as self" are fairly common. They are used to express that relationships "to the object with that relation" (e.g. "member of organization") can be assigned by your system and that only the users that have that relation are those with a [direct relationship](./concepts/direct-relationships.mdx).
+:::
+
+You can read more about group membership and types in [Modeling User Groups](./basics/user-groups.mdx).
+
+:::note Side note
+This also automatically supports nested organizational membership if you want such a feature in your system. You could use relationship tuples like the following one to express that "members of organization A are members of organization B":
+
+```
+{ user: "organization:A#member", relation: "member", object: "organization:B"}
+```
+
+If you want to learn more, you can read further about this in [Modelling User Groups](./basics/user-groups.mdx) and [Managing Relationships Between Objects](../writing-data/managing-relationships-between-objects.mdx).
+:::
+
+##### Complete Type Definition
+
+The complete <ProductConcept section="what-is-a-type-definition" linkName="type definition" /> for the **organization** type is:
+
+<AuthzModelSnippetViewer
+  onlyShow={SyntaxFormat.Friendly2}
+  configuration={{
+    type_definitions: [
+      {
+        type: 'organization',
+        relations: {
+          member: {
+            this: {},
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+<div style={{ display: 'inline-block' }}>
+<DocIcon />
+<div style={{ float: 'right', marginLeft: '16px' }}>
+
+#### Type: Document
+
+</div>
+</div>
+
+After defining your "group" like types, continue with the most important type for the feature: the one that allows the main use case. In this case "document", since the main use case for users is to create, write, read and collaborate on documents.
+
+Defining relations for the main type lets you to focus on your core use case, and will likely make other type definitions easier.
+
+##### Relation: owner
+
+The owner relation is used to tell <ProductName format={ProductNameFormat.ShortForm}/> which users are owners of the document.
+
+:::info Important
+In the current version, there is no way to state that there is only one owner in the authorization model. The application must limit this <ProductConcept section="what-is-a-user" linkName="set of users" /> to just one owner if that is a requirement.
+:::
+
+When a document is created, a relationship tuple will be stored in <ProductName format={ProductNameFormat.ShortForm}/> representing this relationship between owner and document. This is an example of a [user to object relationship](./basics/modeling-basics.mdx).
+
+The relation definition then should be:
+
+<AuthzModelSnippetViewer
+  onlyShow={SyntaxFormat.Friendly2}
+  configuration={{
+    owner: { this: '' },
+  }}
+/>
+
+Why? This <ProductConcept section="what-is-a-relation" linkName="relation definition" /> states that:
+
+- each document can have one or more owners
+- owners of a document are assignable by creating a tuple of the format
+  `{ user: "{user_id}", relation: "owner", object: "document:{id}" }` for individual users
+
+##### Relation: editor
+
+The editor relation is used to tell <ProductName format={ProductNameFormat.ShortForm}/> which users are editors of the document.
+
+When a user shares a document with another user or set of users as editor, a relationship tuple will be stored in <ProductName format={ProductNameFormat.ShortForm}/> representing this relationship between editor and document. This is an example of a [users to object relationship](./basics/modeling-basics.mdx).
+
+The relation definition then should be:
+
+<AuthzModelSnippetViewer
+  onlyShow={SyntaxFormat.Friendly2}
+  configuration={{
+    editor: { this: '' },
+  }}
+/>
+
+Why? This relation definition states that:
+
+- each document can have editors
+- the editor(s) of a document are assignable by creating a tuple with shape
+  `{ user: "{user_id}", relation: "editor", object: "document:{id}" }` for individual users
+
+This also supports making all members in an organization editors of the document, through a [group to object relationship](./basics/user-groups.mdx). A relationship tuple like the following one states that the members of organization A are editors of document 0001.
+
+<RelationshipTuplesViewer
+  relationshipTuples={[
+    {
+      user: 'organization:A#member',
+      relation: 'editor',
+      object: 'document:0001',
+    },
+  ]}
+/>
+
+You can learn more about this in [Modeling User Groups](./basics/user-groups.mdx).
+
+##### Relation: viewer
+
+The viewer relation is similar to the document's [editor relation](#relation-editor). It will be defined like this:
+
+<AuthzModelSnippetViewer
+  onlyShow={SyntaxFormat.Friendly2}
+  configuration={{
+    viewer: { this: '' },
+  }}
+/>
+
+##### Relation: parent
+
+The parent relation is used to tell <ProductName format={ProductNameFormat.ShortForm}/> which folder or drive is the parent of the document.
+
+:::caution Important
+Relation names in <ProductName format={ProductNameFormat.ShortForm}/> are arbitrary strings. There are no reserved relation names. You can use "parent", "container" or "ancestor" to refer to a "parent folder".
+:::
+
+This relation is different from the others we have seen so far, as it is a relation between two objects (a **folder** and or **drive** that is the parent of the **document**). This is known as an [object to object relationship](./concepts/object-to-object-relationships.mdx), of which [parent-child is a particular case](./basics/parent-child.mdx).
+
+When a document is created a relationship tuple will be stored in <ProductName format={ProductNameFormat.ShortForm}/> to represent this relationship between parent and document. The relation definition then should be:
+
+<AuthzModelSnippetViewer
+  onlyShow={SyntaxFormat.Friendly2}
+  configuration={{
+    parent: { this: '' },
+  }}
+/>
+
+Why? This relation definition states that:
+
+- documents may have a parent
+- the parent(s) of a document with id {id} (either a folder a folder or drive, as set by the system) described by one of these relationship tuples:
+  - `{ user: "folder:{id}", relation: "parent", object: "document:{id}" }`
+  - `{ user: "drive:{id}", relation: "parent", object: "document:{id}" }`
+
+:::caution Important
+In the current <ProductName format={ProductNameFormat.ShortForm}/> version, there is no way to state that a document's parent is either a drive or folder. The application must enforce this.
+:::
+
+:::note Side note
+You might have noticed that the "user" in the tuple is an object. This is a special syntax <ProductName format={ProductNameFormat.ShortForm}/> accepts in the "user" parameter to write [object to object relationships](./concepts/object-to-object-relationships.mdx). You can read more about writing data to manage object to object relationships in [Managing Relationships Between Objects](../writing-data/managing-relationships-between-objects.mdx).
+:::
+
+##### Relation: can_share
+
+We need to express the following in the <ProductConcept section="what-is-a-relation" linkName="relation definition" />:
+
+_A user can share a document with another user or an organization as either editor or viewer if they are an owner or editor of a document or if they are an owner of the folder that is the parent of the document._
+
+We can achieve that with the following definition using <UpdateProductNameInLinks link="./configuration-language" name="{ProductName} Configuration Language" />:
+
+<AuthzModelSnippetViewer
+  onlyShow={SyntaxFormat.Friendly2}
+  configuration={{
+    can_share: {
+      union: {
+        child: [
+          {
+            computedUserset: {
+              object: '',
+              relation: 'owner',
+            },
+          },
+          {
+            computedUserset: {
+              object: '',
+              relation: 'editor',
+            },
+          },
+          {
+            tupleToUserset: {
+              computedUserset: {
+                object: '',
+                relation: 'owner',
+              },
+              tupleset: {
+                object: '',
+                relation: 'parent',
+              },
+            },
+          },
+        ],
+      },
+    },
+  }}
+/>
+
+There are a few key things here:
+
+- **We don't use self as part of the definition.** can_share is a common example of representing a permission that is defined in terms of other relations but is not directly assignable by the system.
+- The relation definition contains a [union operator](./configuration-language.mdx#the-union-operator) separating a list of relations that the user must have with the object in order to "be able to share the document". It is any of:
+  - Being an owner of the document
+  - Being an editor of the document
+  - Being an owner of the parent of the document. Whether the parent is a drive or a folder is not important, as they both have an owner relation.
+
+You can read more about the aforementioned items in [Modeling Roles and Permissions](./basics/roles-and-permissions.mdx).
+
+##### Relation: can_view
+
+We need to express the following in the <ProductConcept section="what-is-a-relation" linkName="relation definition" />:
+
+_A user can view a document if they are an owner, viewer or editor of a document or if they are a viewer, owner of the folder/drive that is the parent of the document._
+
+Similar to the [can_share relation](#relation-can_share), we can achieve that with the following definition using <UpdateProductNameInLinks link="./configuration-language" name="{ProductName} Configuration Language" />:
+
+<AuthzModelSnippetViewer
+  onlyShow={SyntaxFormat.Friendly2}
+  configuration={{
+    can_view: {
+      union: {
+        child: [
+          {
+            computedUserset: {
+              object: '',
+              relation: 'viewer',
+            },
+          },
+          {
+            computedUserset: {
+              object: '',
+              relation: 'editor',
+            },
+          },
+          {
+            tupleToUserset: {
+              computedUserset: {
+                object: '',
+                relation: 'viewer',
+              },
+              tupleset: {
+                object: '',
+                relation: 'parent',
+              },
+            },
+          },
+          {
+            tupleToUserset: {
+              computedUserset: {
+                object: '',
+                relation: 'owner',
+              },
+              tupleset: {
+                object: '',
+                relation: 'parent',
+              },
+            },
+          },
+        ],
+      },
+    },
+  }}
+/>
+
+##### Relation: can_write
+
+We need to express the following in the <ProductConcept section="what-is-a-relation" linkName="relation definition" />:
+
+_A user can write a document if they are an owner or editor of a document or if they are an owner or editor of the folder/drive that is the parent of the document._
+
+Similar to the [can_share relation](#relation-can_share), we can achieve that with the following definition using <UpdateProductNameInLinks link="./configuration-language" name="{ProductName} Configuration Language" />:
+
+<AuthzModelSnippetViewer
+  onlyShow={SyntaxFormat.Friendly2}
+  configuration={{
+    can_write: {
+      union: {
+        child: [
+          {
+            computedUserset: {
+              object: '',
+              relation: 'editor',
+            },
+          },
+          {
+            computedUserset: {
+              object: '',
+              relation: 'owner',
+            },
+          },
+          {
+            tupleToUserset: {
+              computedUserset: {
+                object: '',
+                relation: 'owner',
+              },
+              tupleset: {
+                object: '',
+                relation: 'parent',
+              },
+            },
+          },
+        ],
+      },
+    },
+  }}
+/>
+
+##### Relation: can_change_owner
+
+We need to express the following in the <ProductConcept section="what-is-a-relation" linkName="relation definition" />:
+
+_A user can change the owner of a document if they are an owner of the document._
+
+Similar to the [can_share relation](#relation-can_share), we can achieve that with the following definition using <UpdateProductNameInLinks link="./configuration-language" name="{ProductName} Configuration Language" />:
+
+<AuthzModelSnippetViewer
+  onlyShow={SyntaxFormat.Friendly2}
+  configuration={{
+    can_change_owner: {
+      computedUserset: {
+        object: '',
+        relation: 'owner',
+      },
+    },
+  }}
+/>
+
+##### Complete Type Definition
+
+The complete <ProductConcept section="what-is-a-type-definition" linkName="type definition" /> for the document type is:
+
+<AuthzModelSnippetViewer
+  onlyShow={SyntaxFormat.Friendly2}
+  configuration={{
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          owner: {
+            this: {},
+          },
+          editor: {
+            this: {},
+          },
+          viewer: {
+            this: {},
+          },
+          parent: {
+            this: {},
+          },
+          can_share: {
+            union: {
+              child: [
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'owner',
+                  },
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'editor',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'owner',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          can_view: {
+            union: {
+              child: [
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'viewer',
+                  },
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'editor',
+                  },
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'owner',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'viewer',
+                    },
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'editor',
+                    },
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'owner',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          can_write: {
+            union: {
+              child: [
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'editor',
+                  },
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'owner',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'owner',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          can_change_owner: {
+            computedUserset: {
+              object: '',
+              relation: 'owner',
+            },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+Combining the type definitions for document and organization, we have
+
+<AuthzModelSnippetViewer
+  onlyShow={SyntaxFormat.Friendly2}
+  configuration={{
+    type_definitions: [
+      {
+        type: 'organization',
+        relations: {
+          member: {
+            this: {},
+          },
+        },
+      },
+      {
+        type: 'document',
+        relations: {
+          owner: {
+            this: {},
+          },
+          editor: {
+            this: {},
+          },
+          viewer: {
+            this: {},
+          },
+          parent: {
+            this: {},
+          },
+          can_share: {
+            union: {
+              child: [
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'owner',
+                  },
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'editor',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'owner',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          can_view: {
+            union: {
+              child: [
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'viewer',
+                  },
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'editor',
+                  },
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'owner',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'viewer',
+                    },
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'editor',
+                    },
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'owner',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          can_write: {
+            union: {
+              child: [
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'editor',
+                  },
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'owner',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'owner',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          can_change_owner: {
+            computedUserset: {
+              object: '',
+              relation: 'owner',
+            },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+:::note
+
+The <ProductName /> authorization model API and SDK only accepts JSON in its input. To convert from DSL to JSON, you may define and save the model in Playground first. After that, click the JSON button where the JSON configuration will be copied to your clipboard.
+
+:::
+
+### 05. Test the model
+
+![Test the model](./assets/getting-started-diagram-06.svg)
+
+Once you have defined your group like types and the most important type for your feature you want to ensure everything is working as expected. This means testing the model.
+
+How? Remember from the introduction that **<ProductName format={ProductNameFormat.LongForm}/>'s** main job is to answer the question:
+
+<div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+  <CardBox icon={{ icon: <FGAIcon />, alignment: 'left' }} title="Can user U, perform an action A on an object O?" />
+</div>
+
+The <ProductName format={ProductNameFormat.ShortForm}/> service does that by checking if a user has a particular relationship to an object, based on your authorization model and relationship tuples.
+
+<ColumnLayout cols={2} style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+  <CardBox
+    title="General Authorization Check"
+    description={
+      <p>
+        "Can user <b>U</b> <u>perform action</u> <b>A</b> on object <b>O</b>?"
+      </p>
+    }
+    appearance="filled"
+  />
+  <CardBox
+    title="{ProductName} (ReBAC) Authorization Check"
+    description={
+      <p>
+        "Can user <b>U</b> <u>have relation</u> <b>R</b> with object <b>O</b>?"
+      </p>
+    }
+  />
+</ColumnLayout>
+
+What we want is to ensure that given our current authorization model and some sample relationship tuples, we get the expected results for those questions.
+
+So we'll write some relationship tuples and assertions. An <ProductName format={ProductNameFormat.ShortForm}/> assertion takes one of these forms:
+
+1. user U **has** relation R with object O
+2. user U **does not have** relation R with object O
+
+Much like automated tests and assertions work for programming languages, you can use assertions to prevent regressions while you change your tuples and authorization model. Essentially, assertions help you ensure things work like you expect them to work as you iterate.
+
+#### Write Relationship Tuples
+
+The relationship tuples should represent real examples from your system with fake data.
+
+At this point you haven't defined the drive or folder types, so you can only test things based on users or organization members' relationships to documents. Let's imagine an example setup and write the relationship tuples for it:
+
+| System Action                                                                   | Relationship Tuple                                                                 |
+| ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Anne is a member of the contoso organization                                    | `{ user:"anne", relation: "member", object: "organization:contoso"}`               |
+| Beth is a member of fabrikam organization                                       | `{ user:"beth", relation: "member", object: "organization:fabrikam"}`              |
+| Anne creates document:1, becomes its owner.                                     | `{ user:"anne", relation: "owner", object: "document:1"}`                          |
+| Anne shares document:1 with all members of the fabrikam organization as editor. | `{ user:"organization:fabrikam#member", relation: "editor", object: "document:1"}` |
+| Beth creates document:2 and becomes its owner.                                  | `{ user:"beth", relation: "owner", object: "document:2"}`                          |
+| Beth shares document:2 with all members of the contoso organization as viewer   | `{ user:"organization:contoso#member", relation: "viewer", object: "document:2"}`  |
+
+Follow these steps to create relationship tuples.
+
+#### Create Assertions
+
+According to our [written down model](#write-it-in-plain-language) and the [relationship tuples](#write-relationship-tuples) from the previous step, these assertions should be specified:
+
+Because anne is the owner of document:1:
+
+- user **anne** has relation **can_share** with document:1
+- user **anne** has relation **can_write** with document:1
+- user **anne** has relation **can_view** with document:1
+- user **anne** has relation **can_change_owner** with document:1
+
+Because beth is a member of organization:fabrikam and members of organization:fabrikam are writer of document:1:
+
+- user **beth** does not have relation **can_share** with document:1
+- user **beth** has relation **can_write** with document:1
+- user **beth** has relation **can_view** with document:1
+- user **beth** does not have relation **can_change_owner** with document:1
+
+Because beth is the owner of document:2:
+
+- user **beth** has relation **can_share** with document:2
+- user **beth** has relation **can_write** with document:2
+- user **beth** has relation **can_view** with document:2
+- user **beth** has relation **can_change_owner** with document:2
+
+Because anne is a member of organization:contoso and members of organization:contoso are viewer of document:2:
+
+- user **anne** does not have relation **can_share** with document:2
+- user **anne** does not have relation **can_write** with document:2
+- user **anne** has relation **can_view** with document:2
+- user **anne** does not have relation **can_change_owner** with document:2
+
+Follow these steps to create assertions.
+
+#### Run Assertions
+
+Run the assertions. They should all pass. If they don't you can use the query view to understand what is causing them to fail, and then update your authorization model and relation tuples accordingly.
+
+Once all the assertions are working, you should continue the iterative process of working on your model.
+
+### 06. Iterate
+
+![Iterate](./assets/getting-started-diagram-07.svg)
+
+We'll leave the exercise of defining the drive and folder relations, then adding relationship tuples and assertions to you. Once you are finished, check out the complete example to see how you did.
+
+When defining the authorization model for your own system, you would continue iterating on the <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" /> with the [next feature](#01-pick-the-most-important-feature) and so on.
+
+If you have any questions about this model or others, or would like some help creating your model, drop by our [Discord](https://discord.gg/8naAwJfWN6).
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more on how to model with {ProductName}."
+  relatedLinks={[
+    {
+      title: '{ProductName} Concepts',
+      description: 'Learn about the {ProductName} Concepts.',
+      link: '{ProductConcept}',
+      id: '../intro/fga-concepts',
+    },
+    {
+      title: 'Configuration Language',
+      description: 'Learn about {ProductName} Configuration Language.',
+      link: '/modeling/configuration-language',
+      id: './configuration-language',
+    },
+    {
+      title: 'Modeling Basics',
+      description: 'Learn about modeling user access to an object.',
+      link: '/modeling/basics/modeling-basics',
+      id: './modeling-basics',
+    },
+  ]}
+/>

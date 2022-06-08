@@ -1,0 +1,82 @@
+.documentation-feedback {
+  background: linear-gradient(333.17deg, #3ec6eb -1.51%, #635dff 101.22%);
+  padding: 32px;
+  border-radius: 24px;
+  position: relative;
+  max-height: 213px;
+  overflow: hidden;
+  margin: 48px 40px 48px 40px;
+}
+@media (max-width: 1536px) {
+  .documentation-feedback {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+@media (max-width: 996px) {
+  .documentation-feedback {
+    margin: 48px 24px 48px 24px;
+  }
+}
+.documentation-feedback-title {
+  font-family: 'Inter';
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 40px;
+  letter-spacing: -0.5px;
+  color: #fff;
+  margin-bottom: 8px;
+}
+.documentation-feedback-text {
+  font-family: 'Inter';
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: -0.01px;
+  color: #fff;
+  margin-bottom: 18px;
+}
+.documentation-feedback-pattern {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-radius: 24px;
+}
+@media (max-width: 1536px) {
+  .documentation-feedback-pattern {
+    visibility: hidden;
+  }
+}
+.documentation-feedback-img {
+  margin-top: -16px;
+}
+@media (max-width: 1536px) {
+  .documentation-feedback-img {
+    visibility: hidden;
+  }
+}
+.documentation-feedback-button {
+  background-color: #1e212a;
+  border-radius: 8px;
+  border: none;
+  padding: 4.81px 18.65px;
+  font-family: 'Inter';
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 28px;
+  letter-spacing: -0.05px;
+  color: #fff !important;
+}
+.documentation-feedback-button svg {
+  margin-left: 8px;
+}
+.documentation-feedback-button:hover {
+  background-color: #42464d;
+  cursor: pointer;
+  transition: background-color 250ms;
+}
+.documentation-feedback-button:not(hover) {
+  transition: background-color 250ms;
+}
+.documentation-feedback-button:focus {
+  box-shadow: #000 0px 0px 0px 0.25em;
+}

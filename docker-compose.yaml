@@ -1,0 +1,15 @@
+services:
+  docs:
+    build:
+      context: .
+      args:
+        NPM_REGISTRY_TOKEN: $NPM_REGISTRY_TOKEN
+        NPM_REGISTRY_USER: $NPM_REGISTRY_USER
+        NPM_REGISTRY_URL: $NPM_REGISTRY_URL
+        NPM_REGISTRY_AUTH: $NPM_REGISTRY_AUTH
+        COOKIE_PRO_DATA_DOMAIN_ID: $COOKIE_PRO_DATA_DOMAIN_ID
+        HEAP_ID: $HEAP_ID
+        GOOGLE_TAG_MANAGER_ID: $GOOGLE_TAG_MANAGER_ID
+    container_name: openfga-docs-ui
+    ports:
+      - 127.0.0.1:${OPENFGA_DOCS_PORT:-3001}:${OPENFGA_DOCS_PORT:-3000}

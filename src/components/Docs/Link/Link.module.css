@@ -1,0 +1,10 @@
+.documentation-link {
+  transition: all 0.2s linear 0s;
+}
+.documentation-link-show-arrow-on-hover:hover:after {
+  margin-left: 4px;
+  content: '→';
+  transition: all 0.2s linear 0s;
+  opacity: 1;
+  text-indent: 0px;
+}
