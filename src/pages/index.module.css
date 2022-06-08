@@ -5,6 +5,87 @@
   margin-bottom: 1.5rem;
 }
 
+/* Quick Start */
+
+.quickstartSection {
+  background-color: var(--ofga-neutral-black);
+  padding: 9.25rem 0 10.25rem;
+  color: var(--ofga-neutral-base);
+}
+
+.quickstartContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.quickstartContent {
+  flex: 0 0 20.5rem;
+}
+
+.quickstartContent p {
+  margin-bottom: 2rem;
+}
+
+.quickstartContent p:last-child {
+  margin-bottom: 0rem;
+}
+
+.quickstartHighlight {
+  font-weight: 500;
+  font-size: 1.75rem;
+  line-height: 1.28;
+}
+
+.quickstartGraphic {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.quickstartGraphic img {
+  height: 100%;
+  object-fit: cover;
+}
+
+.copyQuickstart {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  height: 48px;
+  left: -80px;
+  padding: 4px;
+  position: relative;
+  top: 68px;
+  width: 48px;
+  display: flex;
+}
+
+.copyQuickstart[copied='true'] svg,
+.copyQuickstart[copied='true']:hover svg {
+  stroke: transparent;
+}
+
+.copyQuickstart[copied='true']::after {
+  color: var(--ofga-green-neon);
+  content: 'copied ✓';
+  font-family: courier;
+  font-size: 16px;
+  line-height: 30px;
+  margin-left: -120px;
+  text-align: right;
+  width: 120px;
+}
+
+.copyQuickstart svg {
+  stroke: var(--ofga-green-neon);
+  transition: all 0.2s ease-in-out;
+}
+
+.copyQuickstart:hover svg {
+  stroke: var(--ofga-neutral-white);
+  transition: all 0.2s ease-in-out;
+}
+
 /* Features */
 
 /* Resources */
