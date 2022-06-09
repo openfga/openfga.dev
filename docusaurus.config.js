@@ -61,7 +61,7 @@ const config = {
       defaultLink: 'https://discord.gg/8naAwJfWN6',
     },
     // location of the swagger file
-    apiDocsBasePath: process.env.API_DOCS_PATH ? process.env.API_DOCS_PATH : 'https://s3.amazonaws.com/assets.sandcastle.cloud/us1/docs/service.swagger.json',
+    apiDocsBasePath: process.env.API_DOCS_PATH ? process.env.API_DOCS_PATH : 'https://raw.githubusercontent.com/openfga/api/main/docs/openapiv2/apidocs.swagger.json',
 
     // Customization for product information
     /* eslint-disable max-len */

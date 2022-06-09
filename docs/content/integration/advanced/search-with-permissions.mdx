@@ -44,7 +44,7 @@ Pre-filter, then call <ProductName format={ProductNameFormat.ShortForm}/> Check 
 
 Consume the `GET /changes` endpoint to create a local index you can use to do an intersection on the two sets of results.
 
-1. Call the <UpdateProductNameInLinks link="/api/service#/Tuples/ReadChanges" name="{ProductName} changes API" />.
+1. Call the <UpdateProductNameInLinks link="/api/service#/Relationship%20Tuples/ReadChanges" name="{ProductName} changes API" />.
 1. For the particular authorization model version(s) you are using in production, flatten/expand the changes (e.g. `user:anne, writer, doc:planning` becomes two tuples: `user:anne, writer, doc:planning` and `user:anne, reader, doc:planning`).
 1. Build the intersection between the objects in your database and the flattened/expanded state you created.
 1. You can then call `/check` on each resource in the resulting set before returning the response to filter out any resource with permissions revoked but whose authorization data has not made it into your index yet.
