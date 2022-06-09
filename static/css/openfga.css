@@ -486,3 +486,25 @@ pre {
   background-color: var(--ofga-neutral-black);
   font-size: 1rem;
 }
+
+/* Prism - DSL */
+.language-dsl .token.fga-type,
+.language-dsl .token.fga-operator,
+.language-dsl .token.fga-keyword {
+  color: var(--ofga-color-primary);
+}
+.language-dsl .token.fga-self {
+  color: var(--ofga-color-secondary);
+}
+.language-dsl .token.fga-tuple-to-userset {
+  /* color: rgb(255, 68, 221); */
+  color: var(--ofga-neutral-base);
+  font-style: italic;
+}
+
+.language-json .token.string {
+  color: var(--ofga-color-primary) !important;
+}
+.language-json .token.punctuation {
+  color: var(--ofga-color-secondary) !important;
+}
