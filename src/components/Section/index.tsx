@@ -2,7 +2,7 @@ import * as React from 'react';
 
 type SectionProps = {
   id: string;
-  className?: any;
+  className?: string;
 };
 
 const Section: React.FC<SectionProps> = ({ id, children, className }) => {
