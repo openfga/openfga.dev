@@ -91,7 +91,7 @@ If you find a bug or inaccuracy in the documentation content, please report it i
 
 <!-- markdown-link-check-disable -->
 ## Author
-OpenFGA <contact@openfga.dev> (https://docs.openfga.dev)
+OpenFGA <contact@openfga.dev> (https://openfga.dev)
 
 ## License
 Please refer to https://github.com/openfga/rfcs/blob/main/LICENSE for license information.

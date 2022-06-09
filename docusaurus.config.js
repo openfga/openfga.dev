@@ -14,7 +14,7 @@ const baseUrl = process.env.BASE_URL ?? '/';
 const config = {
   title: 'OpenFGA Docs',
   tagline: 'Relationship-based access control made fast, scalable, and easy to use.',
-  url: 'https://openfga.github.io/',
+  url: 'https://openfga.dev/',
   baseUrl: baseUrl,
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',

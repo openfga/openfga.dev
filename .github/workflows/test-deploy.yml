@@ -21,6 +21,4 @@ jobs:
       - name: Install dependencies
         run: npm clean-install
       - name: Test build website
-        env:
-          BASE_URL: '/openfga.dev/'
         run: npm run build
