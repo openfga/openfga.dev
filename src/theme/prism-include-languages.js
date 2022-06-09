@@ -10,12 +10,10 @@ export default function prismIncludeLanguages(PrismObject) {
   // avoid polluting global namespace.
   // You can mutate PrismObject: registering plugins, deleting languages... As
   // long as you don't re-assign it
-  window.Prism = PrismObject;
   globalThis.Prism = PrismObject;
   additionalLanguages.forEach((lang) => {
     require(`prismjs/components/prism-${lang}`);
   });
   require('../utils/prism-openfga-dsl');
   delete globalThis.Prism;
-  delete window.Prism;
 }
