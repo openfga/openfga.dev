@@ -19,7 +19,7 @@ const QuickStartSection = () => {
             <Link to="intro/authorization-and-openfga">Getting Started</Link> guides.
           </p>
           <p>
-            Learn how to use sample authorization models and create your own with the project's extensive{' '}
+            Learn how to use sample authorization models and create your own with the project&rsquo;s extensive{' '}
             <Link to="intro/authorization-and-openfga">documentation</Link>.
           </p>
         </div>
