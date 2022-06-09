@@ -38,8 +38,6 @@ jobs:
         run: npx madge --circular . --extensions ts,js,jsx,tsx
 
       - name: Build with npm
-        env:
-          BASE_URL: '/openfga.dev/'
         run: npm run build
 
   fossa:

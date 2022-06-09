@@ -21,8 +21,6 @@ jobs:
       - name: Install dependencies
         run: npm clean-install
       - name: Build website
-        env:
-          BASE_URL: '/openfga.dev/'
         run: npm run build
 
       # Popular action to deploy to GitHub Pages:
