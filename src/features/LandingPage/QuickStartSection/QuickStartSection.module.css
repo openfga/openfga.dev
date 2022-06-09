@@ -19,12 +19,13 @@
 @media screen and (min-width: 996px) {
   .container {
     flex-direction: row;
+    gap: 5rem;
   }
 }
 
 @media screen and (min-width: 996px) {
   .content {
-    flex: 0 0 20.5rem;
+    flex: 0 0 29%;
   }
 }
 
@@ -61,7 +62,7 @@
   }
 }
 
-.graphic img {
+.graphic svg {
   height: 100%;
   object-fit: cover;
 }
