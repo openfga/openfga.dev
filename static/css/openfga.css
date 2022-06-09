@@ -6,6 +6,7 @@
   --ofga-green-light: #d3ffd7;
   --ofga-green-dark: #558f69;
 
+  --ofga-cyan-neon-light: #cdfcfe;
   --ofga-cyan-neon: #20f1f5;
   --ofga-cyan-neon-dark: #2f7f82;
 
@@ -25,6 +26,7 @@
   --ofga-color-primary-light: var(--ofga-green-light);
 
   --ofga-color-secondary: var(--ofga-cyan-neon);
+  --ofga-color-secondary-light: var(--ofga-cyan-neon-light);
   --ofga-color-secondary-dark: var(--ofga-cyan-neon-dark);
 
   --ofga-color-foreground: var(--ofga-neutral-white);
@@ -489,16 +491,23 @@ pre {
 
 /* Prism - DSL */
 .language-dsl .token.fga-type,
-.language-dsl .token.fga-operator,
-.language-dsl .token.fga-keyword {
+.language-dsl .token.fga-definition {
   color: var(--ofga-color-primary);
 }
+
+.language-dsl .token.plain {
+  color: var(--ofga-color-secondary-light);
+}
+
 .language-dsl .token.fga-self {
   color: var(--ofga-color-secondary);
 }
+
+.language-dsl .token.fga-keyword,
+.language-dsl .token.fga-operator,
 .language-dsl .token.fga-tuple-to-userset {
   /* color: rgb(255, 68, 221); */
-  color: var(--ofga-neutral-base);
+  /* color: var(--ofga-neutral-base); */
   font-style: italic;
 }
 

@@ -29,6 +29,7 @@ function displayRelatedLink(link: relatedLink): JSX.Element {
 
 export function RelatedSection(props: RelatedSectionProps) {
   const { siteConfig } = useDocusaurusContext();
+
   const { description, relatedLinks } = props;
   const baseClassName = 'documentation-related-section';
   const descriptionText = description.replace('{ProductName}', siteConfig.customFields.productName as string);
