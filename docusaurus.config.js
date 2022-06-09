@@ -197,23 +197,6 @@ using OpenFga.Sdk.Configuration;`,
     ],
   ],
 
-  scripts: [
-    {
-      src: 'https://cdn.cookielaw.org/scripttemplates/otSDKStub.js',
-      type: 'text/javascript',
-      charset: 'UTF-8',
-      id: 'consent-script',
-      'data-domain-script': process.env.COOKIE_PRO_DATA_DOMAIN_ID,
-    },
-    {
-      src: 'scripts/heap.js',
-      type: 'text/plain',
-      class: 'optanon-category-2',
-      id: 'heap-script',
-      'heap-id': process.env.HEAP_ID,
-    },
-  ],
-
   stylesheets: [
     'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&display=swap',
     'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
