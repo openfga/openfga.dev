@@ -9,14 +9,13 @@ export enum LinkBulletType {
   Bullets = 'bullets',
 }
 
-export interface CardBoxProps {
+export type CardBoxProps = {
   title?: string;
   description?: string | React.ReactNode;
   links?: { to: string; label: string; id?: string }[];
   appearance?: 'filled' | 'gradient';
   border?: boolean;
-  icon?: { label?: string; icon: any; alignment: 'left' | 'center' };
-  children?: any;
+  icon?: { label?: string; icon: React.ReactNode; alignment: 'left' | 'center' };
   centerTitle?: boolean;
   monoFontChildren?: boolean;
   smallFontChildren?: boolean;
@@ -26,9 +25,9 @@ export interface CardBoxProps {
     shouldBold?: boolean;
     shouldShowArrowOnHover?: boolean;
   };
-}
+};
 
-export function CardBox(props: CardBoxProps) {
+const CardBox: React.FC<CardBoxProps> = (props) => {
   const {
     title,
     description,
@@ -138,4 +137,6 @@ export function CardBox(props: CardBoxProps) {
       </div>
     </div>
   );
-}
+};
+
+export { CardBox };
