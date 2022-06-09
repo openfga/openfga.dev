@@ -29,9 +29,10 @@ const SwaggerUI: React.FC<SwaggerUIProps> = ({ apiDocsBasePath }) => {
       responseInterceptor={(response) => {
         if (response.body.tags && response.body.tags.length > 0) {
           response.body.tags = [
-            { name: 'Store Models' },
-            { name: 'Tuples' },
-            { name: 'Debugging' },
+            { name: 'Stores' },
+            { name: 'Authorization Models' },
+            { name: 'Relationship Tuples' },
+            { name: 'Relationship Queries' },
             { name: 'Assertions' },
             // All other tags will appear after these tags.
           ];
