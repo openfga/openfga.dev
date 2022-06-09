@@ -53,7 +53,6 @@ const config = {
         icon: 'CloudIcon',
       },
     ],
-    disableStatusFooter: true,
     feedback: {
       defaultTitle: 'Have Feedback?',
       defaultText: 'Join us on the Discord community if you have any questions or suggestions.',
@@ -79,27 +78,6 @@ const config = {
     //playgroundURL: '',
 
     notice: `OpenFGA is an open source Fine-Grained Authorization solution based on Google's Zanzibar. We welcome community contribution to this project.`,
-    widget: {
-      legend: {
-        user: '#E9786E',
-        relation: '#E571D0',
-        object: 'blue.light',
-      },
-      stringTemplates: {
-        rpc: `Request:
-check("{{user}}", "{{relation}}", "{{object}}")
----
-Response:
-{{passing}}`,
-        json: `Request:
-POST /check
-Content-Type: application/json
-{ "user": "{{user}}", "relation": "{{relation}}", "object": "{{object}}" }
----
-Response:
-{ "allowed": {{passing}} }`,
-      },
-    },
     languageMapping: {
       js: {
         importStatement: `const { OpenFgaApi } = require('@openfga/sdk');`,
