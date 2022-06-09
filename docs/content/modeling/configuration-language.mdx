@@ -12,6 +12,7 @@ import {
   ProductNameFormat,
   RelatedSection,
   RelationshipTuplesViewer,
+  SyntaxFormat,
   UpdateProductNameInLinks,
 } from '@components/Docs';
 
@@ -755,6 +756,63 @@ relation {
 In the <ProductName format={ProductNameFormat.ShortForm}/> DSL, it would become:
 
 <AuthzModelSnippetViewer
+  onlyShow={SyntaxFormat.Friendly2}
+  configuration={{
+    type_definitions: [
+      {
+        type: 'doc',
+        relations: {
+          owner: {
+            this: {},
+          },
+          editor: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'owner',
+                  },
+                },
+              ],
+            },
+          },
+          viewer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'editor',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      relation: 'parent',
+                    },
+                    computedUserset: {
+                      relation: 'viewer',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+And in the <ProductName format={ProductNameFormat.ShortForm}/> JSON, it would become:
+
+<AuthzModelSnippetViewer
+  onlyShow={SyntaxFormat.Api}
   configuration={{
     type_definitions: [
       {
