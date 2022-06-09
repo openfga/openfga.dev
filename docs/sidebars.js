@@ -22,11 +22,6 @@ const sidebars = {
           label: 'OpenFGA Concepts',
           id: 'content/intro/openfga-concepts',
         },
-        {
-          type: 'doc',
-          label: 'Auth0 FGA Playground',
-          id: 'content/intro/playground',
-        },
       ],
     },
     {

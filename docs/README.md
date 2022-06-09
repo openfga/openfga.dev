@@ -22,7 +22,6 @@ hide_title: true
 
 - [Authorization and OpenFGA](./content/intro/authorization-and-openfga.mdx)
 - [OpenFGA Concepts](./content/intro/openfga-concepts.mdx)
-- [Auth0 FGA Playground](./content/intro/playground.mdx)
 - [Setup an OpenFGA server](./content/intro/setup-openfga.mdx)
 - [Modeling Overview](./content/modeling/overview.mdx)
   - [Getting Started with Modeling](./content/modeling/getting-started.mdx)
