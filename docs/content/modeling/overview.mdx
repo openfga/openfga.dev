@@ -1,6 +1,6 @@
 ---
 id: overview
-title: 'Define Your Authorization Model'
+title: 'Modeling Guides'
 slug: /modeling
 sidebar_position: 0
 ---
@@ -29,50 +29,45 @@ This section has guides, concepts and examples that help you define an authoriza
       description: 'How to create an authorization model for your system starting from the requirements.',
       to: '/modeling/getting-started',
     },
-    {
-      title: 'Configuration Language',
-      description: "Learn {ProductName}'s configuration language syntax and its basics.",
-      to: '/modeling/configuration-language',
-    },
   ]}
   middle={[
     {
-      title: 'Modeling Basics',
+      title: 'Direct Access',
       description: 'Learn the basics of modeling authorization and granting access to users.',
       to: '/modeling/basics/modeling-basics',
     },
     {
-      title: 'Modeling User Groups',
+      title: 'User Groups',
       description: 'Learn to model user group membership, and to grant access to all members of a group.',
       to: '/modeling/basics/user-groups',
     },
     {
-      title: 'Modeling Roles and Permissions',
+      title: 'Roles and Permissions',
       description: 'Learn to model roles for users at the object level and model permissions for those roles.',
       to: '/modeling/basics/roles-and-permissions',
     },
     {
-      title: 'Modeling Parent-Child objects',
+      title: 'Parent-Child objects',
       description: 'Learn to model access based on parent-child relationships, e.g.: folders and documents.',
       to: '/modeling/basics/parent-child',
     },
     {
-      title: 'Modeling Block Lists',
+      title: 'Block Lists',
       description: 'Learn to model denying access if users are part of list of blocked users.',
       to: '/modeling/basics/blocklists',
     },
     {
-      title: 'Modeling Public Access',
+      title: 'Public Access',
       description: 'Learn to model giving everyone specific access to an object, e.g.: everyone can read.',
       to: '/modeling/basics/public-access',
     },
     {
-      title: 'Modeling with Multiple Restrictions',
+      title: 'Multiple Restrictions',
       description: 'Learn to model requiring multiple privileges before granting access.',
       to: '/modeling/basics/multiple-restrictions',
     },
     {
-      title: 'Modeling Custom Roles',
+      title: 'Custom Roles',
       description: 'Learn to model custom roles that are created by users.',
       to: '/modeling/basics/custom-roles',
     },
@@ -90,26 +85,14 @@ This section has guides, concepts and examples that help you define an authoriza
   ]}
   bottom={[
     {
-      title: 'Modeling Concepts',
+      title: 'Building Blocks',
       description: 'Learn the underlying concepts/building blocks that can be used to build any model.',
-      to: [
-        {
-          to: '/modeling/concepts/direct-relationships',
-          label: 'Direct Relationships',
-        },
-        {
-          to: '/modeling/concepts/concentric-relationships',
-          label: 'Concentric Relationships',
-        },
-        {
-          to: '/modeling/concepts/object-to-object-relationships',
-          label: 'Object to Object Relationships',
-        },
-        {
-          to: '/modeling/concepts/usersets',
-          label: 'Usersets',
-        },
-      ],
+      to: '/modeling/building-blocks',
+    },
+    {
+      title: 'Advanced Use-Cases',
+      description: 'Explore advanced use cases and patterns for authorization modelling with OpenFGA.',
+      to: '/modeling/advanced',
     },
   ]}
 />
