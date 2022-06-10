@@ -27,8 +27,7 @@
 }
 
 .heading svg {
-  width: 16rem;
-  height: 4.5rem;
+  width: 20rem;
 }
 
 .headingSubtitle {
@@ -39,6 +38,10 @@
 }
 
 @media screen and (min-width: 996px) {
+  .heading svg {
+    width: 25.8rem;
+    height: unset;
+  }
   .headingSubtitle {
     font-size: 2.7rem;
   }
