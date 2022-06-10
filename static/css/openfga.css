@@ -506,8 +506,6 @@ pre {
 .language-dsl .token.fga-keyword,
 .language-dsl .token.fga-operator,
 .language-dsl .token.fga-tuple-to-userset {
-  /* color: rgb(255, 68, 221); */
-  /* color: var(--ofga-neutral-base); */
   font-style: italic;
 }
 
