@@ -13,7 +13,7 @@ const features = [
     icon: <ModelIcon />,
     title: 'Model any authorization system',
     content: [
-      "OpenFGA takes the best ideas from Google's Zanzibar paper for Relationship-Based Access Control, and also solves problems for Role-based Access Control and Attribute-Based Access Control use cases. The modelling language is powerful enough for engineers, but friendly enough for other stakeholders on your team as well.",
+      "OpenFGA takes the best ideas from Google's Zanzibar paper for Relationship-Based Access Control, and also solves problems for Role-based Access Control and Attribute-Based Access Control use cases. The modeling language is powerful enough for engineers, but friendly enough for other stakeholders on your team as well.",
     ],
   },
   {
