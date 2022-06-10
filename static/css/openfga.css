@@ -45,6 +45,15 @@
 
 html {
   font-family: var(--ofga-font-base);
+  scroll-behavior: smooth;
+}
+  
+/* Link targets for TOC scrolling */
+:target:before {
+  content: "";
+  display: block;
+  height: 60px;           /* adjust these to */
+  margin: -60px 0 0;      /* control offset  */
 }
 
 /* Gradient Color Bar */
