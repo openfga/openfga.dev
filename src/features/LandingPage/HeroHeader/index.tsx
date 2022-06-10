@@ -39,7 +39,7 @@ const HeroHeader = () => {
       <div className="container">
         <div className={styles.container}>
           <div className={styles.content}>
-            <h1 className={styles.heading}>
+            <h1 className={styles.heading} ref={headingRef}>
               {<HeroLogo />}
               <span className={styles.headingSubtitle}>{siteConfig.tagline}</span>
             </h1>
