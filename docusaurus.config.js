@@ -145,6 +145,10 @@ using OpenFga.Sdk.Configuration;`,
             to: '/api/service',
             from: ['/api'],
           },
+          {
+            to: '/intro/authorization-and-openfga',
+            from: '/docs',
+          }
         ],
       }),
     ],
