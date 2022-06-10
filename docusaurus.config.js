@@ -60,7 +60,9 @@ const config = {
       defaultLink: 'https://discord.gg/8naAwJfWN6',
     },
     // location of the swagger file
-    apiDocsBasePath: process.env.API_DOCS_PATH ? process.env.API_DOCS_PATH : 'https://raw.githubusercontent.com/openfga/api/main/docs/openapiv2/apidocs.swagger.json',
+    apiDocsBasePath: process.env.API_DOCS_PATH
+      ? process.env.API_DOCS_PATH
+      : 'https://raw.githubusercontent.com/openfga/api/main/docs/openapiv2/apidocs.swagger.json',
 
     // Customization for product information
     /* eslint-disable max-len */
@@ -108,7 +110,9 @@ using OpenFga.Sdk.Configuration;`,
       img-src 'self' data: https://pbs.twimg.com https://docs.github.com https://heapanalytics.com;
       media-src 'none';
       object-src 'none';
-      script-src 'self' ${process.env.NODE_ENV === 'development' ? `'unsafe-eval'` : ``} 'unsafe-inline' https://cdn.cookielaw.org https://geolocation.onetrust.com https://cdn.heapanalytics.com;
+      script-src 'self' ${
+        process.env.NODE_ENV === 'development' ? `'unsafe-eval'` : ``
+      } 'unsafe-inline' https://cdn.cookielaw.org https://geolocation.onetrust.com https://cdn.heapanalytics.com;
       style-src 'unsafe-inline' 'self' https://fonts.googleapis.com;`,
   },
 

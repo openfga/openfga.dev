@@ -1,2 +1,2 @@
 export { SyntaxFormat } from './SyntaxTransformer';
-export * from './Viewer';
+export * from './AuthzModelSnippetViewer';
