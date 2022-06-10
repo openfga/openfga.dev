@@ -1,19 +1,19 @@
 ---
 id: overview
-title: 'Add Authorization to Your API'
+title: 'Getting Started'
 slug: /integration
 sidebar_position: 0
 ---
 
-import { DocumentationNotice, IntroCard, CardGrid } from '@components/Docs';
+import { DocumentationNotice, IntroCard, CardGrid, ProductName } from '@components/Docs';
 
 <DocumentationNotice />
 
-The following will provide a step by step guide on how to add authorization to your API.
+The following will provide a step by step guide on how to get started with <ProductName />.
 
 <IntroCard
   title="When to use"
-  description="This section is useful if you have defined an authorization model, understand how to write authorization data to {ProductName}, and want to learn how to update your code to start authorizing user requests."
+  description="This section is useful if you understand the basic concepts of {ProductName}, and want to learn how to get started."
 />
 
 # Content
@@ -21,10 +21,26 @@ The following will provide a step by step guide on how to add authorization to y
 <CardGrid
   middle={[
     {
-      title: 'Install the SDK',
-      description: 'Install and configure the SDK for the language of your choice.',
+      title: 'Setup OpenFGA server',
+      description: "How to setup an OpenFGA server.",
+      to: '/intro/setup-openfga',
+    },
+    {
+      title: 'Install SDK Client',
+      description: 'Install the SDK for the language of your choice.',
       to: '/integration/install-sdk',
     },
+    {
+      title: 'Create a Store',
+      description: 'Creating an OpenFGA entity that owns an authorization model and relationship tuples.',
+      to: '/integration/create-store',
+    },
+    {
+      title: 'Setup SDK Client for Store',
+      description: 'Configure the SDK client for your store.',
+      to: '/integration/setup-sdk-client',
+    },
+    // Future location of adding authorization via SDK
     {
       title: 'Update Relationship Tuples',
       description: 'Programmatically write authorization data to an {ProductName} store.',
@@ -36,25 +52,9 @@ The following will provide a step by step guide on how to add authorization to y
       to: '/integration/perform-check',
     },
     {
-      title: 'Integrate with a Framework',
+      title: 'Integrate Within a Framework',
       description: 'Integrate authorization checks with a framework.',
       to: '/integration/framework',
-    },
-  ]}
-  bottom={[
-    {
-      title: 'Advanced Integration',
-      description: 'Learn how to handle cases such as honoring fine-grained access control checks while searching.',
-      to: [
-        {
-          to: '/integration/advanced/search-with-permissions',
-          label: 'Search with permissions',
-        },
-        {
-          to: '/integration/read-tuple-changes',
-          label: 'Read tuple changes',
-        },
-      ],
     },
   ]}
 />

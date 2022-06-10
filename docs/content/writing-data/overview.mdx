@@ -1,6 +1,6 @@
 ---
 id: overview
-title: 'Write Your Authorization Data'
+title: 'Interacting with the API'
 slug: /writing-data
 sidebar_position: 0
 ---
@@ -21,22 +21,22 @@ This section helps you integrate <ProductName format={ProductNameFormat.ShortFor
 <CardGrid
   bottom={[
     {
-      title: 'Managing User Access',
+      title: 'Manage User Access',
       description: "Write relationship tuples to manage a user's access to an object.",
       to: '/writing-data/managing-user-access',
     },
     {
-      title: 'Managing Group Membership',
-      description: 'Write relationship tuples to manage the users that are members of a group.',
-      to: '/writing-data/managing-group-membership',
-    },
-    {
-      title: 'Managing Group Access',
+      title: 'Manage Group Access',
       description: 'Write relationship tuples to manage access to an object for all members of a group.',
       to: '/writing-data/managing-group-access',
     },
     {
-      title: 'Managing Object Relationships',
+      title: 'Manage Group Membership',
+      description: 'Write relationship tuples to manage the users that are members of a group.',
+      to: '/writing-data/managing-group-membership',
+    },
+    {
+      title: 'Manage Relationships Between Object',
       description:
         'Write relationship tuples to manage how two objects are related. E.g. parent folder and child document.',
       to: '/writing-data/managing-relationships-between-objects',
@@ -51,5 +51,10 @@ This section helps you integrate <ProductName format={ProductNameFormat.ShortFor
       description: 'Comparing when to use check vs. read vs. expand.',
       to: '/writing-data/advanced/check-read-expand',
     },
-  ]}
+    {
+      title: 'Search with Permissions',
+      description: 'Implementing search with OpenFGA.',
+      to: '/integration/advanced/search-with-permissions',
+    },
+]}
 />
