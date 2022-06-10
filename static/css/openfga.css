@@ -210,7 +210,6 @@ a:visited {
 
 .menu__list-item-collapsible a {
   font-family: var(--ofga-font-highlight);
-  text-transform: uppercase;
 }
 
 .menu__link,
