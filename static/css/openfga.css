@@ -41,6 +41,9 @@
   /* avoid these except for special cases */
   --true-black: #000;
   --true-white: #fff;
+
+  /* padding/margin */
+  --ofga-container-horizontal-padding: 2.25rem;
 }
 
 html {

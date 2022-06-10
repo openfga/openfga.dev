@@ -1,4 +1,7 @@
+import clsx from 'clsx';
 import * as React from 'react';
+
+import styles from './Section.module.css';
 
 type SectionProps = {
   id: string;
@@ -7,8 +10,8 @@ type SectionProps = {
 
 const Section: React.FC<SectionProps> = ({ id, children, className }) => {
   return (
-    <section className={className} id={id}>
-      <div className="container">{children}</div>
+    <section className={clsx(styles.section, className)} id={id}>
+      <div className={'container'}>{children}</div>
     </section>
   );
 };

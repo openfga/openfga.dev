@@ -5,6 +5,7 @@ import { Listing } from './Listing';
 // import { Updates } from './Update';
 
 import styles from './ResourcesSection.module.css';
+import { StyleGrid } from '../StyleGrid';
 
 type ResourcesSectionProps = {
   darkTheme?: boolean;
@@ -16,7 +17,8 @@ const ResourcesSection: React.FC<ResourcesSectionProps> = ({ darkTheme = 'dark' 
   };
 
   return (
-    <Section id="resources">
+    <Section id="resources" className={styles.sectionContainer}>
+      <StyleGrid />
       <div data-theme={darkTheme ? 'dark' : 'light'} className={styles.container}>
         <Listing colorProps={colorProps} />
       </div>
