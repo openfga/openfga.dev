@@ -6,6 +6,7 @@ import { Section } from '@components/Section';
 import { Auth0Icon, CodeIcon, FastIcon, ModelIcon, OpenIcon } from '@components/icons';
 
 import styles from './FeaturesSection.module.css';
+import { StyleGrid } from '../StyleGrid';
 
 const features = [
   {
@@ -53,6 +54,7 @@ const features = [
 
 const FeaturesSection = () => (
   <Section className={styles.section} id="features">
+    <StyleGrid />
     <h2 className="section_heading">Features</h2>
     <div className={styles.grid}>
       {features.map(({ id, icon, title, content }) => (

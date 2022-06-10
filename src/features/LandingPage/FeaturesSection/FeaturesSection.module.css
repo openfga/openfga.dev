@@ -2,6 +2,10 @@
   padding: 3rem 0;
 }
 
+.section h2 {
+  margin-left: calc(var(--ofga-container-horizontal-padding) - var(--ifm-spacing-horizontal) + 2rem);
+}
+
 .section p,
 .section h3 {
   margin: 0;
@@ -19,6 +23,8 @@
   display: grid;
   grid-template-columns: 1fr;
   grid-gap: 3rem;
+
+  padding: 0 calc(var(--ofga-container-horizontal-padding) - var(--ifm-spacing-horizontal));
 }
 
 @media (min-width: 1200px) {
@@ -48,6 +54,7 @@
 
   grid-template-rows: auto auto 1fr;
   grid-gap: 1.5rem;
+  padding: 0 2rem;
 }
 
 .feature a,

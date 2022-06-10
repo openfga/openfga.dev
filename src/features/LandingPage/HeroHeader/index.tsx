@@ -6,6 +6,7 @@ import styles from './HeroHeader.module.css';
 import { HeroPattern } from './HeroPattern';
 import { HeroLogo } from './HeroLogo';
 import { ButtonLink } from '@components/ButtonLink';
+import { StyleGrid } from '../StyleGrid';
 
 const HeroHeader = () => {
   const { siteConfig } = useDocusaurusContext();
@@ -37,6 +38,7 @@ const HeroHeader = () => {
   return (
     <header>
       <div className="container">
+        <StyleGrid />
         <div className={styles.container}>
           <div className={styles.content}>
             <h1 className={styles.heading}>
