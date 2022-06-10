@@ -45,7 +45,7 @@ const HeroHeader = () => {
             </h1>
             <p className={styles.headingDescription}>
               OpenFGA is an open-source authorization solution that allows developers to build granular access control
-              using an easy-to-read modelling language and friendly APIs.
+              using an easy-to-read modeling language and friendly APIs.
             </p>
 
             <div className={styles.buttons}>
