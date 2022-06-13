@@ -14,7 +14,7 @@ const baseUrl = process.env.BASE_URL ?? '/';
 const config = {
   title: 'OpenFGA',
   tagline: 'Relationship-based access control made fast, scalable, and easy to use.',
-  url: 'https://openfga.dev/',
+  url: 'https://openfga.dev',
   baseUrl: baseUrl,
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -188,6 +188,10 @@ using OpenFga.Sdk.Configuration;`,
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      metadata: [
+        { name: 'keywords', content: 'OpenFGA, open source, fine-grained-authorization, fine grained authorization, Zanzibar' },
+        { property: 'og:image', content: 'https://openfga.dev/img/openfga_logo.svg'  }
+      ],
       colorMode: {
         defaultMode: 'dark',
         disableSwitch: true,
