@@ -13,6 +13,19 @@
   /* grid-template-columns: 27.5rem 1fr; */
   color: var(--ofga-neutral-darkest);
   margin: 0 -1.75rem;
+  padding: 0 3rem;
+}
+
+@media screen and (min-width: 996px) {
+  .container {
+    padding: 0 2.75rem;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .container {
+    padding: 0;
+  }
 }
 
 .container[data-theme='dark'] {
