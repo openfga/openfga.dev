@@ -12,7 +12,7 @@ const baseUrl = process.env.BASE_URL ?? '/';
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'OpenFGA Docs',
+  title: 'OpenFGA',
   tagline: 'Relationship-based access control made fast, scalable, and easy to use.',
   url: 'https://openfga.dev/',
   baseUrl: baseUrl,
@@ -74,6 +74,7 @@ const config = {
     // link to the concept page (relative to baseURL)
     conceptLink: `intro/openfga-concepts`,
     longProductName: `OpenFGA`,
+    landingPageTitle: "Fine Grained Authorization",
 
     // define playgroundName and playgroundURL if you want to show your examples through playground
     //playgroundName: '',
