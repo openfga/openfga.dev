@@ -37,7 +37,7 @@ const HeroHeader = () => {
 
   return (
     <header>
-      <div className="container">
+      <div className="container__no-padding">
         <StyleGrid />
         <div className={styles.container}>
           <div className={styles.content}>
