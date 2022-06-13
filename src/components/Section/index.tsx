@@ -11,7 +11,7 @@ type SectionProps = {
 const Section: React.FC<SectionProps> = ({ id, children, className }) => {
   return (
     <section className={clsx(styles.section, className)} id={id}>
-      <div className={'container'}>{children}</div>
+      <div className={'container__no-padding'}>{children}</div>
     </section>
   );
 };

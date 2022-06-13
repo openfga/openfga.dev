@@ -41,9 +41,6 @@
   /* avoid these except for special cases */
   --true-black: #000;
   --true-white: #fff;
-
-  /* padding/margin */
-  --ofga-container-horizontal-padding: 2.25rem;
 }
 
 html {
@@ -67,6 +64,18 @@ logo a:active,
 a:visited {
   color: var(--ofga-green-neon);
   transition: all 0.2s ease;
+}
+
+.container__no-padding {
+  margin: 0 auto;
+  max-width: var(--ifm-container-width);
+  width: 100%;
+}
+
+@media only screen and (min-width: 1440px) {
+  .container__no-padding {
+    max-width: var(--ifm-container-width-xl);
+  }
 }
 
 /* Navbar */

@@ -7,7 +7,7 @@
 
 @media screen and (min-width: 996px) {
   .container {
-    padding: 8rem calc(var(--ofga-container-horizontal-padding) - var(--ifm-spacing-horizontal) + 2rem) 8rem;
+    padding: 8rem 2rem 8rem;
     justify-content: space-between;
   }
 

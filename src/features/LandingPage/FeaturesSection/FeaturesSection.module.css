@@ -3,7 +3,7 @@
 }
 
 .section h2 {
-  margin-left: calc(var(--ofga-container-horizontal-padding) - var(--ifm-spacing-horizontal) + 2rem);
+  margin-left: 2rem;
 }
 
 .section p,
@@ -23,8 +23,6 @@
   display: grid;
   grid-template-columns: 1fr;
   grid-gap: 3rem;
-
-  padding: 0 calc(var(--ofga-container-horizontal-padding) - var(--ifm-spacing-horizontal));
 }
 
 @media (min-width: 1200px) {
