@@ -33,7 +33,7 @@
   .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-gap: 5rem 15.5rem;
+    grid-gap: 5rem 10rem;
   }
 }
 
