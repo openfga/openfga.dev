@@ -139,14 +139,22 @@ since we only have 1 column, no need to have right border
   }
 
   .links {
-    margin-bottom: 3rem;
+    margin-bottom: 0;
+  }
+
+  .links li {
+    margin-bottom: 1rem;
+  }
+
+  .links li:last-of-type {
+    margin-bottom: unset;
   }
 
   .mainArea {
-    padding: 0 3.75rem;
+    padding: 3.75rem;
   }
 
   .mainArea h2 {
-    margin: 3rem 4rem 3rem 0;
+    margin: 0 4rem 3rem 0;
   }
 }
