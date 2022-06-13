@@ -16,5 +16,3 @@ const languageDef = {
 
 Prism.languages['openfga-dsl'] = languageDef;
 Prism.languages.dsl = languageDef;
-
-console.log('PROISM', Prism);
