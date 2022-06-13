@@ -14,7 +14,7 @@ const features = [
     icon: <ModelIcon />,
     title: 'Model any authorization system',
     content: [
-      "OpenFGA takes the best ideas from Google's Zanzibar paper for Relationship-Based Access Control, and also solves problems for Role-based Access Control and Attribute-Based Access Control use cases. The modelling language is powerful enough for engineers, but friendly enough for other stakeholders on your team as well.",
+      "OpenFGA takes the best ideas from Google's Zanzibar paper for Relationship-Based Access Control, and also solves problems for Role-based Access Control and Attribute-Based Access Control use cases. The modeling language is powerful enough for engineers, but friendly enough for other stakeholders on your team as well.",
     ],
   },
   {
@@ -71,7 +71,7 @@ const FeaturesSection = () => (
         <h3>Get involved</h3>
         <p>
           OpenFGA has an active <Link href="https://discord.gg/8naAwJfWN6">Discord community</Link>, a{' '}
-          <Link href="https://github.com/orgs/openfga/projects">public roadmap</Link>, and is ready for contributions.
+          <Link href="https://github.com/orgs/openfga/projects/1">public roadmap</Link>, and is ready for contributions.
           Check out existing <Link href="https://github.com/openfga/rfcs">RFCs</Link> to understand where the project is
           headed, and learn more about how to take part by reading our{' '}
           <Link href="https://github.com/openfga/.github/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</Link>.

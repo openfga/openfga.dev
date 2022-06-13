@@ -41,13 +41,13 @@ const HeroHeader = () => {
         <StyleGrid />
         <div className={styles.container}>
           <div className={styles.content}>
-            <h1 className={styles.heading}>
+            <h1 className={styles.heading} ref={headingRef}>
               {<HeroLogo />}
               <span className={styles.headingSubtitle}>{siteConfig.tagline}</span>
             </h1>
             <p className={styles.headingDescription}>
               OpenFGA is an open-source authorization solution that allows developers to build granular access control
-              using an easy-to-read modelling language and friendly APIs.
+              using an easy-to-read modeling language and friendly APIs.
             </p>
 
             <div className={styles.buttons}>
@@ -68,7 +68,7 @@ const HeroHeader = () => {
                 </svg>
                 Quick start
               </ButtonLink>
-              <ButtonLink href="https://github.com/openfga/openfga">
+              <ButtonLink href="https://github.com/openfga">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
                     fillRule="evenodd"
