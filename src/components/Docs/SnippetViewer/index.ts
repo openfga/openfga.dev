@@ -6,3 +6,4 @@ export * from './ReadRequestViewer';
 export { SdkSetupHeader } from './SdkSetup';
 export { SupportedLanguage, languageLabelMap } from './SupportedLanguage';
 export * from './WriteRequestViewer';
+export * from './WriteAuthzModelViewer';
