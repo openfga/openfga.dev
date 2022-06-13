@@ -2,25 +2,64 @@
 const sidebars = {
   docs: [
     {
+      type: 'doc',
+      label: 'What is OpenFGA',
+      id: 'content/intro/authorization-and-openfga',
+    },
+    {
+      type: 'doc',
+      label: 'Concepts',
+      id: 'content/intro/openfga-concepts',
+    },
+    {
+      type: 'doc',
+      label: 'Configuration Language',
+      id: 'content/modeling/configuration-language',
+    },
+    {
       type: 'category',
-      label: 'Introduction to OpenFGA',
       collapsible: true,
-      collapsed: true,
+      collapsed: false,
+      label: 'Getting Started',
+      link: {
+        type: 'doc',
+        id: 'content/integration/overview',
+      },
       items: [
         {
           type: 'doc',
-          label: 'What is OpenFGA',
-          id: 'content/intro/authorization-and-openfga',
-        },
-        {
-          type: 'doc',
-          label: 'Setup an OpenFGA server',
+          label: 'Setup OpenFGA Server',
           id: 'content/intro/setup-openfga',
         },
         {
           type: 'doc',
-          label: 'OpenFGA Concepts',
-          id: 'content/intro/openfga-concepts',
+          label: 'Install SDK Client',
+          id: 'content/integration/install-sdk',
+        },
+        {
+          type: 'doc',
+          label: 'Create a Store',
+          id: 'content/integration/create-store',
+        },
+        {
+          type: 'doc',
+          label: 'Setup SDK Client for Store',
+          id: 'content/integration/setup-sdk-client',
+        },
+        {
+          type: 'doc',
+          label: 'Update Relationship Tuples',
+          id: 'content/integration/update-tuples',
+        },
+        {
+          type: 'doc',
+          label: 'Perform a Check',
+          id: 'content/integration/perform-check',
+        },
+        {
+          type: 'doc',
+          label: 'Integrate Within a Framework',
+          id: 'content/integration/framework',
         },
       ],
     },
@@ -28,61 +67,55 @@ const sidebars = {
       type: 'category',
       collapsible: true,
       collapsed: true,
-      label: 'Define your authorization model',
+      label: 'Modeling Guides',
+      link: {
+        type: 'doc',
+        id: 'content/modeling/overview',
+      },
       items: [
         {
           type: 'doc',
-          label: 'Overview',
-          id: 'content/modeling/overview',
-        },
-        {
-          type: 'doc',
-          label: 'Getting Started',
+          label: 'Get Started with Modeling',
           id: 'content/modeling/getting-started',
         },
         {
           type: 'doc',
-          label: 'Configuration Language',
-          id: 'content/modeling/configuration-language',
-        },
-        {
-          type: 'doc',
-          label: 'Modeling Basics',
+          label: 'Direct Access',
           id: 'content/modeling/basics/modeling-basics',
         },
         {
           type: 'doc',
-          label: 'Modeling User Groups',
+          label: 'User Groups',
           id: 'content/modeling/basics/user-groups',
         },
         {
           type: 'doc',
-          label: 'Modeling Roles and Permissions',
+          label: 'Roles and Permissions',
           id: 'content/modeling/basics/roles-and-permissions',
         },
         {
           type: 'doc',
-          label: 'Modeling Parent-Child Objects',
+          label: 'Parent-Child Objects',
           id: 'content/modeling/basics/parent-child',
         },
         {
           type: 'doc',
-          label: 'Modeling Blocklists',
+          label: 'Blocklists',
           id: 'content/modeling/basics/blocklists',
         },
         {
           type: 'doc',
-          label: 'Modeling Public Access',
+          label: 'Public Access',
           id: 'content/modeling/basics/public-access',
         },
         {
           type: 'doc',
-          label: 'Modeling with Multiple Restrictions',
+          label: 'Multiple Restrictions',
           id: 'content/modeling/basics/multiple-restrictions',
         },
         {
           type: 'doc',
-          label: 'Modeling Custom Roles',
+          label: 'Custom Roles',
           id: 'content/modeling/basics/custom-roles',
         },
         {
@@ -99,7 +132,11 @@ const sidebars = {
           type: 'category',
           collapsed: true,
           collapsible: true,
-          label: 'Modeling Concepts',
+          label: 'Building Blocks',
+          link: {
+            type: 'doc',
+            id: 'content/modeling/concepts/overview',
+          },
           items: [
             {
               type: 'doc',
@@ -123,37 +160,73 @@ const sidebars = {
             },
           ],
         },
+        {
+          type: 'category',
+          collapsible: true,
+          collapsed: true,
+          label: 'Advanced Use-Cases',
+          link: {
+            type: 'doc',
+            id: 'content/modeling/advanced/overview',
+          },
+          items: [
+            {
+              type: 'doc',
+              label: 'Google Drive',
+              id: 'content/modeling/advanced/use-cases/gdrive',
+            },
+            {
+              type: 'doc',
+              label: 'GitHub',
+              id: 'content/modeling/advanced/use-cases/github',
+            },
+            {
+              type: 'doc',
+              label: 'Slack',
+              id: 'content/modeling/advanced/use-cases/slack',
+            },
+            {
+              type: 'doc',
+              label: 'IoT',
+              id: 'content/modeling/advanced/use-cases/iot',
+            },
+            {
+              type: 'doc',
+              label: 'Entitlements',
+              id: 'content/modeling/advanced/patterns/entitlements',
+            },
+          ],
+        },
       ],
     },
     {
       type: 'category',
-      label: 'Write Your Authorization Data',
+      label: 'Interacting with the API',
       collapsible: true,
       collapsed: true,
+      link: {
+        type: 'doc',
+        id: 'content/writing-data/overview',
+      },
       items: [
         {
           type: 'doc',
-          label: 'Overview',
-          id: 'content/writing-data/overview',
-        },
-        {
-          type: 'doc',
-          label: 'Managing User Access',
+          label: 'Manage User Access',
           id: 'content/writing-data/managing-user-access',
         },
         {
           type: 'doc',
-          label: 'Managing Group Access',
+          label: 'Manage Group Access',
           id: 'content/writing-data/managing-group-access',
         },
         {
           type: 'doc',
-          label: 'Managing Group Membership',
+          label: 'Manage Group Membership',
           id: 'content/writing-data/managing-group-membership',
         },
         {
           type: 'doc',
-          label: 'Managing Relationships Between Objects',
+          label: 'Manage Relationships Between Objects',
           id: 'content/writing-data/managing-relationships-between-objects',
         },
         {
@@ -162,132 +235,19 @@ const sidebars = {
           id: 'content/writing-data/transactional-writes',
         },
         {
-          type: 'category',
-          collapsed: true,
-          collapsible: true,
-          label: 'Advanced',
-          items: [
-            {
-              type: 'doc',
-              label: 'Check, Read and Expand',
-              id: 'content/writing-data/advanced/check-read-expand',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      type: 'category',
-      collapsible: true,
-      collapsed: true,
-      label: 'Add Authorization To Your API',
-      items: [
-        {
           type: 'doc',
-          label: 'Overview',
-          id: 'content/integration/overview',
+          label: 'Check, Read and Expand',
+          id: 'content/writing-data/advanced/check-read-expand',
         },
         {
           type: 'doc',
-          label: 'How to install the SDK',
-          id: 'content/integration/install-sdk',
+          label: 'Get Tuple Changes',
+          id: 'content/integration/read-tuple-changes',
         },
         {
           type: 'doc',
-          label: 'How to setup SDK client',
-          id: 'content/integration/setup-sdk-client',
-        },
-        {
-          type: 'doc',
-          label: 'How to create a store',
-          id: 'content/integration/create-store',
-        },
-        {
-          type: 'doc',
-          label: 'How to update relationship tuples',
-          id: 'content/integration/update-tuples',
-        },
-        {
-          type: 'doc',
-          label: 'How to perform a check',
-          id: 'content/integration/perform-check',
-        },
-        {
-          type: 'doc',
-          label: 'How to integrate within a framework',
-          id: 'content/integration/framework',
-        },
-        {
-          type: 'category',
-          collapsed: true,
-          collapsible: true,
-          label: 'Advanced',
-          items: [
-            {
-              type: 'doc',
-              label: 'How to get tuple changes',
-              id: 'content/integration/read-tuple-changes',
-            },
-            {
-              type: 'doc',
-              label: 'Search with permissions',
-              id: 'content/integration/advanced/search-with-permissions',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      type: 'category',
-      collapsible: true,
-      collapsed: true,
-      label: 'Advanced Modeling',
-      items: [
-        {
-          type: 'doc',
-          label: 'Overview',
-          id: 'content/modeling/advanced/overview',
-        },
-        {
-          type: 'category',
-          label: 'Modeling samples',
-          collapsible: true,
-          collapsed: true,
-          items: [
-            {
-              type: 'doc',
-              label: 'Modeling Google Drive',
-              id: 'content/modeling/advanced/use-cases/gdrive',
-            },
-            {
-              type: 'doc',
-              label: 'Modeling GitHub',
-              id: 'content/modeling/advanced/use-cases/github',
-            },
-            {
-              type: 'doc',
-              label: 'Modeling Slack',
-              id: 'content/modeling/advanced/use-cases/slack',
-            },
-            {
-              type: 'doc',
-              label: 'Modeling for IoT',
-              id: 'content/modeling/advanced/use-cases/iot',
-            },
-          ],
-        },
-        {
-          type: 'category',
-          collapsible: true,
-          collapsed: true,
-          label: 'Modeling patterns',
-          items: [
-            {
-              type: 'doc',
-              label: 'Entitlements',
-              id: 'content/modeling/advanced/patterns/entitlements',
-            },
-          ],
+          label: 'Search with Permissions',
+          id: 'content/integration/advanced/search-with-permissions',
         },
       ],
     },
