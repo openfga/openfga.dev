@@ -1,0 +1,60 @@
+---
+id: overview
+title: 'Getting Started'
+slug: /getting-started
+sidebar_position: 0
+---
+
+import { DocumentationNotice, IntroCard, CardGrid, ProductName } from '@components/Docs';
+
+<DocumentationNotice />
+
+The following will provide a step by step guide on how to get started with <ProductName />.
+
+<IntroCard
+  title="When to use"
+  description="This section is useful if you understand the basic concepts of {ProductName}, and want to learn how to get started."
+/>
+
+# Content
+
+<CardGrid
+  middle={[
+    {
+      title: 'Setup OpenFGA server',
+      description: "How to setup an OpenFGA server.",
+      to: 'getting-started/setup-openfga',
+    },
+    {
+      title: 'Install SDK Client',
+      description: 'Install the SDK for the language of your choice.',
+      to: 'getting-started/install-sdk',
+    },
+    {
+      title: 'Create a Store',
+      description: 'Creating an OpenFGA entity that owns an authorization model and relationship tuples.',
+      to: 'getting-started/create-store',
+    },
+    {
+      title: 'Setup SDK Client for Store',
+      description: 'Configure the SDK client for your store.',
+      to: 'getting-started/setup-sdk-client',
+    },
+    // Future location of adding authorization via SDK
+    {
+      title: 'Update Relationship Tuples',
+      description: 'Programmatically write authorization data to an {ProductName} store.',
+      to: 'getting-started/update-tuples',
+    },
+    {
+      title: 'Perform a Check',
+      description: 'Programmatically perform an authorization check against an {ProductName} store.',
+      to: 'getting-started/perform-check',
+    },
+    {
+      title: 'Integrate Within a Framework',
+      description: 'Integrate authorization checks with a framework.',
+      to: 'getting-started/framework',
+    },
+  ]}
+/>

@@ -16,11 +16,11 @@ const QuickStartSection = () => {
           <p>
             OpenFGA will be running at localhost:8080 on your machine. Learn about other options and next steps in the
             project <Link href="https://github.com/openfga/openfga">README.md</Link> or{' '}
-            <Link to="intro/authorization-and-openfga">Getting Started</Link> guides.
+            <Link to="./docs/getting-started">Getting Started</Link> guides.
           </p>
           <p>
             Learn how to use sample authorization models and create your own with the project&rsquo;s extensive{' '}
-            <Link to="intro/authorization-and-openfga">documentation</Link>.
+            <Link to="./docs/modeling">documentation</Link>.
           </p>
         </div>
         <div className={styles.graphic}>
