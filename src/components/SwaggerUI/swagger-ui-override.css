@@ -7135,7 +7135,7 @@
   border-bottom: 1px solid rgba(59, 65, 81, 0.3);
   cursor: pointer;
   display: flex;
-  padding: 0 26px 16px 0;
+  padding: 0 0 16px 0;
   transition: all 0.2s;
   color: var(--ifm-color-primary-contrast-foreground);
   font-size: 24px;
@@ -7370,8 +7370,9 @@
   background: #fca130;
 }
 .swagger-ui .opblock.opblock-delete {
-  background: rgba(249, 62, 62, 0.1);
-  border-color: #f93e3e;
+  background: unset;
+  border-color: unset;
+  border: unset;
 }
 .swagger-ui .opblock.opblock-delete .opblock-summary-method {
   background: #f93e3e;
@@ -7940,6 +7941,7 @@
 .swagger-ui .expand-operation {
   background: none;
   border: none;
+  padding: 0px;
 }
 .swagger-ui .expand-methods svg,
 .swagger-ui .expand-operation svg {
