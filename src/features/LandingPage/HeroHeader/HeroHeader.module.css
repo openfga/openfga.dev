@@ -9,10 +9,12 @@
   .container {
     padding: 8rem 2rem 8rem;
     justify-content: space-between;
+    align-items: center;
   }
 
   .content {
-    max-width: 37rem;
+    max-width: calc(50% + 48px);
+    width: 40rem;
   }
 }
 
@@ -107,5 +109,8 @@
 @media screen and (min-width: 996px) {
   .heroPattern {
     display: flex;
+    width: 30rem;
+    height: 36.5rem;
+    max-width: calc(50% - 112px);
   }
 }
