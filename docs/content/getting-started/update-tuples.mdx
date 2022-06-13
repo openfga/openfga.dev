@@ -1,0 +1,167 @@
+---
+title: Update Relationship Tuples
+sidebar_position: 3
+slug: /getting-started/update-tuples
+---
+
+import {
+  DocumentationNotice,
+  RelatedSection,
+  SdkSetupHeader,
+  SupportedLanguage,
+  languageLabelMap,
+  ProductConcept,
+  ProductName,
+  ProductNameFormat,
+  WriteRequestViewer,
+  SdkSetupPrerequisite,
+} from '@components/Docs';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Update Relationship Tuples
+
+<DocumentationNotice />
+
+This section will illustrate how to update _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" />_.
+
+## Before you start
+
+<Tabs groupId="languages">
+{[SupportedLanguage.JS_SDK, SupportedLanguage.GO_SDK, SupportedLanguage.DOTNET_SDK].map(lang =>
+<TabItem value={lang} label={languageLabelMap.get(lang)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](./install-sdk.mdx).
+3. You have [configured the _authorization model_](../modeling).
+4. You have loaded `FGA_ENVIRONMENT`, `FGA_STORE_ID`, `FGA_CLIENT_ID` and `FGA_CLIENT_SECRET` as environment variables.
+
+</TabItem>
+)}
+<TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [configured the _authorization model_](../modeling).
+3. You have loaded `FGA_ENVIRONMENT`, `FGA_BEARER_TOKEN` and `FGA_STORE_ID` as environment variables.
+
+</TabItem>
+</Tabs>
+
+## Step by Step
+
+Assume that you want to add user `anne` to have relationship `reader` with object `document:Z`
+
+```json5
+{
+  user: 'anne',
+  relation: 'reader',
+  object: 'document:Z',
+}
+```
+
+### 01. Configure the <ProductName format={ProductNameFormat.ShortForm}/> API client
+
+Before calling the write API, you will need to configure the API client.
+
+<Tabs groupId="languages">
+<TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
+
+<SdkSetupHeader lang={SupportedLanguage.JS_SDK} />
+
+</TabItem>
+<TabItem value={SupportedLanguage.GO_SDK} label={languageLabelMap.get(SupportedLanguage.GO_SDK)}>
+
+<SdkSetupHeader lang={SupportedLanguage.GO_SDK} />
+
+</TabItem>
+<TabItem value={SupportedLanguage.DOTNET_SDK} label={languageLabelMap.get(SupportedLanguage.DOTNET_SDK)}>
+
+<SdkSetupHeader lang={SupportedLanguage.DOTNET_SDK} />
+
+</TabItem>
+<TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
+
+To obtain the [access token](https://auth0.com/docs/authorization/flows/call-your-api-using-the-client-credentials-flow):
+
+<SdkSetupHeader lang={SupportedLanguage.CURL} />
+
+</TabItem>
+</Tabs>
+
+### 02. Calling Write API to Add New Relationship Tuples
+
+To add the relationship tuples, we can invoke the write API.
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'anne',
+      relation: 'reader',
+      object: 'document:Z',
+    },
+  ]}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+### 03. Calling Write API to Delete Relationship Tuples
+
+To delete relationship tuples, we can invoke the write API.
+
+Assume that you want to delete user `anne`'s `reader` relationship with object `document:Z`
+
+```json5
+{
+  user: 'anne',
+  relation: 'reader',
+  object: 'document:Z',
+}
+```
+
+<WriteRequestViewer
+  deleteRelationshipTuples={[
+    {
+      user: 'anne',
+      relation: 'reader',
+      object: 'document:Z',
+    },
+  ]}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more on how to write your authorization data"
+  relatedLinks={[
+    {
+      title: 'Managing User Access',
+      description: 'Learn about how to give a user access to a particular object.',
+      link: '../interacting/managing-user-access',
+      id: '../interacting/managing-user-access.mdx',
+    },
+    {
+      title: 'Managing Group Access',
+      description: 'Learn about how to give a group of users access to a particular object.',
+      link: '../interacting/managing-group-access',
+      id: '../interacting/managing-group-access.mdx',
+    },
+    {
+      title: 'Transactional Writes',
+      description: 'Learn about how to update multiple relations within the same API call.',
+      link: '../interacting/transactional-writes',
+      id: '../interacting/transactional-writes.mdx',
+    },
+  ]}
+/>
