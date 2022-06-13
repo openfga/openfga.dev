@@ -6,8 +6,9 @@ import { QuickStartSection, FeaturesSection, ResourcesSection, HeroHeader } from
 
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
+  const title = siteConfig.customFields.landingPageTitle;
   return (
-    <Layout title={`${siteConfig.title}`} description="Description will go into a meta tag in <head />">
+    <Layout title={`${title}`} description={`${siteConfig.tagline}`}>
       <HeroHeader />
       <main>
         <QuickStartSection />
