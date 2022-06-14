@@ -278,8 +278,8 @@ a.menu__link:hover {
 }
 
 .theme-doc-sidebar-item-category {
-  margin-bottom: 16px;
-  margin-right: 8px;
+  margin-bottom: 1rem;
+  margin-right: 0.5rem;
 }
 
 /* Table of Contents */
