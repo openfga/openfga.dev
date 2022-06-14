@@ -463,6 +463,7 @@ a.table-of-contents__link--active {
 
 .markdown details {
   margin-top: 2rem;
+  border-radius: 24px !important;
   padding: 0;
 }
 
@@ -479,6 +480,7 @@ a.table-of-contents__link--active {
   padding: 2rem;
   margin: unset;
 }
+
 .markdown details summary:before {
   left: auto;
   right: 1rem;
@@ -488,6 +490,14 @@ a.table-of-contents__link--active {
 
 .markdown details[data-collapsed='false'] > summary:before {
   transform: rotate(270deg) !important;
+}
+
+.markdown details h3 {
+  font-size: 1.25rem;
+  line-height: 1.625rem;
+  letter-spacing: -0.1px;
+  margin: unset;
+  padding: 1.5rem 0 1rem;
 }
 
 /* Pre - Code */
