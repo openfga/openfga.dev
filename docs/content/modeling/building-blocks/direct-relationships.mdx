@@ -1,0 +1,538 @@
+---
+sidebar_position: 8
+description: 'Modeling Concepts: Direct Relationships'
+slug: /modeling/building-blocks/direct-relationships
+---
+
+import {
+  AuthzModelSnippetViewer,
+  CardBox,
+  CheckRequestViewer,
+  DocumentationNotice,
+  Playground,
+  ProductConcept,
+  ProductName,
+  ProductNameFormat,
+  RelationshipTuplesViewer,
+  RelatedSection,
+} from '@components/Docs';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Direct Relationships
+
+<DocumentationNotice />
+
+In this guide you'll learn how to model relationships that may or may not be assigned directly to individual users.
+
+<CardBox title="When to use" appearance="filled" description=<div>
+
+Disabling _direct relationships_ for a certain relation on an objects are useful especially in cases where you are trying to model some permissions that are not usually granted individually to a user.
+
+This is useful when:
+
+- For security reason, not permitting permissions assigned directly to individuals without associating roles
+
+</div> />
+
+## Before you start
+
+To better understand this guide, you should be familiar with some <ProductConcept /> and know how to develop the things listed below.
+
+<details>
+
+<summary>
+
+You will need to know the following:
+
+- Modeling Basics
+- <ProductName format={ProductNameFormat.ShortForm} /> Concepts
+
+</summary>
+
+### Modeling Basics
+
+You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](../direct-access.mdx)
+
+### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+
+- A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics
+- A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
+- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between objects of this type and other users in the system
+- An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
+- A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>
+- [Direct Relationship Keyword](../../configuration-language.mdx#the-direct-relationship-keyword): `self` used in the context of the relation definition can be used to allow direct relationships to the objects of this type
+
+</details>
+
+<Playground />
+
+## What are direct relationships?
+
+Direct relationships are relationships where a user has a relationship to an <ProductConcept section="what-is-an-object" linkName="object" /> that is not dependent on any other relationship they have with that object.
+
+When checking for a relationship, a direct relationship exists if a _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple" />_ is present in the system with the exact same object and relation that were in the query and where the user is one of:
+
+- the same user ID as that in the query
+- everyone (`*`)
+- a set of users that contains the user ID present in the query
+
+## Enable or disable direct relationships
+
+Direct relationships can be enabled for a specific relation on an _<ProductConcept section="what-is-a-type" linkName="object type" />_ by adding the [direct relationship keyword](../../configuration-language.mdx#the-direct-relationship-keyword) from that <ProductConcept section="what-is-a-relation-definition" linkName="relation's definition" />. Likewise, they can be disabled by removing that keyword.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          viewer: {
+            union: {
+              child: [
+                {
+                  // a user can be assigned a direct `viewer` relation, i.e., not implied through another relation
+                  this: {},
+                },
+                {
+                  // a user who is related as an editor is also implicitly related as a viewer
+                  computedUserset: {
+                    relation: 'editor',
+                  },
+                },
+              ],
+            },
+          },
+          editor: {
+            this: {},
+          },
+        },
+      },
+      {
+        type: 'team',
+        relations: {
+          member: {
+            this: {},
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+:::info
+
+The <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" /> describes two <ProductConcept section="what-is-a-type" linkName="object types" />: `document` and `team`.
+
+The `document` <ProductConcept section="what-is-a-type-definition" linkName="type definition" /> has two <ProductConcept section="what-is-a-relation" linkName="relations" />, `editor` and `viewer`. Both relations allow a direct relationship; `viewer` also allows an <ProductConcept section="what-are-direct-and-implied-relationships" linkName="indirect relationship" /> through `editor`.
+
+In the `team` type definition, there is a single `member` relation that only allows direct relationships.
+
+:::
+
+## How it affects your system
+
+To illustrate the effect enabling or disabling direct relationships on a specific relation has, we'll investigate several situations.
+
+### 1. With direct relationships enabled
+
+Let us start with the authorization model we had above:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          viewer: {
+            union: {
+              child: [
+                {
+                  // a user can be assigned a direct `viewer` relation, i.e., not implied through another relation
+                  this: {},
+                },
+                {
+                  // a user who is related as an editor is also implicitly related as a viewer
+                  computedUserset: {
+                    relation: 'editor',
+                  },
+                },
+              ],
+            },
+          },
+          editor: {
+            this: {},
+          },
+        },
+      },
+      {
+        type: 'team',
+        relations: {
+          member: {
+            this: {},
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+Now choose the type of relation to see how it affects your system:
+
+<Tabs groupId='relationship-type'>
+<TabItem value='direct' label='Direct User'>
+
+Assume you have a tuple that states that Anne is a `viewer` of `document:planning`
+
+<RelationshipTuplesViewer
+  relationshipTuples={[
+    {
+      user: 'anne',
+      relation: 'viewer',
+      object: 'document:planning',
+    },
+  ]}
+/>
+
+Now if we do a <ProductConcept section="what-is-a-check-request" linkName="check request" /> to see if Anne can view the planning document, we will get a response of `{"allowed": true}`.
+
+<CheckRequestViewer user={'anne'} relation={'viewer'} object={'document:planning'} allowed={true} />
+
+This is because:
+
+- There is a relationship tuple specifying that Anne has a `viewer` relationship with `document:planning`.
+- Direct relationships are allowed in the `viewer` relation definition in the `document` type definition.
+
+</TabItem>
+
+<TabItem value='everyone' label='Everyone'>
+
+Assume you have a tuple that states that <ProductConcept section="how-do-i-represent-everyone" linkName="everyone" /> is a `viewer` of `document:planning` (In other words, the document is public)
+
+<RelationshipTuplesViewer
+  relationshipTuples={[
+    {
+      user: '*',
+      relation: 'viewer',
+      object: 'document:planning',
+    },
+  ]}
+/>
+
+Now if we do a check request to see if Beth can view the planning document, we will get a response of `{"allowed": true}`.
+
+<CheckRequestViewer user={'beth'} relation={'viewer'} object={'document:planning'} allowed={true} />
+
+This is because:
+
+- There is a relationship tuple specifying that everyone has a `viewer` relationship with `document:planning`.
+- Direct relationships are allowed in the `viewer` relation definition in the `document` type definition.
+
+:::info
+
+Note: Even though the relationship tuple stored in the system does not specify the user (`beth`), this is still considered a direct relationship.
+
+:::
+
+</TabItem>
+
+<TabItem value='userset' label='Userset'>
+
+[_Usersets_](./usersets.mdx) are the third way direct relationships apply, we will see how in this section.
+
+Assume you have two relationship tuples:
+
+- Charlie is a member of the product team.
+- Members of the product team are viewers of the planning document.
+
+<RelationshipTuplesViewer
+  relationshipTuples={[
+    {
+      user: 'charlie',
+      relation: 'member',
+      object: 'team:product',
+    },
+    {
+      user: 'team:product#member',
+      relation: 'viewer',
+      object: 'document:planning',
+    },
+  ]}
+/>
+
+:::info
+
+Note that these two relationship tuples are specifying that:
+
+- `charlie` is a `member` of `team:product`.
+- any `member` of `team:product` is a `viewer` of `document:planning`.
+  - Note that this second relationship tuple is specifying that the **members** of the team have viewer access, and not the team object itself.
+
+:::
+
+Now if we do a _check request_ to see if charlie can view the planning document, we will get a response of `{"allowed": true}`.
+
+<CheckRequestViewer user={'charlie'} relation={'viewer'} object={'document:planning'} allowed={true} />
+
+This is because:
+
+- Charlie is a member of the product team.
+- There is a relationship tuple specifying that all members of the product team have a `viewer` relationship with `document:planning`.
+- Direct relationships are allowed in the `viewer` relation definition in the `document` type definition.
+
+Note that this is still considered a direct relationship no matter how many resolutions occur on the usersets until the user is found.
+
+For example, if our relationship tuples were the following relationship tuples:
+
+- Dany is a member of the product leads team.
+- Members of the product leads team are members of the product team.
+- Members of the product team are members of the contoso team.
+- Members of the contoso team are viewers of the planning document.
+
+<RelationshipTuplesViewer
+  relationshipTuples={[
+    {
+      user: 'dany',
+      relation: 'member',
+      object: 'team:product-leads',
+    },
+    {
+      user: 'team:product-leads#member',
+      relation: 'member',
+      object: 'team:product',
+    },
+    {
+      user: 'team:product#member',
+      relation: 'member',
+      object: 'team:contoso',
+    },
+    {
+      user: 'team:contoso#member',
+      relation: 'viewer',
+      object: 'document:planning',
+    },
+  ]}
+/>
+
+A subsequent _check request_ to see if Dany can view the planning document will still return a response of `{"allowed": true}`.
+
+<CheckRequestViewer user={'dany'} relation={'viewer'} object={'document:planning'} allowed={true} />
+
+:::info
+
+Note: Even though the relationship tuple stored in the system does not specify the user (`charlie` or `dany`), this is still considered a direct relationship.
+
+:::
+
+</TabItem>
+
+<TabItem value='indirect' label='Indirect Relationship'>
+
+Here we will cover one example of an <ProductConcept section="what-are-direct-and-implied-relationships" linkName="indirect relationship" /> in order to see how they differ from direct relationships.
+
+With the same authorization model we have above, assume there is a relationship tuple that specifies that Emily is an `editor` of `document:planning`.
+
+<RelationshipTuplesViewer
+  relationshipTuples={[
+    {
+      user: 'emily',
+      relation: 'editor',
+      object: 'document:planning',
+    },
+  ]}
+/>
+
+A subsequent _check request_ to see if emily can view the planning document will still return a response of `{"allowed": true}`.
+
+<CheckRequestViewer user={'emily'} relation={'viewer'} object={'document:planning'} allowed={true} />
+
+This is because:
+
+- Emily is an `editor` of the planning document.
+- The authorization model specified that anyone who is an `editor` on a `document` is also a `viewer` on that document.
+
+In this case, there is **NO** direct viewer relationship between Emily and the planning document. The only viewer relationship that exists is implied because Emily is an editor and the authorization model specified that any document's `editor` is that document's viewer.
+
+</TabItem>
+</Tabs>
+
+### 2. With direct relationships disabled
+
+In this section, we will investigate the effect of disabling _direct relationships_ on the document's `viewer` relation.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          viewer: {
+            // a user who is related as an editor is also implicitly related as a viewer
+            computedUserset: {
+              relation: 'editor',
+            },
+          },
+          editor: {
+            this: {},
+          },
+        },
+      },
+      {
+        type: 'team',
+        relations: {
+          member: {
+            this: {},
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+:::info
+
+Notice that in this updated authorization model, the direct relationship keyword has been removed from the document's `viewer` relation definition.
+
+:::
+
+Now choose the type of relation to see how it affects your system:
+
+<Tabs groupId='relationship-type'>
+<TabItem value='direct' label='Direct User'>
+
+Assume you have a tuple that states that Fred is a `viewer` of `document:planning`
+
+<RelationshipTuplesViewer
+  relationshipTuples={[
+    {
+      user: 'fred',
+      relation: 'viewer',
+      object: 'document:planning',
+    },
+  ]}
+/>
+
+Now if we do a check request to see if Fred can view the planning document, we will get a response of `{"allowed": false}`.
+
+<CheckRequestViewer user={'fred'} relation={'viewer'} object={'document:planning'} allowed={false} />
+
+This is because:
+
+- Even though there is a relationship tuple specifying that Fred has a `viewer` relationship with `document:planning`.
+- Direct relationships are **NOT** allowed in the `viewer` relation definition in the `document` type definition.
+
+</TabItem>
+
+<TabItem value='everyone' label='Everyone'>
+
+You will see the same behaviour with a relationship tuple specifying everyone as the user.
+
+Assume you have a tuple that states that everyone is a `viewer` of `document:planning`.
+
+<RelationshipTuplesViewer
+  relationshipTuples={[
+    {
+      user: '*',
+      relation: 'viewer',
+      object: 'document:planning',
+    },
+  ]}
+/>
+
+Now if we do a check request to see if Gabriel can view the planning document, we will get a response of `{"allowed": false}`.
+
+<CheckRequestViewer user={'gabriel'} relation={'viewer'} object={'document:planning'} allowed={false} />
+
+This is because:
+
+- Even though there is a relationship tuple specifying that everyone has a `viewer` relationship with `document:planning`.
+- Direct relationships are **NOT** allowed in the `viewer` relation definition in the `document` type definition.
+
+</TabItem>
+
+<TabItem value='userset' label='Userset'>
+
+The same logic applies to usersets.
+
+Assume you have two relationship tuples:
+
+- Henry is a member of the product team.
+- Members of the product team are viewers of the planning document.
+
+<RelationshipTuplesViewer
+  relationshipTuples={[
+    {
+      user: 'henry',
+      relation: 'member',
+      object: 'team:product',
+    },
+    {
+      user: 'team:product#member',
+      relation: 'viewer',
+      object: 'document:planning',
+    },
+  ]}
+/>
+
+Now if we do a check request to see if Henry can view the planning document, we will get a response of `{"allowed": false}`.
+
+<CheckRequestViewer user={'henry'} relation={'viewer'} object={'document:planning'} allowed={false} />
+
+This is because although:
+
+- Henry is a member of the product team.
+- There is a relationship tuple specifying that all members of the product team have a `viewer` relationship with `document:planning`.
+
+Direct relationships are **NOT** allowed in the `viewer` relation definition in the `document` type definition.
+
+</TabItem>
+
+<TabItem value='indirect' label='Indirect Relationship'>
+
+Indirect relationships are not affected by disabling a direct relationship on a certain relation.
+
+Assume there is a relationship tuple that specifies that Ingred is an `editor` of `document:planning`.
+
+<RelationshipTuplesViewer
+  relationshipTuples={[
+    {
+      user: 'ingred',
+      relation: 'editor',
+      object: 'document:planning',
+    },
+  ]}
+/>
+
+A subsequent check request to see if Ingred can view the planning document will still return a response of `{"allowed": true}`.
+
+<CheckRequestViewer user={'ingred'} relation={'viewer'} object={'document:planning'} allowed={true} />
+
+</TabItem>
+</Tabs>
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more one how direct relationships can be used. Also, take a look at the access relation in the feature type in Modeling Entitlements for another use-case."
+  relatedLinks={[
+    {
+      title: 'Modeling Roles and Permissions',
+      description: 'Learn how to remove the direct relationship to indicate nonassignable permissions.',
+      link: '../roles-and-permissions',
+      id: '../roles-and-permissions.mdx',
+    },
+    {
+      title: 'Modeling for IoT',
+      description: 'See how Roles and Permissions can be used in an IoT use-case.',
+      link: '../advanced/iot',
+      id: '../advanced/iot.mdx',
+    },
+    {
+      title: 'Modeling Entitlements',
+      description:
+        'Take a look at the access relation in the feature type for an example of removing the direct relationship',
+      link: '../advanced/entitlements',
+      id: '../advanced/entitlements.mdx',
+    },
+  ]}
+/>

@@ -8,6 +8,21 @@
 	  },
 	  {
 		"pattern": "^http://localhost:3000"
+	  },
+	  {
+		"pattern": "^https://api.openfga.example"
+	  },
+	  {
+		"pattern": "https://www.nuget.org/packages/OpenFga.Sdk"
+	  },
+	  {
+		"pattern": "https://www.npmjs.com/package/@openfga/sdk"
+	  },
+	  {
+		"pattern": "https://github.com/openfga/go-sdk"
+	  },
+	  {
+		"pattern": "https://github.com/openfga/dotnet-sdk"
 	  }
 	],
 	"httpHeaders": [

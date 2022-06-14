@@ -1,0 +1,60 @@
+---
+id: overview
+title: 'Interacting with the API'
+slug: /interacting
+sidebar_position: 0
+---
+
+import { DocumentationNotice, IntroCard, CardGrid, ProductName, ProductNameFormat } from '@components/Docs';
+
+<DocumentationNotice />
+
+This section helps you integrate <ProductName format={ProductNameFormat.ShortForm}/> with your system. To do this, you will learn how to programmatically write authorization related data to <ProductName format={ProductNameFormat.ShortForm}/>.
+
+<IntroCard
+  title="When to use"
+  description="This section is useful if you have defined an authorization model and want to understand how to write authorization data to {ProductName} to represent the state of your system."
+/>
+
+# Content
+
+<CardGrid
+  bottom={[
+    {
+      title: 'Manage User Access',
+      description: "Write relationship tuples to manage a user's access to an object.",
+      to: 'interacting/managing-user-access',
+    },
+    {
+      title: 'Manage Group Access',
+      description: 'Write relationship tuples to manage access to an object for all members of a group.',
+      to: 'interacting/managing-group-access',
+    },
+    {
+      title: 'Manage Group Membership',
+      description: 'Write relationship tuples to manage the users that are members of a group.',
+      to: 'interacting/managing-group-membership',
+    },
+    {
+      title: 'Manage Relationships Between Object',
+      description:
+        'Write relationship tuples to manage how two objects are related. E.g. parent folder and child document.',
+      to: 'interacting/managing-relationships-between-objects',
+    },
+    {
+      title: 'Transactional Writes',
+      description: 'Write multiple relationship tuples in a single request, so all writes either succeed or fail.',
+      to: 'interacting/transactional-writes',
+    },
+    {
+      title: 'Comparison Between Check, Read And Expand',
+      description: 'Comparing when to use check vs. read vs. expand.',
+      to: 'interacting/check-read-expand',
+    },
+    {
+      title: 'Search with Permissions',
+      description: 'Implementing search with OpenFGA.',
+      to: 'interacting/search-with-permissions',
+    },
+]}
+/>

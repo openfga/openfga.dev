@@ -1,0 +1,549 @@
+---
+title: Integrate Within a Framework
+sidebar_position: 5
+slug: /getting-started/framework
+---
+
+import {
+  SupportedLanguage,
+  languageLabelMap,
+  DocumentationNotice,
+  ProductConcept,
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+  SdkSetupPrerequisite,
+} from '@components/Docs';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Integrate Within a Framework
+
+<DocumentationNotice />
+
+This section will illustrate how to integrate <ProductName format={ProductNameFormat.LongForm}/> within a framework environment, such as [Fastify](https://www.fastify.io/) or [Fiber](https://docs.gofiber.io/).
+
+## Before you start
+
+<Tabs groupId="languages">
+<TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the OpenFGA SDK](./install-sdk.mdx).
+3. You have [configured the _authorization model_](../modeling) and [updated the _relationship tuples_](./update-tuples.mdx).
+4. You know how to [perform a Check](./perform-check.mdx).
+5. You have loaded `FGA_API_HOST` and `FGA_STORE_ID` as environment variables.
+
+</TabItem>
+<TabItem value={SupportedLanguage.GO_SDK} label={languageLabelMap.get(SupportedLanguage.GO_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the OpenFGA SDK](./install-sdk.mdx).
+3. You have [configured the _authorization model_](../modeling) and [updated the _relationship tuples_](./update-tuples.mdx).
+4. You know how to [perform a Check](./perform-check.mdx).
+5. You have loaded `FGA_API_HOST` and `FGA_STORE_ID` as environment variables.
+
+</TabItem>
+</Tabs>
+
+## Step by Step
+
+Assume that you want to have a web service for `document`s using one of the frameworks mentioned above. The service will authenticate users via [JWT tokens](https://auth0.com/docs/security/tokens/json-web-tokens), which contain the user ID.
+
+:::caution Note
+The reader should set up their own `login` method based on their OpenID connect provider's documentation.
+:::
+
+Assume that you want to provide a route `GET /read/{document}` to return documents depending on whether the authenticated user has access to it.
+
+### 01. Install and setup framework
+
+The first step is to install the framework.
+
+<Tabs groupId="languages">
+<TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
+
+For the context of this example, we will use the [Fastify framework](https://www.fastify.io/). For that we need to install the following packages:
+
+- the [`fastify`](https://github.com/fastify/fastify) package that provides the framework itself
+- the [`fastify-plugin`](https://github.com/fastify/fastify-plugin) package that allows integrating plugins with Fastify
+- the [`fastify-jwt`](https://github.com/fastify/fastify-jwt) package for processing JWT tokens
+
+Using [npm](https://npmjs.org):
+
+```shell
+npm install fastify fastify-plugin fastify-jwt
+```
+
+Using [yarn](https://yarnpkg.com):
+
+```shell
+yarn add fastify fastify-plugin fastify-jwt
+```
+
+Next, we setup the web service with the `GET /read/{document}` route in file `app.js`.
+
+```javascript
+// Require the framework and instantiate it
+const fastify = require('fastify')({ logger: true });
+
+// Declare the route
+fastify.get('/read/:document', async (request, reply) => {
+  return { read: request.params.document };
+});
+
+// Run the server
+const start = async () => {
+  try {
+    await fastify.listen(3000);
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+};
+start();
+```
+
+</TabItem>
+<TabItem value={SupportedLanguage.GO_SDK} label={languageLabelMap.get(SupportedLanguage.GO_SDK)}>
+
+For the context of this example, we will use the [Fiber framework](https://docs.gofiber.io/). For that we need to install the following Go packages:
+
+- the [`gofiber/fiber`](https://docs.gofiber.io/) package that provides the Fiber framework itself
+- the [`gofiber/jwt`](https://github.com/gofiber/jwt) middleware authentication layer for JWT
+- the [`golang-jwt`](https://github.com/golang-jwt/jwt) package that provides Go support for JWT
+
+```shell
+go get -u github.com/gofiber/fiber/v2 github.com/gofiber/jwt/v3 github.com/golang-jwt/jwt/v4
+```
+
+Next, we setup the web service with the `GET /read/{document}` route.
+
+```go
+package main
+
+import "github.com/gofiber/fiber/v2"
+
+func main() {
+  app := fiber.New()
+
+  app.Get("/read/:document", read)
+
+  app.Listen(":3000")
+}
+
+func read(c *fiber.Ctx) error {
+  return c.SendString(c.Params("document"))
+}
+```
+
+</TabItem>
+</Tabs>
+
+### 02. Authenticate and get user ID
+
+Before we can call <ProductName format={ProductNameFormat.LongForm}/> to protect the `/read/{document}` route, we need to validate the user's JWT.
+
+<Tabs groupId="languages">
+<TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
+
+The `fastify-jwt` package allows validation of JWT tokens, as well as providing access to the user's identity.
+
+In `jwt-authenticate.js`:
+
+```javascript
+const fp = require('fastify-plugin');
+
+module.exports = fp(async function (fastify, opts) {
+  fastify.register(require('fastify-jwt'), {
+    secret: {
+      private: readFileSync(`${path.join(__dirname, 'certs')}/private.key`, 'utf8'),
+      public: readFileSync(`${path.join(__dirname, 'certs')}/public.key`, 'utf8'),
+    },
+    sign: { algorithm: 'RS256' },
+  });
+
+  fastify.decorate('authenticate', async function (request, reply) {
+    try {
+      await request.jwtVerify();
+    } catch (err) {
+      reply.send(err);
+    }
+  });
+});
+```
+
+Then, use the `preValidation` hook of a route to protect it and access the user information inside the JWT:
+
+In `route-read.js`:
+
+```javascript
+module.exports = async function (fastify, opts) {
+  fastify.get(
+    '/read/:document',
+    {
+      preValidation: [fastify.authenticate],
+    },
+    async function (request, reply) {
+      // the user's id is in request.user
+      return { read: request.params.document };
+    },
+  );
+};
+```
+
+Finally, update `app.js` to register the newly added hooks.
+
+```javascript
+const fastify = require('fastify')({ logger: true });
+const jwt-authenticate = require('./jwt-authenticate');
+const routeread = require('./route-read');
+
+fastify.register(jwt-authenticate);
+fastify.register(routeread);
+
+// Run the server!
+const start = async () => {
+  try {
+    await fastify.listen(3000);
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+}
+start();
+
+```
+
+</TabItem>
+<TabItem value={SupportedLanguage.GO_SDK} label={languageLabelMap.get(SupportedLanguage.GO_SDK)}>
+
+We will now setup middleware to authenticate the incoming JWTs.
+
+```go
+package main
+
+import (
+  "crypto/rand"
+  "crypto/rsa"
+  "log"
+
+  "github.com/gofiber/fiber/v2"
+
+  jwtware "github.com/gofiber/jwt/v3"
+  "github.com/golang-jwt/jwt/v4"
+)
+
+var (
+  // Do not do this in production.
+  // In production, you would have the private key and public key pair generated
+  // in advance. NEVER add a private key to any GitHub repo.
+  privateKey *rsa.PrivateKey
+)
+
+func main() {
+  app := fiber.New()
+
+  // Just as a demo, generate a new private/public key pair on each run.
+  rng := rand.Reader
+  var err error
+  privateKey, err = rsa.GenerateKey(rng, 2048)
+  if err != nil {
+    log.Fatalf("rsa.GenerateKey: %v", err)
+  }
+
+  // JWT Middleware
+  app.Use(jwtware.New(jwtware.Config{
+    SigningMethod: "RS256",
+    SigningKey:    privateKey.Public(),
+  }))
+
+  app.Get("/read/:document", read)
+
+  app.Listen(":3000")
+}
+
+func read(c *fiber.Ctx) error {
+  user := c.Locals("user").(*jwt.Token)
+  claims := user.Claims.(jwt.MapClaims)
+  name := claims["name"].(string)
+  return c.SendString(name + " read " + c.Params("document"))
+}
+```
+
+</TabItem>
+</Tabs>
+
+### 03. Integrate the <ProductName format={ProductNameFormat.ShortForm}/> Check API into the service
+
+<Tabs groupId="languages">
+<TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
+
+First, we will create a decorator `preauthorize` to parse the incoming HTTP method as well as name of the document, and set the appropriate `relation` and `object` that we will call Check on.
+
+In `preauthorize.js`:
+
+```javascript
+const fp = require('fastify-plugin');
+
+module.exports = fp(async function (fastify, opts) {
+  fastify.decorate('preauthorize', async function (request, reply) {
+    try {
+      switch (request.method) {
+        case 'GET':
+          request.relation = 'reader';
+          break;
+        case 'POST':
+          request.relation = 'writer';
+          break;
+        case 'DELETE':
+        default:
+          request.relation = 'owner';
+          break;
+      }
+      request.object = `document:${request.params.document}`;
+    } catch (err) {
+      reply.send(err);
+    }
+  });
+});
+```
+
+Next, we will create a decorator called `authorize`. This decorator will invoke the [Check API](./perform-check.mdx) to see if the user has a relationship with the specified document.
+
+In `authorize.js`:
+
+```javascript
+const fp = require('fastify-plugin');
+const { OpenFgaApi } = require('@openfga/sdk'); // OR import { OpenFgaApi } from '@openfga/sdk';
+
+module.exports = fp(async function (fastify, opts) {
+  fastify.decorate('authorize', async function (request, reply) {
+    try {
+      // configure the openfga api client
+      const fgaClient = new OpenFgaApi({
+        storeId: process.env.FGA_STORE_ID,
+        apiHost: process.env.FGA_API_HOST,
+        apiToken: process.env.FGA_BEARER_TOKEN, // optional
+        apiTokenIssuer: process.env.FGA_API_ISSUER, // optional, required if client id is set
+        apiAudience: process.env.FGA_API_AUDIENCE, // optional, required if client id is set
+        clientId: process.env.FGA_CLIENT_ID, // optional, required if client secret is set
+        clientSecret: process.env.FGA_CLIENT_SECRET, // optional, required if client id is set
+      });
+      const { allowed } = await fgaClient.check({
+        tuple_key: {
+          user: request.user,
+          relation: request.relation,
+          object: request.object,
+        },
+      });
+      if (!allowed) {
+        reply.code(401).send(`Not authenticated`);
+      }
+    } catch (err) {
+      reply.send(err);
+    }
+  });
+});
+```
+
+We can now update the `GET /read/{document}` route to check for user permissions.
+
+In `route-read.js`:
+
+```javascript
+module.exports = async function (fastify, opts) {
+  fastify.get(
+    '/read/:document',
+    {
+      preValidation: [fastify.authenticate, fastify.preauthorize, fastify.authorize],
+    },
+    async function (request, reply) {
+      // the user's id is in request.user
+      return { read: request.params.document };
+    },
+  );
+};
+```
+
+Finally, we will register the new hooks in `app.js`:
+
+```javascript
+const fastify = require('fastify')({ logger: true });
+const jwt-authenticate = require('./jwt-authenticate');
+const preauthorize = require('./preauthorize');
+const authorize = require('./authorize');
+const routeread = require('./route-read');
+
+fastify.register(jwt-authenticate);
+fastify.register(preauthorize);
+fastify.register(authorize);
+fastify.register(routeread);
+
+const start = async () => {
+  try {
+    await fastify.listen(3000);
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+}
+start();
+```
+
+</TabItem>
+<TabItem value={SupportedLanguage.GO_SDK} label={languageLabelMap.get(SupportedLanguage.GO_SDK)}>
+
+We will create two middlewares:
+
+- `preauthorize` will parse the user's JWT and prepare variables needed to call Check API.
+- `checkAuthorization` will call the [`Check API`](./perform-check.mdx) to see if the user has a relationship with the specified document.
+
+```go
+package main
+
+import (
+  "context"
+  "crypto/rand"
+  "crypto/rsa"
+  "log"
+  "os"
+
+  "github.com/gofiber/fiber/v2"
+
+  jwtware "github.com/gofiber/jwt/v3"
+  "github.com/golang-jwt/jwt/v4"
+  fgaSdk "github.com/openfga/go-sdk"
+)
+
+var (
+  // Do not do this in production.
+  // In production, you would have the private key and public key pair generated
+  // in advance. NEVER add a private key to any GitHub repo.
+  privateKey *rsa.PrivateKey
+)
+
+func main() {
+  app := fiber.New()
+
+  // Just as a demo, generate a new private/public key pair on each run.
+  rng := rand.Reader
+  var err error
+  privateKey, err = rsa.GenerateKey(rng, 2048)
+  if err != nil {
+    log.Fatalf("rsa.GenerateKey: %v", err)
+  }
+
+  // JWT Middleware
+  app.Use(jwtware.New(jwtware.Config{
+    SigningMethod: "RS256",
+    SigningKey:    privateKey.Public(),
+  }))
+
+  app.Use("/read/:document", preauthorize)
+
+  app.Use(checkAuthorization)
+
+  app.Get("/read/:document", read)
+
+  app.Listen(":3000")
+}
+
+func read(c *fiber.Ctx) error {
+  user := c.Locals("user").(*jwt.Token)
+  claims := user.Claims.(jwt.MapClaims)
+  name := claims["name"].(string)
+  return c.SendString(name + " read " + c.Params("document"))
+}
+
+func preauthorize(c *fiber.Ctx) error {
+  // get the user name from JWT
+  user := c.Locals("user").(*jwt.Token)
+  claims := user.Claims.(jwt.MapClaims)
+  name := claims["name"].(string)
+  c.Locals("username", name)
+
+  // parse the HTTP method
+  switch (c.Method()) {
+    case "GET":
+      c.Locals("relation", "reader")
+    case "POST":
+      c.Locals("relation", "writer")
+    case "DELETE":
+      c.Locals("relation", "owner")
+    default:
+      c.Locals("relation", "owner")
+  }
+
+  // get the object name and prepend with type name "document:"
+  c.Locals("object", "document:" + c.Params("document"))
+  return c.Next()
+}
+
+// Middleware to check whether user is authorized to access document
+func checkAuthorization(c *fiber.Ctx) error {
+  configuration, err := fgaSdk.NewConfiguration(fgaSdk.UserConfiguration{
+    ApiScheme:      os.Getenv("FGA_API_SCHEME"), // Optional, either "http" or "https"
+    ApiHost:        os.Getenv("FGA_API_HOST"),
+    StoreId:        os.Getenv("FGA_STORE_ID"),
+    BearerToken:    os.Getenv("FGA_BEARER_TOKEN"), // optional
+    ApiTokenIssuer: os.Getenv("FGA_API_TOKEN_ISSUER"), // optional, required if client id is set
+    ApiAudience:    os.Getenv("FGA_API_AUDIENCE"), // optional, required if client id is set
+    ClientId:       os.Getenv("FGA_CLIENT_ID"), // optional
+    ClientSecret:   os.Getenv("FGA_CLIENT_SECRET"), // optional, required if client id is set
+  })
+
+  if err != nil {
+    return fiber.NewError(fiber.StatusServiceUnavailable, "Unable to build OpenFGA client")
+  }
+
+  fgaClient := fgaSdk.NewAPIClient(configuration)
+
+  body := fgaSdk.CheckRequest{
+    TupleKey: &fgaSdk.TupleKey{
+      User: fgaSdk.PtrString(c.Locals("username").(string)),
+      Relation: fgaSdk.PtrString(c.Locals("relation").(string)),
+      Object: fgaSdk.PtrString(c.Locals("object").(string)),
+    },
+  }
+  data, _, err := fgaClient.OpenFga.Check(context.Background()).Body(body).Execute()
+
+  if err != nil {
+    return fiber.NewError(fiber.StatusServiceUnavailable, "Unable to check for authorization")
+  }
+
+  if !(*data.Allowed) {
+    return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized to access document")
+  }
+
+  // Go to the next middleware
+  return c.Next()
+}
+```
+
+</TabItem>
+
+</Tabs>
+
+## Related Sections
+
+<RelatedSection
+  description="Take a look at the following sections for examples that you can try when integrating with SDK."
+  relatedLinks={[
+    {
+      title: 'Entitlements',
+      description: 'Modeling Entitlements for a System in {ProductName}.',
+      link: '../modeling/advanced/entitlements',
+    },
+    {
+      title: 'IoT',
+      description: 'Modeling Fine Grained Authorization for an IoT Security Camera System with {ProductName}.',
+      link: '../modeling/advanced/iot',
+    },
+    {
+      title: 'Slack',
+      description: 'Modeling Authorization for Slack with {ProductName}.',
+      link: '../modeling/advanced/slack',
+    },
+  ]}
+/>

@@ -142,7 +142,7 @@ Start with the most important feature. It doesn't have to be the most complex on
 Once you've picked a feature, describe its authorization related scope using simple language. Avoid using the word "roles", as this ties you to an RBAC way of thinking.
 
 :::info
-Roles don't "disappear" in ReBAC systems like <ProductName format={ProductNameFormat.ShortForm}/>. Your users might [have roles on a given object, rather than the entire system](./basics/roles-and-permissions.mdx). But starting from the term "role" might lead you down the wrong path. Instead it is better to discover roles while you are modeling.
+Roles don't "disappear" in ReBAC systems like <ProductName format={ProductNameFormat.ShortForm}/>. Your users might [have roles on a given object, rather than the entire system](./roles-and-permissions.mdx). But starting from the term "role" might lead you down the wrong path. Instead it is better to discover roles while you are modeling.
 :::
 
 Your feature description should include the <ProductConcept section="what-is-an-object" linkName="objects" />, <ProductConcept section="what-is-a-user" linkName="users" /> and <ProductConcept section="what-is-a-user" linkName="groups of users" /> participating in the system. Sentences should look like this:
@@ -377,7 +377,7 @@ You're now in the process of building a version you can use. The model above is 
 :::info Important
 In a few cases other users can be part of determining whether an action can be performed on an action or not. Social media is an example of this "a user can comment on a picture if they are a friend of the user that published it".
 
-In those cases [**User** should also be an object type](./concepts/object-to-object-relationships.mdx). Following the last recommendation, we would discover the User type because it is a second noun in an expression: "friend of the user".
+In those cases [**User** should also be an object type](./building-blocks/object-to-object-relationships.mdx). Following the last recommendation, we would discover the User type because it is a second noun in an expression: "friend of the user".
 :::
 
 ### 03. List relations for those types
@@ -589,10 +589,10 @@ Why? This relation definition states:
   `{ user: {user-id}, relation: "member", object: "organization:{id}" }`
 
 :::info Important
-Relation definitions of the form “define {relation} as self" are fairly common. They are used to express that relationships "to the object with that relation" (e.g. "member of organization") can be assigned by your system and that only the users that have that relation are those with a [direct relationship](./concepts/direct-relationships.mdx).
+Relation definitions of the form “define {relation} as self" are fairly common. They are used to express that relationships "to the object with that relation" (e.g. "member of organization") can be assigned by your system and that only the users that have that relation are those with a [direct relationship](./building-blocks/direct-relationships.mdx).
 :::
 
-You can read more about group membership and types in [Modeling User Groups](./basics/user-groups.mdx).
+You can read more about group membership and types in [Modeling User Groups](./user-groups.mdx).
 
 :::note Side note
 This also automatically supports nested organizational membership if you want such a feature in your system. You could use relationship tuples like the following one to express that "members of organization A are members of organization B":
@@ -601,7 +601,7 @@ This also automatically supports nested organizational membership if you want su
 { user: "organization:A#member", relation: "member", object: "organization:B"}
 ```
 
-If you want to learn more, you can read further about this in [Modeling User Groups](./basics/user-groups.mdx) and [Managing Relationships Between Objects](../writing-data/managing-relationships-between-objects.mdx).
+If you want to learn more, you can read further about this in [Modeling User Groups](./user-groups.mdx) and [Managing Relationships Between Objects](../interacting/managing-relationships-between-objects.mdx).
 :::
 
 ##### Complete Type Definition
@@ -645,7 +645,7 @@ The owner relation is used to tell <ProductName format={ProductNameFormat.ShortF
 In the current version, there is no way to state that there is only one owner in the authorization model. The application must limit this <ProductConcept section="what-is-a-user" linkName="set of users" /> to just one owner if that is a requirement.
 :::
 
-When a document is created, a relationship tuple will be stored in <ProductName format={ProductNameFormat.ShortForm}/> representing this relationship between owner and document. This is an example of a [user to object relationship](./basics/modeling-basics.mdx).
+When a document is created, a relationship tuple will be stored in <ProductName format={ProductNameFormat.ShortForm}/> representing this relationship between owner and document. This is an example of a [user to object relationship](./direct-access.mdx).
 
 The relation definition then should be:
 
@@ -666,7 +666,7 @@ Why? This <ProductConcept section="what-is-a-relation" linkName="relation defini
 
 The editor relation is used to tell <ProductName format={ProductNameFormat.ShortForm}/> which users are editors of the document.
 
-When a user shares a document with another user or set of users as editor, a relationship tuple will be stored in <ProductName format={ProductNameFormat.ShortForm}/> representing this relationship between editor and document. This is an example of a [users to object relationship](./basics/modeling-basics.mdx).
+When a user shares a document with another user or set of users as editor, a relationship tuple will be stored in <ProductName format={ProductNameFormat.ShortForm}/> representing this relationship between editor and document. This is an example of a [users to object relationship](./direct-access.mdx).
 
 The relation definition then should be:
 
@@ -683,7 +683,7 @@ Why? This relation definition states that:
 - the editor(s) of a document are assignable by creating a tuple with shape
   `{ user: "{user_id}", relation: "editor", object: "document:{id}" }` for individual users
 
-This also supports making all members in an organization editors of the document, through a [group to object relationship](./basics/user-groups.mdx). A relationship tuple like the following one states that the members of organization A are editors of document 0001.
+This also supports making all members in an organization editors of the document, through a [group to object relationship](./user-groups.mdx). A relationship tuple like the following one states that the members of organization A are editors of document 0001.
 
 <RelationshipTuplesViewer
   relationshipTuples={[
@@ -695,7 +695,7 @@ This also supports making all members in an organization editors of the document
   ]}
 />
 
-You can learn more about this in [Modeling User Groups](./basics/user-groups.mdx).
+You can learn more about this in [Modeling User Groups](./user-groups.mdx).
 
 ##### Relation: viewer
 
@@ -716,7 +716,7 @@ The parent relation is used to tell <ProductName format={ProductNameFormat.Short
 Relation names in <ProductName format={ProductNameFormat.ShortForm}/> are arbitrary strings. There are no reserved relation names. You can use "parent", "container" or "ancestor" to refer to a "parent folder".
 :::
 
-This relation is different from the others we have seen so far, as it is a relation between two objects (a **folder** and or **drive** that is the parent of the **document**). This is known as an [object to object relationship](./concepts/object-to-object-relationships.mdx), of which [parent-child is a particular case](./basics/parent-child.mdx).
+This relation is different from the others we have seen so far, as it is a relation between two objects (a **folder** and or **drive** that is the parent of the **document**). This is known as an [object to object relationship](./building-blocks/object-to-object-relationships.mdx), of which [parent-child is a particular case](./parent-child.mdx).
 
 When a document is created a relationship tuple will be stored in <ProductName format={ProductNameFormat.ShortForm}/> to represent this relationship between parent and document. The relation definition then should be:
 
@@ -739,7 +739,7 @@ In the current <ProductName format={ProductNameFormat.ShortForm}/> version, ther
 :::
 
 :::note Side note
-You might have noticed that the "user" in the tuple is an object. This is a special syntax <ProductName format={ProductNameFormat.ShortForm}/> accepts in the "user" parameter to write [object to object relationships](./concepts/object-to-object-relationships.mdx). You can read more about writing data to manage object to object relationships in [Managing Relationships Between Objects](../writing-data/managing-relationships-between-objects.mdx).
+You might have noticed that the "user" in the tuple is an object. This is a special syntax <ProductName format={ProductNameFormat.ShortForm}/> accepts in the "user" parameter to write [object to object relationships](./building-blocks/object-to-object-relationships.mdx). You can read more about writing data to manage object to object relationships in [Managing Relationships Between Objects](../interacting/managing-relationships-between-objects.mdx).
 :::
 
 ##### Relation: can_share
@@ -748,7 +748,7 @@ We need to express the following in the <ProductConcept section="what-is-a-relat
 
 _A user can share a document with another user or an organization as either editor or viewer if they are an owner or editor of a document or if they are an owner of the folder that is the parent of the document._
 
-We can achieve that with the following definition using <UpdateProductNameInLinks link="./configuration-language" name="{ProductName} Configuration Language" />:
+We can achieve that with the following definition using <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" />:
 
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
@@ -789,12 +789,12 @@ We can achieve that with the following definition using <UpdateProductNameInLink
 There are a few key things here:
 
 - **We don't use self as part of the definition.** can_share is a common example of representing a permission that is defined in terms of other relations but is not directly assignable by the system.
-- The relation definition contains a [union operator](./configuration-language.mdx#the-union-operator) separating a list of relations that the user must have with the object in order to "be able to share the document". It is any of:
+- The relation definition contains a [union operator](../configuration-language.mdx#the-union-operator) separating a list of relations that the user must have with the object in order to "be able to share the document". It is any of:
   - Being an owner of the document
   - Being an editor of the document
   - Being an owner of the parent of the document. Whether the parent is a drive or a folder is not important, as they both have an owner relation.
 
-You can read more about the aforementioned items in [Modeling Roles and Permissions](./basics/roles-and-permissions.mdx).
+You can read more about the aforementioned items in [Modeling Roles and Permissions](./roles-and-permissions.mdx).
 
 ##### Relation: can_view
 
@@ -802,7 +802,7 @@ We need to express the following in the <ProductConcept section="what-is-a-relat
 
 _A user can view a document if they are an owner, viewer or editor of a document or if they are a viewer, owner of the folder/drive that is the parent of the document._
 
-Similar to the [can_share relation](#relation-can_share), we can achieve that with the following definition using <UpdateProductNameInLinks link="./configuration-language" name="{ProductName} Configuration Language" />:
+Similar to the [can_share relation](#relation-can_share), we can achieve that with the following definition using <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" />:
 
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
@@ -858,7 +858,7 @@ We need to express the following in the <ProductConcept section="what-is-a-relat
 
 _A user can write a document if they are an owner or editor of a document or if they are an owner or editor of the folder/drive that is the parent of the document._
 
-Similar to the [can_share relation](#relation-can_share), we can achieve that with the following definition using <UpdateProductNameInLinks link="./configuration-language" name="{ProductName} Configuration Language" />:
+Similar to the [can_share relation](#relation-can_share), we can achieve that with the following definition using <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" />:
 
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
@@ -902,7 +902,7 @@ We need to express the following in the <ProductConcept section="what-is-a-relat
 
 _A user can change the owner of a document if they are an owner of the document._
 
-Similar to the [can_share relation](#relation-can_share), we can achieve that with the following definition using <UpdateProductNameInLinks link="./configuration-language" name="{ProductName} Configuration Language" />:
+Similar to the [can_share relation](#relation-can_share), we can achieve that with the following definition using <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" />:
 
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
@@ -1356,20 +1356,20 @@ If you have any questions about this model or others, or would like some help cr
     {
       title: '{ProductName} Concepts',
       description: 'Learn about the {ProductName} Concepts.',
-      link: '{ProductConcept}',
-      id: '../intro/fga-concepts',
+      link: '../concepts',
+      id: '../concepts',
     },
     {
       title: 'Configuration Language',
       description: 'Learn about {ProductName} Configuration Language.',
-      link: '/modeling/configuration-language',
-      id: './configuration-language',
+      link: '../configuration-language',
+      id: '../configuration-language',
     },
     {
       title: 'Modeling Basics',
       description: 'Learn about modeling user access to an object.',
-      link: '/modeling/basics/modeling-basics',
-      id: './modeling-basics',
+      link: './direct-access',
+      id: './direct-access',
     },
   ]}
 />
