@@ -24,7 +24,7 @@ import TabItem from '@theme/TabItem';
 
 <DocumentationNotice />
 
-This article explains how to configure <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" /> to the OpenFGA server for a <ProductConcept section="what-is-a-store" linkName="store" />.
+This article explains how to configure an <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" /> for a <ProductConcept section="what-is-a-store" linkName="store" /> in an OpenFGA server.
 
 ## Before you start
 
@@ -101,9 +101,9 @@ To obtain the [access token](https://auth0.com/docs/authorization/flows/call-you
 </TabItem>
 </Tabs>
 
-### 02. Calling Configuration Model API to Configure Authorization Model
+### 02. Calling Write Authorization Model API 
 
-To configure authorization model, we can invoke the [authorization models API](/api/service#/Authorization%20Models/WriteAuthorizationModel).
+To configure authorization model, we can invoke the [write authorization models API](/api/service#/Authorization%20Models/WriteAuthorizationModel).
 
 <WriteAuthzModelViewer
   authorizationModel={{
@@ -142,10 +142,10 @@ To convert between the API Syntax and the friendly DSL, you can use the
 [Auth0 FGA's Playground](https://play.fga.dev).
 :::
 
-## Related Section
+## Related Sections
 
 <RelatedSection
-  description="Take a look at the following section for more on how to configure authorization model in your system"
+  description="Take a look at the following sections for more information on how to configure authorization model in your store."
   relatedLinks={[
     {
       title: 'Getting Started with Modeling',
