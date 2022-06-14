@@ -1,6 +1,10 @@
+.sectionContainer {
+  padding-bottom: 10rem;
+}
+
 .container {
   background-color: var(--ofga-neutral-aluminium);
-  margin-bottom: 2rem;
+
   border-radius: 8px;
   height: auto;
   overflow: hidden;
@@ -8,6 +12,20 @@
   /* disable grid template for now until we have updates */
   /* grid-template-columns: 27.5rem 1fr; */
   color: var(--ofga-neutral-darkest);
+  margin: 0 -1.75rem;
+  padding: 0 3rem;
+}
+
+@media screen and (min-width: 996px) {
+  .container {
+    padding: 0 2.75rem;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .container {
+    padding: 0;
+  }
 }
 
 .container[data-theme='dark'] {
@@ -17,12 +35,13 @@
 
 .container > div {
   display: grid;
-  /*grid-template-rows: repeat(9, 1fr);*/
-  grid-template-rows: repeat(1fr);
+  /* disable until we iron out the updates */
+  /* grid-template-rows: repeat(9, 1fr); */
+  grid-template-rows: 1fr;
   align-items: stretch;
 }
 
-/*
+/* Keep for now
 since we only have 1 column, no need to have right border
 .container div:first-child {
   border-right: 1px solid var(--ofga-neutral-dark);
@@ -116,19 +135,26 @@ since we only have 1 column, no need to have right border
 
 @media (min-width: 1200px) {
   .container {
-    margin-bottom: 10rem;
     height: auto;
   }
 
   .links {
-    margin-bottom: 3rem;
+    margin-bottom: 0;
+  }
+
+  .links li {
+    margin-bottom: 1rem;
+  }
+
+  .links li:last-of-type {
+    margin-bottom: unset;
   }
 
   .mainArea {
-    padding-left: 3.5rem;
+    padding: 3.75rem;
   }
 
   .mainArea h2 {
-    margin: 3rem 4rem 3rem 0;
+    margin: 0 4rem 3rem 0;
   }
 }
