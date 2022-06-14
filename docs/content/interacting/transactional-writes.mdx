@@ -1,0 +1,186 @@
+---
+sidebar_position: 2
+slug: /interacting/transactional-writes
+---
+
+import {
+  AuthzModelSnippetViewer,
+  CardBox,
+  DocumentationNotice,
+  ProductConcept,
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+  RelationshipTuplesViewer,
+  WriteRequestViewer,
+} from '@components/Docs';
+
+# Transactional Writes
+
+<DocumentationNotice />
+
+In this guide you will learn how to update multiple <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" /> in a single transaction.
+
+<CardBox title="When to use" appearance="filled" description=<div>
+
+Updating multiple relationship tuples is useful to keep system state consistent.
+
+</div> />
+
+## Before you start
+
+In order to understand this guide correctly you must be familiar with some <ProductConcept /> and know how to develop the things that we will list below.
+
+<details>
+<summary>
+
+Assume that you have the following <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />.<br />
+You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `tweet` that can have a `reader`.
+You have another type called `user` that can have a `follower` and `followed_by` relationship.
+
+</summary>
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'tweet',
+        relations: {
+          reader: {
+            this: {},
+          },
+        },
+      },
+      {
+        type: 'user',
+        relations: {
+          follower: {
+            this: {},
+          },
+          followed_by: {
+            this: {},
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+<hr />
+
+In addition, you will need to know the following:
+
+### Modeling Basics
+
+You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](../modeling/direct-access.mdx)
+
+### Modeling Public Access
+
+You need to know how to grant public access to an object. [Learn more →](../modeling/public-access.mdx)
+
+### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+
+- A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics
+- A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
+- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between objects of this type and other users in the system
+- An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
+- A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>
+
+</details>
+
+## Step by Step
+
+### 01. Adding and removing relationship tuples in the same transaction
+
+When you need to add or delete tuples in your store, you can do so by calling the Write API. For example, if you want to make `tweet:1` public by making everyone a `viewer`, you write one tuple:
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: '*',
+      relation: 'viewer',
+      object: 'tweet:1',
+    },
+  ]}
+/>
+
+And if you want to convert this `tweet` to private, you would need to delete that tuple:
+
+<WriteRequestViewer
+  deleteRelationshipTuples={[
+    {
+      user: '*',
+      relation: 'viewer',
+      object: 'tweet:1',
+    },
+  ]}
+/>
+
+By removing the tuple, we made the tweet visible to no-one, which may not be what we want.
+
+The Write API allows you to send up to 10 unique tuples in the request. (This limit applies to the sum of both writes and deletes in that request). This means we can submit one API call that converts the `tweet` from public to visible to only the `user`'s followers.
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: "Anne's followers can view tweet:1",
+      user: 'user:anne#follower',
+      relation: 'viewer',
+      object: 'tweet:1',
+    },
+  ]}
+  deleteRelationshipTuples={[
+    {
+      _description: 'tweet:1 is no longer viewable by everyone (*)',
+      user: '*',
+      relation: 'viewer',
+      object: 'tweet:1',
+    },
+  ]}
+/>
+
+### 02. Adding multiple related relationship tuples in the same transaction
+
+Having the ability to send multiple tuples per request is also useful when you want to maintain consistency. For example, if `anne` starts following `becky`, we want to be able to save the following two tuples, or neither of them:
+
+<RelationshipTuplesViewer
+  relationshipTuples={[
+    {
+      _description: 'Anne is a follower of Becky',
+      user: 'anne',
+      relation: 'follower',
+      object: 'user:becky',
+    },
+    {
+      _description: 'Becky is followed by Anne',
+      user: 'becky',
+      relation: 'followed_by',
+      object: 'user:anne',
+    },
+  ]}
+/>
+
+:::info
+We have a type called user in this case because users can be related to each other, so the users now are a type in the system
+:::
+
+The <ProductName format={ProductNameFormat.LongForm}/> service will attempt to perform all the changes sent in a single Write API call in one transaction. If it can't (for example, if any of the requested changes fails), it will reject all of the changes.
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more on how to update tuples."
+  relatedLinks={[
+    {
+      title: 'Update relationship tuples in SDK',
+      description: 'Learn about how to update relationship tuples in SDK.',
+      link: '../getting-started/update-tuples',
+      id: '../getting-started/update-tuples',
+    },
+    {
+      title: '{ProductName} API',
+      description: 'Details on the write API in the {ProductName} reference guide.',
+      link: '/api/service#/Relationship%20Tuples/Write',
+    },
+  ]}
+/>

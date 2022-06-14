@@ -69,10 +69,10 @@ const config = {
     description: `OpenFGA is an open source Fine-Grained Authorization solution based on Google's Zanzibar.`,
     productName: `OpenFGA`,
     // link to product description section (relative to baseURL)
-    introLink: `intro/authorization-and-openfga`,
+    introLink: `docs/authorization-and-openfga`,
     productDescriptionSection: `#what-is-openfga`,
     // link to the concept page (relative to baseURL)
-    conceptLink: `intro/openfga-concepts`,
+    conceptLink: `docs/concepts`,
     longProductName: `OpenFGA`,
 
     // define playgroundName and playgroundURL if you want to show your examples through playground
@@ -145,6 +145,10 @@ using OpenFga.Sdk.Configuration;`,
             to: '/api/service',
             from: ['/api'],
           },
+          {
+            to: '/docs/authorization-and-openfga',
+            from : '/docs',
+          }
         ],
       }),
     ],
@@ -168,7 +172,10 @@ using OpenFga.Sdk.Configuration;`,
         debug: isDev,
         docs: {
           sidebarPath: require.resolve('./docs/sidebars.js'),
-          routeBasePath: '/',
+          routeBasePath: '/docs',
+          exclude: [
+            '**/README.md',
+          ],
           showLastUpdateAuthor: false,
           editUrl: 'https://github.com/openfga/openfga.dev/edit/main/',
         },
