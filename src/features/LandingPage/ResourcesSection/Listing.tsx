@@ -27,7 +27,8 @@ const Listing = ({ colorProps }: { colorProps: ColorProps }) => {
             const Icon = icons[icon];
             return (
               <li key={`${text}:${href}`}>
-                {Icon && <Icon {...colorProps} />}
+                {/* set 'monochrome' prop to force color icons to black and white */}
+                {Icon && <Icon {...colorProps} monochrome={true} />}
                 <Link href={href}>{text}</Link>
               </li>
             );

@@ -38,13 +38,13 @@ const config = {
         icon: 'ZanzibarIcon',
       },
       {
-        text: 'Spotify - Authorization in Software →',
-        href: 'https://open.spotify.com/show/2Umz6EzzPZZiCKUcj4bfrC?si=941a0081fd6c4e28',
-        icon: 'PodcastIcon',
+        text: 'Auth0 FGA Playground →',
+        href: 'https://play.fga.dev/',
+        icon: 'ModelIcon',
       },
       {
-        text: 'Apple - Authorization in Software →',
-        href: 'https://podcasts.apple.com/us/podcast/authorization-in-software/id1588308205',
+        text: 'Podcast - Authorization in Software →',
+        href: 'https://authorizationinsoftware.auth0.com/',
         icon: 'PodcastIcon',
       },
       {
