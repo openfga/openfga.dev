@@ -1,0 +1,15 @@
+.centerColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hideOnMobile {
+  display: none;
+}
+
+@media screen and (min-width: 996px) {
+  .hideOnMobile {
+    display: block;
+  }
+}
