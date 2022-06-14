@@ -322,13 +322,9 @@ module.exports = fp(async function (fastify, opts) {
     try {
       // configure the openfga api client
       const fgaClient = new OpenFgaApi({
-        storeId: process.env.FGA_STORE_ID,
+        apiScheme: process.env.FGA_API_SCHEME, // Optional. Can be "http" or "https". Defaults to "https"
         apiHost: process.env.FGA_API_HOST,
-        apiToken: process.env.FGA_BEARER_TOKEN, // optional
-        apiTokenIssuer: process.env.FGA_API_ISSUER, // optional, required if client id is set
-        apiAudience: process.env.FGA_API_AUDIENCE, // optional, required if client id is set
-        clientId: process.env.FGA_CLIENT_ID, // optional, required if client secret is set
-        clientSecret: process.env.FGA_CLIENT_SECRET, // optional, required if client id is set
+        storeId: process.env.FGA_STORE_ID,
       });
       const { allowed } = await fgaClient.check({
         tuple_key: {
@@ -483,14 +479,9 @@ func preauthorize(c *fiber.Ctx) error {
 // Middleware to check whether user is authorized to access document
 func checkAuthorization(c *fiber.Ctx) error {
   configuration, err := fgaSdk.NewConfiguration(fgaSdk.UserConfiguration{
-    ApiScheme:      os.Getenv("FGA_API_SCHEME"), // Optional, either "http" or "https"
+    ApiScheme:      os.Getenv("FGA_API_SCHEME"), // Optional. Can be "http" or "https". Defaults to "https"
     ApiHost:        os.Getenv("FGA_API_HOST"),
     StoreId:        os.Getenv("FGA_STORE_ID"),
-    BearerToken:    os.Getenv("FGA_BEARER_TOKEN"), // optional
-    ApiTokenIssuer: os.Getenv("FGA_API_TOKEN_ISSUER"), // optional, required if client id is set
-    ApiAudience:    os.Getenv("FGA_API_AUDIENCE"), // optional, required if client id is set
-    ClientId:       os.Getenv("FGA_CLIENT_ID"), // optional
-    ClientSecret:   os.Getenv("FGA_CLIENT_SECRET"), // optional, required if client id is set
   })
 
   if err != nil {
