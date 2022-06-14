@@ -72,37 +72,6 @@ Assume that you want to configure your store with the following model.
 />
 
 
-### 01. Configure the <ProductName format={ProductNameFormat.ShortForm}/> API client
-
-Before calling the write API, you will need to configure the API client.
-
-<Tabs groupId="languages">
-<TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
-
-<SdkSetupHeader lang={SupportedLanguage.JS_SDK} />
-
-</TabItem>
-<TabItem value={SupportedLanguage.GO_SDK} label={languageLabelMap.get(SupportedLanguage.GO_SDK)}>
-
-<SdkSetupHeader lang={SupportedLanguage.GO_SDK} />
-
-</TabItem>
-<TabItem value={SupportedLanguage.DOTNET_SDK} label={languageLabelMap.get(SupportedLanguage.DOTNET_SDK)}>
-
-<SdkSetupHeader lang={SupportedLanguage.DOTNET_SDK} />
-
-</TabItem>
-<TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
-
-To obtain the [access token](https://auth0.com/docs/authorization/flows/call-your-api-using-the-client-credentials-flow):
-
-<SdkSetupHeader lang={SupportedLanguage.CURL} />
-
-</TabItem>
-</Tabs>
-
-### 02. Calling Write Authorization Model API 
-
 To configure authorization model, we can invoke the [write authorization models API](/api/service#/Authorization%20Models/WriteAuthorizationModel).
 
 <WriteAuthzModelViewer
