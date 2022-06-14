@@ -47,4 +47,4 @@ const NotFound = (): JSX.Element => (
   </>
 );
 
-export { NotFound };
+export default NotFound;
