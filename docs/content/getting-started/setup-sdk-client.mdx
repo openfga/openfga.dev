@@ -33,9 +33,9 @@ This is a simple setup but it is not recommended for production use.
 const { OpenFgaApi } = require('@openfga/sdk'); // OR import { OpenFgaApi } from '@openfga/sdk';
 
 const openFga = new OpenFgaApi({
-    apiScheme: FGA_API_SCHEME, // optional, defaults to "https"
-    apiHost: FGA_API_HOST, // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
-    storeId: FGA_STORE_ID
+    apiScheme: process.env.FGA_API_SCHEME, // Optional. Can be "http" or "https". Defaults to "https"
+    apiHost: process.env.FGA_API_HOST, // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
+    storeId: process.env.FGA_STORE_ID
 });
 ```
 
@@ -50,7 +50,7 @@ import (
 
 func Main() {
     configuration, err := openfga.NewConfiguration(openfga.Configuration{
-        ApiScheme:      os.Getenv("FGA_API_SCHEME"), // optional, defaults to "https"
+        ApiScheme:      os.Getenv("FGA_API_SCHEME"), // Optional. Can be "http" or "https". Defaults to "https"
         ApiHost:        os.Getenv("FGA_API_HOST"), // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
         StoreId:        os.Getenv("FGA_STORE_ID"),
     })
@@ -76,7 +76,7 @@ namespace ExampleApp;
 class MyProgram {
     static async Task Main() {
         var configuration = new Configuration(environment) {
-            ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // optional, defaults to "https"
+            ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // Optional. Can be "http" or "https". Defaults to "https"
             ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST"), // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
             StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID")
         };
@@ -104,10 +104,13 @@ If you are going to use this setup in production, you should enable TLS in your 
 const { OpenFgaApi } = require('@openfga/sdk'); // OR import { OpenFgaApi } from '@openfga/sdk';
 
 const openFga = new OpenFgaApi({
-    apiScheme: FGA_API_SCHEME, // optional, defaults to "https"
-    apiHost: FGA_API_HOST, // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
-    apiToken: FGA_BEARER_TOKEN,
-    storeId: FGA_STORE_ID
+    apiScheme: process.env.FGA_API_SCHEME, // optional, defaults to "https"
+    apiHost: process.env.FGA_API_HOST, // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
+    storeId: process.env.FGA_STORE_ID,
+    credentials: {
+        method: CredentialsMethod.ApiToken,
+        token: process.env.FGA_BEARER_TOKEN,
+    }
 });
 ```
 
@@ -154,84 +157,6 @@ class MyProgram {
             ApiToken = Environment.GetEnvironmentVariable("FGA_BEARER_TOKEN"),
             StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID")
 
-        };
-        var fgaClient = new OpenFgaApi(configuration);
-    }
-}
-```
-
-</TabItem>
-</Tabs>
-
-## Using OIDC
-
-In this case, you need to provide the details of your OIDC token issuer.
-
-<Tabs groupId="languages">
-<TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
-
-```javascript
-const { OpenFgaApi } = require('@openfga/sdk'); // OR import { OpenFgaApi } from '@openfga/sdk';
-
-const openFga = new OpenFgaApi({
-    apiScheme: FGA_API_SCHEME, // optional, defaults to "https"
-    apiHost: FGA_API_HOST, // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
-    storeId: FGA_STORE_ID,
-    apiTokenIssuer: FGA_API_ISSUER,
-    apiAudience: FGA_API_AUDIENCE,
-    clientId: FGA_CLIENT_ID,
-    clientSecret: FGA_CLIENT_SECRET
-});
-```
-
-</TabItem>
-<TabItem value={SupportedLanguage.GO_SDK} label={languageLabelMap.get(SupportedLanguage.GO_SDK)}>
-
-```go
-import (
-    openfga "github.com/openfga/go-sdk"
-    "os"
-)
-
-func Main() {
-    configuration, err := openfga.NewConfiguration(openfga.Configuration{
-        ApiScheme:      os.Getenv("FGA_API_SCHEME"), // optional, defaults to "https"
-        ApiHost:        os.Getenv("FGA_API_HOST"), // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
-        StoreId:        os.Getenv("FGA_STORE_ID"),
-        ApiTokenIssuer: os.Getenv("FGA_API_ISSUER"),
-        ApiAudience:    os.Getenv("FGA_API_AUDIENCE"),
-        ClientId:       os.Getenv("FGA_CLIENT_ID"),
-        ClientSecret:   os.Getenv("FGA_CLIENT_SECRET"),
-    })
-
-    if err != nil {
-        // .. Handle error
-    }
-
-    apiClient := openfga.NewAPIClient(configuration)
-}
-```
-
-</TabItem>
-<TabItem value={SupportedLanguage.DOTNET_SDK} label={languageLabelMap.get(SupportedLanguage.DOTNET_SDK)}>
-
-```dotnet
-using OpenFga.Sdk.Api;
-using OpenFga.Sdk.Configuration;
-using Environment = System.Environment;
-
-namespace ExampleApp;
-
-class MyProgram {
-    static async Task Main() {
-        var configuration = new Configuration(environment) {
-            ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // optional, defaults to "https"
-            ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST"), // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
-            StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"),
-            ApiTokenIssuer: Environment.GetEnvironmentVariable("FGA_API_ISSUER"),
-            ApiAudience: Environment.GetEnvironmentVariable("FGA_API_AUDIENCE"),
-            ClientId: Environment.GetEnvironmentVariable("FGA_CLIENT_ID"),
-            ClientSecret: Environment.GetEnvironmentVariable("FGA_CLIENT_SECRET")
         };
         var fgaClient = new OpenFgaApi(configuration);
     }
