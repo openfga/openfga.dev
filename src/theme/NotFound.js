@@ -1,8 +1,11 @@
 import React from 'react';
+import clsx from 'clsx';
+import Link from '@docusaurus/Link';
+
 import Translate, { translate } from '@docusaurus/Translate';
 import { PageMetadata } from '@docusaurus/theme-common';
+
 import Layout from '@theme/Layout';
-import clsx from 'clsx';
 
 import { HeroPattern } from '@features/LandingPage/HeroHeader/HeroPattern';
 import styles from './NotFound.module.css';
@@ -27,13 +30,13 @@ export default function NotFound() {
               </h1>
               <p>
                 If you navigated here from a broken link on the OpenFGA website, please{' '}
-                <a href="https://github.com/openfga/openfga.dev/issues" target="_blank" rel="noreferrer">
+                <Link href="https://github.com/openfga/openfga.dev/issues" target="_blank">
                   open an issue on Github
-                </a>
+                </Link>
                 .
               </p>
               <p>
-                Otherwise, try navigating to the <a href="https://openfga.dev">home page</a>, and then finding or
+                Otherwise, try navigating to the <Link href="https://openfga.dev">home page</Link>, and then finding or
                 searching for the content you need from there.
               </p>
             </div>
