@@ -48,6 +48,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Configure Authorization Model',
+          id: 'content/getting-started/configure-model',
+        },
+        {
+          type: 'doc',
           label: 'Update Relationship Tuples',
           id: 'content/getting-started/update-tuples',
         },
