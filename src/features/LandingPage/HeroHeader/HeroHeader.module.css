@@ -1,19 +1,8 @@
 .container {
   display: flex;
   font-size: 1.125rem;
-  padding: 2rem 0rem;
+  padding: 2rem 2rem;
   justify-content: space-between;
-}
-
-@media screen and (min-width: 996px) {
-  .container {
-    padding: 8rem 2rem 8rem;
-    justify-content: space-between;
-  }
-
-  .content {
-    max-width: 37rem;
-  }
 }
 
 .heading {
@@ -28,6 +17,25 @@
 
 .heading svg {
   width: 20rem;
+}
+
+@media screen and (min-width: 996px) {
+  .container {
+    padding: 8rem 2rem 8rem;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .content {
+    max-width: calc(50% + 50px);
+    padding-right: 32px;
+    width: auto;
+  }
+
+  .heading svg {
+    width: 25rem;
+    height: auto;
+  }
 }
 
 .headingSubtitle {
@@ -110,5 +118,9 @@
 @media screen and (min-width: 996px) {
   .heroPattern {
     display: flex;
+    height: 100%;
+    max-width: calc(50% - 50px);
+    padding-left: 32px;
+    width: 100%;
   }
 }

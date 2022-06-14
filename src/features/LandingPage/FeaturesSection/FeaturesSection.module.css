@@ -2,6 +2,10 @@
   padding: 3rem 0;
 }
 
+.section h2 {
+  margin-left: 2rem;
+}
+
 .section p,
 .section h3 {
   margin: 0;
@@ -29,7 +33,7 @@
   .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-gap: 5rem 15.5rem;
+    grid-gap: 5rem 6.25rem;
   }
 }
 
@@ -48,6 +52,7 @@
 
   grid-template-rows: auto auto 1fr;
   grid-gap: 1.5rem;
+  padding: 0 2rem;
 }
 
 .feature a,
