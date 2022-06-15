@@ -35,7 +35,7 @@ Adding a relationship tuple specifying that a group has a relation to an object 
 
 </div> />
 
-## Before you start
+## Before You Start
 
 In order to understand this guide correctly you must be familiar with some <ProductConcept /> and know how to develop the things that we will list below.
 
@@ -91,9 +91,9 @@ You need to know how to add users to groups and grant groups access to an object
 
 </details>
 
-## Step by Step
+## Step By Step
 
-### 01. Adding company to the document
+### 01. Adding Company To The Document
 
 If we want to have every `employee` of a type `company` have a `reader` relationship with a particular object of type `document` (in this case `document:planning`), we need to add a tuple like so:
 
@@ -108,7 +108,7 @@ If we want to have every `employee` of a type `company` have a `reader` relation
   ]}
 />
 
-### 02. Adding employee to the company
+### 02. Adding Employee To The Company
 
 If we also write a tuple that says that Anne is a `employee` of `company:xyz`, like so:
 
@@ -122,7 +122,7 @@ If we also write a tuple that says that Anne is a `employee` of `company:xyz`, l
   ]}
 />
 
-### 03. Checking an individual member's access to an object
+### 03. Checking An Individual Member's Access To An Object
 
 Then a call to the Check API to see whether Anne can read `document:planning` will return true:
 

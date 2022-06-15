@@ -34,7 +34,7 @@ Object-to-object relationships can be used:
 
 </div> />
 
-## Before you start
+## Before You Start
 
 In order to understand this guide correctly you must be familiar with some <ProductConcept /> and know how to develop the things that we will list below.
 
@@ -76,7 +76,7 @@ You have two types:
 
 In addition, you will need to know the following:
 
-### Modeling Basics
+### Direct Access
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](./direct-access.mdx)
 
@@ -93,7 +93,7 @@ You need to know how to create an authorization model and create a relationship 
 
 <Playground />
 
-## Step by Step
+## Step By Step
 
 We would like to model folders that contain documents and that a user having editor access to the folder, has editor access to all documents in that folder.
 
@@ -108,7 +108,7 @@ and then to indicate and verify that **bob** is an `editor` of **document:meetin
 4. Create a new _relationship tuple_ to indicate that **folder:notes** is a `parent` of **document:meeting_notes.doc**
 5. Check to see if **bob** is an `editor` of **document:meeting_notes.doc**
 
-### 01. Update the authorization model to allow a parent relationship between folder and document
+### 01. Update The Authorization Model To Allow A Parent Relationship Between Folder And Document
 
 To allow a `parent` relation between a `folder` and a `document`, we need to update the authorization model to be the following (this is to allow creating relationship tuples that can indicate a relationship between `folder` and `document`. Refer to [Modeling Concepts: Object to Object Relationships](./building-blocks/object-to-object-relationships.mdx) to understand why):
 
@@ -145,7 +145,7 @@ Notice that the `document` type now has a `parent` relation, indicating that oth
 
 :::
 
-### 02. Update the editor relation in the document type definition to support cascading from folder
+### 02. Update The Editor Relation In The Document Type Definition To Support Cascading From Folder
 
 To allow _cascading_ relations between `folder` and `document`, we can update our authorization model as the following:
 
@@ -202,7 +202,7 @@ To allow _cascading_ relations between `folder` and `document`, we can update ou
 
 So with this change, anyone related to a `folder` that is a `parent` of a `document` as an `editor` is also an `editor` of said `document`.
 
-### 03. Create a new relationship tuple to indicate that bob is an editor of folder:notes
+### 03. Create A New Relationship Tuple To Indicate That bob Is An Editor Of folder:notes
 
 To leverage our _cascading_ relation, we need to create a relationship tuple that states: **bob** is an `editor` of **folder:notes**
 
@@ -216,7 +216,7 @@ To leverage our _cascading_ relation, we need to create a relationship tuple tha
   ]}
 />
 
-### 04. Create a new relationship tuple to indicate that folder:notes is a parent of document:meeting_notes.doc
+### 04. Create A New Relationship Tuple To Indicate That folder:notes Is A Parent Of document:meeting_notes.doc
 
 Now that **bob** is an `editor` of **folder:notes**, we need to indicate that **folder:notes** is a `parent` of `document`:**meeting_notes.doc**
 
@@ -231,7 +231,7 @@ Now that **bob** is an `editor` of **folder:notes**, we need to indicate that **
   ]}
 />
 
-### 05. Check to see if bob is an editor of document:meeting_notes.doc
+### 05. Check To See If bob Is An Editor Of document:meeting_notes.doc
 
 Now that we have done the changes to the authorization model and the addition of the two new _relationship tuples_, we can verify if our configuration is correct by running the following check: **is bob an editor of document:meeting_notes.doc**.
 
