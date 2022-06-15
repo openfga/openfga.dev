@@ -1,7 +1,7 @@
 import { getFilteredAllowedLangs, SupportedLanguage, LanguageMappings } from './SupportedLanguage';
 import { defaultOperationsViewer } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
-import { AuthorizationModel } from '@auth0/fga';
+import { AuthorizationModel } from '@openfga/sdk';
 
 interface WriteAuthzModelViewerOpts {
   authorizationModel: AuthorizationModel;
