@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TypeDefinitions } from '@auth0/fga';
+import { TypeDefinitions } from '@openfga/sdk';
 import Link from '@docusaurus/Link';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
