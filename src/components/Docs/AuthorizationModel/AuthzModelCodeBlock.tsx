@@ -1,7 +1,7 @@
 import * as React from 'react';
 import CodeBlock from '@theme/CodeBlock';
 import { loadSyntax, SyntaxFormat } from './SyntaxTransformer';
-import { TypeDefinitions } from '@auth0/fga';
+import { TypeDefinitions } from '@openfga/sdk';
 
 type AuthzModelCodeBlockProps = {
   configuration: TypeDefinitions;

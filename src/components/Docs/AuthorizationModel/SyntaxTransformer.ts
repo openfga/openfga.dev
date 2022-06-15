@@ -2,7 +2,7 @@
 
 import yaml from 'js-yaml';
 import _ from 'lodash';
-import { TypeDefinitions } from '@auth0/fga';
+import { TypeDefinitions } from '@openfga/sdk';
 
 import { Keywords } from './Dsl';
 
