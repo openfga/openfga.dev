@@ -15,7 +15,7 @@ import {
 
 This article explains how to start your own OpenFGA server using Docker, and how to configure it.
 
-## Step by Step
+## Step By Step
 
 If you want to run OpenFGA locally as a Docker container, follow these steps:
 
@@ -24,7 +24,7 @@ If you want to run OpenFGA locally as a Docker container, follow these steps:
 
 This will start an HTTP server and gRPC server with the default configuration options.
 
-## Configuring the server
+## Configuring The Server
 
 There are several configuration options for OpenFGA. One option is to pass them in with an environment file. For example:
 
@@ -55,14 +55,14 @@ All the possible configuration options are:
 | OPENFGA_RPC_PORT                          | RPC port where OpenFGA will run.                                                                                                                                                                                                                 | No       | number                   | 8081          |                                                    |
 | OPENFGA_SERVICE_NAME                      | The name you want to give to your OpenFGA server.                                                                                                                                                                                                | No       | string                   | openfga       |                                                    |
 
-### Configuring data storage
+### Configuring Data Storage
 
 You can choose between two storage options:
 
 - In-memory storage. This option is not persistent, i.e. if you restart the server, the data will be lost.
 - Postgres database. This option requires either a local Postgres installation, or a Docker container that runs Postgres. For an example of a Docker setup that includes a Postgres database, see [OpenFGA's Docker compose file](https://github.com/openfga/openfga/blob/main/docker-compose.yaml).
 
-### Configuring authentication
+### Configuring Authentication
 
 You can configure authentication in your OpenFGA server in two ways: no authentication (the default) or pre-shared key authentication.
 
@@ -72,7 +72,7 @@ If using **Pre-shared key authentication**, you will configure OpenFGA with a se
 If you are going to use this setup in production, you should enable TLS in your OpenFGA server.
 :::
 
-## Production checklist
+## Production Checklist
 
 If you have tried OpenFGA locally, decided it works as expected, and now want to deploy it to production, we recommend the following preparation:
 

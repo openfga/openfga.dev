@@ -35,7 +35,7 @@ This is useful when:
 
 </div> />
 
-## Before you start
+## Before You Start
 
 To better understand this guide, you should be familiar with some <ProductConcept /> and know how to develop the things listed below.
 
@@ -45,12 +45,12 @@ To better understand this guide, you should be familiar with some <ProductConcep
 
 You will need to know the following:
 
-- Modeling Basics
+- Direct Access
 - <ProductName format={ProductNameFormat.ShortForm} /> Concepts
 
 </summary>
 
-### Modeling Basics
+### Direct Access
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](../direct-access.mdx)
 
@@ -67,7 +67,7 @@ You need to know how to create an authorization model and create a relationship 
 
 <Playground />
 
-## What are direct relationships?
+## What Are Direct Relationships?
 
 Direct relationships are relationships where a user has a relationship to an <ProductConcept section="what-is-an-object" linkName="object" /> that is not dependent on any other relationship they have with that object.
 
@@ -77,7 +77,7 @@ When checking for a relationship, a direct relationship exists if a _<ProductCon
 - everyone (`*`)
 - a set of users that contains the user ID present in the query
 
-## Enable or disable direct relationships
+## Enable Or Disable Direct Relationships
 
 Direct relationships can be enabled for a specific relation on an _<ProductConcept section="what-is-a-type" linkName="object type" />_ by adding the [direct relationship keyword](../../configuration-language.mdx#the-direct-relationship-keyword) from that <ProductConcept section="what-is-a-relation-definition" linkName="relation's definition" />. Likewise, they can be disabled by removing that keyword.
 
@@ -130,11 +130,11 @@ In the `team` type definition, there is a single `member` relation that only all
 
 :::
 
-## How it affects your system
+## How It Affects Your System
 
 To illustrate the effect enabling or disabling direct relationships on a specific relation has, we'll investigate several situations.
 
-### 1. With direct relationships enabled
+### 1. With Direct Relationships Enabled
 
 Let us start with the authorization model we had above:
 
@@ -356,7 +356,7 @@ In this case, there is **NO** direct viewer relationship between Emily and the p
 </TabItem>
 </Tabs>
 
-### 2. With direct relationships disabled
+### 2. With Direct Relationships Disabled
 
 In this section, we will investigate the effect of disabling _direct relationships_ on the document's `viewer` relation.
 

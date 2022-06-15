@@ -66,7 +66,7 @@ You have an _<ProductConcept section="what-is-an-object" linkName="object" />_ c
 
 In addition, you will need to know the following:
 
-### Modeling Basics
+### Direct Access
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](./direct-access.mdx)
 
@@ -82,7 +82,7 @@ You need to know how to create an authorization model and create a relationship 
 
 <Playground />
 
-## Step by Step
+## Step By Step
 
 As we develop our application, we might encounter use cases where a group of users have a certain role or permission on an object. For example, `members` of a certain `team` might have an `editor` relation to a certain `document`.
 
@@ -93,7 +93,7 @@ In order to represent this in <ProductName format={ProductNameFormat.ShortForm}/
 3. Assign the `team` members a relation to an _object_
 4. Checking an individual member's access to the _object_
 
-### 01. Introduce the concept of a team to the authorization model
+### 01. Introduce The Concept Of A Team To The Authorization Model
 
 We need to define the _<ProductConcept section="what-is-an-object" linkName="object" />_ `team` in our authorization model. In our use case, a `team` can have `member`s, so we make the following changes to our authorization model:
 
@@ -120,7 +120,7 @@ We need to define the _<ProductConcept section="what-is-an-object" linkName="obj
   }}
 />
 
-### 02. Add users as members to the team
+### 02. Add Users As Members To The Team
 
 We can now assign _<ProductConcept section="what-is-a-user" linkName="users" />_ as `member`s of `team`s. Let's create a new _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple" />_ that states **alice is a member of team:writers**.
 
@@ -134,7 +134,7 @@ We can now assign _<ProductConcept section="what-is-a-user" linkName="users" />_
   ]}
 />
 
-### 03. Assign the team members a relation to an object
+### 03. Assign The Team Members A Relation To An Object
 
 To represent groups we use the `type:object_id#relation` format, which represents the set of users related to the `type:object_id` as a certain relation. For example, `team:writers#members` is used to represent the set of users related to the **team:writers** _object_ as `member`s.
 
@@ -151,7 +151,7 @@ In order to assign `member`s of a `team` a relation to a `document`, we can crea
   ]}
 />
 
-### 04. Checking an individual member's access to an object
+### 04. Checking An Individual Member's Access To An Object
 
 Now that we have:
 

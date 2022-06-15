@@ -31,7 +31,7 @@ Granting access with a *<ProductConcept section="what-is-a-relationship-tuple" l
 
 </div> />
 
-## Before you start
+## Before You Start
 
 In order to understand this guide correctly you must be familiar with some <ProductConcept /> and know how to develop the things that we will list below.
 
@@ -62,7 +62,7 @@ You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `t
 
 In addition, you will need to know the following:
 
-### Modeling Basics
+### Direct Access
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](../modeling/direct-access.mdx)
 
@@ -76,9 +76,9 @@ You need to know how to create an authorization model and create a relationship 
 
 </details>
 
-## Step by Step
+## Step By Step
 
-### 01. Adding direct relationship
+### 01. Adding Direct Relationship
 
 For our application, we will give user Anne the `reader` relationship to a particular `tweet`. To do so we add a tuple as follows:
 
@@ -97,7 +97,7 @@ With the above, we have added a [**direct** relationship](../modeling/building-b
 
 <CheckRequestViewer user={'anne'} relation={'reader'} object={'tweet:1'} allowed={true} />
 
-### 02. Removing direct relationship
+### 02. Removing Direct Relationship
 
 Now let's change this so that Anne no longer has a `reader` relationship to `tweet:1` by deleting the tuple:
 
@@ -121,7 +121,7 @@ With this, we have removed the [direct relationship](../modeling/building-blocks
   description="Check the following sections for more on how to manage user access."
   relatedLinks={[
     {
-      title: 'Modeling Basics',
+      title: 'Direct Access',
       description: 'Learn about how to model granting user access to an object.',
       link: '../modeling/direct-access',
       id: '../modeling/direct-access.mdx',
