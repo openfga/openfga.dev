@@ -10,7 +10,7 @@ const HeroLogo: React.FC<HeroLogoProps> = ({ width = '413', height = '89', class
   <svg
     width={width}
     height={height}
-    viewBox="0 0 471 101"
+    viewBox="0 0 472 101"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     className={className}
