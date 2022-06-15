@@ -30,7 +30,7 @@ In this guide you will learn about the most relevant FGA concepts, such as a typ
 <details>
 <summary>
 
-## What is a type?
+## What Is A Type?
 
 A **type** is a string. It should define a class of objects with similar characteristics.
 
@@ -48,7 +48,7 @@ Examples of types:
 <details>
 <summary>
 
-## What is a type definition?
+## What Is A Type Definition?
 
 A **type definition** is a configuration that defines all possible relations a user or another object can have in relation to this type.
 
@@ -81,7 +81,7 @@ Code snippet below is an example of a type definition:
 <details>
 <summary>
 
-## What is an authorization model?
+## What Is An Authorization Model?
 
 An **authorization model** is a combination of one or more type definitions. This is used to define the permission model of a system.
 
@@ -135,7 +135,7 @@ Learn more about the <UpdateProductNameInLinks link="./configuration-language" n
 <details>
 <summary>
 
-## What is a store?
+## What Is A Store?
 
 A **store** is a <ProductName format={ProductNameFormat.LongForm}/> organization entity that owns an authorization model.
 
@@ -148,7 +148,7 @@ A store contains all your data, including the [authorization model](#what-is-an-
 <details>
 <summary>
 
-## What is an object?
+## What Is An Object?
 
 An **object** represents an entity in the system. We can define how various users have a relationship to it through relationship tuples and the authorization model.
 
@@ -172,7 +172,7 @@ For more information, please see [Direct Access](./modeling/direct-access.mdx).
 <details>
 <summary>
 
-## What is a user?
+## What Is A User?
 
 A **user** is an entity in the system that can be related to an object.
 
@@ -194,7 +194,7 @@ For more information, please see [Direct Access](./modeling/direct-access.mdx).
 <details>
 <summary>
 
-## What is a relation?
+## What Is A Relation?
 
 A **relation** is a string defined in the type definition of an authorization model that defines the possibility of a relationship between objects of this type and other users in the system.
 
@@ -211,7 +211,7 @@ Examples of relation:
 <details>
 <summary>
 
-## What is a relation definition?
+## What Is A Relation Definition?
 
 A **relation definition** lists the conditions or requirements under which this relationship would be possible.
 
@@ -269,7 +269,7 @@ For more information, please see [Direct Access](./modeling/direct-access.mdx).
 <details>
 <summary>
 
-## What is a relationship tuple?
+## What Is A Relationship Tuple?
 
 A **relationship tuple** is a tuple consisting of a user, relation and object stored in <ProductName format={ProductNameFormat.ShortForm}/> .
 
@@ -302,7 +302,7 @@ For more information, please see [Direct Access](./modeling/direct-access.mdx).
 <details>
 <summary>
 
-## What is a relationship?
+## What Is A Relationship?
 
 A **relationship** is the realization of a relation between a user and an object.
 
@@ -315,7 +315,7 @@ An [authorization model](#what-is-an-authorization-model), together with [relati
 <details>
 <summary>
 
-## What are direct and implied relationships?
+## What Are Direct And Implied Relationships?
 
 A **direct relationship** R between user X and object Y means the relationship tuple (user=X, relation=R, object=Y) exists, and the <ProductName format={ProductNameFormat.ShortForm}/> authorization model for that relation allows this direct relationship (by use of `self`).
 
@@ -420,7 +420,7 @@ An **implied (or computed) relationship** R exists between user X and object Y i
 <details>
 <summary>
 
-## What is a check request?
+## What Is A Check Request?
 
 A **check request** is a call to the <ProductName format={ProductNameFormat.LongForm}/> check endpoint that returns whether the user has a certain relationship with an object.
 
@@ -441,7 +441,7 @@ For more information, please see [Comparison between check, read and expand](./i
 <details>
 <summary>
 
-## What are contextual tuples?
+## What Are Contextual Tuples?
 
 Contextual tuples are tuples that are sent alongside a check request, and only exist within the context of that particular request.
 
@@ -462,7 +462,7 @@ For more information, please see [Contextual and Time-Based Authorization](./mod
 <details>
 <summary>
 
-## How do I represent "everyone"?
+## How Do I Represent "Everyone"?
 
 In <ProductName format={ProductNameFormat.LongForm}/> the special syntax `*` means **everyone** when used as **user** in a relationship tuple.
 
@@ -485,7 +485,7 @@ For more information, please see [Modeling Public Access](./modeling/public-acce
 
 </details>
 
-## Related sections
+## Related Sections
 
 <RelatedSection
   description="Check the following sections for more on how object-to-object relationships can be used."
