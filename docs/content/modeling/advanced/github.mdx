@@ -68,7 +68,7 @@ Used here to indicate that users who have repo admin access on an organization, 
 
 </details>
 
-## What You Will You Be Modeling
+## What You Will Be Modeling
 
 GitHub is a system to develop and collaborate on code.
 
@@ -112,7 +112,7 @@ There will be a:
 
 ## Modeling GitHub's Permissions
 
-### 01. Permissions for individuals in an org
+### 01. Permissions For Individuals In An Org
 
 GitHub has [5 different permission levels for repositories](https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/repository-permission-levels-for-an-organization):
 
@@ -327,7 +327,7 @@ With this simple update our model now supports nested definitions and now:
 <CheckRequestViewer user={'beth'} relation={'writer'} object={'repo:contoso/tooling'} allowed={true} />
 <CheckRequestViewer user={'beth'} relation={'reader'} object={'repo:contoso/tooling'} allowed={true} />
 
-### 02. Permissions for teams in an org
+### 02. Permissions For Teams In An Org
 
 GitHub also supports [creating teams in an organization](https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/creating-a-team), [adding members to a team](https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/adding-organization-members-to-a-team) and [granting teams permissions, rather than individuals](https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/managing-team-access-to-an-organization-repository).
 
@@ -377,7 +377,7 @@ The last relationship tuple introduces a new **<ProductName format={ProductNameF
 
 <CheckRequestViewer user={'charles'} relation={'admin'} object={'repo:contoso/tooling'} allowed={true} />
 
-### 03. Permissions for child teams in an org
+### 03. Permissions For Child Teams In An Org
 
 GitHub also supports team nesting, [known as "child teams"](https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/requesting-to-add-a-child-team). **Child teams inherit the access permissions of the parent team.**
 Let's say we have a **protocols** team that is part of the **engineering**. The simplest way to achieve the aforementioned requirement is just adding this <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple" />:
@@ -415,7 +415,7 @@ At the end of this section ended with the following permissions represented:
 
 ![Image showing permissions](./assets/github-03.svg)
 
-### 04. Base permissions for org members
+### 04. Base Permissions For Org Members
 
 In GitHub, ["you can can set base permissions that apply to all members of an organization when accessing any of the organization's repositories"](https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/setting-base-permissions-for-an-organization). For our purposes this means that if:
 

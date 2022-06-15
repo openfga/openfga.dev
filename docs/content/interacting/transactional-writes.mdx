@@ -27,7 +27,7 @@ Updating multiple relationship tuples is useful to keep system state consistent.
 
 </div> />
 
-## Before you start
+## Before You Start
 
 In order to understand this guide correctly you must be familiar with some <ProductConcept /> and know how to develop the things that we will list below.
 
@@ -70,7 +70,7 @@ You have another type called `user` that can have a `follower` and `followed_by`
 
 In addition, you will need to know the following:
 
-### Modeling Basics
+### Direct Access
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](../modeling/direct-access.mdx)
 
@@ -88,9 +88,9 @@ You need to know how to grant public access to an object. [Learn more →](../mo
 
 </details>
 
-## Step by Step
+## Step By Step
 
-### 01. Adding and removing relationship tuples in the same transaction
+### 01. Adding And Removing Relationship Tuples In The Same Transaction
 
 When you need to add or delete tuples in your store, you can do so by calling the Write API. For example, if you want to make `tweet:1` public by making everyone a `viewer`, you write one tuple:
 
@@ -139,7 +139,7 @@ The Write API allows you to send up to 10 unique tuples in the request. (This li
   ]}
 />
 
-### 02. Adding multiple related relationship tuples in the same transaction
+### 02. Adding Multiple Related Relationship Tuples In The Same Transaction
 
 Having the ability to send multiple tuples per request is also useful when you want to maintain consistency. For example, if `anne` starts following `becky`, we want to be able to save the following two tuples, or neither of them:
 

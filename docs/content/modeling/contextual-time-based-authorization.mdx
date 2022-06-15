@@ -33,7 +33,7 @@ Contextual Tuples should be used when modeling cases where a user's access to an
 
 </div> />
 
-## Before you start
+## Before You Start
 
 To follow this guide, you should be familiar with some <ProductConcept />.
 
@@ -192,7 +192,7 @@ By the end of this guide we would like to validate that:
   - at 12pm UTC, should be able to view transaction A
   - at 6pm UTC, should not be able to view transaction A
 
-## Step by Step
+## Step By Step
 
 In order to solve for the requirements above, we will break the problem down to three steps:
 
@@ -232,9 +232,9 @@ Additionally, we will check that Mary, an account manager at a different branch 
 
 Note that so far, we have not prevented Anne from viewing the transaction outside office hours, let's see if we can do better.
 
-### Take Time and IP Address into Consideration
+### Take Time And IP Address Into Consideration
 
-##### Extend the Authorization Model
+##### Extend The Authorization Model
 
 In order to add time and ip address to our authorization model, we will add appropriate types for them. We will have a "timeslot" and an "ip-address-range" as types, and each can have users related to it as a user.
 
@@ -404,7 +404,7 @@ On the "transaction" type:
 - Nothing will need to be done, as it will inherit the updated "viewer" relation definition from "account"
 :::
 
-##### Add the required tuples to mark that Anne is in an approved context
+##### Add The Required Tuples To Mark That Anne Is In An Approved Context
 
 Now that we have updated our authorization model to take time and ip address into consideration, you will notice that Anne has lost access because nothing indicates that Anne is connecting from an approved ip address and time. You can verify that by issuing the following check:
 
@@ -464,7 +464,7 @@ If we have the above two tuples in the system, when checking whether Anne can vi
 
 <CheckRequestViewer user={'anne'} relation={'can_view'} object={'transaction:A'} allowed={true} />
 
-### Using contextual tuples
+### Using Contextual Tuples
 
 Now that we know we can authorize based on present state, we have a different problem to solve. We are storing the tuples in the state in order for <ProductName format={ProductNameFormat.ShortForm}/> to evaluate them, which means that:
 
@@ -767,7 +767,7 @@ Contextual tuples:
 - If you are using the [ReadChanges API endpoint](/api/service#/Relationship%20Tuples/ReadChanges) to build a permission aware search index, note that it will not be trivial to take contextual tuples into account.
 :::
 
-### Taking it a step further: Banks as a Service Authorization
+### Taking It A Step Further: Banks As A Service Authorization
 
 In order to keep this guide concise, we assumed you were modeling for a single bank. What if you were offering a multi-tenant service where each bank is a single tenant?
 

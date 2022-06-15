@@ -36,7 +36,7 @@ This is useful when:
 
 </div> />
 
-## Before you start
+## Before You Start
 
 In order to understand this guide correctly you must be familiar with some <ProductConcept /> and know how to develop the things that we will list below.
 
@@ -138,7 +138,7 @@ In addition, you will need to know the following:
 
 You need to know how to model access based on parent-child relationships, e.g.: folders and documents. [Learn more →](./parent-child.mdx)
 
-### Modeling Roles and Permissions
+### Modeling Roles And Permissions
 
 You need to know how to model roles for users at the object level and model permissions for those roles. [Learn more →](./roles-and-permissions.mdx)
 
@@ -153,7 +153,7 @@ You need to know how to model roles for users at the object level and model perm
 
 </details>
 
-## Step by Step
+## Step By Step
 
 With the above authorization model and relationship tuples, <ProductName format={ProductNameFormat.LongForm} /> will correctly respond with `{"allowed":true}` when *<ProductConcept section="what-is-a-check-request" linkName="check" />*is called to see if Carl and Becky can write this `document`.
 
@@ -170,7 +170,7 @@ To do this, we need to:
 1. [Add can_delete relation to only allow writers that are members of the ownership organization](#01-add-can_delete-relation-to-only-allow-writers-that-are-members-of-the-ownership-organization)
 2. [Verify that our solutions work](#02-verify-that-our-solutions-work)
 
-### 01. Add can_delete relation to only allow writers that are members of the ownership organization
+### 01. Add can_delete Relation To Only Allow Writers That Are Members Of The Ownership Organization
 
 The first step is to add the relation definition for `can_delete` so that it requires users to be both `writer` and `member` of the owner. This is accomplished via the keyword [`and`](../configuration-language.mdx#the-intersection-operator).
 
@@ -230,7 +230,7 @@ The first step is to add the relation definition for `can_delete` so that it req
   }}
 />
 
-### 02. Verify that our solutions work
+### 02. Verify That Our Solutions Work
 
 To verify that our solutions work, we need to check that Becky can delete the planning document because she is a writer AND she is a member of organization:ABC that owns the planning document.
 

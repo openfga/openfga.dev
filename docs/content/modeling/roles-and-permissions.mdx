@@ -81,7 +81,7 @@ You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `t
 
 In addition, you will need to know the following:
 
-### Modeling Basics
+### Direct Access
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](./direct-access.mdx)
 
@@ -100,7 +100,7 @@ You need to know how to create an authorization model and create a relationship 
 
 <Playground />
 
-## Step by Step
+## Step By Step
 
 To illustrate modeling Roles and Permissions in <ProductName format={ProductNameFormat.ShortForm}/>, we will use a trip booking system where you can have `owners` and/or `viewers` that can have more granular permissions such as adding bookings to a trip or viewing bookings on it.
 
@@ -111,7 +111,7 @@ In order to represent this, we need to:
 3. <ProductConcept section="what-is-a-check-request" linkName="Checking" /> user roles and their permissions based on *relationship
    tuples* for direct and implied relations
 
-### 01. Understand how roles work within our trip booking system
+### 01. Understand How Roles Work Within Our Trip Booking System
 
 Relating roles within <ProductName format={ProductNameFormat.ShortForm}/> can be best described as the following: **Roles are relations that can be directly assigned to users.** Looking at our authorization model, our roles would then be `owner` and `viewer`. Meaning that a specific _user_ can be an `owner` and/or a `viewer`.
 
@@ -135,7 +135,7 @@ Relating roles within <ProductName format={ProductNameFormat.ShortForm}/> can be
   }}
 />
 
-### 02. Adding permissions for bookings
+### 02. Adding Permissions For Bookings
 
 Permissions within <ProductName format={ProductNameFormat.LongForm}/> can be best described as the following: **Permissions are relations that users get only through other relations.** To represent permissions, we avoid adding the [**direct relationship keyword**](../configuration-language.mdx#the-direct-relationship-keyword) (`self`) to the relation in the authorization model. Instead, we define the relation from other relations to indicate that it is a permission granted to and implied from a different relation.
 
@@ -190,7 +190,7 @@ To allow `viewers` of a `trip` to have **permissions to view bookings** and `own
 
 > Note: notice how both `booking_viewer` and `booking_adder` don't have the `self` syntax, this is to ensure that the relation can only be assigned through the **role** and not directly.
 
-### 03. Checking user roles and their permissions
+### 03. Checking User Roles And Their Permissions
 
 Now that our type definitions reflects the roles and permissions on how bookings can be viewed/added. Let's create _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" />_ to assign roles to _users_ and then *<ProductConcept section="what-is-a-check-request" linkName="check" />*if _users_ have the proper permissions.
 
