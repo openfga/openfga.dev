@@ -3,10 +3,12 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
 import styles from './HeroHeader.module.css';
 
-import { HeroPattern } from './HeroPattern';
 import { HeroLogo } from './HeroLogo';
 import { ButtonLink } from '@components/ButtonLink';
 import { StyleGrid } from '../StyleGrid';
+import patternMp4 from './pattern.mp4';
+import patternWebm from './pattern.webm';
+import patternImg from './pattern.png';
 
 const HeroHeader = () => {
   const { siteConfig } = useDocusaurusContext();
@@ -81,7 +83,10 @@ const HeroHeader = () => {
               </ButtonLink>
             </div>
           </div>
-          {<HeroPattern className={styles.heroPattern} />}
+          <video width="400" preload="auto" autoPlay muted loop className={styles.heroPattern} poster={patternImg}>
+            <source src={patternWebm} type="video/webm" />
+            <source src={patternMp4} type="video/mp4" />
+          </video>
         </div>
       </div>
     </header>

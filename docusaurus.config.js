@@ -74,7 +74,7 @@ const config = {
     // link to the concept page (relative to baseURL)
     conceptLink: `docs/concepts`,
     longProductName: `OpenFGA`,
-    landingPageTitle: "Fine Grained Authorization",
+    landingPageTitle: 'Fine Grained Authorization',
 
     // define playgroundName and playgroundURL if you want to show your examples through playground
     //playgroundName: '',
@@ -109,7 +109,7 @@ using OpenFga.Sdk.Configuration;`,
       form-action 'none';
       frame-src www.youtube-nocookie.com;
       img-src 'self' data: https://pbs.twimg.com https://docs.github.com https://heapanalytics.com;
-      media-src 'none';
+      media-src 'self';
       object-src 'none';
       script-src 'self' ${
         process.env.NODE_ENV === 'development' ? `'unsafe-eval'` : ``
@@ -148,8 +148,8 @@ using OpenFga.Sdk.Configuration;`,
           },
           {
             to: '/docs/authorization-and-openfga',
-            from : '/docs',
-          }
+            from: '/docs',
+          },
         ],
       }),
     ],
@@ -174,9 +174,7 @@ using OpenFga.Sdk.Configuration;`,
         docs: {
           sidebarPath: require.resolve('./docs/sidebars.js'),
           routeBasePath: '/docs',
-          exclude: [
-            '**/README.md',
-          ],
+          exclude: ['**/README.md'],
           showLastUpdateAuthor: false,
           editUrl: 'https://github.com/openfga/openfga.dev/edit/main/',
         },
@@ -196,8 +194,11 @@ using OpenFga.Sdk.Configuration;`,
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       metadata: [
-        { name: 'keywords', content: 'OpenFGA, open source, fine-grained-authorization, fine grained authorization, Zanzibar' },
-        { property: 'og:image', content: 'https://openfga.dev/img/openfga_logo.svg'  }
+        {
+          name: 'keywords',
+          content: 'OpenFGA, open source, fine-grained-authorization, fine grained authorization, Zanzibar',
+        },
+        { property: 'og:image', content: 'https://openfga.dev/img/openfga_logo.svg' },
       ],
       colorMode: {
         defaultMode: 'dark',
