@@ -16,6 +16,7 @@ const config = {
   tagline: 'Relationship-based access control made fast, scalable, and easy to use.',
   url: 'https://openfga.dev',
   baseUrl: baseUrl,
+  trailingSlash: false,
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: '/img/openfga-icon.svg',
