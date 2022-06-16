@@ -48,7 +48,7 @@ This section will illustrate how to integrate <ProductName format={ProductNameFo
 
 ## Step By Step
 
-Assume that you want to have a web service for `document`s using one of the frameworks mentioned above. The service will authenticate users via [JWT tokens](https://auth0.com/docs/security/tokens/json-web-tokens), which contain the user ID.
+Assume that you want to have a web service for `document`s using one of the frameworks mentioned above. The service will authenticate users via [JWT tokens](https://auth0.com/docs/secure/tokens/json-web-tokens), which contain the user ID.
 
 :::caution Note
 The reader should set up their own `login` method based on their OpenID connect provider's documentation.
@@ -69,7 +69,7 @@ For the context of this example, we will use the [Fastify framework](https://www
 - the [`fastify-plugin`](https://github.com/fastify/fastify-plugin) package that allows integrating plugins with Fastify
 - the [`fastify-jwt`](https://github.com/fastify/fastify-jwt) package for processing JWT tokens
 
-Using [npm](https://npmjs.org):
+Using [npm](https://www.npmjs.com):
 
 ```shell
 npm install fastify fastify-plugin fastify-jwt
