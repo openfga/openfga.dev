@@ -78,12 +78,13 @@ If using **Pre-shared key authentication**, you will configure OpenFGA with a se
 If you are going to use this setup in production, you should enable TLS in your OpenFGA server.
 :::
 
-## Production Checklist
+## Production Recommendations
 
 If you have tried OpenFGA locally, decided it works as expected, and now want to deploy it to production, we recommend the following preparation:
 
-- Ensure you configured authentication.
-- Ensure that you have enabled TLS on the server.
-- Fork the OpenFGA repository and:
-    - Add a rate limiter interceptor that protects your OpenFGA server against bursts in traffic.
-    - Add a logger interceptor that sends logging to your logging platform of choice.
+- Update the configuration as follows:
+  - Configure authentication on the server as explained above.
+  - Enable TLS on the server.
+  - Enable production logging by changing the `OPENFGA_LOG_FORMAT` environment variable to `json`.
+- Add a rate limiter interceptor (for example, [in the server configuration](https://pkg.go.dev/github.com/openfga/openfga/server#Config)) that protects your OpenFGA server against bursts in traffic.
+- Add a logger interceptor (for example, [in the server configuration](https://pkg.go.dev/github.com/openfga/openfga/server#Config)) that sends logs to your logging platform of choice.
