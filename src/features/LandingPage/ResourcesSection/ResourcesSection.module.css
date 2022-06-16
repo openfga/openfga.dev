@@ -12,8 +12,14 @@
   /* disable grid template for now until we have updates */
   /* grid-template-columns: 27.5rem 1fr; */
   color: var(--ofga-neutral-darkest);
-  margin: 0 -1.75rem;
+
   padding: 0 3rem;
+}
+
+@media screen and (min-width: 600px) {
+  .container {
+    margin: 0 -1.75rem;
+  }
 }
 
 @media screen and (min-width: 996px) {
