@@ -21,7 +21,7 @@ import {
 
 <DocumentationNotice />
 
-The <ProductName format={ProductNameFormat.ProductLink}/> service answers <IntroductionSection linkName="authorization" section="what-is-authorization"/> [checks](#what-is-a-check-request) by determining whether a **[relationship](#what-is-a-relation)** exists between an [object](#what-is-an-object) and a [user](#what-is-a-user). Checks takes into consideration the **[authorization model](#what-is-an-authorization-model)** of the system and the **[relationship tuples](#what-is-a-relationship-tuple)** present in the system at that time in order to make a decision.
+The <ProductName format={ProductNameFormat.ProductLink}/> service answers <IntroductionSection linkName="authorization" section="authentication-vs-authorization"/> [checks](#what-is-a-check-request) by determining whether a **[relationship](#what-is-a-relation)** exists between an [object](#what-is-an-object) and a [user](#what-is-a-user). Checks takes into consideration the **[authorization model](#what-is-an-authorization-model)** of the system and the **[relationship tuples](#what-is-a-relationship-tuple)** present in the system at that time in order to make a decision.
 
 In this guide you will learn about the most relevant FGA concepts, such as a type or an authorization model, and you will be able to explore them using the [FGA playground](https://play.fga.dev/).
 
@@ -426,7 +426,7 @@ A **check request** is a call to the <ProductName format={ProductNameFormat.Long
 
 </summary>
 
-This can be done using the `check` methods in the <ProductName format={ProductNameFormat.ShortForm}/> SDKs ([JavaScript SDK](https://www.npmjs.com/package/@openfga/sdk)/[Go SDK](https://github.com/openfga/go-sdk)/[.NET SDK](https://www.nuget.org/packages/OpenFga.Sdk)), by manually calling the [check endpoint](/api/service#/Relationship%20Queries/Check) using curl, or in your code.
+This can be done using the `check` methods in the <ProductName format={ProductNameFormat.ShortForm}/> SDKs ([JavaScript SDK](https://www.npmjs.com/package/@openfga/sdk)/[Go SDK](https://github.com/openfga/go-sdk)/[.NET SDK](https://www.nuget.org/packages/OpenFga.Sdk)), by manually calling the [check endpoint](/api/service#Relationship%20Queries/Check) using curl, or in your code.
 
 The check endpoint responds with `{ "allowed": true }` if a relationship exists, and with `{ "allowed": false }` if the relationship does not.
 
@@ -434,7 +434,7 @@ For example, the following will check whether `anne` has a `viewer` relation to 
 
 <CheckRequestViewer user={'anne'} relation={'viewer'} object={'document:new-roadmap'} allowed={true} />
 
-For more information, please see [Comparison between check, read and expand](./interacting/check-read-expand.mdx) and [Check API Request Documentation](/api/service#/Relationship%20Queries/Check).
+For more information, please see [Comparison between check, read and expand](./interacting/check-read-expand.mdx) and [Check API Request Documentation](/api/service#Relationship%20Queries/Check).
 
 </details>
 
@@ -453,7 +453,7 @@ Unlike relationship tuples, they are not written to the system state. However, i
 
 <!-- markdown-link-check-disable -->
 
-For more information, please see [Contextual and Time-Based Authorization](./modeling/contextual-time-based-authorization.mdx), [Authorization Through Organization Context](./modeling/organization-context-authorization.mdx) and [Check API Request Documentation](/api/service#/Relationship%20Queries/Check).
+For more information, please see [Contextual and Time-Based Authorization](./modeling/contextual-time-based-authorization.mdx), [Authorization Through Organization Context](./modeling/organization-context-authorization.mdx) and [Check API Request Documentation](/api/service#Relationship%20Queries/Check).
 
 <!-- markdown-link-check-enable -->
 
