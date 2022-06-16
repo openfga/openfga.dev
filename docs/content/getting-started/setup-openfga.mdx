@@ -79,6 +79,6 @@ If you have tried OpenFGA locally, decided it works as expected, and now want to
 - Update the configuration as follows:
   - Configure authentication on the server as explained above.
   - Enable TLS on the server.
-  - Enable production logging by changing the `OPENFGA_DEVELOPMENT_LOGGING` environment variable to `false`.
-- Add a rate limiter interceptor [here](https://github.com/openfga/openfga/blob/400c6eb7af873f397522094d02771510ebd5a73e/server/server.go#L77) that protects your OpenFGA server against bursts in traffic.
-- Add a logger interceptor [here](https://github.com/openfga/openfga/blob/400c6eb7af873f397522094d02771510ebd5a73e/server/server.go#L77) that sends logging to your logging platform of choice.
+  - Enable production logging by changing the `OPENFGA_LOG_FORMAT` environment variable to `json`.
+- Add a rate limiter interceptor (for example, [in the server configuration](https://pkg.go.dev/github.com/openfga/openfga/server#Config)) that protects your OpenFGA server against bursts in traffic.
+- Add a logger interceptor (for example, [in the server configuration](https://pkg.go.dev/github.com/openfga/openfga/server#Config)) that sends logs to your logging platform of choice.
