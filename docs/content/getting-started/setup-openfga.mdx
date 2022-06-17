@@ -19,8 +19,9 @@ This article explains how to start your own OpenFGA server using Docker, and how
 
 If you want to run OpenFGA locally as a Docker container, follow these steps:
 
-1. [Install Docker](https://docs.docker.com/get-docker/).
-2. Run `docker run -p 127.0.0.1:8080:8080 -p 127.0.0.1:8081:8081 openfga/openfga`.
+1. [Install Docker](https://docs.docker.com/get-docker/) if Docker was not already installed.
+2. Run `docker pull openfga/openfga` to get the latest docker image.
+3. Run `docker run -p 8080:8080 openfga/openfga run`.
 
 This will start an HTTP server and gRPC server with the default configuration options.
 
