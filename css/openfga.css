@@ -1,4 +1,4 @@
-/* Custome OpenFGA styling (not ifm vars) */
+/* Custom OpenFGA styling (not ifm vars) */
 
 :root {
   /* Colors */
@@ -212,7 +212,7 @@ a:visited {
   cursor: pointer;
 }
 
-/* Normally we wouldn't use max-width, but it appears to be neccessary */
+/* Normally we wouldn't use max-width, but it appears to be necessary */
 /* here to avoid !important due to Docusaurus styles specificity       */
 @media screen and (max-width: 576px) {
   .navbar__search-input {
@@ -220,7 +220,7 @@ a:visited {
     color: var(--ofga-neutral-darkest);
   }
   .navbar__search-input:focus {
-    transition: 0.2s all ease-in-out;
+    width: 8rem;
   }
   .navbar__search-input:not(:focus) {
     background-position: center center;
@@ -228,7 +228,6 @@ a:visited {
     cursor: pointer;
     height: 2rem;
     padding: 0;
-    transition: 0.2s all ease-in-out;
     width: 2rem;
   }
   .navbar__search button {
