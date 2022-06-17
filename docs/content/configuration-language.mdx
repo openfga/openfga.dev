@@ -26,7 +26,7 @@ The **DSL** and the **JSON** syntax are two presentations of that configuration 
 
 You'll encounter the JSON syntax when calling the API directly or through the [SDKs](./getting-started), and the DSL when interacting with <ProductName format={ProductNameFormat.ShortForm}/> through the [Playground](https://play.fga.dev/). Throughout the documentation you can switch between the two presentations.
 
-To better understand this guide correctly, you should be familiar with some <ProductConcept /> and [how to get started on modeling](./modeling/getting-started.mdx).
+To understand this guide better, you should be familiar with some <ProductConcept /> and [How to get started on modeling](./modeling/getting-started.mdx).
 
 ## What Does The Configuration Language Look Like?
 
@@ -258,9 +258,9 @@ For example, let's take a closer look at the `team` type.
   }}
 />
 
-This `team` _<ProductConcept section="what-is-a-type-definition" linkName="type definitions" />_ defines all _<ProductConcept section="what-is-a-relation" linkName="relations" />_ _<ProductConcept section="what-is-a-user" linkName="users" />_ can have with an _<ProductConcept section="what-is-an-object" linkName="object" />_ of _type_ `team`. In this case the _relations_ is: `member`.
+This `team` _<ProductConcept section="what-is-a-type-definition" linkName="type definition" />_ defines all the _<ProductConcept section="what-is-a-relation" linkName="relations" />_ that _<ProductConcept section="what-is-a-user" linkName="users" />_ can have with an _<ProductConcept section="what-is-an-object" linkName="object" />_ of _type_ `team`. In this case the _relation_ is: `member`.
 
-Due to the direct relationship keyword (`self`) being used, this means that a user in the system can have a **<ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" />** with the `team` type as a `member`.
+Due to the direct relationship keyword (`self`) being used, a user in the system can have a **<ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" />** with the `team` type as a `member`.
 
 In the type definition snippet above, `anne` is a `member` of `team:product` if _any one of_ the following relationship tuple sets exist:
 
@@ -337,7 +337,7 @@ You can also reference other relations on the same object. Let us look at a simp
   }}
 />
 
-The above `document` _<ProductConcept section="what-is-a-type-definition" linkName="type definition" />_ defines all the _<ProductConcept section="what-is-a-relation" linkName="relations" />_ _<ProductConcept section="what-is-a-user" linkName="users" />_ can have with an _<ProductConcept section="what-is-an-object" linkName="object" />_ of _type_ `document`. In this case the _relations_ are: `editor`, `viewer` and `can_rename`.
+The above `document` _<ProductConcept section="what-is-a-type-definition" linkName="type definition" />_ defines all the _<ProductConcept section="what-is-a-relation" linkName="relations" />_ that _<ProductConcept section="what-is-a-user" linkName="users" />_ can have with an _<ProductConcept section="what-is-an-object" linkName="object" />_ of _type_ `document`. In this case the _relations_ are: `editor`, `viewer` and `can_rename`.
 
 The `viewer` and `can_rename` _relation definitions_ are both referencing `editor`, which is another relation on the same type.
 
@@ -362,7 +362,7 @@ In the _type definition_ snippet above, `anne` is a `viewer` of `document:new-ro
     ]}
   />
 
-- _anne_ is a _viewer_ to _document:new-roadmap_
+- _anne_ is a _viewer_ of _document:new-roadmap_
   <RelationshipTuplesViewer
     relationshipTuples={[
       {
@@ -374,7 +374,7 @@ In the _type definition_ snippet above, `anne` is a `viewer` of `document:new-ro
     ]}
   />
 
-`anne` has a `can_rename` relationship with `document:new-roadmap` only if anne has an `editor` relationship with the document:
+`anne` has a `can_rename` relationship with `document:new-roadmap` only if `anne` has an `editor` relationship with the document:
 
 - _anne_ is an _editor_ of _document:new-roadmap_
   <RelationshipTuplesViewer
