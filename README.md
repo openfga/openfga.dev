@@ -84,10 +84,10 @@ docker run --init --rm -p 3000:80 fga-docs
 ```
 
 ## Contributing
-Please review the Contributing Guidelines before sending a PR or opening an issue.
+Please review the [Contributing Guidelines](https://github.com/openfga/.github/blob/main/CONTRIBUTING.md) before sending a PR or opening an issue.
 
 ## Issue Reporting
-If you find a bug or inaccuracy in the documentation content, please report it in this repository's issues section. Please do not report security vulnerabilities on the public GitHub issue tracker. The Responsible Disclosure Program details the procedure for disclosing security issues.
+If you find a bug or inaccuracy in the documentation content, please report it in this repository's [issues section](https://github.com/openfga/openfga.dev/issues). Please do not report security vulnerabilities on the public GitHub issue tracker. Refer to [the security policy](https://github.com/openfga/.github/blob/main/SECURITY.md) for disclosing security issues.
 
 <!-- markdown-link-check-disable -->
 ## Author
