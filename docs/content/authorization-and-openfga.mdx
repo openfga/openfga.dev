@@ -15,7 +15,7 @@ This section explains [authorization](#authentication-vs-authorization), [fine-g
 
 ## What Is OpenFGA?
 
-**OpenFGA** is an open source [Fine-Grained Authorization](#what-is-fine-grained-authorization-fga) solution based on Google's [Zanzibar](#what-is-zanzibar). It was created by the [Auth0 FGA](https://docs.fga.dev/) team and welcomes community contribution. OpenFGA is designed to make it easy for application builders to quickly add fine-grained authorization to their applications. It offers an HTTP API and has SDKs for programming languages including [Node.js/JavaScript](https://www.npmjs.com/package/@openfga/sdk), [GoLang](https://github.com/openfga/go-sdk) and [.NET](https://www.nuget.org/packages/OpenFga.Sdk). More SDKs and integrations such as Rego are planned for the future. OpenFGA is designed and optimized for reliability and low latency at a high scale.
+**OpenFGA** is an open source solution to [Fine-Grained Authorization](#what-is-fine-grained-authorization-fga) that applies the concept of [ReBAC](#what-is-relationship-based-access-control-rebac). It was created by the [Auth0 FGA](https://docs.fga.dev/) team and was inspired by [Zanzibar](#what-is-zanzibar). It was designed for reliability and low latency at a high scale. It offers an HTTP API and has SDKs for programming languages including [Node.js/JavaScript](https://www.npmjs.com/package/@openfga/sdk), [GoLang](https://github.com/openfga/go-sdk) and [.NET](https://www.nuget.org/packages/OpenFga.Sdk). More SDKs and integrations such as Rego are planned for the future.
 
 <Playground intro={true} />
 
@@ -29,7 +29,7 @@ For example, when logging in to Twitter, the process in which Twitter verifies t
 
 ## What Is Fine-Grained Authorization (FGA)?
 
-**Fine-Grained Authorization** is being able to grant individual users access to specific objects or resources in a system. FGA at Scale means being able to do so in a system that can have millions (or billions or even more) of objects, users and relations, and has a high change rate - objects are regularly added and access permissions are constantly being updated. A good example of this is Google Drive - access can be granted either to documents, or folders; it can be granted to users individually or as a group. Access regularly changes as new documents are created and shared with specific users, whether inside the same company or outside.
+**Fine-Grained Authorization** is being able to grant individual users access to specific objects or resources in a system. FGA at scale means being able to do so in a system that can have millions of objects, users and relations, and has a high change rate - objects are regularly added and access permissions are constantly being updated. A good example of this is Google Drive, where access can be granted either to documents, or folders; it can be granted to users individually or as a group. Access regularly changes as new documents are created and shared with specific users, whether inside the same company or outside.
 
 ## What Are Role-Based Access Control (RBAC) And Attribute-Based Access Control (ABAC)?
 
