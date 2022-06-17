@@ -7284,11 +7284,12 @@
   color: var(--ofga-color-foreground);
   font-size: 1rem;
   font-weight: 400;
-  min-width: 100px;
+  min-width: 70px;
   padding: 8px 0;
   text-align: center;
   /* text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);   */
 }
+
 .swagger-ui .opblock .opblock-summary-operation-id,
 .swagger-ui .opblock .opblock-summary-path,
 .swagger-ui .opblock .opblock-summary-path__deprecated {
@@ -7309,10 +7310,23 @@
     font-size: 12px;
   }
 }
+
 .swagger-ui .opblock .opblock-summary-path {
   flex-shrink: 0;
-  max-width: calc(100% - 110px - 15rem);
 }
+
+@media (min-width: 768px) {
+  .swagger-ui .opblock .opblock-summary-method {
+    min-width: 100px;
+    padding: 8px 0;
+  }
+
+  .swagger-ui .opblock .opblock-summary-path {
+    flex-shrink: 0;
+    max-width: calc(100% - 110px - 15rem);
+  }
+}
+
 .swagger-ui .opblock .opblock-summary-path__deprecated {
   text-decoration: line-through;
 }
@@ -7325,6 +7339,13 @@
   font-size: 13px;
   word-break: break-word;
 }
+
+@media (max-width: 768px) {
+  .swagger-ui .opblock .opblock-summary-description {
+    display: none;
+  }
+}
+
 .swagger-ui .opblock .opblock-summary {
   align-items: center;
   cursor: pointer;
