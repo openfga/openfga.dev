@@ -24,9 +24,11 @@ To get started, install the <ProductName format={ProductNameFormat.ShortForm}/> 
 <Tabs groupId="languages">
 <TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
 
-You can find find the Node.js package on npm at: [@openfga/sdk](https://www.npmjs.com/package/@openfga/sdk).
+You can find the Node.js package on npm at: [@openfga/sdk](https://www.npmjs.com/package/@openfga/sdk).
 
-Using [npm](https://npmjs.org):
+Using [npm](https://www.npmjs.com/):
+
+<!-- markdown-link-check-disable -->
 
 ```shell
 npm install @openfga/sdk
@@ -41,11 +43,10 @@ yarn add @openfga/sdk
 </TabItem>
 <TabItem value={SupportedLanguage.GO_SDK} label={languageLabelMap.get(SupportedLanguage.GO_SDK)}>
 
-You can find find the Go package on GitHub at: [@openfga/go-sdk](https://github.com/openfga/go-sdk).
+You can find the Go package on GitHub at: [@openfga/go-sdk](https://github.com/openfga/go-sdk).
 
 To install:
 
-<!-- markdown-link-check-disable -->
 ```
 go get -u github.com/openfga/go-sdk
 ```
@@ -56,9 +57,8 @@ In your code, import the module and use it:
 import (
   fgaSdk "github.com/openfga/go-sdk"
 )
-<!-- markdown-link-check-enable -->
 
-func Main() {
+func main() {
 	configuration, err := fgaSdk.NewConfiguration(fgaSdk.UserConfiguration{})
 }
 ```
@@ -74,11 +74,13 @@ to update `go.mod` and `go.sum` if you are using them.
 </TabItem>
 <TabItem value={SupportedLanguage.DOTNET_SDK} label={languageLabelMap.get(SupportedLanguage.DOTNET_SDK)}>
 
+<!-- markdown-link-check-enable -->
+
 The <ProductName format={ProductNameFormat.ShortForm}/> .NET SDK is available on [NuGet](https://www.nuget.org/packages/OpenFga.Sdk).
 
 You can install it using:
 
-- The [dotnet CLI](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-dotnet-cli)
+- The [dotnet CLI](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-dotnet-cli):
 
 ```powershell
 dotnet add package OpenFGA.Sdk
@@ -90,12 +92,11 @@ dotnet add package OpenFGA.Sdk
 Install-Package OpenFGA.Sdk
 ```
 
-- [Visual Studio](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio), [Visual Studio for Mac](https://docs.microsoft.com/en-us/visualstudio/mac/nuget-walkthrough) and [IntelliJ Rider](https://www.jetbrains.com/help/rider/Using_NuGet.html)
-
-Search for and install `OpenFGA.Sdk` in each of their respective package manager UIs.
+- [Visual Studio](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio), [Visual Studio for Mac](https://docs.microsoft.com/en-us/visualstudio/mac/nuget-walkthrough) and [IntelliJ Rider](https://www.jetbrains.com/help/rider/Using_NuGet.html): Search for and install `OpenFGA.Sdk` in each of their respective package manager UIs.
 
 </TabItem>
 </Tabs>
+
 <ProductConcept section="what-is-a-check-request" linkName="check API" />
 
 ## Related Sections
@@ -120,4 +121,3 @@ Search for and install `OpenFGA.Sdk` in each of their respective package manager
     },
   ]}
 />
-

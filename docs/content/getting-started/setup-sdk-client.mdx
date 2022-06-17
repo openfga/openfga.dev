@@ -93,7 +93,7 @@ class MyProgram {
 If you want to use shared key authentication, you need to generate a random string that will work as secret and set that key when building your OpenFGA server. Then, when building the client, set it as environment variable `FGA_BEARER_TOKEN`.
 
 :::caution Warning
-If you are going to use this setup in production, you should enable TLS in your OpenFGA server. Please see the [Production Checklist](./setup-openfga.mdx#production-checklist).
+If you are going to use this setup in production, you should enable TLS in your OpenFGA server. Please see the [Production Checklist](./setup-openfga.mdx#production-recommendations).
 :::
 
 
@@ -106,7 +106,7 @@ const { OpenFgaApi } = require('@openfga/sdk'); // OR import { OpenFgaApi } from
 const openFga = new OpenFgaApi({
     apiScheme: process.env.FGA_API_SCHEME, // optional, defaults to "https"
     apiHost: process.env.FGA_API_HOST, // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
-    storeId: process.env.FGA_STORE_ID,
+    storeId: process.env.FGA_STORE_ID, // optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
     credentials: {
         method: CredentialsMethod.ApiToken,
         token: process.env.FGA_BEARER_TOKEN,
@@ -123,12 +123,17 @@ import (
     "os"
 )
 
-func Main() {
+func main() {
     configuration, err := openfga.NewConfiguration(openfga.Configuration{
         ApiScheme:      os.Getenv("FGA_API_SCHEME"), // optional, defaults to "https"
         ApiHost:        os.Getenv("FGA_API_HOST"), // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
-        ApiToken:       os.Getenv("FGA_BEARER_TOKEN"),
-        StoreId:        os.Getenv("FGA_STORE_ID"),
+        StoreId:        os.Getenv("FGA_STORE_ID"), // optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
+        Credentials: &credentials.Credentials{
+            Method: credentials.CredentialsMethodApiToken,
+            Config: {
+                ApiToken: os.Getenv("FGA_BEARER_TOKEN"), // will be passed as the "Authorization: Bearer ${ApiToken}" request header
+            },
+        },
     })
 
     if err != nil {
@@ -154,9 +159,8 @@ class MyProgram {
         var configuration = new Configuration(environment) {
             ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // optional, defaults to "https"
             ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST"), // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
-            ApiToken = Environment.GetEnvironmentVariable("FGA_BEARER_TOKEN"),
-            StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID")
-
+            StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"),  // optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
+            DefaultHeaders = {new KeyValuePair<string, string>("Authorization", $"Bearer {Environment.GetEnvironmentVariable("FGA_BEARER_TOKEN")}")}
         };
         var fgaClient = new OpenFgaApi(configuration);
     }

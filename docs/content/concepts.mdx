@@ -21,7 +21,7 @@ import {
 
 <DocumentationNotice />
 
-The <ProductName format={ProductNameFormat.ProductLink}/> service answers <IntroductionSection linkName="authorization" section="what-is-authorization"/> [checks](#what-is-a-check-request) by determining whether a **[relationship](#what-is-a-relation)** exists between an [object](#what-is-an-object) and a [user](#what-is-a-user). Checks takes into consideration the **[authorization model](#what-is-an-authorization-model)** of the system and the **[relationship tuples](#what-is-a-relationship-tuple)** present in the system at that time in order to make a decision.
+The <ProductName format={ProductNameFormat.ProductLink}/> service answers <IntroductionSection linkName="authorization" section="authentication-vs-authorization"/> [checks](#what-is-a-check-request) by determining whether a **[relationship](#what-is-a-relation)** exists between an [object](#what-is-an-object) and a [user](#what-is-a-user). Checks takes into consideration the **[authorization model](#what-is-an-authorization-model)** of the system and the **[relationship tuples](#what-is-a-relationship-tuple)** present in the system at that time in order to make a decision.
 
 In this guide you will learn about the most relevant FGA concepts, such as a type or an authorization model, and you will be able to explore them using the [FGA playground](https://play.fga.dev/).
 
@@ -271,7 +271,7 @@ For more information, please see [Direct Access](./modeling/direct-access.mdx).
 
 ## What Is A Relationship Tuple?
 
-A **relationship tuple** is a tuple consisting of a user, relation and object stored in <ProductName format={ProductNameFormat.ShortForm}/> .
+A **relationship tuple** is a tuple consisting of a user, relation and object stored in <ProductName format={ProductNameFormat.ShortForm}/>.
 
 </summary>
 
@@ -426,7 +426,7 @@ A **check request** is a call to the <ProductName format={ProductNameFormat.Long
 
 </summary>
 
-This can be done using the `check` methods in the <ProductName format={ProductNameFormat.ShortForm}/> SDKs ([JavaScript SDK](https://www.npmjs.com/package/@openfga/sdk)/[Go SDK](https://github.com/openfga/go-sdk)/[.NET SDK](https://www.nuget.org/packages/OpenFga.Sdk)), by manually calling the [check endpoint](/api/service#/Relationship%20Queries/Check) using curl, or in your code.
+This can be done using the `check` methods in the <ProductName format={ProductNameFormat.ShortForm}/> SDKs ([JavaScript SDK](https://www.npmjs.com/package/@openfga/sdk)/[Go SDK](https://github.com/openfga/go-sdk)/[.NET SDK](https://www.nuget.org/packages/OpenFga.Sdk)), by manually calling the [check endpoint](/api/service#Relationship%20Queries/Check) using curl, or in your code.
 
 The check endpoint responds with `{ "allowed": true }` if a relationship exists, and with `{ "allowed": false }` if the relationship does not.
 
@@ -434,7 +434,7 @@ For example, the following will check whether `anne` has a `viewer` relation to 
 
 <CheckRequestViewer user={'anne'} relation={'viewer'} object={'document:new-roadmap'} allowed={true} />
 
-For more information, please see [Comparison between check, read and expand](./interacting/check-read-expand.mdx) and [Check API Request Documentation](/api/service#/Relationship%20Queries/Check).
+For more information, please see [Comparison between check, read and expand](./interacting/check-read-expand.mdx) and [Check API Request Documentation](/api/service#Relationship%20Queries/Check).
 
 </details>
 
@@ -443,17 +443,17 @@ For more information, please see [Comparison between check, read and expand](./i
 
 ## What Are Contextual Tuples?
 
-Contextual tuples are tuples that are sent alongside a check request, and only exist within the context of that particular request.
+Contextual tuples are tuples that can be added to a check request, and only exist within the context of that particular request.
 
 </summary>
 
 Similar to [relationship tuples](#what-is-a-relationship-tuple), contextual tuples are composed of a user, relation and object.
 
-Unlike relationship tuples, they are not written to the system state. However, if contextual tuples are sent alongside a check request, in the context of this particular check request, they are treated as have been written to the system state.
+Unlike relationship tuples, they are not written to the store. However, if contextual tuples are sent alongside a check request, in the context of this particular check request, they are treated if they had been written in the store.
 
 <!-- markdown-link-check-disable -->
 
-For more information, please see [Contextual and Time-Based Authorization](./modeling/contextual-time-based-authorization.mdx), [Authorization Through Organization Context](./modeling/organization-context-authorization.mdx) and [Check API Request Documentation](/api/service#/Relationship%20Queries/Check).
+For more information, please see [Contextual and Time-Based Authorization](./modeling/contextual-time-based-authorization.mdx), [Authorization Through Organization Context](./modeling/organization-context-authorization.mdx) and [Check API Request Documentation](/api/service#Relationship%20Queries/Check).
 
 <!-- markdown-link-check-enable -->
 
@@ -480,7 +480,7 @@ For example, in a case where you would like to indicate a certain document `docu
   ]}
 />
 
-Note that `*` has no special meaning when used in other contexts. For example, `workspace:*` as an [object](#what-is-an-object) means a single object with the type `workspace` and identifier the string `*`.
+Note that `*` has no special meaning when used in the `relation` or `object` properties. For example, `workspace:*` as an [object](#what-is-an-object) means a single object with the type `workspace` and identifier `*`.
 For more information, please see [Modeling Public Access](./modeling/public-access.mdx) and [Advanced Modeling: Modeling Google Drive](./modeling/advanced/gdrive.mdx).
 
 </details>
