@@ -1,7 +1,10 @@
 import Link from '@docusaurus/Link';
 import * as React from 'react';
 import { Section } from '@components/Section';
-import QuickStartImg from '@static/img/openfga_quickstart_terminal.svg';
+
+import terminalMp4 from './terminal.mp4';
+import terminalWebm from './terminal.webm';
+import terminalImg from './terminal.png';
 
 import styles from './QuickStartSection.module.css';
 
@@ -24,7 +27,10 @@ const QuickStartSection = () => {
           </p>
         </div>
         <div className={styles.graphic}>
-          <QuickStartImg />
+          <video width="646" preload="auto" autoPlay muted loop className={styles.terminalImg} poster={terminalImg}>
+            <source src={terminalWebm} type="video/webm" />
+            <source src={terminalMp4} type="video/mp4" />
+          </video>
         </div>
       </div>
     </Section>

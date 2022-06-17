@@ -20,13 +20,12 @@
 @media screen and (min-width: 996px) {
   .container {
     flex-direction: row;
-    gap: 5rem;
   }
 }
 
 @media screen and (min-width: 996px) {
   .content {
-    flex: 0 0 29%;
+    width: calc(50% - 50px - 32px);
   }
 }
 
@@ -52,7 +51,7 @@
 
 .graphic {
   margin-top: 3rem;
-  flex: 1;
+  width: calc(50% + 50px - 32px);
   display: flex;
   justify-content: center;
 }
