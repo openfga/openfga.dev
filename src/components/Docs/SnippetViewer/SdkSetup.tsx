@@ -39,8 +39,9 @@ ${importSdkStatement(lang, languageMappings)}
 
 // Initialize the SDK with no auth - see "How to setup SDK client" for more options
 const fgaClient = new ${languageMappings['js'].apiName}({
-  storeId: process.env.FGA_STORE_ID,
-  apiHost: process.env.FGA_API_HOST,
+  apiScheme: process.env.FGA_API_SCHEME, // Either "http" or "https", defaults to "https"
+  apiHost: process.env.FGA_API_HOST, // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
+  storeId: process.env.FGA_STORE_ID, // Either "http" or "https", defaults to "https"
 });`;
 
     case SupportedLanguage.GO_SDK:
@@ -50,12 +51,12 @@ const fgaClient = new ${languageMappings['js'].apiName}({
     "os"
 )
 
-func Main() {
+func main() {
     // Initialize the SDK with no auth - see "How to setup SDK client" for more options
     configuration, err := fgaSdk.NewConfiguration(fgaSdk.UserConfiguration{
-        ApiHost:        os.Getenv("FGA_API_HOST"),  
-        ApiScheme:      os.Getenv("FGA_SCHEME"), // Either "http" or "https"
-        StoreId:        os.Getenv("FGA_STORE_ID"),
+        ApiScheme:      os.Getenv("FGA_SCHEME"), // Either "http" or "https", defaults to "https"
+        ApiHost:        os.Getenv("FGA_API_HOST"), // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
+        StoreId:        os.Getenv("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
     })
 
     if err != nil {
@@ -77,8 +78,9 @@ class MyProgram {
     static async Task Main() {
         // Initialize the SDK with no auth - see "How to setup SDK client" for more options
         var configuration = new Configuration(storeId, environment) {
-          StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"),
-          ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST"),
+          ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // Either "http" or "https", defaults to "https"
+          ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST"), // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
+          StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
         };
         var fgaClient = new ${languageMappings['js'].apiName}(configuration);
     }

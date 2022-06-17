@@ -28,6 +28,8 @@ You can find the Node.js package on npm at: [@openfga/sdk](https://www.npmjs.com
 
 Using [npm](https://www.npmjs.com/):
 
+<!-- markdown-link-check-disable -->
+
 ```shell
 npm install @openfga/sdk
 ```
@@ -45,7 +47,6 @@ You can find the Go package on GitHub at: [@openfga/go-sdk](https://github.com/o
 
 To install:
 
-<!-- markdown-link-check-disable -->
 ```
 go get -u github.com/openfga/go-sdk
 ```
@@ -56,9 +57,8 @@ In your code, import the module and use it:
 import (
   fgaSdk "github.com/openfga/go-sdk"
 )
-<!-- markdown-link-check-enable -->
 
-func Main() {
+func main() {
 	configuration, err := fgaSdk.NewConfiguration(fgaSdk.UserConfiguration{})
 }
 ```
@@ -73,6 +73,8 @@ to update `go.mod` and `go.sum` if you are using them.
 
 </TabItem>
 <TabItem value={SupportedLanguage.DOTNET_SDK} label={languageLabelMap.get(SupportedLanguage.DOTNET_SDK)}>
+
+<!-- markdown-link-check-enable -->
 
 The <ProductName format={ProductNameFormat.ShortForm}/> .NET SDK is available on [NuGet](https://www.nuget.org/packages/OpenFga.Sdk).
 
@@ -94,6 +96,7 @@ Install-Package OpenFGA.Sdk
 
 </TabItem>
 </Tabs>
+
 <ProductConcept section="what-is-a-check-request" linkName="check API" />
 
 ## Related Sections
@@ -118,4 +121,3 @@ Install-Package OpenFGA.Sdk
     },
   ]}
 />
-
