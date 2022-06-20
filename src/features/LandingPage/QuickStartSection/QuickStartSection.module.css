@@ -25,7 +25,8 @@
 
 @media screen and (min-width: 996px) {
   .content {
-    width: calc(50% - 50px - 32px);
+    /* Half the width, minus 50px (grid gap) minus 32px (padding) */
+    width: calc(50% - 5rem);
   }
 }
 
@@ -60,7 +61,8 @@
 @media screen and (min-width: 996px) {
   .terminalContainer {
     margin-top: 0;
-    width: calc(50% + 50px - 32px);
+    /* Half the width, plus 50px (grid gap) minus 32px (padding) */
+    width: calc(50% + 1.125rem);
     display: flex;
     justify-content: center;
   }
