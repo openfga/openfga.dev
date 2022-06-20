@@ -49,20 +49,24 @@
   line-height: 1.28;
 }
 
-.graphic {
+.terminalContainer {
   margin-top: 3rem;
-  width: calc(50% + 50px - 32px);
-  display: flex;
-  justify-content: center;
+}
+.terminalImg {
+  max-width: 100%;
+  width: 100%;
 }
 
 @media screen and (min-width: 996px) {
-  .graphic {
+  .terminalContainer {
     margin-top: 0;
+    width: calc(50% + 50px - 32px);
+    display: flex;
+    justify-content: center;
   }
 }
 
-.graphic svg {
+.terminal svg {
   height: 100%;
   object-fit: cover;
   width: 100%;
@@ -70,4 +74,10 @@
 
 .section a:hover {
   background-color: var(--true-black);
+}
+
+.dockerSnippet {
+  padding: 1rem;
+  font-size: 0.875rem;
+  background-color: #000;
 }
