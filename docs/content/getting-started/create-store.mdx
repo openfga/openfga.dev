@@ -29,8 +29,8 @@ This article explains how to setup an OpenFGA store.
 const { OpenFgaApi } = require('@openfga/sdk'); // OR import { OpenFgaApi } from '@openfga/sdk';
 
 const openFga = new OpenFgaApi({
-    apiScheme: FGA_API_SCHEME, // optional, defaults to "https"
-    apiHost: FGA_API_HOST // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
+    apiScheme: process.env.FGA_API_SCHEME, // optional, defaults to "https"
+    apiHost: process.env.FGA_API_HOST // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
 });
 
 openFga.createStore()
