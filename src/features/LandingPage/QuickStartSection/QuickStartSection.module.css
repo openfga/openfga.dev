@@ -60,11 +60,11 @@
 
 @media screen and (min-width: 996px) {
   .terminalContainer {
+    display: flex;
+    justify-content: center;
     margin-top: 0;
     /* Half the width, plus 50px (grid gap) minus 32px (padding) */
     width: calc(50% + 1.125rem);
-    display: flex;
-    justify-content: center;
   }
 }
 
@@ -79,7 +79,8 @@
 }
 
 .dockerSnippet {
-  padding: 1rem;
-  font-size: 0.875rem;
   background-color: #000;
+  font-size: 0.875rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
 }

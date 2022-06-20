@@ -110,7 +110,7 @@ using OpenFga.Sdk.Configuration;`,
       form-action 'none';
       frame-src www.youtube-nocookie.com;
       img-src 'self' data: https://pbs.twimg.com https://docs.github.com https://heapanalytics.com;
-      media-src 'none';
+      media-src 'self';
       object-src 'none';
       script-src 'self' ${
         process.env.NODE_ENV === 'development' ? `'unsafe-eval'` : ``
@@ -199,8 +199,8 @@ using OpenFga.Sdk.Configuration;`,
           name: 'keywords',
           content: 'OpenFGA, open source, fine-grained-authorization, fine grained authorization, Zanzibar',
         },
-        { 
-          property: 'og:image', 
+        {
+          property: 'og:image',
           content: 'https://openfga.dev/img/og-rich-embed.png',
         },
       ],
