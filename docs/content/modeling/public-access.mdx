@@ -33,7 +33,7 @@ Public access allows your application to grant every user in the system access t
 
 </div> />
 
-## Before you start
+## Before You Start
 
 In order to understand this guide correctly you must be familiar with some <ProductConcept /> and know how to develop the things that we will list below.
 
@@ -64,7 +64,7 @@ You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `d
 
 In addition, you will need to know the following:
 
-### Modeling Basics
+### Direct Access
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](./direct-access.mdx)
 
@@ -85,11 +85,11 @@ Make sure to use unique ids for each object and user within your application dom
 
 <Playground />
 
-## Step by Step
+## Step By Step
 
 In previous guides, we have shown how to indicate that objects are related to users or objects. In some cases, you might want to indicate that everyone is related to an object (for example when sharing a document publicly).
 
-### 01. Create a relationship tuple
+### 01. Create A Relationship Tuple
 
 To do this we need to create a relationship tuple using the <ProductConcept section="how-do-i-represent-everyone" linkName="`*`" /> syntax. The `*` syntax is used to indicate that all users and objects have a relation) to a specific object.
 
@@ -106,7 +106,7 @@ Let us create a relationship tuple that states: **anyone can view document:compa
   ]}
 />
 
-### 02. Check that the relationship exists
+### 02. Check That The Relationship Exists
 
 Once the above _relationship tuple_ is added, we can <ProductConcept section="what-is-a-check-request" linkName="check" /> if **bob** cab `view` `document`:**company-psa.doc**. <ProductName format={ProductNameFormat.ShortForm}/> will return `{ "allowed": true }` even though no relationship tuple linking **bob** to the document was added. That is because the relationship tuple with `*` as the user made it so everyone can `view` the document, making it public.
 

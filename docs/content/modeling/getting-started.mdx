@@ -35,7 +35,7 @@ Creating a <IntroductionSection linkName="Relationship Based Access Control (ReB
 
 This guide outlines a process for defining your <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" /> with <ProductName format={ProductNameFormat.ProductLink}/>.
 
-## Introduction to modeling
+## Introduction To Modeling
 
 To define a ReBAC model in <ProductName format={ProductNameFormat.ShortForm}/> we recommend:
 
@@ -107,7 +107,7 @@ Let's get started!
 
 ---
 
-## A process for defining authorization models
+## A Process For Defining Authorization Models
 
 Defining an authorization model requires codifying an answer to the question "why could user U perform an action A on an object O?" for all use cases or actions in your system. This is an iterative process. For the purpose of this guide, we'll go through one iteration of this process using a simplified Google Drive like system as an example.
 
@@ -122,7 +122,7 @@ Steps for defining your authorization model:
 
 ![The starting point](./assets/getting-started-diagram-01.svg)
 
-### 01. Pick the most important feature
+### 01. Pick The Most Important Feature
 
 ![Pick the most important feature](./assets/getting-started-diagram-02.svg)
 
@@ -137,7 +137,7 @@ Start with the most important feature. It doesn't have to be the most complex on
 
 :::
 
-#### Write it in plain language
+#### Write It In Plain Language
 
 Once you've picked a feature, describe its authorization related scope using simple language. Avoid using the word "roles", as this ties you to an RBAC way of thinking.
 
@@ -207,7 +207,7 @@ This feature can be described with these sentences:
 
 </CardBox>
 
-### 02. List the object types
+### 02. List The Object Types
 
 ![List the object types](./assets/getting-started-diagram-03.svg)
 
@@ -344,7 +344,7 @@ The only second noun we didn't have in our object type list is "Drive", so we'll
   <CardBox icon={{ icon: <DriveIcon />, alignment: 'left', label: 'Drive' }} />
 </ColumnLayout>
 
-Now that we have a list of object types we can start defining them using the <UpdateProductNameInLinks link="./configuration-language" name="{ProductName} Configuration Language" />:
+Now that we have a list of object types we can start defining them using the <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" />:
 
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
@@ -380,7 +380,7 @@ In a few cases other users can be part of determining whether an action can be p
 In those cases [**User** should also be an object type](./building-blocks/object-to-object-relationships.mdx). Following the last recommendation, we would discover the User type because it is a second noun in an expression: "friend of the user".
 :::
 
-### 03. List relations for those types
+### 03. List Relations For Those Types
 
 ![List relations for those types](./assets/getting-started-diagram-04.svg)
 
@@ -495,7 +495,7 @@ The resulting list is:
 In <ProductName format={ProductNameFormat.ShortForm}/>, relations can only have alphanumeric characters, underscores and hyphens. We recommend using underscore (\_) to separate words and removing prepositions. E.g.: "can create a document" can become "can_create_document" or "create_document" if you are into brevity.
 :::
 
-Using the <UpdateProductNameInLinks link="./configuration-language" name="{ProductName} Configuration Language" /> we can enumerate the relations for each type:
+Using the <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" /> we can enumerate the relations for each type:
 
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
@@ -538,11 +538,11 @@ Using the <UpdateProductNameInLinks link="./configuration-language" name="{Produ
 You're now in the process of building a version you can use. The model above is not yet a valid authorization model accepted by <ProductName format={ProductNameFormat.ShortForm}/>.
 :::
 
-### 04. Define relations
+### 04. Define Relations
 
 ![Define relations](./assets/getting-started-diagram-05.svg)
 
-We will use the <UpdateProductNameInLinks link="./configuration-language" name="{ProductName} Configuration Language" /> to create a <ProductConcept section="what-is-a-relation" linkName="relation definition" /> for each of the relations we identified. At this stage we will encode the answers to the question we asked at the beginning of the document:.
+We will use the <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" /> to create a <ProductConcept section="what-is-a-relation" linkName="relation definition" /> for each of the relations we identified. At this stage we will encode the answers to the question we asked at the beginning of the document:.
 
 <div style={{ marginBottom: '2rem' }}>
   <CardBox
@@ -564,7 +564,7 @@ We are going to go over each type and each of its relations and create a definit
 
 We recommend starting from objects that represent groups/containers of users. For features in most systems these are easy to define and help reason about the other types. Examples of type names for these are "team", "group", "organization", etc.
 
-##### Relation: member
+##### Relation: Member
 
 The member relation is used to tell <ProductName format={ProductNameFormat.ShortForm}/> about the members of an organization.
 
@@ -637,7 +637,7 @@ After defining your "group" like types, continue with the most important type fo
 
 Defining relations for the main type lets you to focus on your core use case, and will likely make other type definitions easier.
 
-##### Relation: owner
+##### Relation: Owner
 
 The owner relation is used to tell <ProductName format={ProductNameFormat.ShortForm}/> which users are owners of the document.
 
@@ -662,7 +662,7 @@ Why? This <ProductConcept section="what-is-a-relation" linkName="relation defini
 - owners of a document are assignable by creating a tuple of the format
   `{ user: "{user_id}", relation: "owner", object: "document:{id}" }` for individual users
 
-##### Relation: editor
+##### Relation: Editor
 
 The editor relation is used to tell <ProductName format={ProductNameFormat.ShortForm}/> which users are editors of the document.
 
@@ -697,7 +697,7 @@ This also supports making all members in an organization editors of the document
 
 You can learn more about this in [Modeling User Groups](./user-groups.mdx).
 
-##### Relation: viewer
+##### Relation: Viewer
 
 The viewer relation is similar to the document's [editor relation](#relation-editor). It will be defined like this:
 
@@ -708,7 +708,7 @@ The viewer relation is similar to the document's [editor relation](#relation-edi
   }}
 />
 
-##### Relation: parent
+##### Relation: Parent
 
 The parent relation is used to tell <ProductName format={ProductNameFormat.ShortForm}/> which folder or drive is the parent of the document.
 
@@ -1238,7 +1238,7 @@ The <ProductName /> authorization model API and SDK only accepts JSON in its inp
 
 :::
 
-### 05. Test the model
+### 05. Test The Model
 
 ![Test the model](./assets/getting-started-diagram-06.svg)
 
@@ -1366,7 +1366,7 @@ If you have any questions about this model or others, or would like some help cr
       id: '../configuration-language',
     },
     {
-      title: 'Modeling Basics',
+      title: 'Direct Access',
       description: 'Learn about modeling user access to an object.',
       link: './direct-access',
       id: './direct-access',

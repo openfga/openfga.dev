@@ -31,7 +31,7 @@ To return the set of results that match the user's search query, you will need t
 
 There are three possible ways to do this:
 
-### Option 1: Search, then Check
+### Option 1: Search, Then Check
 
 Pre-filter, then call <ProductName format={ProductNameFormat.ShortForm}/> Check endpoint.
 
@@ -40,16 +40,16 @@ Pre-filter, then call <ProductName format={ProductNameFormat.ShortForm}/> Check 
 1. Filter out objects the user does not have access to.
 1. Return the filtered result to the user.
 
-### Option 2: Build a Local Index from Changes Endpoint, Search, then Check
+### Option 2: Build A Local Index From Changes Endpoint, Search, Then Check
 
 Consume the `GET /changes` endpoint to create a local index you can use to do an intersection on the two sets of results.
 
-1. Call the <UpdateProductNameInLinks link="/api/service#/Relationship%20Tuples/ReadChanges" name="{ProductName} changes API" />.
+1. Call the <UpdateProductNameInLinks link="/api/service#Relationship%20Tuples/ReadChanges" name="{ProductName} changes API" />.
 1. For the particular authorization model version(s) you are using in production, flatten/expand the changes (e.g. `user:anne, writer, doc:planning` becomes two tuples: `user:anne, writer, doc:planning` and `user:anne, reader, doc:planning`).
 1. Build the intersection between the objects in your database and the flattened/expanded state you created.
 1. You can then call `/check` on each resource in the resulting set before returning the response to filter out any resource with permissions revoked but whose authorization data has not made it into your index yet.
 
-### Option 3: Build a List of IDs, then Search
+### Option 3: Build A List Of IDs, Then Search
 
 :::note
 Support for this option has not been added to <ProductName format={ProductNameFormat.ShortForm}/> yet, but we will keep it here for the sake of completion.
@@ -61,7 +61,7 @@ Call the <ProductName format={ProductNameFormat.ShortForm}/> API to get a list o
 1. Pass in the set of object IDs to the database query to limit the search.
 1. Return the filtered result to the user.
 
-## Choosing the best option
+## Choosing The Best Option
 
 Which option to choose among the three listed above depends on the following criteria:
 

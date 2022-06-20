@@ -103,7 +103,7 @@ You need to know how to create relationships between objects and how that might 
 
 <Playground store="custom-roles" />
 
-## Step by Step
+## Step By Step
 
 Starting with the authorization model mentioned above, we want to enable users to create their own custom roles, and tie permissions to those roles to our two users and to the permissions on the logo asset category.
 
@@ -135,7 +135,7 @@ In order to do this, we need to:
   <li>Verify that the Authorization Model works</li>
 </ol>
 
-### 01. Update the authorization model to add a role type
+### 01. Update The Authorization Model To Add A Role Type
 
 Because our roles are going to be dynamic and might change frequently, we represent them in a new type instead of as relations on that same type. We'll create new type called `role`, where users can be related as assignee to it.
 
@@ -181,7 +181,7 @@ The authorization model becomes this:
 
 With this change we can add relationship tuples indicating that a certain user is `assigned` a certain `role`.
 
-### 02.Use Relationship Tuples to tie the Users to the Roles
+### 02.Use Relationship Tuples To Tie The Users To The Roles
 
 Once we've added the `role` type, we can assign roles to Anne and Beth. Anne is assigned the "media-manager" role and Beth is assigned the "media-viewer" role. We can do that by adding relationship tuples as follows:
 
@@ -208,7 +208,7 @@ We can verify they are members of said roles by issuing the following check requ
 
 <CheckRequestViewer user={'anne'} relation={'assignee'} object={'role:media-manager'} allowed={true} />
 
-### 03. Use Relationship Tuples to associate Permissions with the Roles
+### 03. Use Relationship Tuples To Associate Permissions With The Roles
 
 With our users and roles set up, we still need to tie members of a certain role to it's corresponding permission(s).
 
@@ -229,7 +229,7 @@ With our users and roles set up, we still need to tie members of a certain role 
   ]}
 />
 
-### 04. Verify that the Authorization Model works
+### 04. Verify That The Authorization Model Works
 
 To ensure our model works, it needs to match our expectations:
 

@@ -1,4 +1,4 @@
-/* Custome OpenFGA styling (not ifm vars) */
+/* Custom OpenFGA styling (not ifm vars) */
 
 :root {
   /* Colors */
@@ -200,9 +200,56 @@ a:visited {
 
 .navbar__search-input {
   border: 1px solid var(--ofga-neutral-light);
-  background: transparent;
-  padding: 0 5rem 0 1rem;
-  width: unset;
+}
+
+.navbar__search-input:focus {
+  border: 1px solid var(--ofga-color-primary-dark);
+  outline: 2px solid var(--ofga-color-primary);
+}
+
+.navbar__search button {
+  color: var(--ofga-neutral-darkest);
+  cursor: pointer;
+}
+
+/* Normally we wouldn't use max-width, but it appears to be necessary */
+/* here to avoid !important due to Docusaurus styles specificity       */
+@media screen and (max-width: 576px) {
+  .navbar__search-input {
+    background-color: var(--ofga-neutral-light);
+    color: var(--ofga-neutral-darkest);
+  }
+  .navbar__search-input:focus {
+    width: 8rem;
+  }
+  .navbar__search-input:not(:focus) {
+    background-position: center center;
+    color: transparent;
+    cursor: pointer;
+    height: 2rem;
+    padding: 0;
+    width: 2rem;
+  }
+  .navbar__search button {
+    color: var(--ofga-neutral-darkest);
+    cursor: pointer;
+  }
+  .navbar__search-input:not(:focus)::placeholder {
+    color: transparent;
+  }
+  .navbar__search-input::placeholder {
+    color: var(--ofga-neutral-darkest);
+  }
+}
+@media screen and (min-width: 576px) {
+  .navbar .navbar__search-input {
+    background: transparent;
+    padding: 0 5rem 0 1rem;
+    width: unset;
+  }
+  .navbar__search-input::placeholder {
+    color: var(--ofga-neutral-light);
+  }
 }
 
 /* Sidebar */
@@ -348,7 +395,7 @@ a.table-of-contents__link.table-of-contents__link--active {
   display: flex;
   flex-direction: row-reverse;
   justify-content: space-between;
-  width: var(--ifm-container-width-xl);
+  max-width: var(--ifm-container-width-xl);
 }
 
 @media screen and (min-width: 1200px) {

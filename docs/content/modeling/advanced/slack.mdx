@@ -51,7 +51,7 @@ It would be helpful to have an understanding of some concepts of <ProductName fo
 
 </summary>
 
-#### Modeling Basics
+#### Direct Access
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](../direct-access.mdx)
 
@@ -66,7 +66,7 @@ You need to know how to update the authorization model to allow having nested re
 
 </details>
 
-## What You Will You Be Modeling
+## What you will be modeling
 
 Slack is a messaging app for businesses that connects people to the information they need. By bringing people together to work as one unified team, Slack transforms the way organizations communicate. (Source: [What is Slack?](https://slack.com/intl/en-ca/help/articles/115004071768-What-is-Slack-))
 
@@ -190,7 +190,7 @@ Here is how you would express than in <ProductName format={ProductNameFormat.Sho
 
 :::
 
-### 01. Individual permissions
+### 01. Individual Permissions
 
 To keep things simple and focus on <ProductName /> rather than Slack complexity, we will model only four roles (legacy_admin, channels_admin, member, guest).
 
@@ -356,7 +356,7 @@ Let's try to verify the followings:
 | `amy`   | `workspace:sandcastle` | `member`       | `is amy related to workspace:sandcastle as member?`         | No        |
 | `david` | `workspace:sandcastle` | `member`       | `is david related to workspace:sandcastle as member?`       | No        |
 
-### 02. Updating the `workspace` authorization model with Implied Relations
+### 02. Updating The `workspace` Authorization Model With Implied Relations
 
 Some of the queries that you ran earlier, while returning the correct response, do not match reality. One of which is:
 
@@ -441,7 +441,7 @@ We can check for other users and relationships.
 | `amy`   | `workspace:sandcastle` | `member`       | `is amy related to workspace:sandcastle as member?`         | Yes       |
 | `david` | `workspace:sandcastle` | `member`       | `is david related to workspace:sandcastle as member?`       | No        |
 
-### 03. Updating the Authorization Model to include Channels
+### 03. Updating The Authorization Model To Include Channels
 
 So far, you have modeled the users' <ProductConcept section="what-is-a-relation" linkName="relations" /> to the workspace itself. In this task you will expand the model to include the relations concerning the channels.
 
@@ -495,7 +495,7 @@ The configuration snippet above describes a channel that can have the following 
 
 :::
 
-#### Implied relation
+#### Implied Relation
 
 There is an <ProductConcept section="what-are-direct-and-implied-relationships" linkName="implied relation" /> that anyone who can write to a channel can also read from it, so the authorization model can be modified to be:
 
@@ -617,7 +617,7 @@ As a result, the authorization model is:
   }}
 />
 
-#### Updating relationship tuples
+#### Updating Relationship Tuples
 
 What remains is to add the <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" /> to indicate the relation between the users, workspace and the channels.
 
@@ -643,7 +643,7 @@ The Sandcastle workspace is a parent workspace of the #general, #marketing-inter
   ]}
 />
 
-##### `#general` channel
+##### `#general` Channel
 
 The `#general` channel is a public channel visible to all the members of the workspace. In <ProductName format={ProductNameFormat.ShortForm}/>, you represent this relation in the form of the following relationship tuple:
 
@@ -682,7 +682,7 @@ And to indicate that Amy and Emily can write to it:
   ]}
 />
 
-##### `#marketing-internal` channel
+##### `#marketing-internal` Channel
 
 The `#marketing-internal` is visible to only Bob and Emily. They can view and write in it.
 
@@ -701,7 +701,7 @@ The `#marketing-internal` is visible to only Bob and Emily. They can view and wr
   ]}
 />
 
-##### `#proj-marketing-campaign` channel
+##### `#proj-marketing-campaign` Channel
 
 The `#proj-marketing-campaign` is public to all members of the Sandcastle workspace. They can view and write in it.
 
@@ -760,7 +760,7 @@ Repeat this for the following relations
 
 ## Summary
 
-- Have a basic understanding of <IntroductionSection linkName="authorization" section="what-is-authorization"/> and <ProductConcept/>.
+- Have a basic understanding of <IntroductionSection linkName="authorization" section="authentication-vs-authorization"/> and <ProductConcept/>.
 - Understand how to model authorization for a communication platform like Slack using <ProductName format={ProductNameFormat.ProductLink}/>.
 
 In this tutorial, you:
@@ -786,7 +786,7 @@ If you are interested in learning more about Authorization and Role Management a
   />
 </figure>
 
-### Exercises for You
+### Exercises For You
 
 - Try adding more relationship tuples to represent other users and channels being added. Then run queries to make sure that the authorization model remains valid.
 - Update the configuration to model more Slack permissions (workspace owners, Slack orgs), then add the relationship tuples necessary and run some queries to validate your configuration.

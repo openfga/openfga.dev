@@ -25,7 +25,7 @@ import TabItem from '@theme/TabItem';
 
 This section will illustrate how to update _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" />_.
 
-## Before you start
+## Before You Start
 
 <Tabs groupId="languages">
 {[SupportedLanguage.JS_SDK, SupportedLanguage.GO_SDK, SupportedLanguage.DOTNET_SDK].map(lang =>
@@ -33,21 +33,21 @@ This section will illustrate how to update _<ProductConcept section="what-is-a-r
 
 1. <SdkSetupPrerequisite />
 2. You have [installed the SDK](./install-sdk.mdx).
-3. You have [configured the _authorization model_](../modeling).
-4. You have loaded `FGA_ENVIRONMENT`, `FGA_STORE_ID`, `FGA_CLIENT_ID` and `FGA_CLIENT_SECRET` as environment variables.
+3. You have [configured the _authorization model_](./configure-model.mdx).
+4. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
 
 </TabItem>
 )}
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
 1. <SdkSetupPrerequisite />
-2. You have [configured the _authorization model_](../modeling).
-3. You have loaded `FGA_ENVIRONMENT`, `FGA_BEARER_TOKEN` and `FGA_STORE_ID` as environment variables.
+2. You have [configured the _authorization model_](./configure-model.mdx).
+3. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
 
 </TabItem>
 </Tabs>
 
-## Step by Step
+## Step By Step
 
 Assume that you want to add user `anne` to have relationship `reader` with object `document:Z`
 
@@ -59,7 +59,7 @@ Assume that you want to add user `anne` to have relationship `reader` with objec
 }
 ```
 
-### 01. Configure the <ProductName format={ProductNameFormat.ShortForm}/> API client
+### 01. Configure The <ProductName format={ProductNameFormat.ShortForm}/> API Client
 
 Before calling the write API, you will need to configure the API client.
 
@@ -88,7 +88,7 @@ To obtain the [access token](https://auth0.com/docs/authorization/flows/call-you
 </TabItem>
 </Tabs>
 
-### 02. Calling Write API to Add New Relationship Tuples
+### 02. Calling Write API To Add New Relationship Tuples
 
 To add the relationship tuples, we can invoke the write API.
 
@@ -109,7 +109,7 @@ To add the relationship tuples, we can invoke the write API.
   ]}
 />
 
-### 03. Calling Write API to Delete Relationship Tuples
+### 03. Calling Write API To Delete Relationship Tuples
 
 To delete relationship tuples, we can invoke the write API.
 

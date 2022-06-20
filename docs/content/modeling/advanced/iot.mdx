@@ -46,7 +46,7 @@ It would be helpful to have an understanding of some concepts of <ProductName fo
 
 </summary>
 
-#### Modeling Basics
+#### Direct Access
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](../direct-access.mdx)
 
@@ -73,7 +73,7 @@ Used here to indicate that security guards on a certain group are security guard
 
 </details>
 
-## What You Will You Be Modeling
+## What You Will Be Modeling
 
 In this tutorial, you will build an authorization model for a sample IoT Security Camera System (detailed below) using <ProductName format={ProductNameFormat.LongForm}/>. You will use some scenarios to validate the model.
 
@@ -119,7 +119,7 @@ The <ProductName format={ProductNameFormat.LongForm}/> service is based on [Zanz
 
 Starting with devices, you will learn how to express the requirements in terms of relations you can feed into <ProductName format={ProductNameFormat.LongForm}/>.
 
-### 01. Writing the Initial Model for a Device
+### 01. Writing The Initial Model For A Device
 
 The requirements stated:
 
@@ -156,7 +156,7 @@ In <ProductName format={ProductNameFormat.ShortForm}/>, the <ProductConcept sect
   }}
 />
 
-### 02. Inserting some relationship tuples
+### 02. Inserting Some Relationship Tuples
 
 The requirements are:
 
@@ -240,7 +240,7 @@ Now, check the other relationships fore Anne and Beth.
 | `anne` | `device:1` | `device_renamer`        | `is anne related to device:1 as device_renamer?`        | No        |
 | `beth` | `device:1` | `device_renamer`        | `is beth related to device:1 as device_renamer?`        | Yes       |
 
-### 03. Updating our Authorization Model to facilitate future changes
+### 03. Updating Our Authorization Model To Facilitate Future Changes
 
 Notice how you had to add the Anne and Beth as <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relations" /> to all the actions they can take on Device 1 instead of just stating that they are related as Security Guard or IT Admin, and having the other permissions implied? In practice this might have some disadvantages: if your authorization model changes, (e.g so that Security Guards can no longer view previously recorded videos), you would need to change relationship tuples in the system instead of just changing the configuration.
 
@@ -489,7 +489,7 @@ With this change, the full <ProductConcept section="what-is-an-authorization-mod
   }}
 />
 
-#### Updating relationship tuples on roles
+#### Updating Relationship Tuples On Roles
 
 Remember that **Charles** is a **Security Guard**, and **Dianne** an **IT Admin** on **Group 1**, enter the <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" /> below to reflect that.
 
@@ -562,11 +562,11 @@ Type any of the following queries in the **TUPLE QUERIES** section and press **E
 | `charles` | `device:2` | `device_renamer`        | `is charles related to device:2 as device_renamer?`        | No        |
 | `dianne`  | `device:2` | `device_renamer`        | `is dianne related to device:2 as device_renamer?`         | Yes       |
 
-### 05. Disallow Direct Relationships to users
+### 05. Disallow Direct Relationships To Users
 
 Notice that despite following **[Step 03](./iot.mdx#03-updating-our-authorization-model-to-facilitate-future-changes)**, anne and beth still have direct relations to all the actions they can take on device:1.
 
-#### Updating the authorization model
+#### Updating The Authorization Model
 
 `anne` is a `live_video_viewer` by both her position as `security_guard` as well as her _<ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" />_ assignment. This is undesirable. Imagine `anne` left her position of `security_guard` and she will still have `live_video_viewer` access to `device:1`.
 
@@ -697,7 +697,7 @@ Upcoming posts will dive deeper into <ProductName format={ProductNameFormat.Long
 
 <Playground title="IoT" preset="iot" example="IoT" store="iot" />
 
-### Exercises for You
+### Exercises For You
 
 - Try adding a second group tied to devices 4 and 5. Add only Charles and Dianne to this group, then try to run queries that would validate your model.
 - Management has decided that Security Guards can only access live videos, and instituted a new position called Security Officer who can view both live and recorded videos. Can you update the authorization model to reflect that?

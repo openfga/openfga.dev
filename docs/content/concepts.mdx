@@ -21,7 +21,7 @@ import {
 
 <DocumentationNotice />
 
-The <ProductName format={ProductNameFormat.ProductLink}/> service answers <IntroductionSection linkName="authorization" section="what-is-authorization"/> [checks](#what-is-a-check-request) by determining whether a **[relationship](#what-is-a-relation)** exists between an [object](#what-is-an-object) and a [user](#what-is-a-user). Checks takes into consideration the **[authorization model](#what-is-an-authorization-model)** of the system and the **[relationship tuples](#what-is-a-relationship-tuple)** present in the system at that time in order to make a decision.
+The <ProductName format={ProductNameFormat.ProductLink}/> service answers <IntroductionSection linkName="authorization" section="authentication-vs-authorization"/> [checks](#what-is-a-check-request) by determining whether a **[relationship](#what-is-a-relation)** exists between an [object](#what-is-an-object) and a [user](#what-is-a-user). Checks takes into consideration the **[authorization model](#what-is-an-authorization-model)** of the system and the **[relationship tuples](#what-is-a-relationship-tuple)** present in the system at that time in order to make a decision.
 
 In this guide you will learn about the most relevant FGA concepts, such as a type or an authorization model, and you will be able to explore them using the [FGA playground](https://play.fga.dev/).
 
@@ -30,7 +30,7 @@ In this guide you will learn about the most relevant FGA concepts, such as a typ
 <details>
 <summary>
 
-## What is a type?
+## What Is A Type?
 
 A **type** is a string. It should define a class of objects with similar characteristics.
 
@@ -48,7 +48,7 @@ Examples of types:
 <details>
 <summary>
 
-## What is a type definition?
+## What Is A Type Definition?
 
 A **type definition** is a configuration that defines all possible relations a user or another object can have in relation to this type.
 
@@ -81,7 +81,7 @@ Code snippet below is an example of a type definition:
 <details>
 <summary>
 
-## What is an authorization model?
+## What Is An Authorization Model?
 
 An **authorization model** is a combination of one or more type definitions. This is used to define the permission model of a system.
 
@@ -135,7 +135,7 @@ Learn more about the <UpdateProductNameInLinks link="./configuration-language" n
 <details>
 <summary>
 
-## What is a store?
+## What Is A Store?
 
 A **store** is a <ProductName format={ProductNameFormat.LongForm}/> organization entity that owns an authorization model.
 
@@ -148,7 +148,7 @@ A store contains all your data, including the [authorization model](#what-is-an-
 <details>
 <summary>
 
-## What is an object?
+## What Is An Object?
 
 An **object** represents an entity in the system. We can define how various users have a relationship to it through relationship tuples and the authorization model.
 
@@ -165,14 +165,14 @@ For example:
 
 [User](#what-is-a-user), [relation](#what-is-a-relation) and _object_ are the building blocks for [relationship tuples](#what-is-a-relationship-tuple).
 
-For more information, please see [Modeling Basics](./modeling/direct-access.mdx).
+For more information, please see [Direct Access](./modeling/direct-access.mdx).
 
 </details>
 
 <details>
 <summary>
 
-## What is a user?
+## What Is A User?
 
 A **user** is an entity in the system that can be related to an object.
 
@@ -187,14 +187,14 @@ A **user** is
 
 _User_, [relation](#what-is-a-relation) and [object](#what-is-an-object) are the building blocks for [relationship tuples](#what-is-a-relationship-tuple).
 
-For more information, please see [Modeling Basics](./modeling/direct-access.mdx).
+For more information, please see [Direct Access](./modeling/direct-access.mdx).
 
 </details>
 
 <details>
 <summary>
 
-## What is a relation?
+## What Is A Relation?
 
 A **relation** is a string defined in the type definition of an authorization model that defines the possibility of a relationship between objects of this type and other users in the system.
 
@@ -211,7 +211,7 @@ Examples of relation:
 <details>
 <summary>
 
-## What is a relation definition?
+## What Is A Relation Definition?
 
 A **relation definition** lists the conditions or requirements under which this relationship would be possible.
 
@@ -262,16 +262,16 @@ In the configuration of the document type, we have four relations: `viewer`, `co
 
 [User](#what-is-a-user), _relation_ and [object](#what-is-an-object) are the building blocks for [relationship tuples](#what-is-a-relationship-tuple).
 
-For more information, please see [Modeling Basics](./modeling/direct-access.mdx).
+For more information, please see [Direct Access](./modeling/direct-access.mdx).
 
 </details>
 
 <details>
 <summary>
 
-## What is a relationship tuple?
+## What Is A Relationship Tuple?
 
-A **relationship tuple** is a tuple consisting of a user, relation and object stored in <ProductName format={ProductNameFormat.ShortForm}/> .
+A **relationship tuple** is a tuple consisting of a user, relation and object stored in <ProductName format={ProductNameFormat.ShortForm}/>.
 
 </summary>
 
@@ -295,14 +295,14 @@ Throughout the documentation, you will encounter relationship tuples represented
   ]}
 />
 
-For more information, please see [Modeling Basics](./modeling/direct-access.mdx).
+For more information, please see [Direct Access](./modeling/direct-access.mdx).
 
 </details>
 
 <details>
 <summary>
 
-## What is a relationship?
+## What Is A Relationship?
 
 A **relationship** is the realization of a relation between a user and an object.
 
@@ -315,7 +315,7 @@ An [authorization model](#what-is-an-authorization-model), together with [relati
 <details>
 <summary>
 
-## What are direct and implied relationships?
+## What Are Direct And Implied Relationships?
 
 A **direct relationship** R between user X and object Y means the relationship tuple (user=X, relation=R, object=Y) exists, and the <ProductName format={ProductNameFormat.ShortForm}/> authorization model for that relation allows this direct relationship (by use of `self`).
 
@@ -420,13 +420,13 @@ An **implied (or computed) relationship** R exists between user X and object Y i
 <details>
 <summary>
 
-## What is a check request?
+## What Is A Check Request?
 
 A **check request** is a call to the <ProductName format={ProductNameFormat.LongForm}/> check endpoint that returns whether the user has a certain relationship with an object.
 
 </summary>
 
-This can be done using the `check` methods in the <ProductName format={ProductNameFormat.ShortForm}/> SDKs ([JavaScript SDK](https://www.npmjs.com/package/@openfga/sdk)/[Go SDK](https://github.com/openfga/go-sdk)/[.NET SDK](https://www.nuget.org/packages/OpenFga.Sdk)), by manually calling the [check endpoint](/api/service#/Relationship%20Queries/Check) using curl, or in your code.
+This can be done using the `check` methods in the <ProductName format={ProductNameFormat.ShortForm}/> SDKs ([JavaScript SDK](https://www.npmjs.com/package/@openfga/sdk)/[Go SDK](https://github.com/openfga/go-sdk)/[.NET SDK](https://www.nuget.org/packages/OpenFga.Sdk)), by manually calling the [check endpoint](/api/service#Relationship%20Queries/Check) using curl, or in your code.
 
 The check endpoint responds with `{ "allowed": true }` if a relationship exists, and with `{ "allowed": false }` if the relationship does not.
 
@@ -434,26 +434,26 @@ For example, the following will check whether `anne` has a `viewer` relation to 
 
 <CheckRequestViewer user={'anne'} relation={'viewer'} object={'document:new-roadmap'} allowed={true} />
 
-For more information, please see [Comparison between check, read and expand](./interacting/check-read-expand.mdx) and [Check API Request Documentation](/api/service#/Relationship%20Queries/Check).
+For more information, please see [Comparison between check, read and expand](./interacting/check-read-expand.mdx) and [Check API Request Documentation](/api/service#Relationship%20Queries/Check).
 
 </details>
 
 <details>
 <summary>
 
-## What are contextual tuples?
+## What Are Contextual Tuples?
 
-Contextual tuples are tuples that are sent alongside a check request, and only exist within the context of that particular request.
+Contextual tuples are tuples that can be added to a check request, and only exist within the context of that particular request.
 
 </summary>
 
 Similar to [relationship tuples](#what-is-a-relationship-tuple), contextual tuples are composed of a user, relation and object.
 
-Unlike relationship tuples, they are not written to the system state. However, if contextual tuples are sent alongside a check request, in the context of this particular check request, they are treated as have been written to the system state.
+Unlike relationship tuples, they are not written to the store. However, if contextual tuples are sent alongside a check request, in the context of this particular check request, they are treated if they had been written in the store.
 
 <!-- markdown-link-check-disable -->
 
-For more information, please see [Contextual and Time-Based Authorization](./modeling/contextual-time-based-authorization.mdx), [Authorization Through Organization Context](./modeling/organization-context-authorization.mdx) and [Check API Request Documentation](/api/service#/Relationship%20Queries/Check).
+For more information, please see [Contextual and Time-Based Authorization](./modeling/contextual-time-based-authorization.mdx), [Authorization Through Organization Context](./modeling/organization-context-authorization.mdx) and [Check API Request Documentation](/api/service#Relationship%20Queries/Check).
 
 <!-- markdown-link-check-enable -->
 
@@ -462,7 +462,7 @@ For more information, please see [Contextual and Time-Based Authorization](./mod
 <details>
 <summary>
 
-## How do I represent "everyone"?
+## How Do I Represent "Everyone"?
 
 In <ProductName format={ProductNameFormat.LongForm}/> the special syntax `*` means **everyone** when used as **user** in a relationship tuple.
 
@@ -480,7 +480,7 @@ For example, in a case where you would like to indicate a certain document `docu
   ]}
 />
 
-Note that `*` has no special meaning when used in other contexts. For example, `workspace:*` as an [object](#what-is-an-object) means a single object with the type `workspace` and identifier the string `*`.
+Note that `*` has no special meaning when used in the `relation` or `object` properties. For example, `workspace:*` as an [object](#what-is-an-object) means a single object with the type `workspace` and identifier `*`.
 For more information, please see [Modeling Public Access](./modeling/public-access.mdx) and [Advanced Modeling: Modeling Google Drive](./modeling/advanced/gdrive.mdx).
 
 </details>
@@ -497,7 +497,7 @@ For more information, please see [Modeling Public Access](./modeling/public-acce
       id: './configuration-language',
     },
     {
-      title: 'Modeling Basics',
+      title: 'Direct access',
       description: 'Get started with modeling your permission system in {ProductName}',
       link: './modeling/direct-access',
       id: './modeling/direct-access',

@@ -33,7 +33,7 @@ Contextual Tuples should be used when modeling cases where a user's access to an
 
 </div> />
 
-## Before you start
+## Before You Start
 
 To follow this guide, you should be familiar with some <ProductConcept />.
 
@@ -235,7 +235,7 @@ The above state translates to the following relationship tuples:
 - When logging in within the context of organization B, Beth should be able to view, but not delete, project X.
 - Carl should not be able to view nor delete project X
 
-## Step by Step
+## Step By Step
 
 In order to solve for the requirements above, we will break the problem down into three steps:
 
@@ -246,7 +246,7 @@ In order to solve for the requirements above, we will break the problem down int
 2. Extend the authorization model to take time and ip address into consideration
 3. Use contextual tuples for context related checks
 
-### Checking Access (Excluding Contextual Data)
+### Checking Access (excluding contextual data)
 
 With the authorization model and relationship tuples shown above, <ProductName format={ProductNameFormat.ShortForm}/> has all the information needed to ensure that Anne can view and delete "Project X".
 
@@ -271,9 +271,9 @@ We can verify that using the following checks:
 
 Note that so far, we have not prevented Anne from viewing "Project X" even if Anne is viewing it from the context of Organization C.
 
-### Take Organization Context into Consideration
+### Take Organization Context Into Consideration
 
-##### Extend the Authorization Model
+##### Extend The Authorization Model
 
 In order to add a restriction based on the current organization context, we will make use of <ProductName format={ProductNameFormat.ShortForm}/> configuration language's support for [intersection](../configuration-language.mdx#the-intersection-operator) to specify that a user has to both have access _and_ be in the correct context in order to be authorized.
 
@@ -357,7 +357,7 @@ On the "project" type:
 - Nothing will need to be done, as it will inherit the updated "project_manager" and "project_editor" relation definitions from "organization"
 :::
 
-##### Add the required tuples to mark that anne is in an approved context
+##### Add The Required Tuples To Mark That anne Is In An Approved Context
 
 Now that we have updated our authorization model to take the current user's organization context into consideration, you will notice that anne has lost access because nothing indicates that anne is authorizing from the context of an organization. You can verify that by issuing the following check:
 
@@ -378,7 +378,7 @@ In order for Anne to be authorized a tuple indicating Anne's current organizatio
 
 <CheckRequestViewer user={'anne'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
 
-### Using contextual tuples
+### Using Contextual Tuples
 
 Now that we know we can authorize based on present state, we have a different problem to solve. We are storing the tuples in the state in order for <ProductName format={ProductNameFormat.ShortForm}/> to evaluate them, which fails in certain use-cases where Anne can be connected to two different contexts in different browser windows at the same time, as each has a different context at the same time, so if they are written to the state, which will <ProductName format={ProductNameFormat.ShortForm}/> use to compute Anne's access to the project?
 
@@ -626,8 +626,8 @@ Using this, you can check that the following requirements are satisfied:
 Contextual tuples:
 
 - Are not persisted in the store.
-- Are only supported on the <UpdateProductNameInLinks link="/api/service#/Relationship%20Queries/Check" name="Check API endpoint" />. They are not supported on read, expand and other endpoints.
-- If you are using the <UpdateProductNameInLinks link="/api/service#/Relationship%20Tuples/ReadChanges" name="Read Changes API endpoint" /> to build a permission aware search index, note that it will not be trivial to take contextual tuples into account.
+- Are only supported on the <UpdateProductNameInLinks link="/api/service#Relationship%20Queries/Check" name="Check API endpoint" />. They are not supported on read, expand and other endpoints.
+- If you are using the <UpdateProductNameInLinks link="/api/service#Relationship%20Tuples/ReadChanges" name="Read Changes API endpoint" /> to build a permission aware search index, note that it will not be trivial to take contextual tuples into account.
 :::
 
 ## Related Sections
@@ -651,7 +651,7 @@ Contextual tuples:
     {
       title: '{ProductName} Check API',
       description: 'Details on the Check API in the {ProductName} reference guide.',
-      link: '/api/service#/Relationship%20Queries/Check',
+      link: '/api/service#Relationship%20Queries/Check',
     },
   ]}
 />

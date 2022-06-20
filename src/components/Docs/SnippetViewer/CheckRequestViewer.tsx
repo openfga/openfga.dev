@@ -1,7 +1,7 @@
 import { getFilteredAllowedLangs, SupportedLanguage, LanguageMappings } from './SupportedLanguage';
 import { defaultOperationsViewer } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
-import { TupleKey } from '@auth0/fga';
+import { TupleKey } from '@openfga/sdk';
 
 interface CheckRequestViewerOpts {
   user: string;

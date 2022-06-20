@@ -39,7 +39,7 @@ For example:
 
 </div> />
 
-## Before you start
+## Before You Start
 
 To better follow this guide, make sure you're familiar with some <ProductConcept /> and know how to develop the things listed below.
 
@@ -93,9 +93,9 @@ You need to know how to add users to groups and grant groups access to resources
 
 <Playground />
 
-## Step by Step
+## Step By Step
 
-### 01. Create parent relations in document
+### 01. Create Parent Relations In Document
 
 To represent that a `folder` can be a `parent` of a `document`, we first need to modify our `document` <ProductConcept section="what-is-a-type-definition" linkName="type definition" /> to allow a `parent` <ProductConcept section="what-is-a-relation" linkName="relation" />.
 
@@ -126,9 +126,9 @@ To represent that a `folder` can be a `parent` of a `document`, we first need to
   }}
 />
 
-### 02. Add parent relationship tuples
+### 02. Add Parent Relationship Tuples
 
-Once the type definition is updated, we can now create the <ProductConcept section="what-is-a-relationship" linkName="relationship" /> between a `folder` as a `parent` of a `document`. To do this, we will create a new **<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple" />** that describes: **folder:budgets** is a `parent` of **document:may_budget.doc**. In <ProductName format={ProductNameFormat.LongForm}/>, <ProductConcept section="what-is-a-user" linkName="users" /> in the relationship tuples can not only be be IDs, but also other objects in the form of `type:object_id`.
+Once the type definition is updated, we can now create the <ProductConcept section="what-is-a-relationship" linkName="relationship" /> between a `folder` as a `parent` of a `document`. To do this, we will create a new **<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple" />** that describes: **folder:budgets** is a `parent` of **document:may_budget.doc**. In <ProductName format={ProductNameFormat.LongForm}/>, <ProductConcept section="what-is-a-user" linkName="users" /> in the relationship tuples can not only be IDs, but also other objects in the form of `type:object_id`.
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -145,7 +145,7 @@ Once the type definition is updated, we can now create the <ProductConcept secti
 **Note:** <ProductName format={ProductNameFormat.ShortForm}/> does not restrict what value belongs within the user key, so technically a user or any other object can be a `parent` of a `document`. It is your responsibility to ensure that relationship tuples are being created accordingly within your applications business logic.
 :::
 
-### 03. Check that parent folders have permissions
+### 03. Check That Parent Folders Have Permissions
 
 Once that relationship tuple is added to <ProductName format={ProductNameFormat.ShortForm}/>, we can <ProductConcept section="what-is-a-check-request" linkName="check" /> if the relationship is valid by asking the following: **"is folder:budgets a parent of document:may_budget.doc?"**
 
@@ -161,7 +161,7 @@ It is important to note that the current authorization model does not imply inhe
 
 Object to object can be used for more advanced use case, such as [entitlements](../advanced/entitlements.mdx). An example use case is to allow subscribers to be entitled to different plans.
 
-### 01. Create authorization model with object to object relationships
+### 01. Create Authorization Model With Object To Object Relationships
 
 To do this, the authorization model will have two <ProductConcept section="what-is-a-type" linkName="types" /> - feature and plan.
 
@@ -213,7 +213,7 @@ Type `feature` has two relations, associated_plan and access. Relation `associat
   or `this`
 - object to object relationship where a user can access because it is a subscriber_member of a particular plan AND that plan is associated with the feature.
 
-### 02. Adding relationship tuples
+### 02. Adding Relationship Tuples
 
 To realize the relationship, we will need to add the following relationship tuples.
 
@@ -234,7 +234,7 @@ To realize the relationship, we will need to add the following relationship tupl
   ]}
 />
 
-### 03. Check to see if access is allowed without direct relationship
+### 03. Check To See If Access Is Allowed Without Direct Relationship
 
 To validate that the authorization model and relationship tuples are correct, we can ask the question:
 
@@ -242,7 +242,7 @@ To validate that the authorization model and relationship tuples are correct, we
 
 We see that `anne` is allowed to `access` `feature:data_preview` without requiring direct relationship.
 
-### 04. Disassociating plan from feature
+### 04. Disassociating Plan From Feature
 
 At any point in time, `plan:advanced` may be disassociated from `feature:data_preview`.
 

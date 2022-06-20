@@ -23,14 +23,14 @@ import TabItem from '@theme/TabItem';
 
 This section will illustrate how to integrate <ProductName format={ProductNameFormat.LongForm}/> within a framework environment, such as [Fastify](https://www.fastify.io/) or [Fiber](https://docs.gofiber.io/).
 
-## Before you start
+## Before You Start
 
 <Tabs groupId="languages">
 <TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
 
 1. <SdkSetupPrerequisite />
 2. You have [installed the OpenFGA SDK](./install-sdk.mdx).
-3. You have [configured the _authorization model_](../modeling) and [updated the _relationship tuples_](./update-tuples.mdx).
+3. You have [configured the _authorization model_](./configure-model.mdx) and [updated the _relationship tuples_](./update-tuples.mdx).
 4. You know how to [perform a Check](./perform-check.mdx).
 5. You have loaded `FGA_API_HOST` and `FGA_STORE_ID` as environment variables.
 
@@ -39,16 +39,16 @@ This section will illustrate how to integrate <ProductName format={ProductNameFo
 
 1. <SdkSetupPrerequisite />
 2. You have [installed the OpenFGA SDK](./install-sdk.mdx).
-3. You have [configured the _authorization model_](../modeling) and [updated the _relationship tuples_](./update-tuples.mdx).
+3. You have [configured the _authorization model_](./configure-model.mdx) and [updated the _relationship tuples_](./update-tuples.mdx).
 4. You know how to [perform a Check](./perform-check.mdx).
 5. You have loaded `FGA_API_HOST` and `FGA_STORE_ID` as environment variables.
 
 </TabItem>
 </Tabs>
 
-## Step by Step
+## Step By Step
 
-Assume that you want to have a web service for `document`s using one of the frameworks mentioned above. The service will authenticate users via [JWT tokens](https://auth0.com/docs/security/tokens/json-web-tokens), which contain the user ID.
+Assume that you want to have a web service for `document`s using one of the frameworks mentioned above. The service will authenticate users via [JWT tokens](https://auth0.com/docs/secure/tokens/json-web-tokens), which contain the user ID.
 
 :::caution Note
 The reader should set up their own `login` method based on their OpenID connect provider's documentation.
@@ -56,7 +56,7 @@ The reader should set up their own `login` method based on their OpenID connect 
 
 Assume that you want to provide a route `GET /read/{document}` to return documents depending on whether the authenticated user has access to it.
 
-### 01. Install and setup framework
+### 01. Install And Setup Framework
 
 The first step is to install the framework.
 
@@ -69,7 +69,7 @@ For the context of this example, we will use the [Fastify framework](https://www
 - the [`fastify-plugin`](https://github.com/fastify/fastify-plugin) package that allows integrating plugins with Fastify
 - the [`fastify-jwt`](https://github.com/fastify/fastify-jwt) package for processing JWT tokens
 
-Using [npm](https://npmjs.org):
+Using [npm](https://www.npmjs.com):
 
 ```shell
 npm install fastify fastify-plugin fastify-jwt
@@ -140,7 +140,7 @@ func read(c *fiber.Ctx) error {
 </TabItem>
 </Tabs>
 
-### 02. Authenticate and get user ID
+### 02. Authenticate And Get User ID
 
 Before we can call <ProductName format={ProductNameFormat.LongForm}/> to protect the `/read/{document}` route, we need to validate the user's JWT.
 
@@ -274,7 +274,7 @@ func read(c *fiber.Ctx) error {
 </TabItem>
 </Tabs>
 
-### 03. Integrate the <ProductName format={ProductNameFormat.ShortForm}/> Check API into the service
+### 03. Integrate The <ProductName format={ProductNameFormat.ShortForm}/> Check API Into The Service
 
 <Tabs groupId="languages">
 <TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
@@ -322,13 +322,9 @@ module.exports = fp(async function (fastify, opts) {
     try {
       // configure the openfga api client
       const fgaClient = new OpenFgaApi({
-        storeId: process.env.FGA_STORE_ID,
+        apiScheme: process.env.FGA_API_SCHEME, // Optional. Can be "http" or "https". Defaults to "https"
         apiHost: process.env.FGA_API_HOST,
-        apiToken: process.env.FGA_BEARER_TOKEN, // optional
-        apiTokenIssuer: process.env.FGA_API_ISSUER, // optional, required if client id is set
-        apiAudience: process.env.FGA_API_AUDIENCE, // optional, required if client id is set
-        clientId: process.env.FGA_CLIENT_ID, // optional, required if client secret is set
-        clientSecret: process.env.FGA_CLIENT_SECRET, // optional, required if client id is set
+        storeId: process.env.FGA_STORE_ID,
       });
       const { allowed } = await fgaClient.check({
         tuple_key: {
@@ -483,14 +479,9 @@ func preauthorize(c *fiber.Ctx) error {
 // Middleware to check whether user is authorized to access document
 func checkAuthorization(c *fiber.Ctx) error {
   configuration, err := fgaSdk.NewConfiguration(fgaSdk.UserConfiguration{
-    ApiScheme:      os.Getenv("FGA_API_SCHEME"), // Optional, either "http" or "https"
+    ApiScheme:      os.Getenv("FGA_API_SCHEME"), // Optional. Can be "http" or "https". Defaults to "https"
     ApiHost:        os.Getenv("FGA_API_HOST"),
     StoreId:        os.Getenv("FGA_STORE_ID"),
-    BearerToken:    os.Getenv("FGA_BEARER_TOKEN"), // optional
-    ApiTokenIssuer: os.Getenv("FGA_API_TOKEN_ISSUER"), // optional, required if client id is set
-    ApiAudience:    os.Getenv("FGA_API_AUDIENCE"), // optional, required if client id is set
-    ClientId:       os.Getenv("FGA_CLIENT_ID"), // optional
-    ClientSecret:   os.Getenv("FGA_CLIENT_SECRET"), // optional, required if client id is set
   })
 
   if err != nil {

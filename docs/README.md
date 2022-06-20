@@ -25,6 +25,7 @@ hide_title: true
   - [Install SDK Client](./content/getting-started/install-sdk.mdx)
   - [Create a Store](./content/getting-started/create-store.mdx)
   - [Setup SDK Client for Store](./content/getting-started/setup-sdk-client.mdx)
+  - [Configure Authorization Model](./content/getting-started/configure-model.mdx)
   - [Update Relationship Tuples](./content/getting-started/update-tuples.mdx)
   - [Perform a Check](./content/getting-started/perform-check.mdx)
   - [Integrate Within a Framework](./content/getting-started/framework.mdx)

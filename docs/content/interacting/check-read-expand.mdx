@@ -16,7 +16,6 @@ import {
   ProductNameFormat,
   RelatedSection,
   RelationshipTuplesViewer,
-  UpdateProductNameInLinks,
 } from '@components/Docs';
 
 # Comparison between Check, Read and Expand API Calls
@@ -25,7 +24,7 @@ import {
 
 In this guide you will learn the uses and limitation for check, read and expand API.
 
-## Before you start
+## Before You Start
 
 In order to understand this guide correctly you must be familiar with some <ProductConcept /> and know how to develop the things that we will list below.
 
@@ -83,7 +82,7 @@ and `writer`. All writers are readers. `bob` has a `writer` relationship with `d
 
 In addition, you will need to know the following:
 
-### Modeling Basics
+### Direct Access
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](../modeling/direct-access.mdx)
 
@@ -99,11 +98,11 @@ You need to know how to create an authorization model and create a relationship 
 
 ## Check
 
-### What is it for?
+### What Is It For?
 
-The [Check API](/api/service#/Relationship%20Queries/Check) is a call to the <ProductName format={ProductNameFormat.LongForm}/> API endpoint that returns whether the user has a certain relationship with an object. <ProductName format={ProductNameFormat.ShortForm}/> will resolve all prerequisite relationships to establish whether a relationship exists.
+The [Check API](/api/service#Relationship%20Queries/Check) is a call to the <ProductName format={ProductNameFormat.LongForm}/> API endpoint that returns whether the user has a certain relationship with an object. <ProductName format={ProductNameFormat.ShortForm}/> will resolve all prerequisite relationships to establish whether a relationship exists.
 
-### When to use?
+### When To Use?
 
 Check can be called if you need to establish whether a particular user has a specific relationship with a particular object.
 
@@ -116,7 +115,7 @@ The <ProductName format={ProductNameFormat.ShortForm}/> API will return `true` b
 - every `writer` is also a `reader`
 - `bob` is a `writer` for `document:planning`
 
-### Caveats and when not to use it
+### Caveats And When Not To Use It
 
 Check is designed to answer the question "Does user:X have relationship Y with object:Z?". It is _not_ designed to answer the following questions:
 
@@ -126,11 +125,11 @@ Check is designed to answer the question "Does user:X have relationship Y with o
 
 ## Read
 
-### What is it for?
+### What Is It For?
 
-The [Read API](/api/service#/Relationship%20Tuples/Read) is a call to the <ProductName format={ProductNameFormat.LongForm}/> API endpoint that returns the relationship tuples that are stored in the system that satisfy a query.
+The [Read API](/api/service#Relationship%20Tuples/Read) is a call to the <ProductName format={ProductNameFormat.LongForm}/> API endpoint that returns the relationship tuples that are stored in the system that satisfy a query.
 
-### When to use?
+### When To Use?
 
 Read can be called if you need to get all the stored relationship tuples that relate:
 
@@ -138,7 +137,7 @@ Read can be called if you need to get all the stored relationship tuples that re
 2. [a particular user to any objects of a specific type with any relation](#2-a-particular-user-to-any-objects-of-a-specific-type-with-any-relation)
 3. [a particular object to any user with a particular relation](#3-a-particular-object-to-any-user-with-a-particular-relation)
 
-#### 1. A particular user to any objects of a specific type with a particular relation
+#### 1. A Particular User To Any Objects Of A Specific Type With A Particular Relation
 
 For example, to query all the stored relationship tuples `bob` has a `writer` relationship with, one can ask
 
@@ -155,7 +154,7 @@ For example, to query all the stored relationship tuples `bob` has a `writer` re
   ]}
 />
 
-#### 2. A particular user to any objects of a specific type with any relation
+#### 2. A Particular User To Any Objects Of A Specific Type With Any Relation
 
 For example, to query all the stored relationship tuples in which `bob` is related to objects of type `document` as any relation, one can issue the following call:
 
@@ -171,7 +170,7 @@ For example, to query all the stored relationship tuples in which `bob` is relat
   ]}
 />
 
-#### 3. A particular object to any user with a particular relation
+#### 3. A Particular Object To Any User With A Particular Relation
 
 For example, to query all the stored relationship tuples in which any user is related to `document:planning` as a `writer`, one can issue the following call:
 
@@ -187,7 +186,7 @@ For example, to query all the stored relationship tuples in which any user is re
   ]}
 />
 
-### Caveats and when not to use it
+### Caveats And When Not To Use It
 
 The Read API will only return all the stored relationships that match the query specification.
 It does not expand or traverse the graph by taking the authorization model into account.
@@ -204,12 +203,12 @@ Although bob is a writer to document:planning and every writer is also a reader,
 
 ## Expand
 
-### What is it for?
+### What Is It For?
 
 Expand uses the authorization model to expand the specific relationship on a particular object.
 The response is in user tree format. To build a full graph, you would iteratively need to call expand on the leaves returned in the previous expand call.
 
-### When to use?
+### When To Use?
 
 Expand is used for debugging and to understand why a user has a particular relationship with a specific object.
 
@@ -265,7 +264,7 @@ From there, we will learn that
 - `bob` is related to `document:planning` as `writer`
 
 
-### Caveats and when not to use it
+### Caveats And When Not To Use It
 
 The Expand call is expensive and has high latency. As such, it is designed to be used for debugging and understanding why a user has a particular relationship with a specific object. It is not designed for checking whether a user has a particular relationship with a specific object. In that case the Check API call should be used instead.
 
@@ -284,17 +283,17 @@ The Expand call is expensive and has high latency. As such, it is designed to be
     {
       title: '{ProductName} API - Check',
       description: 'Details on the check API in the {ProductName} reference guide.',
-      link: '/api/service#/Relationship%20Queries/Check',
+      link: '/api/service#Relationship%20Queries/Check',
     },
     {
       title: '{ProductName} API - Read',
       description: 'Details on the read API in the {ProductName} reference guide.',
-      link: '/api/service#/Relationship%20Tuples/Read',
+      link: '/api/service#Relationship%20Tuples/Read',
     },
     {
       title: '{ProductName} - Expand',
       description: 'Details on the expand API in the {ProductName} reference guide.',
-      link: '/api/service#/Relationship%20Queries/Expand',
+      link: '/api/service#Relationship%20Queries/Expand',
     },
   ]}
 />

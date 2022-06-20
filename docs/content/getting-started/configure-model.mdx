@@ -1,0 +1,130 @@
+---
+title: Configure Authorization Model
+description: How to configure authorization model for a store
+slug: /getting-started/configure-model
+---
+
+import {
+    AuthzModelSnippetViewer,
+    DocumentationNotice,
+    languageLabelMap,
+    ProductConcept,
+    ProductName,
+    ProductNameFormat,
+    RelatedSection,
+    SdkSetupHeader,
+    SdkSetupPrerequisite,
+    SupportedLanguage,
+    WriteAuthzModelViewer,
+} from '@components/Docs';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Configure Authorization Model for a Store
+
+<DocumentationNotice />
+
+This article explains how to configure an <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" /> for a <ProductConcept section="what-is-a-store" linkName="store" /> in an OpenFGA server.
+
+## Before You Start
+
+<Tabs groupId="languages">
+{[SupportedLanguage.JS_SDK, SupportedLanguage.GO_SDK, SupportedLanguage.DOTNET_SDK].map(lang =>
+<TabItem value={lang} label={languageLabelMap.get(lang)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](./install-sdk.mdx), [created the store](./create-store.mdx) and [setup the SDK client](./setup-sdk-client.mdx).
+3. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
+
+</TabItem>
+)}
+<TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [created the store](./create-store.mdx) and have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
+
+</TabItem>
+</Tabs>
+
+## Step By Step
+
+Assume that you want to configure your store with the following model.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          reader: {
+            this: {},
+          },
+          writer: {
+            this: {},
+          },
+          owner: {
+            this: {},
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+
+To configure authorization model, we can invoke the [write authorization models API](/api/service#Authorization%20Models/WriteAuthorizationModel).
+
+<WriteAuthzModelViewer
+  authorizationModel={{
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          reader: {
+            this: {},
+          },
+          writer: {
+            this: {},
+          },
+          owner: {
+            this: {},
+          },
+        },
+      },
+    ],
+  }}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+The API will then return the authorization model ID. 
+
+:::info Note
+The OpenFGA API only accepts an authorization model in the API&#39;s JSON syntax.
+
+To convert between the API Syntax and the friendly DSL, you can use the
+[syntax transformer](https://github.com/openfga/syntax-transformer/) or
+[Auth0 FGA's Playground](https://play.fga.dev).
+:::
+
+## Related Sections
+
+<RelatedSection
+  description="Take a look at the following sections for more information on how to configure authorization model in your store."
+  relatedLinks={[
+    {
+      title: 'Getting Started with Modeling',
+      description: 'Read how to get started with modeling.',
+      link: '../modeling/getting-started',
+    },
+    {
+      title: 'Modeling: Direct Relationships',
+      description: 'Read the basics of modeling authorization and granting access to users.',
+      link: '../modeling/direct-access',
+    },
+  ]}
+/>

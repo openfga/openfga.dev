@@ -25,7 +25,7 @@ import TabItem from '@theme/TabItem';
 
 This section will illustrate how to perform a <ProductConcept section="what-is-a-check-request" linkName="check" /> request to determine whether a <ProductConcept section="what-is-a-user" linkName="user" /> has a certain <ProductConcept section="what-is-a-relationship" linkName="relationship" /> with an <ProductConcept section="what-is-an-object" linkName="object" />.
 
-## Before you start
+## Before You Start
 
 <Tabs groupId="languages">
 {[SupportedLanguage.JS_SDK, SupportedLanguage.GO_SDK, SupportedLanguage.DOTNET_SDK].map(lang =>
@@ -33,25 +33,25 @@ This section will illustrate how to perform a <ProductConcept section="what-is-a
 
 1. <SdkSetupPrerequisite />
 2. You have [installed the SDK](./install-sdk.mdx).
-3. You have [configured the _authorization model_](../modeling) and [updated the _relationship tuples_](./update-tuples.mdx).
-4. You have loaded `FGA_ENVIRONMENT`, `FGA_STORE_ID`, `FGA_CLIENT_ID` and `FGA_CLIENT_SECRET` as environment variables.
+3. You have [configured the _authorization model_](./configure-model.mdx) and [updated the _relationship tuples_](./update-tuples.mdx).
+4. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
 
 </TabItem>
 )}
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
 1. <SdkSetupPrerequisite />
-2. You have [configured the _authorization model_](../modeling) and [updated the _relationship tuples_](./update-tuples.mdx).
-3. You have loaded `FGA_ENVIRONMENT`, `FGA_BEARER_TOKEN` and `FGA_STORE_ID` as environment variables.
+2. You have [configured the _authorization model_](./configure-model.mdx) and [updated the _relationship tuples_](./update-tuples.mdx).
+3. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
 
 </TabItem>
 </Tabs>
 
-## Step by Step
+## Step By Step
 
 Assume that you want to check whether user `anne` has relationship `reader` with object `document:Z`
 
-### 01. Configure the <ProductName format={ProductNameFormat.ShortForm}/> API client
+### 01. Configure the <ProductName format={ProductNameFormat.ShortForm}/> API Client
 
 Before calling the check API, you will need to configure the API client.
 
@@ -73,7 +73,7 @@ Before calling the check API, you will need to configure the API client.
 </TabItem>
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
-To obtain the [access token](https://auth0.com/docs/authorization/flows/call-your-api-using-the-client-credentials-flow):
+To obtain the [access token](https://auth0.com/docs/get-started/authentication-and-authorization-flow/call-your-api-using-the-client-credentials-flow):
 
 <SdkSetupHeader lang={SupportedLanguage.CURL} />
 
@@ -100,7 +100,7 @@ To check whether user `anne` has relationship `reader` with object `document:Z`
 
 The result's `allowed` field will return `true` if the relationship exists and `false` if the relationship does not exist.
 
-## Related Section
+## Related Sections
 
 <RelatedSection
   description="Take a look at the following section for more on how to perform authorization checks in your system"
@@ -108,7 +108,7 @@ The result's `allowed` field will return `true` if the relationship exists and `
     {
       title: '{ProductName} Check API',
       description: 'Read the Check API documentation and see how it works.',
-      link: '/api/service#/Relationship%20Queries/Check',
+      link: '/api/service#Relationship%20Queries/Check',
     },
   ]}
 />

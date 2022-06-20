@@ -1,7 +1,7 @@
 import { getFilteredAllowedLangs, SupportedLanguage, LanguageMappings } from './SupportedLanguage';
 import { defaultOperationsViewer } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
-import { AuthorizationModel } from '@auth0/fga';
+import { AuthorizationModel } from '@openfga/sdk';
 
 interface WriteAuthzModelViewerOpts {
   authorizationModel: AuthorizationModel;
@@ -18,7 +18,12 @@ function writeAuthZModelViewerCurl(authorizationModel: AuthorizationModel): stri
 
 function writeAuthZModelViewerJS(authorizationModel: AuthorizationModel): string {
   return `
-await fgaClient.writeAuthorizationModel(${JSON.stringify(authorizationModel, null, 2)});`;
+const { authorization_model_id: id } = await fgaClient.writeAuthorizationModel(${JSON.stringify(
+    authorizationModel,
+    null,
+    2,
+  )});
+// id = "1uHxCSuTP0VKPYSnkq1pbb1jeZw"`;
 }
 
 function writeAuthZModelViewerGo(authorizationModel: AuthorizationModel, apiName: string): string {
@@ -32,10 +37,12 @@ function writeAuthZModelViewerGo(authorizationModel: AuthorizationModel, apiName
       return
   }
 
-  _, response, err := fgaClient.${apiName}.WriteAuthorizationModel(context.Background()).TypeDefinitions(typeDefinitions).Execute()
+  data, response, err := fgaClient.${apiName}.WriteAuthorizationModel(context.Background()).TypeDefinitions(typeDefinitions).Execute()
   if err != nil {
       // .. Handle error
   }
+
+  // data.AuthorizationModelId = "1uHxCSuTP0VKPYSnkq1pbb1jeZw"
   `;
 }
 
@@ -44,7 +51,8 @@ function writeAuthZModelViewerDotnet(authorizationModel: AuthorizationModel): st
   var modelJson = ${JSON.stringify(JSON.stringify(authorizationModel))};
   var body = JsonSerializer.Deserialize<ReadAuthorizationModelsResponse>(modelJson);
 
-  await fgaClient.WriteAuthorizationModel(body);`;
+  var response = await fgaClient.WriteAuthorizationModel(body);
+  // response.AuthorizationModelId = "1uHxCSuTP0VKPYSnkq1pbb1jeZw"`;
 }
 
 function writeAuthZModelViewer(

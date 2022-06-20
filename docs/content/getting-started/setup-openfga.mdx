@@ -15,16 +15,17 @@ import {
 
 This article explains how to start your own OpenFGA server using Docker, and how to configure it.
 
-## Step by Step
+## Step By Step
 
 If you want to run OpenFGA locally as a Docker container, follow these steps:
 
-1. [Install Docker](https://docs.docker.com/get-docker/).
-2. Run `docker run -p 127.0.0.1:8080:8080 -p 127.0.0.1:8081:8081 openfga/openfga`.
+1. [Install Docker](https://docs.docker.com/get-docker/) if Docker was not already installed.
+2. Run `docker pull openfga/openfga` to get the latest docker image.
+3. Run `docker run -p 8080:8080 openfga/openfga run`.
 
 This will start an HTTP server and gRPC server with the default configuration options.
 
-## Configuring the server
+## Configuring The Server
 
 There are several configuration options for OpenFGA. One option is to pass them in with an environment file. For example:
 
@@ -39,34 +40,38 @@ $ docker run openfga/openfga --env-file ./myenv
 
 All the possible configuration options are:
 
-| Configuration name                        | Description                                                                                                                                                                                                                                      | Required | Type                          | Default value | Example                                            |
-|-------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|-------------------------------|---------------|----------------------------------------------------|
-| OPENFGA_AUTH_METHOD                       | The authentication method chosen.                                                                                                                                                                                                                | No       | enum: [none, preshared, oidc] | none          |                                                    |
-| OPENFGA_AUTH_OIDC_AUDIENCE                | If `OPENFGA_AUTH_METHOD=oidc`, this is the audience to which the JWTs will be issued against.                                                                                                                                                    | No       | string                        |               | yourapplication.com                                |
-| OPENFGA_AUTH_OIDC_ISSUER                  | If `OPENFGA_AUTH_METHOD=oidc`, this is the URL to the server that issues JWTs.                                                                                                                                                                   | No       | string                        |               | yourapplication.us.auth0.com                       |
-| OPENFGA_AUTH_PRESHARED_KEYS               | If `OPENFGA_AUTH_METHOD=preshared`, this is the array of accepted keys. You must specify at least one.                                                                                                                                           | No       | array of string               |               | `key1,key2`                                        |
-| OPENFGA_CHANGELOG_HORIZON_OFFSET          | This applies only to the ReadChanges API. It's a duration in minutes. For example, if set to 1 minute, if you call the ReadChanges API, the changes that occurred in the last minute will not be included in the response.                       | No       | number                        | 0             |                                                    |
-| OPENFGA_DATASTORE_CONNECTION_URI          | If `OPENFGA_DATASTORE_ENGINE=postgres`, this is the connection URI to the database.                                                                                                                                                              | No       | string                        |               | `postgres://user:password@localhost:5432/database` |
-| OPENFGA_DATASTORE_ENGINE                  | This is where your data (tuples, authorization models, etc.) will live.                                                                                                                                                                          | No       | enum: [memory, postgres]      | memory        |                                                    |
-| OPENFGA_DATASTORE_MAX_CACHE_SIZE          | The maximum number of type definitions to store in a cache. This improves the latency of some APIs.                                                                                                                                              | No       | number                        | 100000        |                                                    |
-| OPENFGA_HTTP_PORT                         | HTTP port where OpenFGA will run.                                                                                                                                                                                                                | No       | number                        | 8080          |                                                    |
-| OPENFGA_MAX_TUPLES_PER_WRITE              | Maximum number of tuples that a Write request can accept. This may have to be set depending on your storage choice.                                                                                                                              | No       | number                        | 100           |                                                    |
-| OPENFGA_MAX_TYPES_PER_AUTHORIZATION_MODEL | Maximum number of types that an authorization model can have.                                                                                                                                                                                    | No       | number                        | 100           |                                                    |
-| OPENFGA_REQUEST_TIMEOUT                   | Limit of time, in seconds, that a request can take before it times out. If zero, there is no timeout.                                                                                                                                            | No       | string                        | 0s            |                                                    |
-| OPENFGA_RESOLVE_NODE_LIMIT                | A number that indicates how deeply nested an authorization model can be. For example, if a type `document` has relations `reader` and `writer`, the latter which is defined as `define writer as reader`, this authorization model has 2 levels. | No       | number                        | 25            |                                                    |
-| OPENFGA_RPC_PORT                          | RPC port where OpenFGA will run.                                                                                                                                                                                                                 | No       | number                        | 8081          |                                                    |
-| OPENFGA_SERVICE_NAME                      | The name you want to give to your OpenFGA server.                                                                                                                                                                                                | No       | string                        | openfga       |                                                    |
+| Configuration name                        | Description                                                                                                                                                                                                                                      | Required | Type                     | Default value | Example                                            |
+|-------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|--------------------------|---------------|----------------------------------------------------|
+| OPENFGA_AUTH_METHOD                       | The authentication method chosen.                                                                                                                                                                                                                | No       | enum: [none, preshared]  | none          |                                                    |
+| OPENFGA_AUTH_PRESHARED_KEYS               | If `OPENFGA_AUTH_METHOD=preshared`, this is the array of accepted keys. You must specify at least one.                                                                                                                                           | No       | array of string          |               | `key1,key2`                                        |
+| OPENFGA_CHANGELOG_HORIZON_OFFSET          | This applies only to the ReadChanges API. It's a duration in minutes. For example, if set to 1 minute, if you call the ReadChanges API, the changes that occurred in the last minute will not be included in the response.                       | No       | number                   | 0             |                                                    |
+| OPENFGA_DATASTORE_CONNECTION_URI          | If `OPENFGA_DATASTORE_ENGINE=postgres`, this is the connection URI to the database.                                                                                                                                                              | No       | string                   |               | `postgres://user:password@localhost:5432/database` |
+| OPENFGA_DATASTORE_ENGINE                  | This is where your data (tuples, authorization models, etc.) will live.                                                                                                                                                                          | No       | enum: [memory, postgres] | memory        |                                                    |
+| OPENFGA_DATASTORE_MAX_CACHE_SIZE          | The maximum number of type definitions to store in a cache. This improves the latency of some APIs.                                                                                                                                              | No       | number                   | 100000        |                                                    |
+| OPENFGA_GRPC_TLS_CERT_PATH                | The path to the gRPC server certificate.                                                                                                                                                                                                         | No       | string                   |               | `./certs/grpc_server.pem`                          |
+| OPENFGA_GRPC_TLS_ENABLED                  | Whether or not to enable TLS for the gRPC server. If `true` then you must also set `OPENFGA_GRPC_TLS_CERT_PATH` and `OPENFGA_GRPC_TLS_KEY_PATH`.                                                                                                 | Yes      | boolean                  | false         | false                                              |
+| OPENFGA_GRPC_TLS_KEY_PATH                 | The path to the gRPC server private key.                                                                                                                                                                                                         | No       | string                   |               | `./certs/grpc_server_key.pem`                      |
+| OPENFGA_HTTP_PORT                         | HTTP port where OpenFGA will run.                                                                                                                                                                                                                | No       | number                   | 8080          |                                                    |
+| OPENFGA_HTTP_TLS_CERT_PATH                | The path to the HTTP server certificate.                                                                                                                                                                                                         | No       | string                   |               | `./certs/http_server.pem`                          |
+| OPENFGA_HTTP_TLS_ENABLED                  | Whether or not to enable TLS for the HTTP server. If `true` then you must also set `OPENFGA_HTTP_TLS_CERT_PATH` and `OPENFGA_HTTP_TLS_KEY_PATH`.                                                                                                 | Yes      | boolean                  | false         | false                                              |
+| OPENFGA_HTTP_TLS_KEY_PATH                 | The path to the HTTP server private key.                                                                                                                                                                                                         | No       | string                   |               | `./certs/http_server_key.pem`                      |
+| OPENFGA_MAX_TUPLES_PER_WRITE              | Maximum number of tuples that a Write request can accept. This may have to be set depending on your storage choice.                                                                                                                              | No       | number                   | 100           |                                                    |
+| OPENFGA_MAX_TYPES_PER_AUTHORIZATION_MODEL | Maximum number of types that an authorization model can have.                                                                                                                                                                                    | No       | number                   | 100           |                                                    |
+| OPENFGA_REQUEST_TIMEOUT                   | Limit of time, in seconds, that a request can take before it times out. If zero, there is no timeout.                                                                                                                                            | No       | string                   | 0s            |                                                    |
+| OPENFGA_RESOLVE_NODE_LIMIT                | A number that indicates how deeply nested an authorization model can be. For example, if a type `document` has relations `reader` and `writer`, the latter which is defined as `define writer as reader`, this authorization model has 2 levels. | No       | number                   | 25            |                                                    |
+| OPENFGA_RPC_PORT                          | RPC port where OpenFGA will run.                                                                                                                                                                                                                 | No       | number                   | 8081          |                                                    |
+| OPENFGA_SERVICE_NAME                      | The name you want to give to your OpenFGA server.                                                                                                                                                                                                | No       | string                   | openfga       |                                                    |
 
-### Configuring data storage
+### Configuring Data Storage
 
 You can choose between two storage options:
 
 - In-memory storage. This option is not persistent, i.e. if you restart the server, the data will be lost.
 - Postgres database. This option requires either a local Postgres installation, or a Docker container that runs Postgres. For an example of a Docker setup that includes a Postgres database, see [OpenFGA's Docker compose file](https://github.com/openfga/openfga/blob/main/docker-compose.yaml).
 
-### Configuring authentication
+### Configuring Authentication
 
-You can configure authentication in your OpenFGA server in three ways: no authentication (the default), pre-shared key authentication and [OIDC authentication](https://openid.net/connect/).
+You can configure authentication in your OpenFGA server in two ways: no authentication (the default) or pre-shared key authentication.
 
 If using **Pre-shared key authentication**, you will configure OpenFGA with a secret key and your application calling OpenFGA will have to set an `Authorization: Bearer <YOUR-KEY-HERE>` header. You can configure multiple keys.
 
@@ -74,14 +79,13 @@ If using **Pre-shared key authentication**, you will configure OpenFGA with a se
 If you are going to use this setup in production, you should enable TLS in your OpenFGA server.
 :::
 
-If using **OIDC authentication**, you will configure OpenFGA with a [JWT](https://jwt.io/) token issuer. Before calling OpenFGA, your application must grab a token from the issuer, and then include it in an `Authorization: Bearer <token>` header.
-
-## Production checklist
+## Production Recommendations
 
 If you have tried OpenFGA locally, decided it works as expected, and now want to deploy it to production, we recommend the following preparation:
 
-- Ensure you configured authentication.
-- Ensure that you have enabled TLS on the server.
-- Fork the OpenFGA repository and:
-    - Add a rate limiter interceptor that protects your OpenFGA server against bursts in traffic.
-    - Add a logger interceptor that sends logging to your logging platform of choice.
+- Update the configuration as follows:
+  - Configure authentication on the server as explained above.
+  - Enable TLS on the server.
+  - Enable production logging by changing the `OPENFGA_LOG_FORMAT` environment variable to `json`.
+- Add a rate limiter interceptor (for example, [in the server configuration](https://pkg.go.dev/github.com/openfga/openfga/server#Config)) that protects your OpenFGA server against bursts in traffic.
+- Add a logger interceptor (for example, [in the server configuration](https://pkg.go.dev/github.com/openfga/openfga/server#Config)) that sends logs to your logging platform of choice.

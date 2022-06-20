@@ -33,7 +33,7 @@ This tutorial explains how to represent [Google Drive](https://www.google.com/in
 - Using [**the union operator**](../../configuration-language.mdx#the-union-operator) condition to indicate that a user might have a certain relation with an object if they match any of the criteria indicated.<br />
   Used here to indicate that a user can be a viewer on a document, or can have the viewer relationship implied through commenter.
 - Using the **<ProductConcept section="how-do-i-represent-everyone" linkName="`*` syntax" />** in a <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple's" /> user field to indicate that everyone has a certain relation with an object. See [Modeling Public Access](../public-access.mdx) for more.<br />
-  Used here to [share documents publicly](#sharing-files-and-folders-publicly).
+  Used here to [share documents publicly](#04-sharing-files-and-folders-publicly).
 - Model [**parent-child objects**](../parent-child.mdx) to indicate that a user having a relationship with a certain object implies having a relationship with another object in <ProductName format={ProductNameFormat.ShortForm}/>.<br />
   Used here is to indicate that a writer on a folder is a writer on all documents inside that folder.
 
@@ -75,7 +75,7 @@ You need to know how to add a relationship tuple to indicate that a resource is 
 
 </details>
 
-## What You Will You Be Modeling
+## What You Will Be Modeling
 
 Google Drive is a system to store, share, and collaborate on files and folders. [Source](https://www.google.com/drive/)
 
@@ -114,7 +114,7 @@ There will be:
 
 ## Modeling Google Drive's Permissions
 
-### 01. Individual permissions
+### 01. Individual Permissions
 
 To keep thing simple and focus on <ProductName format={ProductNameFormat.LongForm}/> features rather than Google Drive complexity we will model only four [roles](https://developers.google.com/drive/api/v3/ref-roles) (Viewer, Commenter, Writer, Owner).
 
@@ -287,7 +287,7 @@ With this update our model now supports nested definitions and now:
 <CheckRequestViewer user={'anne'} relation={'owner'} object={'document:2021-budget'} allowed={true} />
 <CheckRequestViewer user={'anne'} relation={'writer'} object={'document:2021-budget'} allowed={true} />
 
-### 02. Organization permissions
+### 02. Organization Permissions
 
 Google Drive allows you to share a file with everyone in your organization as a viewer, commenter or writer/editor.
 
@@ -355,7 +355,7 @@ The last relationship tuple introduces a new **<ProductName format={ProductNameF
 
 <CheckRequestViewer user={'charles'} relation={'viewer'} object={'document:2021-budget'} allowed={true} />
 
-### 03. Folder permission propagation
+### 03. Folder Permission Propagation
 
 [Permission propagation](https://developers.google.com/drive/api/v3/manage-sharing#permission_propagation) happens between folders and files: if you are a viewer in a folder, you can view its documents. This applies even when you are not explicitly a viewer in a document.
 ![Image](https://pbs.twimg.com/media/Eme_FlYW4AEAYfi?format=jpg&name=large)
@@ -637,7 +637,7 @@ The updated authorization model looks like this:
   }}
 />
 
-### 04. Sharing files and folders publicly
+### 04. Sharing Files And Folders Publicly
 
 Google Drive has a feature which allows [sharing a file or folder publicly](https://support.google.com/a/users/answer/9308873?hl=en), and specifying the permissions a public user might have (writer/commenter/viewer).
 

@@ -64,7 +64,7 @@ Used here to indicate that "access" to a feature cannot be directly granted to a
 
 </details>
 
-## What You Will You Be Modeling
+## What You Will Be Modeling
 
 In many product offerings, the features are behind multiple tiers. In this tutorial, you will build an authorization model for a subset of [GitHub's entitlements](https://github.com/pricing) (detailed below) using <ProductName format={ProductNameFormat.LongForm}/>. You will use some scenarios to validate the model.
 
@@ -123,9 +123,9 @@ By the end of this tutorial, you should be able to query <ProductName format={Pr
 - **Charles** has access to **Draft Pull Requests** (expecting `yes`)
 - **Charles** has access to **Single Sign-on** (expecting `yes`)
 
-## Modeling Entitlements for GitHub
+## Modeling Entitlements For GitHub
 
-### 01. Building the Initial Authorization Model and Relationship Tuples
+### 01. Building The Initial Authorization Model And Relationship Tuples
 
 In this tutorial you are going to take a different approach to previous tutorials. You will start with a simple<ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />, add <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" /> to represent some sample scenarios, and iterate until those scenarios return the results you expect.
 
@@ -168,7 +168,7 @@ Similar to the example above, start with a basic listing of the types and their 
   }}
 />
 
-### 02. Populating the Relationship Tuples
+### 02. Populating The Relationship Tuples
 
 Now you can add the relationship tuples to represent these relationships mentioned in the [requirements](#requirements) and [scenarios](#defined-scenarios) sections:
 
@@ -292,7 +292,7 @@ Querying for relationship tuples that you fed into <ProductName format={ProductN
 <CheckRequestViewer user={'organization:bayer'} relation={'member'} object={'plan:team'} allowed={true} />
 <CheckRequestViewer user={'plan:free'} relation={'associated_plan'} object={'feature:issues'} allowed={true} />
 
-### 03. Updating the Authorization Model
+### 03. Updating The Authorization Model
 
 You are working towards <ProductName format={ProductNameFormat.ShortForm}/> returning the correct answer when you query whether `anne` has `access` to `feature:issues`. It won't work yet, but you will keep updating your configuration to reach that goal.
 
@@ -370,7 +370,7 @@ The resulting updated configuration would be:
   }}
 />
 
-#### Adding modeling pattern of parent-child objects
+#### Adding Modeling Pattern Of Parent-Child Objects
 
 Now we can ask the following query: `is anne related to feature:issues as access?` again.
 
@@ -456,7 +456,7 @@ That would mean that in order for an object to have an `access` relation to a fe
 
 That brings you close. That will allow you to grant organizations access to the feature (as organizations have a subscriber relation with the plan).
 
-#### Adding subscriber relationship with another object related to x associated_plan
+#### Adding Subscriber Relationship With Another Object Related To x associated_plan
 
 One way forward would be to add a direct `access` relation between a user and a feature e.g. `{ "user": "anne", "relation": "access", "object": "feature:y" }` whenever the organization anne is subscribed to a plan, or the organization anne is in subscribes to a new plan.
 But there are several downsides to this:
@@ -605,7 +605,7 @@ Now ask the following query: `is anne related to feature:issues as access?`
 
 <CheckRequestViewer user={'anne'} relation={'access'} object={'feature:issues'} allowed={true} />
 
-#### Disallow direction relationship
+#### Disallow Direction Relationship
 
 So far, with just a <ProductName format={ProductNameFormat.ShortForm}/> authorization model, and the initial relationship tuples indication the relations you know, you configured <ProductName format={ProductNameFormat.LongForm}/> to give you the correct response.
 
