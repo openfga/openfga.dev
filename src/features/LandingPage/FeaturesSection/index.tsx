@@ -38,7 +38,7 @@ const features = [
     icon: <OpenIcon />,
     title: 'Built in the open',
     content: [
-      "Transparency and peer review are important for building secure, stable, and sustainable software. OpenFGA's <a href='https://github.com/openfga/rfcs/blob/main/README.md'  target='_blank'>RFC process</a> and <a href='https://github.com/openfga/.github/blob/main/CONTRIBUTING.md' target='_blank'>governance model</a> invite anyone to become a contributor, and collaboratively develop the <a href='https://github.com/orgs/openfga/projects/' target='_blank'>public roadmap</a>. Come create the next standard for authorization with us!",
+      "Transparency and peer review are important for building secure, stable, and sustainable software. OpenFGA's <a href='https://github.com/openfga/rfcs/blob/main/README.md'  target='_blank'>RFC process</a> and <a href='https://github.com/openfga/.github/blob/main/CONTRIBUTING.md' target='_blank'>governance model</a> invite anyone to become a contributor, and collaboratively develop the <a href='https://github.com/orgs/openfga/projects/1' target='_blank'>public roadmap</a>. Come create the next standard for authorization with us!",
     ],
   },
   {
