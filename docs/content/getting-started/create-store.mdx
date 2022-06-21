@@ -60,7 +60,7 @@ func main() {
     apiClient := openfga.NewAPIClient(configuration)
 
     resp, _, err := apiClient.OpenFgaApi.CreateStore(context.Background()).Body(openfga.CreateStoreRequest{
-        Name: openfga.PtrString("my-store"),
+        Name: openfga.PtrString("FGA Demo Store"),
     }).Execute()
     if err != nil {
         // .. Handle error
@@ -89,7 +89,7 @@ class MyProgram {
 
         var store = await fgaClient.CreateStore(new OpenFga.Sdk.Model.CreateStoreRequest()
         {
-            Name = "Demo"
+            Name = "FGA Demo Store"
         });
     }
 }
