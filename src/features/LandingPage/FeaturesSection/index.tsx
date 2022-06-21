@@ -3,7 +3,7 @@ import * as React from 'react';
 import sanitizeHtml from 'sanitize-html';
 import clsx from 'clsx';
 import { Section } from '@components/Section';
-import { Auth0Icon, CodeIcon, FastIcon, ModelIcon, OpenIcon } from '@components/icons';
+import { Auth0Icon, CodeIcon, FastIcon, GetInvolvedIcon, ModelIcon, OpenIcon } from '@components/icons';
 
 import styles from './FeaturesSection.module.css';
 import { StyleGrid } from '../StyleGrid';
@@ -38,8 +38,7 @@ const features = [
     icon: <OpenIcon />,
     title: 'Built in the open',
     content: [
-      "OpenFGA's <a href='https://github.com/openfga/rfcs/blob/main/README.md' >RFC process</a> and <a href='https://github.com/openfga/.github/blob/main/CONTRIBUTING.md' >governance model</a> invite anyone to become a contributor, and collaboratively develop the project roadmap. Come create the next standard for authorization with us! ",
-      '<a target="_blank" href="https://github.com/openfga/.github/blob/main/CONTRIBUTING.md#contribution-process" >Learn how to get involved → </a>',
+      "Transparency and peer review are important for building secure, stable, and sustainable software. OpenFGA's <a href='https://github.com/openfga/rfcs/blob/main/README.md'  target='_blank'>RFC process</a> and <a href='https://github.com/openfga/.github/blob/main/CONTRIBUTING.md' target='_blank'>governance model</a> invite anyone to become a contributor, and collaboratively develop the <a href='https://github.com/orgs/openfga/projects/' target='_blank'>public roadmap</a>. Come create the next standard for authorization with us!",
     ],
   },
   {
@@ -48,6 +47,15 @@ const features = [
     title: 'Sponsored by Auth0',
     content: [
       'Originally designed by Auth0 to power their managed fine grained authorization system, Auth0 Fine Grained Authorization, OpenFGA is building upon decades of industry experience and insights from dozens of internal stakeholders and customer organizations of all shapes and sizes.',
+    ],
+  },
+  {
+    id: 'contribute',
+    icon: <GetInvolvedIcon />,
+    title: 'Get Involved',
+    content: [
+      "Join OpenFGA's active <a href='https://discord.gg/8naAwJfWN6' target='_blank'>Discord community</a>, check out existing <a href='https://github.com/openfga/rfcs' target='_blank'>RFCs</a> to understand where the project is headed, start a <a href='https://github.com/orgs/openfga/discussions' target='_blank'>discussion</a> about your authorization needs or questions, and learn more about how to take part by reading our <a href='https://github.com/openfga/.github/blob/main/CONTRIBUTING.md' target='_blank'>CONTRIBUTING.md</a>.",
+      '<a target="_blank" href="https://github.com/openfga/.github/blob/main/CONTRIBUTING.md#contribution-process" >Learn how to get involved → </a>',
     ],
   },
 ];
@@ -66,17 +74,6 @@ const FeaturesSection = () => (
           ))}
         </div>
       ))}
-
-      <div className={clsx(styles.feature, styles.highlight)}>
-        <h3>Get involved</h3>
-        <p>
-          OpenFGA has an active <Link href="https://discord.gg/8naAwJfWN6">Discord community</Link>, a{' '}
-          <Link href="https://github.com/orgs/openfga/projects/1">public roadmap</Link>, and is ready for contributions.
-          Check out existing <Link href="https://github.com/openfga/rfcs">RFCs</Link> to understand where the project is
-          headed, and learn more about how to take part by reading our{' '}
-          <Link href="https://github.com/openfga/.github/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</Link>.
-        </p>
-      </div>
     </div>
   </Section>
 );
