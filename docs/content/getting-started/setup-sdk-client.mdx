@@ -48,7 +48,7 @@ import (
     "os"
 )
 
-func Main() {
+func main() {
     configuration, err := openfga.NewConfiguration(openfga.Configuration{
         ApiScheme:      os.Getenv("FGA_API_SCHEME"), // Optional. Can be "http" or "https". Defaults to "https"
         ApiHost:        os.Getenv("FGA_API_HOST"), // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
@@ -75,7 +75,7 @@ namespace ExampleApp;
 
 class MyProgram {
     static async Task Main() {
-        var configuration = new Configuration(environment) {
+        var configuration = new Configuration() {
             ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // Optional. Can be "http" or "https". Defaults to "https"
             ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST"), // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
             StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID")
@@ -156,7 +156,7 @@ namespace ExampleApp;
 
 class MyProgram {
     static async Task Main() {
-        var configuration = new Configuration(environment) {
+        var configuration = new Configuration() {
             ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // optional, defaults to "https"
             ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST"), // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
             StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"),  // optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
