@@ -110,7 +110,7 @@ data, response, err := fgaClient.${languageMappings['go'].apiName}.Check(context
     case SupportedLanguage.DOTNET_SDK:
       return `
 // Run a check
-var response = await fgaClient.Check(new CheckRequest(new TupleKey {
+var response = await fgaClient.Check(new CheckRequest(new TupleKey() {
   User = "${user}",
   Relation = "${relation}",
   Object = "${object}"
