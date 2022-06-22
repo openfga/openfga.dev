@@ -20,13 +20,13 @@
 @media screen and (min-width: 996px) {
   .container {
     flex-direction: row;
-    gap: 5rem;
   }
 }
 
 @media screen and (min-width: 996px) {
   .content {
-    flex: 0 0 29%;
+    /* Half the width, minus 50px (grid gap) minus 32px (padding) */
+    width: calc(50% - 5rem);
   }
 }
 
@@ -50,20 +50,25 @@
   line-height: 1.28;
 }
 
-.graphic {
+.terminalContainer {
   margin-top: 3rem;
-  flex: 1;
-  display: flex;
-  justify-content: center;
+}
+.terminalImg {
+  max-width: 100%;
+  width: 100%;
 }
 
 @media screen and (min-width: 996px) {
-  .graphic {
+  .terminalContainer {
+    display: flex;
+    justify-content: center;
     margin-top: 0;
+    /* Half the width, plus 50px (grid gap) minus 32px (padding) */
+    width: calc(50% + 1.125rem);
   }
 }
 
-.graphic svg {
+.terminal svg {
   height: 100%;
   object-fit: cover;
   width: 100%;
@@ -71,4 +76,11 @@
 
 .section a:hover {
   background-color: var(--true-black);
+}
+
+.dockerSnippet {
+  background-color: #000;
+  font-size: 0.875rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
 }
