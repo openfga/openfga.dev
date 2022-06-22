@@ -2,6 +2,7 @@ export * from './Auth0Icon';
 export * from './CloudIcon';
 export * from './CodeIcon';
 export * from './FastIcon';
+export * from './GetInvolvedIcon';
 export * from './MergeIcon';
 export * from './ModelIcon';
 export * from './OpenIcon';
