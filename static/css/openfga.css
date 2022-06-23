@@ -107,10 +107,19 @@ a:visited {
 
 .navbar__logo {
   height: 2.6rem;
-  width: 174px;
+  width: 42px;
   overflow: hidden;
   margin-right: 29px;
   transition: all 0.3s ease-in-out;
+}
+
+.docs-doc-page .navbar__logo,
+.docs-api-page .navbar__logo {
+  width: 174px;
+}
+
+html:has('* #quick-start') .navbar__logo {
+  background: red;
 }
 
 .navbar__logo img {
@@ -119,8 +128,8 @@ a:visited {
   height: auto;
 }
 
-.navbar__logo[data-minimal='true'] {
-  width: 42px;
+.navbar__logo[data-minimal='false'] {
+  width: 174px;
 }
 
 .navbar__items {

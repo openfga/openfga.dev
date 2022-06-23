@@ -8,6 +8,9 @@ const ApiService = () => {
   const { siteConfig } = useDocusaurusContext();
   const apiDocsBasePath = siteConfig.customFields?.apiDocsBasePath as string | undefined;
 
+  // Provide a way to identify API page in CSS
+  document.getElementById('__docusaurus').className = 'docs-api-page';
+
   return (
     <Layout title="Open FGA API Explorer">
       <SwaggerUI apiDocsBasePath={apiDocsBasePath} />

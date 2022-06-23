@@ -35,6 +35,9 @@ const HeroHeader = () => {
     };
   }, [scrollHandler]);
 
+  // Provide a way to identify landing/home page in CSS
+  document.getElementById('__docusaurus').className = 'docs-landing-page';
+
   return (
     <header>
       <div className="container__no-padding">
