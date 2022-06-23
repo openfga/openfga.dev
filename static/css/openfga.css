@@ -118,10 +118,6 @@ a:visited {
   width: 174px;
 }
 
-html:has('* #quick-start') .navbar__logo {
-  background: red;
-}
-
 .navbar__logo img {
   max-width: inherit;
   width: 174px;
