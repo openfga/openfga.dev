@@ -1,5 +1,6 @@
 import * as React from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
 
 import styles from './HeroHeader.module.css';
 
@@ -34,6 +35,11 @@ const HeroHeader = () => {
       if (headingRef.current) observer.unobserve(headingRef.current);
     };
   }, [scrollHandler]);
+
+  // Provide a way to identify landing/home page in CSS
+  if (ExecutionEnvironment.canUseDOM) {
+    document.getElementById('__docusaurus').className = 'docs-landing-page';
+  }
 
   return (
     <header>
