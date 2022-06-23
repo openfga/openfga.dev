@@ -81,6 +81,52 @@
 .dockerSnippet {
   background-color: #000;
   font-size: 0.875rem;
-  margin-bottom: 2rem;
   padding: 1rem;
+  flex-grow: 1;
+  margin-bottom: 0;
+}
+
+.copyQuickstart {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  height: 32px;
+  padding: 4px;
+  width: 32px;
+  display: flex;
+}
+
+.copyQuickstart[copied='true'] svg,
+.copyQuickstart[copied='true']:hover svg {
+  stroke: transparent;
+}
+.copyQuickstart[copied='true'] {
+  margin-left: 64px;
+}
+.copyQuickstart[copied='true']::after {
+  color: var(--ofga-green-neon);
+  content: 'copied ✓';
+  font-family: courier;
+  font-size: 16px;
+  line-height: 30px;
+  margin-left: -120px;
+  text-align: right;
+  width: 120px;
+}
+
+.copyQuickstart svg {
+  stroke: var(--ofga-green-neon);
+  transition: all 0.2s ease-in-out;
+}
+
+.copyQuickstart:hover svg {
+  stroke: var(--ofga-neutral-white);
+  transition: all 0.2s ease-in-out;
+}
+
+.copyCodeBlock {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
 }
