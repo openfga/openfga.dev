@@ -91,7 +91,7 @@
   border: 0;
   cursor: pointer;
   height: 2rem;
-  padding: 4px;
+  padding: 0.25rem;
   width: 2rem;
   display: flex;
   transition: 0.2s 0.2s all ease-in-out;
