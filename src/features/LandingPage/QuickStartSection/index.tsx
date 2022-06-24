@@ -9,6 +9,8 @@ import terminalImg from './terminal.png';
 import styles from './QuickStartSection.module.css';
 
 const QuickStartSection = () => {
+  const buttonRef = React.useRef(null);
+
   const processHTMLSnippet = (snippet: string) => {
     // Change &amp to &
     const translateAmpersands = snippet.replace(/&amp;/g, '&');
@@ -19,10 +21,10 @@ const QuickStartSection = () => {
   };
 
   const changeSVGState = () => {
-    document.getElementsByClassName(styles.copyQuickstart)[0].setAttribute('data-copied', 'true');
+    buttonRef.current?.setAttribute('data-copied', 'true');
 
     setTimeout(() => {
-      document.getElementsByClassName(styles.copyQuickstart)[0].setAttribute('data-copied', 'false');
+      buttonRef.current?.setAttribute('data-copied', 'false');
     }, 5000);
   };
 
@@ -47,7 +49,12 @@ const QuickStartSection = () => {
               docker pull openfga/openfga && \<br />
               docker run -p 8080:8080 openfga/openfga run
             </pre>
-            <button className={styles.copyQuickstart} data-copied="false" onClick={() => copyCurlCommand()}>
+            <button
+              ref={buttonRef}
+              className={styles.copyQuickstart}
+              data-copied="false"
+              onClick={() => copyCurlCommand()}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
