@@ -90,28 +90,18 @@
   background: none;
   border: 0;
   cursor: pointer;
-  height: 32px;
+  height: 2rem;
   padding: 4px;
-  width: 32px;
+  width: 2rem;
   display: flex;
+  transition: 0.2s 0.2s all ease-in-out;
 }
 
-.copyQuickstart[copied='true'] svg,
-.copyQuickstart[copied='true']:hover svg {
-  stroke: transparent;
-}
-.copyQuickstart[copied='true'] {
-  margin-left: 64px;
-}
-.copyQuickstart[copied='true']::after {
-  color: var(--ofga-green-neon);
-  content: 'copied ✓';
-  font-family: courier;
-  font-size: 16px;
-  line-height: 30px;
-  margin-left: -120px;
-  text-align: right;
-  width: 120px;
+.copyCodeBlock {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
 }
 
 .copyQuickstart svg {
@@ -124,9 +114,42 @@
   transition: all 0.2s ease-in-out;
 }
 
-.copyCodeBlock {
-  display: flex;
-  align-items: center;
-  margin-bottom: 2rem;
-  gap: 1rem;
+.copyQuickstart[data-copied='true'] svg,
+.copyQuickstart[data-copied='true']:hover svg {
+  stroke: transparent;
+}
+.copyQuickstart[data-copied='true'] {
+  margin-left: 4rem;
+}
+.copyQuickstart[data-copied='true']::after {
+  color: var(--ofga-green-neon);
+  content: 'copied  ✓';
+  font-family: courier;
+  font-size: 1rem;
+  line-height: 1.875rem;
+  margin-left: -7.5rem;
+  text-align: right;
+  width: 7.5rem;
+}
+
+.copyQuickstart[data-copied='false']:hover {
+  margin-left: 4rem;
+  transition: 0.2s all ease-in-out;
+}
+.copyQuickstart[data-copied='false']::before {
+  color: var(--ofga-neutral-white);
+  content: 'copy';
+  font-family: courier;
+  font-size: 1rem;
+  line-height: 1.875rem;
+  margin-left: -9rem;
+  margin-right: 1rem;
+  text-align: right;
+  width: 8rem;
+  opacity: 0;
+  transition: 0.2s all ease-in-out;
+}
+.copyQuickstart[data-copied='false']:hover::before {
+  opacity: 1;
+  transition: 0.2s all ease-in-out;
 }
