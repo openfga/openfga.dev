@@ -49,7 +49,7 @@ function writeAuthZModelViewerGo(authorizationModel: AuthorizationModel, apiName
 function writeAuthZModelViewerDotnet(authorizationModel: AuthorizationModel): string {
   return `
   var modelJson = ${JSON.stringify(JSON.stringify(authorizationModel))};
-  var body = JsonSerializer.Deserialize<ReadAuthorizationModelsResponse>(modelJson);
+  var body = JsonSerializer.Deserialize<OpenFga.Sdk.Model.TypeDefinitions>(modelJson);
 
   var response = await fgaClient.WriteAuthorizationModel(body);
   // response.AuthorizationModelId = "1uHxCSuTP0VKPYSnkq1pbb1jeZw"`;

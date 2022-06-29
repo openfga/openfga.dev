@@ -77,7 +77,7 @@ namespace ExampleApp;
 class MyProgram {
     static async Task Main() {
         // Initialize the SDK with no auth - see "How to setup SDK client" for more options
-        var configuration = new Configuration(storeId, environment) {
+        var configuration = new Configuration() {
           ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // Either "http" or "https", defaults to "https"
           ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST"), // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
           StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods

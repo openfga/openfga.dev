@@ -1,67 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import yaml from 'js-yaml';
 import _ from 'lodash';
 import { TypeDefinitions } from '@openfga/sdk';
 
 import { Keywords } from './Dsl';
-
-const apiToFriendlySyntaxV1 = (config: Record<string, any>) => {
-  const result: Record<string, any> = {};
-
-  for (const entry of Object.entries(config)) {
-    let [key, value]: any = entry;
-
-    switch (key) {
-      case 'difference':
-        key = 'diff';
-        break;
-      case 'intersection':
-        key = 'allOf';
-        value = value.child;
-        break;
-      case 'computedUserset':
-        key = 'usersRelatedToObjectAs';
-        value = value.relation;
-        break;
-      case 'union':
-        key = 'anyOf';
-        value = value.child;
-        break;
-      case 'this':
-        return 'self';
-      case 'tupleToUserset':
-        key = 'fromObjects';
-        break;
-      case 'tupleset':
-        key = 'relatedToObjectAs';
-        value = value.relation;
-        break;
-      default:
-        break;
-    }
-
-    if (Array.isArray(value)) {
-      const xs = [];
-
-      for (const item of value) {
-        xs.push(apiToFriendlySyntaxV1(item));
-      }
-
-      result[key] = xs;
-      continue;
-    }
-
-    if (typeof value === 'object') {
-      result[key] = apiToFriendlySyntaxV1(value);
-      continue;
-    }
-
-    result[key] = value;
-  }
-
-  return result;
-};
 
 const readFrom = (obj, define) => {
   const childKeys = Object.keys(obj);
@@ -168,14 +110,11 @@ const apiToFriendlySyntaxV2 = (config: Record<string, any>, newSyntax: string[] 
 
 export enum SyntaxFormat {
   Api = 'api',
-  Friendly1 = 'friendly_v1',
   Friendly2 = 'friendly_v2',
 }
 
 export const loadSyntax = (configuration: TypeDefinitions, format: SyntaxFormat = SyntaxFormat.Api) => {
   switch (format) {
-    case SyntaxFormat.Friendly1:
-      return yaml.dump(apiToFriendlySyntaxV1(configuration));
     case SyntaxFormat.Friendly2:
       return apiToFriendlySyntaxV2(configuration);
     case SyntaxFormat.Api:

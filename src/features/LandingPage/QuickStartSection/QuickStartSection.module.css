@@ -20,13 +20,13 @@
 @media screen and (min-width: 996px) {
   .container {
     flex-direction: row;
-    gap: 5rem;
   }
 }
 
 @media screen and (min-width: 996px) {
   .content {
-    flex: 0 0 29%;
+    /* Half the width, minus 50px (grid gap) minus 32px (padding) */
+    width: calc(50% - 5rem);
   }
 }
 
@@ -50,20 +50,25 @@
   line-height: 1.28;
 }
 
-.graphic {
+.terminalContainer {
   margin-top: 3rem;
-  flex: 1;
-  display: flex;
-  justify-content: center;
+}
+.terminalImg {
+  max-width: 100%;
+  width: 100%;
 }
 
 @media screen and (min-width: 996px) {
-  .graphic {
+  .terminalContainer {
+    display: flex;
+    justify-content: center;
     margin-top: 0;
+    /* Half the width, plus 50px (grid gap) minus 32px (padding) */
+    width: calc(50% + 1.125rem);
   }
 }
 
-.graphic svg {
+.terminal svg {
   height: 100%;
   object-fit: cover;
   width: 100%;
@@ -71,4 +76,80 @@
 
 .section a:hover {
   background-color: var(--true-black);
+}
+
+.dockerSnippet {
+  background-color: #000;
+  font-size: 0.875rem;
+  padding: 1rem;
+  flex-grow: 1;
+  margin-bottom: 0;
+}
+
+.copyQuickstart {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  height: 2rem;
+  padding: 0.25rem;
+  width: 2rem;
+  display: flex;
+  transition: 0.2s 0.2s all ease-in-out;
+}
+
+.copyCodeBlock {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+.copyQuickstart svg {
+  stroke: var(--ofga-green-neon);
+  transition: all 0.2s ease-in-out;
+}
+
+.copyQuickstart:hover svg {
+  stroke: var(--ofga-neutral-white);
+  transition: all 0.2s ease-in-out;
+}
+
+.copyQuickstart[data-copied='true'] svg,
+.copyQuickstart[data-copied='true']:hover svg {
+  stroke: transparent;
+}
+.copyQuickstart[data-copied='true'] {
+  margin-left: 4rem;
+}
+.copyQuickstart[data-copied='true']::after {
+  color: var(--ofga-green-neon);
+  content: 'copied  ✓';
+  font-family: courier;
+  font-size: 1rem;
+  line-height: 1.875rem;
+  margin-left: -7.5rem;
+  text-align: right;
+  width: 7.5rem;
+}
+
+.copyQuickstart[data-copied='false']:hover {
+  margin-left: 4rem;
+  transition: 0.2s all ease-in-out;
+}
+.copyQuickstart[data-copied='false']::before {
+  color: var(--ofga-neutral-white);
+  content: 'copy';
+  font-family: courier;
+  font-size: 1rem;
+  line-height: 1.875rem;
+  margin-left: -9rem;
+  margin-right: 1rem;
+  text-align: right;
+  width: 8rem;
+  opacity: 0;
+  transition: 0.2s all ease-in-out;
+}
+.copyQuickstart[data-copied='false']:hover::before {
+  opacity: 1;
+  transition: 0.2s all ease-in-out;
 }

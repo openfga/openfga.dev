@@ -33,7 +33,9 @@ const openFga = new OpenFgaApi({
     apiHost: process.env.FGA_API_HOST // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
 });
 
-openFga.createStore()
+const { id: storeId } = await openFga.createStore({
+    name: "FGA Demo Store",
+});
 ```
 
 </TabItem>
@@ -45,7 +47,7 @@ import (
     "os"
 )
 
-func Main() {
+func main() {
     configuration, err := openfga.NewConfiguration(openfga.Configuration{
         ApiScheme:      os.Getenv("FGA_API_SCHEME"), // optional, defaults to "https"
         ApiHost:        os.Getenv("FGA_API_HOST"), // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
@@ -57,7 +59,12 @@ func Main() {
 
     apiClient := openfga.NewAPIClient(configuration)
 
-    apiClient.CreateStore()
+    resp, _, err := apiClient.OpenFgaApi.CreateStore(context.Background()).Body(openfga.CreateStoreRequest{
+        Name: openfga.PtrString("FGA Demo Store"),
+    }).Execute()
+    if err != nil {
+        // .. Handle error
+    }
 }
 ```
 
@@ -74,15 +81,28 @@ namespace ExampleApp;
 
 class MyProgram {
     static async Task Main() {
-        var configuration = new Configuration(environment) {
+        var configuration = new Configuration() {
             ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // optional, defaults to "https"
             ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST") // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
         };
         var fgaClient = new OpenFgaApi(configuration);
 
-        fgaClient.CreateStore();
+        var store = await fgaClient.CreateStore(new OpenFga.Sdk.Model.CreateStoreRequest()
+        {
+            Name = "FGA Demo Store"
+        });
     }
 }
+```
+
+</TabItem>
+
+<TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
+
+```console
+curl -X POST $FGA_API_HOST/stores \
+  -H "content-type: application/json" \
+  -d '{"name": "FGA Demo Store"}'
 ```
 
 </TabItem>

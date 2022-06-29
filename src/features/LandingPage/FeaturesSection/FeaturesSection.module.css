@@ -65,15 +65,3 @@
   background-color: var(--ofga-neutral-black);
   color: var(--ofga-green-neon);
 }
-
-.highlight h3 {
-  font-size: 3.5rem;
-  font-weight: 600;
-  letter-spacing: -1.3px;
-  color: var(--ofga-green-neon);
-  line-height: 1.1;
-}
-
-.highlight p {
-  font-size: 1.25rem;
-}
