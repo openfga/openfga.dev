@@ -29,7 +29,7 @@
     "@mdx-js/react": "1.6.22",
     "@openfga/sdk": "0.0.1",
     "assert-never": "1.2.1",
-    "clsx": "1.1.1",
+    "clsx": "1.2.0",
     "path-browserify": "1.0.1",
     "prism-react-renderer": "1.3.3",
     "react": "17.0.2",
