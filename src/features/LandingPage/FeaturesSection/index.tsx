@@ -1,7 +1,5 @@
-import Link from '@docusaurus/Link';
 import * as React from 'react';
 import sanitizeHtml from 'sanitize-html';
-import clsx from 'clsx';
 import { Section } from '@components/Section';
 import { Auth0Icon, CodeIcon, FastIcon, GetInvolvedIcon, ModelIcon, OpenIcon } from '@components/icons';
 
