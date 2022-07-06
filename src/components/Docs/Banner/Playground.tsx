@@ -14,9 +14,9 @@ export function Playground({ example, intro, preset, store, title }: PlaygroundC
   const { siteConfig } = useDocusaurusContext();
   const storeExtension = store ? `samples/${store}` : ``;
   const playgroundName = siteConfig.customFields.playgroundName;
-  const descriptionText = intro
-    ? `Get started `
-    : (example ? `Explore the ${example} sample ` : `Try this guide out `) + `on the ${playgroundName}`;
+  const descriptionText =
+    (intro ? `Get started ` : example ? `Explore the ${example} sample ` : `Try this guide out `) +
+    `on the ${playgroundName}`;
   return siteConfig.customFields.playgroundURL ? (
     <Banner
       title={title ? title : 'The Playground'}
