@@ -27,18 +27,19 @@ This will start an HTTP server and gRPC server with the default configuration op
 
 ## Configuring The Server
 
-You may configure the OpenFGA sever with `config.yaml` file. The config.yaml is be specified in either 
+You may configure the OpenFGA sever with `config.yaml` file. The config.yaml can be specified in either 
 - `/etc/openfga`
 - `$HOME/.openfga`
 - `.` (i.e., the current working directory).
 
 The OpenFGA will search for the configuration file in the above order.
 
-An example of configuration to use postgres as database and configured with preshared authentication keys "key1, key2" is:
+Here is a sample configuration that leverages postgres and preshared authentication:
 
 ```yaml
 database:
   engine: postgres
+  uri: postgres://user:password@localhost:5432/mydatabase
 authn:
   method: preshared
   preshared: [key1,key2]
@@ -70,6 +71,6 @@ If you have tried OpenFGA locally, decided it works as expected, and now want to
 - Update the configuration as follows:
   - Configure authentication on the server as explained above.
   - Enable TLS on the server.
-  - Enable production logging by changing the log format configuration to `json`.
+  - Enable production logging by changing the `log.format` in the [config.yaml](#configuring-the-server) configuration file to `json`.
 - Add a rate limiter interceptor (for example, [in the server configuration](https://pkg.go.dev/github.com/openfga/openfga/server#Config)) that protects your OpenFGA server against bursts in traffic.
 - Add a logger interceptor (for example, [in the server configuration](https://pkg.go.dev/github.com/openfga/openfga/server#Config)) that sends logs to your logging platform of choice.
