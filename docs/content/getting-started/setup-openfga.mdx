@@ -42,7 +42,8 @@ database:
   uri: postgres://user:password@localhost:5432/mydatabase
 authn:
   method: preshared
-  preshared: [key1,key2]
+  preshared:
+    keys: ["key1", "key2"]
 ```
 
 All possible configurations and their default values are defined in [config-schema.json](https://github.com/openfga/openfga/blob/main/config-schema.json).
