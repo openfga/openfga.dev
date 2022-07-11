@@ -45,7 +45,7 @@ const HeroHeader = () => {
 
   // To avoid weird colour issues, force Firefox to use webm, other browsers get mp4
   const injectVideo = () => {
-    const isFirefox = ExecutionEnvironment.canUseDOM && navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+    const isFirefox = ExecutionEnvironment.canUseDOM && navigator.userAgent.toLowerCase().includes('firefox');
 
     return isFirefox ? <source src={patternWebm} type="video/webm" /> : <source src={patternMp4} type="video/mp4" />;
   };
