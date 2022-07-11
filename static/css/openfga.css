@@ -598,3 +598,47 @@ pre {
 .language-json .token.punctuation {
   color: var(--ofga-color-secondary) !important;
 }
+
+/* highlighting getting started modeling page */
+
+.blue-highlight-text {
+  padding: 1.2px 7.2px;
+  background: #ddebfd;
+  border-radius: 2.4px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 18px;
+  color: #00407d;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.green-highlight-text {
+  padding: 1.2px 7.2px;
+  background: #def7f1;
+  border-radius: 2.4px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 18px;
+  color: #004e4e;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.yellow-highlight-text {
+  padding: 1.2px 7.2px;
+  background: #fcf7e4;
+  border-radius: 2.4px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 18px;
+  color: #522c09;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
