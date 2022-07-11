@@ -137,11 +137,15 @@ Learn more about the <UpdateProductNameInLinks link="./configuration-language" n
 
 ## What Is A Store?
 
-A **store** is a <ProductName format={ProductNameFormat.LongForm}/> organization entity that owns an authorization model.
+A "store" is a <ProductName format={ProductNameFormat.LongForm}/> entity used for organizing data needed to answer authorization checks.
 
 </summary>
 
-A store contains all your data, including the [authorization model](#what-is-an-authorization-model) and [relationship tuples](#what-is-a-relationship-tuple).
+Each store contains one or more versions of an [authorization model](#what-is-an-authorization-model) and may contain various [relationship tuples](#what-is-a-relationship-tuple).
+
+Store data such as the authorization model and relationship tuples cannot be shared across stores, so it is highly recommended to store all data that may be related and may affect your authorization result in a single store.
+
+For completely separate authorization needs or isolated environments where data from one should not affect another (e.g. development/prod), you may want to create separate stores.
 
 </details>
 
