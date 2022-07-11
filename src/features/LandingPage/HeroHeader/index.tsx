@@ -4,10 +4,12 @@ import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
 
 import styles from './HeroHeader.module.css';
 
-import { HeroPattern } from './HeroPattern';
 import { HeroLogo } from './HeroLogo';
 import { ButtonLink } from '@components/ButtonLink';
 import { StyleGrid } from '../StyleGrid';
+import patternMp4 from './pattern.mp4';
+import patternWebm from './pattern.webm';
+import patternImg from './pattern.png';
 
 const HeroHeader = () => {
   const { siteConfig } = useDocusaurusContext();
@@ -40,6 +42,13 @@ const HeroHeader = () => {
   if (ExecutionEnvironment.canUseDOM) {
     document.getElementById('__docusaurus').className = 'docs-landing-page';
   }
+
+  // To avoid weird colour issues, force Firefox to use webm, other browsers get mp4
+  const injectVideo = () => {
+    const isFirefox = ExecutionEnvironment.canUseDOM && navigator.userAgent.toLowerCase().includes('firefox');
+
+    return isFirefox ? <source src={patternWebm} type="video/webm" /> : <source src={patternMp4} type="video/mp4" />;
+  };
 
   return (
     <header>
@@ -87,7 +96,9 @@ const HeroHeader = () => {
               </ButtonLink>
             </div>
           </div>
-          {<HeroPattern className={styles.heroPattern} />}
+          <video width="400" preload="auto" autoPlay muted loop className={styles.heroPattern} poster={patternImg}>
+            {injectVideo()}
+          </video>
         </div>
       </div>
     </header>
