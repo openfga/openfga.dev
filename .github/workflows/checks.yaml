@@ -1,6 +1,9 @@
 name: 'Run Checks: Lint, Audit and Build'
 
-on: [push]
+on:
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
