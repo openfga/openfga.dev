@@ -1,6 +1,7 @@
 import * as React from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 
 import styles from './HeroHeader.module.css';
 
@@ -44,11 +45,16 @@ const HeroHeader = () => {
   }
 
   // To avoid weird colour issues, force Firefox to use webm, other browsers get mp4
-  const injectVideo = () => {
-    const isFirefox = ExecutionEnvironment.canUseDOM && navigator.userAgent.toLowerCase().includes('firefox');
-
-    return isFirefox ? <source src={patternWebm} type="video/webm" /> : <source src={patternMp4} type="video/mp4" />;
-  };
+  const injectVideo = () => (
+    <BrowserOnly>
+      {() => {
+        if (navigator.userAgent.toLowerCase().includes('firefox')) {
+          return <source src={patternWebm} type="video/webm" />;
+        }
+        return <source src={patternMp4} type="video/mp4" />;
+      }}
+    </BrowserOnly>
+  );
 
   return (
     <header>
