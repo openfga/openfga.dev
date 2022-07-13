@@ -23,7 +23,7 @@ If you want to run OpenFGA locally as a Docker container, follow these steps:
 2. Run `docker pull openfga/openfga` to get the latest docker image.
 3. Run `docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 openfga/openfga run`.
 
-This will start an HTTP server and gRPC server with the default configuration options. Port 8080 is used to serve the HTTP API, 8081 is used to serve the grpc API, and 3000 is used for serve the [Playground](#playground).
+This will start an HTTP server and gRPC server with the default configuration options. Port 8080 is used to serve the HTTP API, 8081 is used to serve the gRPC API, and 3000 is used for the [Playground](#playground).
 
 ## Configuring The Server
 
@@ -69,7 +69,7 @@ If you are going to use this setup in production, you should enable TLS in your 
 
 The Playground facilitates rapid development by allowing you to visualize and model your application's authorization model(s) and manage relationship tuples with a locally running OpenFGA instance.
 
-The Playground is enabled on port 3000 by default.  To disable the playground, please take a look at [Configure the Server](#configuring-the-server) for more information.
+The Playground is enabled on port 3000 by default. To disable the playground, please take a look at [Configuring the Server](#configuring-the-server) for more information.
 
 ## Production Recommendations
 
