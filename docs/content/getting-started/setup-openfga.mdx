@@ -21,9 +21,9 @@ If you want to run OpenFGA locally as a Docker container, follow these steps:
 
 1. [Install Docker](https://docs.docker.com/get-docker/) if Docker was not already installed.
 2. Run `docker pull openfga/openfga` to get the latest docker image.
-3. Run `docker run -p 8080:8080 -p 3000:3000 openfga/openfga run`.
+3. Run `docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 openfga/openfga run`.
 
-This will start an HTTP server and gRPC server with the default configuration options. Port 8080 will be used for HTTP API request and port 3000 will be used for hosting [playground](#disabling-playground).
+This will start an HTTP server and gRPC server with the default configuration options. Port 8080 is used to serve the HTTP API, 8081 is used to serve the grpc API, and 3000 is used for serve the [Playground](#playground).
 
 ## Configuring The Server
 
@@ -65,11 +65,11 @@ If using **Pre-shared key authentication**, you will configure OpenFGA with a se
 If you are going to use this setup in production, you should enable TLS in your OpenFGA server.
 :::
 
-### Disabling Playground
+### Playground
 
 The Playground facilitates rapid development by allowing you to visualize and model your application's authorization model(s) and manage relationship tuples with a locally running OpenFGA instance.
 
-By default, the playground will be enabled for OpenFGA and port 3000 will be used as default.  To disable the playground, you will need to [configure the server](#configuring-the-server).
+The Playground is enabled on port 3000 by default.  To disable the playground, please take a look at [Configure the Server](#configuring-the-server) for more information.
 
 ## Production Recommendations
 
@@ -79,6 +79,6 @@ If you have tried OpenFGA locally, decided it works as expected, and now want to
   - Configure authentication on the server as explained above.
   - Enable TLS on the server.
   - Enable production logging by changing the `log.format` in the [config.yaml](#configuring-the-server) configuration file to `json`.
-  - Disable playground.
+  - Disable Playground.
 - Add a rate limiter interceptor (for example, [in the server configuration](https://pkg.go.dev/github.com/openfga/openfga/server#Config)) that protects your OpenFGA server against bursts in traffic.
 - Add a logger interceptor (for example, [in the server configuration](https://pkg.go.dev/github.com/openfga/openfga/server#Config)) that sends logs to your logging platform of choice.
