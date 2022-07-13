@@ -47,7 +47,8 @@ const QuickStartSection = () => {
           <div className={styles.copyCodeBlock}>
             <pre id="dockerSnippet" className={styles.dockerSnippet}>
               docker pull openfga/openfga && \<br />
-              docker run -p 8080:8080 openfga/openfga run
+              docker run -p 8080:8080 -p 8081:8081 \<br />
+              -p 3000:3000 openfga/openfga run
             </pre>
             <button
               ref={buttonRef}
