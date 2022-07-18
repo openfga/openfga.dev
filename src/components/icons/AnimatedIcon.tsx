@@ -1,16 +1,17 @@
+import renderRoutes from '@docusaurus/renderRoutes';
 import * as React from 'react';
-import Lottie from 'react-lottie';
+import { Player } from '@lottiefiles/react-lottie-player';
 import { LottieObj } from './types';
 
 const AnimatedIcon: React.FC<LottieObj> = ({element}) => (
-  <Lottie options={{
-    loop: true,
-    autoplay: true,
-    animationData: element,
-    rendererSettings: {
-      preserveAspectRatio: 'xMidYMid slice',
-    },
-  }} />
+  <div>
+    <Player
+      autoplay={true}
+      loop={true}
+      controls={true}
+      src={element}
+    />
+  </div>
 );
 
 export { AnimatedIcon };
