@@ -71,6 +71,27 @@ The Playground facilitates rapid development by allowing you to visualize and mo
 
 The Playground is enabled on port 3000 by default. To disable the Playground, please take a look at [Configuring the Server](#configuring-the-server) for more information.
 
+### Profiler (pprof)
+:::caution Warning
+Continuous pprof profiling can be used in production deployments, but we recommend disabling it unless it is needed to troubleshoot specific performance or memory problems.
+:::
+
+Profiling through pprof can be enabled on the OpenFGA server by providing the `--profiler-enabled` flag.
+
+```sh
+./openfga run --profiler-enabled
+```
+
+:::note
+Remember to expose the profiler port if you're running OpenFGA via docker. For example `docker run -p 8080:8080 -p 8081:8081 -p 3001:3001 openfga/openfga run`.
+:::
+
+If you need to serve the profiler on a different address than the default `:3001`, you can do so by specifying the `--profiler-addr` flag. For example,
+
+```sh
+./openfga run --profiler-enabled --profiler-addr :3002
+```
+
 ## Production Recommendations
 
 If you have tried OpenFGA locally, decided it works as expected, and now want to deploy it to production, we recommend the following preparation:
