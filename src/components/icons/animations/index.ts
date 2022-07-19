@@ -4,4 +4,3 @@ export * from './FastIcon';
 export * from './OpenIcon';
 export * from './Auth0Icon';
 export * from './GetInvolvedIcon';
-
