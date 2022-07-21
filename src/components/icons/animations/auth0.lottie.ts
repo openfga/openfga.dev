@@ -1,4 +1,4 @@
-const Auth0Icon: any = {
+export const auth0Lottie: any = {
   v: '5.7.4',
   fr: 60,
   ip: 0,
@@ -447,5 +447,3 @@ const Auth0Icon: any = {
   ],
   markers: [],
 };
-
-export { Auth0Icon };

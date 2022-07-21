@@ -1,4 +1,4 @@
-const ModelIcon: any = {
+export const modelLottie: any = {
   v: '5.7.4',
   fr: 60,
   ip: 0,
@@ -922,5 +922,3 @@ const ModelIcon: any = {
   ],
   markers: [],
 };
-
-export { ModelIcon };

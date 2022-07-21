@@ -1,4 +1,4 @@
-const OpenIcon: any = {
+export const openLottie: any = {
   v: '5.7.4',
   fr: 60,
   ip: 0,
@@ -616,5 +616,3 @@ const OpenIcon: any = {
   ],
   markers: [],
 };
-
-export { OpenIcon };

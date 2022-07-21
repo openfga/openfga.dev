@@ -1,4 +1,4 @@
-const GetInvolvedIcon: any = {
+export const communityLottie: any = {
   v: '5.7.4',
   fr: 60,
   ip: 0,
@@ -1189,5 +1189,3 @@ const GetInvolvedIcon: any = {
   ],
   markers: [],
 };
-
-export { GetInvolvedIcon };

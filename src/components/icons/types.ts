@@ -3,7 +3,3 @@ export type IconProps = {
   height?: number;
   color?: string;
 };
-
-export type LottieObj = {
-  element?: any;
-};

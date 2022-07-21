@@ -1,4 +1,4 @@
-const CodeIcon: any = {
+export const codeLottie: any = {
   v: '5.7.4',
   fr: 60,
   ip: 0,
@@ -696,5 +696,3 @@ const CodeIcon: any = {
   ],
   markers: [],
 };
-
-export { CodeIcon };
