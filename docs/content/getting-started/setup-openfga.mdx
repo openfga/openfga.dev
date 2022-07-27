@@ -53,7 +53,31 @@ All possible configurations and their default values are defined in [config-sche
 You can choose between two storage options:
 
 - In-memory storage. This option is not persistent, i.e. if you restart the server, the data will be lost.
-- Postgres database. This option requires either a local Postgres installation, or a Docker container that runs Postgres. For an example of a Docker setup that includes a Postgres database, see [OpenFGA's Docker compose file](https://github.com/openfga/openfga/blob/main/docker-compose.yaml).
+- Postgres database. This option requires either a local Postgres installation, or a Docker container that runs Postgres.
+
+#### Configuring Postgres
+
+Let's assume you want to run OpenFGA and Postgres in containers. The first thing we should do is create a new network as this will make communication between containers a bit simplier:
+```console
+docker network create openfga
+```
+
+Start Postgres in the network you created above:
+```console
+docker run -d --name postgres --network=openfga -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password postgres:14
+```
+You should now have Postgres running in a container in the `openfga` network. However, it will not have the tables required for running OpenFGA. You can create the required tables with the command:
+```console
+docker run --rm --network=openfga openfga/openfga migrate --datastore-engine postgres --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
+```
+
+Finally, start OpenFGA:
+```console
+docker run --network=openfga openfga/openfga run --datastore-engine postgres --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
+```
+If all went well, OpenFGA should start and you should see `using 'postgres' storage engine` in the logs.
+
+Now you can try to [Create a Store](./create-store.mdx).
 
 ### Configuring Authentication
 
