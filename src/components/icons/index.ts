@@ -1,4 +1,5 @@
 export * from './CloudIcon';
+export * from './ModelIcon';
 export * from './MergeIcon';
 export * from './PodcastIcon';
 export * from './ZanzibarIcon';

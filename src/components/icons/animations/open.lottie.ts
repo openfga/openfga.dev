@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const openLottie: any = {
   v: '5.7.4',
   fr: 60,

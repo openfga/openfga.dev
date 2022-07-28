@@ -7,7 +7,7 @@ import {
   CodeAnimatedIcon,
   CommunityAnimatedIcon,
   FastAnimatedIcon,
-  ModelAnimatedIcon,
+  ModelIcon,
   OpenAnimatedIcon,
 } from '@components/icons';
 
@@ -17,7 +17,7 @@ import { StyleGrid } from '../StyleGrid';
 const features = [
   {
     id: 'model',
-    icon: <ModelAnimatedIcon />,
+    icon: <ModelIcon />,
     title: 'Model any authorization system',
     content: [
       "OpenFGA takes the best ideas from Google's Zanzibar paper for Relationship-Based Access Control, and also solves problems for Role-based Access Control and Attribute-Based Access Control use cases. The modeling language is powerful enough for engineers, but friendly enough for other stakeholders on your team as well.",
