@@ -79,17 +79,17 @@ Continuous pprof profiling can be used in production deployments, but we recomme
 Profiling through pprof can be enabled on the OpenFGA server by providing the `--profiler-enabled` flag.
 
 ```sh
-./openfga run --profiler-enabled
+docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3001:3001 openfga/openfga run
 ```
 
 :::note
-Remember to expose the profiler port if you're running OpenFGA via docker. For example `docker run -p 8080:8080 -p 8081:8081 -p 3001:3001 openfga/openfga run`.
+Remember to expose the profiler port if you're running OpenFGA via docker. For example `docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3001:3001 openfga/openfga run --profiler-enabled`.
 :::
 
 If you need to serve the profiler on a different address than the default `:3001`, you can do so by specifying the `--profiler-addr` flag. For example,
 
 ```sh
-./openfga run --profiler-enabled --profiler-addr :3002
+docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3002:3002 openfga/openfga run --profiler-enabled --profiler-addr :3002
 ```
 
 ## Production Recommendations
