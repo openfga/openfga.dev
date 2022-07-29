@@ -79,7 +79,7 @@ Continuous pprof profiling can be used in production deployments, but we recomme
 Profiling through pprof can be enabled on the OpenFGA server by providing the `--profiler-enabled` flag.
 
 ```sh
-docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3001:3001 openfga/openfga run
+docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3001:3001 openfga/openfga run --profiler-enabled
 ```
 
 :::note
