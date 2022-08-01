@@ -69,12 +69,16 @@ docker run -d --name postgres --network=openfga -e POSTGRES_USER=postgres -e POS
 
 You should now have Postgres running in a container in the `openfga` network. However, it will not have the tables required for running OpenFGA. You can use the `migrate` command to create the tables. Using the OpenFGA container, this will look like:
 ```console
-docker run --rm --network=openfga openfga/openfga migrate --datastore-engine postgres --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
+docker run --rm --network=openfga openfga/openfga migrate \
+    --datastore-engine postgres \
+    --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
 ```
 
 Finally, start OpenFGA:
 ```console
-docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run --datastore-engine postgres --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
+docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
+    --datastore-engine postgres \
+    --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
 ```
 If all went well, OpenFGA should start and you should see `using 'postgres' storage engine` in the logs.
 
