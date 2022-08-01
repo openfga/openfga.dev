@@ -57,7 +57,7 @@ OpenFGA supports multiple storage engine options including:
 
 #### Postgres
 
-Let's assume you want to run OpenFGA and Postgres in containers. The first thing we should do is create a new network as this will make communication between containers a bit simplier:
+Let's assume you want to run OpenFGA and Postgres in containers. The first thing we should do is create a new network as this will make communication between containers a bit simpler:
 ```console
 docker network create openfga
 ```
@@ -80,7 +80,7 @@ docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:80
     --datastore-engine postgres \
     --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
 ```
-If all went well, OpenFGA should start and you should see `using 'postgres' storage engine` in the logs.
+OpenFGA should start and you should see `using 'postgres' storage engine` in the logs.
 
 Now you can try to [Create a Store](./create-store.mdx).
 
