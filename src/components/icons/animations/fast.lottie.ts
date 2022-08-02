@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const fastLottie: any = {
   v: '5.7.4',
   fr: 60,
