@@ -1,8 +1,8 @@
 ---
-title: Comparison between Check, Read and Expand API Calls
+title: "Relationship Queries: Check, Read, Expand, and ListObjects"
 sidebar_position: 6
-slug: /interacting/check-read-expand
-description: Comparing between Check, Read and Expand API Calls
+slug: /interacting/relationship-queries
+description: An overview of how to use the Check, Read, Expand, and ListObject APIs.
 ---
 
 import {
@@ -10,6 +10,7 @@ import {
   CheckRequestViewer,
   DocumentationNotice,
   ExpandRequestViewer,
+  ListObjectsRequestViewer,
   ReadRequestViewer,
   ProductConcept,
   ProductName,
@@ -18,11 +19,11 @@ import {
   RelationshipTuplesViewer,
 } from '@components/Docs';
 
-# Comparison between Check, Read and Expand API Calls
+# Relationship Queries: Check, Read, Expand, and ListObjects
 
 <DocumentationNotice />
 
-In this guide you will learn the uses and limitation for check, read and expand API.
+In this guide you will learn the uses of and limitations for the Check, Read, Expand, and ListObjects API endpoints.
 
 ## Before You Start
 
@@ -100,7 +101,7 @@ You need to know how to create an authorization model and create a relationship 
 
 ### What Is It For?
 
-The [Check API](/api/service#Relationship%20Queries/Check) is a call to the <ProductName format={ProductNameFormat.LongForm}/> API endpoint that returns whether the user has a certain relationship with an object. <ProductName format={ProductNameFormat.ShortForm}/> will resolve all prerequisite relationships to establish whether a relationship exists.
+The [Check API](/api/service#Relationship%20Queries/Check) is an API endpoint that returns whether the user has a certain relationship with an object. <ProductName format={ProductNameFormat.ShortForm}/> will resolve all prerequisite relationships to establish whether a relationship exists.
 
 ### When To Use?
 
@@ -127,7 +128,7 @@ Check is designed to answer the question "Does user:X have relationship Y with o
 
 ### What Is It For?
 
-The [Read API](/api/service#Relationship%20Tuples/Read) is a call to the <ProductName format={ProductNameFormat.LongForm}/> API endpoint that returns the relationship tuples that are stored in the system that satisfy a query.
+The [Read API](/api/service#Relationship%20Tuples/Read) is an API endpoint that returns the relationship tuples that are stored in the system that satisfy a query.
 
 ### When To Use?
 
@@ -205,8 +206,8 @@ Although bob is a writer to document:planning and every writer is also a reader,
 
 ### What Is It For?
 
-Expand uses the authorization model to expand the specific relationship on a particular object.
-The response is in user tree format. To build a full graph, you would iteratively need to call expand on the leaves returned in the previous expand call.
+The [Expand API](/api/service#/Relationship%20Queries/Expand) returns all users (including users and usersets) that have a specific relationship with an object.
+The response is represented as a tree of users or usersets. To build the full graph of access, you would need to recursively call expand on the leaves returned from the previous expand call.
 
 ### When To Use?
 
@@ -234,7 +235,7 @@ The result of this call will be like
 }
 ```
 
-The returned tree will contains `writer`, for which we will call
+The returned tree will contain `writer`, for which we will call
 
 <ExpandRequestViewer relation={'writer'} object={'document:planning'} />
 
@@ -268,32 +269,60 @@ From there, we will learn that
 
 The Expand call is expensive and has high latency. As such, it is designed to be used for debugging and understanding why a user has a particular relationship with a specific object. It is not designed for checking whether a user has a particular relationship with a specific object. In that case the Check API call should be used instead.
 
+## ListObjects
+
+### What Is It For?
+
+The [ListObjects API](/api/service#/Relationship%20Queries/ListObjects) is an API endpoint that returns the list all of 
+the objects (of a particular type) that a user has a relationship with. 
+
+It provides a solution to the [Search with Permissions (Option 3)](./search-with-permissions.mdx#option-3-build-a-list-of-ids-then-search) use case for access-aware filtering on smaller object collections.
+
+### When To Use?
+
+Use the ListObjects API to filter the objects that a user can see based on the relationships they have.
+
+See [Search with Permissions](./search-with-permissions) for more guidance.
+
+<ListObjectsRequestViewer objectType="document" relation="reader" user="bob" contextualTuples={[{object: "document:otherdoc", relation: "reader", "user": "bob"}]} />
+
+### Caveats And When Not To Use It
+
+The ListObjects API should be used when the number of objects of a certain type the user could have access to is low (~ 1000), and the percentage of the total objects that the user can have access to is also low.
+
+See [Search with Permissions](./search-with-permissions) for more guidance.
+
 ## Summary
 
-|             | Check                                                         | Read                                                   | Expand                                                  |
-| ----------- | ------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------- |
-| Purpose     | Check if user has particular relationship with certain object | Return all stored relationship tuples that match query | Expand the specific relationship on a particular object |
-| When to use | Validate if user X can perform Y on object Z                  | List stored relationships in system                    | Understand why user X can perform Y on object Z         |
+|             | Check                                                         | Read                                                   | Expand                                                  | ListObjects                                                                        |
+| ----------- | ------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Purpose     | Check if user has particular relationship with certain object | Return all stored relationship tuples that match query | Expand the specific relationship on a particular object | List all objects of a particular type that a user has a specific relationship with |            |
+| When to use | Validate if user X can perform Y on object Z                  | List stored relationships in system                    | Understand why user X can perform Y on object Z         | Filter the objects a user has access to                                            |
 
 ## Related Sections
 
 <RelatedSection
-  description="Check the following sections for more on how to query for tuples."
+  description="Check out this additional content for more information on how to query relationships."
   relatedLinks={[
     {
-      title: '{ProductName} API - Check',
-      description: 'Details on the check API in the {ProductName} reference guide.',
+      title: 'Check API Reference',
+      description: 'Official reference guide for the Check API',
       link: '/api/service#Relationship%20Queries/Check',
     },
     {
-      title: '{ProductName} API - Read',
-      description: 'Details on the read API in the {ProductName} reference guide.',
+      title: 'Read API Reference',
+      description: 'Official reference guide for the Read API',
       link: '/api/service#Relationship%20Tuples/Read',
     },
     {
-      title: '{ProductName} - Expand',
-      description: 'Details on the expand API in the {ProductName} reference guide.',
+      title: 'Expand API Reference',
+      description: 'Official reference guide for the Expand API',
       link: '/api/service#Relationship%20Queries/Expand',
+    },
+    {
+      title: 'ListObjects API Reference',
+      description: 'Official reference guide for the ListObjects API',
+      link: '/api/service#Relationship%20Queries/ListObjects',      
     },
   ]}
 />
