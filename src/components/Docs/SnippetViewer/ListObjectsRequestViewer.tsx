@@ -4,6 +4,7 @@ import assertNever from 'assert-never/index';
 import { TupleKey } from '@openfga/sdk';
 
 interface ListObjectsRequestViewerOpts {
+  authorizationModelId?: string;
   user: string;
   relation: string;
   objectType: string;
@@ -17,22 +18,11 @@ function listObjectsRequestViewer(
   opts: ListObjectsRequestViewerOpts,
   languageMappings: LanguageMappings,
 ): string {
-  const { user, relation, objectType, contextualTuples } = opts;
+  const { authorizationModelId, user, relation, objectType, contextualTuples } = opts;
 
   switch (lang) {
     case SupportedLanguage.PLAYGROUND:
-      return `is ${user} related to ${objectType} as ${relation}? // todo(jon-whit): make sure we extend our query language to support ListObjects in the Playground
-${
-  contextualTuples
-    ? `
-# Note: Contextual Tuples are not supported on the playground`
-    : ''
-}
-
-# Response: ${
-        true ? 'A green path from the user to the object' : 'A red object'
-      } indicating that the response from the API is \`{"allowed":${true ? 'true' : 'false'}}\`
-`;
+      return `# Note: List Objects is not currently supported on the playground`;
     case SupportedLanguage.CURL:
       /* eslint-disable max-len */
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/list-objects \\
@@ -59,14 +49,74 @@ ${
 # Response: {"object_ids": [...]}`;
     /* eslint-enable max-len */
     case SupportedLanguage.JS_SDK:
-      return ``
+      return `const response = await fgaClient.listObjects({${authorizationModelId ? `
+  authorization_model_id: "${authorizationModelId}",` : ``}
+  user: "${user}",
+  relation: "${relation}",
+  type: "${objectType}",${contextualTuples?.length ? `
+  contextual_tuples: {
+    tuple_keys: [${contextualTuples.map(tupleKey => `{
+      user: "${tupleKey.user}",
+      relation: "${tupleKey.relation}",
+      object: "${tupleKey.object}"
+    }`).join(', ')}]
+  },` : '' }
+});
+// response.object_ids = [...]`;
     case SupportedLanguage.GO_SDK:
       /* eslint-disable no-tabs */
-      return ``
+      return `body := fgaSdk.ListObjectsRequest{${authorizationModelId ? `
+    AuthorizationModelId: PtrString("${authorizationModelId}"),` : ``}
+    User:                 PtrString("${user}"),
+    Relation:             PtrString("${relation}"),
+    Type:                 PtrString("${objectType}"),${contextualTuples?.length ? `
+    ContextualTuples: &ContextualTupleKeys{
+        TupleKeys: []TupleKey{${contextualTuples.map(tupleKey => `{
+            User:     PtrString("${tupleKey.user}"),
+            Relation: PtrString("${tupleKey.relation}"),
+            Object:   PtrString("${tupleKey.object}"),
+        }`).join(', ')},
+    },` : '' }
+}
+
+data, response, err := apiClient.${languageMappings['go'].apiName}.ListObjects(context.Background()).Body(body).Execute()
+
+// data = { "object_ids": [...] }`;
     case SupportedLanguage.DOTNET_SDK:
-      return ``
+      return `var body = new ListObjectsRequest{${authorizationModelId ? `
+    AuthorizationModelId = "${authorizationModelId}",` : ``}
+    User = "${user}",
+    Relation = "${relation}",
+    Type = "${objectType}",${contextualTuples?.length ? `
+    ContextualTuples = new ContextualTupleKeys() {
+        TupleKeys = new List<TupleKey> {${contextualTuples.map(tupleKey => `
+            new("${tupleKey.object}", "${tupleKey.relation}", "${tupleKey.user}")`).join(',')}
+        }
+    }` : '' }
+};
+var response = await openFgaApi.ListObjects(body);
+
+// response.ObjectIds = [...]`;
     case SupportedLanguage.RPC:
-      return ``
+      return `listObjects(
+  "${user}", // list the objects that the user \`${user}\`
+  "${relation}", // has an \`${relation}\` relation
+  "${objectType}", // and that are of type \`${objectType}\`${authorizationModelId ? `
+  authorization_model_id = "${authorizationModelId}", // for this particular authorization model id` : ``}${
+    contextualTuples
+      ? `
+  contextual_tuples = [ // Assuming the following is true
+    ${contextualTuples
+      .map((tuple) => `{user = "${tuple.user}", relation = "${tuple.relation}", object = "${tuple.object}"}`)
+      .join(',\n    ')}
+  ]`
+      : ''
+  }
+);
+
+Reply: ...`;
+   default:
+      assertNever(lang);
   }
 }
 
