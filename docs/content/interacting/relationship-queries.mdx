@@ -288,9 +288,12 @@ See [Search with Permissions](./search-with-permissions) for more guidance.
 
 ### Caveats And When Not To Use It
 
-The ListObjects API should be used when the number of objects of a certain type the user could have access to is low (~ 1000), and the percentage of the total objects that the user can have access to is also low.
+The ListObjects API should be used when the number of objects of a certain type the user could have access to is low (~ 1000), and the percentage of the total objects that the user can have access to is also low. See [Search with Permissions](./search-with-permissions) for more guidance.
 
-See [Search with Permissions](./search-with-permissions) for more guidance.
+The behavior of the ListObjects API is dependent upon the `listObjectsDeadline` and `listObjectsMaxResults` configuration values (see [Configuring the Server](../getting-started/setup-openfga#configuring-the-server))  provided to the OpenFGA server at startup. These
+configurations are used to protect the server from long-lived and large responses, respectively. If you provide a deadline of 1s then the server will accumulate all of the object ids the
+user has the relationship with for up to 1s and then respond with the results it was able to gather in that time. If you provide a limit on the maximum results then the server will accumulate at most
+that many object ids before responding.
 
 ## Summary
 
