@@ -58,6 +58,6 @@ hide_title: true
   - [Manage Group Membership](./content/interacting/managing-group-membership.mdx)
   - [Manage Relationships Between Objects](./content/interacting/managing-relationships-between-objects.mdx)
   - [Transactional Writes](./content/interacting/transactional-writes.mdx)
-  - [Comparison Between Check, Read And Expand](./content/interacting/check-read-expand.mdx)
+  - [Relationship Queries](./content/interacting/relationship-queries.mdx)
   - [Get Tuple Changes](./content/interacting/read-tuple-changes.mdx)
   - [Search with Permissions](./content/interacting/search-with-permissions.mdx)

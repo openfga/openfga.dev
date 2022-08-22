@@ -241,8 +241,8 @@ const sidebars = {
         },
         {
           type: 'doc',
-          label: 'Check, Read and Expand',
-          id: 'content/interacting/check-read-expand',
+          label: "Relationship Queries",
+          id: 'content/interacting/relationship-queries',
         },
         {
           type: 'doc',
