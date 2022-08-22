@@ -8,6 +8,8 @@ slug: /getting-started/setup-openfga
 import {
   DocumentationNotice,
 } from "@components/Docs";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 # Setup OpenFGA Server
 
@@ -50,10 +52,104 @@ All possible configurations and their default values are defined in [config-sche
 
 ### Configuring Data Storage
 
-You can choose between two storage options:
+OpenFGA supports multiple storage engine options including:
 
-- In-memory storage. This option is not persistent, i.e. if you restart the server, the data will be lost.
-- Postgres database. This option requires either a local Postgres installation, or a Docker container that runs Postgres. For an example of a Docker setup that includes a Postgres database, see [OpenFGA's Docker compose file](https://github.com/openfga/openfga/blob/main/docker-compose.yaml).
+- `memory` - The memory storage engine is the default, but it is not persistent (data is lost between server restarts).
+- `postgres` - The Postgres storage engine requires a Postgres instance that the OpenFGA server can reach.
+
+#### Postgres
+
+<Tabs groupId={"installation"}>
+<TabItem value={"docker"} label={"Docker"}>
+
+Let's assume you want to run OpenFGA and Postgres in containers. The first thing we should do is create a new network as this will make communication between containers a bit simpler:
+
+```shell
+docker network create openfga
+```
+
+Start Postgres in the network you created above:
+
+```shell
+docker run -d --name postgres --network=openfga -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password postgres:14
+```
+
+You should now have Postgres running in a container in the `openfga` network. However, it will not have the tables required for running OpenFGA. You can use the `migrate` command to create the tables. Using the OpenFGA container, this will look like:
+
+```shell
+docker run --rm --network=openfga openfga/openfga migrate \
+    --datastore-engine postgres \
+    --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
+```
+
+Finally, start OpenFGA:
+
+```shell
+docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
+    --datastore-engine postgres \
+    --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
+```
+</TabItem>
+<TabItem value={"docker-compose"} label={"Docker Compose"}>
+
+Copy the below code block into a local file named: `docker-compose.yaml`
+
+```yaml
+version: '3.8'
+
+networks:
+  openfga:
+
+services:
+  db:
+    image: postgres:14
+    networks:
+      - openfga
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=openfga
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  openfga:
+    image: openfga/openfga
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://postgres:password@db:5432/openfga
+      - OPENFGA_LOG_FORMAT=json
+    command: run
+    depends_on:
+      - db
+    networks:
+      - openfga
+    ports:
+      # Needed for the http server
+      - "8080:8080"
+      # Needed for the grpc server (if used)
+      - "8081:8081"
+      # Needed for the playground (Do not enable in prod!)
+      - "3000:3000"
+```
+
+In a terminal, navigate to that directory and run:
+```shell
+docker-compose up -d db && \
+  sleep 1 && \
+  docker-compose run openfga migrate \
+    --datastore-engine postgres \
+    --datastore-uri 'postgres://postgres:password@db:5432/postgres' && \
+  docker-compose up openfga
+```
+</TabItem>
+</Tabs>
+
+OpenFGA should start and you should see `using 'postgres' storage engine` in the logs.
+
+Now you can try to [Create a Store](./create-store.mdx).
 
 ### Configuring Authentication
 
@@ -70,6 +166,27 @@ If you are going to use this setup in production, you should enable TLS in your 
 The Playground facilitates rapid development by allowing you to visualize and model your application's authorization model(s) and manage relationship tuples with a locally running OpenFGA instance.
 
 The Playground is enabled on port 3000 by default. To disable the Playground, please take a look at [Configuring the Server](#configuring-the-server) for more information.
+
+### Profiler (pprof)
+:::caution Warning
+Continuous pprof profiling can be used in production deployments, but we recommend disabling it unless it is needed to troubleshoot specific performance or memory problems.
+:::
+
+Profiling through pprof can be enabled on the OpenFGA server by providing the `--profiler-enabled` flag.
+
+```sh
+docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3001:3001 openfga/openfga run --profiler-enabled
+```
+
+:::note
+Remember to expose the profiler port if you're running OpenFGA via docker. For example `docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3001:3001 openfga/openfga run --profiler-enabled`.
+:::
+
+If you need to serve the profiler on a different address than the default `:3001`, you can do so by specifying the `--profiler-addr` flag. For example,
+
+```sh
+docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3002:3002 openfga/openfga run --profiler-enabled --profiler-addr :3002
+```
 
 ## Production Recommendations
 
