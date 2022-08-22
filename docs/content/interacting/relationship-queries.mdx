@@ -301,6 +301,10 @@ The number of results returned by this API (both the standard and streaming vers
 
 Internally, the API runs concurrent checks against all the objects of the specified type. If the number of objects of that type is high, you should set a high value for `listObjectsDeadline`. If the number of objects of that type the user could have access to is high, you should set a high value for `listObjectsMaxResults`.
 
+:::caution Warning
+This API is provided to gather your feedback. Due to performance and high-latency considerations, we do not recommend using it in production yet.
+:::
+
 ## Summary
 
 |             | Check                                                         | Read                                                   | Expand                                                  | ListObjects                                                                        |
