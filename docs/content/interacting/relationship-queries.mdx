@@ -283,7 +283,7 @@ The current implementation of List Objects API is not optimized and can return i
 
 ### When To Use?
 
-Use the ListObjects API to get what objects a user can see based on the relationships they have. See [Search with Permissions](./search-with-permissions) for more guidance.
+Use the ListObjects API to get what objects a user can see based on the relationships they have. See [Search with Permissions](./search-with-permissions.mdx) for more guidance.
 
 <ListObjectsRequestViewer objectType="document" relation="reader" user="bob" contextualTuples={[{object: "document:otherdoc", relation: "reader", "user": "bob"}]} expectedResults={["otherdoc", "planning"]} />
 
@@ -294,7 +294,7 @@ There's two variations of the List Objects API.
 
 ### Caveats And When Not To Use It
 
-The number of results returned by this API (both the standard and streaming version) may be incomplete depending on the `listObjectsDeadline` and `listObjectsMaxResults` configuration values (see [Configuring the Server](../getting-started/setup-openfga#configuring-the-server)) provided to the <ProductName format={ProductNameFormat.ShortForm}/> server at startup. If you configure both values, the first one to be satisfied will terminate the request.
+The number of results returned by this API (both the standard and streaming version) may be incomplete depending on the `listObjectsDeadline` and `listObjectsMaxResults` configuration values (see [Configuring the Server](../getting-started/setup-openfga.mdx#configuring-the-server)) provided to the <ProductName format={ProductNameFormat.ShortForm}/> server at startup. If you configure both values, the first one to be satisfied will terminate the request.
 
 - If you set `listObjectsDeadline` to `1s`, the server will spend at most 1 second finding results.
 - If you set `listObjectsMaxResults` to `10`, the server will return, at most, 10 object IDs.
