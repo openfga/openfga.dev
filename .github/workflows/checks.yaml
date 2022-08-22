@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Check out the repository
-      - uses: actions/checkout@v1
+      - name: Cached LFS checkout
+        uses: nschloe/action-cached-lfs-checkout@v1.1.2
 
       - name: Set up node
         uses: actions/setup-node@v2
