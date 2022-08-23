@@ -14,6 +14,19 @@ This website is built using [Docusaurus 2](https://docusaurus.io/), a modern sta
 
 ### Setup and Installation
 
+#### Clone the repo locally
+
+Run `git clone https://github.com/openfga/openfga.dev.git` to clone the repo to your machine.
+
+#### Setup Git LFS (Large File Storage)
+
+* Follow the instructions [here](https://git-lfs.github.com/) to install git lfs on your system.
+* If you haven't done so yet, run `git lfs install` to set up git lfs for your account.
+* Run `git lfs pull`
+* Run `git lfs checkout`
+
+Currently `mp4`, `webm` and `svg` files are tracked. If you need to track more media formats, run: `git lfs track "*.extension"`
+
 #### Install Dependencies
 
 To run the docs locally you will need to first install dependencies:
@@ -96,4 +109,3 @@ OpenFGA <contact@openfga.dev> (https://openfga.dev)
 ## License
 Please refer to https://github.com/openfga/rfcs/blob/main/LICENSE for license information.
 <!-- markdown-link-check-enable -->
-

@@ -12,7 +12,8 @@ jobs:
     name: Test deployment
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Cached LFS checkout
+        uses: nschloe/action-cached-lfs-checkout@v1.1.2
       - uses: actions/setup-node@v3
         with:
           node-version: 16.x
