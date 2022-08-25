@@ -13,6 +13,8 @@ function getMapping(lang: SupportedLanguage, languageMappings: LanguageMappings)
       return languageMappings['go'];
     case SupportedLanguage.DOTNET_SDK:
       return languageMappings['dotnet'];
+    case SupportedLanguage.PYTHON_SDK:
+      return languageMappings['python'];
   }
   return {
     importStatement: '',
@@ -85,6 +87,20 @@ class MyProgram {
         var fgaClient = new ${languageMappings['js'].apiName}(configuration);
     }
 }`;
+    /* eslint-enable no-tabs */
+    case SupportedLanguage.PYTHON_SDK:
+      return `
+${importSdkStatement(lang, languageMappings)}
+
+configuration = openfga_sdk.Configuration(
+    scheme = os.environ.get('FGA_API_SCHEME'),
+    host = os.environ.get('FGA_API_HOST'),
+    store_id = os.environ.get('FGA_STORE_ID')
+)
+
+# Create an instance of the API class
+fga_client_instance = open_fga_api.OpenFgaApi(openfga_sdk.ApiClient(configuration))
+`;
     case SupportedLanguage.RPC:
     case SupportedLanguage.PLAYGROUND:
       throw new Error(`Lang ${lang} support has not been implemented`);
@@ -115,6 +131,7 @@ export function GenerateSetupHeader(lang: SupportedLanguage, skipSetup?: boolean
     case SupportedLanguage.JS_SDK:
     case SupportedLanguage.GO_SDK:
     case SupportedLanguage.DOTNET_SDK:
+    case SupportedLanguage.PYTHON_SDK:
       content = getMapping(lang, configuredLanguage).setupNote + sdkSetupHeader(lang, configuredLanguage);
       break;
     case SupportedLanguage.CURL:

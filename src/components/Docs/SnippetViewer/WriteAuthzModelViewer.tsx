@@ -55,6 +55,22 @@ function writeAuthZModelViewerDotnet(authorizationModel: AuthorizationModel): st
   // response.AuthorizationModelId = "1uHxCSuTP0VKPYSnkq1pbb1jeZw"`;
 }
 
+function writeAuthZModelViewerPython(authorizationModel: AuthorizationModel): string {
+  return `
+body_string = ${JSON.stringify(JSON.stringify(authorizationModel))}
+type_definitions = openfga_sdk.model_utils.validate_and_convert_types(
+    json.loads(body_string),
+    (openfga_sdk.model.type_definitions.TypeDefinitions,),
+    ['openfga_sdk.model.type_definitions.TypeDefinitions'],
+    True,
+    True,
+    configuration=configuration
+)
+response = fga_client_instance.write_authorization_model(type_definitions)
+# response.authorization_model_id = "1uHxCSuTP0VKPYSnkq1pbb1jeZw"
+`;
+}
+
 function writeAuthZModelViewer(
   lang: SupportedLanguage,
   opts: WriteAuthzModelViewerOpts,
@@ -77,6 +93,10 @@ function writeAuthZModelViewer(
       return writeAuthZModelViewerDotnet(opts.authorizationModel);
     }
 
+    case SupportedLanguage.PYTHON_SDK: {
+      return writeAuthZModelViewerPython(opts.authorizationModel);
+    }
+
     case SupportedLanguage.RPC:
     case SupportedLanguage.PLAYGROUND:
       return '';
@@ -90,6 +110,7 @@ export function WriteAuthzModelViewer(opts: WriteAuthzModelViewerOpts): JSX.Elem
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
     SupportedLanguage.CURL,
   ];
   const allowedLanguages = getFilteredAllowedLangs(opts.allowedLanguages, defaultLangs);

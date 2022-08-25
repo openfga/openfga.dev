@@ -97,6 +97,37 @@ class MyProgram {
 
 </TabItem>
 
+<TabItem value={SupportedLanguage.PYTHON_SDK} label={languageLabelMap.get(SupportedLanguage.PYTHON_SDK)}>
+
+```python
+import os
+import openfga_sdk
+from openfga_sdk.api import open_fga_api
+from openfga_sdk.model.create_store_request import CreateStoreRequest
+
+
+configuration = openfga_sdk.Configuration(
+    scheme = os.environ.get('FGA_API_SCHEME')
+    api_host = os.environ.get('FGA_API_HOST'),
+)
+
+# Create an instance of the API class
+fga_client_instance = open_fga_api.OpenFgaApi(openfga_sdk.ApiClient(configuration))
+
+try:
+    # Create a store
+    body = CreateStoreRequest(
+        name = "FGA Demo",
+    )
+    api_response = fga_client_instance.create_store(body)
+except openfga_sdk.ApiException as e:
+    print("Exception when calling OpenFgaApi->create_store: %s\n" % e)
+
+```
+
+</TabItem>
+
+
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
 ```console

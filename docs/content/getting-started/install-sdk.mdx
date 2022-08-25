@@ -102,6 +102,23 @@ Install-Package OpenFGA.Sdk
 - [Visual Studio](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio), [Visual Studio for Mac](https://docs.microsoft.com/en-us/visualstudio/mac/nuget-walkthrough) and [IntelliJ Rider](https://www.jetbrains.com/help/rider/Using_NuGet.html): Search for and install `OpenFGA.Sdk` in each of their respective package manager UIs.
 
 </TabItem>
+<TabItem value={SupportedLanguage.PYTHON_SDK} label={languageLabelMap.get(SupportedLanguage.PYTHON_SDK)}>
+
+The <ProductName format={ProductNameFormat.ShortForm}/> Python SDK is available on [PyPI](https://pypi.org/project/openfga-sdk/).
+
+To install:
+
+```
+pip install openfga_sdk
+```
+
+In your code, import the module and use it:
+
+```python
+import openfga_sdk
+```
+
+</TabItem>
 </Tabs>
 
 <ProductConcept section="what-is-a-check-request" linkName="check API" />
@@ -125,6 +142,11 @@ Install-Package OpenFGA.Sdk
       title: '{ProductName} .NET SDK',
       description: 'Connect your .NET service with {ProductName} using our .NET SDK',
       link: 'https://github.com/openfga/dotnet-sdk',
+    },
+    {
+      title: '{ProductName} Python SDK',
+      description: 'Connect your Python service with {ProductName} using our .NET SDK',
+      link: 'https://github.com/openfga/python-sdk',
     },
   ]}
 />

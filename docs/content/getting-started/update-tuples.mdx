@@ -28,7 +28,7 @@ This section will illustrate how to update _<ProductConcept section="what-is-a-r
 ## Before You Start
 
 <Tabs groupId="languages">
-{[SupportedLanguage.JS_SDK, SupportedLanguage.GO_SDK, SupportedLanguage.DOTNET_SDK].map(lang =>
+{[SupportedLanguage.JS_SDK, SupportedLanguage.GO_SDK, SupportedLanguage.DOTNET_SDK, SupportedLanguage.PYTHON_SDK].map(lang =>
 <TabItem value={lang} label={languageLabelMap.get(lang)}>
 
 1. <SdkSetupPrerequisite />
@@ -79,6 +79,11 @@ Before calling the write API, you will need to configure the API client.
 <SdkSetupHeader lang={SupportedLanguage.DOTNET_SDK} />
 
 </TabItem>
+<TabItem value={SupportedLanguage.PYTHON_SDK} label={languageLabelMap.get(SupportedLanguage.PYTHON_SDK)}>
+
+<SdkSetupHeader lang={SupportedLanguage.PYTHON_SDK} />
+
+</TabItem>
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
 To obtain the [access token](https://auth0.com/docs/authorization/flows/call-your-api-using-the-client-credentials-flow):
@@ -105,6 +110,7 @@ To add the relationship tuples, we can invoke the write API.
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
     SupportedLanguage.CURL,
   ]}
 />
@@ -136,6 +142,7 @@ Assume that you want to delete user `anne`'s `reader` relationship with object `
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
     SupportedLanguage.CURL,
   ]}
 />

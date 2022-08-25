@@ -157,6 +157,50 @@ await fgaClient.Write(new WriteRequest{
 });`;
     }
 
+    case SupportedLanguage.PYTHON_SDK: {
+      const writeTuples = opts.relationshipTuples
+        ? opts.relationshipTuples
+            .map(
+              ({ user, relation, object, _description }) => `
+            openfga_sdk.model.tuple_key.TupleKey(
+${_description ? `                # ${_description}\n                ` : '                '}user= "${user}",
+                relation= "${relation}",
+                object="${object}",
+            ),`,
+            )
+            .join('')
+        : '';
+      const deleteTuples = opts.deleteRelationshipTuples
+        ? opts.deleteRelationshipTuples
+            .map(
+              ({ user, relation, object, _description }) => `
+            openfga_sdk.model.tuple_key.TupleKey(
+${_description ? `                # ${_description}\n                ` : '                '}user= "${user}",
+                relation= "${relation}",
+                object="${object}",
+            ),`,
+            )
+            .join('')
+        : '';
+      const writes = `    writes=openfga_sdk.model.tuple_keys.TupleKeys(
+        tuple_keys= [${writeTuples}
+        ],
+    ),
+`;
+      const deletes = `    deletes=openfga_sdk.model.tuple_keys.TupleKeys(
+        tuple_keys= [${deleteTuples}
+        ],
+    ),
+`;
+
+      return `
+body = openfga_sdk.model.write_request.WriteRquest(
+${opts.relationshipTuples ? writes : ''}${opts.deleteRelationshipTuples ? deletes : ''}
+)
+response = fga_client_instance.write(body)
+`;
+    }
+
     case SupportedLanguage.RPC: {
       const writeTuples = opts.relationshipTuples
         ?.map(
@@ -211,6 +255,7 @@ export function WriteRequestViewer(opts: WriteRequestViewerOpts): JSX.Element {
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
     SupportedLanguage.CURL,
     SupportedLanguage.RPC,
   ];
