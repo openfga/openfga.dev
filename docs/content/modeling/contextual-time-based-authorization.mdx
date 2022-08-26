@@ -220,7 +220,7 @@ We can verify that using the following checks
 Anne can view transaction:A because she is an account manager whose account is at the same branch.
 <CheckRequestViewer user={'anne'} relation={'can_view'} object={'transaction:A'} allowed={true} />
 
-Caroline can view transaction:A because she is the customer and the transaction is tied to her account.
+Caroline can view transaction:A because she is a customer and the transaction is tied to her account.
 <CheckRequestViewer user={'caroline'} relation={'can_view'} object={'transaction:A'} allowed={true} />
 
 Additionally, we will check that Mary, an account manager at a different branch _cannot_ view transaction A.

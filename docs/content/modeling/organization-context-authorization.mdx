@@ -362,7 +362,7 @@ The "organization" type definition then becomes:
 
 ##### Add The Required Tuples To Mark That Anne Is In An Approved Context
 
-Now that we have updated our authorization model to take the current user's organization context into consideration, you will notice that Anne has lost access because nothing indicates that anne is authorizing from the context of an organization. You can verify that by issuing the following check:
+Now that we have updated our authorization model to take the current user's organization context into consideration, you will notice that Anne has lost access because nothing indicates that Anne is authorizing from the context of an organization. You can verify that by issuing the following check:
 
 <CheckRequestViewer user={'anne'} relation={'can_view'} object={'project:X'} allowed={false} skipSetup={true} />
 
