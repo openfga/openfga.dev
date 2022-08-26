@@ -37,6 +37,13 @@ Contextual Tuples should be used when modeling cases where a user's access to an
 
 To follow this guide, you should be familiar with some <ProductConcept />.
 
+### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+
+- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between objects of this type and other users in the system
+- A <ProductConcept section="what-is-a-check-request" linkName="Check Request" />: is a call to the <ProductName format={ProductNameFormat.ShortForm}/> check endpoint that returns whether the user has a certain relationship with an object.
+- A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>
+- A <ProductConcept section="what-are-contextual-tuples" linkName="Conceptual Tuple" />: a tuple that can be added to a check request, and only exist within the context of that particular request.
+
 You also need to be familiar with:
 
 - **Modeling Object-to-Object Relationships**: You need to know how to create relationships between objects and how that might affect a user's relationships to those objects. [Learn more →](./building-blocks/object-to-object-relationships.mdx)
@@ -50,7 +57,7 @@ For the scope of this guide, we are going to consider the following scenario.
 
 Consider you are building the authorization model for a multi-tenant project management system.
 
-In this particular system,
+In this particular system:
 
 - projects are owned and managed by companies
 - users can be members of multiple companies
@@ -167,12 +174,13 @@ We will start with the following authorization model:
 <details>
 <summary>
 We are considering the case that:
-- Anne has a project manager role at organizations A, B and C
-- Beth has a project manager role at organization B
-- Carl has a project manager role at organization C
-- Project X is owned by organization A
-- Project X is shared with organization B
-
+<ul>
+<li> Anne has a project manager role at organizations A, B and C</li>
+<li> Beth has a project manager role at organization B</li>
+<li> Carl has a project manager role at organization C</li>
+<li> Project X is owned by organization A</li>
+<li> Project X is shared with organization B</li>
+</ul>
 </summary>
 
 The above state translates to the following relationship tuples:
@@ -233,20 +241,17 @@ The above state translates to the following relationship tuples:
 - When logging in within the context of organization B, Anne should be able to view, but not delete, project X.
 - When logging in within the context of organization C, Anne should not be able to view nor delete project X.
 - When logging in within the context of organization B, Beth should be able to view, but not delete, project X.
-- Carl should not be able to view nor delete project X
+- Carl should not be able to view nor delete project X.
 
 ## Step By Step
 
 In order to solve for the requirements above, we will break the problem down into three steps:
 
-1. Understand the authorization checks can be done with the existing model
+1. [Understand relationships without contextual tuples](#understand-relationships-without-contextual-data). For example, we need to ensure that Anne can view and delete "Project X".
+2. [Take organization context into consideration](#take-organization-context-into-consideration). This includes [extending the authorization model](#extending-the-authorization-model) and a temporary step of [adding the required tuples to mark that Anne is in an approved context](#add-the-required-tuples-to-mark-that-anne-is-in-an-approved-context).
+3. [Use contextual tuples for context related checks](#use-contextual-tuples-for-context-related-checks).
 
-- Ensure that Anne can view and delete "Project X"
-
-2. Extend the authorization model to take time and ip address into consideration
-3. Use contextual tuples for context related checks
-
-### Checking Access (excluding contextual data)
+### Understand Relationships Without Contextual Data
 
 With the authorization model and relationship tuples shown above, <ProductName format={ProductNameFormat.ShortForm}/> has all the information needed to ensure that Anne can view and delete "Project X".
 
@@ -254,11 +259,11 @@ We can verify that using the following checks:
 
 - Anne can view Project X
   <CheckRequestViewer user={'anne'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
+- Anne can delete Project X
+  <CheckRequestViewer user={'anne'} relation={'can_delete'} object={'project:X'} allowed={true} skipSetup={true} />
 
 <details>
   <summary>More checks</summary>
-  * Anne can delete Project X
-  <CheckRequestViewer user={'anne'} relation={'can_delete'} object={'project:X'} allowed={true} skipSetup={true} />
   * Beth can view Project X
   <CheckRequestViewer user={'beth'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
   * Beth cannot delete Project X
@@ -273,7 +278,7 @@ Note that so far, we have not prevented Anne from viewing "Project X" even if An
 
 ### Take Organization Context Into Consideration
 
-##### Extend The Authorization Model
+##### Extending The Authorization Model
 
 In order to add a restriction based on the current organization context, we will make use of <ProductName format={ProductNameFormat.ShortForm}/> configuration language's support for [intersection](../configuration-language.mdx#the-intersection-operator) to specify that a user has to both have access _and_ be in the correct context in order to be authorized.
 
@@ -351,19 +356,17 @@ The "organization" type definition then becomes:
   }}
 />
 
-:::note
-On the "project" type:
+2. On the "project" type
 
 - Nothing will need to be done, as it will inherit the updated "project_manager" and "project_editor" relation definitions from "organization"
-:::
 
-##### Add The Required Tuples To Mark That anne Is In An Approved Context
+##### Add The Required Tuples To Mark That Anne Is In An Approved Context
 
-Now that we have updated our authorization model to take the current user's organization context into consideration, you will notice that anne has lost access because nothing indicates that anne is authorizing from the context of an organization. You can verify that by issuing the following check:
+Now that we have updated our authorization model to take the current user's organization context into consideration, you will notice that Anne has lost access because nothing indicates that anne is authorizing from the context of an organization. You can verify that by issuing the following check:
 
 <CheckRequestViewer user={'anne'} relation={'can_view'} object={'project:X'} allowed={false} skipSetup={true} />
 
-In order for Anne to be authorized a tuple indicating Anne's current organization context will need to be present:
+In order for Anne to be authorized, a tuple indicating Anne's current organization context will need to be present:
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -376,15 +379,29 @@ In order for Anne to be authorized a tuple indicating Anne's current organizatio
   ]}
 />
 
+We can verify this by running a check request
 <CheckRequestViewer user={'anne'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
 
-### Using Contextual Tuples
+### Use Contextual Tuples For Context Related Checks
 
 Now that we know we can authorize based on present state, we have a different problem to solve. We are storing the tuples in the state in order for <ProductName format={ProductNameFormat.ShortForm}/> to evaluate them, which fails in certain use-cases where Anne can be connected to two different contexts in different browser windows at the same time, as each has a different context at the same time, so if they are written to the state, which will <ProductName format={ProductNameFormat.ShortForm}/> use to compute Anne's access to the project?
 
 For Check calls, <ProductName format={ProductNameFormat.ShortForm}/> has a concept called "<ProductConcept section="what-are-contextual-tuples" linkName="Contextual Tuples" />". Contextual Tuples are tuples that do **not** exist in the system state and are not written beforehand to <ProductName format={ProductNameFormat.ShortForm}/>. They are tuples that are sent alongside the Check request and will be treated as _if_ they already exist in the state for the context of that particular Check call. That means that Anne can be using two different sessions, each within a different organization context, and <ProductName format={ProductNameFormat.ShortForm}/> will correctly respond to each one with the correct authorization decision.
 
-When Anne is connecting from the context of organization A, <ProductName format={ProductNameFormat.ShortForm}/> will return `{"allowed":true}`:
+First, we will undo the [temporary step](#add-the-required-tuples-to-mark-that-anne-is-in-an-approved-context) and remove the stored tuples for which Anne has a `user_in_context` relation with `organization:A`.
+
+<WriteRequestViewer
+  deleteRelationshipTuples={[
+    {
+      _description: 'Delete stored tuples where Anne is authorizing from the context of organization:A',
+      user: 'anne',
+      relation: 'user_in_context',
+      object: 'organization:A',
+    },
+  ]}
+/>
+
+Next, when Anne is connecting from the context of organization A, <ProductName format={ProductNameFormat.ShortForm}/> will return `{"allowed":true}`:
 
 <CheckRequestViewer
   user={'anne'}
