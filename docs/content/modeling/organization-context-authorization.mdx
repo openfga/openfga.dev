@@ -39,7 +39,7 @@ To follow this guide, you should be familiar with some <ProductConcept />.
 
 ### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
 
-- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between objects and other users in the system
+- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
 - A <ProductConcept section="what-is-a-check-request" linkName="Check Request" />: is a call to the <ProductName format={ProductNameFormat.ShortForm}/> check endpoint that returns whether the user has a certain relationship with an object.
 - A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>
 - A <ProductConcept section="what-are-contextual-tuples" linkName="Contextual Tuple" />: a tuple that can be added to a check request, and only exist within the context of that particular request.
@@ -248,7 +248,7 @@ The above state translates to the following relationship tuples:
 In order to solve for the requirements above, we will break the problem down into three steps:
 
 1. [Understand relationships without contextual tuples](#understand-relationships-without-contextual-data). For example, we need to ensure that Anne can view and delete "Project X".
-2. [Take organization context into consideration](#take-organization-context-into-consideration). This includes [extending the authorization model](#extending-the-authorization-model) and a temporary step of [adding the required tuples to mark that Anne is in an approved context](#add-the-required-tuples-to-mark-that-anne-is-in-an-approved-context).
+2. [Take organization context into consideration](#take-organization-context-into-consideration). This includes [extending the authorization model](#extend-the-authorization-model) and a temporary step of [adding the required tuples to mark that Anne is in an approved context](#add-the-required-tuples-to-mark-that-anne-is-in-an-approved-context).
 3. [Use contextual tuples for context related checks](#use-contextual-tuples-for-context-related-checks).
 
 ### Understand Relationships Without Contextual Data
@@ -278,7 +278,7 @@ Note that so far, we have not prevented Anne from viewing "Project X" even if An
 
 ### Take Organization Context Into Consideration
 
-##### Extending The Authorization Model
+##### Extend The Authorization Model
 
 In order to add a restriction based on the current organization context, we will make use of <ProductName format={ProductNameFormat.ShortForm}/> configuration language's support for [intersection](../configuration-language.mdx#the-intersection-operator) to specify that a user has to both have access _and_ be in the correct context in order to be authorized.
 
