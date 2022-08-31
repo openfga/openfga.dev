@@ -217,7 +217,7 @@ With the Authorization Model and relationship tuples shown above, <ProductName f
 
 We can verify that using the following checks
 
-Anne can view transaction:A because she is an account manager whose account is at the same branch.
+Anne can view transaction:A because she is an account manager of an account that is at the same branch.
 <CheckRequestViewer user={'anne'} relation={'can_view'} object={'transaction:A'} allowed={true} />
 
 Caroline can view transaction:A because she is a customer and the transaction is tied to her account.
