@@ -93,8 +93,8 @@ class MyProgram {
 ${importSdkStatement(lang, languageMappings)}
 
 configuration = openfga_sdk.Configuration(
-    scheme = os.environ.get('FGA_API_SCHEME'),
-    host = os.environ.get('FGA_API_HOST'),
+    api_scheme = os.environ.get('FGA_API_SCHEME'),
+    api_host = os.environ.get('FGA_API_HOST'),
     store_id = os.environ.get('FGA_STORE_ID')
 )
 

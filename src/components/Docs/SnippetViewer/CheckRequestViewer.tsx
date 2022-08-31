@@ -128,9 +128,14 @@ var response = await fgaClient.Check(new CheckRequest(new TupleKey() {
 // response.Allowed = ${allowed}`;
     case SupportedLanguage.PYTHON_SDK:
       return `
+# from openfga_sdk.model.check_request import CheckRequest
+# from openfga_sdk.model.tuple_key import TupleKey
+# from openfga_sdk.model.contextual_tuple_keys import ContextualTupleKeys
+
 # Run a check
-body = openfga_sdk.model.check_request.CheckRequest(
-    tuple_key=openfga_sdk.model.tuple_key.TupleKey(
+
+body = CheckRequest(
+    tuple_key=TupleKey(
         user="${user}",
         relation="${relation}",
         object="${object}",
@@ -138,13 +143,10 @@ body = openfga_sdk.model.check_request.CheckRequest(
 ${
   contextualTuples
     ? `
-    contextual_tuples=openfga_sdk.model.contextual_tuple_keys.ContextualTupleKeys(
+    contextual_tuples=ContextualTupleKeys(
         tuple_keys=[
             ${contextualTuples
-              .map(
-                (tuple) =>
-                  `openfga_sdk.model.tuple_key.TupleKey(user="${tuple.user}", relation="${tuple.relation}", object="${tuple.object}")`,
-              )
+              .map((tuple) => `TupleKey(user="${tuple.user}", relation="${tuple.relation}", object="${tuple.object}")`)
               .join(',\n                ')}
         ],
     ),

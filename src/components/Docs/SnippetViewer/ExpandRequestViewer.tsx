@@ -66,14 +66,18 @@ Reply: {tree:...}`;
 
     case SupportedLanguage.PYTHON_SDK:
       return `
-body = openfga_sdk.model.expand_request.ExpandRequest(
-    tuple_key=openfga_sdk.model.tuple_key.TupleKey(
+# from openfga_sdk.model.expand_request import ExpandRequest
+# from openfga_sdk.model.expand_response import ExpandResponse
+# from openfga_sdk.model.tuple_key import TupleKey
+
+body = ExpandRequest(
+    tuple_key=TupleKey(
         relation: "${opts.relation}",
         object: "${opts.object}",
     )
 )
 response = fga_client_instance.expand(body)
-# response = openfga_sdk.model.expand_response.ExpandResponse({"tree":...})
+# response = ExpandResponse({"tree":...})
 `;
 
     case SupportedLanguage.PLAYGROUND:

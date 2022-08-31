@@ -57,11 +57,13 @@ function writeAuthZModelViewerDotnet(authorizationModel: AuthorizationModel): st
 
 function writeAuthZModelViewerPython(authorizationModel: AuthorizationModel): string {
   return `
+# from openfga_sdk.model.type_definitions import TypeDefinitions
+
 body_string = ${JSON.stringify(JSON.stringify(authorizationModel))}
 type_definitions = openfga_sdk.model_utils.validate_and_convert_types(
     json.loads(body_string),
-    (openfga_sdk.model.type_definitions.TypeDefinitions,),
-    ['openfga_sdk.model.type_definitions.TypeDefinitions'],
+    (TypeDefinitions,),
+    ['TypeDefinitions'],
     True,
     True,
     configuration=configuration

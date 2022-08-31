@@ -100,13 +100,17 @@ var response = fgaClient.Read(new ReadRequest(new TupleKey() {
         `        object="${opts.object}",\n`;
 
       return `
-body = openfga_sdk.model.read_request.ReadRequest(
-    tuple_key=openfga_sdk.model.tuple_key.TupleKey(
+# from openfga_sdk.model.read_request import ReadRequest
+# from openfga_sdk.model.read_response import ReadResponse
+# from openfga_sdk.model.tuple_key import TupleKey
+
+body = ReadRequest(
+    tuple_key=TupleKey(
 ${requestTuples}
     )
 )
 response = fga_client_instance.read(body)
-# response = openfga_sdk.model.read_response.ReadResponse({"tuples":[${readTuples}]})`;
+# response = ReadResponse({"tuples":[${readTuples}]})`;
     }
     case SupportedLanguage.RPC: {
       const objectOrType = opts.object.slice(-1) === ':' ? 'type' : 'object';

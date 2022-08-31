@@ -162,7 +162,7 @@ await fgaClient.Write(new WriteRequest{
         ? opts.relationshipTuples
             .map(
               ({ user, relation, object, _description }) => `
-            openfga_sdk.model.tuple_key.TupleKey(
+            TupleKey(
 ${_description ? `                # ${_description}\n                ` : '                '}user= "${user}",
                 relation= "${relation}",
                 object="${object}",
@@ -174,7 +174,7 @@ ${_description ? `                # ${_description}\n                ` : '      
         ? opts.deleteRelationshipTuples
             .map(
               ({ user, relation, object, _description }) => `
-            openfga_sdk.model.tuple_key.TupleKey(
+            TupleKey(
 ${_description ? `                # ${_description}\n                ` : '                '}user= "${user}",
                 relation= "${relation}",
                 object="${object}",
@@ -182,19 +182,23 @@ ${_description ? `                # ${_description}\n                ` : '      
             )
             .join('')
         : '';
-      const writes = `    writes=openfga_sdk.model.tuple_keys.TupleKeys(
+      const writes = `    writes=TupleKeys(
         tuple_keys= [${writeTuples}
         ],
     ),
 `;
-      const deletes = `    deletes=openfga_sdk.model.tuple_keys.TupleKeys(
+      const deletes = `    deletes=TupleKeys(
         tuple_keys= [${deleteTuples}
         ],
     ),
 `;
 
       return `
-body = openfga_sdk.model.write_request.WriteRquest(
+# from openfga_sdk.model.tuple_key import TupleKey
+# from openfga_sdk.model.tuple_keys import TupleKeys
+# from openfga_sdk.model.write_request import WriteRequest
+
+body = WriteRequest(
 ${opts.relationshipTuples ? writes : ''}${opts.deleteRelationshipTuples ? deletes : ''}
 )
 response = fga_client_instance.write(body)

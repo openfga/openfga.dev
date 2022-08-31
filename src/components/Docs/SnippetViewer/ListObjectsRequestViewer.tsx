@@ -140,19 +140,21 @@ var response = await openFgaApi.ListObjects(body);
 // response.ObjectIds = [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
     case SupportedLanguage.PYTHON_SDK:
       return `
-body = openfga_sdk.model.list_objects_request.ListObjectsRequest(${
-        authorizationModelId ? `authorization_model_id="${authorizationModelId}",` : ``
-      }
+# from openfga_sdk.model.list_objects_request import ListObjectsRequest
+# from openfga_sdk.model.tuple_key import TupleKey
+# from openfga_sdk.model.contextual_tuple_keys import ContextualTupleKeys
+
+body = ListObjectsRequest(${authorizationModelId ? `authorization_model_id="${authorizationModelId}",` : ``}
     user="${user}",
     relation="${relation}",
     type="${objectType}",${
         contextualTuples?.length
           ? `
-    contextual_tuples=openfga_sdk.model.contextual_tuple_keys.ContextualTupleKeys(
+    contextual_tuples=ContextualTupleKeys(
         tuple_keys=[
             ${contextualTuples
               .map(
-                (tupleKey) => `openfga_sdk.model.tuple_key.TupleKeys(
+                (tupleKey) => `TupleKey(
                 user="${tupleKey.user}",
                 relation="${tupleKey.relation}",
                 object="${tupleKey.object}")`,
