@@ -36,6 +36,13 @@ Contextual Tuples should be used when modeling cases where a user's access to an
 
 To follow this guide, you should be familiar with some <ProductConcept />.
 
+### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+
+- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system.
+- A <ProductConcept section="what-is-a-check-request" linkName="Check Request" />: is a call to the <ProductName format={ProductNameFormat.ShortForm}/> check endpoint that returns whether the user has a certain relationship with an object.
+- A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>
+- A <ProductConcept section="what-are-contextual-tuples" linkName="Contextual Tuple" />: a tuple that can be added to a Check request, and only exists within the context of that particular request.
+
 You also need to be familiar with:
 
 - **Modeling Object-to-Object Relationships**: You need to know how to create relationships between objects and how that might affect a user's relationships to those objects. [Learn more →](./building-blocks/object-to-object-relationships.mdx)
@@ -195,15 +202,13 @@ By the end of this guide we would like to validate that:
 
 In order to solve for the requirements above, we will break the problem down to three steps:
 
-1. Understand the authorization checks can be done with the existing model
+1. [Understand relationships without contextual tuples](#understand-relationships-without-contextual-data). We will want to ensure that 
+- the customer can view a transaction tied to their account
+- the account manager can view a transaction whose account is at the same branch
+2. Extend the Authorization Model to [take time and ip address into consideration](#take-time-and-ip-address-into-consideration)
+3. [Use contextual tuples for context related checks](#use-contextual-tuples-for-context-related-checks).
 
-- Ensure that the customer can view a transaction tied to their account
-- Ensure that the account manager can view a transaction whose account is at the same branch
-
-2. Extend the Authorization Model to take time and ip address into consideration
-3. Use contextual tuples for context related checks
-
-### Checking Access (Excluding Contextual Data)
+### Understand Relationships Without Contextual Data
 
 With the Authorization Model and relationship tuples shown above, <ProductName format={ProductNameFormat.ShortForm}/> has all the information needed to
 
@@ -212,7 +217,10 @@ With the Authorization Model and relationship tuples shown above, <ProductName f
 
 We can verify that using the following checks
 
+Anne can view transaction:A because she is an account manager of an account that is at the same branch.
 <CheckRequestViewer user={'anne'} relation={'can_view'} object={'transaction:A'} allowed={true} />
+
+Caroline can view transaction:A because she is a customer and the transaction is tied to her account.
 <CheckRequestViewer user={'caroline'} relation={'can_view'} object={'transaction:A'} allowed={true} />
 
 Additionally, we will check that Mary, an account manager at a different branch _cannot_ view transaction A.
@@ -442,7 +450,7 @@ We need to add relationship tuples to mark some approved timeslots and ip addres
 
 Now that we have added the allowed timeslots and ip address ranges we need to add the following relationship tuples to give Anne access.
 
-<RelationshipTuplesViewer
+<WriteRequestViewer
   relationshipTuples={[
     {
       _description: 'Anne is connecting from within the 10.0.0.0/16 ip address range',
@@ -463,7 +471,7 @@ If we have the above two tuples in the system, when checking whether Anne can vi
 
 <CheckRequestViewer user={'anne'} relation={'can_view'} object={'transaction:A'} allowed={true} />
 
-### Using Contextual Tuples
+### Use Contextual Tuples For Context Related Checks
 
 Now that we know we can authorize based on present state, we have a different problem to solve. We are storing the tuples in the state in order for <ProductName format={ProductNameFormat.ShortForm}/> to evaluate them, which means that:
 
@@ -471,6 +479,25 @@ Now that we know we can authorize based on present state, we have a different pr
 - On every check call we have to first write the correct tuples, then call the Check api, then clean up those tuples. This causes a substantial increase in latency as well as incorrect answers for requests happening in parallel (they could write/delete each other's tuples).
 
 How do we solve this? How do we tie the above two tuples to the context of the request instead of the system state?
+
+First, we will need to undo adding the stored relationship tuples where Anne is connecting from within the 10.0.0.0/16 ip address range and Anne connecting between 12pm and 1pm 
+
+<WriteRequestViewer
+  deleteRelationshipTuples={[
+    {
+      _description: 'Remove stored tuples where Anne is connecting from within the 10.0.0.0/16 ip address range',
+      user: 'anne',
+      relation: 'user',
+      object: 'ip-address-range:10.0.0.0/16',
+    },
+    {
+      _description: 'Remove stored tuples where Anne is connecting between 12pm and 1pm',
+      user: 'anne',
+      relation: 'user',
+      object: 'timeslot:12_13',
+    },
+  ]}
+/>
 
 For Check calls, <ProductName format={ProductNameFormat.ShortForm}/> has a concept called "<ProductConcept section="what-are-contextual-tuples" linkName="Contextual Tuples" />". Contextual Tuples are tuples that do **not** exist in the system state and are not written beforehand to <ProductName format={ProductNameFormat.ShortForm}/>. They are tuples that are sent alongside the Check request and will be treated as _if_ they already exist in the state for the context of that particular Check call.
 
