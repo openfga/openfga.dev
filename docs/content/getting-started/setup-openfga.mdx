@@ -56,6 +56,7 @@ OpenFGA supports multiple storage engine options including:
 
 - `memory` - The memory storage engine is the default, but it is not persistent (data is lost between server restarts).
 - `postgres` - The Postgres storage engine requires a Postgres instance that the OpenFGA server can reach.
+- `mysql` - The MySQL storage engine requires a MySQL instance that the OpenFGA server can reach, and that the connection uri specifies the query `parseTime=true`.
 
 #### Postgres
 
@@ -148,6 +149,41 @@ docker-compose up -d db && \
 </Tabs>
 
 OpenFGA should start and you should see `using 'postgres' storage engine` in the logs.
+
+Now you can try to [Create a Store](./create-store.mdx).
+
+#### MySQL
+
+Setting up MySQL and OpenFGA is very similar to setting up Postgres and OpenFGA. 
+We first make a network:
+```shell
+docker network create openfga
+```
+
+Then, start MySQL in the network you created above:
+
+```shell
+docker run -d --name mysql --network=openfga -e MYSQL_ROOT_PASSWORD=secret -e MYSQL_DATABASE=openfga mysql:8
+```
+
+You should now have MySQL running in a container in the `openfga` network. But we still have to migrate all the tables to be able to run OpenFGA. You can use the `migrate` command to create the tables. Using the OpenFGA container, this will look like:
+
+```shell
+docker run --rm --network=openfga openfga/openfga migrate \
+    --datastore-engine mysql \
+    --datastore-uri 'root:secret@mysql:3306/openfga?parseTime=true'
+```
+
+Finally, start OpenFGA:
+
+```shell
+docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
+    --datastore-engine mysql \
+    --datastore-uri 'root:secret@mysql:3306/openfga?parseTime=true'
+```
+
+
+OpenFGA should start and you should see `using 'mysql' storage engine` in the logs.
 
 Now you can try to [Create a Store](./create-store.mdx).
 
