@@ -41,7 +41,7 @@
     "swagger-ui-react": "4.14.0"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "2.0.1",
+    "@docusaurus/module-type-aliases": "2.1.0",
     "@tsconfig/docusaurus": "1.0.6",
     "@types/prismjs": "1.26.0",
     "@types/react": "17.0.41",
