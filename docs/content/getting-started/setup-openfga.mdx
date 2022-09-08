@@ -188,6 +188,20 @@ If you need to serve the profiler on a different address than the default `:3001
 docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3002:3002 openfga/openfga run --profiler-enabled --profiler-addr :3002
 ```
 
+## Health Check
+
+The OpenFGA is configured with a HTTP health check endpoint `/healthz` that is wired to datastore testing. Possible values are
+- UNKNOWN
+- SERVING
+- NOT_SERVING
+- SERVICE_UNKNOWN
+
+```console
+curl -X GET $FGA_API_HOST/healthz
+
+# {"status":"SERVING"}
+```
+
 ## Production Recommendations
 
 If you have tried OpenFGA locally, decided it works as expected, and now want to deploy it to production, we recommend the following preparation:
