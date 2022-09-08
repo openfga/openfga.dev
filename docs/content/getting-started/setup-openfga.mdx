@@ -128,7 +128,10 @@ services:
       pause:
         condition: service_completed_successfully
     command: |
-      migrate --datastore-engine postgres --datastore-uri postgres://postgres:password@db:5432/openfga
+      migrate
+    environment: 
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://postgres:password@db:5432/openfga
     networks:
       - openfga
 
