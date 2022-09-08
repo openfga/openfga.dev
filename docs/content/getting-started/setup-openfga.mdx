@@ -190,7 +190,7 @@ docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3002:3002 openfga/openfga r
 
 ## Health Check
 
-The OpenFGA is configured with a HTTP health check endpoint `/healthz` that is wired to datastore testing. Possible values are
+OpenFGA is configured with a HTTP and gRPC health check endpoint `/healthz` that is wired to datastore testing. Possible response values are
 - UNKNOWN
 - SERVING
 - NOT_SERVING
