@@ -115,6 +115,26 @@ services:
       timeout: 5s
       retries: 5
 
+  pause:
+    image: ubuntu
+    command: sleep 5
+    depends_on:
+      db:
+        condition: service_started
+
+  migrate:
+    image: openfga/openfga
+    depends_on:
+      pause:
+        condition: service_completed_successfully
+    command: |
+      migrate
+    environment: 
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://postgres:password@db:5432/openfga
+    networks:
+      - openfga
+
   openfga:
     image: openfga/openfga
     environment:
@@ -123,7 +143,10 @@ services:
       - OPENFGA_LOG_FORMAT=json
     command: run
     depends_on:
-      - db
+      db:
+        condition: service_started
+      migrate:
+        condition: service_completed_successfully
     networks:
       - openfga
     ports:
@@ -137,16 +160,12 @@ services:
 
 In a terminal, navigate to that directory and run:
 ```shell
-docker-compose up -d db && \
-  sleep 1 && \
-  docker-compose run openfga migrate \
-    --datastore-engine postgres \
-    --datastore-uri 'postgres://postgres:password@db:5432/postgres' && \
-  docker-compose up openfga
+docker-compose up
 ```
 </TabItem>
 </Tabs>
 
+This will start the postgres database, run `openfga migrate` to configure the database and finally start the OpenFGA server.
 OpenFGA should start and you should see `using 'postgres' storage engine` in the logs.
 
 Now you can try to [Create a Store](./create-store.mdx).
