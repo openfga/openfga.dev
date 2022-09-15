@@ -140,32 +140,33 @@ var response = await openFgaApi.ListObjects(body);
 // response.ObjectIds = [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
     case SupportedLanguage.PYTHON_SDK:
       return `
-# from openfga_sdk.model.list_objects_request import ListObjectsRequest
-# from openfga_sdk.model.tuple_key import TupleKey
-# from openfga_sdk.model.contextual_tuple_keys import ContextualTupleKeys
+# from openfga_sdk.models.list_objects_request import ListObjectsRequest
+# from openfga_sdk.models.tuple_key import TupleKey
+# from openfga_sdk.models.contextual_tuple_keys import ContextualTupleKeys
 
-body = ListObjectsRequest(${authorizationModelId ? `authorization_model_id="${authorizationModelId}",` : ``}
-    user="${user}",
-    relation="${relation}",
-    type="${objectType}",${
+async def list_objects():
+    body = ListObjectsRequest(${authorizationModelId ? `authorization_model_id="${authorizationModelId}",` : ``}
+        user="${user}",
+        relation="${relation}",
+        type="${objectType}",${
         contextualTuples?.length
           ? `
-    contextual_tuples=ContextualTupleKeys(
-        tuple_keys=[
-            ${contextualTuples
-              .map(
-                (tupleKey) => `TupleKey(
-                user="${tupleKey.user}",
-                relation="${tupleKey.relation}",
-                object="${tupleKey.object}")`,
-              )
-              .join(',\n            ')}
-        ]
-    )`
+        contextual_tuples=ContextualTupleKeys(
+            tuple_keys=[
+                ${contextualTuples
+                  .map(
+                    (tupleKey) => `TupleKey(
+                    user="${tupleKey.user}",
+                    relation="${tupleKey.relation}",
+                    object="${tupleKey.object}")`,
+                  )
+                  .join(',\n            ')}
+            ]
+        )`
           : ``
       }
-)
-response = fga_client_instance.list_objects(body)
+    )
+    response = await fga_client_instance.list_objects(body)
 `;
     case SupportedLanguage.RPC:
       return `listObjects(

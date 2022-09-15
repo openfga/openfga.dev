@@ -162,11 +162,11 @@ await fgaClient.Write(new WriteRequest{
         ? opts.relationshipTuples
             .map(
               ({ user, relation, object, _description }) => `
-            TupleKey(
-${_description ? `                # ${_description}\n                ` : '                '}user= "${user}",
-                relation= "${relation}",
-                object="${object}",
-            ),`,
+                TupleKey(
+${_description ? `                    # ${_description}\n                    ` : '                    '}user="${user}",
+                    relation="${relation}",
+                    object="${object}",
+                ),`,
             )
             .join('')
         : '';
@@ -174,34 +174,35 @@ ${_description ? `                # ${_description}\n                ` : '      
         ? opts.deleteRelationshipTuples
             .map(
               ({ user, relation, object, _description }) => `
-            TupleKey(
-${_description ? `                # ${_description}\n                ` : '                '}user= "${user}",
-                relation= "${relation}",
-                object="${object}",
-            ),`,
+                TupleKey(
+${_description ? `                    # ${_description}\n                    ` : '                    '}user="${user}",
+                    relation="${relation}",
+                    object="${object}",
+                ),`,
             )
             .join('')
         : '';
       const writes = `    writes=TupleKeys(
-        tuple_keys= [${writeTuples}
-        ],
-    ),
+            tuple_keys=[${writeTuples}
+            ],
+        ),
 `;
       const deletes = `    deletes=TupleKeys(
-        tuple_keys= [${deleteTuples}
-        ],
-    ),
+            tuple_keys=[${deleteTuples}
+            ],
+        ),
 `;
 
       return `
-# from openfga_sdk.model.tuple_key import TupleKey
-# from openfga_sdk.model.tuple_keys import TupleKeys
-# from openfga_sdk.model.write_request import WriteRequest
+# from openfga_sdk.models.tuple_key import TupleKey
+# from openfga_sdk.models.tuple_keys import TupleKeys
+# from openfga_sdk.models.write_request import WriteRequest
 
-body = WriteRequest(
-${opts.relationshipTuples ? writes : ''}${opts.deleteRelationshipTuples ? deletes : ''}
-)
-response = fga_client_instance.write(body)
+async def write():
+    body = WriteRequest(
+    ${opts.relationshipTuples ? writes : ''}${opts.deleteRelationshipTuples ? deletes : ''}
+    )
+    await fga_client_instance.write(body)
 `;
     }
 

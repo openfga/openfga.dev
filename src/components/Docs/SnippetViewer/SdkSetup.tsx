@@ -93,9 +93,9 @@ class MyProgram {
 ${importSdkStatement(lang, languageMappings)}
 
 configuration = openfga_sdk.Configuration(
-    api_scheme = os.environ.get('FGA_API_SCHEME'),
-    api_host = os.environ.get('FGA_API_HOST'),
-    store_id = os.environ.get('FGA_STORE_ID')
+    api_scheme = os.environ.get('FGA_API_SCHEME'), # Either "http" or "https", defaults to "https"
+    api_host = os.environ.get('FGA_API_HOST'), # required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
+    store_id = os.environ.get('FGA_STORE_ID') # optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
 )
 
 # Create an instance of the API class

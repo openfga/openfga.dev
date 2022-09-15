@@ -103,7 +103,7 @@ class MyProgram {
 import os
 import openfga_sdk
 from openfga_sdk.api import open_fga_api
-from openfga_sdk.model.create_store_request import CreateStoreRequest
+from openfga_sdk.models.create_store_request import CreateStoreRequest
 
 
 configuration = openfga_sdk.Configuration(
@@ -114,14 +114,15 @@ configuration = openfga_sdk.Configuration(
 # Create an instance of the API class
 fga_client_instance = open_fga_api.OpenFgaApi(openfga_sdk.ApiClient(configuration))
 
-try:
-    # Create a store
-    body = CreateStoreRequest(
-        name = "FGA Demo",
-    )
-    api_response = fga_client_instance.create_store(body)
-except openfga_sdk.ApiException as e:
-    print("Exception when calling OpenFgaApi->create_store: %s\n" % e)
+async def create_store():
+    try:
+        # Create a store
+        body = CreateStoreRequest(
+            name = "FGA Demo",
+        )
+        api_response = await fga_client_instance.create_store(body)
+    except openfga_sdk.ApiException as e:
+        print("Exception when calling OpenFgaApi->create_store: %s\n" % e)
 
 ```
 
