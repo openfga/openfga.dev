@@ -25,7 +25,7 @@ function expandRequestViewer(
 # Response: {"tree": ...}`;
     case SupportedLanguage.JS_SDK:
       return `
-// Run a check
+// Expand relation ${opts.relation} for object ${opts.object}
 const { tree } = await fgaClient.expand({
   tuple_key: {
     relation: '${opts.relation}',
