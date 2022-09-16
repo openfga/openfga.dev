@@ -252,7 +252,7 @@ using OpenFga.Sdk.Configuration;`,
           {
             to: 'https://github.com/openfga',
             position: 'right',
-            label: 'Github',
+            label: 'GitHub',
             className: 'header-social header-github-link',
             'aria-label': 'OpenFGA on GitHub',
           },
