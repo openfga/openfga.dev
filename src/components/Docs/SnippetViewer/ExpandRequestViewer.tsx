@@ -25,11 +25,10 @@ function expandRequestViewer(
 # Response: {"tree": ...}`;
     case SupportedLanguage.JS_SDK:
       return `
-// Expand relation ${opts.relation} for object ${opts.object}
 const { tree } = await fgaClient.expand({
   tuple_key: {
-    relation: '${opts.relation}',
-    object: '${opts.object}',
+    relation: '${opts.relation}', // expand all who has '${opts.relation}' relation
+    object: '${opts.object}', // with the object '${opts.object}'
   },
 });
 
@@ -40,8 +39,8 @@ const { tree } = await fgaClient.expand({
       return `
 body := fgaSdk.ExpandRequest{
 	TupleKey: &fgaSdk.TupleKey{
-		Relation: fgaSdk.PtrString("${opts.relation}"),
-		Object: fgaSdk.PtrString("${opts.object}"),
+		Relation: fgaSdk.PtrString("${opts.relation}"), // expand all who has "${opts.relation}" relation
+		Object: fgaSdk.PtrString("${opts.object}"), // with the object "${opts.object}"
 	},
 }
 data, response, err := fgaClient.${languageMappings['go'].apiName}.Expand(context.Background()).Body(body).Execute()
@@ -52,8 +51,8 @@ data, response, err := fgaClient.${languageMappings['go'].apiName}.Expand(contex
     case SupportedLanguage.DOTNET_SDK:
       return `
 var response = await fgaClient.Expand(new ExpandRequest(new TupleKey() {
-    Relation = "${opts.relation}",
-    Object = "${opts.object}"
+    Relation = "${opts.relation}",  // expand all who has "${opts.relation}" relation
+    Object = "${opts.object}" // with the object "${opts.object}"
 }));
 // response = { tree: ... }`;
     case SupportedLanguage.RPC:
