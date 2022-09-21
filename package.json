@@ -37,7 +37,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-feather": "2.0.10",
-    "sanitize-html": "2.7.1",
+    "sanitize-html": "2.7.2",
     "swagger-ui-react": "4.14.0"
   },
   "devDependencies": {
@@ -47,8 +47,8 @@
     "@types/react": "17.0.41",
     "@types/react-router-dom": "5.3.3",
     "@types/sanitize-html": "2.6.2",
-    "@typescript-eslint/eslint-plugin": "5.36.2",
-    "@typescript-eslint/parser": "5.36.2",
+    "@typescript-eslint/eslint-plugin": "5.38.0",
+    "@typescript-eslint/parser": "5.38.0",
     "docusaurus-plugin-module-alias": "0.0.2",
     "eslint": "8.23.1",
     "eslint-config-prettier": "8.5.0",
