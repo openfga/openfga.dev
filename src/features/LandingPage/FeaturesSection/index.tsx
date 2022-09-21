@@ -3,13 +3,14 @@ import sanitizeHtml from 'sanitize-html';
 import { Section } from '@components/Section';
 
 import {
-  Auth0AnimatedIcon,
   CodeAnimatedIcon,
   CommunityAnimatedIcon,
   FastAnimatedIcon,
   ModelIcon,
   OpenAnimatedIcon,
 } from '@components/icons';
+
+import CNCFIcon from '../../../../static/img/cncf-icon-white.svg';
 
 import styles from './FeaturesSection.module.css';
 import { StyleGrid } from '../StyleGrid';
@@ -49,11 +50,9 @@ const features = [
   },
   {
     id: 'sponsored',
-    icon: <Auth0AnimatedIcon />,
-    title: 'Sponsored by Auth0',
-    content: [
-      'Originally designed by Auth0 to power their managed fine grained authorization system, Auth0 Fine Grained Authorization, OpenFGA is building upon decades of industry experience and insights from dozens of internal stakeholders and customer organizations of all shapes and sizes.',
-    ],
+    icon: <CNCFIcon />,
+    title: 'CNCF Sandbox Project',
+    content: ["We are a <a href='https://www.cncf.io/'>Cloud Native Computing Foundation</a> sandbox project."],
   },
   {
     id: 'contribute',
