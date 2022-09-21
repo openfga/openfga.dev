@@ -260,7 +260,7 @@ from openfga_sdk.api import open_fga_api`,
           {
             to: 'https://github.com/openfga',
             position: 'right',
-            label: 'Github',
+            label: 'GitHub',
             className: 'header-social header-github-link',
             'aria-label': 'OpenFGA on GitHub',
           },
