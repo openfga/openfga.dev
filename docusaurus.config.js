@@ -155,6 +155,22 @@ using OpenFga.Sdk.Configuration;`,
       }),
     ],
     [
+      'content-docs',
+      /** @type {import('@docusaurus/plugin-content-docs').Options} */
+      ({
+        id: 'project',
+        path: 'project',
+        routeBasePath: 'project',
+        editUrl: ({ docPath }) => {
+          return `https://github.com/openfga/openfga.dev/edit/main/project/${docPath}`;
+        },
+        editCurrentVersion: true,
+        showLastUpdateAuthor: true,
+        showLastUpdateTime: true,
+        sidebarPath: false,
+      }),
+    ],
+    [
       'docusaurus-plugin-module-alias',
       {
         alias: {
@@ -235,6 +251,11 @@ using OpenFga.Sdk.Configuration;`,
             label: 'Docs',
           },
           { to: '/api/service', label: 'API', position: 'left' },
+          {
+            to: '/project/intro',
+            position: 'left',
+            label: 'Project',
+          },
           {
             to: 'https://twitter.com/OpenFGA',
             label: 'Twitter',
