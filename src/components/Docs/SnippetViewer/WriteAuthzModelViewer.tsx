@@ -57,19 +57,20 @@ function writeAuthZModelViewerDotnet(authorizationModel: AuthorizationModel): st
 
 function writeAuthZModelViewerPython(authorizationModel: AuthorizationModel): string {
   return `
-# from openfga_sdk.model.type_definitions import TypeDefinitions
+# from openfga_sdk.models.write_authorization_model_request import WriteAuthorizationModelRequest
 
-body_string = ${JSON.stringify(JSON.stringify(authorizationModel))}
-type_definitions = openfga_sdk.model_utils.validate_and_convert_types(
-    json.loads(body_string),
-    (TypeDefinitions,),
-    ['TypeDefinitions'],
-    True,
-    True,
-    configuration=configuration
-)
-response = fga_client_instance.write_authorization_model(type_definitions)
-# response.authorization_model_id = "1uHxCSuTP0VKPYSnkq1pbb1jeZw"
+async def write_authorization_model():
+    body_string = ${JSON.stringify(JSON.stringify(authorizationModel))}
+    body = openfga_sdk.model_utils.validate_and_convert_types(
+        json.loads(body_string),
+        (WriteAuthorizationModelRequest,),
+        ['WriteAuthorizationModelRequest'],
+        True,
+        True,
+        configuration=configuration
+    )
+    response = await fga_client_instance.write_authorization_model(body)
+    # response.authorization_model_id = "1uHxCSuTP0VKPYSnkq1pbb1jeZw"
 `;
 }
 

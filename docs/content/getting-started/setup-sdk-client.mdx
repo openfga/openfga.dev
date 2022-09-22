@@ -200,8 +200,9 @@ from open_fga_api.credentials import Credentials, CredentialConfiguration
 credentials = Credentials(method='api_token',
     configuration=CredentialConfiguration(api_token=os.environ.get(FGA_BEARER_TOKEN)))
 configuration = openfga_sdk.Configuration(
-    scheme = os.environ.get(OPENFGA_API_SCHEME),
-    api_host = os.environ.get(OPENFGA_API_HOST),
+    api_scheme = os.environ.get(FGA_API_SCHEME), # optional, defaults to "https"
+    api_host = os.environ.get(FGA_API_HOST), # required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
+    store_id = os.environ.get(FGA_STORE_ID), # optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
     credentials = credentials)
 
 # Create an instance of the API class

@@ -128,35 +128,34 @@ var response = await fgaClient.Check(new CheckRequest(new TupleKey() {
 // response.Allowed = ${allowed}`;
     case SupportedLanguage.PYTHON_SDK:
       return `
-# from openfga_sdk.model.check_request import CheckRequest
-# from openfga_sdk.model.tuple_key import TupleKey
-# from openfga_sdk.model.contextual_tuple_keys import ContextualTupleKeys
+# from openfga_sdk.models.check_request import CheckRequest
+# from openfga_sdk.models.tuple_key import TupleKey
+# from openfga_sdk.models.contextual_tuple_keys import ContextualTupleKeys
 
 # Run a check
-
-body = CheckRequest(
-    tuple_key=TupleKey(
-        user="${user}",
-        relation="${relation}",
-        object="${object}",
-    ),
-${
-  contextualTuples
-    ? `
-    contextual_tuples=ContextualTupleKeys(
-        tuple_keys=[
-            ${contextualTuples
-              .map((tuple) => `TupleKey(user="${tuple.user}", relation="${tuple.relation}", object="${tuple.object}")`)
-              .join(',\n                ')}
-        ],
-    ),
-`
-    : ``
-}
-)
-response = fga_client_instance.check(body)
-# response.allowed = ${allowed}
-
+async def check():
+    body = CheckRequest(
+        tuple_key=TupleKey(
+            user="${user}",
+            relation="${relation}",
+            object="${object}",
+        ), ${
+          contextualTuples
+            ? `
+        contextual_tuples=ContextualTupleKeys(
+            tuple_keys=[
+                ${contextualTuples
+                  .map(
+                    (tuple) => `TupleKey(user="${tuple.user}", relation="${tuple.relation}", object="${tuple.object}")`,
+                  )
+                  .join(',\n                ')}
+            ],
+        ),`
+            : ``
+        }
+    )
+    response = await fga_client_instance.check(body)
+    # response.allowed = ${allowed}
 `;
     case SupportedLanguage.RPC:
       return `check(

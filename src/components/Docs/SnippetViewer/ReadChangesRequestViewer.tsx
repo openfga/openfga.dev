@@ -65,23 +65,24 @@ await fgaClient.ReadChanges(type, pageSize, continuationToken);`;
 
     case SupportedLanguage.PYTHON_SDK: {
       return `
-response = fga_client_instance.read_changes(${
-        opts.type
-          ? `
-    type="${opts.type}",`
-          : ``
-      }${
+async def read_changes():
+    response = await fga_client_instance.read_changes(${
+      opts.type
+        ? `
+        type="${opts.type}",`
+        : ``
+    }${
         opts.pageSize
           ? `
-    page_size="${opts.pageSize}",`
+        page_size="${opts.pageSize}",`
           : ``
       }${
         opts.continuationToken
           ? `
-    continuation_token="${opts.continuationToken}",`
+        continuation_token="${opts.continuationToken}",`
           : ``
       }
-)`;
+    )`;
     }
 
     default: {
