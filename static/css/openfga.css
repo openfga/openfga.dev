@@ -440,15 +440,6 @@ a.table-of-contents__link.table-of-contents__link--active {
   color: var(--ofga-neutral-white);
 }
 
-.footer__copyright::before {
-  content: '';
-  width: 6.5rem;
-  height: 1.5rem;
-  margin-right: 0.5rem;
-  background: url('/img/openfga_logo-white.svg') no-repeat;
-  background-size: 6.5rem 1.5rem;
-}
-
 /* Content Footer */
 .theme-doc-footer a,
 .theme-doc-footer a:active,

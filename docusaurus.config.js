@@ -48,11 +48,6 @@ const config = {
         href: 'https://authorizationinsoftware.auth0.com/',
         icon: 'PodcastIcon',
       },
-      {
-        text: 'Looking for a cloud hosted service? →',
-        href: 'https://fga.dev/',
-        icon: 'CloudIcon',
-      },
     ],
     feedback: {
       defaultTitle: 'Have Feedback?',
@@ -279,7 +274,7 @@ using OpenFga.Sdk.Configuration;`,
             label: 'Github',
           },
         ],
-        copyright: `@ ${new Date().getFullYear()}`,
+        copyright: `<div><a href="https://www.linuxfoundation.org/legal/trademark-usage"><img src="/img/cncf-icon-white.svg" alt="CNCF" style="vertical-align:middle" /></a> @ ${new Date().getFullYear()}</div>`,
       },
       prism: {
         theme: lightCodeTheme,
