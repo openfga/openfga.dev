@@ -2,8 +2,8 @@ import React from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Link from '@docusaurus/Link';
 import { ColumnLayout } from '../Column';
-import Notifications from '../../../../static/img/Notifications.svg';
-import Pattern from '../../../../static/img/Pattern.svg';
+import Notifications from '@site/static/img/Notifications.svg';
+import Pattern from '@site/static/img/Pattern.svg';
 import styles from './Callout.module.css';
 
 interface FeedbackCalloutProps {
