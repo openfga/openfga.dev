@@ -10,7 +10,7 @@ import {
   OpenAnimatedIcon,
 } from '@components/icons';
 
-import CNCFIcon from '../../../../static/img/cncf-icon-white.svg';
+import CNCFIcon from '@site/static/img/cncf-icon-white.svg';
 
 import styles from './FeaturesSection.module.css';
 import { StyleGrid } from '../StyleGrid';
