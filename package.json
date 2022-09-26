@@ -38,7 +38,7 @@
     "react-dom": "17.0.2",
     "react-feather": "2.0.10",
     "sanitize-html": "2.7.2",
-    "swagger-ui-react": "4.14.0"
+    "swagger-ui-react": "4.14.1"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "2.1.0",
