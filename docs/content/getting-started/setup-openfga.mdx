@@ -171,7 +171,7 @@ You should now have MySQL running in a container in the `openfga` network. But w
 ```shell
 docker run --rm --network=openfga openfga/openfga migrate \
     --datastore-engine mysql \
-    --datastore-uri 'root:secret@mysql:3306/openfga?parseTime=true'
+    --datastore-uri 'root:secret@tcp(mysql:3306)/openfga?parseTime=true'
 ```
 
 Finally, start OpenFGA:
@@ -179,7 +179,7 @@ Finally, start OpenFGA:
 ```shell
 docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
     --datastore-engine mysql \
-    --datastore-uri 'root:secret@mysql:3306/openfga?parseTime=true'
+    --datastore-uri 'root:secret@tcp(mysql:3306)/openfga?parseTime=true'
 ```
 
 
