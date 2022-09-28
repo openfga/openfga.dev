@@ -187,6 +187,12 @@ OpenFGA should start and you should see `using 'mysql' storage engine` in the lo
 
 Now you can try to [Create a Store](./create-store.mdx).
 
+##### MySQL Limitations
+Note that the MySQL datastore has stricter limits for the max length of some fields for tuples compared to other datastore engines, in particular:
+- object type is at most 128 characters (down from 256)
+- object id is at most 128 characters (down from 256)
+- user is at most 256 characters (down from 512)
+
 ### Configuring Authentication
 
 You can configure authentication in your OpenFGA server in two ways: no authentication (the default) or pre-shared key authentication.
