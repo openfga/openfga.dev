@@ -29,15 +29,15 @@ const { authorization_model_id: id } = await fgaClient.writeAuthorizationModel($
 function writeAuthZModelViewerGo(authorizationModel: AuthorizationModel, apiName: string): string {
   /* eslint-disable no-tabs */
   return `
-  var typeDefinitionsString = ${JSON.stringify(JSON.stringify(authorizationModel))}
-  var typeDefinitions TypeDefinitions
-  if err := json.Unmarshal([]byte(typeDefinitionsString), &typeDefinitions); err != nil {
+  var writeAuthorizationModelRequestString = ${JSON.stringify(JSON.stringify(authorizationModel))}
+  var body WriteAuthorizationModelRequest
+  if err := json.Unmarshal([]byte(writeAuthorizationModelRequestString), &body); err != nil {
       t.Errorf("%v", err)
       // .. Handle error
       return
   }
 
-  data, response, err := fgaClient.${apiName}.WriteAuthorizationModel(context.Background()).TypeDefinitions(typeDefinitions).Execute()
+  data, response, err := fgaClient.${apiName}.WriteAuthorizationModel(context.Background()).Body(body).Execute()
   if err != nil {
       // .. Handle error
   }
