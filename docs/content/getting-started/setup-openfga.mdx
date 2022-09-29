@@ -116,6 +116,26 @@ services:
       timeout: 5s
       retries: 5
 
+  pause:
+    image: ubuntu
+    command: sleep 5
+    depends_on:
+      db:
+        condition: service_started
+
+  migrate:
+    image: openfga/openfga
+    depends_on:
+      pause:
+        condition: service_completed_successfully
+    command: |
+      migrate
+    environment: 
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://postgres:password@db:5432/openfga
+    networks:
+      - openfga
+
   openfga:
     image: openfga/openfga
     environment:
@@ -124,7 +144,10 @@ services:
       - OPENFGA_LOG_FORMAT=json
     command: run
     depends_on:
-      - db
+      db:
+        condition: service_started
+      migrate:
+        condition: service_completed_successfully
     networks:
       - openfga
     ports:
@@ -138,16 +161,12 @@ services:
 
 In a terminal, navigate to that directory and run:
 ```shell
-docker-compose up -d db && \
-  sleep 1 && \
-  docker-compose run openfga migrate \
-    --datastore-engine postgres \
-    --datastore-uri 'postgres://postgres:password@db:5432/postgres' && \
-  docker-compose up openfga
+docker-compose up
 ```
 </TabItem>
 </Tabs>
 
+This will start the postgres database, run `openfga migrate` to configure the database and finally start the OpenFGA server.
 OpenFGA should start and you should see `using 'postgres' storage engine` in the logs.
 
 Now you can try to [Create a Store](./create-store.mdx).
@@ -207,7 +226,7 @@ If you are going to use this setup in production, you should enable TLS in your 
 
 The Playground facilitates rapid development by allowing you to visualize and model your application's authorization model(s) and manage relationship tuples with a locally running OpenFGA instance.
 
-The Playground is enabled on port 3000 by default. To disable the Playground, please take a look at [Configuring the Server](#configuring-the-server) for more information.
+The Playground is enabled on port 3000 by default and accessible at http://localhost:3000/playground (if using the docker make sure port 3000 is exposed to your local network). To disable the Playground, please take a look at [Configuring the Server](#configuring-the-server) for more information.
 
 ### Profiler (pprof)
 :::caution Warning
@@ -228,6 +247,30 @@ If you need to serve the profiler on a different address than the default `:3001
 
 ```sh
 docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3002:3002 openfga/openfga run --profiler-enabled --profiler-addr :3002
+```
+
+## Health Check
+
+OpenFGA is configured with an HTTP health check endpoint `/healthz` and a gRPC health check `grpc.health.v1.Health/Check`, which is wired to datastore testing. Possible response values are
+- UNKNOWN
+- SERVING
+- NOT_SERVING
+- SERVICE_UNKNOWN
+
+For HTTP health check
+
+```console
+curl -X GET $FGA_API_HOST/healthz
+
+# {"status":"SERVING"}
+```
+
+For gRPC health check
+
+```console
+grpcurl -plaintext $FGA_API_HOST grpc.health.v1.Health/Check
+
+# {"status":"SERVING"}
 ```
 
 ## Production Recommendations
