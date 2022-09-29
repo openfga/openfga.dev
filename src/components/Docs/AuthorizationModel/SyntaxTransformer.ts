@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import { TypeDefinitions } from '@openfga/sdk';
-import { apiSyntaxToFriendlySyntax } from "@openfga/syntax-transformer";
+import { apiSyntaxToFriendlySyntax } from '@openfga/syntax-transformer';
 
 export enum SyntaxFormat {
   Api = 'api',
