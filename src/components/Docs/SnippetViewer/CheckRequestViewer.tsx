@@ -59,7 +59,8 @@ const { allowed } = await fgaClient.check({
     object: '${object}',
   },${
     !contextualTuples
-      ? ''
+      ? `
+`
       : `
   contextual_tuples: {
     tuple_keys: [${contextualTuples
@@ -102,7 +103,8 @@ ${contextualTuples
 \t\t}
 \t}
 }`
-          : ''
+          : `
+}`
       }
 data, response, err := fgaClient.${languageMappings['go'].apiName}.Check(context.Background()).Body(body).Execute()
 
