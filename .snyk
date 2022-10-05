@@ -2,34 +2,25 @@
 version: v1.22.1
 # ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
-  SNYK-JS-AUTOLINKER-2438289:
-    - swagger-ui-react > remarkable > autolinker:
-        reason: >-
-          Autolinker issue described
-          [here](https://github.com/gregjacobs/Autolinker.js/issues/377) does
-          not affect this project. openfga.dev does not accept untrusted user
-          input. Any changes here have to go through a pull request review
-          process.
-        expires: '2022-09-30T23:59:59.999Z'
   SNYK-JS-GOT-2932019:
     - '@docusaurus/core > update-notifier > latest-version > package-json > got':
         reason: >-
           Links are defined at build time. Any updates to them have to go
           through a PR review process.
-        expires: '2022-09-30T23:59:59.999Z'
+        expires: '2022-12-31T23:59:59.999Z'
     - '@docusaurus/plugin-client-redirects > @docusaurus/core > update-notifier > latest-version > package-json > got':
         reason: >-
           Links are defined at build time. Any updates to them have to go
           through a PR review process.
-        expires: '2022-09-30T23:59:59.999Z'
+        expires: '2022-12-31T23:59:59.999Z'
     - '@docusaurus/preset-classic > @docusaurus/core > update-notifier > latest-version > package-json > got':
         reason: >-
           Links are defined at build time. Any updates to them have to go
           through a PR review process.
-        expires: '2022-09-30T23:59:59.999Z'
+        expires: '2022-12-31T23:59:59.999Z'
     - '@easyops-cn/docusaurus-search-local > @docusaurus/plugin-content-docs > @docusaurus/core > update-notifier > latest-version > package-json > got':
         reason: >-
           Links are defined at build time. Any updates to them have to go
           through a PR review process.
-        expires: '2022-09-30T23:59:59.999Z'
+        expires: '2022-12-31T23:59:59.999Z'
 patch: {}
