@@ -85,6 +85,9 @@ Direct relationships can be enabled for a specific relation on an _<ProductConce
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'document',
         relations: {
           viewer: {
@@ -142,6 +145,9 @@ Let us start with the authorization model we had above:
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'document',
         relations: {
           viewer: {
@@ -187,7 +193,7 @@ Assume you have a tuple that states that Anne is a `viewer` of `document:plannin
 <RelationshipTuplesViewer
   relationshipTuples={[
     {
-      user: 'anne',
+      user: 'user:anne',
       relation: 'viewer',
       object: 'document:planning',
     },
@@ -196,7 +202,7 @@ Assume you have a tuple that states that Anne is a `viewer` of `document:plannin
 
 Now if we do a <ProductConcept section="what-is-a-check-request" linkName="check request" /> to see if Anne can view the planning document, we will get a response of `{"allowed": true}`.
 
-<CheckRequestViewer user={'anne'} relation={'viewer'} object={'document:planning'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'viewer'} object={'document:planning'} allowed={true} />
 
 This is because:
 
@@ -221,7 +227,7 @@ Assume you have a tuple that states that <ProductConcept section="how-do-i-repre
 
 Now if we do a check request to see if Beth can view the planning document, we will get a response of `{"allowed": true}`.
 
-<CheckRequestViewer user={'beth'} relation={'viewer'} object={'document:planning'} allowed={true} />
+<CheckRequestViewer user={'user:beth'} relation={'viewer'} object={'document:planning'} allowed={true} />
 
 This is because:
 
@@ -248,7 +254,7 @@ Assume you have two relationship tuples:
 <RelationshipTuplesViewer
   relationshipTuples={[
     {
-      user: 'charlie',
+      user: 'user:charlie',
       relation: 'member',
       object: 'team:product',
     },
@@ -264,7 +270,7 @@ Assume you have two relationship tuples:
 
 Note that these two relationship tuples are specifying that:
 
-- `charlie` is a `member` of `team:product`.
+- `user:charlie` is a `member` of `team:product`.
 - any `member` of `team:product` is a `viewer` of `document:planning`.
   - Note that this second relationship tuple is specifying that the **members** of the team have viewer access, and not the team object itself.
 
@@ -272,7 +278,7 @@ Note that these two relationship tuples are specifying that:
 
 Now if we do a _check request_ to see if charlie can view the planning document, we will get a response of `{"allowed": true}`.
 
-<CheckRequestViewer user={'charlie'} relation={'viewer'} object={'document:planning'} allowed={true} />
+<CheckRequestViewer user={'user:charlie'} relation={'viewer'} object={'document:planning'} allowed={true} />
 
 This is because:
 
@@ -292,7 +298,7 @@ For example, if our relationship tuples were the following relationship tuples:
 <RelationshipTuplesViewer
   relationshipTuples={[
     {
-      user: 'dany',
+      user: 'user:dany',
       relation: 'member',
       object: 'team:product-leads',
     },
@@ -316,7 +322,7 @@ For example, if our relationship tuples were the following relationship tuples:
 
 A subsequent _check request_ to see if Dany can view the planning document will still return a response of `{"allowed": true}`.
 
-<CheckRequestViewer user={'dany'} relation={'viewer'} object={'document:planning'} allowed={true} />
+<CheckRequestViewer user={'user:dany'} relation={'viewer'} object={'document:planning'} allowed={true} />
 
 :::info
 
@@ -335,7 +341,7 @@ With the same authorization model we have above, assume there is a relationship 
 <RelationshipTuplesViewer
   relationshipTuples={[
     {
-      user: 'emily',
+      user: 'user:emily',
       relation: 'editor',
       object: 'document:planning',
     },
@@ -344,7 +350,7 @@ With the same authorization model we have above, assume there is a relationship 
 
 A subsequent _check request_ to see if emily can view the planning document will still return a response of `{"allowed": true}`.
 
-<CheckRequestViewer user={'emily'} relation={'viewer'} object={'document:planning'} allowed={true} />
+<CheckRequestViewer user={'user:emily'} relation={'viewer'} object={'document:planning'} allowed={true} />
 
 This is because:
 
@@ -363,6 +369,9 @@ In this section, we will investigate the effect of disabling _direct relationshi
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'document',
         relations: {
@@ -405,7 +414,7 @@ Assume you have a tuple that states that Fred is a `viewer` of `document:plannin
 <RelationshipTuplesViewer
   relationshipTuples={[
     {
-      user: 'fred',
+      user: 'user:fred',
       relation: 'viewer',
       object: 'document:planning',
     },
@@ -414,7 +423,7 @@ Assume you have a tuple that states that Fred is a `viewer` of `document:plannin
 
 Now if we do a check request to see if Fred can view the planning document, we will get a response of `{"allowed": false}`.
 
-<CheckRequestViewer user={'fred'} relation={'viewer'} object={'document:planning'} allowed={false} />
+<CheckRequestViewer user={'user:fred'} relation={'viewer'} object={'document:planning'} allowed={false} />
 
 This is because:
 
@@ -441,7 +450,7 @@ Assume you have a tuple that states that everyone is a `viewer` of `document:pla
 
 Now if we do a check request to see if Gabriel can view the planning document, we will get a response of `{"allowed": false}`.
 
-<CheckRequestViewer user={'gabriel'} relation={'viewer'} object={'document:planning'} allowed={false} />
+<CheckRequestViewer user={'user:gabriel'} relation={'viewer'} object={'document:planning'} allowed={false} />
 
 This is because:
 
@@ -462,7 +471,7 @@ Assume you have two relationship tuples:
 <RelationshipTuplesViewer
   relationshipTuples={[
     {
-      user: 'henry',
+      user: 'user:henry',
       relation: 'member',
       object: 'team:product',
     },
@@ -476,7 +485,7 @@ Assume you have two relationship tuples:
 
 Now if we do a check request to see if Henry can view the planning document, we will get a response of `{"allowed": false}`.
 
-<CheckRequestViewer user={'henry'} relation={'viewer'} object={'document:planning'} allowed={false} />
+<CheckRequestViewer user={'user:henry'} relation={'viewer'} object={'document:planning'} allowed={false} />
 
 This is because although:
 
@@ -496,7 +505,7 @@ Assume there is a relationship tuple that specifies that Ingred is an `editor` o
 <RelationshipTuplesViewer
   relationshipTuples={[
     {
-      user: 'ingred',
+      user: 'user:ingred',
       relation: 'editor',
       object: 'document:planning',
     },
@@ -505,7 +514,7 @@ Assume there is a relationship tuple that specifies that Ingred is an `editor` o
 
 A subsequent check request to see if Ingred can view the planning document will still return a response of `{"allowed": true}`.
 
-<CheckRequestViewer user={'ingred'} relation={'viewer'} object={'document:planning'} allowed={true} />
+<CheckRequestViewer user={'user:ingred'} relation={'viewer'} object={'document:planning'} allowed={true} />
 
 </TabItem>
 </Tabs>

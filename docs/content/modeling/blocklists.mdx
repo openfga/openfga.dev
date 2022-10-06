@@ -51,6 +51,9 @@ Let us also assume that we have a `document` called "planning", shared for editi
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'document',
         relations: {
           editor: {
@@ -82,13 +85,13 @@ The current state of the system is represented by the following relationship tup
     },
     {
       _description: 'Becky is a member of the product team',
-      user: 'becky',
+      user: 'user:becky',
       relation: 'member',
       object: 'team:product',
     },
     {
       _description: 'Carl is a member of the product team',
-      user: 'carl',
+      user: 'user:carl',
       relation: 'member',
       object: 'team:product',
     },
@@ -122,9 +125,9 @@ With the above authorization model and relationship tuples, <ProductName format=
 
 We can verify that by issuing two check requests:
 
-<CheckRequestViewer user={'becky'} relation={'editor'} object={'document:planning'} allowed={true} />
+<CheckRequestViewer user={'user:becky'} relation={'editor'} object={'document:planning'} allowed={true} />
 
-<CheckRequestViewer user={'carl'} relation={'editor'} object={'document:planning'} allowed={true} />
+<CheckRequestViewer user={'user:carl'} relation={'editor'} object={'document:planning'} allowed={true} />
 
 We want to share a document with the product team and also have the ability to deny certain users access, even if they have the document shared with them already. We can verify this by blocking Carl (who we have seen already has edit access) from editing the document.
 
@@ -134,11 +137,11 @@ In order to do that, we need to:
 2. [Modify our model to indicate that users who are blocked can no longer edit the document](#02-modify-our-model-so-users-who-are-blocked-can-no-longer-edit-the-document)
 3. [Verify that our solution works](#03-verify-our-solution-works):
 
-  a. [Indicate that Carl is blocked from the planning document](#a-indicate-that-carl-is-blocked-from-the-planning-document)
+a. [Indicate that Carl is blocked from the planning document](#a-indicate-that-carl-is-blocked-from-the-planning-document)
 
-  b. [Carl (now blocked) can no longer edit the document](#b-carl-now-blocked-can-no-longer-edit-the-document)
+b. [Carl (now blocked) can no longer edit the document](#b-carl-now-blocked-can-no-longer-edit-the-document)
 
-  c. [Becky still has edit access](#c-becky-still-has-edit-access)
+c. [Becky still has edit access](#c-becky-still-has-edit-access)
 
 ### 01. Modify Our Model So Users Can Be Blocked From Accessing A Document
 
@@ -149,6 +152,9 @@ The authorization model becomes this:
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'document',
         relations: {
@@ -181,6 +187,9 @@ Now that we can mark users as `blocked` from editing documents, we need to suppo
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'document',
         relations: {
@@ -225,7 +234,7 @@ With our modified authorization model, we can indicate that Carl is blocked by a
   relationshipTuples={[
     {
       _description: 'Carl is blocked from editing the planning document',
-      user: 'carl',
+      user: 'user:carl',
       relation: 'blocked',
       object: 'document:planning',
     },
@@ -238,7 +247,7 @@ We have modified the authorization model and added relationship tuples to indica
 
 To check if Carl still has access to the document, we can issue a check request with Carl as the user.
 
-<CheckRequestViewer user={'carl'} relation={'editor'} object={'document:planning'} allowed={false} />
+<CheckRequestViewer user={'user:carl'} relation={'editor'} object={'document:planning'} allowed={false} />
 
 The response is `false`, so our solution is working as expected.
 
@@ -246,7 +255,7 @@ The response is `false`, so our solution is working as expected.
 
 To check if Becky still has access to the document, we'll issue another check request with Becky as the user.
 
-<CheckRequestViewer user={'becky'} relation={'editor'} object={'document:planning'} allowed={true} />
+<CheckRequestViewer user={'user:becky'} relation={'editor'} object={'document:planning'} allowed={true} />
 
 The response is `true`, indicating our model change did not inadvertently deny access for users who have access but are not blocked.
 

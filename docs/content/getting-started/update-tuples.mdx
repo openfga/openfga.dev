@@ -49,11 +49,11 @@ This section will illustrate how to update _<ProductConcept section="what-is-a-r
 
 ## Step By Step
 
-Assume that you want to add user `anne` to have relationship `reader` with object `document:Z`
+Assume that you want to add user `user:anne` to have relationship `reader` with object `document:Z`
 
 ```json5
 {
-  user: 'anne',
+  user: 'user:anne',
   relation: 'reader',
   object: 'document:Z',
 }
@@ -100,7 +100,7 @@ To add the relationship tuples, we can invoke the write API.
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'anne',
+      user: 'user:anne',
       relation: 'reader',
       object: 'document:Z',
     },
@@ -119,11 +119,11 @@ To add the relationship tuples, we can invoke the write API.
 
 To delete relationship tuples, we can invoke the write API.
 
-Assume that you want to delete user `anne`'s `reader` relationship with object `document:Z`
+Assume that you want to delete user `user:anne`'s `reader` relationship with object `document:Z`
 
 ```json5
 {
-  user: 'anne',
+  user: 'user:anne',
   relation: 'reader',
   object: 'document:Z',
 }
@@ -132,7 +132,7 @@ Assume that you want to delete user `anne`'s `reader` relationship with object `
 <WriteRequestViewer
   deleteRelationshipTuples={[
     {
-      user: 'anne',
+      user: 'user:anne',
       relation: 'reader',
       object: 'document:Z',
     },

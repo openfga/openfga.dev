@@ -63,6 +63,9 @@ You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `t
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'trip',
         relations: {
           owner: {
@@ -119,6 +122,9 @@ Relating roles within <ProductName format={ProductNameFormat.ShortForm}/> can be
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'trip',
         relations: {
           // Users can have role: 'owner'
@@ -146,6 +152,9 @@ To allow `viewers` of a `trip` to have **permissions to view bookings** and `own
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'trip',
         relations: {
@@ -203,13 +212,13 @@ Let us create two relationship tuples:
   relationshipTuples={[
     {
       _description: 'Add bob as viewer on trip:Europe',
-      user: 'bob',
+      user: 'user:bob',
       relation: 'viewer',
       object: 'trip:Europe',
     },
     {
       _description: 'Add alice as owner on trip:Europe',
-      user: 'alice',
+      user: 'user:alice',
       relation: 'owner',
       object: 'trip:Europe',
     },
@@ -218,7 +227,7 @@ Let us create two relationship tuples:
 
 Now we can check: **is bob allowed to view bookings on trip Europe?**
 
-<CheckRequestViewer user={'bob'} relation={'booking_viewer'} object={'trip:Europe'} allowed={true} />
+<CheckRequestViewer user={'user:bob'} relation={'booking_viewer'} object={'trip:Europe'} allowed={true} />
 
 **bob** is a `booking_viewer` because of the following chain of resolution:
 
@@ -228,12 +237,12 @@ Now we can check: **is bob allowed to view bookings on trip Europe?**
 
 To confirm that **bob is not allowed to add bookings on trip Europe**, we can do the following check:
 
-<CheckRequestViewer user={'bob'} relation={'booking_adder'} object={'trip:Europe'} allowed={false} />
+<CheckRequestViewer user={'user:bob'} relation={'booking_adder'} object={'trip:Europe'} allowed={false} />
 
 We can also check: **is alice allowed to view and add bookings on trip Europe?**
 
-<CheckRequestViewer user={'alice'} relation={'booking_viewer'} object={'trip:Europe'} allowed={true} />
-<CheckRequestViewer user={'alice'} relation={'booking_adder'} object={'trip:Europe'} allowed={true} />
+<CheckRequestViewer user={'user:alice'} relation={'booking_viewer'} object={'trip:Europe'} allowed={true} />
+<CheckRequestViewer user={'user:alice'} relation={'booking_adder'} object={'trip:Europe'} allowed={true} />
 
 **alice** is a `booking_viewer` and `booking_adder` because of the following chain of resolution:
 

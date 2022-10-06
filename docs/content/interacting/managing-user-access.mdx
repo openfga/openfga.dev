@@ -47,6 +47,9 @@ You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `t
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'tweet',
         relations: {
           reader: {
@@ -86,7 +89,7 @@ For our application, we will give user Anne the `reader` relationship to a parti
   relationshipTuples={[
     {
       _description: 'Anne can read tweet:1',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'reader',
       object: 'tweet:1',
     },
@@ -95,7 +98,7 @@ For our application, we will give user Anne the `reader` relationship to a parti
 
 With the above, we have added a [**direct** relationship](../modeling/building-blocks/direct-relationships.mdx) between Anne and `tweet:1`. When we call the Check API to see if Anne has a `reader` relationship, <ProductName format={ProductNameFormat.ShortForm}/> will say yes.
 
-<CheckRequestViewer user={'anne'} relation={'reader'} object={'tweet:1'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'reader'} object={'tweet:1'} allowed={true} />
 
 ### 02. Removing Direct Relationship
 
@@ -104,7 +107,7 @@ Now let's change this so that Anne no longer has a `reader` relationship to `twe
 <WriteRequestViewer
   deleteRelationshipTuples={[
     {
-      user: 'anne',
+      user: 'user:anne',
       relation: 'reader',
       object: 'tweet:1',
     },
@@ -113,7 +116,7 @@ Now let's change this so that Anne no longer has a `reader` relationship to `twe
 
 With this, we have removed the [direct relationship](../modeling/building-blocks/direct-relationships.mdx) between Anne and `tweet:1`. And because our type definition for `reader` does not include any other relations, a call to the Check API will now return a negative response.
 
-<CheckRequestViewer user={'anne'} relation={'reader'} object={'tweet:1'} allowed={false} />
+<CheckRequestViewer user={'user:anne'} relation={'reader'} object={'tweet:1'} allowed={false} />
 
 ## Related Sections
 

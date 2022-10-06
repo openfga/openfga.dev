@@ -54,6 +54,9 @@ You have two <ProductConcept section="what-is-a-type" linkName="types" />:
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'org',
         relations: {
           member: {
@@ -96,7 +99,7 @@ Now let's make Anne a `member` of `org:contoso` by adding another tuple:
   relationshipTuples={[
     {
       _description: 'Anne is a member of the contoso org',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'member',
       object: 'org:contoso',
     },
@@ -105,9 +108,9 @@ Now let's make Anne a `member` of `org:contoso` by adding another tuple:
 
 The <ProductName format={ProductNameFormat.ShortForm}/> service will now correctly respond with `{"allowed":true}` when check is called to see if Anne can read `document:planning`, but it will still respond with `{"allowed":false}` if we ask the same question for another user called Becky, who is not a member of the group `org:contoso`.
 
-<CheckRequestViewer user={'anne'} relation={'reader'} object={'document:planning'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'reader'} object={'document:planning'} allowed={true} />
 
-<CheckRequestViewer user={'becky'} relation={'reader'} object={'document:planning'} allowed={false} />
+<CheckRequestViewer user={'user:becky'} relation={'reader'} object={'document:planning'} allowed={false} />
 
 ### Modeling User Groups
 
@@ -136,7 +139,7 @@ Imagine that every member of `org:contoso` has a `reader` relationship to 1000 d
 <WriteRequestViewer
   deleteRelationshipTuples={[
     {
-      user: 'anne',
+      user: 'user:anne',
       relation: 'member',
       object: 'org:contoso',
     },
@@ -147,7 +150,7 @@ Imagine that every member of `org:contoso` has a `reader` relationship to 1000 d
 
 Once the above relationship tuple is deleted, we can check if Anne can read `document:planning`. <ProductName format={ProductNameFormat.ShortForm}/> will return `{ "allowed": false }`.
 
-<CheckRequestViewer user={'anne'} relation={'reader'} object={'document:planning'} allowed={false} />
+<CheckRequestViewer user={'user:anne'} relation={'reader'} object={'document:planning'} allowed={false} />
 
 ## Related Sections
 

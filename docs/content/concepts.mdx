@@ -182,9 +182,11 @@ A **user** is an entity in the system that can be related to an object.
 
 </summary>
 
-A **user** is
+A **user** is is a combination of a [type](#what-is-a-type), an identifier and an optional relation.
 
-- any identifier: e.g. `anne` or `4179af14-f0c0-4930-88fd-5570c7bf6f59`
+For example,
+
+- any identifier: e.g. `user:anne` or `user:4179af14-f0c0-4930-88fd-5570c7bf6f59`
 - any object: e.g. `workspace:fb83c013-3060-41f4-9590-d3233a67938f`, `repository:auth0/express-jwt` or `organization:org_ajUc9kJ`
 - a group or a set of users (also called a **userset**): e.g. `organization:org_ajUc9kJ#members`, which represents the set of users related to the object `organization:org_ajUc9kJ` as `member`
 - everyone, using the special syntax: `*`
@@ -224,7 +226,7 @@ A **relation definition** lists the conditions or requirements under which this 
 For example:
 
 - `editor` describing a possible relationship between a user and an object in the `document` type allows the following:
-  - **user identifier to object relationship**: the user id `anne` is related to the object `document:roadmap` as `editor`
+  - **user identifier to object relationship**: the user id `anne` of type `user` is related to the object `document:roadmap` as `editor`
   - **object to object relationship**: the object `application:ifft` is related to the object `document:roadmap` as `editor`
   - **userset to object relationship**: the userset `organization:auth0.com#member` is related to `document:roadmap` as `editor`
     - indicating that the set of users who are related to the object `organization:auth0.com` as `member` are related to the object `document:roadmap` as `editor`s
@@ -254,6 +256,9 @@ These would be defined in the [authorization model](#what-is-an-authorization-mo
           },
         },
       },
+      {
+        type: 'user',
+      },
     ],
   }}
 />
@@ -281,7 +286,7 @@ A **relationship tuple** is a tuple consisting of a user, relation and object st
 
 A **relationship tuple** consists of a:
 
-- **[user](#what-is-a-user)**, e.g. `anne`, `3f7768e0-4fa7-4e93-8417-4da68ce1846c`, `workspace:auth0` or `folder:planning#editor`
+- **[user](#what-is-a-user)**, e.g. `user:anne`, `user:3f7768e0-4fa7-4e93-8417-4da68ce1846c`, `workspace:auth0` or `folder:planning#editor`
 - **[relation](#what-is-a-relation)**, e.g. `editor`, `member` or `parent_workspace`
 - **[object](#what-is-an-object)**, e.g `repo:auth0/express_jwt`, `domain:auth0.com` or `channel:marketing`
 
@@ -292,7 +297,7 @@ Throughout the documentation, you will encounter relationship tuples represented
 <RelationshipTuplesViewer
   relationshipTuples={[
     {
-      user: 'anne',
+      user: 'user:anne',
       relation: 'editor',
       object: 'document:new-roadmap',
     },
@@ -327,13 +332,13 @@ An **implied (or computed) relationship** R exists between user X and object Y i
 
 </summary>
 
-- `anne` has a **direct relationship** with `document:new-roadmap` as `viewer` if the [type definition](#what-is-a-type-definition) allows it (allows [`self`](./configuration-language.mdx#the-direct-relationship-keyword)), and one of the following [relationship tuples](#what-is-a-relationship-tuple) exist:
+- `user:anne` has a **direct relationship** with `document:new-roadmap` as `viewer` if the [type definition](#what-is-a-type-definition) allows it (allows [`self`](./configuration-language.mdx#the-direct-relationship-keyword)), and one of the following [relationship tuples](#what-is-a-relationship-tuple) exist:
 
   - <RelationshipTuplesViewer
       relationshipTuples={[
         {
-          _description: 'Anne is directly related to the document',
-          user: 'anne',
+          _description: 'Anne of type user is directly related to the document',
+          user: 'user:anne',
           relation: 'viewer',
           object: 'document:new-roadmap',
         },
@@ -343,7 +348,7 @@ An **implied (or computed) relationship** R exists between user X and object Y i
   - <RelationshipTuplesViewer
       relationshipTuples={[
         {
-          _description: 'Everyone (`*`) is directly related to the document',
+          _description: 'Everyone (`*`) of type user is directly related to the document',
           user: '*',
           relation: 'viewer',
           object: 'document:new-roadmap',
@@ -360,15 +365,15 @@ An **implied (or computed) relationship** R exists between user X and object Y i
           object: 'document:new-roadmap',
         },
         {
-          _description: 'AND Anne is a member of a userset (e.g. team:product#member)',
-          user: 'anne',
+          _description: 'AND Anne of type user is a member of a userset (e.g. team:product#member)',
+          user: 'user:anne',
           relation: 'member',
           object: 'team:product#member',
         },
       ]}
     />
 
-- `anne` has an **implied relationship** with `document:new-roadmap` as `viewer` if the type definition allows it, and the presence of relationship tuples satisfying the relationship exist.
+- `user:anne` has an **implied relationship** with `document:new-roadmap` as `viewer` if the type definition allows it, and the presence of relationship tuples satisfying the relationship exist.
 
   For example, assuming the following type definition:
 
@@ -399,6 +404,9 @@ An **implied (or computed) relationship** R exists between user X and object Y i
             },
           },
         },
+        {
+          type: 'user',
+        },
       ],
     }}
   />
@@ -408,16 +416,16 @@ An **implied (or computed) relationship** R exists between user X and object Y i
   <RelationshipTuplesViewer
     relationshipTuples={[
       {
-        user: 'anne',
+        user: 'user:anne',
         relation: 'editor',
         object: 'document:new-roadmap',
       },
     ]}
   />
 
-  In this case, the [relationship](#what-is-a-relationship) between `anne` and `document:new-roadmap` as a `viewer` is implied from the direct `editor` relationship `anne` has with that same document. Thus, the following request to [check](#what-is-a-check-request) whether a viewer relationship exists between `anne` and `document:new-roadmap` will return `true`.
+  In this case, the [relationship](#what-is-a-relationship) between `user:anne` and `document:new-roadmap` as a `viewer` is implied from the direct `editor` relationship `user:anne` has with that same document. Thus, the following request to [check](#what-is-a-check-request) whether a viewer relationship exists between `user:anne` and `document:new-roadmap` will return `true`.
 
-  <CheckRequestViewer user={'anne'} relation={'viewer'} object={'document:new-roadmap'} allowed={true} />
+  <CheckRequestViewer user={'user:anne'} relation={'viewer'} object={'document:new-roadmap'} allowed={true} />
 
 </details>
 
@@ -434,9 +442,9 @@ This can be done using the `check` methods in the <ProductName format={ProductNa
 
 The check endpoint responds with `{ "allowed": true }` if a relationship exists, and with `{ "allowed": false }` if the relationship does not.
 
-For example, the following will check whether `anne` has a `viewer` relation to `document:new-roadmap`:
+For example, the following will check whether `anne` of type user has a `viewer` relation to `document:new-roadmap`:
 
-<CheckRequestViewer user={'anne'} relation={'viewer'} object={'document:new-roadmap'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'viewer'} object={'document:new-roadmap'} allowed={true} />
 
 For more information, please see the [Relationship Queries page](./interacting/relationship-queries.mdx) and the official [Check API Reference](/api/service#Relationship%20Queries/Check).
 
@@ -472,7 +480,7 @@ In <ProductName format={ProductNameFormat.LongForm}/> the special syntax `*` mea
 
 </summary>
 
-For example, in a case where you would like to indicate a certain document `document:new-roadmap` is publicly writable (i.e. has everyone as an editor), you can add the following [relationship tuple](#what-is-a-relationship-tuple):
+For example, in a case where you would like to indicate a certain document `document:new-roadmap` is publicly writable (i.e. has everyone of type user as an editor), you can add the following [relationship tuple](#what-is-a-relationship-tuple):
 
 <RelationshipTuplesViewer
   relationshipTuples={[

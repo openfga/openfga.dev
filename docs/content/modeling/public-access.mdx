@@ -49,6 +49,9 @@ You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `d
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'document',
         relations: {
           view: {
@@ -110,7 +113,7 @@ Let us create a relationship tuple that states: **anyone can view document:compa
 
 Once the above _relationship tuple_ is added, we can <ProductConcept section="what-is-a-check-request" linkName="check" /> if **bob** cab `view` `document`:**company-psa.doc**. <ProductName format={ProductNameFormat.ShortForm}/> will return `{ "allowed": true }` even though no relationship tuple linking **bob** to the document was added. That is because the relationship tuple with `*` as the user made it so everyone can `view` the document, making it public.
 
-<CheckRequestViewer user={'bob'} relation={'view'} object={'document:company-psa.doc'} allowed={true} />
+<CheckRequestViewer user={'user:bob'} relation={'view'} object={'document:company-psa.doc'} allowed={true} />
 
 :::caution Wildcard syntax usage
 Please note that `*` is a special <ProductName format={ProductNameFormat.ShortForm}/> syntax meaning **everyone** when used as a _user_ within a _relationship tuple_. It is not a wildcard or regex expression.

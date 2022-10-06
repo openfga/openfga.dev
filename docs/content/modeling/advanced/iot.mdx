@@ -136,6 +136,9 @@ In <ProductName format={ProductNameFormat.ShortForm}/>, the <ProductConcept sect
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'device', // objects of type "device"
         relations: {
           // have users related to them as...
@@ -174,7 +177,7 @@ To add Anne as live_video_viewer of device:1:
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'anne',
+      user: 'user:anne',
       relation: 'live_video_viewer',
       object: 'device:1',
     },
@@ -186,7 +189,7 @@ To add Anne as recorded_video_viewer of device:1
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'anne',
+      user: 'user:anne',
       relation: 'recorded_video_viewer',
       object: 'device:1',
     },
@@ -198,17 +201,17 @@ Likewise, we will add Beth's relationship with device:1.
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'beth',
+      user: 'user:beth',
       relation: 'live_video_viewer',
       object: 'device:1',
     },
     {
-      user: 'beth',
+      user: 'user:beth',
       relation: 'recorded_video_viewer',
       object: 'device:1',
     },
     {
-      user: 'beth',
+      user: 'user:beth',
       relation: 'device_renamer',
       object: 'device:1',
     },
@@ -223,11 +226,11 @@ First, you will find out if `anne` has permission to `view the live video` on `d
 
 Anne has `live_video_viewer` relationship with device:1.
 
-<CheckRequestViewer user={'anne'} relation={'live_video_viewer'} object={'device:1'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'live_video_viewer'} object={'device:1'} allowed={true} />
 
 On the other hand, Anne does not have `device_renamer` relationship with device:1.
 
-<CheckRequestViewer user={'anne'} relation={'device_renamer'} object={'device:1'} allowed={false} />
+<CheckRequestViewer user={'user:anne'} relation={'device_renamer'} object={'device:1'} allowed={false} />
 
 Now, check the other relationships fore Anne and Beth.
 
@@ -336,22 +339,22 @@ Instead of adding different relationship tuples with direct relations to the act
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'anne',
+      user: 'user:anne',
       relation: 'security_guard',
       object: 'device:1',
     },
     {
-      user: 'beth',
+      user: 'user:beth',
       relation: 'it_admin',
       object: 'device:1',
     },
     {
-      user: 'charles',
+      user: 'user:charles',
       relation: 'security_guard',
       object: 'device:1',
     },
     {
-      user: 'dianne',
+      user: 'user:dianne',
       relation: 'it_admin',
       object: 'device:1',
     },
@@ -362,7 +365,7 @@ Instead of adding different relationship tuples with direct relations to the act
 
 We can now verify whether charles is related to device:1 as live_video_viewer.
 
-<CheckRequestViewer user={'charles'} relation={'live_video_viewer'} object={'device:1'} allowed={true} />
+<CheckRequestViewer user={'user:charles'} relation={'live_video_viewer'} object={'device:1'} allowed={true} />
 
 Check the other relationships for anne, beth, charles and dianne.
 
@@ -411,6 +414,9 @@ With this change, the full <ProductConcept section="what-is-an-authorization-mod
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'device',
         relations: {
@@ -496,12 +502,12 @@ Remember that **Charles** is a **Security Guard**, and **Dianne** an **IT Admin*
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'charles',
+      user: 'user:charles',
       relation: 'security_guard',
       object: 'device_group:group1',
     },
     {
-      user: 'dianne',
+      user: 'user:dianne',
       relation: 'it_admin',
       object: 'device_group:group1',
     },
@@ -575,6 +581,9 @@ To remedy this, remove `self` from `live_video_viewer`, `recorded_video_viewer` 
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'device',
         relations: {
@@ -661,17 +670,17 @@ To test this, we can add a new user `emily`. Emily is **not** a `security_guard`
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'emily',
+      user: 'user:emily',
       relation: 'live_video_viewer',
       object: 'device:1',
     },
     {
-      user: 'emily',
+      user: 'user:emily',
       relation: 'recorded_video_viewer',
       object: 'device:1',
     },
     {
-      user: 'emily',
+      user: 'user:emily',
       relation: 'device_renamer',
       object: 'device:1',
     },
@@ -680,7 +689,7 @@ To test this, we can add a new user `emily`. Emily is **not** a `security_guard`
 
 Now try to query `is emily related to device:1 as live_video_viewer?`. The returned result should be `emily is not related to device:1 as live_video_viewer`. This confirms that direct relations have no effect on the `live_video_viewer` relations, and that is because the [**direct relationship keyword**](../../configuration-language.mdx#the-direct-relationship-keyword) (`self`) was removed from the relation configuration.
 
-<CheckRequestViewer user={'emily'} relation={'live_video_viewer'} object={'device:1'} allowed={false} />
+<CheckRequestViewer user={'user:emily'} relation={'live_video_viewer'} object={'device:1'} allowed={false} />
 
 Query on the other relationships and you will see:
 

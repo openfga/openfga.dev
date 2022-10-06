@@ -56,6 +56,9 @@ Let us also assume that we have a `document` called "meeting_notes.doc" and bob 
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'document',
         relations: {
           viewer: {
@@ -75,7 +78,7 @@ The current state of the system is represented by the following relationship tup
 <RelationshipTuplesViewer
   relationshipTuples={[
     {
-      user: 'bob',
+      user: 'user:bob',
       relation: 'editor',
       object: 'document:meeting_notes.doc',
     },
@@ -115,6 +118,9 @@ Our authorization model becomes the following:
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'document',
         relations: {
@@ -159,7 +165,7 @@ With this authorization model change, having an `editor` relationship with a cer
 Since we had a _relationship tuple_ that indicates that **bob** is an `editor` of **document:meeting_notes.doc**, this means **bob** is now implicitly a `viewer` of **document:meeting_notes.doc**.
 If we now check: **is bob a viewer of document:meeting_notes.doc?** we would get the following:
 
-<CheckRequestViewer user={'bob'} relation={'viewer'} object={'document:meeting_notes.doc'} allowed={true} />
+<CheckRequestViewer user={'user:bob'} relation={'viewer'} object={'document:meeting_notes.doc'} allowed={true} />
 
 :::caution Note
 When creating relationship tuples for <ProductName format={ProductNameFormat.ShortForm}/> make sure to use unique ids for each object and user within your application domain. We're using first names and simple ids to just illustrate an easy-to-follow example.

@@ -44,7 +44,11 @@ To define a ReBAC model in <ProductName format={ProductNameFormat.ShortForm}/> w
 
 If that sounds hard, don't worry! We'll guide you through it.
 
-<ProductName format={ProductNameFormat.ShortForm}/> is built to quickly and reliably make <ProductConcept section="what-is-a-check-request" linkName="authorization checks" />. This means providing an answer to a question: "Can user U perform action A on object O?"
+<ProductName format={ProductNameFormat.ShortForm} /> is built to quickly and reliably make <ProductConcept
+  section="what-is-a-check-request"
+  linkName="authorization checks"
+/>
+. This means providing an answer to a question: "Can user U perform action A on object O?"
 
 ReBAC systems determine access from a <ProductConcept section="what-is-a-user" linkName="user's" /> <ProductConcept section="what-is-a-relation" linkName="relation" /> to an <ProductConcept section="what-is-an-object" linkName="object" />. Authorization decisions are then yes or no answers to the question: "Does user U have relation R with object O?".
 
@@ -335,9 +339,11 @@ Let's highlight those expressions in <span className="green-highlight-text">gree
 </CardBox>
 </div>
 
-The only second noun we didn't have in our object type list is "Drive", so we'll add it to the list:
+The only second noun we didn't have in our object type list is "Drive", so we'll add it to the list.
+We will also need to add "User" to the list as it establishes the type of user who can establish relations.
 
-<ColumnLayout cols={4} style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+<ColumnLayout cols={5} style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+  <CardBox icon={{ alignment: 'left', label: 'User' }} />
   <CardBox icon={{ icon: <DocIcon />, alignment: 'left', label: 'Document' }} />
   <CardBox icon={{ icon: <DirIcon />, alignment: 'left', label: 'Folder' }} />
   <CardBox icon={{ icon: <OrgIcon />, alignment: 'left', label: 'Organization' }} />
@@ -351,20 +357,19 @@ Now that we have a list of object types we can start defining them using the <Up
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'document',
-        relations: {},
       },
       {
         type: 'folder',
-        relations: {},
       },
       {
         type: 'organization',
-        relations: {},
       },
       {
         type: 'drive',
-        relations: {},
       },
     ],
   }}
@@ -502,6 +507,9 @@ Using the <UpdateProductNameInLinks link="../configuration-language" name="{Prod
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'document',
         relations: {
           parent: {},
@@ -577,7 +585,14 @@ Remember _"How a user is added as a member to an organization is beyond the scop
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
   configuration={{
-    member: { this: '' },
+    type_definitions: [
+      {
+        type: 'organization',
+        relations: {
+          member: { this: '' },
+        },
+      },
+    ],
   }}
 />
 
@@ -652,7 +667,14 @@ The relation definition then should be:
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
   configuration={{
-    owner: { this: '' },
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          owner: { this: '' },
+        },
+      },
+    ],
   }}
 />
 
@@ -673,7 +695,14 @@ The relation definition then should be:
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
   configuration={{
-    editor: { this: '' },
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          editor: { this: '' },
+        },
+      },
+    ],
   }}
 />
 
@@ -704,7 +733,14 @@ The viewer relation is similar to the document's [editor relation](#relation-edi
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
   configuration={{
-    viewer: { this: '' },
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          viewer: { this: '' },
+        },
+      },
+    ],
   }}
 />
 
@@ -723,7 +759,14 @@ When a document is created a relationship tuple will be stored in <ProductName f
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
   configuration={{
-    parent: { this: '' },
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          parent: { this: '' },
+        },
+      },
+    ],
   }}
 />
 
@@ -1078,6 +1121,9 @@ Combining the type definitions for document and organization, we have
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'organization',
         relations: {
           member: {
@@ -1289,11 +1335,11 @@ At this point you haven't defined the drive or folder types, so you can only tes
 
 | System Action                                                                   | Relationship Tuple                                                                 |
 | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Anne is a member of the contoso organization                                    | `{ user:"anne", relation: "member", object: "organization:contoso"}`               |
-| Beth is a member of fabrikam organization                                       | `{ user:"beth", relation: "member", object: "organization:fabrikam"}`              |
-| Anne creates document:1, becomes its owner.                                     | `{ user:"anne", relation: "owner", object: "document:1"}`                          |
+| Anne is a member of the contoso organization                                    | `{ user:"user:anne", relation: "member", object: "organization:contoso"}`          |
+| Beth is a member of fabrikam organization                                       | `{ user:"user:beth", relation: "member", object: "organization:fabrikam"}`         |
+| Anne creates document:1, becomes its owner.                                     | `{ user:"user:anne", relation: "owner", object: "document:1"}`                     |
 | Anne shares document:1 with all members of the fabrikam organization as editor. | `{ user:"organization:fabrikam#member", relation: "editor", object: "document:1"}` |
-| Beth creates document:2 and becomes its owner.                                  | `{ user:"beth", relation: "owner", object: "document:2"}`                          |
+| Beth creates document:2 and becomes its owner.                                  | `{ user:"user:beth", relation: "owner", object: "document:2"}`                     |
 | Beth shares document:2 with all members of the contoso organization as viewer   | `{ user:"organization:contoso#member", relation: "viewer", object: "document:2"}`  |
 
 Follow these steps to create relationship tuples.

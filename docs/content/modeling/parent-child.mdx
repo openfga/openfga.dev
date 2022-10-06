@@ -53,6 +53,9 @@ You have two types:
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'folder',
         relations: {
           editor: {
@@ -116,6 +119,9 @@ To allow a `parent` relation between a `folder` and a `document`, we need to upd
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'folder',
         relations: {
           editor: {
@@ -152,6 +158,9 @@ To allow _cascading_ relations between `folder` and `document`, we can update ou
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'folder',
         relations: {
@@ -209,7 +218,7 @@ To leverage our _cascading_ relation, we need to create a relationship tuple tha
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'bob',
+      user: 'user:bob',
       relation: 'editor',
       object: 'folder:notes',
     },
@@ -235,7 +244,7 @@ Now that **bob** is an `editor` of **folder:notes**, we need to indicate that **
 
 Now that we have done the changes to the authorization model and the addition of the two new _relationship tuples_, we can verify if our configuration is correct by running the following check: **is bob an editor of document:meeting_notes.doc**.
 
-<CheckRequestViewer user={'bob'} relation={'editor'} object={'document:meeting_notes.doc'} allowed={true} />
+<CheckRequestViewer user={'user:bob'} relation={'editor'} object={'document:meeting_notes.doc'} allowed={true} />
 
 > Note: There are no other relationship tuples within the store that dictate any direct relation between **bob** and **document:meeting_notes.doc**. The check succeeds because of the _cascading_ relation applied.
 

@@ -42,6 +42,9 @@ and `writer`. All writers are readers. `bob` has a `writer` relationship with `d
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'document',
         relations: {
           writer: {
@@ -72,7 +75,7 @@ and `writer`. All writers are readers. `bob` has a `writer` relationship with `d
   relationshipTuples={[
     {
       _description: 'Bob has writer relationship with planning document',
-      user: 'bob',
+      user: 'user:bob',
       relation: 'writer',
       object: 'document:planning',
     },
@@ -109,7 +112,7 @@ Check can be called if you need to establish whether a particular user has a spe
 
 For example, you can call check to determine whether `bob` has a `reader` relationship with `document:planning`.
 
-<CheckRequestViewer user={'bob'} relation={'reader'} object={'document:planning'} allowed={true} />
+<CheckRequestViewer user={'user:bob'} relation={'reader'} object={'document:planning'} allowed={true} />
 
 The <ProductName format={ProductNameFormat.ShortForm}/> API will return `true` because there is an implied relationship as
 
@@ -143,12 +146,12 @@ Read can be called if you need to get all the stored relationship tuples that re
 For example, to query all the stored relationship tuples `bob` has a `writer` relationship with, one can ask
 
 <ReadRequestViewer
-  user={'bob'}
+  user={'user:bob'}
   relation={'writer'}
   object={'document:'}
   tuples={[
     {
-      user: 'bob',
+      user: 'user:bob',
       relation: 'writer',
       object: 'document:planning',
     },
@@ -160,11 +163,11 @@ For example, to query all the stored relationship tuples `bob` has a `writer` re
 For example, to query all the stored relationship tuples in which `bob` is related to objects of type `document` as any relation, one can issue the following call:
 
 <ReadRequestViewer
-  user={'bob'}
+  user={'user:bob'}
   object={'document:'}
   tuples={[
     {
-      user: 'bob',
+      user: 'user:bob',
       relation: 'writer',
       object: 'document:planning',
     },
@@ -180,7 +183,7 @@ For example, to query all the stored relationship tuples in which any user is re
   object={'document:planning'}
   tuples={[
     {
-      user: 'bob',
+      user: 'user:bob',
       relation: 'writer',
       object: 'document:planning',
     },
@@ -196,7 +199,7 @@ For example, if you specify that `writers` are `viewers` in the authorization mo
 
 In the following case, although all `writers` have reader `relationships` for document objects and `bob` is a `writer` for `document:planning`, if you query for all objects that `bob` has `reader` relationships, it will not return `document:planning`.
 
-<ReadRequestViewer user={'bob'} relation={'reader'} object={'document:'} tuples={[]} />
+<ReadRequestViewer user={'user:bob'} relation={'reader'} object={'document:'} tuples={[]} />
 
 :::info
 Although bob is a writer to document:planning and every writer is also a reader, the Read API will return an empty list because there are no stored relationship tuples that relate bob to document:planning as reader.
@@ -249,7 +252,7 @@ The result of this call will be like
         "leaf":{
           "users":{
             "users":[
-              "bob"
+              "user:bob"
             ]
           }
         }
@@ -285,7 +288,7 @@ The current implementation of List Objects API is not optimized and can return i
 
 Use the ListObjects API to get what objects a user can see based on the relationships they have. See [Search with Permissions](./search-with-permissions.mdx) for more guidance.
 
-<ListObjectsRequestViewer objectType="document" relation="reader" user="bob" contextualTuples={[{object: "document:otherdoc", relation: "reader", "user": "bob"}]} expectedResults={["otherdoc", "planning"]} />
+<ListObjectsRequestViewer objectType="document" relation="reader" user="user:bob" contextualTuples={[{object: "document:otherdoc", relation: "reader", "user": "user:bob"}]} expectedResults={["otherdoc", "planning"]} />
 
 There's two variations of the List Objects API.
 

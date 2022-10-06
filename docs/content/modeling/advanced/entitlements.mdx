@@ -141,6 +141,9 @@ Similar to the example above, start with a basic listing of the types and their 
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'feature',
         relations: {
           associated_plan: {
@@ -246,19 +249,19 @@ The relations between the organizations and the users are as follows:
   relationshipTuples={[
     {
       _description: 'anne is a member of the Alpha Beta Gamma organization',
-      user: 'anne', // Anne
+      user: 'user:anne', // Anne
       relation: 'member', // is a member
       object: 'organization:alpha', // of the Alpha Beta Gamma organization
     },
     {
       _description: 'beth is a member of the Bayer Water Supplies',
-      user: 'beth', // Beth
+      user: 'user:beth', // Beth
       relation: 'member', // is a member
       object: 'organization:bayer', // of the Bayer Water Supplies
     },
     {
       _description: 'charles is a member of the Cups and Dishes organization',
-      user: 'charles', // Charles
+      user: 'user:charles', // Charles
       relation: 'member', // is a member
       object: 'organization:cups', // of the Cups and Dishes organization
     },
@@ -272,7 +275,7 @@ So far you have given <ProductName format={ProductNameFormat.ShortForm}/> a repr
 In production, it is highly recommended to use unique, immutable identifiers. Names are used in this article to make it easier to read and follow.
 For example, the relationship tuple indicating that _anne is a member of organization:alpha_ could be written as:
 
-- user: 2b4840f2-7c9c-42c8-9329-911002051524
+- user: user:2b4840f2-7c9c-42c8-9329-911002051524
 - relation: member
 - object: project:52e529c6-c571-4d5c-b78a-bc574cf98b54
 
@@ -284,12 +287,12 @@ Now that you have some data, you can start using it to ask is ${USER} related to
 
 First, you will <ProductConcept section="what-is-a-check-request" linkName="check" /> if `anne` is a member of `organization:alpha`. This is one of the relationship tuples you previously added, you will make sure <ProductName format={ProductNameFormat.ShortForm}/> can detect a relation in this case.
 
-<CheckRequestViewer user={'anne'} relation={'member'} object={'organization:alpha'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'member'} object={'organization:alpha'} allowed={true} />
 
 Querying for relationship tuples that you fed into <ProductName format={ProductNameFormat.LongForm}/> earlier should work, try a few before proceeding to make sure everything is working well.
 
-<CheckRequestViewer user={'anne'} relation={'member'} object={'organization:bayer'} allowed={false} />
-<CheckRequestViewer user={'organization:bayer'} relation={'member'} object={'plan:team'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'member'} object={'organization:bayer'} allowed={false} />
+<CheckRequestViewer user={'organization:bayer'} relation={'subscriber'} object={'plan:team'} allowed={true} />
 <CheckRequestViewer user={'plan:free'} relation={'associated_plan'} object={'feature:issues'} allowed={true} />
 
 ### 03. Updating The Authorization Model
@@ -298,7 +301,7 @@ You are working towards <ProductName format={ProductNameFormat.ShortForm}/> retu
 
 To start, try to run that query on `is anne related to feature:issues as access?`
 
-<CheckRequestViewer user={'anne'} relation={'access'} object={'feature:issues'} />
+<CheckRequestViewer user={'user:anne'} relation={'access'} object={'feature:issues'} />
 
 The <ProductName format={ProductNameFormat.LongForm}/> service is returning that the query tuple is invalid. That is because you are asking for relation as `access`, but that relation is not in the configuration of the `feature` type!
 
@@ -340,6 +343,9 @@ The resulting updated configuration would be:
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'feature',
         relations: {
           associated_plan: {
@@ -374,7 +380,7 @@ The resulting updated configuration would be:
 
 Now we can ask the following query: `is anne related to feature:issues as access?` again.
 
-<CheckRequestViewer user={'anne'} relation={'access'} object={'feature:issues'} allowed={false} />
+<CheckRequestViewer user={'user:anne'} relation={'access'} object={'feature:issues'} allowed={false} />
 
 So far so good. <ProductName format={ProductNameFormat.ShortForm}/> understood your query, but said that no <ProductConcept section="what-is-a-relation" linkName="relation" /> exists. That is because according to the configuration provided so far, there is no `access` relation between `anne` and `feature:issues`.
 
@@ -406,7 +412,7 @@ With this, when asked to check a user's `viewer` relationship with the object, <
 2. For each relationship tuple, return all _usersets_ that have `all_objects_viewer` relation to the objects in those relationship tuples
 3. If the user is in any of those _usersets_, return yes, as the user is a `viewer` on this object.
    In other words, users related as `all_objects_viewer` to any of this object's `parents` are related as `viewer` to this object.
-:::
+   :::
 
 If you want to give all subscribers on a plan access to a feature, you can do it like so:
 
@@ -450,9 +456,9 @@ So everyone who has direct access, as well as the subscribers of the associated 
 That would mean that in order for an object to have an `access` relation to a feature y, there needs to be either a:
 
 - a <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" /> via a relationship tuple:
-  e.g. `{ "user": "x", "relation": "access", "object": "feature:y" }`
+  e.g. `{ "user": "user:x", "relation": "access", "object": "feature:y" }`
 - subscriber relationship with another object related to x associated_plan:
-  e.g. `{ "user": "x", "relation": "subscriber", "object": "plan:z" } { "user": "plan:z", "relation": "associated_plan", "object": "feature:y" }`
+  e.g. `{ "user": "user:x", "relation": "subscriber", "object": "plan:z" } { "user": "plan:z", "relation": "associated_plan", "object": "feature:y" }`
 
 That brings you close. That will allow you to grant organizations access to the feature (as organizations have a subscriber relation with the plan).
 
@@ -471,6 +477,9 @@ Replace all the existing code you had previously with the updated authorization 
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'feature',
         relations: {
@@ -533,6 +542,9 @@ In order to do that, you will add a relation on the plan, that indicates that al
   Under the \`plan\` type, in order for someone to have a \`subscriber_member\` relation to the plan, they have to be related as a \`member\` to the object related as a \`subscriber\` to the plan (as in they have to be a member of on of the plan's subscribers).`}
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'feature',
         relations: {
@@ -603,13 +615,13 @@ Under the `plan` type, in order for someone to have a `subscriber_member` relati
 
 Now ask the following query: `is anne related to feature:issues as access?`
 
-<CheckRequestViewer user={'anne'} relation={'access'} object={'feature:issues'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'access'} object={'feature:issues'} allowed={true} />
 
 #### Disallow Direction Relationship
 
 So far, with just a <ProductName format={ProductNameFormat.ShortForm}/> authorization model, and the initial relationship tuples indication the relations you know, you configured <ProductName format={ProductNameFormat.LongForm}/> to give you the correct response.
 
-Earlier on, the idea of not allowing a direct `access` relation between a user and a `feature` was discussed, e.g. adding a relationship tuple like `{ "user": "anne", "relation": "access", "object": "feature:y" }`. You will remove it now.
+Earlier on, the idea of not allowing a direct `access` relation between a user and a `feature` was discussed, e.g. adding a relationship tuple like `{ "user": "user:anne", "relation": "access", "object": "feature:y" }`. You will remove it now.
 
 To disallow a direct relationship, you need to remove `self`. The following snippet:
 
@@ -668,11 +680,11 @@ becomes
 
 With this change, even if your app layer added the following relationship tuple:
 
-- `{ "user": "anne", "relation": "access", "object": feature:issues }`
+- `{ "user": "user:anne", "relation": "access", "object": feature:issues }`
 
 a subsequent check for `is anne related to feature:issues as access?` would return no relation. The only way for a relation to exist is if the following three relationship tuples do:
 
-- `{ "user": "anne", "relation": "member", "object": "organization:z" }`
+- `{ "user": "user:anne", "relation": "member", "object": "organization:z" }`
 - `{ "user": "organization:z", "relation": "subscriber", "object": "plan:y" }`
 - `{ "user": "plan:y", "relation": "associated_plan", "object": "feature:issues" }`
 
@@ -683,6 +695,9 @@ Ensure that your authorization model matches the one below
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'feature',
         relations: {
@@ -743,7 +758,7 @@ You will now verify that the configuration is correct by running checks for all 
 - **Charles** has access to **Draft Pull Requests** (expecting `yes`)
 - **Charles** has access to **Single Sign-on** (expecting `yes`)
 
-<CheckRequestViewer user={'anne'} relation={'access'} object={'feature:issues'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'access'} object={'feature:issues'} allowed={true} />
 
 Try to verify for the other user, object and relation combinations as listed below.
 

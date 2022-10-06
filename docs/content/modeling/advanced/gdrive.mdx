@@ -128,6 +128,9 @@ To represent permissions in <ProductName format={ProductNameFormat.ShortForm}/> 
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'document',
         relations: {
           owner: {
@@ -176,7 +179,7 @@ If we want to say `beth` is a commenter of **document:2021-budget** we create th
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'beth',
+      user: 'user:beth',
       relation: 'commenter',
       object: 'document:2021-budget',
     },
@@ -185,14 +188,14 @@ If we want to say `beth` is a commenter of **document:2021-budget** we create th
 
 We can now ask <ProductName format={ProductNameFormat.ShortForm}/> "is `beth` a commenter of repository **document:2021-budget**?"
 
-<CheckRequestViewer user={'beth'} relation={'commenter'} object={'document:2021-budget'} allowed={true} />
+<CheckRequestViewer user={'user:beth'} relation={'commenter'} object={'document:2021-budget'} allowed={true} />
 
 We could also say that `anne` is an owner of the same document:
 
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'anne',
+      user: 'user:anne',
       relation: 'owner',
       object: 'document:2021-budget',
     },
@@ -201,8 +204,8 @@ We could also say that `anne` is an owner of the same document:
 
 And <ProductConcept section="what-is-a-check-request" linkName="ask" /> some questions to <ProductName format={ProductNameFormat.ShortForm}/>:
 
-<CheckRequestViewer user={'anne'} relation={'owner'} object={'document:2021-budget'} allowed={true} />
-<CheckRequestViewer user={'anne'} relation={'writer'} object={'document:2021-budget'} allowed={false} />
+<CheckRequestViewer user={'user:anne'} relation={'owner'} object={'document:2021-budget'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'writer'} object={'document:2021-budget'} allowed={false} />
 
 The first reply makes sense but the second one does not. Intuitively, if `anne` was an **owner**, she was also be a **writer**. In fact, Google Drive explains this in [their documentation](https://developers.google.com/drive/api/v3/ref-roles)
 
@@ -213,6 +216,9 @@ To make <ProductName format={ProductNameFormat.ShortForm}/> aware of this "conce
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'document', // objects of type document
         relations: {
@@ -284,8 +290,8 @@ objects of type document have users related to them as "viewer": if they belong 
 
 With this update our model now supports nested definitions and now:
 
-<CheckRequestViewer user={'anne'} relation={'owner'} object={'document:2021-budget'} allowed={true} />
-<CheckRequestViewer user={'anne'} relation={'writer'} object={'document:2021-budget'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'owner'} object={'document:2021-budget'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'writer'} object={'document:2021-budget'} allowed={true} />
 
 ### 02. Organization Permissions
 
@@ -297,7 +303,7 @@ At the end of this section we want to end up with the following permissions repr
 
 ![Image showing permissions](./assets/gdrive-gdrive2.svg)
 
-To add support for domains and members all we need to do is add this object to the <ProductName format={ProductNameFormat.ProductLink}/> <ProductConcept section="what-is-a-type-definition" linkName="authorization model" />:
+To add support for domains and members all we need to do is add this object to the <ProductName format={ProductNameFormat.ProductLink}/> <ProductConcept section="what-is-a-type-definition" linkName="authorization model" />. In addition, update the model to allow domain member to be assigned to document:
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -328,17 +334,17 @@ Let's now create a domain, add members to it and make all members **viewers** of
   relationshipTuples={[
     {
       _description: 'make anne, beth, charles a member of the xyz domain',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'member',
       object: 'domain:xyz',
     },
     {
-      user: 'beth',
+      user: 'user:beth',
       relation: 'member',
       object: 'domain:xyz',
     },
     {
-      user: 'charles',
+      user: 'user:charles',
       relation: 'member',
       object: 'domain:xyz',
     },
@@ -353,7 +359,7 @@ Let's now create a domain, add members to it and make all members **viewers** of
 
 The last relationship tuple introduces a new **<ProductName format={ProductNameFormat.ShortForm}/>** concept. A **<ProductConcept section="what-is-a-user" linkName="userset" />**. When the value of a user is formatted like this **objectType:objectId#relation**, <ProductName format={ProductNameFormat.LongForm}/> will automatically expand the userset into all its individual user identifiers:
 
-<CheckRequestViewer user={'charles'} relation={'viewer'} object={'document:2021-budget'} allowed={true} />
+<CheckRequestViewer user={'user:charles'} relation={'viewer'} object={'document:2021-budget'} allowed={true} />
 
 ### 03. Folder Permission Propagation
 
@@ -369,6 +375,9 @@ We need to add the notion that a **document** can be the **parent** of another *
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'document',
         relations: {
@@ -439,7 +448,7 @@ We can indicate this relation by adding the following relationship tuples
   relationshipTuples={[
     {
       _description: 'Diane is a viewer of document:2021-planning',
-      user: 'diane',
+      user: 'user:diane',
       relation: 'viewer',
       object: 'document:2021-planning',
     },
@@ -459,7 +468,7 @@ What we still lack is the ability to propagate permissions from parent to childr
 
 We need a way to consider the parent viewers, not just direct viewers of the document when getting a check for:
 
-<CheckRequestViewer user={'diane'} relation={'viewer'} object={'document:2021-budget'} />
+<CheckRequestViewer user={'user:diane'} relation={'viewer'} object={'document:2021-budget'} />
 
 More details on this technique can be found in the section [Modeling Parent-Child Objects](../parent-child.mdx).
 
@@ -488,7 +497,7 @@ We express it like this:
               computedUserset: {
                 // and for each relationship tuple return all usersets that match the following, replacing $TUPLE_USERSET_OBJECT with document:2021-planning
                 // this will return relationship tuples of shape { "object": "document:2021-planning", "viewer", "user": ??? }
-                // including { "object": "document:2021-planning", "viewer", "user": "diane:" }
+                // including { "object": "document:2021-planning", "viewer", "user": "user:diane" }
                 relation: 'viewer',
               },
             },
@@ -517,7 +526,7 @@ What the added section is doing is:
 
 `{ "object": "document:2021-planning", "viewer", "user": ??? }`
 
-including: `{ "object": "document:2021-planning", "viewer", "user": "diane:" }`
+including: `{ "object": "document:2021-planning", "viewer", "user": "user:diane" }`
 
 :::
 
@@ -526,6 +535,9 @@ The updated authorization model looks like this:
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'document',
         relations: {
@@ -653,7 +665,7 @@ To mark Anne as the owner, the domain members as commenters and the public as vi
   relationshipTuples={[
     {
       _description: 'Anne is the owner of document:2021-public-roadmap',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'owner',
       object: 'document:2021-public-roadmap',
     },
@@ -674,17 +686,17 @@ To mark Anne as the owner, the domain members as commenters and the public as vi
 
 Anne is an owner of the document
 
-<CheckRequestViewer user={'anne'} relation={'owner'} object={'document:2021-public-roadmap'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'owner'} object={'document:2021-public-roadmap'} allowed={true} />
 
 Beth is a member of the xyz.com domain, and so can comment but cannot write
 
-<CheckRequestViewer user={'beth'} relation={'writer'} object={'document:2021-public-roadmap'} allowed={false} />
-<CheckRequestViewer user={'beth'} relation={'commenter'} object={'document:2021-public-roadmap'} allowed={true} />
+<CheckRequestViewer user={'user:beth'} relation={'writer'} object={'document:2021-public-roadmap'} allowed={false} />
+<CheckRequestViewer user={'user:beth'} relation={'commenter'} object={'document:2021-public-roadmap'} allowed={true} />
 
 Erik is NOT a member of the xyz.com domain, and so can only view the document
 
-<CheckRequestViewer user={'erik'} relation={'writer'} object={'document:2021-public-roadmap'} allowed={false} />
-<CheckRequestViewer user={'erik'} relation={'viewer'} object={'document:2021-public-roadmap'} allowed={false} />
+<CheckRequestViewer user={'user:erik'} relation={'writer'} object={'document:2021-public-roadmap'} allowed={false} />
+<CheckRequestViewer user={'user:erik'} relation={'viewer'} object={'document:2021-public-roadmap'} allowed={false} />
 
 <Playground title="Google Drive" preset="drive" example="Google Drive" store="gdrive" />
 
