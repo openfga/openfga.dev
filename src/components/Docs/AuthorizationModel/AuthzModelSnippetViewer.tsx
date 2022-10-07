@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TypeDefinitions } from '@openfga/sdk';
+import { WriteAuthorizationModelRequest } from '@openfga/sdk';
 import Link from '@docusaurus/Link';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -11,7 +11,7 @@ import { AuthzModelCodeBlock } from './AuthzModelCodeBlock';
 
 type AuthzModelSnippetViewerProps = {
   // Authorization Model in api syntax
-  configuration: TypeDefinitions;
+  configuration: WriteAuthorizationModelRequest;
   // optional description
   description?: string;
   onlyShow?: SyntaxFormat;
