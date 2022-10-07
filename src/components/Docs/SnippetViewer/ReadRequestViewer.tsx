@@ -46,9 +46,9 @@ function readRequestViewer(lang: SupportedLanguage, opts: ReadRequestViewerOpts,
 
     case SupportedLanguage.JS_SDK: {
       const requestTuples =
-        (opts.user ? `    user:'${opts.user},\n` : '') +
+        (opts.user ? `    user:'${opts.user}',\n` : '') +
         (opts.relation ? `    relation:'${opts.relation}',\n` : '') +
-        `    object:'${opts.object}',\n`;
+        `    object:'${opts.object}',`;
       return `
 // Execute a read
 const { tuples } = await fgaClient.read({
@@ -81,14 +81,14 @@ data, response, err := fgaClient.${languageMappings['go'].apiName}.Read(context.
 
     case SupportedLanguage.DOTNET_SDK: {
       const requestTuples =
-        (opts.user ? `User = "${opts.user}",\n` : '') +
-        (opts.relation ? `Relation = "${opts.relation}",\n` : '') +
-        `Object = "${opts.object}",\n`;
+        (opts.user ? `  User = "${opts.user}",\n` : '') +
+        (opts.relation ? `  Relation = "${opts.relation}",\n` : '') +
+        `  Object = "${opts.object}",`;
 
       /* eslint-disable no-tabs */
       return `
 var response = fgaClient.Read(new ReadRequest(new TupleKey() {
-  ${requestTuples}
+${requestTuples}
 }));
 
 // data = { "tuples": [${readTuples}] }`;
