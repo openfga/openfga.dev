@@ -51,7 +51,7 @@
     "@typescript-eslint/eslint-plugin": "5.39.0",
     "@typescript-eslint/parser": "5.39.0",
     "docusaurus-plugin-module-alias": "0.0.2",
-    "eslint": "8.24.0",
+    "eslint": "8.25.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-react": "7.31.8",
     "husky": "8.0.1",
