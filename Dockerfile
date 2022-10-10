@@ -2,8 +2,6 @@ FROM node:16-alpine as base
 
 WORKDIR /home/node/app
 
-RUN apk add curl bash nginx
-
 ARG COOKIE_PRO_DATA_DOMAIN_ID
 ARG HEAP_ID
 ARG GOOGLE_TAG_MANAGER_ID
@@ -37,7 +35,7 @@ RUN npm run build
 COPY --chown=node:node . /home/node/app/
 
 
-FROM nginx:stable-alpine as deploy
+FROM nginx:mainline-alpine as deploy
 # Remove un-needed packages
 RUN apk del freetype
 COPY --chown=node:node --from=production  /home/node/app/build /usr/share/nginx/html/
