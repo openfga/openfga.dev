@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import _ from 'lodash';
-import { TypeDefinitions } from '@openfga/sdk';
+import { WriteAuthorizationModelRequest } from '@openfga/sdk';
 import { apiSyntaxToFriendlySyntax } from '@openfga/syntax-transformer';
 
 export enum SyntaxFormat {
@@ -9,7 +8,7 @@ export enum SyntaxFormat {
   Friendly2 = 'friendly_v2',
 }
 
-export const loadSyntax = (configuration: TypeDefinitions, format: SyntaxFormat = SyntaxFormat.Api) => {
+export const loadSyntax = (configuration: WriteAuthorizationModelRequest, format: SyntaxFormat = SyntaxFormat.Api) => {
   switch (format) {
     case SyntaxFormat.Friendly2:
       return apiSyntaxToFriendlySyntax(configuration);

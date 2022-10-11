@@ -1,10 +1,10 @@
 import * as React from 'react';
 import CodeBlock from '@theme/CodeBlock';
 import { loadSyntax, SyntaxFormat } from './SyntaxTransformer';
-import { TypeDefinitions } from '@openfga/sdk';
+import { WriteAuthorizationModelRequest } from '@openfga/sdk';
 
 type AuthzModelCodeBlockProps = {
-  configuration: TypeDefinitions;
+  configuration: WriteAuthorizationModelRequest;
   syntaxFormat: SyntaxFormat;
 };
 
