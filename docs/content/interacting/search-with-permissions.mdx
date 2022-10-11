@@ -51,9 +51,9 @@ Consume the `GET /changes` endpoint to create a local index you can use to do an
 
 ### Option 3: Build A List Of IDs, Then Search
 
-Call the `GET /list-objects API` to get a list of object IDs the user has access to, then run the filter restricting by the object IDs returned.
+Call the `GET /list-objects` API to get a list of object IDs the user has access to, then run the filter restricting by the object IDs returned.
 
-1. Call the <UpdateProductNameInLinks link="/api/service#Relationship%20Tuples/ListObjects" name="{ProductName} changes API" />. to get the list of all resources a user can access.
+1. Call the <UpdateProductNameInLinks link="/api/service#Relationship%20Queries/ListObjects" name="{ProductName} List Objects API" />. to get the list of all resources a user can access.
 1. Pass in the set of object IDs to the database query to limit the search.
 1. Return the filtered result to the user.
 
