@@ -30,7 +30,7 @@
     "@lottiefiles/react-lottie-player": "^3.4.7",
     "@mdx-js/react": "1.6.22",
     "@openfga/sdk": "0.1.0",
-    "@openfga/syntax-transformer": "^0.0.5",
+    "@openfga/syntax-transformer": "0.0.6",
     "assert-never": "1.2.1",
     "clsx": "1.2.1",
     "path-browserify": "1.0.1",
@@ -39,7 +39,7 @@
     "react-dom": "17.0.2",
     "react-feather": "2.0.10",
     "sanitize-html": "2.7.2",
-    "swagger-ui-react": "4.14.2"
+    "swagger-ui-react": "4.14.3"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "2.1.0",
@@ -48,12 +48,12 @@
     "@types/react": "17.0.41",
     "@types/react-router-dom": "5.3.3",
     "@types/sanitize-html": "2.6.2",
-    "@typescript-eslint/eslint-plugin": "5.39.0",
-    "@typescript-eslint/parser": "5.39.0",
+    "@typescript-eslint/eslint-plugin": "5.40.0",
+    "@typescript-eslint/parser": "5.40.0",
     "docusaurus-plugin-module-alias": "0.0.2",
     "eslint": "8.25.0",
     "eslint-config-prettier": "8.5.0",
-    "eslint-plugin-react": "7.31.9",
+    "eslint-plugin-react": "7.31.10",
     "husky": "8.0.1",
     "prettier": "2.7.1",
     "typescript": "4.8.4"
