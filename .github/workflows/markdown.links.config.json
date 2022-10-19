@@ -23,6 +23,12 @@
 	  },
 	  {
 		"pattern": "https://github.com/openfga/dotnet-sdk"
+	  },
+	  {
+		"pattern": "https://github.com/openfga/python-sdk"
+	  },
+	  {
+		"pattern": "https://pypi.org/project/openfga-sdk"
 	  }
 	],
 	"httpHeaders": [

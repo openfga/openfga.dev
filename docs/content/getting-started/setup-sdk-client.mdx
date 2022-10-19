@@ -86,6 +86,26 @@ class MyProgram {
 ```
 
 </TabItem>
+<TabItem value={SupportedLanguage.PYTHON_SDK} label={languageLabelMap.get(SupportedLanguage.PYTHON_SDK)}>
+
+```python
+import os
+import openfga_sdk
+from openfga_sdk.api import open_fga_api
+
+configuration = openfga_sdk.Configuration(
+    api_scheme = os.environ.get('FGA_API_SCHEME')
+    api_host = os.environ.get('FGA_API_HOST'),
+    store_id = os.environ.get('FGA_STORE_ID')
+)
+
+# Create an instance of the API class
+fga_client_instance = open_fga_api.OpenFgaApi(openfga_sdk.ApiClient(configuration))
+
+```
+
+</TabItem>
+
 </Tabs>
 
 ## Using Shared Key Authentication
@@ -165,6 +185,29 @@ class MyProgram {
         var fgaClient = new OpenFgaApi(configuration);
     }
 }
+```
+
+</TabItem>
+<TabItem value={SupportedLanguage.PYTHON_SDK} label={languageLabelMap.get(SupportedLanguage.PYTHON_SDK)}>
+
+```python
+import os
+import openfga_sdk
+from openfga_sdk.api import open_fga_api
+from open_fga_api.credentials import Credentials, CredentialConfiguration
+
+
+credentials = Credentials(method='api_token',
+    configuration=CredentialConfiguration(api_token=os.environ.get(FGA_BEARER_TOKEN)))
+configuration = openfga_sdk.Configuration(
+    api_scheme = os.environ.get(FGA_API_SCHEME), # optional, defaults to "https"
+    api_host = os.environ.get(FGA_API_HOST), # required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
+    store_id = os.environ.get(FGA_STORE_ID), # optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
+    credentials = credentials)
+
+# Create an instance of the API class
+fga_client_instance = open_fga_api.OpenFgaApi(openfga_sdk.ApiClient(configuration))
+
 ```
 
 </TabItem>

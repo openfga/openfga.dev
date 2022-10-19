@@ -138,6 +138,36 @@ data, response, err := apiClient.${
 var response = await openFgaApi.ListObjects(body);
 
 // response.ObjectIds = [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
+    case SupportedLanguage.PYTHON_SDK:
+      return `
+# from openfga_sdk.models.list_objects_request import ListObjectsRequest
+# from openfga_sdk.models.tuple_key import TupleKey
+# from openfga_sdk.models.contextual_tuple_keys import ContextualTupleKeys
+
+async def list_objects():
+    body = ListObjectsRequest(${authorizationModelId ? `authorization_model_id="${authorizationModelId}",` : ``}
+        user="${user}",
+        relation="${relation}",
+        type="${objectType}",${
+        contextualTuples?.length
+          ? `
+        contextual_tuples=ContextualTupleKeys(
+            tuple_keys=[
+                ${contextualTuples
+                  .map(
+                    (tupleKey) => `TupleKey(
+                    user="${tupleKey.user}",
+                    relation="${tupleKey.relation}",
+                    object="${tupleKey.object}")`,
+                  )
+                  .join(',\n            ')}
+            ]
+        )`
+          : ``
+      }
+    )
+    response = await fga_client_instance.list_objects(body)
+`;
     case SupportedLanguage.RPC:
       return `listObjects(
   "${user}", // list the objects that the user \`${user}\`
@@ -170,6 +200,7 @@ export function ListObjectsRequestViewer(opts: ListObjectsRequestViewerOpts): JS
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
     SupportedLanguage.CURL,
     SupportedLanguage.RPC,
   ];

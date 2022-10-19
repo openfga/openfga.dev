@@ -63,6 +63,23 @@ var response = await fgaClient.Expand(new ExpandRequest(new TupleKey() {
 
 Reply: {tree:...}`;
 
+    case SupportedLanguage.PYTHON_SDK:
+      return `
+# from openfga_sdk.models.expand_request import ExpandRequest
+# from openfga_sdk.models.expand_response import ExpandResponse
+# from openfga_sdk.models.tuple_key import TupleKey
+
+async def expand():
+    body = ExpandRequest(
+        tuple_key=TupleKey(
+            relation: "${opts.relation}",
+            object: "${opts.object}",
+        )
+    )
+    response = await fga_client_instance.expand(body)
+    # response = ExpandResponse({"tree":...})
+`;
+
     case SupportedLanguage.PLAYGROUND:
       return '';
     default:
@@ -75,6 +92,7 @@ export function ExpandRequestViewer(opts: ExpandRequestViewerOpts): JSX.Element 
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
     SupportedLanguage.CURL,
     SupportedLanguage.RPC,
   ];

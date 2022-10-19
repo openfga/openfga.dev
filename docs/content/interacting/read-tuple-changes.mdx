@@ -32,7 +32,7 @@ This section illustrates how to call the Read Changes API to get the list of rel
 1. <SdkSetupPrerequisite />
 2. You have [installed the SDK](../getting-started/install-sdk.mdx).
 3. You have [configured the _authorization model_](../modeling) and [added some _relationship tuples_](../getting-started/update-tuples.mdx#02-calling-write-api-to-add-new-relationship-tuples).
-4. You have loaded `FGA_ENVIRONMENT`, `FGA_STORE_ID`, `FGA_CLIENT_ID` and `FGA_CLIENT_SECRET` as environment variables.
+4. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
 
 </TabItem>
 <TabItem value={SupportedLanguage.GO_SDK} label={languageLabelMap.get(SupportedLanguage.GO_SDK)}>
@@ -40,7 +40,7 @@ This section illustrates how to call the Read Changes API to get the list of rel
 1. <SdkSetupPrerequisite />
 2. You have [installed the SDK](../getting-started/install-sdk.mdx).
 3. You have [configured the _authorization model_](../modeling) and [added some _relationship tuples_](../getting-started/update-tuples.mdx#02-calling-write-api-to-add-new-relationship-tuples).
-4. You have loaded `FGA_ENVIRONMENT`, `FGA_STORE_ID`, `FGA_CLIENT_ID` and `FGA_CLIENT_SECRET` as environment variables.
+4. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
 
 </TabItem>
 
@@ -49,14 +49,22 @@ This section illustrates how to call the Read Changes API to get the list of rel
 1. <SdkSetupPrerequisite />
 2. You have [installed the SDK](../getting-started/install-sdk.mdx).
 3. You have [configured the _authorization model_](../modeling).
-4. You have loaded `FGA_ENVIRONMENT`, `FGA_STORE_ID`, `FGA_CLIENT_ID` and `FGA_CLIENT_SECRET` as environment variables.
+4. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
+
+</TabItem>
+<TabItem value={SupportedLanguage.PYTHON_SDK} label={languageLabelMap.get(SupportedLanguage.PYTHON_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](../getting-started/install-sdk.mdx).
+3. You have [configured the _authorization model_](../modeling).
+4. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
 
 </TabItem>
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
 1. <SdkSetupPrerequisite />
 2. You have [configured the _authorization model_](../modeling) and [added some _relationship tuples_](../getting-started/update-tuples.mdx#02-calling-write-api-to-add-new-relationship-tuples).
-3. You have loaded `FGA_ENVIRONMENT`, `FGA_BEARER_TOKEN` and `FGA_STORE_ID` as environment variables.
+3. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
 
 </TabItem>
 </Tabs>
@@ -87,6 +95,12 @@ First you will need to configure the API client.
 
 </TabItem>
 
+<TabItem value={SupportedLanguage.PYTHON_SDK} label={languageLabelMap.get(SupportedLanguage.PYTHON_SDK)}>
+
+<SdkSetupHeader lang="python-sdk" />
+
+</TabItem>
+
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
 To obtain the [access token](https://auth0.com/docs/authorization/flows/call-your-api-using-the-client-credentials-flow):
@@ -108,6 +122,7 @@ To get a paginated list of changes that happened in your store:
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
     SupportedLanguage.CURL,
   ]}
 />
@@ -124,6 +139,7 @@ You can then use this token to get the next set of changes:
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
     SupportedLanguage.CURL,
   ]}
 />
@@ -182,6 +198,7 @@ It is possible to get a list of changes that happened in your store that relate 
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
     SupportedLanguage.CURL,
   ]}
 />
@@ -197,6 +214,7 @@ The response will include a continuation token. In subsequent calls, you have to
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
     SupportedLanguage.CURL,
   ]}
 />

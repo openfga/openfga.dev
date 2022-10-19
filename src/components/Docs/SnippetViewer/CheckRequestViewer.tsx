@@ -128,6 +128,37 @@ var response = await fgaClient.Check(new CheckRequest(new TupleKey() {
       });
 
 // response.Allowed = ${allowed}`;
+    case SupportedLanguage.PYTHON_SDK:
+      return `
+# from openfga_sdk.models.check_request import CheckRequest
+# from openfga_sdk.models.tuple_key import TupleKey
+# from openfga_sdk.models.contextual_tuple_keys import ContextualTupleKeys
+
+# Run a check
+async def check():
+    body = CheckRequest(
+        tuple_key=TupleKey(
+            user="${user}",
+            relation="${relation}",
+            object="${object}",
+        ), ${
+          contextualTuples
+            ? `
+        contextual_tuples=ContextualTupleKeys(
+            tuple_keys=[
+                ${contextualTuples
+                  .map(
+                    (tuple) => `TupleKey(user="${tuple.user}", relation="${tuple.relation}", object="${tuple.object}")`,
+                  )
+                  .join(',\n                ')}
+            ],
+        ),`
+            : ``
+        }
+    )
+    response = await fga_client_instance.check(body)
+    # response.allowed = ${allowed}
+`;
     case SupportedLanguage.RPC:
       return `check(
   "${user}", // check if the user \`${user}\`
@@ -156,6 +187,7 @@ export function CheckRequestViewer(opts: CheckRequestViewerOpts): JSX.Element {
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
     SupportedLanguage.CURL,
     SupportedLanguage.RPC,
   ];

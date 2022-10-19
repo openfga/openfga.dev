@@ -93,6 +93,26 @@ ${requestTuples}
 
 // data = { "tuples": [${readTuples}] }`;
     }
+    case SupportedLanguage.PYTHON_SDK: {
+      const requestTuples =
+        (opts.user ? `            user="${opts.user}",\n` : '') +
+        (opts.relation ? `            relation="${opts.relation}",\n` : '') +
+        `            object="${opts.object}",\n`;
+
+      return `
+# from openfga_sdk.models.read_request import ReadRequest
+# from openfga_sdk.models.read_response import ReadResponse
+# from openfga_sdk.models.tuple_key import TupleKey
+
+async def read():
+    body = ReadRequest(
+        tuple_key=TupleKey(
+${requestTuples}
+        )
+    )
+    response = await fga_client_instance.read(body)
+    # response = ReadResponse({"tuples":[${readTuples}]})`;
+    }
     case SupportedLanguage.RPC: {
       const objectOrType = opts.object.slice(-1) === ':' ? 'type' : 'object';
       const requestTuples =
@@ -133,6 +153,7 @@ export function ReadRequestViewer(opts: ReadRequestViewerOpts): JSX.Element {
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
     SupportedLanguage.CURL,
     SupportedLanguage.RPC,
   ];

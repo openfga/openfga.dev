@@ -94,6 +94,14 @@ using OpenFga.Sdk.Configuration;`,
         apiName: `OpenFgaApi`,
         setupNote: `// ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`,
       },
+      python: {
+        importStatement: `import os
+import json
+import openfga_sdk
+from openfga_sdk.api import open_fga_api`,
+        apiName: `OpenFgaApi`,
+        setupNote: `# ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`, 
+      }
     },
     contentSecurityPolicy: `default-src 'none';
       base-uri 'self';

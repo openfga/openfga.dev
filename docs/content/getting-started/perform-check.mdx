@@ -28,7 +28,7 @@ This section will illustrate how to perform a <ProductConcept section="what-is-a
 ## Before You Start
 
 <Tabs groupId="languages">
-{[SupportedLanguage.JS_SDK, SupportedLanguage.GO_SDK, SupportedLanguage.DOTNET_SDK].map(lang =>
+{[SupportedLanguage.JS_SDK, SupportedLanguage.GO_SDK, SupportedLanguage.DOTNET_SDK, SupportedLanguage.PYTHON_SDK].map(lang =>
 <TabItem value={lang} label={languageLabelMap.get(lang)}>
 
 1. <SdkSetupPrerequisite />
@@ -71,6 +71,11 @@ Before calling the check API, you will need to configure the API client.
 <SdkSetupHeader lang={SupportedLanguage.DOTNET_SDK} />
 
 </TabItem>
+<TabItem value={SupportedLanguage.PYTHON_SDK} label={languageLabelMap.get(SupportedLanguage.PYTHON_SDK)}>
+
+<SdkSetupHeader lang={SupportedLanguage.PYTHON_SDK} />
+
+</TabItem>
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
 To obtain the [access token](https://auth0.com/docs/get-started/authentication-and-authorization-flow/call-your-api-using-the-client-credentials-flow):
@@ -94,6 +99,7 @@ To check whether user `anne` has relationship `reader` with object `document:Z`
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
     SupportedLanguage.CURL,
   ]}
 />
