@@ -35,7 +35,7 @@ RUN npm run build
 COPY --chown=node:node . /home/node/app/
 
 
-FROM nginx:mainline-alpine as deploy
+FROM nginx:1.23.2-alpine as deploy
 # Remove un-needed packages
 RUN apk del freetype
 COPY --chown=node:node --from=production  /home/node/app/build /usr/share/nginx/html/
