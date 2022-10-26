@@ -134,6 +134,11 @@ const sidebars = {
           id: 'content/modeling/organization-context-authorization',
         },
         {
+          type: 'doc',
+          label: 'Migrating Relations',
+          id: 'content/modeling/migrating-relations',
+        },
+        {
           type: 'category',
           collapsed: true,
           collapsible: true,

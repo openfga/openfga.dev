@@ -1,0 +1,310 @@
+---
+sidebar_position: 10
+slug: /modeling/migrating-relations
+---
+
+import {
+  AuthzModelSnippetViewer,
+  CardBox,
+  CheckRequestViewer,
+  DocumentationNotice,
+  ProductConcept,
+  ProductName,
+  ProductNameFormat,
+  ReadRequestViewer,
+  RelatedSection,
+  RelationshipTuplesViewer,
+  WriteRequestViewer,
+} from '@components/Docs';
+
+# Migrating Relations
+
+<DocumentationNotice />
+
+Over the course of a software lifetime, we will need to make changes to an <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" /> and our goal is to avoid service disruption. In this guide we are going to discuss the steps needed when making changes to existing models.
+
+## Before You Start
+
+In order to understand this guide correctly you must be familiar with some <ProductConcept /> and know how to develop the things that we will list below.
+
+<details>
+<summary>
+
+You will start with the _<ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />_ below,
+it represents a `document` _<ProductConcept section="what-is-a-type" linkName="type" />_ that can have users assigned as editor relation. Editor can edit document.
+
+</summary>
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          editor: {
+            this: {},
+          },
+          can_edit: {
+            computedUserset: {
+              object: '',
+              relation: 'editor',
+            },
+          },
+        },
+      },
+      {
+        type: 'user',
+      },
+    ],
+  }}
+/>
+
+There are existing <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" /> associated with editor relation.
+
+<RelationshipTuplesViewer
+  relationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'editor',
+      object: 'document:roadmap',
+    },
+    {
+      user: 'user:charles',
+      relation: 'editor',
+      object: 'document:roadmap',
+    },
+  ]}
+/>
+
+<hr />
+
+In addition, you will need to know the following:
+
+### <ProductName format={ProductNameFormat.ShortForm} /> Concepts
+
+- A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics
+- A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
+- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
+- A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm} />
+- [Intersection Operator](../configuration-language.mdx#the-intersection-operator): the intersection operator can be used to indicate a relationship exists if the user is in all the sets of users
+
+</details>
+
+## Step By Step
+
+Assume that you want to migrate to the following model:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          writer: {
+            this: {},
+          },
+          can_write: {
+            computedUserset: {
+              object: '',
+              relation: 'writer',
+            },
+          },
+        },
+      },
+      {
+        type: 'user',
+      },
+    ],
+  }}
+/>
+
+### 01. Creating a Backward Compatible Model
+
+To create a seamless transition, we want to create a backward compatible model so that existing tuple will still work.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          editor: {
+            this: {},
+          },
+          writer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'editor',
+                  },
+                },
+              ],
+            },
+          },
+          can_write: {
+            computedUserset: {
+              object: '',
+              relation: 'writer',
+            },
+          },
+          can_edit: {
+            computedUserset: {
+              object: '',
+              relation: 'writer',
+            },
+          },
+        },
+      },
+      {
+        type: 'user',
+      },
+    ],
+  }}
+/>
+
+For the above model, check on whether user:Anne can write document:roadmap will produce the correct value while can_edit will still work.
+
+<CheckRequestViewer user={'user:anne'} relation={'can_write'} object={'document:roadmap'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'can_edit'} object={'document:roadmap'} allowed={true} />
+
+### 02. New Relationship Tuples Should Use New Relation
+
+After we have updated to the backward compatible models, new relationship tuples should use the new relation.
+
+For example, we will want to add Bethany to writer instead of editor relationship.
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: 'Bethany is to be assigned as writer instead of editor',
+      user: 'user:bethany',
+      relation: 'writer',
+      object: 'document:roadmap',
+    },
+  ]}
+/>
+
+We can verify by calling check API for Bethany
+<CheckRequestViewer user={'user:bethany'} relation={'can_write'} object={'document:roadmap'} allowed={true} />
+
+### 03. Migrating Existing Relationship Tuples
+
+The next step is to migrate existing relationship tuples that have the soon-to-be obsolete relation to the new relation name.  In our example, we can use the read API to lookup all relationship tuples that have the relation name "editor".
+
+<ReadRequestViewer
+  relation={'editor'}
+  object={'document:'}
+  tuples={[
+    {
+      user: 'user:anne',
+      relation: 'editor',
+      object: 'document:planning',
+    },
+    {
+      user: 'user:charles',
+      relation: 'editor',
+      object: 'document:planning',
+    },
+  ]}
+/>
+
+We will then add new tuples as writer.
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'writer',
+      object: 'document:roadmap',
+    },
+    {
+      user: 'user:charles',
+      relation: 'writer',
+      object: 'document:roadmap',
+    },
+  ]}
+/>
+
+Finally, we can remove the old relationship tuples.
+<WriteRequestViewer
+  deleteRelationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'editor',
+      object: 'document:roadmap',
+    },
+    {
+      user: 'user:charles',
+      relation: 'editor',
+      object: 'document:roadmap',
+    },
+  ]}
+/>
+
+
+:::info
+We should perform write prior to delete so that anne will always have access. 
+:::
+
+
+We can validate this by running check on Anne.
+
+<CheckRequestViewer user={'user:anne'} relation={'can_write'} object={'document:roadmap'} allowed={true} />
+
+We can verify that the old relationship tuple has been removed.
+<CheckRequestViewer user={'user:anne'} relation={'editor'} object={'document:roadmap'} allowed={false} />
+
+### 04. Remove Obsolete Relation From Model
+
+After all relationship tuples with old relation name is removed, we can update our authorization model to remove the obsolete relation.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          writer: {
+            this: {},
+          },
+          can_write: {
+            computedUserset: {
+              object: '',
+              relation: 'writer',
+            },
+          },
+        },
+      },
+      {
+        type: 'user',
+      },
+    ],
+  }}
+/>
+
+Once we have done that, the write API will only accept the new relation name.
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more on how relationship tuples are managed."
+  relatedLinks={[
+    {
+      title: 'Transactional Writes',
+      description: 'Learn how to perform transactional write',
+      link: '../interacting/transactional-writes',
+      id: '../interacting/transactional-writes.mdx',
+    },
+    {
+      title: 'Relationship Queries',
+      description: 'Understand the differences between check, read, expand and list objects.',
+      link: '../interacting/relationship-queries',
+      id: '../interacting/relationship-queries.mdx',
+    },
+  ]}
+/>
