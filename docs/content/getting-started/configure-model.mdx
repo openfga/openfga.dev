@@ -5,17 +5,17 @@ slug: /getting-started/configure-model
 ---
 
 import {
-    AuthzModelSnippetViewer,
-    DocumentationNotice,
-    languageLabelMap,
-    ProductConcept,
-    ProductName,
-    ProductNameFormat,
-    RelatedSection,
-    SdkSetupHeader,
-    SdkSetupPrerequisite,
-    SupportedLanguage,
-    WriteAuthzModelViewer,
+  AuthzModelSnippetViewer,
+  DocumentationNotice,
+  languageLabelMap,
+  ProductConcept,
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+  SdkSetupHeader,
+  SdkSetupPrerequisite,
+  SupportedLanguage,
+  WriteAuthzModelViewer,
 } from '@components/Docs';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -52,6 +52,7 @@ Assume that you want to configure your store with the following model.
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -81,11 +82,11 @@ Assume that you want to configure your store with the following model.
   }}
 />
 
-
 To configure authorization model, we can invoke the [write authorization models API](/api/service#Authorization%20Models/WriteAuthorizationModel).
 
 <WriteAuthzModelViewer
   authorizationModel={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'document',
@@ -119,7 +120,7 @@ To configure authorization model, we can invoke the [write authorization models 
   ]}
 />
 
-The API will then return the authorization model ID. 
+The API will then return the authorization model ID.
 
 :::info Note
 The OpenFGA API only accepts an authorization model in the API&#39;s JSON syntax.

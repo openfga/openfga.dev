@@ -1,5 +1,5 @@
 ---
-title: "Relationship Queries: Check, Read, Expand, and ListObjects"
+title: 'Relationship Queries: Check, Read, Expand, and ListObjects'
 sidebar_position: 6
 slug: /interacting/relationship-queries
 description: An overview of how to use the Check, Read, Expand, and ListObject APIs.
@@ -40,6 +40,7 @@ and `writer`. All writers are readers. `bob` has a `writer` relationship with `d
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -68,8 +69,8 @@ and `writer`. All writers are readers. `bob` has a `writer` relationship with `d
         },
         metadata: {
           relations: {
-            writer: { directly_related_user_types: [{type: 'user'}] },
-            reader: { directly_related_user_types: [{type: 'user'}] },
+            writer: { directly_related_user_types: [{ type: 'user' }] },
+            reader: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -273,7 +274,6 @@ From there, we will learn that
 - those related to `document:planning` as `reader` are all those who are related to that document as `writer`
 - `bob` is related to `document:planning` as `writer`
 
-
 ### Caveats And When Not To Use It
 
 The Expand call is expensive and has high latency. As such, it is designed to be used for debugging and understanding why a user has a particular relationship with a specific object. It is not designed for checking whether a user has a particular relationship with a specific object. In that case the Check API call should be used instead.
@@ -294,7 +294,13 @@ The current implementation of List Objects API is not optimized and can return i
 
 Use the ListObjects API to get what objects a user can see based on the relationships they have. See [Search with Permissions](./search-with-permissions.mdx) for more guidance.
 
-<ListObjectsRequestViewer objectType="document" relation="reader" user="user:bob" contextualTuples={[{object: "document:otherdoc", relation: "reader", "user": "user:bob"}]} expectedResults={["otherdoc", "planning"]} />
+<ListObjectsRequestViewer
+  objectType="document"
+  relation="reader"
+  user="user:bob"
+  contextualTuples={[{ object: 'document:otherdoc', relation: 'reader', user: 'user:bob' }]}
+  expectedResults={['otherdoc', 'planning']}
+/>
 
 There's two variations of the List Objects API.
 
@@ -318,7 +324,7 @@ This API is provided to gather your feedback. Due to performance and high-latenc
 
 |             | Check                                                         | Read                                                   | Expand                                                  | ListObjects                                                                        |
 | ----------- | ------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Purpose     | Check if user has particular relationship with certain object | Return all stored relationship tuples that match query | Expand the specific relationship on a particular object | List all objects of a particular type that a user has a specific relationship with |            |
+| Purpose     | Check if user has particular relationship with certain object | Return all stored relationship tuples that match query | Expand the specific relationship on a particular object | List all objects of a particular type that a user has a specific relationship with |
 | When to use | Validate if user X can perform Y on object Z                  | List stored relationships in system                    | Understand why user X can perform Y on object Z         | Filter the objects a user has access to                                            |
 
 ## Related Sections
@@ -344,7 +350,7 @@ This API is provided to gather your feedback. Due to performance and high-latenc
     {
       title: 'ListObjects API Reference',
       description: 'Official reference guide for the ListObjects API',
-      link: '/api/service#Relationship%20Queries/ListObjects',      
+      link: '/api/service#Relationship%20Queries/ListObjects',
     },
   ]}
 />

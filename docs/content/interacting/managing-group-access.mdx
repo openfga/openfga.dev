@@ -52,6 +52,7 @@ You have two <ProductConcept section="what-is-a-type" linkName="types" />:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -65,7 +66,7 @@ You have two <ProductConcept section="what-is-a-type" linkName="types" />:
         },
         metadata: {
           relations: {
-            employee: { directly_related_user_types: [{type: 'user'}] },
+            employee: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -78,7 +79,7 @@ You have two <ProductConcept section="what-is-a-type" linkName="types" />:
         },
         metadata: {
           relations: {
-            reader: { directly_related_user_types: [{type: 'company', relation: 'employee'}] },
+            reader: { directly_related_user_types: [{ type: 'company', relation: 'employee' }] },
           },
         },
       },

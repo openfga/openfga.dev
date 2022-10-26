@@ -75,6 +75,7 @@ We will start with the following authorization model:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -94,9 +95,9 @@ We will start with the following authorization model:
         },
         metadata: {
           relations: {
-            member: { directly_related_user_types: [{type: 'user'}] },
-            project_manager: { directly_related_user_types: [{type: 'user'}] },
-            project_editor: { directly_related_user_types: [{type: 'user'}] },
+            member: { directly_related_user_types: [{ type: 'user' }] },
+            project_manager: { directly_related_user_types: [{ type: 'user' }] },
+            project_editor: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -178,8 +179,8 @@ We will start with the following authorization model:
         },
         metadata: {
           relations: {
-            owner: { directly_related_user_types: [{type: 'organization'}] },
-            partner: { directly_related_user_types: [{type: 'organization'}] },
+            owner: { directly_related_user_types: [{ type: 'organization' }] },
+            partner: { directly_related_user_types: [{ type: 'organization' }] },
           },
         },
       },
@@ -191,6 +192,7 @@ We will start with the following authorization model:
 <summary>
 
 We are considering the case that:
+
 - Anne has a project manager role at organizations A, B and C
 - Beth has a project manager role at organization B
 - Carl has a project manager role at organization C
@@ -283,11 +285,23 @@ We can verify that using the following checks:
   * Beth can view Project X
   <CheckRequestViewer user={'user:beth'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
   * Beth cannot delete Project X
-  <CheckRequestViewer user={'user:beth'} relation={'can_delete'} object={'project:X'} allowed={false} skipSetup={true} />
+  <CheckRequestViewer
+    user={'user:beth'}
+    relation={'can_delete'}
+    object={'project:X'}
+    allowed={false}
+    skipSetup={true}
+  />
   * Carl cannot view Project X
   <CheckRequestViewer user={'user:carl'} relation={'can_view'} object={'project:X'} allowed={false} skipSetup={true} />
   * Carl cannot delete Project X
-  <CheckRequestViewer user={'user:carl'} relation={'can_delete'} object={'project:X'} allowed={false} skipSetup={true} />
+  <CheckRequestViewer
+    user={'user:carl'}
+    relation={'can_delete'}
+    object={'project:X'}
+    allowed={false}
+    skipSetup={true}
+  />
 </details>
 
 Note that so far, we have not prevented Anne from viewing "Project X" even if Anne is viewing it from the context of Organization C.
@@ -371,10 +385,10 @@ The "organization" type definition then becomes:
     },
     metadata: {
       relations: {
-        member: { directly_related_user_types: [{type: 'user'}] },
-        project_manager: { directly_related_user_types: [{type: 'user'}] },
-        base_project_editor: { directly_related_user_types: [{type: 'user'}] },
-        user_in_context: { directly_related_user_types: [{type: 'user'}] },
+        member: { directly_related_user_types: [{ type: 'user' }] },
+        project_manager: { directly_related_user_types: [{ type: 'user' }] },
+        base_project_editor: { directly_related_user_types: [{ type: 'user' }] },
+        user_in_context: { directly_related_user_types: [{ type: 'user' }] },
       },
     },
   }}
@@ -404,6 +418,7 @@ In order for Anne to be authorized, a tuple indicating Anne's current organizati
 />
 
 We can verify this by running a check request
+
 <CheckRequestViewer user={'user:anne'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
 
 ### Use Contextual Tuples For Context Related Checks
@@ -483,6 +498,7 @@ Using this, you can check that the following requirements are satisfied:
   Final version of the Authorization Model and Relationship tuples
 </summary>
 <AuthzModelSnippetViewer configuration={{
+    schema_version: '1.1',
   "type_definitions": [
     {
       "type": "user",
@@ -686,6 +702,7 @@ Contextual tuples:
 - Are not persisted in the store.
 - Are only supported on the <UpdateProductNameInLinks link="/api/service#Relationship%20Queries/Check" name="Check API endpoint" />. They are not supported on read, expand and other endpoints.
 - If you are using the <UpdateProductNameInLinks link="/api/service#Relationship%20Tuples/ReadChanges" name="Read Changes API endpoint" /> to build a permission aware search index, note that it will not be trivial to take contextual tuples into account.
+
 :::
 
 ## Related Sections

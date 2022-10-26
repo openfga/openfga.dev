@@ -139,6 +139,7 @@ Similar to the example above, start with a basic listing of the types and their 
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -362,6 +363,7 @@ The resulting updated configuration would be:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -484,9 +486,7 @@ If you want to give all subscribers on a plan access to a feature, you can do it
       relations: {
         associated_plan: { directly_related_user_types: [{ type: 'plan' }] },
         access: {
-          directly_related_user_types: [
-            { type: 'user' },
-          ],
+          directly_related_user_types: [{ type: 'user' }],
         },
       },
     },
@@ -523,6 +523,7 @@ Replace all the existing code you had previously with the updated authorization 
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -557,9 +558,7 @@ Replace all the existing code you had previously with the updated authorization 
           relations: {
             associated_plan: { directly_related_user_types: [{ type: 'plan' }] },
             access: {
-              directly_related_user_types: [
-                { type: 'user' },
-              ],
+              directly_related_user_types: [{ type: 'user' }],
             },
           },
         },
@@ -608,6 +607,7 @@ In order to do that, you will add a relation on the plan, that indicates that al
   description={`Notice that \`subscriber\` has been updated to \`subscriber_member\` in the \`access\` relation of the \`feature\` type.
   Under the \`plan\` type, in order for someone to have a \`subscriber_member\` relation to the plan, they have to be related as a \`member\` to the object related as a \`subscriber\` to the plan (as in they have to be a member of on of the plan's subscribers).`}
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -642,9 +642,7 @@ In order to do that, you will add a relation on the plan, that indicates that al
           relations: {
             associated_plan: { directly_related_user_types: [{ type: 'plan' }] },
             access: {
-              directly_related_user_types: [
-                { type: 'user' },
-              ],
+              directly_related_user_types: [{ type: 'user' }],
             },
           },
         },
@@ -743,9 +741,7 @@ To disallow a direct relationship, you need to remove `self`. The following snip
       relations: {
         associated_plan: { directly_related_user_types: [{ type: 'plan' }] },
         access: {
-          directly_related_user_types: [
-            { type: 'user' },
-          ],
+          directly_related_user_types: [{ type: 'user' }],
         },
       },
     },
@@ -796,6 +792,7 @@ Ensure that your authorization model matches the one below
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
