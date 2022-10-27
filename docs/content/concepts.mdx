@@ -99,6 +99,7 @@ Code snippet below is an example of an authorization model:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'document',
@@ -262,6 +263,7 @@ These would be defined in the [authorization model](#what-is-an-authorization-mo
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'document',
@@ -320,6 +322,7 @@ For the following model, only [relationship tuple](#what-is-a-relationship-tuple
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'document',
@@ -344,7 +347,6 @@ For the following model, only [relationship tuple](#what-is-a-relationship-tuple
 Relationship tuple with user `user:anne` or `user:3f7768e0-4fa7-4e93-8417-4da68ce1846c` may be written for objects with type `document` and relation `viewer`, so writing `{"user": "user:anne","relation":"viewer","object":"document:roadmap"}` will succeed.
 Relationship tuple writes with user type that is not allowed for the `viewer` relation on objects of type `document`, for example `workspace:auth0` or `folder:planning#editor` will be rejected, so writing `{"user": "folder:product","relation":"viewer","object":"document:roadmap"}` will fail.
 This will affect only relations that are [directly related](#what-are-direct-and-implied-relationships) and have [the direct relationship keyword ("this")](./configuration-language.mdx#the-direct-relationship-keyword) in their relation definition.
-
 
 </details>
 
@@ -452,6 +454,7 @@ An **implied (or computed) relationship** R exists between user X and object Y i
 
   <AuthzModelSnippetViewer
     configuration={{
+      schema_version: '1.1',
       type_definitions: [
         {
           type: 'document',

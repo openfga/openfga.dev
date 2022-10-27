@@ -42,6 +42,7 @@ You have another type called `user` that can have a `follower` and `followed_by`
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'tweet',
@@ -53,10 +54,7 @@ You have another type called `user` that can have a `follower` and `followed_by`
         metadata: {
           relations: {
             owner: {
-              directly_related_user_types: [
-                { type: 'user' },
-                { type: 'user', relation: 'follower' },
-              ],
+              directly_related_user_types: [{ type: 'user' }, { type: 'user', relation: 'follower' }],
             },
           },
         },

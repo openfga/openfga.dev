@@ -49,6 +49,7 @@ You have an _<ProductConcept section="what-is-an-object" linkName="object" />_ c
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -107,6 +108,7 @@ We need to define the _<ProductConcept section="what-is-an-object" linkName="obj
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -120,7 +122,7 @@ We need to define the _<ProductConcept section="what-is-an-object" linkName="obj
         },
         metadata: {
           relations: {
-            member: { directly_related_user_types: [{ type: 'team', 'relation': 'member' }] },
+            member: { directly_related_user_types: [{ type: 'team', relation: 'member' }] },
           },
         },
       },

@@ -126,6 +126,7 @@ To represent permissions in <ProductName format={ProductNameFormat.LongForm}/> w
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -167,6 +168,7 @@ The <ProductName format={ProductNameFormat.ShortForm}/> service determines if a 
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -236,6 +238,7 @@ To make <ProductName format={ProductNameFormat.ShortForm}/> aware of this "conce
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -376,6 +379,7 @@ To add support for teams and memberships all we need to do is add this object to
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'team', // objects of type "team"
@@ -400,6 +404,7 @@ In addition, the repo's relations should be add team member as a directly relate
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -562,6 +567,7 @@ Let us add support for organizations and membership. Hopefully this feels famili
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'organization', // objects of type "organization"
@@ -586,6 +592,7 @@ And support for repositories having owners:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'repo',
@@ -657,34 +664,19 @@ And support for repositories having owners:
         metadata: {
           relations: {
             reader: {
-              directly_related_user_types: [
-                { type: 'user' },
-                { type: 'team', relation: 'member' },
-              ],
+              directly_related_user_types: [{ type: 'user' }, { type: 'team', relation: 'member' }],
             },
             triager: {
-              directly_related_user_types: [
-                { type: 'user' },
-                { type: 'team', relation: 'member' },
-              ],
+              directly_related_user_types: [{ type: 'user' }, { type: 'team', relation: 'member' }],
             },
             writer: {
-              directly_related_user_types: [
-                { type: 'user' },
-                { type: 'team', relation: 'member' },
-              ],
+              directly_related_user_types: [{ type: 'user' }, { type: 'team', relation: 'member' }],
             },
             maintainer: {
-              directly_related_user_types: [
-                { type: 'user' },
-                { type: 'team', relation: 'member' },
-              ],
+              directly_related_user_types: [{ type: 'user' }, { type: 'team', relation: 'member' }],
             },
             admin: {
-              directly_related_user_types: [
-                { type: 'user' },
-                { type: 'team', relation: 'member' },
-              ],
+              directly_related_user_types: [{ type: 'user' }, { type: 'team', relation: 'member' }],
             },
             owner: {
               directly_related_user_types: [{ type: 'organization' }],
@@ -801,6 +793,7 @@ The updated authorization model looks like this:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -945,9 +938,7 @@ The updated authorization model looks like this:
               ],
             },
             owner: {
-              directly_related_user_types: [
-                { type: 'organization' },
-              ],
+              directly_related_user_types: [{ type: 'organization' }],
             },
           },
         },
@@ -965,7 +956,7 @@ The updated authorization model looks like this:
         metadata: {
           relations: {
             owner: {
-              directly_related_user_types: [{type: 'organization'}],
+              directly_related_user_types: [{ type: 'organization' }],
             },
             repo_admin: {
               directly_related_user_types: [

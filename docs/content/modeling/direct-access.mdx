@@ -45,6 +45,7 @@ You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `d
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -63,7 +64,7 @@ You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `d
           relations: {
             viewer: { directly_related_user_types: [{ type: 'user' }] },
             editor: { directly_related_user_types: [{ type: 'user' }] },
-          }
+          },
         },
       },
     ],
