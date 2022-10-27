@@ -154,6 +154,13 @@ In <ProductName format={ProductNameFormat.ShortForm}/>, the <ProductConcept sect
             this: {}, // "device_renamer": if they belong to the userset of all users related to the device as "device_renamer"
           },
         },
+        metadata: {
+          relations: {
+            live_video_viewer: { directly_related_user_types: [{ type: 'user' }] },
+            recorded_video_viewer: { directly_related_user_types: [{ type: 'user' }] },
+            device_renamer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -322,6 +329,15 @@ The resulting authorization model is:
             },
           },
         },
+        metadata: {
+          relations: {
+            it_admin: { directly_related_user_types: [{ type: 'user' }] },
+            security_guard: { directly_related_user_types: [{ type: 'user' }] },
+            live_video_viewer: { directly_related_user_types: [{ type: 'user' }] },
+            recorded_video_viewer: { directly_related_user_types: [{ type: 'user' }] },
+            device_renamer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -406,6 +422,12 @@ The <ProductConcept section="what-is-a-type-definition" linkName="type definitio
         this: {},
       },
     },
+    metadata: {
+      relations: {
+        it_admin: { directly_related_user_types: [{ type: 'user' }] },
+        security_guard: { directly_related_user_types: [{ type: 'user' }] },
+      },
+    },
   }}
 />
 
@@ -479,6 +501,19 @@ With this change, the full <ProductConcept section="what-is-an-authorization-mod
             },
           },
         },
+        metadata: {
+          relations: {
+            it_admin: {
+              directly_related_user_types: [{ type: 'user' }, { type: 'device_group', relation: 'it_admin' }],
+            },
+            security_guard: {
+              directly_related_user_types: [{ type: 'user' }, { type: 'device_group', relation: 'security_guard' }],
+            },
+            live_video_viewer: { directly_related_user_types: [{ type: 'user' }] },
+            recorded_video_viewer: { directly_related_user_types: [{ type: 'user' }] },
+            device_renamer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
       {
         type: 'device_group',
@@ -488,6 +523,12 @@ With this change, the full <ProductConcept section="what-is-an-authorization-mod
           },
           security_guard: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            it_admin: { directly_related_user_types: [{ type: 'user' }] },
+            security_guard: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -637,6 +678,16 @@ To remedy this, remove `self` from `live_video_viewer`, `recorded_video_viewer` 
             },
           },
         },
+        metadata: {
+          relations: {
+            it_admin: {
+              directly_related_user_types: [{ type: 'user' }, { type: 'device_group', relation: 'it_admin' }],
+            },
+            security_guard: {
+              directly_related_user_types: [{ type: 'user' }, { type: 'device_group', relation: 'security_guard' }],
+            },
+          },
+        },
       },
       {
         type: 'device_group',
@@ -646,6 +697,12 @@ To remedy this, remove `self` from `live_video_viewer`, `recorded_video_viewer` 
           },
           security_guard: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            it_admin: { directly_related_user_types: [{ type: 'user' }] },
+            security_guard: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },

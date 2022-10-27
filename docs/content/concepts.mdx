@@ -73,6 +73,14 @@ Code snippet below is an example of a type definition:
         this: {},
       },
     },
+    metadata: {
+      relations: {
+        viewer: { directly_related_user_types: [{ type: 'user' }] },
+        commenter: { directly_related_user_types: [{ type: 'user' }] },
+        editor: { directly_related_user_types: [{ type: 'user' }] },
+        owner: { directly_related_user_types: [{ type: 'user' }] },
+      },
+    },
   }}
 />
 
@@ -108,6 +116,14 @@ Code snippet below is an example of an authorization model:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'domain', relation: 'member' }, { type: 'user' }] },
+            commenter: { directly_related_user_types: [{ type: 'domain', relation: 'member' }, { type: 'user' }] },
+            editor: { directly_related_user_types: [{ type: 'domain', relation: 'member' }, { type: 'user' }] },
+            owner: { directly_related_user_types: [{ type: 'domain', relation: 'member' }, { type: 'user' }] },
+          },
+        },
       },
       {
         type: 'domain',
@@ -116,6 +132,14 @@ Code snippet below is an example of an authorization model:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+      {
+        type: 'user',
       },
     ],
   }}
@@ -255,6 +279,14 @@ These would be defined in the [authorization model](#what-is-an-authorization-mo
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+            commenter: { directly_related_user_types: [{ type: 'user' }] },
+            editor: { directly_related_user_types: [{ type: 'user' }] },
+            owner: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
       {
         type: 'user',
@@ -272,6 +304,47 @@ In the configuration of the document type, we have four relations: `viewer`, `co
 [User](#what-is-a-user), _relation_ and [object](#what-is-an-object) are the building blocks for [relationship tuples](#what-is-a-relationship-tuple).
 
 For more information, please see [Direct Access](./modeling/direct-access.mdx).
+
+</details>
+
+<details>
+<summary>
+
+## What Is A Directly Related User Type?
+
+A **directly related user type** is an array specified in the type definition to indicate what types of users can be directly related to that relation.
+
+</summary>
+
+For the following model, only [relationship tuple](#what-is-a-relationship-tuple) with [user](#what-is-a-user) [type](#what-is-a-type) `user` may be assigned to document.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          viewer: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+      {
+        type: 'user',
+      },
+    ],
+  }}
+/>
+
+Relationship tuple with user `user:anne` or `user:3f7768e0-4fa7-4e93-8417-4da68ce1846c` may be written for objects with type `document` and relation `viewer`, so writing `{"user": "user:anne","relation":"viewer","object":"document:roadmap"}` will succeed.
+Relationship tuple writes with user type that is not allowed for the `viewer` relation on objects of type `document`, for example `workspace:auth0` or `folder:planning#editor` will be rejected, so writing `{"user": "folder:product","relation":"viewer","object":"document:roadmap"}` will fail.
+This will affect only relations that are [directly related](#what-are-direct-and-implied-relationships) and have [the direct relationship keyword ("this")](./configuration-language.mdx#the-direct-relationship-keyword) in their relation definition.
+
 
 </details>
 
@@ -401,6 +474,12 @@ An **implied (or computed) relationship** R exists between user X and object Y i
             },
             editor: {
               this: {},
+            },
+          },
+          metadata: {
+            relations: {
+              editor: { directly_related_user_types: [{ type: 'user' }] },
+              viewer: { directly_related_user_types: [{ type: 'user' }] },
             },
           },
         },

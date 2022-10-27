@@ -77,6 +77,11 @@ We will start with the following Authorization Model
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            account_manager: { directly_related_user_types: [{type: 'user'}] },
+          }
+        },
       },
       {
         type: 'account',
@@ -124,6 +129,12 @@ We will start with the following Authorization Model
             },
           },
         },
+        metadata: {
+          relations: {
+            branch: { directly_related_user_types: [{type: 'branch'}] },
+            customer: { directly_related_user_types: [{type: 'user'}] },
+          }
+        },
       },
       {
         type: 'transaction',
@@ -143,6 +154,11 @@ We will start with the following Authorization Model
               },
             },
           },
+        },
+        metadata: {
+          relations: {
+            account: { directly_related_user_types: [{type: 'account'}] },
+          }
         },
       },
     ],
@@ -256,6 +272,11 @@ In order to add time and ip address to our authorization model, we will add appr
         this: {},
       },
     },
+    metadata: {
+      relations: {
+        user: { directly_related_user_types: [{type: 'user'}] },
+      },
+    },
   }}
 />
 
@@ -265,6 +286,11 @@ In order to add time and ip address to our authorization model, we will add appr
     relations: {
       user: {
         this: {},
+      },
+    },
+    metadata: {
+      relations: {
+        user: { directly_related_user_types: [{type: 'user'}] },
       },
     },
   }}
@@ -323,6 +349,13 @@ The branch type definition then becomes:
           ],
         },
       },
+    },
+    metadata: {
+      relations: {
+        account_manager: { directly_related_user_types: [{type: 'user'}] },
+        approved_ip_address_range: { directly_related_user_types: [{type: 'ip-address-range'}] },
+        approved_timeslot: { directly_related_user_types: [{type: 'timeslot'}] },
+      }
     },
   }}
 />
@@ -404,6 +437,12 @@ The account type definition then becomes:
           relation: 'viewer',
         },
       },
+    },
+    metadata: {
+      relations: {
+        branch: { directly_related_user_types: [{type: 'branch'}] },
+        customer: { directly_related_user_types: [{type: 'user'}] },
+      }
     },
   }}
 />
@@ -603,7 +642,14 @@ When Anne is connecting from a denied ip address range or timeslot, <ProductName
             ]
           }
         }
-      }
+      },
+      metadata: {
+        relations: {
+          account_manager: { directly_related_user_types: [{type: 'user'}] },
+          approved_ip_address_range: { directly_related_user_types: [{type: 'ip-address-range'}] },
+          approved_timeslot: { directly_related_user_types: [{type: 'timeslot'}] },
+        },
+      },
     },
     {
       "type": "account",
@@ -674,7 +720,13 @@ When Anne is connecting from a denied ip address range or timeslot, <ProductName
             "relation": "viewer"
           }
         }
-      }
+      },
+      metadata: {
+        relations: {
+          branch: { directly_related_user_types: [{type: 'branch'}] },
+          customer: { directly_related_user_types: [{type: 'user'}] },
+        },
+      },
     },
     {
       "type": "transaction",
@@ -694,7 +746,12 @@ When Anne is connecting from a denied ip address range or timeslot, <ProductName
             }
           }
         }
-      }
+      },
+      metadata: {
+        relations: {
+          account: { directly_related_user_types: [{type: 'account'}] },
+        },
+      },
     },
     {
       "type": "timeslot",
@@ -702,7 +759,12 @@ When Anne is connecting from a denied ip address range or timeslot, <ProductName
         "user": {
           "this": {}
         }
-      }
+      },
+      metadata: {
+        relations: {
+          user: { directly_related_user_types: [{type: 'user'}] },
+        },
+      },
     },
     {
       "type": "ip-address-range",
@@ -710,7 +772,12 @@ When Anne is connecting from a denied ip address range or timeslot, <ProductName
         "user": {
           "this": {}
         }
-      }
+      },
+      metadata: {
+        relations: {
+          user: { directly_related_user_types: [{type: 'user'}] },
+        },
+      },
     }
   ]
 }} />
@@ -818,6 +885,11 @@ In that case, we can extend the model like so:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            admin: { directly_related_user_types: [{type: 'user'}] },
+          },
+        },
       },
       {
         type: 'branch',
@@ -863,6 +935,14 @@ In that case, we can extend the model like so:
                 },
               ],
             },
+          },
+        },
+        metadata: {
+          relations: {
+            bank: { directly_related_user_types: [{type: 'bank'}] },
+            account_manager: { directly_related_user_types: [{type: 'user'}] },
+            approved_ip_address_range: { directly_related_user_types: [{type: 'ip-address-range'}] },
+            approved_timeslot: { directly_related_user_types: [{type: 'timeslot'}] },
           },
         },
       },
@@ -936,6 +1016,12 @@ In that case, we can extend the model like so:
             },
           },
         },
+        metadata: {
+          relations: {
+            branch: { directly_related_user_types: [{type: 'branch'}] },
+            customer: { directly_related_user_types: [{type: 'user'}] },
+          },
+        },
       },
       {
         type: 'transaction',
@@ -956,6 +1042,11 @@ In that case, we can extend the model like so:
             },
           },
         },
+        metadata: {
+          relations: {
+            account: { directly_related_user_types: [{type: 'account'}] },
+          },
+        },
       },
       {
         type: 'timeslot',
@@ -964,12 +1055,22 @@ In that case, we can extend the model like so:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            user: { directly_related_user_types: [{type: 'user'}] },
+          },
+        },
       },
       {
         type: 'ip-address-range',
         relations: {
           user: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            user: { directly_related_user_types: [{type: 'user'}] },
           },
         },
       },

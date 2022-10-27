@@ -63,12 +63,22 @@ You have two <ProductConcept section="what-is-a-type" linkName="types" />:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            employee: { directly_related_user_types: [{type: 'user'}] },
+          },
+        },
       },
       {
         type: 'document',
         relations: {
           reader: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            reader: { directly_related_user_types: [{type: 'company', relation: 'employee'}] },
           },
         },
       },

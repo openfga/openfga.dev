@@ -69,6 +69,13 @@ Assume that you want to configure your store with the following model.
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            reader: { directly_related_user_types: [{ type: 'user' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }] },
+            owner: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -91,6 +98,13 @@ To configure authorization model, we can invoke the [write authorization models 
           },
           owner: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            reader: { directly_related_user_types: [{ type: 'user' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }] },
+            owner: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },

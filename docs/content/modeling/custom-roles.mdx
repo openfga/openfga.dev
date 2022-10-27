@@ -80,6 +80,12 @@ We'll start with the following authorization model showing a system with an `ass
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{ type: 'user' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -172,12 +178,23 @@ The authorization model becomes this:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'role', relation: 'assignee' }] },
+            editor: { directly_related_user_types: [{ type: 'user' }, { type: 'role', relation: 'assignee' }] },
+          },
+        },
       },
       {
         type: 'role',
         relations: {
           assignee: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            assignee: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },

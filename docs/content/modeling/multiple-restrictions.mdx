@@ -79,12 +79,23 @@ Let us also assume that we have:
             },
           },
         },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{type: 'user'}, { type: 'organization', relation: 'member' }] },
+            writer: { directly_related_user_types: [{type: 'user'},{ type: 'organization', relation: 'member' }] },
+          },
+        },
       },
       {
         type: 'organization',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -223,12 +234,23 @@ The first step is to add the relation definition for `can_delete` so that it req
             },
           },
         },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{type: 'user'}, { type: 'organization', relation: 'member' }] },
+            writer: { directly_related_user_types: [{type: 'user'},{ type: 'organization', relation: 'member' }] },
+          },
+        },
       },
       {
         type: 'organization',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
