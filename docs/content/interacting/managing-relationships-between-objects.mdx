@@ -47,6 +47,9 @@ Assume that you have the following <ProductConcept section="what-is-an-authoriza
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'repo',
         relations: {
           admin: {
@@ -83,12 +86,12 @@ For the current model, a <ProductConcept section="what-is-a-user" linkName="user
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'anne',
+      user: 'user:anne',
       relation: 'admin',
       object: 'repo:1',
     },
     {
-      user: 'anne',
+      user: 'user:anne',
       relation: 'admin',
       object: 'repo:2',
     },
@@ -104,6 +107,9 @@ Another way of modeling this is to have an authorization model as follows:
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'repo',
         relations: {
@@ -177,7 +183,7 @@ Now, imagine we have a new user Becky. If we wanted to have Becky be the `admin`
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'becky',
+      user: 'user:becky',
       relation: 'repo_admin',
       object: 'org:xyz',
     },
@@ -188,9 +194,9 @@ Now, imagine we have a new user Becky. If we wanted to have Becky be the `admin`
 
 We can now verify that Becky an `admin` of all the `repo`s owned by `org:xyz`:
 
-<CheckRequestViewer user={'becky'} relation={'admin'} object={'repo:1'} allowed={true} />
+<CheckRequestViewer user={'user:becky'} relation={'admin'} object={'repo:1'} allowed={true} />
 
-<CheckRequestViewer user={'becky'} relation={'admin'} object={'repo:2'} allowed={true} />
+<CheckRequestViewer user={'user:becky'} relation={'admin'} object={'repo:2'} allowed={true} />
 
 ### 05. Revoking Access
 
@@ -208,7 +214,7 @@ Suppose now that we want to prevent users from being an `admin` of `repo:1` via 
 
 With this change, we may now verify that Becky is no longer an `admin` of `repo:1`.
 
-<CheckRequestViewer user={'becky'} relation={'admin'} object={'repo:1'} allowed={false} />
+<CheckRequestViewer user={'user:becky'} relation={'admin'} object={'repo:1'} allowed={false} />
 
 ## Related Sections
 

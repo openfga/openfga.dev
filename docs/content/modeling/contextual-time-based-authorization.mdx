@@ -68,6 +68,9 @@ We will start with the following Authorization Model
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'branch',
         relations: {
           account_manager: {
@@ -163,13 +166,13 @@ The above state translates to the following relationship tuples:
 <WriteRequestViewer relationshipTuples={[
   {
     "_description": "Anne is the Account Manager at the West-Side branch",
-    "user": "anne",
+    "user": "user:anne",
     "relation": "account_manager",
     "object": "branch:west-side"
   },
   {
     "_description": "Caroline is the customer for checking account number 526",
-    "user": "caroline",
+    "user": "user:caroline",
     "relation": "customer",
     "object": "account:checking-526"
   },
@@ -218,10 +221,10 @@ With the Authorization Model and relationship tuples shown above, <ProductName f
 We can verify that using the following checks
 
 Anne can view transaction:A because she is an account manager of an account that is at the same branch.
-<CheckRequestViewer user={'anne'} relation={'can_view'} object={'transaction:A'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'can_view'} object={'transaction:A'} allowed={true} />
 
 Caroline can view transaction:A because she is a customer and the transaction is tied to her account.
-<CheckRequestViewer user={'caroline'} relation={'can_view'} object={'transaction:A'} allowed={true} />
+<CheckRequestViewer user={'user:caroline'} relation={'can_view'} object={'transaction:A'} allowed={true} />
 
 Additionally, we will check that Mary, an account manager at a different branch _cannot_ view transaction A.
 
@@ -229,13 +232,13 @@ Additionally, we will check that Mary, an account manager at a different branch 
   relationshipTuples={[
     {
       _description: 'Mary is an account manager at the East-Side branch',
-      user: 'mary',
+      user: 'user:mary',
       relation: 'account_manager',
       object: 'branch:east-side',
     },
   ]}
 />
-<CheckRequestViewer user={'mary'} relation={'can_view'} object={'transaction:A'} allowed={false} />
+<CheckRequestViewer user={'user:mary'} relation={'can_view'} object={'transaction:A'} allowed={false} />
 
 Note that so far, we have not prevented Anne from viewing the transaction outside office hours, let's see if we can do better.
 
@@ -454,13 +457,13 @@ Now that we have added the allowed timeslots and ip address ranges we need to ad
   relationshipTuples={[
     {
       _description: 'Anne is connecting from within the 10.0.0.0/16 ip address range',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'user',
       object: 'ip-address-range:10.0.0.0/16',
     },
     {
       _description: 'Anne is connecting between 12pm and 1pm',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'user',
       object: 'timeslot:12_13',
     },
@@ -469,7 +472,7 @@ Now that we have added the allowed timeslots and ip address ranges we need to ad
 
 If we have the above two tuples in the system, when checking whether Anne can view transaction A we should get a response stating that Anne can view it.
 
-<CheckRequestViewer user={'anne'} relation={'can_view'} object={'transaction:A'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'can_view'} object={'transaction:A'} allowed={true} />
 
 ### Use Contextual Tuples For Context Related Checks
 
@@ -486,13 +489,13 @@ First, we will need to undo adding the stored relationship tuples where Anne is 
   deleteRelationshipTuples={[
     {
       _description: 'Remove stored tuples where Anne is connecting from within the 10.0.0.0/16 ip address range',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'user',
       object: 'ip-address-range:10.0.0.0/16',
     },
     {
       _description: 'Remove stored tuples where Anne is connecting between 12pm and 1pm',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'user',
       object: 'timeslot:12_13',
     },
@@ -504,20 +507,20 @@ For Check calls, <ProductName format={ProductNameFormat.ShortForm}/> has a conce
 When Anne is connecting from an allowed ip address range and timeslot, <ProductName format={ProductNameFormat.ShortForm}/> will return `{"allowed":true}`:
 
 <CheckRequestViewer
-  user={'anne'}
+  user={'user:anne'}
   relation={'can_view'}
   object={'transaction:A'}
   allowed={true}
   contextualTuples={[
     {
       _description: 'Anne is connecting from within the 10.0.0.0/16 ip address range',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'user',
       object: 'ip-address-range:10.0.0.0/16',
     },
     {
       _description: 'Anne is connecting between 12pm and 1pm',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'user',
       object: 'timeslot:12_13',
     },
@@ -527,20 +530,20 @@ When Anne is connecting from an allowed ip address range and timeslot, <ProductN
 When Anne is connecting from a denied ip address range or timeslot, <ProductName format={ProductNameFormat.ShortForm}/> will return `{"allowed":false}`:
 
 <CheckRequestViewer
-  user={'anne'}
+  user={'user:anne'}
   relation={'can_view'}
   object={'transaction:A'}
   allowed={false}
   contextualTuples={[
     {
       _description: 'Anne is connecting from within the 10.0.0.0/16 ip address range',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'user',
       object: 'ip-address-range:10.0.0.0/16',
     },
     {
       _description: 'Anne is connecting between 6pm and 7pm',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'user',
       object: 'timeslot:18_19',
     },
@@ -555,6 +558,9 @@ When Anne is connecting from a denied ip address range or timeslot, <ProductName
 </summary>
 <AuthzModelSnippetViewer configuration={{
   "type_definitions": [
+    {
+      "type": "user",
+    },
     {
       "type": "branch",
       "relations": {
@@ -712,13 +718,13 @@ When Anne is connecting from a denied ip address range or timeslot, <ProductName
 <WriteRequestViewer relationshipTuples={[
   {
     "_description": "Anne is the Account Manager at the West-Side branch",
-    "user": "anne",
+    "user": "user:anne",
     "relation": "account_manager",
     "object": "branch:west-side"
   },
   {
     "_description": "Caroline is the customer for checking account number 526",
-    "user": "caroline",
+    "user": "user:caroline",
     "relation": "customer",
     "object": "account:checking-526"
   },
@@ -802,6 +808,9 @@ In that case, we can extend the model like so:
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'bank',
         relations: {

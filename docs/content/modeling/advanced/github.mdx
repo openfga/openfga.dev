@@ -128,6 +128,9 @@ To represent permissions in <ProductName format={ProductNameFormat.LongForm}/> w
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'repo',
         relations: {
           reader: {
@@ -157,6 +160,9 @@ The <ProductName format={ProductNameFormat.ShortForm}/> service determines if a 
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'repo', // objects of type "repo"
         relations: {
           // have users related to them as
@@ -181,7 +187,7 @@ If we want to say `anne` is a reader of repository **repo:contoso/tooling** we h
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'anne',
+      user: 'user:anne',
       relation: 'reader',
       object: 'repo:contoso/tooling',
     },
@@ -190,14 +196,14 @@ If we want to say `anne` is a reader of repository **repo:contoso/tooling** we h
 
 We can now <ProductConcept section="what-is-a-check-request" linkName="ask" /> <ProductName format={ProductNameFormat.ShortForm}/> "is `anne` a reader of repository **repo:contoso/tooling**?"
 
-<CheckRequestViewer user={'anne'} relation={'reader'} object={'repo:contoso/tooling'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'reader'} object={'repo:contoso/tooling'} allowed={true} />
 
 We could also say that `beth` is a writer of the same repository:
 
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'beth',
+      user: 'user:beth',
       relation: 'writer',
       object: 'repo:contoso/tooling',
     },
@@ -206,8 +212,8 @@ We could also say that `beth` is a writer of the same repository:
 
 And ask some questions to <ProductName format={ProductNameFormat.ShortForm}/>:
 
-<CheckRequestViewer user={'beth'} relation={'writer'} object={'repo:contoso/tooling'} allowed={true} />
-<CheckRequestViewer user={'beth'} relation={'reader'} object={'repo:contoso/tooling'} allowed={false} />
+<CheckRequestViewer user={'user:beth'} relation={'writer'} object={'repo:contoso/tooling'} allowed={true} />
+<CheckRequestViewer user={'user:beth'} relation={'reader'} object={'repo:contoso/tooling'} allowed={false} />
 
 The first reply makes sense but the second one does not. Intuitively, if `beth` was writer, she was also be a reader. In fact, GitHub explains this in [their documentation](https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/repository-permission-levels-for-an-organization#repository-access-for-each-permission-level)
 ![Showing various Github repo access level](./assets/github-repo-access-level.svg)
@@ -217,6 +223,9 @@ To make <ProductName format={ProductNameFormat.ShortForm}/> aware of this "conce
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'repo',
         relations: {
@@ -324,8 +333,8 @@ The users with a reader relationship to a certain object of type "repo" are any 
 
 With this simple update our model now supports nested definitions and now:
 
-<CheckRequestViewer user={'beth'} relation={'writer'} object={'repo:contoso/tooling'} allowed={true} />
-<CheckRequestViewer user={'beth'} relation={'reader'} object={'repo:contoso/tooling'} allowed={true} />
+<CheckRequestViewer user={'user:beth'} relation={'writer'} object={'repo:contoso/tooling'} allowed={true} />
+<CheckRequestViewer user={'user:beth'} relation={'reader'} object={'repo:contoso/tooling'} allowed={true} />
 
 ### 02. Permissions For Teams In An Org
 
@@ -360,7 +369,7 @@ Let us now create a team, add a member to it and make it an admin of **repo:cont
   relationshipTuples={[
     {
       _description: 'make charles a member of the contoso/engineering team',
-      user: 'charles',
+      user: 'user:charles',
       relation: 'member',
       object: 'team:contoso/engineering',
     },
@@ -375,7 +384,7 @@ Let us now create a team, add a member to it and make it an admin of **repo:cont
 
 The last relationship tuple introduces a new **<ProductName format={ProductNameFormat.ShortForm}/>** concept. A **<ProductConcept section="what-is-a-user" linkName="userset" />**. When the value of a user is formatted like this **type:objectId#relation**, <ProductName format={ProductNameFormat.ShortForm}/> will automatically expand the userset into all its individual user identifiers:
 
-<CheckRequestViewer user={'charles'} relation={'admin'} object={'repo:contoso/tooling'} allowed={true} />
+<CheckRequestViewer user={'user:charles'} relation={'admin'} object={'repo:contoso/tooling'} allowed={true} />
 
 ### 03. Permissions For Child Teams In An Org
 
@@ -402,14 +411,14 @@ We can now add a member to the protocols team and check that they are admins of 
   relationshipTuples={[
     {
       _description: 'make diane a member of the contoso/protocols team',
-      user: 'diane',
+      user: 'user:diane',
       relation: 'member',
       object: 'team:contoso/protocols',
     },
   ]}
 />
 
-<CheckRequestViewer user={'diane'} relation={'admin'} object={'repo:contoso/tooling'} allowed={true} />
+<CheckRequestViewer user={'user:diane'} relation={'admin'} object={'repo:contoso/tooling'} allowed={true} />
 
 At the end of this section ended with the following permissions represented:
 
@@ -437,7 +446,7 @@ Let us add support for organizations and membership. Hopefully this feels famili
   configuration={{
     type_definitions: [
       {
-        type: 'org', // objects of type "org"
+        type: 'organization', // objects of type "organization"
         relations: {
           // have users related to them as
           member: {
@@ -538,12 +547,12 @@ We can now make Erik a member of contoso and make contoso own **contoso/tooling*
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'erik',
+      user: 'user:erik',
       relation: 'member',
-      object: 'org:contoso',
+      object: 'organization:contoso',
     },
     {
-      user: 'org:contoso',
+      user: 'organization:contoso',
       relation: 'owner',
       object: 'repo:contoso/tooling',
     },
@@ -557,7 +566,7 @@ What we still lack is the ability to create "default permissions" for the organi
 
 We need a way to consider the organization members, not just direct relations to the repo when getting a check for:
 
-<CheckRequestViewer user={'erik'} relation={'admin'} object={'repo:contoso/tooling'} />
+<CheckRequestViewer user={'user:erik'} relation={'admin'} object={'repo:contoso/tooling'} />
 
 More details on this technique can be found in the section [Modeling Parent-Child Objects](../parent-child.mdx).
 
@@ -574,12 +583,12 @@ We express it like this:
           {
             tupleToUserset: {
               // read all tuples related to tooling as owner
-              // which returns [{ "user": "org:contoso", "relation": "owner", "object": "repo:contoso/tooling" }]
+              // which returns [{ "user": "organization:contoso", "relation": "owner", "object": "repo:contoso/tooling" }]
               tupleset: {
                 relation: 'owner',
               },
-              // and for each tuple return all usersets that match the following, replacing $TUPLE_USERSET_OBJECT with org:contoso
-              // this will return tuples of shape { object: "org:contoso", "repo_admin", "user": ??? }
+              // and for each tuple return all usersets that match the following, replacing $TUPLE_USERSET_OBJECT with organization:contoso
+              // this will return tuples of shape { object: "organization:contoso", "repo_admin", "user": ??? }
               computedUserset: {
                 relation: 'repo_admin',
               },
@@ -602,18 +611,18 @@ What the added section is doing is:
 
 1. read all relationship tuples related to repo:contoso/tooling as parent which returns:
 
-`[{ "object": "repo:contoso/tooling", "relation": "parent", "user": "org:contoso" }]`
+`[{ "object": "repo:contoso/tooling", "relation": "parent", "user": "organization:contoso" }]`
 
 2. for each relationship tuple read, return all usersets that match the following, returning tuples of shape:
 
-`{ "object": "org:contoso", "repo_admin", "user": ??? }`
+`{ "object": "organization:contoso", "repo_admin", "user": ??? }`
 
 :::
 
 What should the **users** in those relationship tuples with **???** be?
 
 - Well:
-  - If the base permission for org contoso is repo_admin then it should be **org:contoso#member**.
+  - If the base permission for org contoso is repo_admin then it should be **organization:contoso#member**.
   - If the base permission for org contoso is NOT repo_admin, then it should be empty (no relationship tuple).
 - Whenever the value of this dropdown changes:
   ![Selecting new permission level from base permissions drop-down](https://docs.github.com/assets/images/help/organizations/base-permissions-drop-down.png)
@@ -621,9 +630,9 @@ What should the **users** in those relationship tuples with **???** be?
     <WriteRequestViewer
       relationshipTuples={[
         {
-          user: 'org:contoso#member',
+          user: 'organization:contoso#member',
           relation: 'repo_admin',
-          object: 'org:contoso',
+          object: 'organization:contoso',
         },
       ]}
     />
@@ -633,6 +642,9 @@ The updated authorization model looks like this:
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'repo',
         relations: {
@@ -737,7 +749,7 @@ The updated authorization model looks like this:
         },
       },
       {
-        type: 'org',
+        type: 'organization',
         relations: {
           owner: {
             this: {},

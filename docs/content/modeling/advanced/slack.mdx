@@ -154,26 +154,32 @@ Here is how you would express than in <ProductName format={ProductNameFormat.Sho
 
 <AuthzModelSnippetViewer
   configuration={{
-    type: 'workspace', // objects of type workspace
-    relations: {
-      // have users related to them as...
-      legacy_admin: {
-        // Legacy Admins
-        this: {},
-      },
-      channels_admin: {
-        // Channels Admin
-        this: {},
-      },
-      member: {
-        // Member
-        this: {},
-      },
-      guest: {
-        // Guest
-        this: {},
-      },
+    type_definitions: [
+    {
+      type: 'user',
     },
+    {
+      type: 'workspace', // objects of type workspace
+      relations: {
+        // have users related to them as...
+        legacy_admin: {
+          // Legacy Admins
+          this: {},
+        },
+        channels_admin: {
+          // Channels Admin
+          this: {},
+        },
+        member: {
+          // Member
+          this: {},
+        },
+        guest: {
+          // Guest
+          this: {},
+        },
+      },
+    }]
   }}
 />
 
@@ -209,6 +215,9 @@ To represent permissions in <ProductName /> we use <ProductConcept section="what
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'workspace',
         relations: {
@@ -259,7 +268,7 @@ If we want to say `amy` is a `legacy_admin` of `workspace:sandcastle` we create 
   relationshipTuples={[
     {
       _description: 'Amy is a Legacy Admin in the Sandcastle workspace',
-      user: 'amy',
+      user: 'user:amy',
       relation: 'legacy_admin',
       object: 'workspace:sandcastle',
     },
@@ -268,7 +277,7 @@ If we want to say `amy` is a `legacy_admin` of `workspace:sandcastle` we create 
 
 We can now ask <ProductName /> "is `amy` a legacy_admin of **workspace:sandcastle**?"
 
-<CheckRequestViewer user={'amy'} relation={'legacy_admin'} object={'workspace:sandcastle'} allowed={true} />
+<CheckRequestViewer user={'user:amy'} relation={'legacy_admin'} object={'workspace:sandcastle'} allowed={true} />
 
 We can also say that `catherine` is a `member` of `workspace:sandcastle`:
 
@@ -276,7 +285,7 @@ We can also say that `catherine` is a `member` of `workspace:sandcastle`:
   relationshipTuples={[
     {
       _description: 'Catherine is a Member in the Sandcastle workspace',
-      user: 'catherine',
+      user: 'user:catherine',
       relation: 'member',
       object: 'workspace:sandcastle',
     },
@@ -285,11 +294,11 @@ We can also say that `catherine` is a `member` of `workspace:sandcastle`:
 
 And verify by <ProductConcept section="what-is-a-check-request" linkName="asking" /> <ProductName />
 
-<CheckRequestViewer user={'catherine'} relation={'member'} object={'workspace:sandcastle'} allowed={true} />
+<CheckRequestViewer user={'user:catherine'} relation={'member'} object={'workspace:sandcastle'} allowed={true} />
 
 Catherine, on the other hand, is not a legacy_admin of workspace:sandcastle.
 
-<CheckRequestViewer user={'catherine'} relation={'legacy_admin'} object={'workspace:sandcastle'} allowed={false} />
+<CheckRequestViewer user={'user:catherine'} relation={'legacy_admin'} object={'workspace:sandcastle'} allowed={false} />
 
 Repeat this process for the other relationships
 
@@ -297,19 +306,19 @@ Repeat this process for the other relationships
 [
   {
     // Bob is a Channels Admin in the Sandcastle workspace
-    user: 'bob',
+    user: 'user:bob',
     relation: 'channels_admin',
     object: 'workspace:sandcastle',
   },
   {
     // David is a guest in the Sandcastle workspace
-    user: 'david',
+    user: 'user:david',
     relation: 'guest',
     object: 'workspace:sandcastle',
   },
   {
     // Emily is a Member in the Sandcastle workspace
-    user: 'emily',
+    user: 'user:emily',
     relation: 'member',
     object: 'workspace:sandcastle',
   },
@@ -320,19 +329,19 @@ Repeat this process for the other relationships
   relationshipTuples={[
     {
       _description: 'Bob is a Channels Admin in the Sandcastle workspace',
-      user: 'bob',
+      user: 'user:bob',
       relation: 'channels_admin',
       object: 'workspace:sandcastle',
     },
     {
       _description: 'David is a guest in the Sandcastle workspace',
-      user: 'david',
+      user: 'user:david',
       relation: 'guest',
       object: 'workspace:sandcastle',
     },
     {
       _description: 'Emily is a Member in the Sandcastle workspace',
-      user: 'emily',
+      user: 'user:emily',
       relation: 'member',
       object: 'workspace:sandcastle',
     },
@@ -343,7 +352,7 @@ Repeat this process for the other relationships
 
 To verify, we can issue <ProductConcept section="what-is-a-check-request" linkName="check request" /> to verify it is working as expected.
 
-<CheckRequestViewer user={'amy'} relation={'legacy_admin'} object={'workspace:sandcastle'} allowed={true} />
+<CheckRequestViewer user={'user:amy'} relation={'legacy_admin'} object={'workspace:sandcastle'} allowed={true} />
 
 Let's try to verify the followings:
 
@@ -360,7 +369,7 @@ Let's try to verify the followings:
 
 Some of the queries that you ran earlier, while returning the correct response, do not match reality. One of which is:
 
-<CheckRequestViewer user={'amy'} relation={'member'} object={'workspace:sandcastle'} allowed={false} />
+<CheckRequestViewer user={'user:amy'} relation={'member'} object={'workspace:sandcastle'} allowed={false} />
 
 As you saw before, running this query will return `amy is not a member of workspace:sandcastle`, which is correct based on the data you have given <ProductName format={ProductNameFormat.LongForm}/> so far. But in reality, Amy, who is a `legacy_admin` already has an <ProductConcept section="what-are-direct-and-implied-relationships" linkName="implied" /> `channels_admin` and `member` relations. In fact anyone (other than a guest) is a `member` of the workspace.
 
@@ -371,6 +380,9 @@ With the following updated <ProductConcept section="what-is-a-type-definition" l
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'workspace',
         relations: {
@@ -428,7 +440,7 @@ With the following updated <ProductConcept section="what-is-a-type-definition" l
 
 We can then verify `amy` is a `member` of `workspace:sandcastle`.
 
-<CheckRequestViewer user={'amy'} relation={'member'} object={'workspace:sandcastle'} allowed={true} />
+<CheckRequestViewer user={'user:amy'} relation={'member'} object={'workspace:sandcastle'} allowed={true} />
 
 We can check for other users and relationships.
 
@@ -544,6 +556,9 @@ As a result, the authorization model is:
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'workspace',
         relations: {
@@ -670,12 +685,12 @@ And to indicate that Amy and Emily can write to it:
     {
       _description:
         'Due to the configuration update you added earlier, writer relation is enough to imply a viewer relation',
-      user: 'amy',
+      user: 'user:amy',
       relation: 'writer',
       object: 'channel:general',
     },
     {
-      user: 'emily',
+      user: 'user:emily',
       relation: 'writer',
       object: 'channel:general',
     },
@@ -689,12 +704,12 @@ The `#marketing-internal` is visible to only Bob and Emily. They can view and wr
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'bob',
+      user: 'user:bob',
       relation: 'writer',
       object: 'channel:marketing_internal',
     },
     {
-      user: 'emily',
+      user: 'user:emily',
       relation: 'writer',
       object: 'channel:marketing_internal',
     },
@@ -720,7 +735,7 @@ David is a guest user who can also view and write to #proj-marketing-campaign
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'david',
+      user: 'user:david',
       relation: 'writer',
       object: 'channel:proj_marketing_campaign',
     },
@@ -733,11 +748,11 @@ Now that you have added the necessary relationship tuples, you will check to mak
 
 First, we want to ensure david is not related to channel:general as viewer.
 
-<CheckRequestViewer user={'david'} relation={'viewer'} object={'channel:general'} allowed={false} />
+<CheckRequestViewer user={'user:david'} relation={'viewer'} object={'channel:general'} allowed={false} />
 
 David should be related to channel:proj_marketing_campaign as viewer.
 
-<CheckRequestViewer user={'david'} relation={'viewer'} object={'channel:proj_marketing_campaign'} allowed={true} />
+<CheckRequestViewer user={'user:david'} relation={'viewer'} object={'channel:proj_marketing_campaign'} allowed={true} />
 
 Repeat this for the following relations
 

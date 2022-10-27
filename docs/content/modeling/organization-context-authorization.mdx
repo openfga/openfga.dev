@@ -77,6 +77,9 @@ We will start with the following authorization model:
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'organization',
         relations: {
           member: {
@@ -189,31 +192,31 @@ The above state translates to the following relationship tuples:
   relationshipTuples={[
     {
       _description: 'Anne has a `project manager` role at organization A',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'project_manager',
       object: 'organization:A',
     },
     {
       _description: 'Anne has a `project manager` role at organization B',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'project_manager',
       object: 'organization:B',
     },
     {
       _description: 'Anne has a `project manager` role at organization C',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'project_manager',
       object: 'organization:C',
     },
     {
       _description: 'Beth has a `project manager` role at organization B',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'project_manager',
       object: 'organization:B',
     },
     {
       _description: 'Carl has a `project manager` role at organization C',
-      user: 'carl',
+      user: 'user:carl',
       relation: 'project_manager',
       object: 'organization:C',
     },
@@ -258,20 +261,20 @@ With the authorization model and relationship tuples shown above, <ProductName f
 We can verify that using the following checks:
 
 - Anne can view Project X
-  <CheckRequestViewer user={'anne'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
+  <CheckRequestViewer user={'user:anne'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
 - Anne can delete Project X
-  <CheckRequestViewer user={'anne'} relation={'can_delete'} object={'project:X'} allowed={true} skipSetup={true} />
+  <CheckRequestViewer user={'user:anne'} relation={'can_delete'} object={'project:X'} allowed={true} skipSetup={true} />
 
 <details>
   <summary>More checks</summary>
   * Beth can view Project X
-  <CheckRequestViewer user={'beth'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
+  <CheckRequestViewer user={'user:beth'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
   * Beth cannot delete Project X
-  <CheckRequestViewer user={'beth'} relation={'can_delete'} object={'project:X'} allowed={false} skipSetup={true} />
+  <CheckRequestViewer user={'user:beth'} relation={'can_delete'} object={'project:X'} allowed={false} skipSetup={true} />
   * Carl cannot view Project X
-  <CheckRequestViewer user={'carl'} relation={'can_view'} object={'project:X'} allowed={false} skipSetup={true} />
+  <CheckRequestViewer user={'user:carl'} relation={'can_view'} object={'project:X'} allowed={false} skipSetup={true} />
   * Carl cannot delete Project X
-  <CheckRequestViewer user={'carl'} relation={'can_delete'} object={'project:X'} allowed={false} skipSetup={true} />
+  <CheckRequestViewer user={'user:carl'} relation={'can_delete'} object={'project:X'} allowed={false} skipSetup={true} />
 </details>
 
 Note that so far, we have not prevented Anne from viewing "Project X" even if Anne is viewing it from the context of Organization C.
@@ -364,7 +367,7 @@ The "organization" type definition then becomes:
 
 Now that we have updated our authorization model to take the current user's organization context into consideration, you will notice that Anne has lost access because nothing indicates that Anne is authorizing from the context of an organization. You can verify that by issuing the following check:
 
-<CheckRequestViewer user={'anne'} relation={'can_view'} object={'project:X'} allowed={false} skipSetup={true} />
+<CheckRequestViewer user={'user:anne'} relation={'can_view'} object={'project:X'} allowed={false} skipSetup={true} />
 
 In order for Anne to be authorized, a tuple indicating Anne's current organization context will need to be present:
 
@@ -372,7 +375,7 @@ In order for Anne to be authorized, a tuple indicating Anne's current organizati
   relationshipTuples={[
     {
       _description: 'Anne is authorizing from the context of organization:A',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'user_in_context',
       object: 'organization:A',
     },
@@ -380,7 +383,7 @@ In order for Anne to be authorized, a tuple indicating Anne's current organizati
 />
 
 We can verify this by running a check request
-<CheckRequestViewer user={'anne'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
+<CheckRequestViewer user={'user:anne'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
 
 ### Use Contextual Tuples For Context Related Checks
 
@@ -394,7 +397,7 @@ First, we will undo the [temporary step](#add-the-required-tuples-to-mark-that-a
   deleteRelationshipTuples={[
     {
       _description: 'Delete stored tuples where Anne is authorizing from the context of organization:A',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'user_in_context',
       object: 'organization:A',
     },
@@ -404,7 +407,7 @@ First, we will undo the [temporary step](#add-the-required-tuples-to-mark-that-a
 Next, when Anne is connecting from the context of organization A, <ProductName format={ProductNameFormat.ShortForm}/> will return `{"allowed":true}`:
 
 <CheckRequestViewer
-  user={'anne'}
+  user={'user:anne'}
   relation={'can_view'}
   object={'project:X'}
   allowed={true}
@@ -412,7 +415,7 @@ Next, when Anne is connecting from the context of organization A, <ProductName f
   contextualTuples={[
     {
       _description: 'Anne is authorizing from the context of organization:A',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'user_in_context',
       object: 'organization:A',
     },
@@ -422,7 +425,7 @@ Next, when Anne is connecting from the context of organization A, <ProductName f
 When Anne is connecting from the context of organization C, <ProductName format={ProductNameFormat.ShortForm}/> will return `{"allowed":false}`:
 
 <CheckRequestViewer
-  user={'anne'}
+  user={'user:anne'}
   relation={'can_view'}
   object={'project:X'}
   allowed={false}
@@ -430,7 +433,7 @@ When Anne is connecting from the context of organization C, <ProductName format=
   contextualTuples={[
     {
       _description: 'Anne is authorizing from the context of organization:A',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'user_in_context',
       object: 'organization:C',
     },
@@ -460,6 +463,9 @@ Using this, you can check that the following requirements are satisfied:
 </summary>
 <AuthzModelSnippetViewer configuration={{
   "type_definitions": [
+    {
+      "type": "user",
+    },
     {
       "type": "organization",
       "relations": {
@@ -602,27 +608,27 @@ Using this, you can check that the following requirements are satisfied:
 <WriteRequestViewer relationshipTuples={[
   {
     "_description": "Anne has a `project manager` role at organization A",
-    "user": "anne",
+    "user": "user:anne",
     "relation": "project_manager",
     "object": "organization:A"
   }, {
     "_description": "Anne has a `project manager` role at organization B",
-    "user": "anne",
+    "user": "user:anne",
     "relation": "project_manager",
     "object": "organization:B"
   }, {
     "_description": "Anne has a `project manager` role at organization C",
-    "user": "anne",
+    "user": "user:anne",
     "relation": "project_manager",
     "object": "organization:C"
   }, {
     "_description": "Beth has a `project manager` role at organization B",
-    "user": "beth",
+    "user": "user:beth",
     "relation": "project_manager",
     "object": "organization:B"
   }, {
     "_description": "Carl has a `project manager` role at organization C",
-    "user": "carl",
+    "user": "user:carl",
     "relation": "project_manager",
     "object": "organization:C"
   }, {

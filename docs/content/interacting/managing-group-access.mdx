@@ -54,6 +54,9 @@ You have two <ProductConcept section="what-is-a-type" linkName="types" />:
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'company',
         relations: {
           employee: {
@@ -115,7 +118,7 @@ If we also write a tuple that says that Anne is a `employee` of `company:xyz`, l
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'anne',
+      user: 'user:anne',
       relation: 'employee',
       object: 'company:xyz',
     },
@@ -126,11 +129,11 @@ If we also write a tuple that says that Anne is a `employee` of `company:xyz`, l
 
 Then a call to the Check API to see whether Anne can read `document:planning` will return true:
 
-<CheckRequestViewer user={'anne'} relation={'reader'} object={'document:planning'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'reader'} object={'document:planning'} allowed={true} />
 
 The same check for a different user Becky, however, will return false, because Becky does not have an `employee` relationship with `company:xyz`:
 
-<CheckRequestViewer user={'becky'} relation={'reader'} object={'document:planning'} allowed={false} />
+<CheckRequestViewer user={'user:becky'} relation={'reader'} object={'document:planning'} allowed={false} />
 
 ## Related Sections
 

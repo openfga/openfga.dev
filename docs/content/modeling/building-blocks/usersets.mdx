@@ -37,6 +37,9 @@ Imagine the following authorization model:
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'org',
         relations: {
           member: {
@@ -68,7 +71,7 @@ Now let us assume that the store has the following tuples:
     },
     {
       _description: 'Anne is part of the userset "Members of the xyz org"',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'member',
       object: 'org:xyz',
     },
@@ -77,7 +80,7 @@ Now let us assume that the store has the following tuples:
 
 If we call the <ProductConcept section="what-is-a-check-request" linkName="check API" /> to see if user `anne` has a `reader` relationship with `document:budget`, <ProductName format={ProductNameFormat.ShortForm}/> will check whether `anne` is part of the userset that does have a `reader` relationship. Because she is part of that userset, the request will return true:
 
-<CheckRequestViewer user={'anne'} relation={'reader'} object={'document:budget'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'reader'} object={'document:budget'} allowed={true} />
 
 ## How Do Expand Requests Work With Usersets?
 
@@ -86,6 +89,9 @@ Imagine the following authorization model:
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'document',
         relations: {
@@ -126,7 +132,7 @@ If we wanted to see which users and usersets have a `reader` relationship with `
             "type": "document:budget#reader",
             "leaf": {
               "users": {
-                "users": ["bob"]
+                "users": ["user:bob"]
               }
             }
           },

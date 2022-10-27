@@ -61,6 +61,9 @@ Let us also assume that we have:
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'document',
         relations: {
           owner: {
@@ -101,25 +104,25 @@ The current state of the system is represented by the following relationship tup
     },
     {
       _description: 'Becky is a writer to the planning document',
-      user: 'becky',
+      user: 'user:becky',
       relation: 'writer',
       object: 'document:planning',
     },
     {
       _description: 'Carl is a writer to the planning document',
-      user: 'carl',
+      user: 'user:carl',
       relation: 'writer',
       object: 'document:planning',
     },
     {
       _description: 'Becky is a member of the organization ABC',
-      user: 'becky',
+      user: 'user:becky',
       relation: 'member',
       object: 'organization:ABC',
     },
     {
       _description: 'Carl is a member of the organization XYZ',
-      user: 'carl',
+      user: 'user:carl',
       relation: 'member',
       object: 'organization:XYZ',
     },
@@ -159,9 +162,9 @@ With the above authorization model and relationship tuples, <ProductName format=
 
 We can verify that by issuing two check requests:
 
-<CheckRequestViewer user={'becky'} relation={'can_write'} object={'document:planning'} allowed={true} />
+<CheckRequestViewer user={'user:becky'} relation={'can_write'} object={'document:planning'} allowed={true} />
 
-<CheckRequestViewer user={'carl'} relation={'can_write'} object={'document:planning'} allowed={true} />
+<CheckRequestViewer user={'user:carl'} relation={'can_write'} object={'document:planning'} allowed={true} />
 
 What we would like to do is offer a way so that a document can be written by Becky and Carl, but only writers who are also members of the organization that owns the document can remove it.
 
@@ -177,6 +180,9 @@ The first step is to add the relation definition for `can_delete` so that it req
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'document',
         relations: {
@@ -234,11 +240,11 @@ The first step is to add the relation definition for `can_delete` so that it req
 
 To verify that our solutions work, we need to check that Becky can delete the planning document because she is a writer AND she is a member of organization:ABC that owns the planning document.
 
-<CheckRequestViewer user={'becky'} relation={'can_delete'} object={'document:planning'} allowed={true} />
+<CheckRequestViewer user={'user:becky'} relation={'can_delete'} object={'document:planning'} allowed={true} />
 
 However, Carl cannot delete the planning document because although he is a writer, Carl is not a member of organization:ABC that owns the planning document.
 
-<CheckRequestViewer user={'carl'} relation={'can_delete'} object={'document:planning'} allowed={false} />
+<CheckRequestViewer user={'user:carl'} relation={'can_delete'} object={'document:planning'} allowed={false} />
 
 ## Related Sections
 

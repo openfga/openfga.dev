@@ -51,6 +51,9 @@ You have an _<ProductConcept section="what-is-an-object" linkName="object" />_ c
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'document',
         relations: {
           editor: {
@@ -101,6 +104,9 @@ We need to define the _<ProductConcept section="what-is-an-object" linkName="obj
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'document',
         relations: {
           editor: {
@@ -127,7 +133,7 @@ We can now assign _<ProductConcept section="what-is-a-user" linkName="users" />_
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'alice',
+      user: 'user:alice',
       relation: 'member',
       object: 'team:writers',
     },
@@ -160,7 +166,7 @@ Now that we have:
 
 This means that if we \*<ProductConcept section="what-is-a-check-request" linkName="check" />**\*is alice an editor of document:meeting_notes.doc**? We would get the following:
 
-<CheckRequestViewer user={'alice'} relation={'editor'} object={'document:meeting_notes.doc'} allowed={true} />
+<CheckRequestViewer user={'user:alice'} relation={'editor'} object={'document:meeting_notes.doc'} allowed={true} />
 
 The chain of resolution becomes:
 

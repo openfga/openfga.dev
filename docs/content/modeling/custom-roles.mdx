@@ -56,6 +56,9 @@ We'll start with the following authorization model showing a system with an `ass
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'asset-category',
         relations: {
           viewer: {
@@ -145,6 +148,9 @@ The authorization model becomes this:
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'asset-category',
         relations: {
           viewer: {
@@ -189,13 +195,13 @@ Once we've added the `role` type, we can assign roles to Anne and Beth. Anne is 
   relationshipTuples={[
     {
       _description: 'Anne is assigned the media-manager role',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'assignee',
       object: 'role:media-manager',
     },
     {
       _description: 'Beth is assigned the media-viewer role',
-      user: 'beth',
+      user: 'user:beth',
       relation: 'assignee',
       object: 'role:media-viewer',
     },
@@ -206,7 +212,7 @@ We can verify they are members of said roles by issuing the following check requ
 
 ![Image showing expected membership checks](./assets/custom-roles-membership-checks.svg)
 
-<CheckRequestViewer user={'anne'} relation={'assignee'} object={'role:media-manager'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'assignee'} object={'role:media-manager'} allowed={true} />
 
 ### 03. Use Relationship Tuples To Associate Permissions With The Roles
 
@@ -235,7 +241,7 @@ To ensure our model works, it needs to match our expectations:
 
 ![Image showing expected results](./assets/custom-roles-expectations.svg)
 
-<CheckRequestViewer user={'anne'} relation={'editor'} object={'asset-category:logos'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'editor'} object={'asset-category:logos'} allowed={true} />
 
 The checks come back as we expect, so our model is working correctly.
 

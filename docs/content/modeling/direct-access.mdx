@@ -47,6 +47,9 @@ You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `d
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'document',
         relations: {
           viewer: {
@@ -89,7 +92,7 @@ Let us add a _<ProductConcept section="what-is-a-relationship-tuple" linkName="r
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: 'bob',
+      user: 'user:bob',
       relation: 'editor',
       object: 'document:meeting_notes.doc',
     },
@@ -100,11 +103,11 @@ Let us add a _<ProductConcept section="what-is-a-relationship-tuple" linkName="r
 
 Once that _relationship tuple_ is added to <ProductName format={ProductNameFormat.ShortForm} />, we can _<ProductConcept section="what-is-a-check-request" linkName="check" />_ if the relationship is valid by asking the following: **"is bob an editor of document:meeting_notes.doc?"**
 
-<CheckRequestViewer user={'bob'} relation={'editor'} object={'document:meeting_notes.doc'} allowed={true} />
+<CheckRequestViewer user={'user:bob'} relation={'editor'} object={'document:meeting_notes.doc'} allowed={true} />
 
 If we were to _check_ the following: **"is bob a viewer of document:meeting_notes.doc?"** it would return **false** since that _relationship tuple_ does not exist within <ProductName format={ProductNameFormat.ShortForm}/> yet.
 
-<CheckRequestViewer user={'bob'} relation={'viewer'} object={'document:meeting_notes.doc'} allowed={false} />
+<CheckRequestViewer user={'user:bob'} relation={'viewer'} object={'document:meeting_notes.doc'} allowed={false} />
 
 :::caution
 **Note:** When creating relationship tuples for <ProductName format={ProductNameFormat.LongForm}/> make sure to use unique ids for each object and user within your application domain. We're using first names and simple ids to just illustrate an easy-to-follow example.

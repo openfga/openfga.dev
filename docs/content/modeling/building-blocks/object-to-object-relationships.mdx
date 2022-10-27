@@ -54,6 +54,9 @@ You will start with the _<ProductConcept section="what-is-an-authorization-model
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'document',
         relations: {
           editor: {
@@ -102,6 +105,9 @@ To represent that a `folder` can be a `parent` of a `document`, we first need to
 <AuthzModelSnippetViewer
   configuration={{
     type_definitions: [
+      {
+        type: 'user',
+      },
       {
         type: 'document',
         relations: {
@@ -169,6 +175,9 @@ To do this, the authorization model will have two <ProductConcept section="what-
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
         type: 'feature',
         relations: {
           associated_plan: {
@@ -221,7 +230,7 @@ To realize the relationship, we will need to add the following relationship tupl
   relationshipTuples={[
     {
       _description: 'make anne as subscriber_member for plan:advanced',
-      user: 'anne',
+      user: 'user:anne',
       relation: 'subscriber_member',
       object: 'plan:advanced',
     },
@@ -238,7 +247,7 @@ To realize the relationship, we will need to add the following relationship tupl
 
 To validate that the authorization model and relationship tuples are correct, we can ask the question:
 
-<CheckRequestViewer user={'anne'} relation={'access'} object={'feature:data_preview'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'access'} object={'feature:data_preview'} allowed={true} />
 
 We see that `anne` is allowed to `access` `feature:data_preview` without requiring direct relationship.
 
@@ -259,8 +268,8 @@ At any point in time, `plan:advanced` may be disassociated from `feature:data_pr
 
 When this is the case, `anne` will no longer have `access` to `feature:data_preview` even though she is still a `subscriber_member` of `plan:advanced`.
 
-<CheckRequestViewer user={'anne'} relation={'access'} object={'feature:data_preview'} allowed={false} />
-<CheckRequestViewer user={'anne'} relation={'subscriber_member'} object={'plan:advanced'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'access'} object={'feature:data_preview'} allowed={false} />
+<CheckRequestViewer user={'user:anne'} relation={'subscriber_member'} object={'plan:advanced'} allowed={true} />
 
 ## Related Sections
 
