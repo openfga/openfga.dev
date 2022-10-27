@@ -60,6 +60,11 @@ You have an _<ProductConcept section="what-is-an-object" linkName="object" />_ c
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -113,12 +118,22 @@ We need to define the _<ProductConcept section="what-is-an-object" linkName="obj
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'team', 'relation': 'member' }] },
+          },
+        },
       },
       {
         type: 'team',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },

@@ -170,6 +170,11 @@ Imagine you have the following authorization model:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{type: 'user'}] },
+          },
+        },
       },
       {
         type: 'folder',
@@ -178,12 +183,22 @@ Imagine you have the following authorization model:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{type: 'group', relation: 'member'}, {type: 'user'}] },
+          },
+        },
       },
       {
         type: 'doc',
         relations: {
           owner: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{type: 'group', relation: 'member'}, {type: 'user'}] },
           },
         },
       },

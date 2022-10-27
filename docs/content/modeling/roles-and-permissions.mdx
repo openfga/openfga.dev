@@ -75,6 +75,12 @@ You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `t
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -136,6 +142,12 @@ Relating roles within <ProductName format={ProductNameFormat.ShortForm}/> can be
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -190,6 +202,12 @@ To allow `viewers` of a `trip` to have **permissions to view bookings** and `own
                 },
               ],
             },
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },

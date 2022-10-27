@@ -66,6 +66,12 @@ and `writer`. All writers are readers. `bob` has a `writer` relationship with `d
             },
           },
         },
+        metadata: {
+          relations: {
+            writer: { directly_related_user_types: [{type: 'user'}] },
+            reader: { directly_related_user_types: [{type: 'user'}] },
+          },
+        },
       },
     ],
   }}

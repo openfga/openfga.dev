@@ -150,6 +150,11 @@ Similar to the example above, start with a basic listing of the types and their 
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            associated_plan: { directly_related_user_types: [{ type: 'plan' }] },
+          },
+        },
       },
       {
         type: 'plan',
@@ -158,12 +163,22 @@ Similar to the example above, start with a basic listing of the types and their 
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            subscriber: { directly_related_user_types: [{ type: 'organization' }] },
+          },
+        },
       },
       {
         type: 'organization',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -318,6 +333,12 @@ Add it now. Like so:
         this: {},
       },
     },
+    metadata: {
+      relations: {
+        associated_plan: { directly_related_user_types: [{ type: 'plan' }] },
+        access: { directly_related_user_types: [{ type: 'user' }] },
+      },
+    },
   }}
 />
 
@@ -355,6 +376,12 @@ The resulting updated configuration would be:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            associated_plan: { directly_related_user_types: [{ type: 'plan' }] },
+            access: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
       {
         type: 'plan',
@@ -363,12 +390,22 @@ The resulting updated configuration would be:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            subscriber: { directly_related_user_types: [{ type: 'organization' }] },
+          },
+        },
       },
       {
         type: 'organization',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            subscriber: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -443,6 +480,16 @@ If you want to give all subscribers on a plan access to a feature, you can do it
         },
       },
     },
+    metadata: {
+      relations: {
+        associated_plan: { directly_related_user_types: [{ type: 'plan' }] },
+        access: {
+          directly_related_user_types: [
+            { type: 'user' },
+          ],
+        },
+      },
+    },
   }}
 />
 
@@ -506,6 +553,16 @@ Replace all the existing code you had previously with the updated authorization 
             },
           },
         },
+        metadata: {
+          relations: {
+            associated_plan: { directly_related_user_types: [{ type: 'plan' }] },
+            access: {
+              directly_related_user_types: [
+                { type: 'user' },
+              ],
+            },
+          },
+        },
       },
       {
         type: 'plan',
@@ -514,12 +571,22 @@ Replace all the existing code you had previously with the updated authorization 
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            subscriber: { directly_related_user_types: [{ type: 'organization' }] },
+          },
+        },
       },
       {
         type: 'organization',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -571,6 +638,16 @@ In order to do that, you will add a relation on the plan, that indicates that al
             },
           },
         },
+        metadata: {
+          relations: {
+            associated_plan: { directly_related_user_types: [{ type: 'plan' }] },
+            access: {
+              directly_related_user_types: [
+                { type: 'user' },
+              ],
+            },
+          },
+        },
       },
       {
         type: 'plan',
@@ -592,12 +669,22 @@ In order to do that, you will add a relation on the plan, that indicates that al
             },
           },
         },
+        metadata: {
+          relations: {
+            subscriber: { directly_related_user_types: [{ type: 'organization' }] },
+          },
+        },
       },
       {
         type: 'organization',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -652,6 +739,16 @@ To disallow a direct relationship, you need to remove `self`. The following snip
         },
       },
     },
+    metadata: {
+      relations: {
+        associated_plan: { directly_related_user_types: [{ type: 'plan' }] },
+        access: {
+          directly_related_user_types: [
+            { type: 'user' },
+          ],
+        },
+      },
+    },
   }}
 />
 
@@ -673,6 +770,11 @@ becomes
             relation: 'subscriber_member',
           },
         },
+      },
+    },
+    metadata: {
+      relations: {
+        associated_plan: { directly_related_user_types: [{ type: 'plan' }] },
       },
     },
   }}
@@ -715,6 +817,11 @@ Ensure that your authorization model matches the one below
             },
           },
         },
+        metadata: {
+          relations: {
+            associated_plan: { directly_related_user_types: [{ type: 'plan' }] },
+          },
+        },
       },
       {
         type: 'plan',
@@ -733,12 +840,22 @@ Ensure that your authorization model matches the one below
             },
           },
         },
+        metadata: {
+          relations: {
+            subscriber: { directly_related_user_types: [{ type: 'organization' }] },
+          },
+        },
       },
       {
         type: 'organization',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },

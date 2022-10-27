@@ -146,6 +146,14 @@ To represent permissions in <ProductName format={ProductNameFormat.ShortForm}/> 
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }] },
+            commenter: { directly_related_user_types: [{ type: 'user' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -161,6 +169,11 @@ The <ProductName format={ProductNameFormat.LongForm}/> service determines if a <
       viewer: {
         // "viewer": if those users belong to:
         this: {}, // the userset of all users related to the document as "viewer"
+      },
+    },
+    metadata: {
+      relations: {
+        viewer: { directly_related_user_types: [{ type: 'user' }] },
       },
     },
   }}
@@ -272,6 +285,14 @@ To make <ProductName format={ProductNameFormat.ShortForm}/> aware of this "conce
             },
           },
         },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }] },
+            commenter: { directly_related_user_types: [{ type: 'user' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -309,10 +330,80 @@ To add support for domains and members all we need to do is add this object to t
   configuration={{
     type_definitions: [
       {
+        type: 'user',
+      },
+      {
+        type: 'document', // objects of type document
+        relations: {
+          // have users related to them as
+          owner: {
+            this: {},
+          },
+          writer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'owner',
+                  },
+                },
+              ],
+            },
+          },
+          commenter: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'writer',
+                  },
+                },
+              ],
+            },
+          },
+          viewer: {
+            // "viewer": if they belong to
+            union: {
+              // any of (the union of) these user sets
+              child: [
+                {
+                  this: {}, // the userset of all users related to the document as "viewer"
+                },
+                {
+                  computedUserset: {
+                    // the userset of all users related to the document as "commenter"
+                    relation: 'commenter',
+                  },
+                },
+              ],
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            commenter: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+          },
+        },
+      },
+      {
         type: 'domain',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -429,6 +520,15 @@ We need to add the notion that a **document** can be the **parent** of another *
                 },
               ],
             },
+          },
+        },
+        metadata: {
+          relations: {
+            parent: { directly_related_user_types: [{ type: 'document' }] },
+            owner: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            commenter: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
           },
         },
       },
@@ -636,12 +736,26 @@ The updated authorization model looks like this:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            parent: { directly_related_user_types: [{ type: 'document' }] },
+            owner: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            commenter: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+          },
+        },
       },
       {
         type: 'domain',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },

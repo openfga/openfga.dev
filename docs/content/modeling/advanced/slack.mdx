@@ -179,6 +179,14 @@ Here is how you would express than in <ProductName format={ProductNameFormat.Sho
           this: {},
         },
       },
+      metadata: {
+        relations: {
+          legacy_admin: { directly_related_user_types: [{ type: 'user' }] },
+          channels_admin: { directly_related_user_types: [{ type: 'user' }] },
+          member: { directly_related_user_types: [{ type: 'user' }] },
+          guest: { directly_related_user_types: [{ type: 'user' }] },
+        },
+      },
     }]
   }}
 />
@@ -234,6 +242,14 @@ To represent permissions in <ProductName /> we use <ProductConcept section="what
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            legacy_admin: { directly_related_user_types: [{ type: 'user' }] },
+            channels_admin: { directly_related_user_types: [{ type: 'user' }] },
+            member: { directly_related_user_types: [{ type: 'user' }] },
+            guest: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -249,6 +265,11 @@ The <ProductName format={ProductNameFormat.LongForm}/> service determines if a <
       member: {
         // "member": if those users belong to:
         this: {}, // the userset of all users related to the document as "member"
+      },
+    },
+    metadata: {
+      relations: {
+        member: { directly_related_user_types: [{ type: 'user' }] },
       },
     },
   }}
@@ -433,6 +454,14 @@ With the following updated <ProductConcept section="what-is-a-type-definition" l
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            legacy_admin: { directly_related_user_types: [{ type: 'user' }] },
+            channels_admin: { directly_related_user_types: [{ type: 'user' }] },
+            member: { directly_related_user_types: [{ type: 'user' }] },
+            guest: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -494,6 +523,29 @@ The authorization model already has a section describing the workspace, what rem
         this: {},
       },
     },
+    metadata: {
+      relations: {
+        parent_workspace: { directly_related_user_types: [{ type: 'workspace' }] },
+        writer: {
+          directly_related_user_types: [
+            { type: 'user' },
+            { type: 'workspace', relation: 'legacy_admin' },
+            { type: 'workspace', relation: 'channels_admin' },
+            { type: 'workspace', relation: 'member' },
+            { type: 'workspace', relation: 'guest' },
+          ],
+        },
+        viewer: {
+          directly_related_user_types: [
+            { type: 'user' },
+            { type: 'workspace', relation: 'legacy_admin' },
+            { type: 'workspace', relation: 'channels_admin' },
+            { type: 'workspace', relation: 'member' },
+            { type: 'workspace', relation: 'guest' },
+          ],
+        },
+      },
+    },
   }}
 />
 
@@ -535,6 +587,29 @@ There is an <ProductConcept section="what-are-direct-and-implied-relationships" 
                 relation: 'writer',
               },
             },
+          ],
+        },
+      },
+    },
+    metadata: {
+      relations: {
+        parent_workspace: { directly_related_user_types: [{ type: 'workspace' }] },
+        writer: {
+          directly_related_user_types: [
+            { type: 'user' },
+            { type: 'workspace', relation: 'legacy_admin' },
+            { type: 'workspace', relation: 'channels_admin' },
+            { type: 'workspace', relation: 'member' },
+            { type: 'workspace', relation: 'guest' },
+          ],
+        },
+        viewer: {
+          directly_related_user_types: [
+            { type: 'user' },
+            { type: 'workspace', relation: 'legacy_admin' },
+            { type: 'workspace', relation: 'channels_admin' },
+            { type: 'workspace', relation: 'member' },
+            { type: 'workspace', relation: 'guest' },
           ],
         },
       },
@@ -602,6 +677,14 @@ As a result, the authorization model is:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            legacy_admin: { directly_related_user_types: [{ type: 'user' }] },
+            channels_admin: { directly_related_user_types: [{ type: 'user' }] },
+            member: { directly_related_user_types: [{ type: 'user' }] },
+            guest: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
       {
         type: 'channel',
@@ -623,6 +706,29 @@ As a result, the authorization model is:
                     relation: 'writer',
                   },
                 },
+              ],
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            parent_workspace: { directly_related_user_types: [{ type: 'workspace' }] },
+            writer: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'workspace', relation: 'legacy_admin' },
+                { type: 'workspace', relation: 'channels_admin' },
+                { type: 'workspace', relation: 'member' },
+                { type: 'workspace', relation: 'guest' },
+              ],
+            },
+            viewer: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'workspace', relation: 'legacy_admin' },
+                { type: 'workspace', relation: 'channels_admin' },
+                { type: 'workspace', relation: 'member' },
+                { type: 'workspace', relation: 'guest' },
               ],
             },
           },

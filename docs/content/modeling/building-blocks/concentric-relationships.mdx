@@ -68,6 +68,12 @@ Let us also assume that we have a `document` called "meeting_notes.doc" and bob 
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{type: 'user'}] },
+            editor: { directly_related_user_types: [{type: 'user'}] },
+          },
+        },
       },
     ],
   }}
@@ -142,6 +148,12 @@ Our authorization model becomes the following:
           },
           editor: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{type: 'user'}] },
+            editor: { directly_related_user_types: [{type: 'user'}] },
           },
         },
       },

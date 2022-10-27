@@ -92,6 +92,13 @@ We will start with the following authorization model:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{type: 'user'}] },
+            project_manager: { directly_related_user_types: [{type: 'user'}] },
+            project_editor: { directly_related_user_types: [{type: 'user'}] },
+          },
+        },
       },
       {
         type: 'project',
@@ -167,6 +174,12 @@ We will start with the following authorization model:
               object: '',
               relation: 'editor',
             },
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{type: 'organization'}] },
+            partner: { directly_related_user_types: [{type: 'organization'}] },
           },
         },
       },
@@ -356,6 +369,14 @@ The "organization" type definition then becomes:
         this: {},
       },
     },
+    metadata: {
+      relations: {
+        member: { directly_related_user_types: [{type: 'user'}] },
+        project_manager: { directly_related_user_types: [{type: 'user'}] },
+        base_project_editor: { directly_related_user_types: [{type: 'user'}] },
+        user_in_context: { directly_related_user_types: [{type: 'user'}] },
+      },
+    },
   }}
 />
 
@@ -523,7 +544,15 @@ Using this, you can check that the following requirements are satisfied:
         "user_in_context": {
           "this": {}
         }
-      }
+      },
+      metadata: {
+        relations: {
+          member: { directly_related_user_types: [{type: 'user'}] },
+          project_manager: { directly_related_user_types: [{type: 'user'}] },
+          base_project_editor: { directly_related_user_types: [{type: 'user'}] },
+          user_in_context: { directly_related_user_types: [{type: 'user'}] },
+        },
+      },
     },
     {
       "type": "project",
@@ -600,7 +629,13 @@ Using this, you can check that the following requirements are satisfied:
             "relation": "editor"
           }
         }
-      }
+      },
+      metadata: {
+        relations: {
+          owner: { directly_related_user_types: [{type: 'organization'}] },
+          partner: { directly_related_user_types: [{type: 'organization'}] },
+        },
+      },
     }
   ]
 }} />

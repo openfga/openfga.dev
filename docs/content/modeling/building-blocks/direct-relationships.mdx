@@ -110,12 +110,23 @@ Direct relationships can be enabled for a specific relation on an _<ProductConce
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{type: 'user'}, {type: 'team', relation: 'member'}] },
+            editor: { directly_related_user_types: [{type: 'user'}, {type: 'team', relation: 'member'}] },
+          },
+        },
       },
       {
         type: 'team',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{type: 'user'}] },
           },
         },
       },
@@ -170,12 +181,23 @@ Let us start with the authorization model we had above:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{type: 'user'}, {type: 'team', relation: 'member'}] },
+            editor: { directly_related_user_types: [{type: 'user'}, {type: 'team', relation: 'member'}] },
+          },
+        },
       },
       {
         type: 'team',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{type: 'user'}] },
           },
         },
       },
@@ -385,12 +407,22 @@ In this section, we will investigate the effect of disabling _direct relationshi
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{type: 'user'}, {type: 'team', relation: 'member'}] },
+          },
+        },
       },
       {
         type: 'team',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{type: 'user'}] },
           },
         },
       },

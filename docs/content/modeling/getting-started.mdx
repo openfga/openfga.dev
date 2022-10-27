@@ -591,6 +591,11 @@ Remember _"How a user is added as a member to an organization is beyond the scop
         relations: {
           member: { this: '' },
         },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }, { type: 'organization', relation: 'member' }] },
+          },
+        },
       },
     ],
   }}
@@ -608,6 +613,14 @@ Relation definitions of the form “define {relation} as self" are fairly common
 :::
 
 You can read more about group membership and types in [Modeling User Groups](./user-groups.mdx).
+
+For the direct relationships, we need to figure out the object types that makes sense for the relationship tuples' user. In our organization example, it makes sense for member relations to have user of type
+- user
+- organization#member (i.e., other organization's member)
+
+However, it will not make sense for organization member's user to be of type document, folder or drive.
+
+We will specify this logic as part of directly <ProductConcept section="what-is-a-directly-related-user-type" linkName="directly related user type" />.
 
 :::note Side note
 This also automatically supports nested organizational membership if you want such a feature in your system. You could use relationship tuples like the following one to express that "members of organization A are members of organization B":
@@ -632,6 +645,11 @@ The complete <ProductConcept section="what-is-a-type-definition" linkName="type 
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }, { type: 'organization', relation: 'member' }] },
           },
         },
       },
@@ -673,6 +691,11 @@ The relation definition then should be:
         relations: {
           owner: { this: '' },
         },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }, { type: 'organization', relation: 'member' }] },
+          },
+        },
       },
     ],
   }}
@@ -700,6 +723,11 @@ The relation definition then should be:
         type: 'document',
         relations: {
           editor: { this: '' },
+        },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{ type: 'user' }, { type: 'organization', relation: 'member' }] },
+          },
         },
       },
     ],
@@ -739,6 +767,11 @@ The viewer relation is similar to the document's [editor relation](#relation-edi
         relations: {
           viewer: { this: '' },
         },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'organization', relation: 'member' }] },
+          },
+        },
       },
     ],
   }}
@@ -764,6 +797,11 @@ When a document is created a relationship tuple will be stored in <ProductName f
         type: 'document',
         relations: {
           parent: { this: '' },
+        },
+        metadata: {
+          relations: {
+            parent: { directly_related_user_types: [{ type: 'folder' }] },
+          },
         },
       },
     ],
@@ -1109,6 +1147,14 @@ The complete <ProductConcept section="what-is-a-type-definition" linkName="type 
             },
           },
         },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }, { type: 'organization', relation: 'member' }] },
+            editor: { directly_related_user_types: [{ type: 'user' }, { type: 'organization', relation: 'member' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'organization', relation: 'member' }] },
+            parent: { directly_related_user_types: [{ type: 'folder' }] },
+          },
+        },
       },
     ],
   }}
@@ -1271,6 +1317,14 @@ Combining the type definitions for document and organization, we have
               object: '',
               relation: 'owner',
             },
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }, { type: 'organization', relation: 'member' }] },
+            editor: { directly_related_user_types: [{ type: 'user' }, { type: 'organization', relation: 'member' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'organization', relation: 'member' }] },
+            parent: { directly_related_user_types: [{ type: 'folder' }] },
           },
         },
       },

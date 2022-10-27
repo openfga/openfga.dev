@@ -149,6 +149,15 @@ To represent permissions in <ProductName format={ProductNameFormat.LongForm}/> w
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            reader: { directly_related_user_types: [{ type: 'user' }] },
+            triager: { directly_related_user_types: [{ type: 'user' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }] },
+            maintainer: { directly_related_user_types: [{ type: 'user' }] },
+            admin: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -169,6 +178,11 @@ The <ProductName format={ProductNameFormat.ShortForm}/> service determines if a 
           reader: {
             // "reader", if those users belong to
             this: {}, // the userset of all users related to the repo as "reader"
+          },
+        },
+        metadata: {
+          relations: {
+            reader: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -289,6 +303,15 @@ To make <ProductName format={ProductNameFormat.ShortForm}/> aware of this "conce
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            reader: { directly_related_user_types: [{ type: 'user' }] },
+            triager: { directly_related_user_types: [{ type: 'user' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }] },
+            maintainer: { directly_related_user_types: [{ type: 'user' }] },
+            admin: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -317,6 +340,11 @@ Let us examine one of those relations in detail:
             },
           ],
         },
+      },
+    },
+    metadata: {
+      relations: {
+        reader: { directly_related_user_types: [{ type: 'user' }] },
       },
     },
   }}
@@ -356,6 +384,96 @@ To add support for teams and memberships all we need to do is add this object to
           member: {
             // "member", if those users belong to
             this: {}, // the userset of all users related to the repo as "member"
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }, { type: 'team', relation: 'member' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+In addition, the repo's relations should be add team member as a directly related user types.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'repo',
+        relations: {
+          reader: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'triager',
+                  },
+                },
+              ],
+            },
+          },
+          triager: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'writer',
+                  },
+                },
+              ],
+            },
+          },
+          writer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'maintainer',
+                  },
+                },
+              ],
+            },
+          },
+          maintainer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'admin',
+                  },
+                },
+              ],
+            },
+          },
+          admin: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            reader: { directly_related_user_types: [{ type: 'user' }, { type: 'team', relation: 'member' }] },
+            triager: { directly_related_user_types: [{ type: 'user' }, { type: 'team', relation: 'member' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }, { type: 'team', relation: 'member' }] },
+            maintainer: { directly_related_user_types: [{ type: 'user' }, { type: 'team', relation: 'member' }] },
+            admin: { directly_related_user_types: [{ type: 'user' }, { type: 'team', relation: 'member' }] },
           },
         },
       },
@@ -454,6 +572,11 @@ Let us add support for organizations and membership. Hopefully this feels famili
             this: {}, // the userset of all users related to the repo as "member"
           },
         },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -529,6 +652,43 @@ And support for repositories having owners:
           owner: {
             // An organization can "own" a repository
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            reader: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'team', relation: 'member' },
+              ],
+            },
+            triager: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'team', relation: 'member' },
+              ],
+            },
+            writer: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'team', relation: 'member' },
+              ],
+            },
+            maintainer: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'team', relation: 'member' },
+              ],
+            },
+            admin: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'team', relation: 'member' },
+              ],
+            },
+            owner: {
+              directly_related_user_types: [{ type: 'organization' }],
+            },
           },
         },
       },
@@ -747,6 +907,50 @@ The updated authorization model looks like this:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            reader: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'team', relation: 'member' },
+                { type: 'organization', relation: 'member' },
+              ],
+            },
+            triager: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'team', relation: 'member' },
+                { type: 'organization', relation: 'member' },
+              ],
+            },
+            writer: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'team', relation: 'member' },
+                { type: 'organization', relation: 'member' },
+              ],
+            },
+            maintainer: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'team', relation: 'member' },
+                { type: 'organization', relation: 'member' },
+              ],
+            },
+            admin: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'team', relation: 'member' },
+                { type: 'organization', relation: 'member' },
+              ],
+            },
+            owner: {
+              directly_related_user_types: [
+                { type: 'organization' },
+              ],
+            },
+          },
+        },
       },
       {
         type: 'organization',
@@ -756,6 +960,20 @@ The updated authorization model looks like this:
           },
           repo_admin: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            owner: {
+              directly_related_user_types: [{type: 'organization'}],
+            },
+            repo_admin: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'team', relation: 'member' },
+                { type: 'organization', relation: 'member' },
+              ],
+            },
           },
         },
       },

@@ -59,6 +59,12 @@ You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `d
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+            editor: { directly_related_user_types: [{ type: 'user' }] },
+          }
+        },
       },
     ],
   }}

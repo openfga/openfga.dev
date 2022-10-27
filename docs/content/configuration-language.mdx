@@ -45,6 +45,11 @@ Below is a sample authorization model. In the next sections we'll go over the bu
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
       {
         type: 'folder',
@@ -132,6 +137,14 @@ Below is a sample authorization model. In the next sections we'll go over the bu
                 },
               ],
             },
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            parent_folder: { directly_related_user_types: [{ type: 'folder' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
           },
         },
       },
@@ -223,6 +236,14 @@ Below is a sample authorization model. In the next sections we'll go over the bu
             },
           },
         },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            parent_folder: { directly_related_user_types: [{ type: 'folder' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+          },
+        },
       },
     ],
   }}
@@ -258,6 +279,11 @@ For example, let's take a closer look at the `team` type.
         this: {},
       },
     },
+    metadata: {
+      relations: {
+        member: { directly_related_user_types: [{ type: 'user' }, { type: 'team', relation: 'member' }] },
+      },
+    },
   }}
 />
 
@@ -281,7 +307,7 @@ In the type definition snippet above, `anne` is a `member` of `team:product` if 
 - <RelationshipTuplesViewer
     relationshipTuples={[
       {
-        user: '*',
+        user: 'user:*',
         relation: 'member',
         object: 'team:product',
         _description: 'Everyone (`*`) is directly related to the product team as a member',
@@ -335,6 +361,12 @@ You can also reference other relations on the same object. Let us look at a simp
         computedUserset: {
           relation: 'editor',
         },
+      },
+    },
+    metadata: {
+      relations: {
+        editor: { directly_related_user_types: [{ type: 'user' }] },
+        viewer: { directly_related_user_types: [{ type: 'user' }] },
       },
     },
   }}
@@ -418,6 +450,11 @@ Take a look at the _authorization model_ below.
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'folder', relation: 'viewer' }] },
+          },
+        },
       },
       {
         type: 'document',
@@ -445,6 +482,12 @@ Take a look at the _authorization model_ below.
             },
           },
         },
+        metadata: {
+          relations: {
+            parent_folder: { directly_related_user_types: [{ type: 'folder' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -454,25 +497,37 @@ The snippet below taken from the authorization model above is stating that viewe
 
 <AuthzModelSnippetViewer
   configuration={{
-    viewer: {
-      union: {
-        child: [
-          { this: {} },
-          {
-            tupleToUserset: {
-              tupleset: {
-                object: '',
-                relation: 'parent_folder',
-              },
-              computedUserset: {
-                object: '',
-                relation: 'viewer',
-              },
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          viewer: {
+            union: {
+              child: [
+                { this: {} },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent_folder',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'viewer',
+                    },
+                  },
+                },
+              ],
             },
           },
-        ],
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
-    },
+    ],
   }}
 />
 
@@ -519,22 +574,34 @@ The _union operator_ (`or` in the DSL, `union` in the JSON syntax) is used to in
 
 <AuthzModelSnippetViewer
   configuration={{
-    viewer: {
-      // a user is related to the object as a viewer if:
-      union: {
-        // they are in any of
-        child: [
-          {
-            this: {}, // the userset of all users related to the object as "viewer"; indicating that a user can be assigned a direct `viewer` relation, i.e., not implied through another relation
-          },
-          {
-            computedUserset: {
-              relation: 'editor', // the userset of all users related to the object as "editor"; indicating that a user who is an editor is also implicitly a viewer
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          viewer: {
+            // a user is related to the object as a viewer if:
+            union: {
+              // they are in any of
+              child: [
+                {
+                  this: {}, // the userset of all users related to the object as "viewer"; indicating that a user can be assigned a direct `viewer` relation, i.e., not implied through another relation
+                },
+                {
+                  computedUserset: {
+                    relation: 'editor', // the userset of all users related to the object as "editor"; indicating that a user who is an editor is also implicitly a viewer
+                  },
+                },
+              ],
             },
           },
-        ],
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
-    },
+    ],
   }}
 />
 
@@ -580,26 +647,38 @@ The _intersection operator_ (`and` in the DSL, `intersection` in the JSON syntax
 
 <AuthzModelSnippetViewer
   configuration={{
-    viewer: {
-      // a user is related to the object as a viewer if
-      intersection: {
-        // they are in all of
-        child: [
-          {
-            computedUserset: {
-              // the userset of all users related to the object as "authorized_user"
-              relation: 'authorized_user',
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          viewer: {
+            // a user is related to the object as a viewer if
+            intersection: {
+              // they are in all of
+              child: [
+                {
+                  computedUserset: {
+                    // the userset of all users related to the object as "authorized_user"
+                    relation: 'authorized_user',
+                  },
+                },
+                {
+                  computedUserset: {
+                    // the userset of all users related to the object as "editor"
+                    relation: 'editor',
+                  },
+                },
+              ],
             },
           },
-          {
-            computedUserset: {
-              // the userset of all users related to the object as "editor"
-              relation: 'editor',
-            },
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
           },
-        ],
+        },
       },
-    },
+    ],
   }}
 />
 
@@ -651,19 +730,31 @@ The _exclusion operator_ (`but not` in the DSL, `difference` in the JSON syntax)
 
 <AuthzModelSnippetViewer
   configuration={{
-    viewer: {
-      // a user is related to the object as a viewer if they are in
-      difference: {
-        base: {
-          this: {}, // the userset of all users related to the object as "viewer"
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          viewer: {
+            // a user is related to the object as a viewer if they are in
+            difference: {
+              base: {
+                this: {}, // the userset of all users related to the object as "viewer"
+              },
+              subtract: {
+                computedUserset: {
+                  relation: 'blocked', // but not in the userset of all users related to the object as "blocked"
+                },
+              },
+            },
+          },
         },
-        subtract: {
-          computedUserset: {
-            relation: 'blocked', // but not in the userset of all users related to the object as "blocked"
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
-    },
+    ],
   }}
 />
 
@@ -806,6 +897,13 @@ In the <ProductName format={ProductNameFormat.ShortForm}/> DSL, it would become:
             },
           },
         },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }] },
+            editor: { directly_related_user_types: [{ type: 'user' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -862,6 +960,13 @@ And in the <ProductName format={ProductNameFormat.ShortForm}/> JSON, it would be
             },
           },
         },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }] },
+            editor: { directly_related_user_types: [{ type: 'user' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -873,33 +978,45 @@ So the following:
 
 <AuthzModelSnippetViewer
   configuration={{
-    viewer: {
-      union: {
-        child: [
-          {
-            // a user can be assigned a direct `viewer` relation, i.e., not implied through another relation
-            this: {},
-          },
-          {
-            // a user that is an editor is also implicitly a viewer
-            computedUserset: {
-              relation: 'editor',
+    type_definitions: [
+      {
+        type: 'doc',
+        relations: {
+          viewer: {
+            union: {
+              child: [
+                {
+                  // a user can be assigned a direct `viewer` relation, i.e., not implied through another relation
+                  this: {},
+                },
+                {
+                  // a user that is an editor is also implicitly a viewer
+                  computedUserset: {
+                    relation: 'editor',
+                  },
+                },
+                {
+                  // a user that is an viewer on any of the object's parents is also implicitly a viewer on the object
+                  tupleToUserset: {
+                    tupleset: {
+                      relation: 'parent',
+                    },
+                    computedUserset: {
+                      relation: 'viewer',
+                    },
+                  },
+                },
+              ],
             },
           },
-          {
-            // a user that is an viewer on any of the object's parents is also implicitly a viewer on the object
-            tupleToUserset: {
-              tupleset: {
-                relation: 'parent',
-              },
-              computedUserset: {
-                relation: 'viewer',
-              },
-            },
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
           },
-        ],
+        },
       },
-    },
+    ],
   }}
 />
 
