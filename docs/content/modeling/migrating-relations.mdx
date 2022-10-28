@@ -21,17 +21,24 @@ import {
 
 <DocumentationNotice />
 
-Over the course of a software lifetime, we will need to make changes to an <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" /> and our goal is to avoid service disruption. In this guide we are going to discuss the steps needed when making changes to existing models.
+In the lifecycle of software development, you will need to make updates or changes to the <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />. In this guide, you will learn best practices for changing your existing authorization model. With these recommendations, you will minimize downtime and ensure your relationship models stay up to date.
 
-## Before You Start
+## Before you start 
 
-In order to understand this guide correctly you must be familiar with some <ProductConcept /> and know how to develop the things that we will list below.
+This guide assumes you are familiar with the following OpenFGA concepts:
 
-<details>
-<summary>
+- A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics
+- A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
+- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
+- A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm} />
+- [Intersection Operator](../configuration-language.mdx#the-intersection-operator): the intersection operator can be used to indicate a relationship exists if the user is in all the sets of users
 
-You will start with the _<ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />_ below,
-it represents a `document` _<ProductConcept section="what-is-a-type" linkName="type" />_ that can have users assigned as editor relation. Editor can edit document.
+## Step by step
+
+The document below is an example of a relational authorization model. In this model, you can assign users to the `editor` relation. The `editor` relation has write privileges that regular users do not.
+
+In this scenario, you will migrate the following model:
 
 </summary>
 
@@ -78,22 +85,13 @@ There are existing <ProductConcept section="what-is-a-relationship-tuple" linkNa
 
 <hr />
 
-In addition, you will need to know the following:
 
-### <ProductName format={ProductNameFormat.ShortForm} /> Concepts
-
-- A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics
-- A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
-- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
-- An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
-- A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm} />
-- [Intersection Operator](../configuration-language.mdx#the-intersection-operator): the intersection operator can be used to indicate a relationship exists if the user is in all the sets of users
 
 </details>
 
-## Step By Step
+### 01. Create a backwards compatible model
 
-Assume that you want to migrate to the following model:
+To avoid service disruption, you will create a backwards compatible model. The backwards compatible model ensures the existing relationship tuple will still work.
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -119,9 +117,7 @@ Assume that you want to migrate to the following model:
   }}
 />
 
-### 01. Creating a Backward Compatible Model
-
-To create a seamless transition, we want to create a backward compatible model so that existing tuple will still work.
+In the example below, `user:Anne` still has write privileges to the `document:roadmap` resource.
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -167,21 +163,21 @@ To create a seamless transition, we want to create a backward compatible model s
   }}
 />
 
-For the above model, check on whether user:Anne can write document:roadmap will produce the correct value while can_edit will still work.
+Test the `can_edit` definition. It should produce a value of  `true`.
 
 <CheckRequestViewer user={'user:anne'} relation={'can_write'} object={'document:roadmap'} allowed={true} />
 <CheckRequestViewer user={'user:anne'} relation={'can_edit'} object={'document:roadmap'} allowed={true} />
 
-### 02. New Relationship Tuples Should Use New Relation
+### 02. Create a new relationship tuple
 
-After we have updated to the backward compatible models, new relationship tuples should use the new relation.
+Now that you have a backwards compatible model, you can create new relationship tuples with a new relation.
 
-For example, we will want to add Bethany to writer instead of editor relationship.
+In this example, you will add Bethany to the `writer` relationship.
 
 <WriteRequestViewer
   relationshipTuples={[
     {
-      _description: 'Bethany is to be assigned as writer instead of editor',
+      _description: 'Bethany assigned writer instead of editor',
       user: 'user:bethany',
       relation: 'writer',
       object: 'document:roadmap',
@@ -189,12 +185,16 @@ For example, we will want to add Bethany to writer instead of editor relationshi
   ]}
 />
 
-We can verify by calling check API for Bethany
+Run a check in the API for Bethany to ensure correct access.
+
 <CheckRequestViewer user={'user:bethany'} relation={'can_write'} object={'document:roadmap'} allowed={true} />
 
-### 03. Migrating Existing Relationship Tuples
+### 03. Migrate the existing relationship tuples
 
-The next step is to migrate existing relationship tuples that have the soon-to-be obsolete relation to the new relation name.  In our example, we can use the read API to lookup all relationship tuples that have the relation name "editor".
+
+Next, migrate the existing relationship tuples. The new relation makes this definition obsolete.
+
+Use the `read` API to lookup all relationship tuples with the `editor` name in your model.
 
 <ReadRequestViewer
   relation={'editor'}
@@ -213,7 +213,7 @@ The next step is to migrate existing relationship tuples that have the soon-to-b
   ]}
 />
 
-We will then add new tuples as writer.
+Update the new tuples with the `write` relationship.
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -230,7 +230,7 @@ We will then add new tuples as writer.
   ]}
 />
 
-Finally, we can remove the old relationship tuples.
+Finally, remove the old relationship tuples.
 <WriteRequestViewer
   deleteRelationshipTuples={[
     {
@@ -248,20 +248,20 @@ Finally, we can remove the old relationship tuples.
 
 
 :::info
-We should perform write prior to delete so that anne will always have access. 
+Perform a `write` operation before a `delete` operation to ensure Anne still has access.
 :::
 
 
-We can validate this by running check on Anne.
+Confirm the tuples are correct by running a check on the user.
 
 <CheckRequestViewer user={'user:anne'} relation={'can_write'} object={'document:roadmap'} allowed={true} />
 
-We can verify that the old relationship tuple has been removed.
+The old relationship tuple no longer exists.
 <CheckRequestViewer user={'user:anne'} relation={'editor'} object={'document:roadmap'} allowed={false} />
 
-### 04. Remove Obsolete Relation From Model
+### 04. Remove obsolete relationship from the model
 
-After all relationship tuples with old relation name is removed, we can update our authorization model to remove the obsolete relation.
+After you remove the previous relationship tuples, update your authorization model to remove the obsolete relation.
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -287,12 +287,12 @@ After all relationship tuples with old relation name is removed, we can update o
   }}
 />
 
-Once we have done that, the write API will only accept the new relation name.
+Now, the `write` API will only accept the new relation name.
 
 ## Related Sections
 
 <RelatedSection
-  description="Check the following sections for more on how relationship tuples are managed."
+  description="Review the following sections for more information on managing relationship tuples."
   relatedLinks={[
     {
       title: 'Transactional Writes',
