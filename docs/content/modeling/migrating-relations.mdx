@@ -23,7 +23,7 @@ import {
 
 In the lifecycle of software development, you will need to make updates or changes to the <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />. In this guide, you will learn best practices for changing your existing authorization model. With these recommendations, you will minimize downtime and ensure your relationship models stay up to date.
 
-## Before you start 
+## Before You Start
 
 This guide assumes you are familiar with the following OpenFGA concepts:
 
@@ -34,13 +34,11 @@ This guide assumes you are familiar with the following OpenFGA concepts:
 - A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm} />
 - [Intersection Operator](../configuration-language.mdx#the-intersection-operator): the intersection operator can be used to indicate a relationship exists if the user is in all the sets of users
 
-## Step by step
+## Step By Step
 
 The document below is an example of a relational authorization model. In this model, you can assign users to the `editor` relation. The `editor` relation has write privileges that regular users do not.
 
 In this scenario, you will migrate the following model:
-
-</summary>
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -83,15 +81,7 @@ There are existing <ProductConcept section="what-is-a-relationship-tuple" linkNa
   ]}
 />
 
-<hr />
-
-
-
-</details>
-
-### 01. Create a backwards compatible model
-
-To avoid service disruption, you will create a backwards compatible model. The backwards compatible model ensures the existing relationship tuple will still work.
+This is the authorization model that you will want to migrate to:
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -116,6 +106,12 @@ To avoid service disruption, you will create a backwards compatible model. The b
     ],
   }}
 />
+
+<hr />
+
+### 01. Create A Backwards Compatible Model
+
+To avoid service disruption, you will create a backwards compatible model. The backwards compatible model ensures the existing relationship tuple will still work.
 
 In the example below, `user:Anne` still has write privileges to the `document:roadmap` resource.
 
@@ -163,12 +159,12 @@ In the example below, `user:Anne` still has write privileges to the `document:ro
   }}
 />
 
-Test the `can_edit` definition. It should produce a value of  `true`.
+Test the `can_edit` definition. It should produce a value of `true`.
 
 <CheckRequestViewer user={'user:anne'} relation={'can_write'} object={'document:roadmap'} allowed={true} />
 <CheckRequestViewer user={'user:anne'} relation={'can_edit'} object={'document:roadmap'} allowed={true} />
 
-### 02. Create a new relationship tuple
+### 02. Create a New Relationship Tuple
 
 Now that you have a backwards compatible model, you can create new relationship tuples with a new relation.
 
@@ -189,8 +185,7 @@ Run a check in the API for Bethany to ensure correct access.
 
 <CheckRequestViewer user={'user:bethany'} relation={'can_write'} object={'document:roadmap'} allowed={true} />
 
-### 03. Migrate the existing relationship tuples
-
+### 03. Migrate The Existing Relationship Tuples
 
 Next, migrate the existing relationship tuples. The new relation makes this definition obsolete.
 
@@ -231,6 +226,7 @@ Update the new tuples with the `write` relationship.
 />
 
 Finally, remove the old relationship tuples.
+
 <WriteRequestViewer
   deleteRelationshipTuples={[
     {
@@ -246,20 +242,19 @@ Finally, remove the old relationship tuples.
   ]}
 />
 
-
 :::info
 Perform a `write` operation before a `delete` operation to ensure Anne still has access.
 :::
-
 
 Confirm the tuples are correct by running a check on the user.
 
 <CheckRequestViewer user={'user:anne'} relation={'can_write'} object={'document:roadmap'} allowed={true} />
 
 The old relationship tuple no longer exists.
+
 <CheckRequestViewer user={'user:anne'} relation={'editor'} object={'document:roadmap'} allowed={false} />
 
-### 04. Remove obsolete relationship from the model
+### 04. Remove Obsolete Relationship From The Model
 
 After you remove the previous relationship tuples, update your authorization model to remove the obsolete relation.
 
