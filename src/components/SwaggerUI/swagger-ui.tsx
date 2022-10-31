@@ -3,6 +3,7 @@ import * as React from 'react';
 import SwaggerUIComponent from 'swagger-ui-react';
 
 import './swagger-ui-override.css';
+import './swagger-ui-feature-override.css';
 
 const DisableAuthorizePlugin = function () {
   return {
