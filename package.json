@@ -23,9 +23,9 @@
     "format:fix": "prettier --write src/**"
   },
   "dependencies": {
-    "@docusaurus/core": "2.1.0",
-    "@docusaurus/plugin-client-redirects": "2.1.0",
-    "@docusaurus/preset-classic": "2.1.0",
+    "@docusaurus/core": "2.2.0",
+    "@docusaurus/plugin-client-redirects": "2.2.0",
+    "@docusaurus/preset-classic": "2.2.0",
     "@easyops-cn/docusaurus-search-local": "0.33.5",
     "@lottiefiles/react-lottie-player": "^3.4.7",
     "@mdx-js/react": "1.6.22",
@@ -38,11 +38,11 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-feather": "2.0.10",
-    "sanitize-html": "2.7.2",
-    "swagger-ui-react": "4.15.0"
+    "sanitize-html": "2.7.3",
+    "swagger-ui-react": "4.15.2"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "2.1.0",
+    "@docusaurus/module-type-aliases": "2.2.0",
     "@tsconfig/docusaurus": "1.0.6",
     "@types/prismjs": "1.26.0",
     "@types/react": "17.0.41",
