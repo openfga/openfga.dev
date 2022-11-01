@@ -7,6 +7,7 @@ description: Learning about the FGA configuration language and using it to build
 
 import {
   AuthzModelSnippetViewer,
+  CheckRequestViewer,
   DocumentationNotice,
   ProductConcept,
   ProductName,
@@ -15,6 +16,7 @@ import {
   RelationshipTuplesViewer,
   SyntaxFormat,
   UpdateProductNameInLinks,
+  WriteRequestViewer,
 } from '@components/Docs';
 
 # Configuration Language
@@ -579,6 +581,76 @@ In the _authorization model_ above, `user:anne` is a `viewer` of `document:new-r
 This particular use of referencing relations on related objects is defining a transitive implied relationship. If **user A** is related to a certain **object B** as a **viewer**, and **object B** is related to **object C** as **parent**, then **user A** is related to **object C** as **viewer**.
 
 This can be used to indicate that **viewers** of a **folders** are **viewers** of all **documents** in that **folder**.
+
+:::caution
+<details>
+<summary>
+Note that when searching tuples that are related to the object (the word after `from`, also called the tupleset), <ProductName format={ProductNameFormat.LongForm}/> will not do any evaluation and will only consider concrete objects (of the form `object_type:object_id`) that were directly assigned, and will throw an error if it encounters any rewrites, or a `*`, a type bound public access (`object_type:*`) or a userset (`object_type:object_id#relation`).
+</summary>
+  In the case below:
+
+  <AuthzModelSnippetViewer
+  configuration={{
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'folder',
+        relations: {
+          parent: {
+            this: {},
+          },
+          ancestor: {
+            computedUserset: {
+              relation: 'parent',
+            }
+          },
+          editor: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      relation: 'ancestor',
+                    },
+                    computedUserset: {
+                      relation: 'editor',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+  If you add two tuples:
+  <WriteRequestViewer
+    skipSetup={true}
+    relationshipTuples={[
+    {
+      user: 'folder:product',
+      relation: 'parent',
+      object: 'folder:planning'
+    },
+    {
+      user: 'user:anne',
+      relation: 'editor',
+      object: 'folder:product'
+    }
+  ]} />
+
+  Run the following check will return `false` because the `ancestor` relation contains a rewrite which will not be evaluated.
+  <CheckRequestViewer skipSetup={true} user={'user:anne'} relation={'editor'} object={'folder:planning'} allowed={false} />
+</details>
+:::
 
 For more examples, take look at [Modeling: Parent-Child Objects](./modeling/parent-child.mdx), [Advanced Modeling: Google Drive](./modeling/advanced/gdrive.mdx), [Advanced Modeling: GitHub](./modeling/advanced/github.mdx), and [Advanced Modeling: Entitlements](./modeling/advanced/entitlements.mdx).
 

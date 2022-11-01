@@ -261,6 +261,10 @@ To leverage our _cascading_ relation, we need to create a relationship tuple tha
   ]}
 />
 
+:::caution
+**Note:** Make sure to use unique ids for each object and user within your application domain when creating relationship tuples for <ProductName format={ProductNameFormat.LongForm}/>. We are using first names and simple ids to illustrate an easy-to-follow example.
+:::
+
 ### 04. Create A New Relationship Tuple To Indicate That folder:notes Is A Parent Of document:meeting_notes.doc
 
 Now that **bob** is an `editor` of **folder:notes**, we need to indicate that **folder:notes** is a `parent` of `document`:**meeting_notes.doc**
@@ -292,7 +296,9 @@ The chain of resolution becomes:
 - Therefore, **bob** is an `editor` of **document:meeting_notes.doc**
 
 :::caution
-**Note:** When creating relationship tuples for <ProductName format={ProductNameFormat.LongForm}/> make sure to use unique ids for each object and user within your application domain. We are using first names and simple ids to just illustrate an easy-to-follow example.
+Note that when searching tuples that are related to the object (the word after `from`, also called the tupleset), <ProductName format={ProductNameFormat.LongForm}/> will not do any evaluation and will only consider concrete objects (of the form `<object_type>:<object_id>`) that were directly assigned, and will throw an error if it encounters any rewrites, or a `*`, a type bound public access (`<object_type>:*`) or a userset (`<object_type>:<object_id>#<relation>`).
+
+See [Referencing Relations on Related Objects](../configuration-language.mdx#referencing-relations-on-related-objects) for more.
 :::
 
 ## Related Sections
