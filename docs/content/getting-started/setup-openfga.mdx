@@ -50,6 +50,11 @@ authn:
 
 All possible configurations and their default values are defined in [config-schema.json](https://github.com/openfga/openfga/blob/main/.config-schema.json).
 
+:::info Information
+The OpenFGA server supports **environment variables** for configuration, it will take priority against your configuration file. 
+Each variable must be prefixed with `OPENFGA_` and followed by your option in uppercase (e.g `--grpc-tls-key` becomes `OPENFGA_GRPC_TLS_KEY`).
+:::
+
 ### Configuring Data Storage
 
 OpenFGA supports multiple storage engine options including:
