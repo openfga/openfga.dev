@@ -61,15 +61,7 @@ function writeAuthZModelViewerPython(authorizationModel: AuthorizationModel): st
 
 async def write_authorization_model():
     body_string = ${JSON.stringify(JSON.stringify(authorizationModel))}
-    body = openfga_sdk.model_utils.validate_and_convert_types(
-        json.loads(body_string),
-        (WriteAuthorizationModelRequest,),
-        ['WriteAuthorizationModelRequest'],
-        True,
-        True,
-        configuration=configuration
-    )
-    response = await fga_client_instance.write_authorization_model(body)
+    response = await fga_client_instance.write_authorization_model(json.loads(body))
     # response.authorization_model_id = "1uHxCSuTP0VKPYSnkq1pbb1jeZw"
 `;
 }
