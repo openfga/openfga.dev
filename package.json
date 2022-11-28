@@ -26,7 +26,7 @@
     "@docusaurus/core": "2.2.0",
     "@docusaurus/plugin-client-redirects": "2.2.0",
     "@docusaurus/preset-classic": "2.2.0",
-    "@easyops-cn/docusaurus-search-local": "0.33.5",
+    "@easyops-cn/docusaurus-search-local": "0.33.6",
     "@lottiefiles/react-lottie-player": "^3.4.7",
     "@mdx-js/react": "1.6.22",
     "@openfga/sdk": "0.1.0",
