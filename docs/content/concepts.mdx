@@ -558,7 +558,7 @@ For more information, please see [Contextual and Time-Based Authorization](./mod
 
 ## How Do I Represent "Everyone"?
 
-In <ProductName format={ProductNameFormat.LongForm}/> the special syntax `*` means **everyone** when used as **user** in a relationship tuple.
+In <ProductName format={ProductNameFormat.LongForm}/> the special syntax `*` means **everyone** when used as **user** in a relationship tuple. For example, `user:*` represents everyone with a user type.
 
 </summary>
 
@@ -567,7 +567,7 @@ For example, in a case where you would like to indicate a certain document `docu
 <RelationshipTuplesViewer
   relationshipTuples={[
     {
-      user: '*',
+      user: 'user:*',
       relation: 'editor',
       object: 'document:new-roadmap',
     },
