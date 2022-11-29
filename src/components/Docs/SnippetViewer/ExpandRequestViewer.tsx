@@ -38,7 +38,7 @@ const { tree } = await fgaClient.expand({
       /* eslint-disable no-tabs */
       return `
 body := fgaSdk.ExpandRequest{
-	TupleKey: &fgaSdk.TupleKey{
+	TupleKey: fgaSdk.TupleKey{
 		Relation: fgaSdk.PtrString("${opts.relation}"), // expand all who has "${opts.relation}" relation
 		Object: fgaSdk.PtrString("${opts.object}"), // with the object "${opts.object}"
 	},

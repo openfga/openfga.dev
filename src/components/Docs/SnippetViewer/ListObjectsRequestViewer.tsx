@@ -86,9 +86,9 @@ function listObjectsRequestViewer(
     AuthorizationModelId: PtrString("${authorizationModelId}"),`
           : ``
       }
-    User:                 PtrString("${user}"),
-    Relation:             PtrString("${relation}"),
-    Type:                 PtrString("${objectType}"),${
+    User:                 "${user}",
+    Relation:             "${relation}",
+    Type:                 "${objectType}",${
         contextualTuples?.length
           ? `
     ContextualTuples: &ContextualTupleKeys{
