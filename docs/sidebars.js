@@ -139,6 +139,11 @@ const sidebars = {
           id: 'content/modeling/migrating-relations',
         },
         {
+          type: 'doc',
+          label: 'Migrating to Schema 1.1',
+          id: 'content/migrating/migrating-schema-1-1',
+        },
+        {
           type: 'category',
           collapsed: true,
           collapsible: true,
