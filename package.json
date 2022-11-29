@@ -26,11 +26,11 @@
     "@docusaurus/core": "2.2.0",
     "@docusaurus/plugin-client-redirects": "2.2.0",
     "@docusaurus/preset-classic": "2.2.0",
-    "@easyops-cn/docusaurus-search-local": "0.33.5",
-    "@lottiefiles/react-lottie-player": "^3.4.7",
+    "@easyops-cn/docusaurus-search-local": "0.33.6",
+    "@lottiefiles/react-lottie-player": "3.4.9",
     "@mdx-js/react": "1.6.22",
-    "@openfga/sdk": "0.1.0",
-    "@openfga/syntax-transformer": "0.0.6",
+    "@openfga/sdk": "0.1.1",
+    "@openfga/syntax-transformer": "0.0.8",
     "assert-never": "1.2.1",
     "clsx": "1.2.1",
     "path-browserify": "1.0.1",
@@ -39,7 +39,7 @@
     "react-dom": "17.0.2",
     "react-feather": "2.0.10",
     "sanitize-html": "2.7.3",
-    "swagger-ui-react": "4.15.2"
+    "swagger-ui-react": "4.15.5"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "2.2.0",
@@ -48,19 +48,20 @@
     "@types/react": "17.0.41",
     "@types/react-router-dom": "5.3.3",
     "@types/sanitize-html": "2.6.2",
-    "@typescript-eslint/eslint-plugin": "5.41.0",
-    "@typescript-eslint/parser": "5.41.0",
+    "@typescript-eslint/eslint-plugin": "5.45.0",
+    "@typescript-eslint/parser": "5.45.0",
     "docusaurus-plugin-module-alias": "0.0.2",
-    "eslint": "8.26.0",
+    "eslint": "8.28.0",
     "eslint-config-prettier": "8.5.0",
-    "eslint-plugin-react": "7.31.10",
-    "husky": "8.0.1",
-    "prettier": "2.7.1",
-    "typescript": "4.8.4"
+    "eslint-plugin-react": "7.31.11",
+    "husky": "8.0.2",
+    "prettier": "2.8.0",
+    "typescript": "4.9.3"
   },
   "overrides": {
     "trim": "0.0.3",
-    "minimatch@3.0.4": "3.0.5"
+    "minimatch@3.0.4": "3.0.5",
+    "loader-utils": "2.0.4"
   },
   "keywords": [
     "authorization",
