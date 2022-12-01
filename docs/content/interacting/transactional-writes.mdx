@@ -47,14 +47,18 @@ You have another type called `user` that can have a `follower` and `followed_by`
       {
         type: 'tweet',
         relations: {
-          reader: {
+          viewer: {
             this: {},
           },
         },
         metadata: {
           relations: {
-            owner: {
-              directly_related_user_types: [{ type: 'user' }, { type: 'user', relation: 'follower' }],
+            viewer: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'user', wildcard: {} },
+                { type: 'user', relation: 'follower' },
+              ],
             },
           },
         },
@@ -111,7 +115,7 @@ When you need to add or delete tuples in your store, you can do so by calling th
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: '*',
+      user: 'user:*',
       relation: 'viewer',
       object: 'tweet:1',
     },
@@ -123,7 +127,7 @@ And if you want to convert this `tweet` to private, you would need to delete tha
 <WriteRequestViewer
   deleteRelationshipTuples={[
     {
-      user: '*',
+      user: 'user:*',
       relation: 'viewer',
       object: 'tweet:1',
     },
@@ -146,7 +150,7 @@ The Write API allows you to send up to 10 unique tuples in the request. (This li
   deleteRelationshipTuples={[
     {
       _description: 'tweet:1 is no longer viewable by everyone (*)',
-      user: '*',
+      user: 'user:*',
       relation: 'viewer',
       object: 'tweet:1',
     },

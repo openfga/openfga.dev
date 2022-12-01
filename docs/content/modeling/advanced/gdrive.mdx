@@ -778,6 +778,142 @@ Assume that `Anne` has created a new document: `2021-public-roadmap`, has shared
 
 Here's where another <ProductName format={ProductNameFormat.LongForm}/> feature, <ProductConcept section="how-do-i-represent-everyone" linkName="`*`" /> (as in everyone), would come in handy.
 
+First, we will need to update our model to allow for public access with type `user` for viewer relation.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'document',
+        relations: {
+          owner: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  tupleToUserset: {
+                    computedUserset: {
+                      relation: 'owner',
+                    },
+                    tupleset: {
+                      relation: 'parent',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          writer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'owner',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    computedUserset: {
+                      relation: 'writer',
+                    },
+                    tupleset: {
+                      relation: 'parent',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          commenter: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'writer',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    computedUserset: {
+                      relation: 'commenter',
+                    },
+                    tupleset: {
+                      relation: 'parent',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          viewer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'commenter',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    computedUserset: {
+                      relation: 'viewer',
+                    },
+                    tupleset: {
+                      relation: 'parent',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          parent: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            parent: { directly_related_user_types: [{ type: 'document' }] },
+            owner: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            commenter: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' },{type: 'user', wildcard: {}} , { type: 'domain', relation: 'member' }] },
+          },
+        },
+      },
+      {
+        type: 'domain',
+        relations: {
+          member: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+
+
 To mark Anne as the owner, the domain members as commenters and the public as viewers, we need to add the following relationship tuples:
 
 <WriteRequestViewer
@@ -795,8 +931,8 @@ To mark Anne as the owner, the domain members as commenters and the public as vi
       object: 'document:2021-public-roadmap',
     },
     {
-      _description: 'The public can view document:2021-public-roadmap',
-      user: '*',
+      _description: 'Everyone with type `user` can view document:2021-public-roadmap',
+      user: 'user:*',
       relation: 'viewer',
       object: 'document:2021-public-roadmap',
     },
