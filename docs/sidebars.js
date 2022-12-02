@@ -141,7 +141,7 @@ const sidebars = {
         {
           type: 'doc',
           label: 'Migrating to Schema 1.1',
-          id: 'content/migrating/migrating-schema-1-1',
+          id: 'content/modeling/migrating-schema-1-1',
         },
         {
           type: 'category',
