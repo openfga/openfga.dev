@@ -21,6 +21,13 @@
   --ofga-neutral-lightest: #f4f6f7;
   --ofga-neutral-white: #ffffff;
 
+  --ofga-color-default: #FFFFFF;
+  --ofga-color-comment: #737981;
+  --ofga-color-keyword: #AAAAAA;
+  --ofga-color-type: #79ED83;
+  --ofga-color-relation: #20F1F5;
+  --ofga-color-directly-assignable: #CEEC93;
+
   --ofga-color-primary: var(--ofga-green-neon);
   --ofga-color-primary-dark: var(--ofga-green-dark);
   --ofga-color-primary-light: var(--ofga-green-light);
@@ -31,13 +38,6 @@
 
   --ofga-color-foreground: var(--ofga-neutral-white);
   --ofga-color-background: var(--ofga-neutral-black);
-
-  --ofga-color-default: #FFFFFF;
-  --ofga-color-comment: #737981;
-  --ofga-color-keyword: #AAAAAA;
-  --ofga-color-type: #79ED83;
-  --ofga-color-relation: #20F1F5;
-  --ofga-color-directly-assignable: #CEEC93;
 
   /* Fonts */
   --ofga-font-base: 'Inter', sans-serif, -apple-system, BlinkMacSystemFont, ‘Segoe UI’, Roboto, Helvetica, Arial,
