@@ -21,6 +21,13 @@
   --ofga-neutral-lightest: #f4f6f7;
   --ofga-neutral-white: #ffffff;
 
+  --ofga-color-default: #FFFFFF;
+  --ofga-color-comment: #737981;
+  --ofga-color-keyword: #AAAAAA;
+  --ofga-color-type: #79ED83;
+  --ofga-color-relation: #20F1F5;
+  --ofga-color-directly-assignable: #CEEC93;
+
   --ofga-color-primary: var(--ofga-green-neon);
   --ofga-color-primary-dark: var(--ofga-green-dark);
   --ofga-color-primary-light: var(--ofga-green-light);
@@ -564,23 +571,27 @@ pre {
 }
 
 /* Prism - DSL */
-.language-dsl .token.fga-type,
-.language-dsl .token.fga-definition {
-  color: var(--ofga-color-primary);
+.language-dsl\.openfga .token.plain {
+  color: var(--ofga-color-default);
+}
+.language-dsl\.openfga .token.comment {
+  color: var(--ofga-color-comment);
 }
 
-.language-dsl .token.plain {
-  color: var(--ofga-color-secondary-light);
+.language-dsl\.openfga .token.keyword {
+  color: var(--ofga-color-keyword) !important;
 }
 
-.language-dsl .token.fga-self {
-  color: var(--ofga-color-secondary);
+.language-dsl\.openfga .token.type {
+  color: var(--ofga-color-type);
 }
 
-.language-dsl .token.fga-keyword,
-.language-dsl .token.fga-operator,
-.language-dsl .token.fga-tuple-to-userset {
-  font-style: italic;
+.language-dsl\.openfga .token.relation {
+  color: var(--ofga-color-relation);
+}
+
+.language-dsl\.openfga .token.directly-assignable {
+  color: var(--ofga-color-directly-assignable);
 }
 
 .language-json .token.string {
