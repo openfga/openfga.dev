@@ -214,11 +214,14 @@ const sidebars = {
               label: 'Migrating Relations',
               id: 'content/modeling/migrating-relations',
             },
+            /*
+            // for now, do not show the migrating schema page
             {
               type: 'doc',
               label: 'Migrating to Schema 1.1',
               id: 'content/modeling/migrating-schema-1-1',
             },
+            */
           ],
         },
       ],
