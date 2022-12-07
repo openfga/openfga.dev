@@ -76,7 +76,6 @@ const config = {
     //playgroundName: '',
     //playgroundURL: '',
 
-    notice: `OpenFGA is an open source Fine-Grained Authorization solution based on Google's Zanzibar. We welcome community contribution to this project.`,
     languageMapping: {
       js: {
         importStatement: `const { OpenFgaApi } = require('@openfga/sdk');`,
