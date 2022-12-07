@@ -134,11 +134,6 @@ const sidebars = {
           id: 'content/modeling/organization-context-authorization',
         },
         {
-          type: 'doc',
-          label: 'Migrating Relations',
-          id: 'content/modeling/migrating-relations',
-        },
-        {
           type: 'category',
           collapsed: true,
           collapsible: true,
@@ -204,6 +199,25 @@ const sidebars = {
               type: 'doc',
               label: 'Entitlements',
               id: 'content/modeling/advanced/entitlements',
+            },
+          ],
+        },
+        {
+          type: 'category',
+          collapsed: true,
+          collapsible: true,
+          label: 'Migrations',
+          
+          items: [
+            {
+              type: 'doc',
+              label: 'Migrating Relations',
+              id: 'content/modeling/migrating-relations',
+            },
+            {
+              type: 'doc',
+              label: 'Migrating to Schema 1.1',
+              id: 'content/modeling/migrating-schema-1-1',
             },
           ],
         },
