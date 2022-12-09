@@ -1,18 +1,10 @@
 import { Prism } from 'prism-react-renderer';
+import { syntaxHighlighters } from '@openfga/syntax-transformer';
+import { OpenFgaDslThemeTokenType } from '@openfga/syntax-transformer/dist/theme';
 
 const languageDef = {
-  comment: {
-    pattern: /(^|[^\\:])\/\/.*/,
-    lookbehind: true,
-    greedy: true,
-  },
-  'fga-type': /^(type|relations|define)\b/m,
-  'fga-definition': /\b(relations|define)\b/m,
-  'fga-keyword': /\b(?:as)\b/,
-  'fga-operator': /\b(?:and|or|but\snot)\b/,
-  'fga-self': /\bself\b/,
-  'fga-tuple-to-userset': /\bfrom\b/,
+  ...syntaxHighlighters.PrismExtensions.languageDefinition,
+  [OpenFgaDslThemeTokenType.DIRECTLY_ASSIGNABLE]: /\[.*\]|self/,
 };
 
-Prism.languages['openfga-dsl'] = languageDef;
-Prism.languages.dsl = languageDef;
+Prism.languages[syntaxHighlighters.PrismExtensions.LANGUAGE_NAME] = languageDef;
