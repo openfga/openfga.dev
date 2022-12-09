@@ -30,7 +30,7 @@ In short, we will be:
 1. [Adding model schema version field](#-model-schema-versions)
 2. [Adding type restrictions and removing need to specify `as self`](#type-restrictions--removing-as-self)
 3. [Disallowing string literals in user_ids](#disallowing-string-literals-in-user_ids)
-4. [Enforcing userset type restrictions](#enforcing-userset-type-restrictions)
+4. [Enforcing type restrictions](#enforcing-type-restrictions)
 5. [Requiring you to specify for which relations you can write tuples with public access](#public-access)
 6. [Changes in query evaluation behavior with type restrictions](#query-evaluation-behavior-with-type-restrictions)
 
@@ -262,7 +262,7 @@ You can then use that type when writing tuples:
   ]}
 />
 
-## Enforcing Userset Type Restrictions
+## Enforcing Type Restrictions
 
 With the model above, the following tuples will be valid according to the type definitions:
 
