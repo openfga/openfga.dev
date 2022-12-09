@@ -23,18 +23,18 @@ import {
 
 <ProductName format={ProductNameFormat.ShortForm} /> has introduced a new DSL schema version with several changes that we
 believe will make models easier to read and write, enable better tuple and model validations, and provide more options for
-optimizing the performance of different <ProductName format={ProductNameFormat.ShortForm} /> APIs.
+optimizing the performance of different <ProductName format={ProductNameFormat.ShortForm} /> APIs.<br/><br/>
 
 In short, we will be:
 
 1. [Adding model schema version field](#-model-schema-versions)
-2. [Adding type enforcements and removing need to specify `as self`](#type-enforcements--removing-as-self)
+2. [Adding type restrictions and removing need to specify `as self`](#type-restrictions--removing-as-self)
 3. [Disallowing string literals in user_ids](#disallowing-string-literals-in-user_ids)
 4. [Enforcing userset type restrictions](#enforcing-userset-type-restrictions)
-5. [Requiring you to specify for which relations you can write tuples with public access (using ‘`*`’)](#public-access)
+5. [Requiring you to specify for which relations you can write tuples with public access](#public-access)
 6. [Changes in query evaluation behavior with type restrictions](#query-evaluation-behavior-with-type-restrictions)
 
-To facilitate migration to the new DSL schema, you will need to update tuples that are no longer valid. In particular, all tuples with wildcard (`*` or `user:*`) user field defined with model schema 1.0 <u><strong>MUST</strong></u> be deleted and re-added back.
+To facilitate migration to the new DSL schema, you will need to update tuples that are no longer valid. In particular, all tuples whose `user` field involves a wildcard character (`*` or `user:*`) defined with model schema 1.0 <u><strong>MUST</strong></u> be deleted and re-added back.
 
 ## <ProductName format={ProductNameFormat.ShortForm}/> Model Schema Versions
 
@@ -45,10 +45,14 @@ model
   schema 1.1
 ```
 
+:::info
+
 <ProductName format={ProductNameFormat.ShortForm} /> will eventually stop supporting schema version 1.0. Notifications will
 be posted in GitHub, Discord and Twitter before this change occurs.
 
-## Type Enforcements & Removing `as self`
+:::
+
+## Type Restrictions & Removing `as self`
 
 We’ll use the following version 1.0 model and tuples to illustrate the changes we’ll need to make:
 
@@ -220,7 +224,7 @@ The model above needs to be rewritten as:
   }}
 />
 
-After making these changes, <ProductName format={ProductNameFormat.ShortForm}/> will start validating the tuples more strictly, for example, you won’t be able to assign a `document` as a member of a `group`. If your application is writing invalid tuples, you’ll start getting errors when invoking the `Write` API.
+After making these changes, <ProductName format={ProductNameFormat.ShortForm}/> will start validating the tuples more strictly, for example, you won’t be able to assign a `document` as a member of a `group`. If your application is writing invalid tuples, you’ll start getting errors when invoking the [`Write` API](/api/service#/Relationship%20Tuples/Write  ).
 
 ## Disallowing String Literals in user_ids
 
@@ -398,7 +402,7 @@ When using version 1.0, you can indicate public access to specific objects by sp
   ]}
 />
 
-When you write the tuple above, all users are granted with the “viewer” relationship for the “pricing" document. You can write those kinds of tuples for any relation that is <ProductConcept section="what-are-direct-and-implied-relationships" linkName="directly assignable" /> in the model.
+When you write the tuple above, all users are granted the “viewer” relationship for the “pricing" document. You can write those kinds of tuples for any relation that is <ProductConcept section="what-are-direct-and-implied-relationships" linkName="directly assignable" /> in the model.
 
 In version 1.1 we want to be more explicit about the tuples you can write, so you’ll need to declare in the DSL which relations allow wildcards and for which object types. If we want to let any object of type “user” to be a viewer of a specific document, we’ll need to explicitly define it.
 
@@ -439,11 +443,11 @@ Being explicit about the wildcard type restrictions also lets you model scenario
 
 This change implies that you’ll need to change your code to write tuples with this new syntax, and that you’ll need to migrate existing tuples to use the new format.
 
-You might have 3 kinds of tuples in your model that use “\*”, with different migration strategies:
+You might have 3 kinds of tuples in your model that use `*`, with different migration strategies:
 
-1. Tuples that have user = “\*”
+1. Tuples that have user = `*`
 
-You would need to retrieve those tuples and write them using the proper type (e.g. `user:*`). To retrieve them, you’ll need to use the Read endpoint, filter on your side the tuples that have `user = “*”`, and call the Write API for each one, with the proper type, e.g:
+You would need to retrieve those tuples and write them using the proper type (e.g. `user:*`). To retrieve them, you’ll need to use the [Read endpoint](/api/service#/Relationship%20Tuples/Read), filter on your side the tuples that have `user = “*”`, and call the Write API for each one, with the proper type, e.g:
 
 <RelationshipTuplesViewer
   relationshipTuples={[
@@ -456,13 +460,13 @@ You would need to retrieve those tuples and write them using the proper type (e.
   ]}
 />
 
-2. Tuples that have `user = "employee:*”`, where `employee` is NOT a type that is defined in the new iteration of your model.
+2. Tuples that have user = `employee:*`, where `employee` is NOT a type that is defined in the new iteration of your model.
 
 If you have tuples with this format, they will be considered invalid because they don’t have a corresponding type in the model. If you need such a type defined, you’ll need to add it to the model, and the scenario will be similar to the one described below.
 
-3. Tuples that have `user = “user:*”`, which would mean "the user with user_id = '\*'”, where `user` is type that is defined in the new iteration of your model.
+3. Tuples that have user = `user:*`, which would mean the user with user_id = `*`, where `user` is type that is defined in the new iteration of your model.
 
-In this case, the meaning of the tuple will change. If you were intending to specify "a user with user id = \*", you will need to encode it in a different way instead of using “\*”. If you intended to specify “every user has this relationship with this object” then it’s not the way it would have worked with schema version = 1.0, but it will work with version = 1.1.
+In this case, the meaning of the tuple will change. If you were intending to specify a user with user id = `*`, you will need to encode it in a different way instead of using `*`. If you intended to specify public access to the object (e.g. "every user has this relationship with this object"), 1.0 models will not interpret the `user:*` value as a wildcard but 1.1 models will.
 
 :::caution Warning
 If you have any wildcard tuples (i.e., `*` or `user:*`) that were created with model schema 1.0, you <strong><em>must</em></strong> delete and re-add these tuples with the appropriate type. This allows <ProductName format={ProductNameFormat.ShortForm} /> to interpret these tuples appropriately with the model schema 1.1 semantics. Failure to delete and re-add may cause <ProductName format={ProductNameFormat.ShortForm} /> to interpret these tuples incorrectly.
@@ -470,14 +474,14 @@ If you have any wildcard tuples (i.e., `*` or `user:*`) that were created with m
 
 ## Query Evaluation Behavior with Type Restrictions
 
-When you make changes to a model that already has tuples, those tuples might become invalid. Some cases where this can happen are:
+It is possible to introduce new models and have existing tuples (from prior models) with incompatibilities with the new model. Some cases where this can happen include:
 
 - If you rename/delete a type.
 - If you rename/delete a relation.
-- If you remove types from the list of allowed types in a relation, including changes for Public Access.
+- If you remove a type restriction from the list of type restrictions for a relation, including changes for public access.
 - If <ProductName format={ProductNameFormat.ShortForm}/> introduces a change that makes a tuple invalid.
 
-In these cases, <ProductName format={ProductNameFormat.ShortForm}/> will not consider those invalid tuples when evaluating queries (check, expand, list-objects, etc). However, after any of the changes above happens, you should delete those tuples as having a large number of invalid tuples will negatively affect performance.
+In these cases, <ProductName format={ProductNameFormat.ShortForm}/> will not consider those invalid tuples when evaluating queries ([Check](/api/service#/Relationship%20Queries/Check), [Expand](/api/service#/Relationship%20Queries/Expand), [List-objects](/api/service#/Relationship%20Queries/ListObjects), etc). However, after any of the changes above happen, you should delete those tuples as having a large number of invalid tuples will negatively affect performance.
 
 ## Related Sections
 
