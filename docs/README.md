@@ -41,7 +41,7 @@ hide_title: true
   - [Custom Roles](./content/modeling/custom-roles.mdx)
   - [Contextual and Time-Based Authorization](./content/modeling/contextual-time-based-authorization.mdx)
   - [Authorization Through Organization Context](./content/modeling/organization-context-authorization.mdx)
-  - [Migrating Relations](./content/modeling/migrating-relations.mdx)
+  - [Migrating Relations](./content/modeling/migrating/migrating-relations.mdx)
   - [Building Blocks](./content/modeling/building-blocks/overview.mdx)
     - [Direct Relationships](./content/modeling/building-blocks/direct-relationships.mdx)
     - [Concentric Relationships](./content/modeling/building-blocks/concentric-relationships.mdx)
