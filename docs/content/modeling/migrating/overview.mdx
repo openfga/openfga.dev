@@ -1,0 +1,37 @@
+---
+id: overview
+title: 'Migrating'
+slug: /modeling/migrating
+sidebar_position: 0
+---
+
+import { DocumentationNotice, IntroCard, CardGrid } from '@components/Docs';
+
+<DocumentationNotice />
+
+This section has guides that on migrating models and relations.
+
+<IntroCard
+  title="When to use"
+  description="The content in this section is useful:"
+  listItems={[
+    `If you want to upgrade existing {ProductName} models and relations to new version.`,
+  ]}
+/>
+
+# Content
+
+<CardGrid
+  middle={[
+    {
+      title: 'Migrating Relations',
+	  description: 'Learn to migrate relations in a production environment.',
+      to: 'migrating/migrating-relations',
+    },
+    {
+      title: 'Migrating To Schema 1.1',
+	  description: 'Learn to migrate models to schema 1.1.',
+      to: 'migrating/migrating-schema-1-1',
+    },
+  ]}
+/>
