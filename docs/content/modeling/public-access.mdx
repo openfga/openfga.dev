@@ -47,6 +47,7 @@ You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `d
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -56,6 +57,11 @@ You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `d
         relations: {
           view: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            view: { directly_related_user_types: [{ type: 'user' }, {type: 'user', wildcard:{} }] },
           },
         },
       },
@@ -94,15 +100,15 @@ In previous guides, we have shown how to indicate that objects are related to us
 
 ### 01. Create A Relationship Tuple
 
-To do this we need to create a relationship tuple using the <ProductConcept section="how-do-i-represent-everyone" linkName="`*`" /> syntax. The `*` syntax is used to indicate that all users and objects have a relation) to a specific object.
+To do this we need to create a relationship tuple using the <ProductConcept section="how-do-i-represent-everyone" linkName="`*`" /> syntax. The `*` syntax is used to indicate that all users of a particular type have a relation to a specific object.
 
-Let us create a relationship tuple that states: **anyone can view document:company-psa.doc**
+Let us create a relationship tuple that states: **any user can view document:company-psa.doc**
 
 <WriteRequestViewer
   relationshipTuples={[
     {
-      _description: '* denotes that the user is every user and object',
-      user: '*',
+      _description: 'user:* denotes every object of type user',
+      user: 'user:*',
       relation: 'view',
       object: 'document:company-psa.doc',
     },

@@ -35,6 +35,7 @@ Imagine the following authorization model:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -46,12 +47,22 @@ Imagine the following authorization model:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
       {
         type: 'document',
         relations: {
           reader: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            reader: { directly_related_user_types: [{ type: 'user' }, { type: 'org', relation: 'member' }] },
           },
         },
       },
@@ -88,6 +99,7 @@ Imagine the following authorization model:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -112,6 +124,12 @@ Imagine the following authorization model:
                 },
               ],
             },
+          },
+        },
+        metadata: {
+          relations: {
+            reader: { directly_related_user_types: [{ type: 'user' }, { type: 'org', relation: 'member' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }, { type: 'org', relation: 'member' }] },
           },
         },
       },
