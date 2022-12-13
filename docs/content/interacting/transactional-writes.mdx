@@ -42,12 +42,24 @@ You have another type called `user` that can have a `follower` and `followed_by`
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'tweet',
         relations: {
-          reader: {
+          viewer: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            viewer: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'user', wildcard: {} },
+                { type: 'user', relation: 'follower' },
+              ],
+            },
           },
         },
       },
@@ -59,6 +71,12 @@ You have another type called `user` that can have a `follower` and `followed_by`
           },
           followed_by: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            follower: { directly_related_user_types: [{ type: 'user' }] },
+            followed_by: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -97,7 +115,7 @@ When you need to add or delete tuples in your store, you can do so by calling th
 <WriteRequestViewer
   relationshipTuples={[
     {
-      user: '*',
+      user: 'user:*',
       relation: 'viewer',
       object: 'tweet:1',
     },
@@ -109,7 +127,7 @@ And if you want to convert this `tweet` to private, you would need to delete tha
 <WriteRequestViewer
   deleteRelationshipTuples={[
     {
-      user: '*',
+      user: 'user:*',
       relation: 'viewer',
       object: 'tweet:1',
     },
@@ -132,7 +150,7 @@ The Write API allows you to send up to 10 unique tuples in the request. (This li
   deleteRelationshipTuples={[
     {
       _description: 'tweet:1 is no longer viewable by everyone (*)',
-      user: '*',
+      user: 'user:*',
       relation: 'viewer',
       object: 'tweet:1',
     },

@@ -126,6 +126,7 @@ To represent permissions in <ProductName format={ProductNameFormat.ShortForm}/> 
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -146,6 +147,14 @@ To represent permissions in <ProductName format={ProductNameFormat.ShortForm}/> 
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }] },
+            commenter: { directly_related_user_types: [{ type: 'user' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -161,6 +170,11 @@ The <ProductName format={ProductNameFormat.LongForm}/> service determines if a <
       viewer: {
         // "viewer": if those users belong to:
         this: {}, // the userset of all users related to the document as "viewer"
+      },
+    },
+    metadata: {
+      relations: {
+        viewer: { directly_related_user_types: [{ type: 'user' }] },
       },
     },
   }}
@@ -215,6 +229,7 @@ To make <ProductName format={ProductNameFormat.ShortForm}/> aware of this "conce
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -272,6 +287,14 @@ To make <ProductName format={ProductNameFormat.ShortForm}/> aware of this "conce
             },
           },
         },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }] },
+            commenter: { directly_related_user_types: [{ type: 'user' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }}
@@ -307,12 +330,83 @@ To add support for domains and members all we need to do is add this object to t
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'document', // objects of type document
+        relations: {
+          // have users related to them as
+          owner: {
+            this: {},
+          },
+          writer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'owner',
+                  },
+                },
+              ],
+            },
+          },
+          commenter: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'writer',
+                  },
+                },
+              ],
+            },
+          },
+          viewer: {
+            // "viewer": if they belong to
+            union: {
+              // any of (the union of) these user sets
+              child: [
+                {
+                  this: {}, // the userset of all users related to the document as "viewer"
+                },
+                {
+                  computedUserset: {
+                    // the userset of all users related to the document as "commenter"
+                    relation: 'commenter',
+                  },
+                },
+              ],
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            commenter: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+          },
+        },
+      },
       {
         type: 'domain',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -374,6 +468,7 @@ We need to add the notion that a **document** can be the **parent** of another *
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -429,6 +524,15 @@ We need to add the notion that a **document** can be the **parent** of another *
                 },
               ],
             },
+          },
+        },
+        metadata: {
+          relations: {
+            parent: { directly_related_user_types: [{ type: 'document' }] },
+            owner: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            commenter: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
           },
         },
       },
@@ -534,6 +638,7 @@ The updated authorization model looks like this:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -636,12 +741,26 @@ The updated authorization model looks like this:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            parent: { directly_related_user_types: [{ type: 'document' }] },
+            owner: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            commenter: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+          },
+        },
       },
       {
         type: 'domain',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -658,6 +777,142 @@ Assume that `Anne` has created a new document: `2021-public-roadmap`, has shared
 ![Image showing requirements](./assets/gdrive-gdrive4.svg)
 
 Here's where another <ProductName format={ProductNameFormat.LongForm}/> feature, <ProductConcept section="how-do-i-represent-everyone" linkName="`*`" /> (as in everyone), would come in handy.
+
+First, we will need to update our model to allow for public access with type `user` for viewer relation.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'document',
+        relations: {
+          owner: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  tupleToUserset: {
+                    computedUserset: {
+                      relation: 'owner',
+                    },
+                    tupleset: {
+                      relation: 'parent',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          writer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'owner',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    computedUserset: {
+                      relation: 'writer',
+                    },
+                    tupleset: {
+                      relation: 'parent',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          commenter: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'writer',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    computedUserset: {
+                      relation: 'commenter',
+                    },
+                    tupleset: {
+                      relation: 'parent',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          viewer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'commenter',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    computedUserset: {
+                      relation: 'viewer',
+                    },
+                    tupleset: {
+                      relation: 'parent',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          parent: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            parent: { directly_related_user_types: [{ type: 'document' }] },
+            owner: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            commenter: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' },{type: 'user', wildcard: {}} , { type: 'domain', relation: 'member' }] },
+          },
+        },
+      },
+      {
+        type: 'domain',
+        relations: {
+          member: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+
 
 To mark Anne as the owner, the domain members as commenters and the public as viewers, we need to add the following relationship tuples:
 
@@ -676,8 +931,8 @@ To mark Anne as the owner, the domain members as commenters and the public as vi
       object: 'document:2021-public-roadmap',
     },
     {
-      _description: 'The public can view document:2021-public-roadmap',
-      user: '*',
+      _description: 'Everyone with type `user` can view document:2021-public-roadmap',
+      user: 'user:*',
       relation: 'viewer',
       object: 'document:2021-public-roadmap',
     },
