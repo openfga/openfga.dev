@@ -207,21 +207,22 @@ const sidebars = {
           collapsed: true,
           collapsible: true,
           label: 'Migrations',
-          
+          link: {
+            type: 'doc',
+            id: 'content/modeling/migrating/overview',
+          }, 
           items: [
             {
               type: 'doc',
               label: 'Migrating Relations',
               id: 'content/modeling/migrating/migrating-relations',
             },
-            /*
             // for now, do not show the migrating schema page
             {
               type: 'doc',
               label: 'Migrating to Schema 1.1',
               id: 'content/modeling/migrating/migrating-schema-1-1',
             },
-            */
           ],
         },
       ],
