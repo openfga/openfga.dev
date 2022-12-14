@@ -54,7 +54,7 @@ function listObjectsRequestViewer(
       }'`
       }
 
-# Response: {"object_ids": [${expectedResults.map((r) => `"${r}"`).join(', ')}]}`;
+# Response: {"objects": [${expectedResults.map((r) => `"${r}"`).join(', ')}]}`;
     /* eslint-enable max-len */
     case SupportedLanguage.JS_SDK:
       return `const response = await fgaClient.listObjects({
@@ -78,7 +78,7 @@ function listObjectsRequestViewer(
           : ''
       }
 });
-// response.object_ids = [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
+// response.objects = [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
     case SupportedLanguage.GO_SDK:
       /* eslint-disable no-tabs */
       return `body := fgaSdk.ListObjectsRequest{
@@ -107,7 +107,7 @@ data, response, err := apiClient.${
         languageMappings['go'].apiName
       }.ListObjects(context.Background()).Body(body).Execute()
 
-// data = { "object_ids": [${expectedResults.map((r) => `"${r}"`).join(', ')}] }`;
+// data = { "objects": [${expectedResults.map((r) => `"${r}"`).join(', ')}] }`;
     case SupportedLanguage.DOTNET_SDK:
       return `var body = new ListObjectsRequest{
     AuthorizationModelId = "${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}",
@@ -130,7 +130,7 @@ data, response, err := apiClient.${
 };
 var response = await openFgaApi.ListObjects(body);
 
-// response.ObjectIds = [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
+// response.Objects = [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
     case SupportedLanguage.PYTHON_SDK:
       return `
 # from openfga_sdk.models.list_objects_request import ListObjectsRequest
