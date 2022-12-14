@@ -169,7 +169,7 @@ ${deleteTuples}
       return `
 await fgaClient.Write(new WriteRequest{
   ${opts.relationshipTuples ? writes : ''}${separator}${opts.deleteRelationshipTuples ? deletes : ''},
-  authorization_model_id: "${opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId}"
+  AuthorizationModelId = "${opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId}"
 });`;
     }
 
