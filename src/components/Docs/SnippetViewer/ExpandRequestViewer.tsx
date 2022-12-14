@@ -62,10 +62,10 @@ data, response, err := fgaClient.${languageMappings['go'].apiName}.Expand(contex
     /* eslint-enable no-tabs */
     case SupportedLanguage.DOTNET_SDK:
       return `
-var response = await fgaClient.Expand(new ExpandRequest(new TupleKey() {
+var response = await fgaClient.Expand{TupleKey = new ExpandRequest(new TupleKey() {
     Relation = "${opts.relation}",  // expand all who has "${opts.relation}" relation
     Object = "${opts.object}" // with the object "${opts.object}"
-},   AuthorizationModelId = "${opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId}"));
+},   AuthorizationModelId = "${opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId}"});
 // response = { tree: ... }`;
     case SupportedLanguage.RPC:
       return `expand(

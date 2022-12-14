@@ -124,20 +124,20 @@ data, response, err := fgaClient.${languageMappings['go'].apiName}.Check(context
     case SupportedLanguage.DOTNET_SDK:
       return `
 // Run a check
-var response = await fgaClient.Check(new CheckRequest(new TupleKey() {
+var response = await fgaClient.Check{TupleKey = new CheckRequest(new TupleKey() {
   User = "${user}",
   Relation = "${relation}",
   Object = "${object}"
 }${
         contextualTuples
           ? `,
-  new ContextualTupleKeys(new List<TupleKey>({
+    ContextualTuples = new ContextualTupleKeys(new List<TupleKey>({
     ${contextualTuples
       .map((tuple) => `new(user: "${tuple.user}", relation: "${tuple.relation}", _object: "${tuple.object}")`)
       .join(',\n    ')}
 }))`
           : ''
-      }, AuthorizationModelId = "${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}");
+      }, AuthorizationModelId = "${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}"};
 
 // response.Allowed = ${allowed}`;
     case SupportedLanguage.PYTHON_SDK:
