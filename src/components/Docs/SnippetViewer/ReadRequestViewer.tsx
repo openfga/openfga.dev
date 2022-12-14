@@ -71,7 +71,7 @@ ${requestTuples}
       /* eslint-disable no-tabs */
       return `
 body := fgaSdk.ReadRequest{
-	TupleKey: &fgaSdk.TupleKey{
+	TupleKey: fgaSdk.TupleKey{
 ${requestTuples}
 	},
 }
