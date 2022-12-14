@@ -1,9 +1,15 @@
-import { getFilteredAllowedLangs, SupportedLanguage, LanguageMappings } from './SupportedLanguage';
+import {
+  getFilteredAllowedLangs,
+  SupportedLanguage,
+  LanguageMappings,
+  DefaultAuthorizationModelId,
+} from './SupportedLanguage';
 import { defaultOperationsViewer } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
 import { TupleKey } from '@openfga/sdk';
 
 interface CheckRequestViewerOpts {
+  authorizationModelId?: string;
   user: string;
   relation: string;
   object: string;
@@ -18,7 +24,7 @@ function checkRequestViewer(
   opts: CheckRequestViewerOpts,
   languageMappings: LanguageMappings,
 ): string {
-  const { user, relation, object, allowed, contextualTuples } = opts;
+  const { authorizationModelId, user, relation, object, allowed, contextualTuples } = opts;
 
   switch (lang) {
     case SupportedLanguage.PLAYGROUND:
@@ -39,7 +45,9 @@ ${
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/check \\
   -H "Authorization: Bearer $FGA_BEARER_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
-  -d '{"tuple_key":{"user":"${user}","relation":"${relation}","object":"${object}"}${
+  -d '{"authorization_model_id": "${
+    authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId
+  }", "tuple_key":{"user":"${user}","relation":"${relation}","object":"${object}"}${
         contextualTuples
           ? `,"contextual_tuples":{"tuple_keys":[${contextualTuples
               .map((tuple) => `{"user":"${tuple.user}","relation":"${tuple.relation}","object":"${tuple.object}"}`)
@@ -53,6 +61,7 @@ ${
       return `
 // Run a check
 const { allowed } = await fgaClient.check({
+  authorization_model_id: '${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}',
   tuple_key: {
     user: '${user}',
     relation: '${relation}',
@@ -82,6 +91,9 @@ const { allowed } = await fgaClient.check({
       /* eslint-disable no-tabs */
       return `
 body := fgaSdk.CheckRequest{
+\tAuthorizationModelId: fgaSdk.PtrString("${
+        authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId
+      }"),
 \tTupleKey: &fgaSdk.TupleKey{
 \t\tUser: fgaSdk.PtrString("${user}"),
 \t\tRelation: fgaSdk.PtrString("${relation}"),
@@ -118,14 +130,14 @@ var response = await fgaClient.Check(new CheckRequest(new TupleKey() {
   Object = "${object}"
 }${
         contextualTuples
-          ? `
+          ? `,
   new ContextualTupleKeys(new List<TupleKey>({
     ${contextualTuples
       .map((tuple) => `new(user: "${tuple.user}", relation: "${tuple.relation}", _object: "${tuple.object}")`)
       .join(',\n    ')}
 }))`
           : ''
-      });
+      }, AuthorizationModelId = "${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}");
 
 // response.Allowed = ${allowed}`;
     case SupportedLanguage.PYTHON_SDK:
@@ -155,6 +167,7 @@ async def check():
         ),`
             : ``
         }
+        authorization_model_id="${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}",
     )
     response = await fga_client_instance.check(body)
     # response.allowed = ${allowed}
@@ -170,9 +183,9 @@ async def check():
     ${contextualTuples
       .map((tuple) => `{user = "${tuple.user}", relation = "${tuple.relation}", object = "${tuple.object}"}`)
       .join(',\n    ')}
-  ]`
+  ],`
       : ''
-  }
+  } authorization_id="${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}"
 );
 
 Reply: ${allowed}`;

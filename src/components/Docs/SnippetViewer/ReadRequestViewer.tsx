@@ -1,4 +1,9 @@
-import { getFilteredAllowedLangs, SupportedLanguage, LanguageMappings } from './SupportedLanguage';
+import {
+  getFilteredAllowedLangs,
+  SupportedLanguage,
+  LanguageMappings,
+  DefaultAuthorizationModelId,
+} from './SupportedLanguage';
 import { defaultOperationsViewer } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
 
@@ -9,6 +14,7 @@ interface ReadTuples {
 }
 
 interface ReadRequestViewerOpts {
+  authorizationModelId?: string;
   user?: string;
   relation?: string;
   object: string;
@@ -39,7 +45,9 @@ function readRequestViewer(lang: SupportedLanguage, opts: ReadRequestViewerOpts,
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/read \\
   -H "Authorization: Bearer $FGA_BEARER_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
-  -d '{"tuple_key":{${requestTuples}}}'
+  -d '{"tuple_key":{${requestTuples}}, "authorization_model_id":"${
+        opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId
+      }"}'
 
 # Response: "tuples": {[${readTuples}]}`;
     }
@@ -55,6 +63,7 @@ const { tuples } = await fgaClient.read({
   tuple_key: {
 ${requestTuples}
   },
+  authorization_model_id: "${opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId}",
 });
 
 // tuples = [${readTuples}]
@@ -73,6 +82,9 @@ body := fgaSdk.ReadRequest{
 	TupleKey: &fgaSdk.TupleKey{
 ${requestTuples}
 	},
+\tAuthorizationModelId: fgaSdk.PtrString("${
+        opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId
+      }"),
 }
 data, response, err := fgaClient.${languageMappings['go'].apiName}.Read(context.Background()).Body(body).Execute()
 
@@ -89,7 +101,7 @@ data, response, err := fgaClient.${languageMappings['go'].apiName}.Read(context.
       return `
 var response = fgaClient.Read(new ReadRequest(new TupleKey() {
 ${requestTuples}
-}));
+}, AuthorizationModelId = "${opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId}"));
 
 // data = { "tuples": [${readTuples}] }`;
     }
@@ -108,7 +120,8 @@ async def read():
     body = ReadRequest(
         tuple_key=TupleKey(
 ${requestTuples}
-        )
+        ),
+        authorization_model_id="${opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId}",
     )
     response = await fga_client_instance.read(body)
     # response = ReadResponse({"tuples":[${readTuples}]})`;
@@ -120,7 +133,7 @@ ${requestTuples}
           ? `  "${opts.user}", // where user \`${opts.user}\` has $(opts.relation ? '': 'any ' )relation\n`
           : `  // for users who have relation\n`) +
         (opts.relation ? `  "${opts.relation}", // \`${opts.relation}\`\n` : '') +
-        `  "${opts.object}" // with the ${objectOrType} \`${opts.object}\``;
+        `  "${opts.object}", // with the ${objectOrType} \`${opts.object}\``;
 
       const readTuples = opts.tuples
         ? opts.tuples
@@ -135,6 +148,7 @@ ${requestTuples}
       return `read(
   // read all stored tuples
 ${requestTuples}
+  authorization_model_id="${opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId}"
 );
 
 Reply: tuples:[${readTuples}]`;
