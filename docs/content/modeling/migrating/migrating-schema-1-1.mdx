@@ -36,6 +36,12 @@ In short, we will be:
 
 To facilitate migration to the new DSL schema, you will need to update tuples that are no longer valid. In particular, all tuples whose `user` field involves a wildcard character (`*` or `user:*`) defined with model schema 1.0 <u><strong>MUST</strong></u> be deleted and re-added back.
 
+:::info
+
+Before starting to migrate to the new model schema, it is recommended that you obtain your current [authorization model ID](/api/service#/Authorization%20Models/ReadAuthorizationModels) and ensure that all your [check](../../concepts.mdx#what-is-a-check-request), [write](../../getting-started/update-tuples), [read](../../interacting/relationship-queries#read), [expand](../../interacting/relationship-queries#expand) and [list object](../../interacting/relationship-queries#listobjects) are performed against that model id. This allows consistent behavior in your production system until you are ready to switch to the new model. 
+
+:::
+
 ## <ProductName format={ProductNameFormat.ShortForm}/> Model Schema Versions
 
 Since the changes in the DSL are significant, we have decided to add a schema version to the DSL. The previous version of the DSL’s schema was `1.0`, and the new schema version will be `1.1`. To use the new syntax please add the following to the top of the model:

@@ -1,4 +1,9 @@
-import { getFilteredAllowedLangs, SupportedLanguage, LanguageMappings } from './SupportedLanguage';
+import {
+  getFilteredAllowedLangs,
+  SupportedLanguage,
+  LanguageMappings,
+  DefaultAuthorizationModelId,
+} from './SupportedLanguage';
 import { defaultOperationsViewer } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
 
@@ -10,6 +15,7 @@ interface RelationshipTuple {
 }
 
 interface WriteRequestViewerOpts {
+  authorizationModelId?: string;
   relationshipTuples: RelationshipTuple[];
   deleteRelationshipTuples: RelationshipTuple[];
   isDelete?: boolean;
@@ -36,7 +42,11 @@ function writeRequestViewer(lang: SupportedLanguage, opts: WriteRequestViewerOpt
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/write \\
   -H "Authorization: Bearer $FGA_BEARER_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
-  -d '{${opts.relationshipTuples ? writes : ''}${separator}${opts.deleteRelationshipTuples ? deletes : ''}}'`;
+  -d '{${opts.relationshipTuples ? writes : ''}${separator}${
+        opts.deleteRelationshipTuples ? deletes : ''
+      }, authorization_model_id: "${
+        opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId
+      }"}'`;
     }
 
     case SupportedLanguage.JS_SDK: {
@@ -71,7 +81,8 @@ function writeRequestViewer(lang: SupportedLanguage, opts: WriteRequestViewerOpt
       const separator = `${opts.deleteRelationshipTuples && opts.relationshipTuples ? ',\n  ' : ''}`;
       return `
 await fgaClient.write({
-  ${opts.relationshipTuples ? writes : ''}${separator}${opts.deleteRelationshipTuples ? deletes : ''}
+  ${opts.relationshipTuples ? writes : ''}${separator}${opts.deleteRelationshipTuples ? deletes : ''},
+  authorization_model_id: "${opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId}" 
 });`;
     }
 
@@ -114,7 +125,11 @@ await fgaClient.write({
 
       return `
 body := fgaSdk.WriteRequest{
-${opts.relationshipTuples ? writes : ''}${opts.deleteRelationshipTuples ? deletes : ''}}
+${opts.relationshipTuples ? writes : ''}${
+        opts.deleteRelationshipTuples ? deletes : ''
+      } \tAuthorizationModelId: fgaSdk.PtrString("${
+        opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId
+      }")}
 
 _, response, err := fgaClient.${languageMappings['go'].apiName}.Write(context.Background()).Body(body).Execute()
 if err != nil {
@@ -153,7 +168,8 @@ ${deleteTuples}
       const separator = `${opts.deleteRelationshipTuples && opts.relationshipTuples ? ',\n  ' : ''}`;
       return `
 await fgaClient.Write(new WriteRequest{
-  ${opts.relationshipTuples ? writes : ''}${separator}${opts.deleteRelationshipTuples ? deletes : ''}
+  ${opts.relationshipTuples ? writes : ''}${separator}${opts.deleteRelationshipTuples ? deletes : ''},
+  authorization_model_id: "${opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId}"
 });`;
     }
 
@@ -200,7 +216,9 @@ ${_description ? `                    # ${_description}\n                    ` :
 
 async def write():
     body = WriteRequest(
-    ${opts.relationshipTuples ? writes : ''}${opts.deleteRelationshipTuples ? deletes : ''}
+    ${opts.relationshipTuples ? writes : ''}${opts.deleteRelationshipTuples ? deletes : ''} \tauthorization_model_id="${
+        opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId
+      }",
     )
     await fga_client_instance.write(body)
 `;
@@ -239,8 +257,12 @@ async def write():
     }`,
         )
         .join(',');
-      const writes = `write([${writeTuples}\n])`;
-      const deletes = `delete([${deleteTuples}\n])`;
+      const writes = `write([${writeTuples}\n], authorization_model_id="${
+        opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId
+      }")`;
+      const deletes = `delete([${deleteTuples}\n], authorization_model_id="${
+        opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId
+      }")`;
       const separator = `${opts.deleteRelationshipTuples && opts.relationshipTuples ? ',' : ''}`;
 
       return `${opts.relationshipTuples ? writes : ''}${separator}

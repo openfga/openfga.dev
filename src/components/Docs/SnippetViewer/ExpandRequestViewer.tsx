@@ -1,8 +1,14 @@
-import { getFilteredAllowedLangs, SupportedLanguage, LanguageMappings } from './SupportedLanguage';
+import {
+  getFilteredAllowedLangs,
+  SupportedLanguage,
+  LanguageMappings,
+  DefaultAuthorizationModelId,
+} from './SupportedLanguage';
 import { defaultOperationsViewer } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
 
 interface ExpandRequestViewerOpts {
+  authorizationModelId?: string;
   relation: string;
   object: string;
   skipSetup?: boolean;
@@ -20,7 +26,9 @@ function expandRequestViewer(
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/expand \\
   -H "Authorization: Bearer $FGA_BEARER_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
-  -d '{"tuple_key":{"relation":"${opts.relation}","object":"${opts.object}"}}'
+  -d '{"tuple_key":{"relation":"${opts.relation}","object":"${opts.object}"}, "authorization_model_id": "${
+        opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId
+      }"}'
 
 # Response: {"tree": ...}`;
     case SupportedLanguage.JS_SDK:
@@ -30,6 +38,7 @@ const { tree } = await fgaClient.expand({
     relation: '${opts.relation}', // expand all who has '${opts.relation}' relation
     object: '${opts.object}', // with the object '${opts.object}'
   },
+  authorization_model_id: '${opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId}'
 });
 
 // tree = ...`;
@@ -42,6 +51,9 @@ body := fgaSdk.ExpandRequest{
 		Relation: fgaSdk.PtrString("${opts.relation}"), // expand all who has "${opts.relation}" relation
 		Object: fgaSdk.PtrString("${opts.object}"), // with the object "${opts.object}"
 	},
+\tAuthorizationModelId: fgaSdk.PtrString("${
+        opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId
+      }"),
 }
 data, response, err := fgaClient.${languageMappings['go'].apiName}.Expand(context.Background()).Body(body).Execute()
 
@@ -53,12 +65,13 @@ data, response, err := fgaClient.${languageMappings['go'].apiName}.Expand(contex
 var response = await fgaClient.Expand(new ExpandRequest(new TupleKey() {
     Relation = "${opts.relation}",  // expand all who has "${opts.relation}" relation
     Object = "${opts.object}" // with the object "${opts.object}"
-}));
+},   AuthorizationModelId = "${opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId}"));
 // response = { tree: ... }`;
     case SupportedLanguage.RPC:
       return `expand(
   "${opts.relation}", // expand all who has \`${opts.relation}\` relation
-  "${opts.object}" // with the object \`${opts.object}\`
+  "${opts.object}", // with the object \`${opts.object}\`
+  authorization_model_id="${opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId}"
 );
 
 Reply: {tree:...}`;
@@ -74,7 +87,10 @@ async def expand():
         tuple_key=TupleKey(
             relation: "${opts.relation}",
             object: "${opts.object}",
-        )
+        ),
+        authorization_model_id: "${
+          opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId
+        }",
     )
     response = await fga_client_instance.expand(body)
     # response = ExpandResponse({"tree":...})
