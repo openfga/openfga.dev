@@ -49,6 +49,7 @@ Let us also assume that we have a `document` called "planning", shared for editi
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -60,12 +61,22 @@ Let us also assume that we have a `document` called "planning", shared for editi
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{ type: 'user' }, { type: 'team', relation: 'member' }] },
+          },
+        },
       },
       {
         type: 'team',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -151,6 +162,7 @@ The authorization model becomes this:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -165,12 +177,23 @@ The authorization model becomes this:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            blocked: { directly_related_user_types: [{ type: 'user' }] },
+            editor: { directly_related_user_types: [{ type: 'user' }, { type: 'team', relation: 'member' }] },
+          },
+        },
       },
       {
         type: 'team',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -186,6 +209,7 @@ Now that we can mark users as `blocked` from editing documents, we need to suppo
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -209,12 +233,23 @@ Now that we can mark users as `blocked` from editing documents, we need to suppo
             },
           },
         },
+        metadata: {
+          relations: {
+            blocked: { directly_related_user_types: [{ type: 'user' }] },
+            editor: { directly_related_user_types: [{ type: 'user' }, { type: 'team', relation: 'member' }] },
+          },
+        },
       },
       {
         type: 'team',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },

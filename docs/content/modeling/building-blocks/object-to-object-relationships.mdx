@@ -52,6 +52,7 @@ You will start with the _<ProductConcept section="what-is-an-authorization-model
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -63,12 +64,22 @@ You will start with the _<ProductConcept section="what-is-an-authorization-model
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{type: 'user'}] },
+          },
+        },
       },
       {
         type: 'folder',
         relations: {
           viewer: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{type: 'user'}] },
           },
         },
       },
@@ -104,6 +115,7 @@ To represent that a `folder` can be a `parent` of a `document`, we first need to
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -119,12 +131,23 @@ To represent that a `folder` can be a `parent` of a `document`, we first need to
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            parent: { directly_related_user_types: [{type: 'folder'}] },
+            editor: { directly_related_user_types: [{type: 'user'}] },
+          },
+        },
       },
       {
         type: 'folder',
         relations: {
           viewer: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{type: 'user'}] },
           },
         },
       },
@@ -146,10 +169,6 @@ Once the type definition is updated, we can now create the <ProductConcept secti
     },
   ]}
 />
-
-:::caution
-**Note:** <ProductName format={ProductNameFormat.ShortForm}/> does not restrict what value belongs within the user key, so technically a user or any other object can be a `parent` of a `document`. It is your responsibility to ensure that relationship tuples are being created accordingly within your applications business logic.
-:::
 
 ### 03. Check That Parent Folders Have Permissions
 
@@ -173,6 +192,7 @@ To do this, the authorization model will have two <ProductConcept section="what-
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -203,12 +223,23 @@ To do this, the authorization model will have two <ProductConcept section="what-
             },
           },
         },
+        metadata: {
+          relations: {
+            associated_plan: { directly_related_user_types: [{type: 'plan'}] },
+            access: { directly_related_user_types: [{type: 'user'}] },
+          },
+        },
       },
       {
         type: 'plan',
         relations: {
           subscriber_member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            subscriber_member: { directly_related_user_types: [{type: 'user'}] },
           },
         },
       },

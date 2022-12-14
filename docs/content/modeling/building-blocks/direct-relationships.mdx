@@ -83,6 +83,7 @@ Direct relationships can be enabled for a specific relation on an _<ProductConce
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -110,12 +111,29 @@ Direct relationships can be enabled for a specific relation on an _<ProductConce
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            viewer: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'user', wildcard: {} },
+                { type: 'team', relation: 'member' },
+              ],
+            },
+            editor: { directly_related_user_types: [{ type: 'user' }, { type: 'team', relation: 'member' }] },
+          },
+        },
       },
       {
         type: 'team',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -143,6 +161,7 @@ Let us start with the authorization model we had above:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -170,12 +189,29 @@ Let us start with the authorization model we had above:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            viewer: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'user', wildcard: {} },
+                { type: 'team', relation: 'member' },
+              ],
+            },
+            editor: { directly_related_user_types: [{ type: 'user' }, { type: 'team', relation: 'member' }] },
+          },
+        },
       },
       {
         type: 'team',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -213,12 +249,12 @@ This is because:
 
 <TabItem value='everyone' label='Everyone'>
 
-Assume you have a tuple that states that <ProductConcept section="how-do-i-represent-everyone" linkName="everyone" /> is a `viewer` of `document:planning` (In other words, the document is public)
+Assume you have a tuple that states that <ProductConcept section="how-do-i-represent-everyone" linkName="everyone" /> of type `user` is a `viewer` of `document:planning` (In other words, the document is public)
 
 <RelationshipTuplesViewer
   relationshipTuples={[
     {
-      user: '*',
+      user: 'user:*',
       relation: 'viewer',
       object: 'document:planning',
     },
@@ -231,7 +267,7 @@ Now if we do a check request to see if Beth can view the planning document, we w
 
 This is because:
 
-- There is a relationship tuple specifying that everyone has a `viewer` relationship with `document:planning`.
+- There is a relationship tuple specifying that everyone of type `user` has a `viewer` relationship with `document:planning`.
 - Direct relationships are allowed in the `viewer` relation definition in the `document` type definition.
 
 :::info
@@ -368,6 +404,7 @@ In this section, we will investigate the effect of disabling _direct relationshi
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -385,12 +422,20 @@ In this section, we will investigate the effect of disabling _direct relationshi
             this: {},
           },
         },
+        metadata: {
+          relations: {},
+        },
       },
       {
         type: 'team',
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -434,14 +479,14 @@ This is because:
 
 <TabItem value='everyone' label='Everyone'>
 
-You will see the same behaviour with a relationship tuple specifying everyone as the user.
+You will see the same behaviour with a relationship tuple specifying everyone of type `user` as the user.
 
-Assume you have a tuple that states that everyone is a `viewer` of `document:planning`.
+Assume you have a tuple that states that everyone of type `user` is a `viewer` of `document:planning`.
 
 <RelationshipTuplesViewer
   relationshipTuples={[
     {
-      user: '*',
+      user: 'user:*',
       relation: 'viewer',
       object: 'document:planning',
     },

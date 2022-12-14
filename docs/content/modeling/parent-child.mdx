@@ -51,6 +51,7 @@ You have two types:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -62,12 +63,22 @@ You have two types:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
       {
         type: 'document',
         relations: {
           editor: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -117,6 +128,7 @@ To allow a `parent` relation between a `folder` and a `document`, we need to upd
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -126,6 +138,11 @@ To allow a `parent` relation between a `folder` and a `document`, we need to upd
         relations: {
           editor: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -138,6 +155,12 @@ To allow a `parent` relation between a `folder` and a `document`, we need to upd
           },
           editor: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            parent: { directly_related_user_types: [{ type: 'folder' }] },
+            editor: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -157,6 +180,7 @@ To allow _cascading_ relations between `folder` and `document`, we can update ou
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -166,6 +190,11 @@ To allow _cascading_ relations between `folder` and `document`, we can update ou
         relations: {
           editor: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -193,6 +222,12 @@ To allow _cascading_ relations between `folder` and `document`, we can update ou
                 },
               ],
             },
+          },
+        },
+        metadata: {
+          relations: {
+            parent: { directly_related_user_types: [{ type: 'folder' }] },
+            editor: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },

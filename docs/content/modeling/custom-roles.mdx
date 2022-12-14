@@ -54,6 +54,7 @@ We'll start with the following authorization model showing a system with an `ass
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -78,6 +79,12 @@ We'll start with the following authorization model showing a system with an `ass
           },
           editor: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{ type: 'user' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -146,6 +153,7 @@ The authorization model becomes this:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -172,12 +180,23 @@ The authorization model becomes this:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'role', relation: 'assignee' }] },
+            editor: { directly_related_user_types: [{ type: 'user' }, { type: 'role', relation: 'assignee' }] },
+          },
+        },
       },
       {
         type: 'role',
         relations: {
           assignee: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            assignee: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },

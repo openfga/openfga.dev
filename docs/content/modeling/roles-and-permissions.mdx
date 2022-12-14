@@ -61,6 +61,7 @@ You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `t
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -73,6 +74,12 @@ You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `t
           },
           viewer: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -120,6 +127,7 @@ Relating roles within <ProductName format={ProductNameFormat.ShortForm}/> can be
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -134,6 +142,12 @@ Relating roles within <ProductName format={ProductNameFormat.ShortForm}/> can be
           // Users can have role: 'viewer'
           viewer: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -151,6 +165,7 @@ To allow `viewers` of a `trip` to have **permissions to view bookings** and `own
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -190,6 +205,12 @@ To allow `viewers` of a `trip` to have **permissions to view bookings** and `own
                 },
               ],
             },
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },

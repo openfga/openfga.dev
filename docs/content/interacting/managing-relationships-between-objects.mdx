@@ -45,6 +45,7 @@ Assume that you have the following <ProductConcept section="what-is-an-authoriza
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -54,6 +55,11 @@ Assume that you have the following <ProductConcept section="what-is-an-authoriza
         relations: {
           admin: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            admin: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -106,6 +112,7 @@ Another way of modeling this is to have an authorization model as follows:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -138,12 +145,23 @@ Another way of modeling this is to have an authorization model as follows:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'org' }] },
+            admin: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
       {
         type: 'org',
         relations: {
           repo_admin: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            repo_admin: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },

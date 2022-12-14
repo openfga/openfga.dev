@@ -66,6 +66,7 @@ We will start with the following Authorization Model
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -75,6 +76,11 @@ We will start with the following Authorization Model
         relations: {
           account_manager: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            account_manager: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -124,6 +130,12 @@ We will start with the following Authorization Model
             },
           },
         },
+        metadata: {
+          relations: {
+            branch: { directly_related_user_types: [{ type: 'branch' }] },
+            customer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
       {
         type: 'transaction',
@@ -142,6 +154,11 @@ We will start with the following Authorization Model
                 relation: 'viewer',
               },
             },
+          },
+        },
+        metadata: {
+          relations: {
+            account: { directly_related_user_types: [{ type: 'account' }] },
           },
         },
       },
@@ -205,9 +222,11 @@ By the end of this guide we would like to validate that:
 
 In order to solve for the requirements above, we will break the problem down to three steps:
 
-1. [Understand relationships without contextual tuples](#understand-relationships-without-contextual-data). We will want to ensure that 
+1. [Understand relationships without contextual tuples](#understand-relationships-without-contextual-data). We will want to ensure that
+
 - the customer can view a transaction tied to their account
 - the account manager can view a transaction whose account is at the same branch
+
 2. Extend the Authorization Model to [take time and ip address into consideration](#take-time-and-ip-address-into-consideration)
 3. [Use contextual tuples for context related checks](#use-contextual-tuples-for-context-related-checks).
 
@@ -221,9 +240,11 @@ With the Authorization Model and relationship tuples shown above, <ProductName f
 We can verify that using the following checks
 
 Anne can view transaction:A because she is an account manager of an account that is at the same branch.
+
 <CheckRequestViewer user={'user:anne'} relation={'can_view'} object={'transaction:A'} allowed={true} />
 
 Caroline can view transaction:A because she is a customer and the transaction is tied to her account.
+
 <CheckRequestViewer user={'user:caroline'} relation={'can_view'} object={'transaction:A'} allowed={true} />
 
 Additionally, we will check that Mary, an account manager at a different branch _cannot_ view transaction A.
@@ -256,6 +277,11 @@ In order to add time and ip address to our authorization model, we will add appr
         this: {},
       },
     },
+    metadata: {
+      relations: {
+        user: { directly_related_user_types: [{ type: 'user' }] },
+      },
+    },
   }}
 />
 
@@ -265,6 +291,11 @@ In order to add time and ip address to our authorization model, we will add appr
     relations: {
       user: {
         this: {},
+      },
+    },
+    metadata: {
+      relations: {
+        user: { directly_related_user_types: [{ type: 'user' }] },
       },
     },
   }}
@@ -322,6 +353,13 @@ The branch type definition then becomes:
             },
           ],
         },
+      },
+    },
+    metadata: {
+      relations: {
+        account_manager: { directly_related_user_types: [{ type: 'user' }] },
+        approved_ip_address_range: { directly_related_user_types: [{ type: 'ip-address-range' }] },
+        approved_timeslot: { directly_related_user_types: [{ type: 'timeslot' }] },
       },
     },
   }}
@@ -405,6 +443,12 @@ The account type definition then becomes:
         },
       },
     },
+    metadata: {
+      relations: {
+        branch: { directly_related_user_types: [{ type: 'branch' }] },
+        customer: { directly_related_user_types: [{ type: 'user' }] },
+      },
+    },
   }}
 />
 
@@ -412,6 +456,7 @@ The account type definition then becomes:
 On the "transaction" type:
 
 - Nothing will need to be done, as it will inherit the updated "viewer" relation definition from "account"
+
 :::
 
 ##### Add The Required Tuples To Mark That Anne Is In An Approved Context
@@ -426,6 +471,7 @@ We need to add relationship tuples to mark some approved timeslots and ip addres
 
 - Here we added the time slots in increments of 1 hour periods, but this is not a requirement.
 - We did not add all the office hours to keep this guide shorter.
+
 :::
 
 <WriteRequestViewer
@@ -483,7 +529,7 @@ Now that we know we can authorize based on present state, we have a different pr
 
 How do we solve this? How do we tie the above two tuples to the context of the request instead of the system state?
 
-First, we will need to undo adding the stored relationship tuples where Anne is connecting from within the 10.0.0.0/16 ip address range and Anne connecting between 12pm and 1pm 
+First, we will need to undo adding the stored relationship tuples where Anne is connecting from within the 10.0.0.0/16 ip address range and Anne connecting between 12pm and 1pm
 
 <WriteRequestViewer
   deleteRelationshipTuples={[
@@ -557,6 +603,7 @@ When Anne is connecting from a denied ip address range or timeslot, <ProductName
   Final version of the Authorization Model and Relationship tuples
 </summary>
 <AuthzModelSnippetViewer configuration={{
+    schema_version: '1.1',
   "type_definitions": [
     {
       "type": "user",
@@ -603,7 +650,14 @@ When Anne is connecting from a denied ip address range or timeslot, <ProductName
             ]
           }
         }
-      }
+      },
+      metadata: {
+        relations: {
+          account_manager: { directly_related_user_types: [{type: 'user'}] },
+          approved_ip_address_range: { directly_related_user_types: [{type: 'ip-address-range'}] },
+          approved_timeslot: { directly_related_user_types: [{type: 'timeslot'}] },
+        },
+      },
     },
     {
       "type": "account",
@@ -674,7 +728,13 @@ When Anne is connecting from a denied ip address range or timeslot, <ProductName
             "relation": "viewer"
           }
         }
-      }
+      },
+      metadata: {
+        relations: {
+          branch: { directly_related_user_types: [{type: 'branch'}] },
+          customer: { directly_related_user_types: [{type: 'user'}] },
+        },
+      },
     },
     {
       "type": "transaction",
@@ -694,7 +754,12 @@ When Anne is connecting from a denied ip address range or timeslot, <ProductName
             }
           }
         }
-      }
+      },
+      metadata: {
+        relations: {
+          account: { directly_related_user_types: [{type: 'account'}] },
+        },
+      },
     },
     {
       "type": "timeslot",
@@ -702,7 +767,12 @@ When Anne is connecting from a denied ip address range or timeslot, <ProductName
         "user": {
           "this": {}
         }
-      }
+      },
+      metadata: {
+        relations: {
+          user: { directly_related_user_types: [{type: 'user'}] },
+        },
+      },
     },
     {
       "type": "ip-address-range",
@@ -710,7 +780,12 @@ When Anne is connecting from a denied ip address range or timeslot, <ProductName
         "user": {
           "this": {}
         }
-      }
+      },
+      metadata: {
+        relations: {
+          user: { directly_related_user_types: [{type: 'user'}] },
+        },
+      },
     }
   ]
 }} />
@@ -797,6 +872,7 @@ Contextual tuples:
 - Are not persisted in the store.
 - Are only supported on the [Check API endpoint](/api/service#Relationship%20Queries/Check). They are not supported on read, expand and other endpoints.
 - If you are using the [ReadChanges API endpoint](/api/service#Relationship%20Tuples/ReadChanges) to build a permission aware search index, note that it will not be trivial to take contextual tuples into account.
+
 :::
 
 ### Taking It A Step Further: Banks As A Service Authorization
@@ -807,6 +883,7 @@ In that case, we can extend the model like so:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',
@@ -816,6 +893,11 @@ In that case, we can extend the model like so:
         relations: {
           admin: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            admin: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -863,6 +945,14 @@ In that case, we can extend the model like so:
                 },
               ],
             },
+          },
+        },
+        metadata: {
+          relations: {
+            bank: { directly_related_user_types: [{ type: 'bank' }] },
+            account_manager: { directly_related_user_types: [{ type: 'user' }] },
+            approved_ip_address_range: { directly_related_user_types: [{ type: 'ip-address-range' }] },
+            approved_timeslot: { directly_related_user_types: [{ type: 'timeslot' }] },
           },
         },
       },
@@ -936,6 +1026,12 @@ In that case, we can extend the model like so:
             },
           },
         },
+        metadata: {
+          relations: {
+            branch: { directly_related_user_types: [{ type: 'branch' }] },
+            customer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
       {
         type: 'transaction',
@@ -956,6 +1052,11 @@ In that case, we can extend the model like so:
             },
           },
         },
+        metadata: {
+          relations: {
+            account: { directly_related_user_types: [{ type: 'account' }] },
+          },
+        },
       },
       {
         type: 'timeslot',
@@ -964,12 +1065,22 @@ In that case, we can extend the model like so:
             this: {},
           },
         },
+        metadata: {
+          relations: {
+            user: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
       {
         type: 'ip-address-range',
         relations: {
           user: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            user: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
