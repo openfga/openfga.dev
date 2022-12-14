@@ -491,7 +491,7 @@ func checkAuthorization(c *fiber.Ctx) error {
   fgaClient := fgaSdk.NewAPIClient(configuration)
 
   body := fgaSdk.CheckRequest{
-    TupleKey: &fgaSdk.TupleKey{
+    TupleKey: fgaSdk.TupleKey{
       User: fgaSdk.PtrString(c.Locals("username").(string)),
       Relation: fgaSdk.PtrString(c.Locals("relation").(string)),
       Object: fgaSdk.PtrString(c.Locals("object").(string)),

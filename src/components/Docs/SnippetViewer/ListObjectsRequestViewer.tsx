@@ -83,9 +83,9 @@ function listObjectsRequestViewer(
       /* eslint-disable no-tabs */
       return `body := fgaSdk.ListObjectsRequest{
     AuthorizationModelId: PtrString("${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}"),
-    User:                 PtrString("${user}"),
-    Relation:             PtrString("${relation}"),
-    Type:                 PtrString("${objectType}"),${
+    User:                 "${user}",
+    Relation:             "${relation}",
+    Type:                 "${objectType}",${
         contextualTuples?.length
           ? `
     ContextualTuples: &ContextualTupleKeys{

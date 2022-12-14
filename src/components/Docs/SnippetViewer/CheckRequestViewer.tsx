@@ -94,10 +94,10 @@ body := fgaSdk.CheckRequest{
 \tAuthorizationModelId: fgaSdk.PtrString("${
         authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId
       }"),
-\tTupleKey: &fgaSdk.TupleKey{
-\t\tUser: fgaSdk.PtrString("${user}"),
-\t\tRelation: fgaSdk.PtrString("${relation}"),
-\t\tObject: fgaSdk.PtrString("${object}"),
+\tTupleKey: fgaSdk.TupleKey{
+\t\tUser: "${user}",
+\t\tRelation: "${relation}",
+\t\tObject: "${object}",
 \t},${
         contextualTuples
           ? `
