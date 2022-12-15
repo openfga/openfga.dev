@@ -1,0 +1,66 @@
+---
+title: Production Environment
+description: Running OpenFGA in Production Environment
+sidebar_position: 8
+slug: /getting-started/production-environment
+---
+
+import {
+  DocumentationNotice,
+  RelatedSection,
+} from "@components/Docs";
+
+# Running OpenFGA in Production Environment
+
+<DocumentationNotice />
+
+## Preparation
+
+If you have tried OpenFGA locally, decided it works as expected, and now want to deploy it to production, we recommend the following preparation:
+
+- Update the configuration as follows:
+  - [Configure authentication](./setup-openfga.mdx#configuring-authentication) on the server.
+  - Enable TLS on the server.
+  - Enable production logging by changing the `log.format` in the [config.yaml](#configuring-the-server) configuration file to `json`.
+  - [Disable Playground](./setup-openfga.mdx#playground).
+- Add a rate limiter interceptor (for example, [in the server configuration](https://pkg.go.dev/github.com/openfga/openfga/server#Config)) that protects your OpenFGA server against bursts in traffic.
+- Add a logger interceptor (for example, [in the server configuration](https://pkg.go.dev/github.com/openfga/openfga/server#Config)) that sends logs to your logging platform of choice.
+
+## Database Performance Implication
+
+To ensure good performance for OpenFGA, it is recommended that the [database](./setup-openfga.mdx#configuring-data-storage) be:
+- Used exclusively for OpenFGA and not share with other applications. This allows scaling the OpenFGA database separately and independently.  
+- Indexing to improve performance, especially for check
+
+## Tuples Operation with Authorization Model ID
+
+To ensure reliability while new models are developed, it is <strong>strongly recommended</strong> that 
+- [Check](./perform-check.mdx), [write](./update-tuples.mdx), [expand](../interacting/relationship-queries.mdx#expand) and [list object](../interacting/relationship-queries.mdx#listobjects) be performed against a validated model by specifying the authorization model id 
+- At the same time, updates may be performed on the model and testing may be the new model.
+- Once you are satisfied with the new model, you may switch to the new model either via blue-green deployment or via canary by switching a small percentage of check, write, expand and list objects with the new authorization model id.  
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more on how to run OpenFGA in production environment."
+  relatedLinks={[
+    {
+      title: 'Setup OpenFGA',
+      description: 'Learn how to setup the OpenFGA Server.',
+      link: './setup-openfga',
+      id: './setup-openfga',
+    },
+    {
+      title: 'Migrating Relations',
+      description: 'Learn how to migrate relations in a production environment',
+      link: '../modeling/migrating/migrating-relations',
+      id: '../modeling/migrating/migrating-relations',
+    },
+    {
+      title: 'Migrating Schema 1.1',
+      description: 'Learn how to migrate to model schema 1.1',
+      link: '../modeling/migrating/migrating-schema-1-1',
+      id: '../modeling/migrating/migrating-schema-1-1',
+    },
+  ]}
+/>

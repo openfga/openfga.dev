@@ -29,6 +29,7 @@ hide_title: true
   - [Update Relationship Tuples](./content/getting-started/update-tuples.mdx)
   - [Perform a Check](./content/getting-started/perform-check.mdx)
   - [Integrate Within a Framework](./content/getting-started/framework.mdx)
+  - [Production Environment](./content/getting-started/production-environment.mdx)
 - [Modeling Overview](./content/modeling/overview.mdx)
   - [Getting Started with Modeling](./content/modeling/getting-started.mdx)
   - [Direct Access](./content/modeling/direct-access.mdx)
