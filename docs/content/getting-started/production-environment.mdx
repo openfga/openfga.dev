@@ -32,13 +32,6 @@ To ensure good performance for OpenFGA, it is recommended that the [database](./
 - Used exclusively for OpenFGA and not share with other applications. This allows scaling the OpenFGA database separately and independently.  
 - Indexing to improve performance, especially for check
 
-## Tuples Operation with Authorization Model ID
-
-To ensure reliability while new models are developed, it is <strong>strongly recommended</strong> that 
-- [Check](./perform-check.mdx), [write](./update-tuples.mdx), [expand](../interacting/relationship-queries.mdx#expand) and [list object](../interacting/relationship-queries.mdx#listobjects) be performed against a validated model by specifying the authorization model id 
-- At the same time, updates may be performed on the model and testing may be the new model.
-- Once you are satisfied with the new model, you may switch to the new model either via blue-green deployment or via canary by switching a small percentage of check, write, expand and list objects with the new authorization model id.  
-
 ## Related Sections
 
 <RelatedSection
