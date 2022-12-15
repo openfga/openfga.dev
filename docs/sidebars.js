@@ -68,8 +68,8 @@ const sidebars = {
         },
         {
           type: 'doc',
-          label: 'Runnin in Production',
-          id: 'content/getting-started/running-in-production',
+          label: 'Production Environment',
+          id: 'content/getting-started/production-environment',
         },
       ],
     },
