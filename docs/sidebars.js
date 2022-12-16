@@ -69,7 +69,7 @@ const sidebars = {
         {
           type: 'doc',
           label: 'Production Best Practices',
-          id: 'content/getting-started/production-environment',
+          id: 'content/getting-started/production-best-practices',
         },
       ],
     },
