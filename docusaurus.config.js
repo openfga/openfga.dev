@@ -99,8 +99,8 @@ import json
 import openfga_sdk
 from openfga_sdk.api import open_fga_api`,
         apiName: `OpenFgaApi`,
-        setupNote: `# ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`, 
-      }
+        setupNote: `# ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`,
+      },
     },
     contentSecurityPolicy: `default-src 'none';
       base-uri 'self';
@@ -281,7 +281,7 @@ from openfga_sdk.api import open_fga_api`,
             label: 'Github',
           },
         ],
-        copyright: `<div><a href="https://www.linuxfoundation.org/legal/trademark-usage"><img src="/img/cncf-icon-white.svg" alt="CNCF" style="vertical-align:middle" /></a> @ ${new Date().getFullYear()}</div>`,
+        copyright: `<div><a href="https://www.linuxfoundation.org/trademark-usage"><img src="/img/cncf-icon-white.svg" alt="CNCF" style="vertical-align:middle; margin-right:8px;" /></a> &copy; ${new Date().getFullYear()} <a href="https://www.linuxfoundation.org/" target="_blank">The Linux Foundation</a>®. All rights reserved. <span class="display-on-desktop">For a list of trademarks of The Linux Foundation, see our <a href="https://www.linuxfoundation.org/trademark-usage" class="light-text" target="blank">Trademark Usage page</a>.</span></div>`,
       },
       prism: {
         theme: lightCodeTheme,

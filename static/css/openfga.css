@@ -21,12 +21,12 @@
   --ofga-neutral-lightest: #f4f6f7;
   --ofga-neutral-white: #ffffff;
 
-  --ofga-color-default: #FFFFFF;
+  --ofga-color-default: #ffffff;
   --ofga-color-comment: #737981;
-  --ofga-color-keyword: #AAAAAA;
-  --ofga-color-type: #79ED83;
-  --ofga-color-relation: #20F1F5;
-  --ofga-color-directly-assignable: #CEEC93;
+  --ofga-color-keyword: #aaaaaa;
+  --ofga-color-type: #79ed83;
+  --ofga-color-relation: #20f1f5;
+  --ofga-color-directly-assignable: #ceec93;
 
   --ofga-color-primary: var(--ofga-green-neon);
   --ofga-color-primary-dark: var(--ofga-green-dark);
@@ -643,4 +643,14 @@ pre {
   color: #522c09;
   letter-spacing: 0.8px;
   text-transform: uppercase;
+}
+
+.display-on-desktop {
+  display: none;
+}
+
+@media screen and (min-width: 1200px) {
+  .display-on-desktop {
+    display: inline;
+  }
 }
