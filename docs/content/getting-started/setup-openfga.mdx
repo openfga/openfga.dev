@@ -21,7 +21,7 @@ This article explains how to start your own OpenFGA server using Docker, and how
 
 If you want to run OpenFGA locally as a Docker container, follow these steps:
 
-1. [Install Docker](https://docs.docker.com/get-docker/) if Docker was not already installed.
+1. [Install Docker](https://docs.docker.com/get-docker/) (if not already installed).
 2. Run `docker pull openfga/openfga` to get the latest docker image.
 3. Run `docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 openfga/openfga run`.
 
@@ -277,6 +277,27 @@ grpcurl -plaintext $FGA_API_HOST grpc.health.v1.Health/Check
 
 # {"status":"SERVING"}
 ```
+
+## Experimental Features
+Various releases of OpenFGA may have experimental features that can be enabled by providing the `--enable-experimentals` flag or the `enableExperimentals` config.
+
+```
+docker run -p 8080:8080 -p 8081:8081 openfga/openfga run --enable-experimental="feature1, feature2"
+```
+
+The following table table enumerates the experimental flags, a description of what they do, and the versions of OpenFGA the flag is supported in:
+
+| name                   | description                                                                                              | openfga version |
+|------------------------|----------------------------------------------------------------------------------------------------------|-----------------|
+| list-objects-optimized | Enables support for an optimization of the [openfga.v1.ListObjects](/api/service#/Relationship%20Queries/ListObjects) API for models with schema version 1.1 | >= v0.3.1       |
+
+:::caution Warning
+Experimental features are not guaranteed to be stable and may lead to server instabilities. It is not recommended to enable
+experimental features for anything other than experimentation.
+
+Experimental feature flags are also not considered part of API compatibility and are subject to change, so please refer to each 
+OpenFGA specific release for a list of the experimental feature flags that can be enabled for that release.
+:::
 
 ## Production Recommendations
 
