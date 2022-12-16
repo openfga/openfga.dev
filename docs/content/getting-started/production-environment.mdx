@@ -1,6 +1,6 @@
 ---
-title: Running OpenFGA in Production
-description: Running OpenFGA in a Production Environment
+title: Production Best Practices
+description: Best Practices of Running OpenFGA in a Production Environment
 sidebar_position: 8
 slug: /getting-started/running-in-production
 ---
@@ -14,23 +14,18 @@ import {
 
 <DocumentationNotice />
 
-## Preparation
+The following list outlines some guidelines and best-practices for running OpenFGA in a production environment:
 
-If you have tried OpenFGA locally, decided it works as expected, and now want to deploy it to production, we recommend the following preparation:
+- [Configure Authentication](./setup-openfga.mdx#configuring-authentication)
+- Enable HTTP TLS or gRPC TLS or both
+- Configure JSON as the log.format
+- [Disable the Playground](./setup-openfga.mdx#playground).
 
-- Update the configuration as follows:
-  - [Configure authentication](./setup-openfga.mdx#configuring-authentication) on the server.
-  - Enable TLS on the server.
-  - Enable production logging by changing the `log.format` in the [config.yaml](#configuring-the-server) configuration file to `json`.
-  - [Disable Playground](./setup-openfga.mdx#playground).
-- Add a rate limiter interceptor (for example, [in the server configuration](https://pkg.go.dev/github.com/openfga/openfga/server#Config)) that protects your OpenFGA server against bursts in traffic.
-- Add a logger interceptor (for example, [in the server configuration](https://pkg.go.dev/github.com/openfga/openfga/server#Config)) that sends logs to your logging platform of choice.
-
-## Database Performance Implication
+## Database Recommendations
 
 To ensure good performance for OpenFGA, it is recommended that the [database](./setup-openfga.mdx#configuring-data-storage) be:
-- Used exclusively for OpenFGA and not share with other applications. This allows scaling the OpenFGA database separately and independently.  
-- Indexing to improve performance, especially for check
+- Used exclusively for OpenFGA and not shared with other applications. This allows scaling the OpenFGA database independently and avoiding contention with your application database. 
+- Bootstrapped and managed with the openfga migrate tool. This will ensure the appropriate indexes are created for any specific version of OpenFGA.
 
 ## Related Sections
 
