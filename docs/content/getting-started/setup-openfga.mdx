@@ -279,10 +279,10 @@ grpcurl -plaintext $FGA_API_HOST grpc.health.v1.Health/Check
 ```
 
 ## Experimental Features
-Various releases of OpenFGA may have experimental features that can be enabled by providing the `--enable-experimentals` flag or the `enableExperimentals` config.
+Various releases of OpenFGA may have experimental features that can be enabled by providing the `--experimentals` flag or the `experimentals` config.
 
 ```
-docker run -p 8080:8080 -p 8081:8081 openfga/openfga run --enable-experimental="feature1, feature2"
+docker run -p 8080:8080 -p 8081:8081 openfga/openfga run --experimentals="feature1, feature2"
 ```
 
 The following table table enumerates the experimental flags, a description of what they do, and the versions of OpenFGA the flag is supported in:
