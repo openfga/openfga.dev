@@ -300,7 +300,7 @@ Use the ListObjects API to get what objects a user can see based on the relation
   relation="reader"
   user="user:bob"
   contextualTuples={[{ object: 'document:otherdoc', relation: 'reader', user: 'user:bob' }]}
-  expectedResults={['otherdoc', 'planning']}
+  expectedResults={['document:otherdoc', 'document:planning']}
 />
 
 There's two variations of the List Objects API.
