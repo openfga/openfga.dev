@@ -1,0 +1,55 @@
+---
+title: Production Best Practices
+description: Best Practices of Running OpenFGA in a Production Environment
+sidebar_position: 8
+slug: /getting-started/running-in-production
+---
+
+import {
+  DocumentationNotice,
+  RelatedSection,
+} from "@components/Docs";
+
+# Running OpenFGA in Production
+
+<DocumentationNotice />
+
+The following list outlines some guidelines and best-practices for running OpenFGA in a production environment:
+
+- [Configure Authentication](./setup-openfga.mdx#configuring-authentication)
+- Enable HTTP TLS or gRPC TLS or both
+- Set the log.format to "json"
+- Set the log.level to "info"
+- [Disable the Playground](./setup-openfga.mdx#playground).
+
+## Database Recommendations
+
+To ensure good performance for OpenFGA, it is recommended that the [database](./setup-openfga.mdx#configuring-data-storage) be:
+- Used exclusively for OpenFGA and not shared with other applications. This allows scaling the OpenFGA database independently and avoiding contention with your application database. 
+- Bootstrapped and managed with the `openfga migrate` tool. This will ensure the appropriate indexes are created for any specific version of OpenFGA.
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more on how to run OpenFGA in production environment."
+  relatedLinks={[
+    {
+      title: 'Setup OpenFGA',
+      description: 'Learn how to setup the OpenFGA Server',
+      link: './setup-openfga',
+      id: './setup-openfga',
+    },
+    {
+      title: 'Migrating Relations',
+      description: 'Learn how to migrate relations in a production environment',
+      link: '../modeling/migrating/migrating-relations',
+      id: '../modeling/migrating/migrating-relations',
+    },
+    {
+      title: 'Migrating Schema 1.1',
+      description: 'Learn how to migrate to model schema 1.1',
+      link: '../modeling/migrating/migrating-schema-1-1',
+      id: '../modeling/migrating/migrating-schema-1-1',
+    },
+  ]}
+/>

@@ -7,6 +7,7 @@ slug: /getting-started/setup-openfga
 
 import {
   DocumentationNotice,
+  RelatedSection,
 } from "@components/Docs";
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -301,14 +302,16 @@ Experimental features are not guaranteed to be stable and may lead to server ins
 Experimental feature flags are also not considered part of API compatibility and are subject to change, so please refer to each OpenFGA specific release for a list of the experimental feature flags that can be enabled for that release.
 :::
 
-## Production Recommendations
+## Related Sections
 
-If you have tried OpenFGA locally, decided it works as expected, and now want to deploy it to production, we recommend the following preparation:
-
-- Update the configuration as follows:
-  - Configure authentication on the server as explained above.
-  - Enable TLS on the server.
-  - Enable production logging by changing the `log.format` in the [config.yaml](#configuring-the-server) configuration file to `json`.
-  - Disable Playground.
-- Add a rate limiter interceptor (for example, [in the server configuration](https://pkg.go.dev/github.com/openfga/openfga/server#Config)) that protects your OpenFGA server against bursts in traffic.
-- Add a logger interceptor (for example, [in the server configuration](https://pkg.go.dev/github.com/openfga/openfga/server#Config)) that sends logs to your logging platform of choice.
+<RelatedSection
+  description="Check the following sections for more on how to use OpenFGA."
+  relatedLinks={[
+    {
+      title: 'Production Best Practices',
+      description: 'Learn the best practices of running OpenFGA in a production environment',
+      link: './running-in-production',
+      id: './running-in-production',
+    }
+  ]}
+/>

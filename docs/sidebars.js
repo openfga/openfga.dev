@@ -66,6 +66,11 @@ const sidebars = {
           label: 'Integrate Within a Framework',
           id: 'content/getting-started/framework',
         },
+        {
+          type: 'doc',
+          label: 'Production Best Practices',
+          id: 'content/getting-started/production-best-practices',
+        },
       ],
     },
     {
