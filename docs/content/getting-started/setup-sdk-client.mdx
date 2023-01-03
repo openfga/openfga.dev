@@ -121,7 +121,7 @@ If you are going to use this setup in production, you should enable TLS in your 
 <TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
 
 ```javascript
-const { OpenFgaApi } = require('@openfga/sdk'); // OR import { OpenFgaApi } from '@openfga/sdk';
+const { CredentialsMethod, OpenFgaApi } = require('@openfga/sdk'); // OR import { CredentialsMethod, OpenFgaApi } from '@openfga/sdk';
 
 const openFga = new OpenFgaApi({
     apiScheme: process.env.FGA_API_SCHEME, // optional, defaults to "https"
@@ -129,7 +129,9 @@ const openFga = new OpenFgaApi({
     storeId: process.env.FGA_STORE_ID, // optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
     credentials: {
         method: CredentialsMethod.ApiToken,
-        token: process.env.FGA_BEARER_TOKEN,
+        config: {
+            token: process.env.FGA_BEARER_TOKEN,
+        },
     }
 });
 ```
