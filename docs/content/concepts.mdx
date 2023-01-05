@@ -556,9 +556,9 @@ For more information, please see [Contextual and Time-Based Authorization](./mod
 <details>
 <summary>
 
-## How Do I Represent "Everyone"?
+## What Is Type Bound Public Access?
 
-In <ProductName format={ProductNameFormat.LongForm}/> the special syntax `*` means **everyone** when used as **user** in a relationship tuple. For example, `user:*` represents everyone with a user type.
+In <ProductName format={ProductNameFormat.LongForm}/>, type bound public access (represented by `<type>:*`) is a special <ProductName format={ProductNameFormat.ShortForm}/> syntax meaning **every object of that type** when used as a _user_ within a _relationship tuple_. For example, `user:*` represents every object of type `user` (including those not currently present in the system).
 
 </summary>
 
@@ -574,7 +574,7 @@ For example, in a case where you would like to indicate a certain document `docu
   ]}
 />
 
-Note that `*` has no special meaning when used in the `relation` or `object` properties. For example, `workspace:*` as an [object](#what-is-an-object) means a single object with the type `workspace` and identifier `*`.
+Note that you cannot use `<type>:*` in the `relation` or `object` properties. In addition, you cannot use `<type>:*` as part of a userset in the tuple's user field.
 For more information, please see [Modeling Public Access](./modeling/public-access.mdx) and [Advanced Modeling: Modeling Google Drive](./modeling/advanced/gdrive.mdx).
 
 </details>
