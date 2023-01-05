@@ -85,7 +85,7 @@ You need to know how to create an authorization model and create a relationship 
 - A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
 - An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
 - A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>
-- A <ProductConcept section="what-is-a-type-bound-public-access" linkName="Type Bound Public Access" />: is a special <ProductName format={ProductNameFormat.ShortForm}/> concept (represented by `<type>:*`) can be used in relationship tuples to represent every user
+- A <ProductConcept section="what-is-a-type-bound-public-access" linkName="Type Bound Public Access" />: is a special <ProductName format={ProductNameFormat.ShortForm}/> concept (represented by `<type>:*`) can be used in relationship tuples to represent every object of that type
 
 </details>
 
@@ -158,7 +158,7 @@ The following syntax is invalid:
 
 ### 02. Check That The Relationship Exists
 
-Once the above _relationship tuple_ is added, we can <ProductConcept section="what-is-a-check-request" linkName="check" /> if **bob** cab `view` `document`:**company-psa.doc**. <ProductName format={ProductNameFormat.ShortForm}/> will return `{ "allowed": true }` even though no relationship tuple linking **bob** to the document was added. That is because the relationship tuple with `*` as the user made it so everyone can `view` the document, making it public.
+Once the above _relationship tuple_ is added, we can <ProductConcept section="what-is-a-check-request" linkName="check" /> if **bob** cab `view` `document`:**company-psa.doc**. <ProductName format={ProductNameFormat.ShortForm}/> will return `{ "allowed": true }` even though no relationship tuple linking **bob** to the document was added. That is because the relationship tuple with `user:*` as the user made it so every object of type user (such as `user:bob`) can `view` the document, making it public.
 
 <CheckRequestViewer user={'user:bob'} relation={'view'} object={'document:company-psa.doc'} allowed={true} />
 
