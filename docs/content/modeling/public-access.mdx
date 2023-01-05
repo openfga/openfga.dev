@@ -13,6 +13,7 @@ import {
   ProductName,
   ProductNameFormat,
   RelatedSection,
+  RelationshipTuplesViewer,
   WriteRequestViewer,
 } from '@components/Docs';
 
@@ -20,11 +21,11 @@ import {
 
 <DocumentationNotice />
 
-In this guide you will learn how to grant public access to an <ProductConcept section="what-is-an-object" linkName="object" />, such as a certain document, using <ProductName format={ProductNameFormat.ProductLink}/>.
+In this guide you will learn how to grant public access to an <ProductConcept section="what-is-an-object" linkName="object" />, such as a certain document, using <ProductConcept section="what-is-a-type-bound-public-access" linkName="type bound public access" />.
 
 <CardBox title="When to use" appearance="filled" description=<div>
 
-Public access allows your application to grant every user in the system access to an object. You would add a relationship tuple with a user as `*` when:
+Public access allows your application to grant every user in the system access to an object. You would add a relationship tuple with type-bound public access when:
 
 - sharing a `document` publicly to indicate that everyone can `view` it
 - a public `poll` is created to indicate that anyone can `vote` on it
@@ -84,7 +85,7 @@ You need to know how to create an authorization model and create a relationship 
 - A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
 - An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
 - A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>
-- With <ProductConcept section="how-do-i-represent-everyone" linkName="Everyone" />: a `*` can be used in relationship tuples to represent every user
+- A <ProductConcept section="what-is-a-type-bound-public-access" linkName="Type Bound Public Access" />: is a special <ProductName format={ProductNameFormat.ShortForm}/> concept (represented by `<type>:*`) can be used in relationship tuples to represent every user
 
 </details>
 
@@ -100,7 +101,7 @@ In previous guides, we have shown how to indicate that objects are related to us
 
 ### 01. Create A Relationship Tuple
 
-To do this we need to create a relationship tuple using the <ProductConcept section="how-do-i-represent-everyone" linkName="`*`" /> syntax. The `*` syntax is used to indicate that all users of a particular type have a relation to a specific object.
+To do this we need to create a relationship tuple using the <ProductConcept section="what-is-a-type-bound-public-access" linkName="type bound public access" />. The type bound public access syntax is used to indicate that all users of a particular type have a relation to a specific object.
 
 Let us create a relationship tuple that states: **any user can view document:company-psa.doc**
 
@@ -116,20 +117,39 @@ Let us create a relationship tuple that states: **any user can view document:com
 />
 
 :::caution Wildcard syntax usage
-Please note that `<type>:*` is a special <ProductName format={ProductNameFormat.ShortForm}/> syntax meaning **every object of that type** when used as a _user_ within a _relationship tuple_.
 
-**It is not a wildcard or a regex expression.** `folder:plan*` does not mean all all folder starting with `plan`, and will not match either `plan` nor `planning`; `folder:plan*` means a single object with the type `folder` and the `object_id` the string `plan*`.
+Please note that type-bound public access is not a wildcard or a regex expression.
 
-**You cannot use the `*` syntax in the tuple's object field.**
+**You cannot use the `<type>:*` syntax in the tuple's object field.**
 
 The following syntax is invalid:
-<WriteRequestViewer
+
+<RelationshipTuplesViewer
   relationshipTuples={[
     {
-      _description: 'It is invalid to use this syntax in the object field. The below relationship tuple is invalid and does not mean that Anne can view all documents.',
-      user: 'user:anne',
+      _description: 'It is invalid to use this syntax in the object field. The below relationship tuple is invalid and does not mean that Bob can view all documents.',
+      user: 'user:bob',
       relation: 'view',
       object: 'document:*',
+    },
+  ]}
+/>
+
+:::
+
+:::caution Wildcard syntax usage
+
+**You cannot use `<type>:*` as part of a userset in the tuple's user field.**
+
+The following syntax is invalid:
+
+<RelationshipTuplesViewer
+  relationshipTuples={[
+    {
+      _description: 'It is invalid to use this syntax as part of a userset. The below relationship tuple is invalid and does not mean that members of any org can view the company-psa document.',
+      user: 'org:*#member',
+      relation: 'view',
+      object: 'document:company-psa.doc',
     },
   ]}
 />

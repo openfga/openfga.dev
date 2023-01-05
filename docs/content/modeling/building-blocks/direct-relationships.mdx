@@ -74,7 +74,7 @@ Direct relationships are relationships where a user has a relationship to an <Pr
 When checking for a relationship, a direct relationship exists if a _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple" />_ is present in the system with the exact same object and relation that were in the query and where the user is one of:
 
 - the same user ID as that in the query
-- everyone (`*`)
+- type bound public access (`<type>:*`)
 - a set of users that contains the user ID present in the query
 
 ## Enable Or Disable Direct Relationships
@@ -247,9 +247,9 @@ This is because:
 
 </TabItem>
 
-<TabItem value='everyone' label='Everyone'>
+<TabItem value='everyone' label='Type Bound Public Access'>
 
-Assume you have a tuple that states that <ProductConcept section="how-do-i-represent-everyone" linkName="everyone" /> of type `user` is a `viewer` of `document:planning` (In other words, the document is public)
+Assume you have a <ProductConcept section="what-is-a-type-bound-public-access" linkName="type bound public access" /> tuple where everyone of type `user` is a `viewer` of `document:planning` (In other words, the document is public)
 
 <RelationshipTuplesViewer
   relationshipTuples={[
