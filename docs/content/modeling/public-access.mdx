@@ -115,17 +115,30 @@ Let us create a relationship tuple that states: **any user can view document:com
   ]}
 />
 
+:::caution Wildcard syntax usage
+Please note that `*` is a special <ProductName format={ProductNameFormat.ShortForm}/> syntax meaning **everyone** when used as a _user_ within a _relationship tuple_. It is not a wildcard or regex expression.
+
+**You cannot use the `*` syntax in the tuple's object field.**
+
+The following syntax is invalid:
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: 'Not allow to specify * in the object field',
+      user: 'user:*',
+      relation: 'view',
+      object: 'document:*',
+    },
+  ]}
+/>
+
+:::
+
 ### 02. Check That The Relationship Exists
 
 Once the above _relationship tuple_ is added, we can <ProductConcept section="what-is-a-check-request" linkName="check" /> if **bob** cab `view` `document`:**company-psa.doc**. <ProductName format={ProductNameFormat.ShortForm}/> will return `{ "allowed": true }` even though no relationship tuple linking **bob** to the document was added. That is because the relationship tuple with `*` as the user made it so everyone can `view` the document, making it public.
 
 <CheckRequestViewer user={'user:bob'} relation={'view'} object={'document:company-psa.doc'} allowed={true} />
-
-:::caution Wildcard syntax usage
-Please note that `*` is a special <ProductName format={ProductNameFormat.ShortForm}/> syntax meaning **everyone** when used as a _user_ within a _relationship tuple_. It is not a wildcard or regex expression.
-
-**You cannot use it with a type to mean all objects in that type.** `workspace:*` does not mean all types; it means a single object with the type `workspace` and the `object_id` the string `*`.
-:::
 
 ## Related Sections
 
