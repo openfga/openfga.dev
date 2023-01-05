@@ -21,7 +21,7 @@ import {
 
 <DocumentationNotice />
 
-In this guide you will learn how to grant public access to an <ProductConcept section="what-is-an-object" linkName="object" />, such as a certain document, using <ProductConcept section="what-is-a-type-bound-public-access" linkName="type bound public access" />.
+In this guide you will learn how to grant public access to an <ProductConcept section="what-is-an-object" linkName="object" />, such as a certain document, using <ProductConcept section="what-is-type-bound-public-access" linkName="type bound public access" />.
 
 <CardBox title="When to use" appearance="filled" description=<div>
 
@@ -85,7 +85,7 @@ You need to know how to create an authorization model and create a relationship 
 - A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
 - An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
 - A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>
-- A <ProductConcept section="what-is-a-type-bound-public-access" linkName="Type Bound Public Access" />: is a special <ProductName format={ProductNameFormat.ShortForm}/> concept (represented by `<type>:*`) can be used in relationship tuples to represent every object of that type
+- A <ProductConcept section="what-is-type-bound-public-access" linkName="Type Bound Public Access" />: is a special <ProductName format={ProductNameFormat.ShortForm}/> concept (represented by `<type>:*`) can be used in relationship tuples to represent every object of that type
 
 </details>
 
@@ -101,7 +101,7 @@ In previous guides, we have shown how to indicate that objects are related to us
 
 ### 01. Create A Relationship Tuple
 
-To do this we need to create a relationship tuple using the <ProductConcept section="what-is-a-type-bound-public-access" linkName="type bound public access" />. The type bound public access syntax is used to indicate that all users of a particular type have a relation to a specific object.
+To do this we need to create a relationship tuple using the <ProductConcept section="what-is-type-bound-public-access" linkName="type bound public access" />. The type bound public access syntax is used to indicate that all users of a particular type have a relation to a specific object.
 
 Let us create a relationship tuple that states: **any user can view document:company-psa.doc**
 
