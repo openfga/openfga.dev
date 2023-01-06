@@ -294,7 +294,7 @@ This `team` _<ProductConcept section="what-is-a-type-definition" linkName="type 
 
 Due to the direct relationship type restrictions (`[user, team#member]`) being used, a user in the system can have a **<ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" />** with the `team` type as a `member` for users of 
 - type `user`
-- <ProductConcept section="what-is-type-bound-public-access" linkName="type bound public access" /> of type `user`
+- `user` <ProductConcept section="what-is-type-bound-public-access" linkName="type bound public access" />
 - [usersets](./modeling/building-blocks/usersets.mdx) of type `team`
 
 In the type definition snippet above, `anne` is a `member` of `team:product` if _any one of_ the following relationship tuple sets exist:
@@ -823,7 +823,7 @@ The JSON syntax accepted by the <ProductName format={ProductNameFormat.ShortForm
 
 | Zanzibar           | <ProductName format={ProductNameFormat.ShortForm}/> JSON | <ProductName format={ProductNameFormat.ShortForm}/> DSL |
 | :----------------- | :------------------------------------------------------- | :------------------------------------------------------ |
-| `this`             | `this`                                                   | `[]`                                                  |
+| `this`             | `this`                                                   | [`[<type1>,<type2>]`](#the-direct-relationship-type-restrictions)                                                  |
 | `union`            | `union`                                                  | `or`                                                    |
 | `intersection`     | `intersection`                                           | `and`                                                   |
 | `exclusion`        | `difference`                                             | `but not`                                               |

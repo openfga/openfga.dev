@@ -16,7 +16,7 @@ type AuthzModelSnippetViewerProps = {
   description?: string;
   onlyShow?: SyntaxFormat;
   showWrite?: boolean;
-  // do not display the model schema in DSL
+  // do not display the model schema in DSL and JSON
   skipVersion?: boolean;
 };
 
