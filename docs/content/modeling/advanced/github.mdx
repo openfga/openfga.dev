@@ -324,6 +324,7 @@ Let us examine one of those relations in detail:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type: 'repo', // objects of type "repo"
     relations: {
       // have users related to them as
@@ -351,6 +352,7 @@ Let us examine one of those relations in detail:
       },
     },
   }}
+  skipVersion={true}
 />
 
 :::info
@@ -726,30 +728,35 @@ We express it like this:
 
 <AuthzModelSnippetViewer
   configuration={{
-    admin: {
-      union: {
-        child: [
-          {
-            this: {},
-          },
-          {
-            tupleToUserset: {
-              // read all tuples related to tooling as owner
-              // which returns [{ "user": "organization:contoso", "relation": "owner", "object": "repo:contoso/tooling" }]
-              tupleset: {
-                relation: 'owner',
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        admin: {
+          union: {
+            child: [
+              {
+                this: {},
               },
-              // and for each tuple return all usersets that match the following, replacing $TUPLE_USERSET_OBJECT with organization:contoso
-              // this will return tuples of shape { object: "organization:contoso", "repo_admin", "user": ??? }
-              computedUserset: {
-                relation: 'repo_admin',
+              {
+                tupleToUserset: {
+                  // read all tuples related to tooling as owner
+                  // which returns [{ "user": "organization:contoso", "relation": "owner", "object": "repo:contoso/tooling" }]
+                  tupleset: {
+                    relation: 'owner',
+                  },
+                  // and for each tuple return all usersets that match the following, replacing $TUPLE_USERSET_OBJECT with organization:contoso
+                  // this will return tuples of shape { object: "organization:contoso", "repo_admin", "user": ??? }
+                  computedUserset: {
+                    relation: 'repo_admin',
+                  },
+                },
               },
-            },
+            ],
           },
-        ],
+        },
       },
-    },
-  }}
+    ],
+  }} skipVersion={true}
 />
 
 :::info

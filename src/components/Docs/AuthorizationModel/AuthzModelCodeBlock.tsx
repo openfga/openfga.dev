@@ -7,16 +7,17 @@ import { WriteAuthorizationModelRequest } from '@openfga/sdk';
 type AuthzModelCodeBlockProps = {
   configuration: WriteAuthorizationModelRequest;
   syntaxFormat: SyntaxFormat;
+  skipVersion?: boolean;
 };
 
-const AuthzModelCodeBlock: React.FC<AuthzModelCodeBlockProps> = ({ configuration, syntaxFormat }) => {
+const AuthzModelCodeBlock: React.FC<AuthzModelCodeBlockProps> = ({ configuration, syntaxFormat, skipVersion }) => {
   return (
     <CodeBlock
       className={`language-${
         syntaxFormat === SyntaxFormat.Api ? 'json' : syntaxHighlighters.PrismExtensions.LANGUAGE_NAME
       }`}
     >
-      {loadSyntax(configuration, syntaxFormat)}
+      {loadSyntax(configuration, syntaxFormat, skipVersion)}
     </CodeBlock>
   );
 };

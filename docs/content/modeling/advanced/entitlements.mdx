@@ -325,6 +325,7 @@ Add it now. Like so:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type: 'feature',
     relations: {
       associated_plan: {
@@ -340,7 +341,7 @@ Add it now. Like so:
         access: { directly_related_user_types: [{ type: 'user' }] },
       },
     },
-  }}
+  }} skipVersion={true}
 />
 
 :::info
@@ -353,7 +354,7 @@ Add it now. Like so:
 
 In this tutorial, you will find the phrases <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship and implied relationship" />.
 
-A _direct relationship_ R between user X and object Y means the relationship tuple (user=X, relation=R, object=Y) exists, and the <ProductName format={ProductNameFormat.ShortForm}/> authorization model for that relation allows this direct relationship (by use of `self`).
+A _direct relationship_ R between user X and object Y means the relationship tuple (user=X, relation=R, object=Y) exists, and the <ProductName format={ProductNameFormat.ShortForm}/> authorization model for that relation allows this direct relationship (by use of [direct relationship type restriction](../../configuration-language.mdx#the-direct-relationship-type-restrictions)).
 
 An _implied relationship_ R exists between user X and object Y if user X is related to an object Z that is in direct or implied relationship with object Y, and the <ProductName format={ProductNameFormat.ShortForm}/> authorization model allows it.
 
@@ -431,6 +432,7 @@ If you have already completed some of the other tutorials you might have encount
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     viewer: {
       tupleToUserset: {
         tupleset: {
@@ -441,7 +443,7 @@ If you have already completed some of the other tutorials you might have encount
         },
       },
     },
-  }}
+  }} skipVersion={true}
 />
 
 :::info
@@ -451,12 +453,13 @@ With this, when asked to check a user's `viewer` relationship with the object, <
 2. For each relationship tuple, return all _usersets_ that have `all_objects_viewer` relation to the objects in those relationship tuples
 3. If the user is in any of those _usersets_, return yes, as the user is a `viewer` on this object.
    In other words, users related as `all_objects_viewer` to any of this object's `parents` are related as `viewer` to this object.
-   :::
+:::
 
 If you want to give all subscribers on a plan access to a feature, you can do it like so:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type: 'feature',
     relations: {
       associated_plan: {
@@ -490,7 +493,7 @@ If you want to give all subscribers on a plan access to a feature, you can do it
         },
       },
     },
-  }}
+  }} skipVersion={true}
 />
 
 :::info
@@ -708,10 +711,11 @@ So far, with just a <ProductName format={ProductNameFormat.ShortForm}/> authoriz
 
 Earlier on, the idea of not allowing a direct `access` relation between a user and a `feature` was discussed, e.g. adding a relationship tuple like `{ "user": "user:anne", "relation": "access", "object": "feature:y" }`. You will remove it now.
 
-To disallow a direct relationship, you need to remove `self`. The following snippet:
+To disallow a direct relationship, you need to remove direct relationship type restriction. The following snippet:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type: 'feature',
     relations: {
       associated_plan: {
@@ -745,13 +749,14 @@ To disallow a direct relationship, you need to remove `self`. The following snip
         },
       },
     },
-  }}
+  }} skipVersion={true}
 />
 
 becomes
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type: 'feature',
     relations: {
       associated_plan: {
@@ -773,7 +778,7 @@ becomes
         associated_plan: { directly_related_user_types: [{ type: 'plan' }] },
       },
     },
-  }}
+  }} skipVersion={true}
 />
 
 With this change, even if your app layer added the following relationship tuple:
@@ -896,7 +901,7 @@ In this tutorial, you learned:
 - how to start with a set of requirements and scenarios and iterate on the <ProductName format={ProductNameFormat.ShortForm}/> authorization model until the checks match the expected scenarios
 - how to model [**parent-child relationships**](../parent-child.mdx) to indicate that a user having a relationship with a certain object implies having a relationship with another object in <ProductName format={ProductNameFormat.ShortForm}/>
 - how to use [**the union operator**](../../configuration-language.mdx#the-union-operator) condition to indicate multiple possible paths for a relationship between two objects to be computed
-- using the [**direct relationship keyword**](../../configuration-language.mdx#the-direct-relationship-keyword) (`self`) in a <ProductName format={ProductNameFormat.ShortForm}/> authorization model, and how to block direct relationships by removing it
+- using the [**direct relationship type restrictions**](../../configuration-language.mdx#the-direct-relationship-type-restrictions) in a <ProductName format={ProductNameFormat.ShortForm}/> authorization model, and how to block direct relationships by removing it
 
 <Playground title="Entitlements" preset="entitlements" example="Entitlements" store="entitlements" />
 

@@ -415,6 +415,7 @@ The <ProductConcept section="what-is-a-type-definition" linkName="type definitio
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type: 'device_group',
     relations: {
       it_admin: {
@@ -430,7 +431,7 @@ The <ProductConcept section="what-is-a-type-definition" linkName="type definitio
         security_guard: { directly_related_user_types: [{ type: 'user' }] },
       },
     },
-  }}
+  }} skipVersion={true}
 />
 
 With this change, the full <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" /> becomes:
@@ -620,7 +621,7 @@ Notice that despite following **[Step 03](./iot.mdx#03-updating-our-authorizatio
 
 `anne` is a `live_video_viewer` by both her position as `security_guard` as well as her _<ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" />_ assignment. This is undesirable. Imagine `anne` left her position of `security_guard` and she will still have `live_video_viewer` access to `device:1`.
 
-To remedy this, remove `self` from `live_video_viewer`, `recorded_video_viewer` and `device_renamer`. This denies direct relations to `live_video_viewer`, `recorded_video_viewer` and `device_renamer` from having an effect. To do this:
+To remedy this, remove `[user]` from `live_video_viewer`, `recorded_video_viewer` and `device_renamer`. This denies direct relations to `live_video_viewer`, `recorded_video_viewer` and `device_renamer` from having an effect. To do this:
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -716,7 +717,7 @@ To remedy this, remove `self` from `live_video_viewer`, `recorded_video_viewer` 
 
 :::info
 
-Notice that any reference to the [**direct relationship keyword**](../../configuration-language.mdx#the-direct-relationship-keyword) (`self` in the friendly Syntax - or `this` in the api syntax) has been removed. That indicates that a user cannot have a <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" /> with an object in this type.
+Notice that any reference to the [**direct relationship type restrictions**](../../configuration-language.mdx#the-direct-relationship-type-restrictions) has been removed. That indicates that a user cannot have a <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" /> with an object in this type.
 
 With this change, `anne` can no longer have a `live_video_viewer` permission for `device:1` except through having a `security_guard` or `it_admin` role first, and when she loses access to that role, she will automatically lose access to the `live_video_viewer` permission.
 
@@ -748,7 +749,7 @@ To test this, we can add a new user `emily`. Emily is **not** a `security_guard`
   ]}
 />
 
-Now try to query `is emily related to device:1 as live_video_viewer?`. The returned result should be `emily is not related to device:1 as live_video_viewer`. This confirms that direct relations have no effect on the `live_video_viewer` relations, and that is because the [**direct relationship keyword**](../../configuration-language.mdx#the-direct-relationship-keyword) (`self`) was removed from the relation configuration.
+Now try to query `is emily related to device:1 as live_video_viewer?`. The returned result should be `emily is not related to device:1 as live_video_viewer`. This confirms that direct relations have no effect on the `live_video_viewer` relations, and that is because the [**direct relationship type restrictions**](../../configuration-language.mdx#the-direct-relationship-type-restrictions) was removed from the relation configuration.
 
 <CheckRequestViewer user={'user:emily'} relation={'live_video_viewer'} object={'device:1'} allowed={false} />
 
