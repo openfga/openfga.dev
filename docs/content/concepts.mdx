@@ -83,7 +83,7 @@ Code snippet below is an example of a type definition:
         owner: { directly_related_user_types: [{ type: 'user' }] },
       },
     },
-  }}
+  }} skipVersion={true}
 />
 
 </details>
@@ -296,7 +296,7 @@ These would be defined in the [authorization model](#what-is-an-authorization-mo
         type: 'user',
       },
     ],
-  }}
+  }} skipVersion={true}
 />
 
 :::info
@@ -339,11 +339,8 @@ For the following model, only [relationship tuple](#what-is-a-relationship-tuple
           },
         },
       },
-      {
-        type: 'user',
-      },
     ],
-  }}
+  }} skipVersion={true}
 />
 
 Relationship tuple with user `user:anne` or `user:3f7768e0-4fa7-4e93-8417-4da68ce1846c` may be written for objects with type `document` and relation `viewer`, so writing `{"user": "user:anne","relation":"viewer","object":"document:roadmap"}` will succeed.
@@ -488,11 +485,8 @@ An **implied (or computed) relationship** R exists between user X and object Y i
             },
           },
         },
-        {
-          type: 'user',
-        },
       ],
-    }}
+    }} skipVersion={true}
   />
 
   And assuming the following relationship tuple exists in the system:
