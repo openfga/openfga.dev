@@ -602,6 +602,7 @@ Remember _"How a user is added as a member to an organization is beyond the scop
       },
     ],
   }}
+  skipVersion={true}
 />
 
 Why? This relation definition states:
@@ -660,6 +661,7 @@ The complete <ProductConcept section="what-is-a-type-definition" linkName="type 
       },
     ],
   }}
+  skipVersion={true}
 />
 
 <div style={{ display: 'inline-block' }}>
@@ -705,6 +707,7 @@ The relation definition then should be:
       },
     ],
   }}
+  skipVersion={true}
 />
 
 Why? This <ProductConcept section="what-is-a-relation" linkName="relation definition" /> states that:
@@ -739,6 +742,7 @@ The relation definition then should be:
       },
     ],
   }}
+  skipVersion={true}
 />
 
 Why? This relation definition states that:
@@ -783,6 +787,7 @@ The viewer relation is similar to the document's [editor relation](#relation-edi
       },
     ],
   }}
+  skipVersion={true}
 />
 
 ##### Relation: Parent
@@ -815,6 +820,7 @@ When a document is created a relationship tuple will be stored in <ProductName f
       },
     ],
   }}
+  skipVersion={true}
 />
 
 Why? This relation definition states that:
@@ -1209,6 +1215,11 @@ Combining the type definitions for document and organization, we have
         relations: {
           member: {
             this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }, { type: 'organization', relation: 'member' }] },
           },
         },
       },
