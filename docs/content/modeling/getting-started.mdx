@@ -612,7 +612,7 @@ Why? This relation definition states:
   `{ user: {user-id}, relation: "member", object: "organization:{id}" }`
 
 :::info Important
-Relation definitions of the form “define {relation} as self" are fairly common. They are used to express that relationships "to the object with that relation" (e.g. "member of organization") can be assigned by your system and that only the users that have that relation are those with a [direct relationship](./building-blocks/direct-relationships.mdx).
+Relation definitions of the form “define {relation}: [user, organization#member]" are fairly common. They are used to express that relationships "to the object with that relation" (e.g. "users" of type user or "member of organization") can be assigned by your system and that only the users that have that relation are those with a [direct relationship](./building-blocks/direct-relationships.mdx).
 :::
 
 You can read more about group membership and types in [Modeling User Groups](./user-groups.mdx).
@@ -842,43 +842,49 @@ We can achieve that with the following definition using <UpdateProductNameInLink
 
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
+  skipVersion={true}
   configuration={{
-    can_share: {
-      union: {
-        child: [
-          {
-            computedUserset: {
-              object: '',
-              relation: 'owner',
-            },
-          },
-          {
-            computedUserset: {
-              object: '',
-              relation: 'editor',
-            },
-          },
-          {
-            tupleToUserset: {
-              computedUserset: {
-                object: '',
-                relation: 'owner',
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        can_share: {
+          union: {
+            child: [
+              {
+                computedUserset: {
+                  object: '',
+                  relation: 'owner',
+                },
               },
-              tupleset: {
-                object: '',
-                relation: 'parent',
+              {
+                computedUserset: {
+                  object: '',
+                  relation: 'editor',
+                },
               },
-            },
+              {
+                tupleToUserset: {
+                  computedUserset: {
+                    object: '',
+                    relation: 'owner',
+                  },
+                  tupleset: {
+                    object: '',
+                    relation: 'parent',
+                  },
+                },
+              },
+            ],
           },
-        ],
+        },
       },
-    },
+    ],
   }}
 />
 
 There are a few key things here:
 
-- **We don't use self as part of the definition.** can_share is a common example of representing a permission that is defined in terms of other relations but is not directly assignable by the system.
+- **We don't use a [direct relationship type restriction](../configuration-language.mdx#the-direct-relationship-type-restrictions) as part of the definition.** can_share is a common example of representing a permission that is defined in terms of other relations but is not directly assignable by the system.
 - The relation definition contains a [union operator](../configuration-language.mdx#the-union-operator) separating a list of relations that the user must have with the object in order to "be able to share the document". It is any of:
   - Being an owner of the document
   - Being an editor of the document
@@ -896,49 +902,55 @@ Similar to the [can_share relation](#relation-can_share), we can achieve that wi
 
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
+  skipVersion={true}
   configuration={{
-    can_view: {
-      union: {
-        child: [
-          {
-            computedUserset: {
-              object: '',
-              relation: 'viewer',
-            },
-          },
-          {
-            computedUserset: {
-              object: '',
-              relation: 'editor',
-            },
-          },
-          {
-            tupleToUserset: {
-              computedUserset: {
-                object: '',
-                relation: 'viewer',
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        can_view: {
+          union: {
+            child: [
+              {
+                computedUserset: {
+                  object: '',
+                  relation: 'viewer',
+                },
               },
-              tupleset: {
-                object: '',
-                relation: 'parent',
+              {
+                computedUserset: {
+                  object: '',
+                  relation: 'editor',
+                },
               },
-            },
+              {
+                tupleToUserset: {
+                  computedUserset: {
+                    object: '',
+                    relation: 'viewer',
+                  },
+                  tupleset: {
+                    object: '',
+                    relation: 'parent',
+                  },
+                },
+              },
+              {
+                tupleToUserset: {
+                  computedUserset: {
+                    object: '',
+                    relation: 'owner',
+                  },
+                  tupleset: {
+                    object: '',
+                    relation: 'parent',
+                  },
+                },
+              },
+            ],
           },
-          {
-            tupleToUserset: {
-              computedUserset: {
-                object: '',
-                relation: 'owner',
-              },
-              tupleset: {
-                object: '',
-                relation: 'parent',
-              },
-            },
-          },
-        ],
+        },
       },
-    },
+    ],
   }}
 />
 
@@ -952,37 +964,43 @@ Similar to the [can_share relation](#relation-can_share), we can achieve that wi
 
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
+  skipVersion={true}
   configuration={{
-    can_write: {
-      union: {
-        child: [
-          {
-            computedUserset: {
-              object: '',
-              relation: 'editor',
-            },
-          },
-          {
-            computedUserset: {
-              object: '',
-              relation: 'owner',
-            },
-          },
-          {
-            tupleToUserset: {
-              computedUserset: {
-                object: '',
-                relation: 'owner',
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        can_write: {
+          union: {
+            child: [
+              {
+                computedUserset: {
+                  object: '',
+                  relation: 'editor',
+                },
               },
-              tupleset: {
-                object: '',
-                relation: 'parent',
+              {
+                computedUserset: {
+                  object: '',
+                  relation: 'owner',
+                },
               },
-            },
+              {
+                tupleToUserset: {
+                  computedUserset: {
+                    object: '',
+                    relation: 'owner',
+                  },
+                  tupleset: {
+                    object: '',
+                    relation: 'parent',
+                  },
+                },
+              },
+            ],
           },
-        ],
+        },
       },
-    },
+    ],
   }}
 />
 
@@ -996,13 +1014,19 @@ Similar to the [can_share relation](#relation-can_share), we can achieve that wi
 
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
+  skipVersion={true}
   configuration={{
-    can_change_owner: {
-      computedUserset: {
-        object: '',
-        relation: 'owner',
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        can_change_owner: {
+          computedUserset: {
+            object: '',
+            relation: 'owner',
+          },
+        },
       },
-    },
+    ],
   }}
 />
 

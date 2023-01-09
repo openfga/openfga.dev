@@ -104,7 +104,7 @@ You need to know how to create an authorization model and create a relationship 
 - An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
 - A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in Auth <ProductName format={ProductNameFormat.ShortForm}/>
 - A <ProductConcept section="what-is-a-relationship" linkName="Relationship" />: <ProductName format={ProductNameFormat.ShortForm}/> will be called to check if there is a relationship between a user and an object, indicating that the access is allowed
-- [Direct Relationship Keyword](../configuration-language.mdx#the-direct-relationship-keyword): The `self` keyword can be used to indicate direct relationships between users and objects
+- [Direct Relationship Type Restrictions](../configuration-language.mdx#the-direct-relationship-type-restrictions): can be used to indicate direct relationships between users and objects
 - A <ProductConcept section="what-is-a-check-request" linkName="Check API Request" /> the Check API Request is used to check for relationships between users and objects
 
 </details>
@@ -158,7 +158,7 @@ Relating roles within <ProductName format={ProductNameFormat.ShortForm}/> can be
 
 ### 02. Adding Permissions For Bookings
 
-Permissions within <ProductName format={ProductNameFormat.LongForm}/> can be best described as the following: **Permissions are relations that users get only through other relations.** To represent permissions, we avoid adding the [**direct relationship keyword**](../configuration-language.mdx#the-direct-relationship-keyword) (`self`) to the relation in the authorization model. Instead, we define the relation from other relations to indicate that it is a permission granted to and implied from a different relation.
+Permissions within <ProductName format={ProductNameFormat.LongForm}/> can be best described as the following: **Permissions are relations that users get only through other relations.** To represent permissions, we avoid adding a [**direct relationship type restriction**](../configuration-language.mdx#the-direct-relationship-type-restrictions) to the relation in the authorization model. Instead, we define the relation from other relations to indicate that it is a permission granted to and implied from a different relation.
 
 To add permissions related to bookings, we can add new relations to the `trip` _object_ type denoting the various actions a user can take on `trips` (view, edit, delete, rename, etc...)
 
@@ -219,11 +219,11 @@ To allow `viewers` of a `trip` to have **permissions to view bookings** and `own
   }}
 />
 
-> Note: notice how both `booking_viewer` and `booking_adder` don't have the `self` syntax, this is to ensure that the relation can only be assigned through the **role** and not directly.
+> Note: notice how both `booking_viewer` and `booking_adder` don't have [direct relationship type restrictions](../configuration-language.mdx#the-direct-relationship-type-restrictions). This is to ensure that the relation can only be assigned through the **role** and not directly.
 
 ### 03. Checking User Roles And Their Permissions
 
-Now that our type definitions reflects the roles and permissions on how bookings can be viewed/added. Let's create _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" />_ to assign roles to _users_ and then *<ProductConcept section="what-is-a-check-request" linkName="check" />*if _users_ have the proper permissions.
+Now that our type definitions reflects the roles and permissions on how bookings can be viewed/added. Let's create _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" />_ to assign roles to _users_ and then *<ProductConcept section="what-is-a-check-request" linkName="check" />* if _users_ have the proper permissions.
 
 Let us create two relationship tuples:
 

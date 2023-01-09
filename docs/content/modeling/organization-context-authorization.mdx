@@ -320,13 +320,14 @@ We can do that by introducing some new relations and updating existing relation 
 - Add "user_in_context" relation to mark that a user's access is being evaluated within that particular context
 - Update the "project_manager" relation to require that the user be in the correct context (by adding `and user_in_context` to the relation definition)
 - Considering that <ProductName format={ProductNameFormat.ShortForm}/> does not yet support multiple logical operations within the same definition, we will split "project_editor" into two:
-  - "base_project_editor" editor which will contain the original relation definition (`self or project_manager`)
+  - "base_project_editor" editor which will contain the original relation definition (`[user] or project_manager`)
   - "project_editor" which will require that a user has both the "base_project_editor" and the "user_in_context" relations
 
 The "organization" type definition then becomes:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type: 'organization',
     relations: {
       member: {
@@ -392,7 +393,7 @@ The "organization" type definition then becomes:
         user_in_context: { directly_related_user_types: [{ type: 'user' }] },
       },
     },
-  }}
+  }} skipVersion={true}
 />
 
 2. On the "project" type

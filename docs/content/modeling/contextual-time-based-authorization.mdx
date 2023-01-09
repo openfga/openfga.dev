@@ -272,6 +272,7 @@ In order to add time and ip address to our authorization model, we will add appr
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type: 'timeslot',
     relations: {
       user: {
@@ -283,11 +284,12 @@ In order to add time and ip address to our authorization model, we will add appr
         user: { directly_related_user_types: [{ type: 'user' }] },
       },
     },
-  }}
+  }} skipVersion={true}
 />
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type: 'ip-address-range',
     relations: {
       user: {
@@ -299,7 +301,7 @@ In order to add time and ip address to our authorization model, we will add appr
         user: { directly_related_user_types: [{ type: 'user' }] },
       },
     },
-  }}
+  }} skipVersion={true}
 />
 
 We'll also need to introduce some new relations, and modify some others.
@@ -314,6 +316,7 @@ The branch type definition then becomes:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type: 'branch',
     relations: {
       account_manager: {
@@ -363,7 +366,7 @@ The branch type definition then becomes:
         approved_timeslot: { directly_related_user_types: [{ type: 'timeslot' }] },
       },
     },
-  }}
+  }} skipVersion={true}
 />
 
 2. On the "account" type:
@@ -375,6 +378,7 @@ The account type definition then becomes:
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type: 'account',
     relations: {
       branch: {
@@ -450,7 +454,7 @@ The account type definition then becomes:
         customer: { directly_related_user_types: [{ type: 'user' }] },
       },
     },
-  }}
+  }} skipVersion={true}
 />
 
 :::note

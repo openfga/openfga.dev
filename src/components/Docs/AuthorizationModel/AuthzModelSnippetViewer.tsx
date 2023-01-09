@@ -16,21 +16,36 @@ type AuthzModelSnippetViewerProps = {
   description?: string;
   onlyShow?: SyntaxFormat;
   showWrite?: boolean;
+  // do not display the model schema in DSL and JSON
+  skipVersion?: boolean;
 };
 
-const AuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({ configuration, onlyShow, showWrite }) => {
+const AuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
+  configuration,
+  onlyShow,
+  showWrite,
+  skipVersion,
+}) => {
   if (onlyShow) {
-    return <AuthzModelCodeBlock configuration={configuration} syntaxFormat={onlyShow} />;
+    return <AuthzModelCodeBlock configuration={configuration} syntaxFormat={onlyShow} skipVersion={skipVersion} />;
   }
 
   return (
     <>
       <Tabs groupId="dsl">
         <TabItem value="dsl" label="DSL">
-          <AuthzModelCodeBlock configuration={configuration} syntaxFormat={SyntaxFormat.Friendly2} />
+          <AuthzModelCodeBlock
+            configuration={configuration}
+            syntaxFormat={SyntaxFormat.Friendly2}
+            skipVersion={skipVersion}
+          />
         </TabItem>
         <TabItem value="json" label="JSON">
-          <AuthzModelCodeBlock configuration={configuration} syntaxFormat={SyntaxFormat.Api} />
+          <AuthzModelCodeBlock
+            configuration={configuration}
+            syntaxFormat={SyntaxFormat.Api}
+            skipVersion={skipVersion}
+          />
         </TabItem>
       </Tabs>
       {showWrite ? (

@@ -261,13 +261,18 @@ The `folder` and `document` _type definitions_ each have five _relations_: `pare
 
 :::
 
-### The Direct Relationship Keyword
+### The Direct Relationship Type Restrictions
 
-`self`, when used in the context of the <ProductConcept section="what-is-a-relation-definition" linkName="relation definition" /> allows <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationships" /> to the objects of this type. The absence of `self` disallows these direct relationships.
+`[<string, <string>, ...]`, when used at the beginning of a <ProductConcept section="what-is-a-relation-definition" linkName="relation definition" /> allows <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationships" /> from the objects of these specified types. The strings can be of three formats:
+- `<type>`: indicating that tuples relating objects of those types as users can be written (e.g. `group:marketing` can be related if `group` is in the type restrictions)
+- `<type:*>`: indicating that a tuple relating all objects of that type can be written (e.g. `user:*` can be added if `user:*` is in the type restrictions)
+- `<type>#<relation>`: indicating that tuples with sets of users that are related to an object of that type by that particular relation (e.g. `group:marketing#member` can be added if `group#member` is in the type restrictions)
+
+If the direct relationship type restrictions are missing, then no tuple can be written relating other objects as this particular relation with objects of this type (direct relationships are disallowed).
 
 :::info
 
-`self` in the <ProductName format={ProductNameFormat.ShortForm}/> DSL translates to `this` in the <ProductName format={ProductNameFormat.ShortForm}/> API syntax.
+`[<type1>, <type2>, ...]` in the <ProductName format={ProductNameFormat.ShortForm}/> DSL translates to `this` in the <ProductName format={ProductNameFormat.ShortForm}/> API syntax.
 
 :::
 
@@ -275,6 +280,7 @@ For example, let's take a closer look at the `team` type.
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type: 'team',
     relations: {
       member: {
@@ -283,15 +289,18 @@ For example, let's take a closer look at the `team` type.
     },
     metadata: {
       relations: {
-        member: { directly_related_user_types: [{ type: 'user' }, { type: 'team', relation: 'member' }] },
+        member: { directly_related_user_types: [{ type: 'user' }, { type: 'user:*'}, { type: 'team', relation: 'member' }] },
       },
     },
-  }}
+  }} skipVersion={true}
 />
 
 This `team` _<ProductConcept section="what-is-a-type-definition" linkName="type definition" />_ defines all the _<ProductConcept section="what-is-a-relation" linkName="relations" />_ that _<ProductConcept section="what-is-a-user" linkName="users" />_ can have with an _<ProductConcept section="what-is-an-object" linkName="object" />_ of _type_ `team`. In this case the _relation_ is: `member`.
 
-Due to the direct relationship keyword (`self`) being used, a user in the system can have a **<ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" />** with the `team` type as a `member`.
+Due to the direct relationship type restrictions (`[user, team#member]`) being used, a user in the system can have a **<ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" />** with the `team` type as a `member` for objects of 
+- type `user`
+- the `user` <ProductConcept section="what-is-type-bound-public-access" linkName="type bound public access" /> (`user:*`)
+- [usersets](./modeling/building-blocks/usersets.mdx) that have a `team` type and a `member` relation (e.g. `team:product#member`)
 
 In the type definition snippet above, `anne` is a `member` of `team:product` if _any one of_ the following relationship tuple sets exist:
 
@@ -342,6 +351,7 @@ You can also reference other relations on the same object. Let us look at a simp
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type: 'document',
     relations: {
       editor: {
@@ -371,7 +381,7 @@ You can also reference other relations on the same object. Let us look at a simp
         viewer: { directly_related_user_types: [{ type: 'user' }] },
       },
     },
-  }}
+  }} skipVersion={true}
 />
 
 The above `document` _<ProductConcept section="what-is-a-type-definition" linkName="type definition" />_ defines all the _<ProductConcept section="what-is-a-relation" linkName="relations" />_ that _<ProductConcept section="what-is-a-user" linkName="users" />_ can have with an _<ProductConcept section="what-is-an-object" linkName="object" />_ of _type_ `document`. In this case the _relations_ are: `editor`, `viewer` and `can_rename`.
@@ -380,7 +390,7 @@ The `viewer` and `can_rename` _relation definitions_ are both referencing `edito
 
 :::info
 
-Notice how `can_rename` does not reference the [_direct relationship keyword_](#the-direct-relationship-keyword) (`self`), indicating that a direct relationship is not possible (as in a user cannot be directly assigned this relation, it has to be inherited through an assignment of the `editor` relation). The `viewer` relation on the other hand allows both _direct and indirect relationships_ using the [Union Operator](#the-union-operator).
+Notice how `can_rename` does not reference the [_direct relationship type restrictions_](#the-direct-relationship-type-restrictions), indicating that a direct relationship is not possible (as in a user cannot be directly assigned this relation, it has to be inherited through an assignment of the `editor` relation). The `viewer` relation on the other hand allows both _direct and indirect relationships_ using the [Union Operator](#the-union-operator).
 
 :::
 
@@ -532,7 +542,7 @@ The snippet below taken from the authorization model above is stating that viewe
         },
       },
     ],
-  }}
+  }} skipVersion={true}
 />
 
 In the _authorization model_ above, `user:anne` is a `viewer` of `document:new-roadmap` if any one of the following relationship tuple sets exists:
@@ -607,7 +617,7 @@ The _union operator_ (`or` in the DSL, `union` in the JSON syntax) is used to in
         },
       },
     ],
-  }}
+  }} skipVersion={true}
 />
 
 In the <ProductConcept section="what-is-a-type-definition" linkName="type definition" /> snippet above, `user:anne` is a `viewer` of `document:new-roadmap` if _any of_ the following conditions are satisfied:
@@ -685,7 +695,7 @@ The _intersection operator_ (`and` in the DSL, `intersection` in the JSON syntax
         },
       },
     ],
-  }}
+  }} skipVersion={true}
 />
 
 In the <ProductConcept section="what-is-a-type-definition" linkName="type definition" /> snippet above, `user:anne` is a `viewer` of `document:new-roadmap` if **all of** the following conditions are satisfied:
@@ -762,7 +772,7 @@ The _exclusion operator_ (`but not` in the DSL, `difference` in the JSON syntax)
         },
       },
     ],
-  }}
+  }} skipVersion={true}
 />
 
 In the _type definition_ snippet above, `user:anne` is a `viewer` of `document:new-roadmap` if:
@@ -818,7 +828,7 @@ The JSON syntax accepted by the <ProductName format={ProductNameFormat.ShortForm
 
 | Zanzibar           | <ProductName format={ProductNameFormat.ShortForm}/> JSON | <ProductName format={ProductNameFormat.ShortForm}/> DSL |
 | :----------------- | :------------------------------------------------------- | :------------------------------------------------------ |
-| `this`             | `this`                                                   | `self`                                                  |
+| `this`             | `this`                                                   | [`[<type1>,<type2>]`](#the-direct-relationship-type-restrictions)                                                  |
 | `union`            | `union`                                                  | `or`                                                    |
 | `intersection`     | `intersection`                                           | `and`                                                   |
 | `exclusion`        | `difference`                                             | `but not`                                               |

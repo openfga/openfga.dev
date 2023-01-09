@@ -150,10 +150,11 @@ The requirements stated:
 - **Catherine** and **Emily** are a normal **members** of the **Sandcastle workspace**
 - **David** is a **guest** user
 
-Here is how you would express than in <ProductName format={ProductNameFormat.ShortForm}/>'s<ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />: You have a <ProductConcept section="what-is-a-type" linkName="type" /> called "workspace", and users can be related to it as a legacy_admin, channels_admin, member and guest
+Here is how you would express than in <ProductName format={ProductNameFormat.ShortForm}/>'s <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />: You have a <ProductConcept section="what-is-a-type" linkName="type" /> called "workspace", and users can be related to it as a legacy_admin, channels_admin, member and guest
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type_definitions: [
     {
       type: 'user',
@@ -200,7 +201,7 @@ Here is how you would express than in <ProductName format={ProductNameFormat.Sho
 - Member (`member`)
 - Guest (`guest`)
 
-`self` (or `this` in the API Syntax) is the [direct relationship keyword](../../configuration-language.mdx#the-direct-relationship-keyword) and indicates that a user can have a <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" /> with an object of the type the relation specifies.
+[Direct relationship type restrictions](../../configuration-language.mdx#the-direct-relationship-type-restrictions) indicate that a user can have a <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" /> with an object of the type the relation specifies.
 
 :::
 
@@ -260,6 +261,7 @@ The <ProductName format={ProductNameFormat.LongForm}/> service determines if a <
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type: 'workspace', // objects of type workspace
     relations: {
       // have users related to them as...
@@ -273,7 +275,7 @@ The <ProductName format={ProductNameFormat.LongForm}/> service determines if a <
         member: { directly_related_user_types: [{ type: 'user' }] },
       },
     },
-  }}
+  }} skipVersion={true}
 />
 
 :::info
@@ -510,6 +512,7 @@ The authorization model already has a section describing the workspace, what rem
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type: 'channel', // A channel can have the following relations:
     relations: {
       parent_workspace: {
@@ -548,7 +551,7 @@ The authorization model already has a section describing the workspace, what rem
         },
       },
     },
-  }}
+  }} skipVersion={true}
 />
 
 :::info
@@ -567,6 +570,7 @@ There is an <ProductConcept section="what-are-direct-and-implied-relationships" 
 
 <AuthzModelSnippetViewer
   configuration={{
+    schema_version: '1.1',
     type: 'channel',
     relations: {
       parent_workspace: {
@@ -616,7 +620,7 @@ There is an <ProductConcept section="what-are-direct-and-implied-relationships" 
         },
       },
     },
-  }}
+  }} skipVersion={true}
 />
 
 :::info
