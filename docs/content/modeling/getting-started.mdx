@@ -884,7 +884,7 @@ We can achieve that with the following definition using <UpdateProductNameInLink
 
 There are a few key things here:
 
-- **We don't use [direct relationship type restriction](../configuration-language.mdx#the-direct-relationship-type-restrictions) as part of the definition.** can_share is a common example of representing a permission that is defined in terms of other relations but is not directly assignable by the system.
+- **We don't use a [direct relationship type restriction](../configuration-language.mdx#the-direct-relationship-type-restrictions) as part of the definition.** can_share is a common example of representing a permission that is defined in terms of other relations but is not directly assignable by the system.
 - The relation definition contains a [union operator](../configuration-language.mdx#the-union-operator) separating a list of relations that the user must have with the object in order to "be able to share the document". It is any of:
   - Being an owner of the document
   - Being an editor of the document
