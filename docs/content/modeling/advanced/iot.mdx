@@ -749,7 +749,7 @@ To test this, we can add a new user `emily`. Emily is **not** a `security_guard`
   ]}
 />
 
-Now try to query `is emily related to device:1 as live_video_viewer?`. The returned result should be `emily is not related to device:1 as live_video_viewer`. This confirms that direct relations have no effect on the `live_video_viewer` relations, and that is because the [**direct relationship type restrictions**](../../configuration-language.mdx#the-direct-relationship-type-restrictions) was removed from the relation configuration.
+Now try to query `is emily related to device:1 as live_video_viewer?`. The returned result should be `emily is not related to device:1 as live_video_viewer`. This confirms that direct relations have no effect on the `live_video_viewer` relations, and that is because the [**direct relationship type restriction**](../../configuration-language.mdx#the-direct-relationship-type-restrictions) was removed from the relation configuration.
 
 <CheckRequestViewer user={'user:emily'} relation={'live_video_viewer'} object={'device:1'} allowed={false} />
 
