@@ -295,12 +295,30 @@ The following table table enumerates the experimental flags, a description of wh
 | name                   | description                                                                                              | openfga version |
 |------------------------|----------------------------------------------------------------------------------------------------------|-----------------|
 | list-objects-optimized | Enables support for an optimized version of the [openfga.v1.ListObjects](/api/service#/Relationship%20Queries/ListObjects) API for models with schema version 1.1 | >= v0.3.1       |
+| otel-metrics           | Enables support for exposing OpenFGA metrics through OpenTelemetry | >= v0.3.2       |
 
 :::caution Warning
 Experimental features are not guaranteed to be stable and may lead to server instabilities. It is not recommended to enable experimental features for anything other than experimentation.
 
 Experimental feature flags are also not considered part of API compatibility and are subject to change, so please refer to each OpenFGA specific release for a list of the experimental feature flags that can be enabled for that release.
 :::
+
+## Telemetry (Metrics and Tracing)
+
+
+### Metrics
+To expose OpenFGA metrics you must enable the `otel-metrics` experimental feature (see [Experimental Features](#experimental-features)).
+
+:::info
+OpenTelemetry metrics are exported in [`otlp`](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md) format.
+
+Other export formats may be supported in the future, but in the meantime you can setup an OpenTelemetry Collector to receive, process, and publish metrics in other formats. For more information see the [official OpenTelemetry Collector documentation](https://opentelemetry.io/docs/collector/).
+:::
+
+To configure the OpenTelemetry integration you can supply the `--otel-telemetry-endpoint` and `--otel-telemetry-protocol` flags. These flags wire up the OpenTelemetry exporter with the provided collector endpoint and configures the exporter protocol (`grpc` or `http`). For more information see [OTLP gRPC Exporter](https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlpexporter/README.md) and [OTLP HTTP Exporter](https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter/README.md).
+
+### Tracing
+OpenFGA, when run in standalone server mode, does not yet support tracing. This work is in our roadmap and we will update this section with more information when the time comes.
 
 ## Related Sections
 
