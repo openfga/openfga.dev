@@ -315,7 +315,10 @@ OpenTelemetry metrics are exported in [`otlp`](https://github.com/open-telemetry
 Other export formats may be supported in the future, but in the meantime you can setup an OpenTelemetry Collector to receive, process, and publish metrics in other formats. For more information see the [official OpenTelemetry Collector documentation](https://opentelemetry.io/docs/collector/).
 :::
 
-To configure the OpenTelemetry integration you can supply the `--otel-telemetry-endpoint` and `--otel-telemetry-protocol` flags. These flags wire up the OpenTelemetry exporter with the provided collector endpoint and configures the exporter protocol (`grpc` or `http`). For more information see [OTLP gRPC Exporter](https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlpexporter/README.md) and [OTLP HTTP Exporter](https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter/README.md).
+If you need to configure the OpenTelemetry integration with non-default values you can supply the `--otel-telemetry-endpoint` and `--otel-telemetry-protocol` flags. These flags wire up the OpenTelemetry exporter with the provided collector endpoint and configures the exporter protocol (`grpc` or `http`). For more information see [OTLP gRPC Exporter](https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlpexporter/README.md) and [OTLP HTTP Exporter](https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter/README.md). For example,
+```
+openfga run --experimentals=otel-metrics --otel-telemetry-endpoint=127.0.0.1:4317 --otel-telemetry-protocol=http
+```
 
 ### Tracing
 OpenFGA, when run in standalone server mode, does not yet support tracing. This work is in our roadmap and we will update this section with more information when the time comes.
