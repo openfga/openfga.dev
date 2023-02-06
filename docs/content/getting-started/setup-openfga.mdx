@@ -220,13 +220,126 @@ Note that the MySQL datastore has stricter limits for the max length of some fie
 
 ### Configuring Authentication
 
-You can configure authentication in your OpenFGA server in two ways: no authentication (the default) or pre-shared key authentication.
+You can configure authentication in your OpenFGA server in three ways: no authentication (the default), pre-shared key authentication or via OIDC.
+
+#### Pre-shared Key Authentication
 
 If using **Pre-shared key authentication**, you will configure OpenFGA with a secret key and your application calling OpenFGA will have to set an `Authorization: Bearer <YOUR-KEY-HERE>` header. You can configure multiple keys.
 
 :::caution Warning
-If you are going to use this setup in production, you should enable TLS in your OpenFGA server.
+If you are going to use this setup in production, you should enable HTTP TLS in your OpenFGA server. You will need to configure the TLS certificate and key.
 :::
+
+<Tabs groupId={"configuration"}>
+<TabItem value={"configuration file"} label={"Configuration File"}>
+
+Update the config.yaml file to 
+
+```yaml
+authn:
+  method: preshared
+  preshared:
+    keys: ["key1", "key2"]
+http:
+  tls:
+    enabled: true
+    cert: /Users/myuser/key/server.crt
+    key: /Users/myuser/key/server.key
+```
+
+</TabItem>
+
+<TabItem value={"environment variables"} label={"Environment Variables"}>
+
+1. Configure the authentication method to preshared: `export OPENFGA_AUTHN_METHOD=preshared`.
+2. Configure the authentication keys: `export OPENFGA_AUTHN_PRESHARED_KEYS="key1,key2"`
+3. Enable the HTTP TLS configuration: `export OPENFGA_HTTP_TLS_ENABLED=true`
+4. Configure the HTTP TLS certificate location: `export OPENFGA_HTTP_TLS_CERT=/Users/myuser/key/server.crt`
+5. Configure the HTTP TLS key location: `export OPENFGA_HTTP_TLS_KEY=/Users/myuser/key/server.key`
+
+</TabItem>
+
+<TabItem value={"docker"} label={"Docker"}>
+
+To configure with pre-shared and enabling TLS in http server with docker.
+
+1. Copy the certificate and key files to your docker container.
+
+2. Run the docker with the following command
+```shell
+docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
+    --authn-method=preshared \
+    --authn-preshared-keys="key1,key2" \
+    --http-tls-enabled=true \
+    --http-tls-cert="/Users/myuser/key/server.crt" \
+    --http-tls-key="/Users/myuser/key/server.key"
+```
+</TabItem>
+
+</Tabs>
+
+#### OIDC
+
+To configure with OIDC authentication, you will first need to obtain the OIDC issuer and audience from your provider.
+
+:::caution Warning
+If you are going to use this setup in production, you should enable HTTP TLS in your OpenFGA server. You will need to configure the TLS certificate and key.
+:::
+
+
+<Tabs groupId={"configuration"}>
+<TabItem value={"configuration file"} label={"Configuration File"}>
+
+Update the config.yaml file to 
+
+```yaml
+authn:
+  method: oidc
+  oidc:
+    issuer: "oidc-issuer"
+    audience: "oidc-audience"
+
+http:
+  tls:
+    enabled: true
+    cert: /Users/myuser/key/server.crt
+    key: /Users/myuser/key/server.key
+```
+
+</TabItem>
+
+<TabItem value={"environment variables"} label={"Environment Variables"}>
+
+1. Configure the authentication method to preshared: `export OPENFGA_AUTHN_METHOD=oidc`.
+2. Configure the authentication keys: `export OPENFGA_AUTHN_OIDC_ISSUER=oidc-issuer`
+2. Configure the authentication keys: `export OPENFGA_AUTHN_OIDC_audience=oidc-audience`
+3. Enable the HTTP TLS configuration: `export OPENFGA_HTTP_TLS_ENABLED=true`
+4. Configure the HTTP TLS certificate location: 
+`export OPENFGA_HTTP_TLS_CERT=/Users/myuser/key/server.crt`
+5. Configure the HTTP TLS key location: 
+`export OPENFGA_HTTP_TLS_KEY=/Users/myuser/key/server.key`
+
+</TabItem>
+
+<TabItem value={"docker"} label={"Docker"}>
+
+To configure with pre-shared and enabling TLS in http server with docker.
+
+1. Copy the certificate and key files to your docker container.
+
+2. Run the docker with the following command
+```shell
+docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
+    --authn-method=oidc \
+    --authn-oidc-issuer="oidc-issuer" \
+    --authn-oidc-audience="oidc-audience" \
+    --http-tls-enabled=true \
+    --http-tls-cert="/Users/myuser/key/server.crt" \
+    --http-tls-key="/Users/myuser/key/server.key"
+```
+</TabItem>
+
+</Tabs>
 
 ### Playground
 
