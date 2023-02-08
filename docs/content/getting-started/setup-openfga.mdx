@@ -433,7 +433,22 @@ openfga run --experimentals=otel-metrics --otel-telemetry-endpoint=127.0.0.1:431
 ```
 
 ### Tracing
-OpenFGA, when run in standalone server mode, does not yet support tracing. This work is in our roadmap and we will update this section with more information when the time comes.
+
+OpenFGA supports [OpenTelemetry](https://opentelemetry.io/) tracing via a gRPC endpoint to the [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/). The OpenTelemetry Collector can then export your traces to the backend of your choice. 
+
+:::info
+You will need to have the OpenTelemety Collector running and exporting traces to some backend in order to view the traces. See the documentation for the [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) to see how to set that up.
+:::
+
+Tracing can configure with the following flags:
+- `--trace-enabled`: needs to be set to true in order for traces to be sent to the collector.
+- `--trace-otlp-endpoint`: this is the gRPC endpoint of the collector.
+- `--trace-sample-ratio`: is a float which specifies what fraction of traces to sample. Fractions >= 1 will always sample, and fractions <= 0 will never sample.
+
+For example,
+```
+openfga run --trace-enabled=true --trace-otlp-endpoint=127.0.0.1:4317 --trace-sample-ratio=0.2
+```
 
 ## Related Sections
 
