@@ -130,7 +130,10 @@ services:
         condition: service_healthy
     image: openfga/openfga:latest
     container_name: migrate
-    command: migrate --datastore-engine postgres --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
+    command: migrate
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://postgres:password@postgres:5432/postgres?sslmode=disable
     networks:
       - openfga
 
@@ -141,8 +144,10 @@ services:
     image: openfga/openfga:latest
     container_name: openfga
     environment:
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://postgres:password@postgres:5432/postgres?sslmode=disable
       - OPENFGA_LOG_FORMAT=json
-    command: run --datastore-engine postgres --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
+    command: run
     networks:
       - openfga
     ports:
