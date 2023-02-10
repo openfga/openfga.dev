@@ -108,52 +108,46 @@ networks:
   openfga:
 
 services:
-  db:
+  postgres:
     image: postgres:14
+    container_name: postgres
     networks:
       - openfga
+    ports:
+      - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=openfga
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
       timeout: 5s
       retries: 5
 
-  pause:
-    image: ubuntu
-    command: sleep 5
-    depends_on:
-      db:
-        condition: service_started
-
   migrate:
-    image: openfga/openfga
     depends_on:
-      pause:
-        condition: service_completed_successfully
-    command: |
-      migrate
-    environment: 
+      postgres:
+        condition: service_healthy
+    image: openfga/openfga:latest
+    container_name: migrate
+    command: migrate
+    environment:
       - OPENFGA_DATASTORE_ENGINE=postgres
-      - OPENFGA_DATASTORE_URI=postgres://postgres:password@db:5432/openfga
+      - OPENFGA_DATASTORE_URI=postgres://postgres:password@postgres:5432/postgres?sslmode=disable
     networks:
       - openfga
 
   openfga:
-    image: openfga/openfga
-    environment:
-      - OPENFGA_DATASTORE_ENGINE=postgres
-      - OPENFGA_DATASTORE_URI=postgres://postgres:password@db:5432/openfga
-      - OPENFGA_LOG_FORMAT=json
-    command: run
     depends_on:
-      db:
-        condition: service_started
       migrate:
         condition: service_completed_successfully
+    image: openfga/openfga:latest
+    container_name: openfga
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://postgres:password@postgres:5432/postgres?sslmode=disable
+      - OPENFGA_LOG_FORMAT=json
+    command: run
     networks:
       - openfga
     ports:
