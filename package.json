@@ -25,7 +25,7 @@
   "dependencies": {
     "@docusaurus/core": "2.2.0",
     "@docusaurus/plugin-client-redirects": "2.2.0",
-    "@docusaurus/preset-classic": "2.2.0",
+    "@docusaurus/preset-classic": "2.3.1",
     "@easyops-cn/docusaurus-search-local": "0.33.6",
     "@lottiefiles/react-lottie-player": "3.5.0",
     "@openfga/sdk": "0.2.2",
