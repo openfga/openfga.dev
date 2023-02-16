@@ -7,6 +7,6 @@
       "@features/*": ["src/features/*"],
       "@static/*": ["static/*"]
     },
-  "moduleResolution": "Node16"
+    "moduleResolution": "Node16"
   }
 }
