@@ -12,7 +12,6 @@ import {
   ProductName,
   ProductNameFormat,
   RelatedSection,
-  SdkSetupHeader,
   SdkSetupPrerequisite,
   SupportedLanguage,
   WriteAuthzModelViewer,
@@ -29,15 +28,37 @@ This article explains how to configure an <ProductConcept section="what-is-an-au
 ## Before You Start
 
 <Tabs groupId="languages">
-{[SupportedLanguage.JS_SDK, SupportedLanguage.GO_SDK, SupportedLanguage.DOTNET_SDK, SupportedLanguage.PYTHON_SDK].map(lang =>
-<TabItem value={lang} label={languageLabelMap.get(lang)}>
+<TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
 
 1. <SdkSetupPrerequisite />
 2. You have [installed the SDK](./install-sdk.mdx), [created the store](./create-store.mdx) and [setup the SDK client](./setup-sdk-client.mdx).
 3. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
 
 </TabItem>
-)}
+<TabItem value={SupportedLanguage.GO_SDK} label={languageLabelMap.get(SupportedLanguage.GO_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](./install-sdk.mdx), [created the store](./create-store.mdx) and [setup the SDK client](./setup-sdk-client.mdx).
+3. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
+
+</TabItem>
+
+<TabItem value={SupportedLanguage.DOTNET_SDK} label={languageLabelMap.get(SupportedLanguage.DOTNET_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](./install-sdk.mdx), [created the store](./create-store.mdx) and [setup the SDK client](./setup-sdk-client.mdx).
+3. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
+
+</TabItem>
+
+<TabItem value={SupportedLanguage.PYTHON_SDK} label={languageLabelMap.get(SupportedLanguage.PYTHON_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](./install-sdk.mdx), [created the store](./create-store.mdx) and [setup the SDK client](./setup-sdk-client.mdx).
+3. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
+
+</TabItem>
+
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
 1. <SdkSetupPrerequisite />
