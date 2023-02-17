@@ -6,6 +6,7 @@
       "@components/*": ["src/components/*"],
       "@features/*": ["src/features/*"],
       "@static/*": ["static/*"]
-    }
+    },
+    "moduleResolution": "Node16"
   }
 }
