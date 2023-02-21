@@ -490,6 +490,15 @@ It is possible to introduce new models and have existing tuples (from prior mode
 
 In these cases, <ProductName format={ProductNameFormat.ShortForm}/> will not consider those invalid tuples when evaluating queries ([Check](/api/service#/Relationship%20Queries/Check), [Expand](/api/service#/Relationship%20Queries/Expand), [List-objects](/api/service#/Relationship%20Queries/ListObjects), etc). However, after any of the changes above happen, you should delete those tuples as having a large number of invalid tuples will negatively affect performance.
 
+## Improved Schema Validation
+
+Type restriction allow <ProductName format={ProductNameFormat.ShortForm} /> to validate schema better at the time of writing the schema instead of at time of query evaluation.
+
+In particular, models that used to allow referencing related objects than can be evaluated used to error out at the time of evaluation (e.g. during a Check call). As of schema v1.1, the error will be encountered when preforming a `WriteAuthorizationModel`, because <ProductName format={ProductNameFormat.ShortForm} /> is able to know what types are expected beforehand.
+
+See [Referencing Relations on Related Objects](../configuration-language.mdx#referencing-relations-on-related-objects) for more.
+
+
 ## Related Sections
 
 <RelatedSection
