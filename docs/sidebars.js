@@ -71,6 +71,11 @@ const sidebars = {
           label: 'Production Best Practices',
           id: 'content/getting-started/production-best-practices',
         },
+        {
+          type: 'doc',
+          label: 'Managing Best Practices',
+          id: 'content/getting-started/tuples-api-best-practices',
+        }
       ],
     },
     {
