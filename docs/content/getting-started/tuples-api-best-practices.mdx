@@ -1,0 +1,62 @@
+---
+title: Managing Tuples and Invoking API Best Practices
+description: Best Practices of Managing Tuples and Invoking APIs
+sidebar_position: 8
+slug: /getting-started/tuples-api-best-practices
+---
+
+import {
+  DocumentationNotice,
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+} from "@components/Docs";
+
+# Best Practices of Managing Tuples and Invoking APIs
+
+<DocumentationNotice />
+
+The following list outlines some guidelines and best-practices for using <ProductName format={ProductNameFormat.ShortForm}/>:
+
+- Do not store Personal Identifiable Information in tuples
+- Always specify authorization model ID whenever possible
+- Avoid using intersection or exclusion in ListObjects authorization model
+
+## Do Not Store Personal Identifiable Information in Tuples
+
+You can use any string for user and object identifiers, but we strongly recommend that you do not store Personal Identifiable Information (PII) tuples for the following reasons:
+
+1. By not storing personal information, you will reduce the impact of using the product from a compliance perspective.
+2. In some cases, tuple information flows through Data Sub Processors such as ones used for logging and tracing. You’ll minimize risk if you don’t include sensitive data in tuples.
+
+## Always Specify Authorization Model ID Whenever Possible
+
+It is strong recommended that authorization model ID be specified in your Relationship Queries (such as [Check](./perform-check.mdx) and [ListObjects](../interacting/relationship-queries.mdx#listobjects)) and Relationship Tuples (such as [Read](../interacting/relationship-queries.mdx#read) and [Write](./update-tuples.mdx)) request.
+
+Specifying authorization model ID in API calls have the following advantages:
+1. Better performances as <ProductName format={ProductNameFormat.ShortForm}/> do not need to invoke database queries to get the latest authorization model ID 
+2. Allows consistent behavior in your production system until until you are ready to switch to the new model.
+
+## Avoid Using Intersection or Exclusion in ListObjects Authorization Model
+
+If you are planning to use ListObjects, avoid using [intersection](../configuration-language.mdx#the-intersection-operator) or [exclusion](../configuration-language.mdx#the-exclusion-operator) as it is not optimized for them yet.
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more on recommendation for managing relations and model in production environment."
+  relatedLinks={[
+    {
+      title: 'Migrating Relations',
+      description: 'Learn how to migrate relations in a production environment',
+      link: '../modeling/migrating/migrating-relations',
+      id: '../modeling/migrating/migrating-relations',
+    },
+    {
+      title: 'Migrating Schema 1.1',
+      description: 'Learn how to migrate to model schema 1.1',
+      link: '../modeling/migrating/migrating-schema-1-1',
+      id: '../modeling/migrating/migrating-schema-1-1',
+    },
+  ]}
+/>

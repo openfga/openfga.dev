@@ -30,6 +30,7 @@ hide_title: true
   - [Perform a Check](./content/getting-started/perform-check.mdx)
   - [Integrate Within a Framework](./content/getting-started/framework.mdx)
   - [Production Best Practices](./content/getting-started/production-best-practices.mdx)
+  - [Managing Tuples and Invoking API Best Practices](./content/getting-started/tuples-api-best-practices.mdx)
 - [Modeling Overview](./content/modeling/overview.mdx)
   - [Getting Started with Modeling](./content/modeling/getting-started.mdx)
   - [Direct Access](./content/modeling/direct-access.mdx)
