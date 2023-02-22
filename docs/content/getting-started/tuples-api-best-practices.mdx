@@ -16,7 +16,7 @@ import {
 
 <DocumentationNotice />
 
-The following list outlines some guidelines and best-practices for using <ProductName format={ProductNameFormat.ShortForm}/>:
+The following list outlines some guidelines and best practices for using <ProductName format={ProductNameFormat.ShortForm}/>:
 
 - Do not store Personal Identifiable Information in tuples
 - Always specify authorization model ID whenever possible
@@ -36,10 +36,10 @@ The documentation and samples uses first names and simple ids to illustrate easy
 
 ## Always Specify Authorization Model ID Whenever Possible
 
-It is strong recommended that authorization model ID be specified in your Relationship Queries (such as [Check](./perform-check.mdx) and [ListObjects](../interacting/relationship-queries.mdx#listobjects)) and Relationship Tuples (such as [Write](./update-tuples.mdx)) request.
+It is strongly recommended that authorization model ID be specified in your Relationship Queries (such as [Check](./perform-check.mdx) and [ListObjects](../interacting/relationship-queries.mdx#listobjects)) and Relationship Commands (such as [Write](./update-tuples.mdx)).
 
 Specifying authorization model ID in API calls have the following advantages:
-1. Better performances as <ProductName format={ProductNameFormat.ShortForm}/> do not need to invoke database queries to get the latest authorization model ID 
+1. Better performance as <ProductName format={ProductNameFormat.ShortForm}/> will not need to perform a database query to get the latest authorization model ID.
 2. Allows consistent behavior in your production system until until you are ready to switch to the new model.
 
 ## If Using ListObjects, Avoid Having Intersection or Exclusion in the Authorization Model
