@@ -174,9 +174,9 @@ async def check():
 `;
     case SupportedLanguage.RPC:
       return `check(
-  "${user}", // check if the user \`${user}\`
-  "${relation}", // has an \`${relation}\` relation
-  "${object}", // with the object \`${object}\`
+  user = "${user}", // check if the user \`${user}\`
+  relation = "${relation}", // has an \`${relation}\` relation
+  object = "${object}", // with the object \`${object}\`
   ${
     contextualTuples
       ? `contextual_tuples = [ // Assuming the following is true
@@ -185,7 +185,7 @@ async def check():
       .join(',\n    ')}
   ],`
       : ''
-  } authorization_id="${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}"
+  } authorization_id = "${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}"
 );
 
 Reply: ${allowed}`;
