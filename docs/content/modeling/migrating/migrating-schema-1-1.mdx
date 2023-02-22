@@ -494,7 +494,7 @@ In these cases, <ProductName format={ProductNameFormat.ShortForm}/> will not con
 
 Type restrictions allow <ProductName format={ProductNameFormat.ShortForm} /> to validate the schema better at the time of writing the schema instead of at the time of query evaluation.
 
-In <ProductName format={ProductNameFormat.ShortForm} />, when [referencing relations on related objects](../configuration-language.mdx#referencing-relations-on-related-objects) the relation tying the related objects (the word after `from`, also called the tupleset) cannot be evaluated - that means it cannot be referencing another relation, or allow non-concrete types (type bound public access (`<object_type>:*`) or usersets (`<object_type>#<relation>`)) in its type restrictions.
+In <ProductName format={ProductNameFormat.ShortForm} />, when [referencing relations on related objects](../../configuration-language.mdx#referencing-relations-on-related-objects) the relation tying the related objects (the word after `from`, also called the tupleset) cannot be evaluated - that means it cannot be referencing another relation, or allow non-concrete types (type bound public access (`<object_type>:*`) or usersets (`<object_type>#<relation>`)) in its type restrictions.
 
 
 
