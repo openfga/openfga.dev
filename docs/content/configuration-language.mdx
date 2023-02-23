@@ -7,6 +7,7 @@ description: Learning about the FGA configuration language and using it to build
 
 import {
   AuthzModelSnippetViewer,
+  CheckRequestViewer,
   DocumentationNotice,
   ProductConcept,
   ProductName,
@@ -15,6 +16,7 @@ import {
   RelationshipTuplesViewer,
   SyntaxFormat,
   UpdateProductNameInLinks,
+  WriteRequestViewer,
 } from '@components/Docs';
 
 # Configuration Language
@@ -579,6 +581,12 @@ In the _authorization model_ above, `user:anne` is a `viewer` of `document:new-r
 This particular use of referencing relations on related objects is defining a transitive implied relationship. If **user A** is related to a certain **object B** as a **viewer**, and **object B** is related to **object C** as **parent**, then **user A** is related to **object C** as **viewer**.
 
 This can be used to indicate that **viewers** of a **folders** are **viewers** of all **documents** in that **folder**.
+
+:::caution
+Note that <ProductName format={ProductNameFormat.LongForm}/> does not allow the referenced relation (the word after `from`, also called the tupleset) to be referencing another relation or allow non-concrete types (type bound public access (`<object_type>:*`) or usersets (`<object_type>#<relation>`)) in its type restrictions and will throw a validation error when attempting to call `WriteAuthorizationModel`.
+
+Note: In the [deprecated 1.0 schema version](./modeling/migrating/migrating-schema-1-1.mdx), the validation error will be thrown at the time of evaluation (`Check`, etc..).
+:::
 
 For more examples, take look at [Modeling: Parent-Child Objects](./modeling/parent-child.mdx), [Advanced Modeling: Google Drive](./modeling/advanced/gdrive.mdx), [Advanced Modeling: GitHub](./modeling/advanced/github.mdx), and [Advanced Modeling: Entitlements](./modeling/advanced/entitlements.mdx).
 

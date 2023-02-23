@@ -490,6 +490,79 @@ It is possible to introduce new models and have existing tuples (from prior mode
 
 In these cases, <ProductName format={ProductNameFormat.ShortForm}/> will not consider those invalid tuples when evaluating queries ([Check](/api/service#/Relationship%20Queries/Check), [Expand](/api/service#/Relationship%20Queries/Expand), [List-objects](/api/service#/Relationship%20Queries/ListObjects), etc). However, after any of the changes above happen, you should delete those tuples as having a large number of invalid tuples will negatively affect performance.
 
+## Improved Schema Validation
+
+Type restrictions allow <ProductName format={ProductNameFormat.ShortForm} /> to validate the schema better at the time of writing the schema instead of at the time of query evaluation.
+
+In <ProductName format={ProductNameFormat.ShortForm} />, when [referencing relations on related objects](../../configuration-language.mdx#referencing-relations-on-related-objects) the relation tying the related objects (the word after `from`, also called the tupleset) cannot be evaluated - that means it cannot be referencing another relation, or allow non-concrete types (type bound public access (`<object_type>:*`) or usersets (`<object_type>#<relation>`)) in its type restrictions.
+
+
+
+<details>
+<summary>
+
+In schema 1.0, because type restrictions were not available, the validation error would occur at the time of evaluation (e.g. a `Check` call), while in schema 1.1, the error will be thrown when writing the model (during the `WriteAuthorizationModel` request).
+
+</summary>
+  In the case below, the write request will fail in the new schema 1.1 version, but would have succeeded in schema version 1.0:
+
+  <AuthzModelSnippetViewer
+    showSchemaOneDotZero={true}
+    configuration={{
+      schema_version: "1.1",
+      type_definitions: [
+        {
+          type: 'user',
+        },
+        {
+          type: 'folder',
+          relations: {
+            parent: {
+              this: {},
+            },
+            editor: {
+              union: {
+                child: [
+                  {
+                    this: {},
+                  },
+                  {
+                    tupleToUserset: {
+                      tupleset: {
+                        relation: 'parent',
+                      },
+                      computedUserset: {
+                        relation: 'editor',
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          metadata: {
+            relations: {
+              parent: { directly_related_user_types: [{ type: 'folder' }, { type: 'folder', relation: "parent" }] },
+              editor: { directly_related_user_types: [{ type: 'user' }] },
+            },
+          }
+        },
+      ],
+    }}
+  />
+
+  In schema 1.0, the `WriteAuthorizationModel` would have succeeded, but when attempting to write a tuple such as the one below, you would have received an error:
+  <WriteRequestViewer
+    skipSetup={true}
+    relationshipTuples={[
+    {
+      user: 'folder:product#parent',
+      relation: 'parent',
+      object: 'folder:planning'
+    }
+  ]} />
+</details>
+
 ## Related Sections
 
 <RelatedSection
