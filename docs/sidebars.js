@@ -73,7 +73,7 @@ const sidebars = {
         },
         {
           type: 'doc',
-          label: 'Managing Best Practices',
+          label: 'Implementation Best Practices',
           id: 'content/getting-started/tuples-api-best-practices',
         }
       ],
