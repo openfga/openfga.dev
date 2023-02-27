@@ -22,7 +22,11 @@ import {
 
 <DocumentationNotice />
 
-<ProductName format={ProductNameFormat.ShortForm} /> has introduced a new DSL schema version with several changes that we
+:::caution
+The <ProductName format={ProductNameFormat.ShortForm} /> model schema v1.0 is being deprecated. Read about when support will be dropped in the [deprecation timeline](#deprecation-timeline).
+:::
+
+A new DSL schema version has been introduced with several changes that we
 believe will make models easier to read and write, enable better tuple and model validations, and provide more options for
 optimizing the performance of different <ProductName format={ProductNameFormat.ShortForm} /> APIs.<br/><br/>
 
@@ -562,6 +566,28 @@ In schema 1.0, because type restrictions were not available, the validation erro
     }
   ]} />
 </details>
+
+## Deprecation Timeline
+
+1- **February 13th 2023**: Deprecation Notice
+  - [This](https://github.com/orgs/openfga/discussions/111) deprecation notice is posted.
+
+2- **March 15th 2023**: Disallow writing and evaluating new 1.0 models with OpenFGA version `0.4.0`
+  - The API will no longer accept writing new 1.0 models (affects [`WriteAuthorizationModel`](/api/service#/Authorization%20Models/WriteAuthorizationModel), [`WriteAssertions`](/api/service#/Assertions/WriteAssertions)) unless the `OPENFGA_ALLOW_WRITING_1_0_MODELS` flag is used to override the setting. Note: reading those earlier models and their assertions will keep working.
+  - Evaluation requests ([`Check`](/api/service#/Relationship%20Queries/Check), [`Expand`](/api/service#/Relationship%20Queries/Expand), [`ListObjects`](/api/service#/Relationship%20Queries/List%20Objects)) and [`Write`](/api/service#Relationship%20Tuples/Write) against 1.0 models will, by default, no longer be accepted unless the `OPENFGA_ALLOW_EVALUATING_1_0_MODELS` flag is used to override the setting.
+  - [`ReadAuthorizationModel`](/api/service#/Authorization%20Models/ReadAuthorizationModel), [`ReadAuthorizationModels`](/api/service#/Authorization%20Models/ReadAuthorizationModels) and [`ReadAssertions`](/api/service#/Assertions/ReadAssertions) will continue to serve results for 1.0 and 1.1 models.
+
+3- **March 31st 2023**: Default model version in Syntax Transformer, Playground and Docs switch to `1.1`
+  - The model schema version will be required in all new authorization models, and new authorization models without the version will be rejected.
+  ```
+   model
+     schema 1.1
+  ```
+
+4- **May 15th 2023**: Code Removed with OpenFGA version `0.5.0`
+  - `OPENFGA_ALLOW_WRITING_1_0_MODELS` and `OPENFGA_ALLOW_EVALUATING_1_0_MODELS` flags removed
+  - The code relating to branching and evaluating `1.0` models will be removed except for [`ReadAuthorizationModel`](/api/service#/Authorization%20Models/ReadAuthorizationModel), [`ReadAuthorizationModels`](/api/service#/Authorization%20Models/ReadAuthorizationModels) and [`ReadAssertions`](/api/service#/Assertions/ReadAssertions).
+
 
 ## Related Sections
 
