@@ -213,7 +213,7 @@ from openfga_sdk.api import open_fga_api`,
       announcementBar: {
         id: 'announcementBar.4', // Increment on change
         // eslint-disable-next-line max-len
-        content: `The original OpenFGA authorization model schema v1.0 is considered deprecated, and support for it is scheduled to be dropped. Read the <a href="/docs/modeling/migrating/migrating-schema-1-1#deprecation-timeline">deprecation timeline</a>.`,
+        content: `OpenFGA is deprecating model schema v1.0. Read about when support will be dropped and how to migrate in the <a href="/docs/modeling/migrating/migrating-schema-1-1#deprecation-timeline">deprecation timeline</a>.`,
       },
       navbar: {
         // style: "primary",
