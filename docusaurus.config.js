@@ -211,9 +211,9 @@ from openfga_sdk.api import open_fga_api`,
         disableSwitch: true,
       },
       announcementBar: {
-        id: 'announcementBar.3', // Increment on change
+        id: 'announcementBar.4', // Increment on change
         // eslint-disable-next-line max-len
-        content: `OpenFGA is an open source Fine-Grained Authorization solution based on Google's Zanzibar. We welcome community contribution to this project.`,
+        content: `The original OpenFGA authorization model schema v1.0 is considered deprecated, and support for it is scheduled to be dropped. Read the <a href="/docs/modeling/migrating/migrating-schema-1-1#deprecation-timeline">deprecation timeline</a>.`,
       },
       navbar: {
         // style: "primary",
