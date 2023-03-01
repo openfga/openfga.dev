@@ -1,4 +1,6 @@
 # OpenFGA Documentation
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fopenfga%2Fopenfga.dev.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fopenfga%2Fopenfga.dev?ref=badge_shield)
+
 
 ## About OpenFGA
 <!-- markdown-link-check-disable -->
@@ -109,3 +111,6 @@ OpenFGA <contact@openfga.dev> (https://openfga.dev)
 ## License
 Please refer to https://github.com/openfga/rfcs/blob/main/LICENSE for license information.
 <!-- markdown-link-check-enable -->
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fopenfga%2Fopenfga.dev.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fopenfga%2Fopenfga.dev?ref=badge_large)
