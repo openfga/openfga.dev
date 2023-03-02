@@ -21,5 +21,5 @@ export default function prismIncludeLanguages(PrismObject: typeof PrismNamespace
 
   require('../utils/prism-openfga-dsl');
 
-  delete (globalThis as Global & { Prism?: typeof PrismNamespace }).Prism;
+  delete (globalThis as unknown as Global & { Prism?: typeof PrismNamespace }).Prism;
 }
