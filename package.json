@@ -59,10 +59,10 @@
   },
   "overrides": {
     "eta": "2.0.0",
+    "gauge": "5.0.0",
     "loader-utils": "2.0.4",
     "minimatch@3.0.4": "3.0.5",
     "package-json@6.5.0": "7.0.0",
-    "string-width@1.0.2": "2.1.1",
     "trim": "0.0.3"
   },
   "keywords": [
