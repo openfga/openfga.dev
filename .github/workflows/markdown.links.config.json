@@ -29,6 +29,9 @@
 	  },
 	  {
 		"pattern": "https://pypi.org/project/openfga-sdk"
+	  },
+	  {
+		"pattern": "^https://app.fossa.com"
 	  }
 	],
 	"httpHeaders": [
