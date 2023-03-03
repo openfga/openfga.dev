@@ -494,7 +494,10 @@ Experimental feature flags are also not considered part of API compatibility and
 OpenFGA telemetry data is collected by default starting on version v0.3.5. Metrics and tracing are exported using the [`otlp`](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md) format. Other export formats may be supported in the future, and you can setup an OpenTelemetry Collector to receive, process, and publish metrics in other formats. For more information see the [official OpenTelemetry Collector documentation](https://opentelemetry.io/docs/collector/).
 
 ### Metrics
+
+<!-- markdown-link-check-disable -->
 OpenFGA metrics are exported by default to a Prometheus server running on address http://localhost:2112/metrics.
+<!-- markdown-link-check-enable -->
 
 Metrics can be configured with the following flags:
 
