@@ -35,9 +35,9 @@ You may configure the OpenFGA server with a `config.yaml` file. The `config.yaml
 - `$HOME/.openfga`
 - `.` (i.e., the current working directory).
 
-The OpenFGA will server search for the configuration file in the above order.
+The OpenFGA server will search for the configuration file in the above order.
 
-Here is a sample configuration to run OpenFGA with postgres and using a preshared key for authentication:
+Here is a sample configuration to run OpenFGA with a Postgres database and using a preshared key for authentication:
 
 ```yaml
 datastore:
@@ -52,17 +52,17 @@ authn:
 All possible configurations and their default values are defined in [config-schema.json](https://github.com/openfga/openfga/blob/main/.config-schema.json).
 
 :::info Information
-The OpenFGA server supports **environment variables** for configuration, it will take priority against your configuration file. 
+The OpenFGA server supports **environment variables** for configuration, and they will take priority over your configuration file.
 Each variable must be prefixed with `OPENFGA_` and followed by your option in uppercase (e.g `--grpc-tls-key` becomes `OPENFGA_GRPC_TLS_KEY`).
 :::
 
 ### Configuring Data Storage
 
-OpenFGA supports multiple storage engine options including:
+OpenFGA supports multiple storage engine options, including:
 
 - `memory` - The memory storage engine is the default, but it is not persistent (data is lost between server restarts).
 - `postgres` - The Postgres storage engine requires a Postgres instance that the OpenFGA server can reach.
-- `mysql` - The MySQL storage engine requires a MySQL instance that the OpenFGA server can reach, and that the connection uri specifies the query `parseTime=true`.
+- `mysql` - The MySQL storage engine requires a MySQL instance that the OpenFGA server can reach, and that the connection URI specifies the query `parseTime=true`.
 
 #### Postgres
 
@@ -86,7 +86,7 @@ You should now have Postgres running in a container in the `openfga` network. Ho
 ```shell
 docker run --rm --network=openfga openfga/openfga migrate \
     --datastore-engine postgres \
-    --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
+    --datastore-uri "postgres://postgres:password@postgres:5432/postgres?sslmode=disable"
 ```
 
 Finally, start OpenFGA:
@@ -96,6 +96,9 @@ docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:80
     --datastore-engine postgres \
     --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
 ```
+
+OpenFGA should start and you should see `using 'postgres' storage engine` in the logs.
+
 </TabItem>
 <TabItem value={"docker-compose"} label={"Docker Compose"}>
 
@@ -119,10 +122,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+        test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]
 
   migrate:
     depends_on:
@@ -163,18 +163,29 @@ In a terminal, navigate to that directory and run:
 ```shell
 docker-compose up
 ```
+
+This will start the Postgres database, run `openfga migrate` to configure the database and finally start the OpenFGA server.
+
 </TabItem>
 </Tabs>
-
-This will start the postgres database, run `openfga migrate` to configure the database and finally start the OpenFGA server.
-OpenFGA should start and you should see `using 'postgres' storage engine` in the logs.
 
 Now you can try to [Create a Store](./create-store.mdx).
 
 #### MySQL
 
-Setting up MySQL and OpenFGA is very similar to setting up Postgres and OpenFGA. 
+Setting up MySQL and OpenFGA is very similar to setting up Postgres and OpenFGA.
+
+:::info Information
+Note that the MySQL datastore has stricter limits for the max length of some fields for tuples compared to other datastore engines, in particular:
+- object type is at most 128 characters (down from 256)
+- object id is at most 128 characters (down from 256)
+- user is at most 256 characters (down from 512)
+:::info
+
+<Tabs groupId={"installation_mysql"}>
+<TabItem value={"docker-mysql"} label={"Docker"}>
 We first make a network:
+
 ```shell
 docker network create openfga
 ```
@@ -203,14 +214,80 @@ docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:80
 
 
 OpenFGA should start and you should see `using 'mysql' storage engine` in the logs.
+</TabItem>
+<TabItem value={"docker-compose-mysql"} label={"Docker Compose"}>
+
+Copy the below code block into a local file named: `docker-compose.yaml`
+
+```yaml
+version: '3.8'
+
+networks:
+  openfga:
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    networks:
+      - openfga
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=openfga
+    healthcheck:
+        test: ["CMD-SHELL", "mysqladmin" ,"ping", "-h", "localhost"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
+
+  migrate:
+    depends_on:
+        mysql:
+            condition: service_healthy
+    image: openfga/openfga:latest
+    container_name: migrate
+    command: migrate
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=mysql
+      - OPENFGA_DATASTORE_URI=root:secret@tcp(mysql:3306)/openfga?parseTime=true
+    networks:
+      - openfga
+
+  openfga:
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    image: openfga/openfga:latest
+    container_name: openfga
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=mysql
+      - OPENFGA_DATASTORE_URI=root:secret@tcp(mysql:3306)/openfga?parseTime=true
+      - OPENFGA_LOG_FORMAT=json
+    command: run
+    networks:
+      - openfga
+    ports:
+      # Needed for the http server
+      - "8080:8080"
+      # Needed for the grpc server (if used)
+      - "8081:8081"
+      # Needed for the playground (Do not enable in prod!)
+      - "3000:3000"
+```
+
+In a terminal, navigate to that directory and run:
+
+```shell
+docker-compose up
+```
+
+This will start the MySQL database, run `openfga migrate` to configure the database and finally start the OpenFGA server.
+</TabItem>
+</Tabs>
 
 Now you can try to [Create a Store](./create-store.mdx).
-
-##### MySQL Limitations
-Note that the MySQL datastore has stricter limits for the max length of some fields for tuples compared to other datastore engines, in particular:
-- object type is at most 128 characters (down from 256)
-- object id is at most 128 characters (down from 256)
-- user is at most 256 characters (down from 512)
 
 ### Configuring Authentication
 
@@ -255,11 +332,10 @@ http:
 
 <TabItem value={"docker"} label={"Docker"}>
 
-To configure with pre-shared and enabling TLS in http server with docker.
+To configure with pre-shared authentication and enabling TLS in http server with Docker.
 
-1. Copy the certificate and key files to your docker container.
-
-2. Run the docker with the following command
+1. Copy the certificate and key files to your Docker container.
+2. Run with the following command:
 ```shell
 docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
     --authn-method=preshared \
@@ -317,11 +393,11 @@ http:
 
 <TabItem value={"docker"} label={"Docker"}>
 
-To configure with pre-shared and enabling TLS in http server with docker.
+To configure with pre-shared authentication and enabling TLS in http server with Docker.
 
 1. Copy the certificate and key files to your docker container.
+2. Run the following command
 
-2. Run the docker with the following command
 ```shell
 docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
     --authn-method=oidc \
@@ -339,24 +415,20 @@ docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:80
 
 The Playground facilitates rapid development by allowing you to visualize and model your application's authorization model(s) and manage relationship tuples with a locally running OpenFGA instance.
 
-The Playground is enabled on port 3000 by default and accessible at http://localhost:3000/playground (if using the docker make sure port 3000 is exposed to your local network). To disable the Playground, please take a look at [Configuring the Server](#configuring-the-server) for more information.
+The Playground is enabled on port 3000 by default and accessible at http://localhost:3000/playground (if using Docker, make sure port 3000 is exposed to your local network). To disable the Playground, see [Configuring the Server](#configuring-the-server).
 
 ### Profiler (pprof)
 :::caution Warning
-Continuous pprof profiling can be used in production deployments, but we recommend disabling it unless it is needed to troubleshoot specific performance or memory problems.
+Continuous profiling can be used in production deployments, but we recommend disabling it unless it is needed to troubleshoot specific performance or memory problems.
 :::
 
-Profiling through pprof can be enabled on the OpenFGA server by providing the `--profiler-enabled` flag.
+Profiling through [`pprof`](https://github.com/google/pprof/blob/main/doc/README.md) can be enabled on the OpenFGA server by providing the `--profiler-enabled` flag. For example, in Docker:
 
 ```sh
 docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3001:3001 openfga/openfga run --profiler-enabled
 ```
 
-:::note
-Remember to expose the profiler port if you're running OpenFGA via docker. For example `docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3001:3001 openfga/openfga run --profiler-enabled`.
-:::
-
-If you need to serve the profiler on a different address than the default `:3001`, you can do so by specifying the `--profiler-addr` flag. For example,
+If you need to serve the profiler on a different port than the default `3001`, you can do so by specifying the `--profiler-addr` flag. For example:
 
 ```sh
 docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3002:3002 openfga/openfga run --profiler-enabled --profiler-addr :3002
@@ -370,21 +442,27 @@ OpenFGA is configured with an HTTP health check endpoint `/healthz` and a gRPC h
 - NOT_SERVING
 - SERVICE_UNKNOWN
 
-For HTTP health check
+<Tabs groupId={"healthcheck"}>
+<TabItem value={"health-curl"} label={"cURL"}>
 
-```console
+```shell
 curl -X GET $FGA_API_HOST/healthz
 
 # {"status":"SERVING"}
 ```
 
-For gRPC health check
+</TabItem>
 
-```console
+<TabItem value={"health-grpc"} label={"gRPC"}>
+
+```shell
+# See https://github.com/fullstorydev/grpcurl#installation
 grpcurl -plaintext $FGA_API_HOST grpc.health.v1.Health/Check
 
 # {"status":"SERVING"}
 ```
+</TabItem>
+</Tabs>
 
 ## Experimental Features
 Various releases of OpenFGA may have experimental features that can be enabled by providing the `--experimentals` flag or the `experimentals` config.
@@ -399,9 +477,11 @@ docker run -p 8080:8080 -p 8081:8081 openfga/openfga -e OPENFGA_EXPERIMENTALS="f
 
 The following table table enumerates the experimental flags, a description of what they do, and the versions of OpenFGA the flag is supported in:
 
-| name                   | description                                                                                              | openfga version |
-|------------------------|----------------------------------------------------------------------------------------------------------|-----------------|
-| otel-metrics           | Enables support for exposing OpenFGA metrics through OpenTelemetry | >= v0.3.2       |
+| name         | description                                                        | openfga version      |
+|--------------|--------------------------------------------------------------------|----------------------|
+| otel-metrics | Enables support for exposing OpenFGA metrics through OpenTelemetry | v0.3.2 <= v < v0.3.5 |
+| list-objects | Enables ListObjects API                                            | v0.2.0 <= v < v0.3.3 |
+
 
 :::caution Warning
 Experimental features are not guaranteed to be stable and may lead to server instabilities. It is not recommended to enable experimental features for anything other than experimentation.
@@ -409,40 +489,44 @@ Experimental features are not guaranteed to be stable and may lead to server ins
 Experimental feature flags are also not considered part of API compatibility and are subject to change, so please refer to each OpenFGA specific release for a list of the experimental feature flags that can be enabled for that release.
 :::
 
-## Telemetry (Metrics and Tracing)
+## Telemetry
 
+OpenFGA telemetry data is collected by default starting on version v0.3.5. Metrics and tracing are exported using the [`otlp`](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md) format. Other export formats may be supported in the future, and you can setup an OpenTelemetry Collector to receive, process, and publish metrics in other formats. For more information see the [official OpenTelemetry Collector documentation](https://opentelemetry.io/docs/collector/).
 
 ### Metrics
-To expose OpenFGA metrics you must enable the `otel-metrics` experimental feature (see [Experimental Features](#experimental-features)).
+OpenFGA metrics are exported by default to a Prometheus server running on address http://localhost:2112/metrics.
 
-:::info
-OpenTelemetry metrics are exported in [`otlp`](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md) format.
+Metrics can be configured with the following flags:
 
-Other export formats may be supported in the future, but in the meantime you can setup an OpenTelemetry Collector to receive, process, and publish metrics in other formats. For more information see the [official OpenTelemetry Collector documentation](https://opentelemetry.io/docs/collector/).
-:::
-
-If you need to configure the OpenTelemetry integration with non-default values you can supply the `--otel-telemetry-endpoint` and `--otel-telemetry-protocol` flags. These flags wire up the OpenTelemetry exporter with the provided collector endpoint and configures the exporter protocol (`grpc` or `http`). For more information see [OTLP gRPC Exporter](https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlpexporter/README.md) and [OTLP HTTP Exporter](https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter/README.md). For example,
-```
-openfga run --experimentals=otel-metrics --otel-telemetry-endpoint=127.0.0.1:4317 --otel-telemetry-protocol=http
-```
+- `--metrics-enabled`: can be set to false to disable exporting metrics.
+- `--metrics-addr`: the address to which metrics will be sent, for example `0.0.0.0:2113`
 
 ### Tracing
 
-OpenFGA supports [OpenTelemetry](https://opentelemetry.io/) tracing via a gRPC endpoint to the [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/). The OpenTelemetry Collector can then export your traces to the backend of your choice. 
+OpenFGA can send traces to an [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/). The OpenTelemetry Collector can then export your traces to the backend of your choice.
 
 :::info
 You will need to have the OpenTelemety Collector running and exporting traces to some backend in order to view the traces. See the documentation for the [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) to see how to set that up.
 :::
 
-Tracing can configure with the following flags:
+Tracing can be configured with the following flags:
 - `--trace-enabled`: needs to be set to true in order for traces to be sent to the collector.
-- `--trace-otlp-endpoint`: this is the gRPC endpoint of the collector.
+- `--trace-otlp-endpoint`: the gRPC endpoint of the collector.
 - `--trace-sample-ratio`: is a float which specifies what fraction of traces to sample. Fractions >= 1 will always sample, and fractions <= 0 will never sample.
 
-For example,
-```
+For example:
+
+```shell
 openfga run --trace-enabled=true --trace-otlp-endpoint=127.0.0.1:4317 --trace-sample-ratio=0.2
 ```
+
+### Logging
+
+OpenFGA generates logs, but it doesn't follow the `otlp` format.
+
+Logging can be configured with the following flags:
+- `--log-format`: can be `text` or `json`.
+- `--log-level`: defaults to `info`, can be set to `none` to turn off loging.
 
 ## Related Sections
 
