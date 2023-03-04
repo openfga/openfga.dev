@@ -178,7 +178,7 @@ Now you can try to [Create a Store](./create-store.mdx).
 
 Setting up MySQL and OpenFGA is very similar to setting up Postgres and OpenFGA.
 
-:::info Information
+:::info
 Note that the MySQL datastore has stricter limits for the max length of some fields for tuples compared to other datastore engines, in particular:
 - object type is at most 128 characters (down from 256)
 - object id is at most 128 characters (down from 256)
@@ -479,10 +479,10 @@ docker run -p 8080:8080 -p 8081:8081 openfga/openfga -e OPENFGA_EXPERIMENTALS="f
 
 The following table enumerates the experimental flags, a description of what they do, and the versions of OpenFGA the flag is supported in:
 
-| name         | description                                                        | openfga version      |
-|--------------|--------------------------------------------------------------------|----------------------|
-| otel-metrics | Enables support for exposing OpenFGA metrics through OpenTelemetry | v0.3.2 <= v < v0.3.5 |
-| list-objects | Enables ListObjects API                                            | v0.2.0 <= v < v0.3.3 |
+| Name         | Description                                                        | OpenFGA Version       | Status                     |
+|--------------|--------------------------------------------------------------------|-----------------------|----------------------------|
+| otel-metrics | Enables support for exposing OpenFGA metrics through OpenTelemetry | `0.3.2 <= v < v0.3.5` | became default in `v0.3.5` |
+| list-objects | Enables ListObjects API                                            | `0.2.0 <= v < v0.3.3` | became default in `v0.3.3` |
 
 
 :::caution Warning
@@ -493,7 +493,7 @@ Experimental feature flags are also not considered part of API compatibility and
 
 ## Telemetry
 
-OpenFGA telemetry data is collected by default starting on version v0.3.5. Metrics and tracing are exported using the [`otlp`](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md) format. Other export formats may be supported in the future, and you can setup an OpenTelemetry Collector to receive, process, and publish metrics in other formats. For more information see the [official OpenTelemetry Collector documentation](https://opentelemetry.io/docs/collector/).
+OpenFGA telemetry data is collected by default starting on version `v0.3.5`. Metrics and tracing are exported using the [`otlp`](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md) format. Other export formats may be supported in the future, and you can setup an OpenTelemetry Collector to receive, process, and publish metrics in other formats. For more information see the [official OpenTelemetry Collector documentation](https://opentelemetry.io/docs/collector/).
 
 ### Metrics
 
