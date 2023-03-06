@@ -37,11 +37,10 @@ function readRequestViewer(lang: SupportedLanguage, opts: ReadRequestViewerOpts,
           `"object":"${opts.object}"`
         : '';
 
-      const requestTuplePayload =
-        requestTuples != ''
-          ? `\\
+      const requestTuplePayload = requestTuples
+        ? `\\
   -d '{"tuple_key":{${requestTuples}}}`
-          : '';
+        : '';
 
       // eslint-disable-next-line max-len
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/read \\
@@ -57,14 +56,13 @@ function readRequestViewer(lang: SupportedLanguage, opts: ReadRequestViewerOpts,
           (opts.relation ? `    relation:'${opts.relation}',\n` : '') +
           `    object:'${opts.object}',`
         : '';
-      const requestTuplesPayload =
-        requestTuples != ''
-          ? `
+      const requestTuplesPayload = requestTuples
+        ? `
   tuple_key: {
 ${requestTuples}
   },
 `
-          : '';
+        : '';
       return `
 // Execute a read
 const { tuples } = await fgaClient.read({${requestTuplesPayload}});
@@ -79,14 +77,13 @@ const { tuples } = await fgaClient.read({${requestTuplesPayload}});
           (opts.relation ? `\t\tRelation: fgaSdk.PtrString("${opts.relation}"),\n` : '') +
           `\t\tObject: fgaSdk.PtrString("${opts.object}"),\n`
         : '';
-      const requestTuplePayload =
-        requestTuples != ''
-          ? `
+      const requestTuplePayload = requestTuples
+        ? `
   TupleKey: fgaSdk.TupleKey{
 ${requestTuples}
   },
 `
-          : '';
+        : '';
 
       /* eslint-disable no-tabs */
       return `
@@ -103,12 +100,11 @@ data, response, err := fgaClient.${languageMappings['go'].apiName}.Read(context.
           `  Object = "${opts.object}",`
         : '';
 
-      const requestTuplePayload =
-        requestTuples != ''
-          ? `new TupleKey() {
+      const requestTuplePayload = requestTuples
+        ? `new TupleKey() {
 ${requestTuples}
 }`
-          : '';
+        : '';
 
       /* eslint-disable no-tabs */
       return `
@@ -123,14 +119,13 @@ var response = fgaClient.Read(new ReadRequest(${requestTuplePayload}));
           `            object="${opts.object}",\n`
         : '';
 
-      const requestTuplePayload =
-        requestTuples != ''
-          ? `
+      const requestTuplePayload = requestTuples
+        ? `
         tuple_key=TupleKey(
 ${requestTuples}
         ),
     `
-          : '';
+        : '';
       return `
 # from openfga_sdk.models.read_request import ReadRequest
 # from openfga_sdk.models.read_response import ReadResponse
