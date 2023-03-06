@@ -97,8 +97,6 @@ docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:80
     --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
 ```
 
-OpenFGA should start and you should see `using 'postgres' storage engine` in the logs.
-
 </TabItem>
 <TabItem value={"docker-compose"} label={"Docker Compose"}>
 
@@ -167,10 +165,10 @@ In a terminal, navigate to that directory and run:
 docker-compose up
 ```
 
-This will start the Postgres database, run `openfga migrate` to configure the database and finally start the OpenFGA server.
-
 </TabItem>
 </Tabs>
+
+This will start the Postgres database, run `openfga migrate` to configure the database and finally start the OpenFGA server.
 
 Now you can try to [Create a Store](./create-store.mdx).
 
@@ -215,8 +213,6 @@ docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:80
     --datastore-uri 'root:secret@tcp(mysql:3306)/openfga?parseTime=true'
 ```
 
-
-OpenFGA should start and you should see `using 'mysql' storage engine` in the logs.
 </TabItem>
 <TabItem value={"docker-compose-mysql"} label={"Docker Compose"}>
 
@@ -285,9 +281,10 @@ In a terminal, navigate to that directory and run:
 docker-compose up
 ```
 
-This will start the MySQL database, run `openfga migrate` to configure the database and finally start the OpenFGA server.
 </TabItem>
 </Tabs>
+
+This will start the MySQL database, run `openfga migrate` to configure the database and finally start the OpenFGA server.
 
 Now you can try to [Create a Store](./create-store.mdx).
 
