@@ -493,7 +493,12 @@ Experimental feature flags are also not considered part of API compatibility and
 
 ## Telemetry
 
-OpenFGA telemetry data is collected by default starting on version `v0.3.5`. Metrics and tracing are exported using the [`otlp`](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md) format. Other export formats may be supported in the future, and you can setup an OpenTelemetry Collector to receive, process, and publish metrics in other formats. For more information see the [official OpenTelemetry Collector documentation](https://opentelemetry.io/docs/collector/).
+OpenFGA telemetry data is collected by default starting on version `v0.3.5`.
+
+- Traces are exported using the [`otlp`](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md) format.
+- Metrics are exported using the [Prometheus](https://prometheus.io/docs/concepts/data_model/) format.
+
+Other export formats may be supported in the future, and you can setup an OpenTelemetry Collector to receive, process, and publish metrics in other formats. For more information see the [official OpenTelemetry Collector documentation](https://opentelemetry.io/docs/collector/).
 
 ### Metrics
 
@@ -504,7 +509,7 @@ OpenFGA metrics are exported by default to a Prometheus server running on addres
 Metrics can be configured with the following flags:
 
 - `--metrics-enabled`: can be set to false to disable exporting metrics.
-- `--metrics-addr`: the address to which metrics will be sent, for example `0.0.0.0:2113`
+- `--metrics-addr`: the address to which metrics will be sent, for example `0.0.0.0:2113`.
 
 ### Tracing
 
@@ -531,7 +536,7 @@ OpenFGA generates logs, but it doesn't follow the `otlp` format.
 
 Logging can be configured with the following flags:
 - `--log-format`: can be `text` or `json`.
-- `--log-level`: defaults to `info`, can be set to `none` to turn off loging.
+- `--log-level`: defaults to `info`, can be set to `none` to turn off logging.
 
 ## Related Sections
 
