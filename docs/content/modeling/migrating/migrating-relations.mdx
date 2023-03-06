@@ -193,11 +193,9 @@ Run a check in the API for Bethany to ensure correct access.
 
 Next, migrate the existing relationship tuples. The new relation makes this definition obsolete.
 
-Use the `read` API to lookup all relationship tuples with the `editor` name in your model.
+Use the `read` API to lookup all relationship tuples.
 
 <ReadRequestViewer
-  relation={'editor'}
-  object={'document:'}
   tuples={[
     {
       user: 'user:anne',
@@ -212,7 +210,7 @@ Use the `read` API to lookup all relationship tuples with the `editor` name in y
   ]}
 />
 
-Update the new tuples with the `write` relationship.
+Then filter out the tuples that do not match the object type or relation (in this case, `document` and `editor` respectively), and update the new tuples with the `write` relationship.
 
 <WriteRequestViewer
   relationshipTuples={[
