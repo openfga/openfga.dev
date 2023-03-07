@@ -131,7 +131,7 @@ async def create_store():
 
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
-```console
+```shell
 curl -X POST $FGA_API_HOST/stores \
   -H "content-type: application/json" \
   -d '{"name": "FGA Demo Store"}'
