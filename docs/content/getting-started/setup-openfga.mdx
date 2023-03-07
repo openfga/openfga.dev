@@ -498,9 +498,9 @@ Please refer to the [docker-compose.yaml](https://github.com/openfga/openfga/blo
 
 ### Metrics
 
-OpenFGA metrics are collected with the [Prometheus data format](https://prometheus.io/docs/concepts/data_model/) and exposed on address `http://localhost:2112/metrics`.
+OpenFGA metrics are collected with the [Prometheus data format](https://prometheus.io/docs/concepts/data_model/) and exposed on address `http://0.0.0.0:2112/metrics`.
 
-They are collected and exposed by default, but you can disable this by setting the flag `--metrics-enabled=false` (or `OPENFGA_METRICS_ENABLED=false` environment variable).
+Metrics are exposed by default, but you can disable this with `--metrics-enabled=false` (or `OPENFGA_METRICS_ENABLED=false` environment variable).
 
 To set an alternative address, you can provide the `--metrics-addr` flag (`OPENFGA_METRICS_ADDR` environment variable). For example:
 
@@ -514,7 +514,7 @@ To see the request latency per endpoint of your OpenFGA deployment, you can prov
 
 OpenFGA traces can be collected with the [OTLP data format](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md).
 
-Collection and exporting is disabled by default, but you can enable both with the `--trace-enabled=true` flag (`OPENFGA_TRACE_ENABLED=true` environment variable). Traces will be exported by default to address  `http://localhost:4317`. You can change this address with the `--trace-otlp-endpoint` flag (`OPENFGA_TRACE_OTLP_ENDPOINT` environment variable).
+Tracing is disabled by default, but you can enable this with the `--trace-enabled=true` (`OPENFGA_TRACE_ENABLED=true` environment variable). Traces will be exported by default to address `http://0.0.0.0:4317`. You can change this address with the `--trace-otlp-endpoint` flag (`OPENFGA_TRACE_OTLP_ENDPOINT` environment variable).
 
 To increase or decrease the trace sampling ratio, you can provide the `--trace-sample-ratio` flag (`OPENFGA_TRACE_SAMPLE_RATIO` env variable).
 
