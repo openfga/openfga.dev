@@ -12,7 +12,7 @@ interface ReadRequestViewerOpts {
   ModelId?: string;
   user?: string;
   relation?: string;
-  object: string;
+  object?: string;
   tuples?: ReadTuples[];
   skipSetup?: boolean;
   allowedLanguages?: SupportedLanguage[];
@@ -31,97 +31,120 @@ function readRequestViewer(lang: SupportedLanguage, opts: ReadRequestViewerOpts,
 
   switch (lang) {
     case SupportedLanguage.CURL: {
-      const requestTuples =
-        (opts.user ? `"user":"${opts.user}",` : '') +
-        (opts.relation ? `"relation":"${opts.relation}",` : '') +
-        `"object":"${opts.object}"`;
+      const requestTuples = opts.object
+        ? (opts.user ? `"user":"${opts.user}",` : '') +
+          (opts.relation ? `"relation":"${opts.relation}",` : '') +
+          `"object":"${opts.object}"`
+        : '';
+
+      const requestTuplePayload = requestTuples
+        ? `\\
+  -d '{"tuple_key":{${requestTuples}}}`
+        : '';
 
       // eslint-disable-next-line max-len
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/read \\
   -H "Authorization: Bearer $FGA_BEARER_TOKEN" \\ # Not needed if service does not require authorization
-  -H "content-type: application/json" \\
-  -d '{"tuple_key":{${requestTuples}}}'
+  -H "content-type: application/json" ${requestTuplePayload}'
 
 # Response: "tuples": {[${readTuples}]}`;
     }
 
     case SupportedLanguage.JS_SDK: {
-      const requestTuples =
-        (opts.user ? `    user:'${opts.user}',\n` : '') +
-        (opts.relation ? `    relation:'${opts.relation}',\n` : '') +
-        `    object:'${opts.object}',`;
-      return `
-// Execute a read
-const { tuples } = await fgaClient.read({
+      const requestTuples = opts.object
+        ? (opts.user ? `    user:'${opts.user}',\n` : '') +
+          (opts.relation ? `    relation:'${opts.relation}',\n` : '') +
+          `    object:'${opts.object}',`
+        : '';
+      const requestTuplesPayload = requestTuples
+        ? `
   tuple_key: {
 ${requestTuples}
   },
-});
+`
+        : '';
+      return `
+// Execute a read
+const { tuples } = await fgaClient.read({${requestTuplesPayload}});
 
 // tuples = [${readTuples}]
 `;
     }
 
     case SupportedLanguage.GO_SDK: {
-      const requestTuples =
-        (opts.user ? `\t\tUser: fgaSdk.PtrString("${opts.user}"),\n` : '') +
-        (opts.relation ? `\t\tRelation: fgaSdk.PtrString("${opts.relation}"),\n` : '') +
-        `\t\tObject: fgaSdk.PtrString("${opts.object}"),\n`;
+      const requestTuples = opts.object
+        ? (opts.user ? `\t\tUser: fgaSdk.PtrString("${opts.user}"),\n` : '') +
+          (opts.relation ? `\t\tRelation: fgaSdk.PtrString("${opts.relation}"),\n` : '') +
+          `\t\tObject: fgaSdk.PtrString("${opts.object}"),\n`
+        : '';
+      const requestTuplePayload = requestTuples
+        ? `
+  TupleKey: fgaSdk.TupleKey{
+${requestTuples}
+  },
+`
+        : '';
 
       /* eslint-disable no-tabs */
       return `
-body := fgaSdk.ReadRequest{
-	TupleKey: fgaSdk.TupleKey{
-${requestTuples}
-	},
-}
+body := fgaSdk.ReadRequest{${requestTuplePayload}}
 data, response, err := fgaClient.${languageMappings['go'].apiName}.Read(context.Background()).Body(body).Execute()
 
 // data = { "tuples": [${readTuples}] }`;
     }
 
     case SupportedLanguage.DOTNET_SDK: {
-      const requestTuples =
-        (opts.user ? `  User = "${opts.user}",\n` : '') +
-        (opts.relation ? `  Relation = "${opts.relation}",\n` : '') +
-        `  Object = "${opts.object}",`;
+      const requestTuples = opts.object
+        ? (opts.user ? `  User = "${opts.user}",\n` : '') +
+          (opts.relation ? `  Relation = "${opts.relation}",\n` : '') +
+          `  Object = "${opts.object}",`
+        : '';
+
+      const requestTuplePayload = requestTuples
+        ? `new TupleKey() {
+${requestTuples}
+}`
+        : '';
 
       /* eslint-disable no-tabs */
       return `
-var response = fgaClient.Read(new ReadRequest(new TupleKey() {
-${requestTuples}
-}));
+var response = fgaClient.Read(new ReadRequest(${requestTuplePayload}));
 
 // data = { "tuples": [${readTuples}] }`;
     }
     case SupportedLanguage.PYTHON_SDK: {
-      const requestTuples =
-        (opts.user ? `            user="${opts.user}",\n` : '') +
-        (opts.relation ? `            relation="${opts.relation}",\n` : '') +
-        `            object="${opts.object}",\n`;
+      const requestTuples = opts.object
+        ? (opts.user ? `            user="${opts.user}",\n` : '') +
+          (opts.relation ? `            relation="${opts.relation}",\n` : '') +
+          `            object="${opts.object}",\n`
+        : '';
 
+      const requestTuplePayload = requestTuples
+        ? `
+        tuple_key=TupleKey(
+${requestTuples}
+        ),
+    `
+        : '';
       return `
 # from openfga_sdk.models.read_request import ReadRequest
 # from openfga_sdk.models.read_response import ReadResponse
 # from openfga_sdk.models.tuple_key import TupleKey
 
 async def read():
-    body = ReadRequest(
-        tuple_key=TupleKey(
-${requestTuples}
-        ),
-    )
+    body = ReadRequest(${requestTuplePayload})
     response = await fga_client_instance.read(body)
     # response = ReadResponse({"tuples":[${readTuples}]})`;
     }
     case SupportedLanguage.RPC: {
-      const objectOrType = opts.object.slice(-1) === ':' ? 'type' : 'object';
-      const requestTuples =
-        (opts.user
-          ? `  "${opts.user}", // where user \`${opts.user}\` has $(opts.relation ? '': 'any ' )relation\n`
-          : `  // for users who have relation\n`) +
-        (opts.relation ? `  "${opts.relation}", // \`${opts.relation}\`\n` : '') +
-        `  "${opts.object}", // with the ${objectOrType} \`${opts.object}\``;
+      const objectOrType = opts.object ? (opts.object.slice(-1) === ':' ? 'type' : 'object') : '';
+      const requestTuples = opts.object
+        ? (opts.user
+            ? `  "${opts.user}", // where user \`${opts.user}\` has $(opts.relation ? '': 'any ' )relation\n`
+            : `  // for users who have relation\n`) +
+          (opts.relation ? `  "${opts.relation}", // \`${opts.relation}\`\n` : '') +
+          `  "${opts.object}", // with the ${objectOrType} \`${opts.object}\``
+        : '';
 
       const readTuples = opts.tuples
         ? opts.tuples
