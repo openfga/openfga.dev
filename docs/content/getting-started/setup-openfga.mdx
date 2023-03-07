@@ -490,50 +490,44 @@ Experimental feature flags are also not considered part of API compatibility and
 
 ## Telemetry
 
-OpenFGA telemetry data is collected by default starting on version `v0.3.5`.
+OpenFGA telemetry data is collected by default starting on version `v0.3.5`. The telemetry information that is captured includes Metrics, Traces, and Logs.
 
-- Traces are exported using the [`otlp`](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md) format.
-- Metrics are exported using the [Prometheus](https://prometheus.io/docs/concepts/data_model/) format.
-
-Other export formats may be supported in the future, and you can setup an OpenTelemetry Collector to receive, process, and publish metrics in other formats. For more information see the [official OpenTelemetry Collector documentation](https://opentelemetry.io/docs/collector/).
+:::note
+Please refer to the [docker-compose.yaml](https://github.com/openfga/openfga/blob/main/docker-compose.yaml) file as an example of how to collect Metrics and Tracing in OpenFGA in a Docker environment using the [OpenTelemetry Collector](https://opentelemetry.io/docs/concepts/data-collection/). This should serve as a good example that you can adjust for your specific deployment scenario.
+:::
 
 ### Metrics
 
-<!-- markdown-link-check-disable -->
-OpenFGA metrics are exported by default to a Prometheus server running on address http://localhost:2112/metrics.
-<!-- markdown-link-check-enable -->
+OpenFGA metrics are collected with the [Prometheus data format](https://prometheus.io/docs/concepts/data_model/) and exposed on address `http://localhost:2112/metrics`.
 
-Metrics can be configured with the following flags:
+They are collected and exposed by default, but you can disable this by setting the flag `--metrics-enabled=false` (or `OPENFGA_METRICS_ENABLED=false` environment variable).
 
-- `--metrics-enabled`: can be set to false to disable exporting metrics.
-- `--metrics-addr`: the address to which metrics will be sent, for example `0.0.0.0:2113`.
+To set an alternative address, you can provide the `--metrics-addr` flag (`OPENFGA_METRICS_ADDR` environment variable). For example:
+
+```shell
+openfga run --metrics-addr=0.0.0.0:2114
+```
+
+To see the request latency per endpoint of your OpenFGA deployment, you can provide the `--metrics-enable-rpc-histograms` flag (`OPENFGA_METRICS_ENABLE_RPC_HISTOGRAMS` environment variable).
 
 ### Tracing
 
-OpenFGA can send traces to an [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/). The OpenTelemetry Collector can then export your traces to the backend of your choice.
+OpenFGA traces can be collected with the [OTLP data format](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md).
 
-:::info
-You will need to have the OpenTelemety Collector running and exporting traces to some backend in order to view the traces. See the documentation for the [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) to see how to set that up.
+Collection and exporting is disabled by default, but you can enable both with the `--trace-enabled=true` flag (`OPENFGA_TRACE_ENABLED=true` environment variable). Traces will be exported by default to address  `http://localhost:4317`. You can change this address with the `--trace-otlp-endpoint` flag (`OPENFGA_TRACE_OTLP_ENDPOINT` environment variable).
+
+To increase or decrease the trace sampling ratio, you can provide the `--trace-sample-ratio` flag (`OPENFGA_TRACE_SAMPLE_RATIO` env variable).
+
+:::caution Warning
+It is not recommended to sample all traces (e.g. `--trace-sample-ratio=1`). You will need to adjust your sampling ratio based on the amount of traffic your deployment receives. Higher traffic will require less sampling and lower traffic can tolerate higher sampling ratios.
 :::
-
-Tracing can be configured with the following flags:
-- `--trace-enabled`: needs to be set to true in order for traces to be sent to the collector.
-- `--trace-otlp-endpoint`: the gRPC endpoint of the collector.
-- `--trace-sample-ratio`: is a float which specifies what fraction of traces to sample. Fractions >= 1 will always sample, and fractions <= 0 will never sample.
-
-For example:
-
-```shell
-openfga run --trace-enabled=true --trace-otlp-endpoint=127.0.0.1:4317 --trace-sample-ratio=0.2
-```
 
 ### Logging
 
-OpenFGA generates logs, but it doesn't follow the `otlp` format.
+OpenFGA generates structured logs by default, and it can be configured with the following flags:
 
-Logging can be configured with the following flags:
-- `--log-format`: can be `text` or `json`.
-- `--log-level`: defaults to `info`, can be set to `none` to turn off logging.
+- `--log-format`: sets the log format. Today we support `text` and `json` format.
+- `--log-level`: sets the minimum log level (defaults to `info`). It can be set to `none` to turn off logging.
 
 ## Related Sections
 
