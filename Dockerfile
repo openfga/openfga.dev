@@ -37,5 +37,5 @@ COPY --chown=node:node . /home/node/app/
 
 FROM nginx:mainline-alpine as deploy
 # Remove un-needed packages
-RUN apk del freetype
+RUN apk del freetype curl
 COPY --chown=node:node --from=production  /home/node/app/build /usr/share/nginx/html/
