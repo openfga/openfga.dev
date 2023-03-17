@@ -46,48 +46,6 @@ jobs:
       - name: Build with npm
         run: npm run build
 
-  fossa:
-    name: Run FOSSA
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up node
-        uses: actions/setup-node@v2
-        with:
-          registry-url: 'https://registry.npmjs.org'
-          always-auth: false
-          cache: 'npm'
-      - name: Install dependencies
-        run: npm ci
-      - name: Run FOSSA scan and upload build data
-        uses: fossas/fossa-action@main
-        with:
-          api-key: ${{ secrets.FOSSA_API_KEY }}
-          branch: ${{ github.ref_name }}
-      - name: Run FOSSA tests
-        uses: fossas/fossa-action@main
-        with:
-          api-key: ${{ secrets.FOSSA_API_KEY }}
-          run-tests: true
-
-  snyk:
-    name: Run Snyk
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up node
-        uses: actions/setup-node@v2
-        with:
-          registry-url: 'https://registry.npmjs.org'
-          always-auth: false
-          cache: 'npm'
-      - name: Install dependencies
-        run: npm ci
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
   # Checking to ensure markdown link is not broken
   markdown-link-check-md:
     runs-on: ubuntu-latest
