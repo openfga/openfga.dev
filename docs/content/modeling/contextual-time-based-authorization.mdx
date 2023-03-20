@@ -372,7 +372,7 @@ The branch type definition then becomes:
 2. On the "account" type:
 
 - Add "account_manager_viewer" relation to combine the "account_manager" relationship and the new "approved_context" relation from the branch
-- Update the "viewer" relation definition to point to "customer" (who can view without being subjected to contextual authorization) instead of "account_manager_viewer" (who needs to be within the branch allowed context to view)
+- Update the "viewer" relation definition to `customer or account_manager_viewer` where "customer" can view without being subjected to contextual authorization, while "account_manager_viewer" needs to be within the branch allowed context to view
 
 The account type definition then becomes:
 
