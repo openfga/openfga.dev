@@ -27,9 +27,26 @@ const sidebars = {
       },
       items: [
         {
-          type: 'doc',
-          label: 'Setup OpenFGA Server',
-          id: 'content/getting-started/setup-openfga',
+          type: 'category',
+          collapsible: true,
+          collapsed: true,
+          label: 'Setup OpenFGA',
+          link: {
+            type: 'doc',
+            id: 'content/getting-started/setup-openfga/overview'
+          },
+          items: [
+            {
+              type: 'doc',
+              label: '🐳 Docker',
+              id: 'content/getting-started/setup-openfga/docker-setup',
+            },
+            {
+              type: 'doc',
+              label: '☸️ Kubernetes',
+              id: 'content/getting-started/setup-openfga/kubernetes-setup',
+            }
+          ]
         },
         {
           type: 'doc',
