@@ -23,7 +23,7 @@ hide_title: true
 - [Getting Started](./content/getting-started/overview.mdx)
   - [Setup OpenFGA](./content/getting-started/setup-openfga/overview.mdx)
     - [Docker](./content/getting-started/setup-openfga/docker-setup.mdx)
-    - [Kubernetes](./content/getting-started/setup-openfga/kubernetes.mdx)
+    - [Kubernetes](./content/getting-started/setup-openfga/kubernetes-setup.mdx)
   - [Install SDK Client](./content/getting-started/install-sdk.mdx)
   - [Create a Store](./content/getting-started/create-store.mdx)
   - [Setup SDK Client for Store](./content/getting-started/setup-sdk-client.mdx)
