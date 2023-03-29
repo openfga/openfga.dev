@@ -113,7 +113,7 @@ fga_client_instance = open_fga_api.OpenFgaApi(openfga_sdk.ApiClient(configuratio
 If you want to use shared key authentication, you need to generate a random string that will work as secret and set that key when building your OpenFGA server. Then, when building the client, set it as environment variable `FGA_BEARER_TOKEN`.
 
 :::caution Warning
-If you are going to use this setup in production, you should enable TLS in your OpenFGA server. Please see the [Production Checklist](./setup-openfga.mdx#production-recommendations).
+If you are going to use this setup in production, you should enable TLS in your OpenFGA server. Please see the [Production Checklist](./production-best-practices.mdx).
 :::
 
 

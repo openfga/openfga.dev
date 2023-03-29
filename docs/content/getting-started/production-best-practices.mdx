@@ -16,15 +16,15 @@ import {
 
 The following list outlines some guidelines and best-practices for running OpenFGA in a production environment:
 
-- [Configure Authentication](./setup-openfga.mdx#configuring-authentication)
+- [Configure Authentication](./setup-openfga/docker-setup.mdx#configuring-authentication)
 - Enable HTTP TLS or gRPC TLS or both
 - Set the log.format to "json"
 - Set the log.level to "info"
-- [Disable the Playground](./setup-openfga.mdx#playground).
+- [Disable the Playground](./setup-openfga/docker-setup.mdx#playground).
 
 ## Database Recommendations
 
-To ensure good performance for OpenFGA, it is recommended that the [database](./setup-openfga.mdx#configuring-data-storage) be:
+To ensure good performance for OpenFGA, it is recommended that the [database](./setup-openfga/docker-setup.mdx#configuring-data-storage) be:
 - Used exclusively for OpenFGA and not shared with other applications. This allows scaling the OpenFGA database independently and avoiding contention with your application database. 
 - Bootstrapped and managed with the `openfga migrate` tool. This will ensure the appropriate indexes are created for any specific version of OpenFGA.
 

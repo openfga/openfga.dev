@@ -1,8 +1,8 @@
 ---
-title: Setup OpenFGA Server
-description: Setting up an OpenFGA server
+title: Docker Setup Guide
+description: Setting up an OpenFGA server with Docker
 sidebar_position: 1
-slug: /getting-started/setup-openfga
+slug: /getting-started/setup-openfga/docker
 ---
 
 import {
@@ -12,7 +12,7 @@ import {
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Setup OpenFGA Server
+# 🐳 Setup OpenFGA with Docker
 
 <DocumentationNotice />
 
@@ -170,7 +170,7 @@ docker-compose up
 
 This will start the Postgres database, run `openfga migrate` to configure the database and finally start the OpenFGA server.
 
-Now you can try to [Create a Store](./create-store.mdx).
+Now you can try to [Create a Store](../create-store.mdx).
 
 #### MySQL
 
@@ -286,7 +286,7 @@ docker-compose up
 
 This will start the MySQL database, run `openfga migrate` to configure the database and finally start the OpenFGA server.
 
-Now you can try to [Create a Store](./create-store.mdx).
+Now you can try to [Create a Store](../create-store.mdx).
 
 ### Configuring Authentication
 
@@ -537,7 +537,7 @@ OpenFGA generates structured logs by default, and it can be configured with the 
     {
       title: 'Production Best Practices',
       description: 'Learn the best practices of running OpenFGA in a production environment',
-      link: './running-in-production',
+      link: '../running-in-production',
       id: './running-in-production',
     }
   ]}
