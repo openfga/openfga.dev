@@ -286,8 +286,8 @@ The [ListObjects API](/api/service#/Relationship%20Queries/ListObjects) is an AP
 
 It provides a solution to the [Search with Permissions (Option 3)](./search-with-permissions.mdx#option-3-build-a-list-of-ids-then-search) use case for access-aware filtering on small object collections.
 
-:::caution Note
-The current implementation of List Objects API is not optimized and can return incomplete results. [See below](./relationship-queries.mdx#caveats-and-when-not-to-use-it-3) for more details.
+:::
+Make sure to read the [caveats](./relationship-queries.mdx#caveats-and-when-not-to-use-it-3) when using ListObjects.
 :::
 
 ### When To Use?
@@ -310,15 +310,15 @@ There's two variations of the List Objects API.
 
 ### Caveats And When Not To Use It
 
-The number of results returned by this API (both the standard and streaming version) may be incomplete depending on the `listObjectsDeadline` and `listObjectsMaxResults` configuration values (see [Configuring the Server](../getting-started/setup-openfga/docker-setup.mdx#configuring-the-server)) provided to the <ProductName format={ProductNameFormat.ShortForm}/> server at startup. If you configure both values, the first one to be satisfied will terminate the request.
+ListObjects will return the results found within the time allotted (`listObjectsDeadline`, default: `3s`) up to the maximum number of results configured (`listObjectsMaxResults`, default: `1000`). See [Configuring the Server](../getting-started/setup-openfga/docker-setup.mdx#configuring-the-server)) for more on how to change the default configuration.
 
 - If you set `listObjectsDeadline` to `1s`, the server will spend at most 1 second finding results.
-- If you set `listObjectsMaxResults` to `10`, the server will return, at most, 10 object IDs.
+- If you set `listObjectsMaxResults` to `10`, the server will return, at most, 10 objects.
 
-Internally, the API runs concurrent checks against all the objects of the specified type. If the number of objects of that type is high, you should set a high value for `listObjectsDeadline`. If the number of objects of that type the user could have access to is high, you should set a high value for `listObjectsMaxResults`.
+If the number of objects of that type is high, you should set a high value for `listObjectsDeadline`. If the number of objects of that type the user could have access to is high, you should set a high value for `listObjectsMaxResults`.
 
 :::caution Warning
-This API is provided to gather your feedback. Due to performance and high-latency considerations, we do not recommend using it in production yet.
+ListObjects has sub-optimal performance if there are `and` or `but not` in your Authorization Model. Proceed with care if you intend to use this combination in production.
 :::
 
 ## Summary
