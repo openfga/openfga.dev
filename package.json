@@ -29,7 +29,7 @@
     "@easyops-cn/docusaurus-search-local": "0.35.0",
     "@lottiefiles/react-lottie-player": "3.5.3",
     "@openfga/sdk": "0.2.4",
-    "@openfga/syntax-transformer": "0.1.0",
+    "@openfga/syntax-transformer": "0.1.1",
     "assert-never": "1.2.1",
     "clsx": "1.2.1",
     "path-browserify": "1.0.1",
@@ -38,7 +38,7 @@
     "react-dom": "17.0.2",
     "react-feather": "2.0.10",
     "sanitize-html": "2.10.0",
-    "swagger-ui-react": "4.18.1"
+    "swagger-ui-react": "4.18.2"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "2.4.0",
@@ -47,15 +47,15 @@
     "@types/react": "17.0.41",
     "@types/react-router-dom": "5.3.3",
     "@types/sanitize-html": "2.9.0",
-    "@typescript-eslint/eslint-plugin": "5.56.0",
-    "@typescript-eslint/parser": "5.56.0",
+    "@typescript-eslint/eslint-plugin": "5.57.1",
+    "@typescript-eslint/parser": "5.57.1",
     "docusaurus-plugin-module-alias": "0.0.2",
-    "eslint": "8.36.0",
+    "eslint": "8.37.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-react": "7.32.2",
     "husky": "8.0.3",
     "prettier": "2.8.7",
-    "typescript": "5.0.2"
+    "typescript": "5.0.3"
   },
   "overrides": {
     "gauge": "5.0.0",
