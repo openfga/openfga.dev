@@ -107,7 +107,7 @@ from openfga_sdk.api import open_fga_api`,
       block-all-mixed-content;
       child-src www.youtube-nocookie.com;
       prefetch-src 'self';
-      connect-src 'self' https://raw.githubusercontent.com https://s3.amazonaws.com https://cdn.cookielaw.org https://privacyportal.onetrust.com https://heapanalytics.com;
+      connect-src 'self' https://raw.githubusercontent.com https://s3.amazonaws.com https://cdn.cookielaw.org https://privacyportal.onetrust.com https://heapanalytics.com https://js.hs-scripts.com;
       font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;
       form-action 'none';
       frame-src www.youtube-nocookie.com;
@@ -116,7 +116,7 @@ from openfga_sdk.api import open_fga_api`,
       object-src 'none';
       script-src 'self' ${
         process.env.NODE_ENV === 'development' ? `'unsafe-eval'` : ``
-      } 'unsafe-inline' https://cdn.cookielaw.org https://geolocation.onetrust.com https://cdn.heapanalytics.com;
+      } 'unsafe-inline' https://cdn.cookielaw.org https://geolocation.onetrust.com https://cdn.heapanalytics.com https://js.hs-scripts.com;
       style-src 'unsafe-inline' 'self' https://fonts.googleapis.com;`,
   },
 
@@ -296,5 +296,18 @@ from openfga_sdk.api import open_fga_api`,
       },
     }),
 };
+
+if (process.env.HUBSPOT_TRACKING_ID) {
+  config.scripts = [
+    {
+      src: `https://js.hs-scripts.com/${process.env.HUBSPOT_TRACKING_ID}.js`,
+      type: "text/javascript",
+      charset: "UTF-8",
+      id: "hs-script-loader",
+      async: true,
+      defer: true,
+    },
+  ];
+}
 
 module.exports = config;
