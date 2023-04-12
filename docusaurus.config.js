@@ -297,4 +297,17 @@ from openfga_sdk.api import open_fga_api`,
     }),
 };
 
+if (process.env.HUBSPOT_TRACKING_ID) {
+  config.scripts = [
+    {
+      src: `https://js-na1.hs-scripts.com/${process.env.HUBSPOT_TRACKING_ID}.js`,
+      type: "text/javascript",
+      charset: "UTF-8",
+      id: "hs-script-loader",
+      async: true,
+      defer: true,
+    },
+  ];
+}
+
 module.exports = config;
