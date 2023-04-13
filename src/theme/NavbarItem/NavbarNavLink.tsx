@@ -29,24 +29,20 @@ export default function NavbarNavLink({
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await fetch(
-          `https://api.github.com/repos/openfga/openfga`
-        );
+        const response = await fetch(`https://api.github.com/repos/openfga/openfga`);
         if (!response.ok) {
-          throw new Error(
-            `This is an HTTP error: The status is ${response.status}`
-          );
+          throw new Error(`This is an HTTP error: The status is ${response.status}`);
         }
         const actualData = await response.json();
         setData(actualData.stargazers_count);
-      } catch(err) {
+      } catch (err) {
         setData(null);
-      }  
-    }
-    getData()
-  }, [])
+      }
+    };
+    getData();
+  }, []);
 
-  const newLabel = (label === 'GitHub' && data)? `GitHub | ${data}` : label;
+  const newLabel = label === 'GitHub' && data ? `GitHub | ${data}` : label;
 
   // Link content is set through html XOR label
   const linkContentProps = html
@@ -55,23 +51,13 @@ export default function NavbarNavLink({
         children: (
           <>
             {newLabel}
-            {isExternalLink && (
-              <IconExternalLink
-                {...(isDropdownLink && { width: 12, height: 12 })}
-              />
-            )}
+            {isExternalLink && <IconExternalLink {...(isDropdownLink && { width: 12, height: 12 })} />}
           </>
         ),
       };
 
   if (href) {
-    return (
-      <Link
-        href={prependBaseUrlToHref ? normalizedHref : href}
-        {...props}
-        {...linkContentProps}
-      />
-    );
+    return <Link href={prependBaseUrlToHref ? normalizedHref : href} {...props} {...linkContentProps} />;
   }
 
   return (

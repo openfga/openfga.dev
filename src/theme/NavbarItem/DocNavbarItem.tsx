@@ -22,10 +22,7 @@ export default function DocNavbarItem({
     <DefaultNavbarItem
       exact
       {...props}
-      isActive={() =>
-        activeDoc?.path === doc.path ||
-        (!!activeDoc?.sidebar && activeDoc.sidebar === doc.sidebar)
-      }
+      isActive={() => activeDoc?.path === doc.path || (!!activeDoc?.sidebar && activeDoc.sidebar === doc.sidebar)}
       label={staticLabel ?? doc.id}
       to={doc.path}
     />

@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  useVersions,
-  useActiveDocContext,
-} from '@docusaurus/plugin-content-docs/client';
+import { useVersions, useActiveDocContext } from '@docusaurus/plugin-content-docs/client';
 import { useDocsPreferredVersion } from '@docusaurus/theme-common';
 import { useDocsVersionCandidates } from '@docusaurus/theme-common/internal';
 import { translate } from '@docusaurus/Translate';
@@ -12,8 +9,7 @@ import DropdownNavbarItem from '@theme/NavbarItem/DropdownNavbarItem';
 import type { Props } from '@theme/NavbarItem/DocsVersionDropdownNavbarItem';
 import type { GlobalVersion } from '@docusaurus/plugin-content-docs/client';
 
-const getVersionMainDoc = (version: GlobalVersion) =>
-  version.docs.find((doc) => doc.id === version.mainDocId)!;
+const getVersionMainDoc = (version: GlobalVersion) => version.docs.find((doc) => doc.id === version.mainDocId)!;
 
 export default function DocsVersionDropdownNavbarItem({
   mobile,
@@ -30,9 +26,7 @@ export default function DocsVersionDropdownNavbarItem({
   const versionLinks = versions.map((version) => {
     // We try to link to the same doc, in another version
     // When not possible, fallback to the "main doc" of the version
-    const versionDoc =
-      activeDocContext.alternateDocVersions[version.name] ??
-      getVersionMainDoc(version);
+    const versionDoc = activeDocContext.alternateDocVersions[version.name] ?? getVersionMainDoc(version);
     return {
       label: version.label,
       // preserve ?search#hash suffix on version switches
@@ -41,11 +35,7 @@ export default function DocsVersionDropdownNavbarItem({
       onClick: () => savePreferredVersionName(version.name),
     };
   });
-  const items = [
-    ...dropdownItemsBefore,
-    ...versionLinks,
-    ...dropdownItemsAfter,
-  ];
+  const items = [...dropdownItemsBefore, ...versionLinks, ...dropdownItemsAfter];
 
   const dropdownVersion = useDocsVersionCandidates(docsPluginId)[0];
 
@@ -55,14 +45,10 @@ export default function DocsVersionDropdownNavbarItem({
       ? translate({
           id: 'theme.navbar.mobileVersionsDropdown.label',
           message: 'Versions',
-          description:
-            'The label for the navbar versions dropdown on mobile view',
+          description: 'The label for the navbar versions dropdown on mobile view',
         })
       : dropdownVersion.label;
-  const dropdownTo =
-    mobile && items.length > 1
-      ? undefined
-      : getVersionMainDoc(dropdownVersion).path;
+  const dropdownTo = mobile && items.length > 1 ? undefined : getVersionMainDoc(dropdownVersion).path;
 
   // We don't want to render a version dropdown with 0 or 1 item. If we build
   // the site with a single docs version (onlyIncludeVersions: ['1.0.0']),
