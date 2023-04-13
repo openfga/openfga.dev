@@ -238,7 +238,7 @@ from openfga_sdk.api import open_fga_api`,
           },
           { to: '/api/service', label: 'API', position: 'left' },
           {
-            to: 'https://github.com/openfga',
+            to: 'https://github.com/openfga/openfga/stargazers',
             position: 'right',
             label: 'GitHub',
             className: 'header-social header-github-link',
