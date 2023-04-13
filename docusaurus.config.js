@@ -116,7 +116,7 @@ from openfga_sdk.api import open_fga_api`,
       object-src 'none';
       script-src 'self' ${
         process.env.NODE_ENV === 'development' ? `'unsafe-eval'` : ``
-      } 'unsafe-inline' https://cdn.cookielaw.org https://geolocation.onetrust.com https://cdn.heapanalytics.com https://js.hs-scripts.com;
+      } 'unsafe-inline' https://cdn.cookielaw.org https://geolocation.onetrust.com https://cdn.heapanalytics.com https://js.hs-scripts.com https://api.github.com;
       style-src 'unsafe-inline' 'self' https://fonts.googleapis.com;`,
   },
 
