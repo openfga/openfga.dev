@@ -107,16 +107,16 @@ from openfga_sdk.api import open_fga_api`,
       block-all-mixed-content;
       child-src www.youtube-nocookie.com;
       prefetch-src 'self';
-      connect-src 'self' https://raw.githubusercontent.com https://s3.amazonaws.com https://cdn.cookielaw.org https://privacyportal.onetrust.com https://heapanalytics.com https://js.hs-scripts.com https://api.github.com ;
+      connect-src 'self' https://raw.githubusercontent.com https://s3.amazonaws.com https://cdn.cookielaw.org https://privacyportal.onetrust.com https://heapanalytics.com https://js.hs-scripts.com https://api.github.com https://js.hscollectedforms.net https://js.hs-analytics.net https://js.hs-banner.com https://forms.hscollectedforms.net ;
       font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;
       form-action 'none';
       frame-src www.youtube-nocookie.com;
-      img-src 'self' data: https://pbs.twimg.com https://docs.github.com https://heapanalytics.com;
+      img-src 'self' data: https://pbs.twimg.com https://docs.github.com https://heapanalytics.com https://forms.hsforms.com https://track.hubspot.com ;
       media-src 'self';
       object-src 'none';
       script-src 'self' ${
         process.env.NODE_ENV === 'development' ? `'unsafe-eval'` : ``
-      } 'unsafe-inline' https://cdn.cookielaw.org https://geolocation.onetrust.com https://cdn.heapanalytics.com https://js.hs-scripts.com https://api.github.com;
+      } 'unsafe-inline' https://cdn.cookielaw.org https://geolocation.onetrust.com https://cdn.heapanalytics.com https://js.hs-scripts.com https://api.github.com https://js.hscollectedforms.net https://js.hs-analytics.net https://js.hs-banner.com;
       style-src 'unsafe-inline' 'self' https://fonts.googleapis.com;`,
   },
 
