@@ -116,7 +116,7 @@ from openfga_sdk.api import open_fga_api`,
       object-src 'none';
       script-src 'self' ${
         process.env.NODE_ENV === 'development' ? `'unsafe-eval'` : ``
-      } 'unsafe-inline' https://cdn.cookielaw.org https://geolocation.onetrust.com https://cdn.heapanalytics.com https://js.hs-scripts.com;
+      } 'unsafe-inline' https://cdn.cookielaw.org https://geolocation.onetrust.com https://cdn.heapanalytics.com https://js.hs-scripts.com https://api.github.com;
       style-src 'unsafe-inline' 'self' https://fonts.googleapis.com;`,
   },
 
@@ -238,6 +238,13 @@ from openfga_sdk.api import open_fga_api`,
           },
           { to: '/api/service', label: 'API', position: 'left' },
           {
+            to: 'https://github.com/openfga/openfga/stargazers',
+            position: 'right',
+            label: 'GitHub',
+            className: 'header-social header-github-link',
+            'aria-label': 'OpenFGA on GitHub',
+          },
+          {
             to: 'https://twitter.com/OpenFGA',
             label: 'Twitter',
             position: 'right',
@@ -250,13 +257,6 @@ from openfga_sdk.api import open_fga_api`,
             position: 'right',
             className: 'header-social header-discord-link',
             'aria-label': 'OpenFGA on Discord',
-          },
-          {
-            to: 'https://github.com/openfga',
-            position: 'right',
-            label: 'GitHub',
-            className: 'header-social header-github-link',
-            'aria-label': 'OpenFGA on GitHub',
           },
         ],
       },
