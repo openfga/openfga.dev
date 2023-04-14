@@ -107,7 +107,7 @@ from openfga_sdk.api import open_fga_api`,
       block-all-mixed-content;
       child-src www.youtube-nocookie.com;
       prefetch-src 'self';
-      connect-src 'self' https://raw.githubusercontent.com https://s3.amazonaws.com https://cdn.cookielaw.org https://privacyportal.onetrust.com https://heapanalytics.com https://js.hs-scripts.com;
+      connect-src 'self' https://raw.githubusercontent.com https://s3.amazonaws.com https://cdn.cookielaw.org https://privacyportal.onetrust.com https://heapanalytics.com https://js.hs-scripts.com https://api.github.com ;
       font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;
       form-action 'none';
       frame-src www.youtube-nocookie.com;
