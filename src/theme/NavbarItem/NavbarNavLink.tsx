@@ -41,8 +41,8 @@ export default function NavbarNavLink({
       try {
         if (cachedGithubStars) {
           const cacheExpiryTime = new Date(cachedGithubStars.retrievedTime);
-          cacheExpiryTime.setDate(cacheExpiryTime.getDate() + 1)
-          if ( cacheExpiryTime.getTime() > Date.now()) {
+          cacheExpiryTime.setDate(cacheExpiryTime.getDate() + 1);
+          if (cacheExpiryTime.getTime() > Date.now()) {
             setGithubStars(cachedGithubStars.count);
             return;
           }
