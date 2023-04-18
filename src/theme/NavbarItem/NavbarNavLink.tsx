@@ -6,6 +6,8 @@ import { isRegexpStringMatch } from '@docusaurus/theme-common';
 import IconExternalLink from '@theme/Icon/ExternalLink';
 import type { Props } from '@theme/NavbarItem/NavbarNavLink';
 
+const github_stars = 'openfga_github_stars';
+
 export default function NavbarNavLink({
   activeBasePath,
   activeBaseRegex,
@@ -29,17 +31,26 @@ export default function NavbarNavLink({
   useEffect(() => {
     const getData = async () => {
       try {
+        const cached_github_stars = sessionStorage.getItem(github_stars);
+        if (cached_github_stars) {
+          setData(cached_github_stars);
+          return;
+        }
+
         const response = await fetch(`https://api.github.com/repos/openfga/openfga`);
         if (!response.ok) {
           throw new Error(`This is an HTTP error: The status is ${response.status}`);
         }
         const actualData = await response.json();
         setData(actualData.stargazers_count);
+        sessionStorage.setItem(cached_github_stars, actualData.stargazers_count);
       } catch (err) {
         setData(null);
       }
     };
-    getData();
+    if (!data) {
+      getData();
+    }
   }, []);
 
   const newLabel = label === 'GitHub' && data ? `GitHub | ${data}` : label;
