@@ -139,7 +139,7 @@ TupleKey = new TupleKey() {
       .join(',\n    ')}
 }))`
           : ''
-      }, AuthorizationModelId = "${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}")};
+      }, AuthorizationModelId = "${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}"});
 
 // response.Allowed = ${allowed}`;
     case SupportedLanguage.PYTHON_SDK:
