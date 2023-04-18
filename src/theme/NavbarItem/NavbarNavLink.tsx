@@ -8,7 +8,7 @@ import type { Props } from '@theme/NavbarItem/NavbarNavLink';
 
 const GITHUB_STARS_SESSION_STORAGE_NAME = 'openfga_github_stars';
 
-interface githubStarsSessionStorage {
+interface GithubStarsSessionStorage {
   count: number;
   retrievedTime: number;
 }
@@ -31,7 +31,7 @@ export default function NavbarNavLink({
   const normalizedHref = useBaseUrl(href, { forcePrependBaseUrl: true });
   const isExternalLink = label && href && !isInternalUrl(href);
 
-  const [githubStars, setGithubStars] = useState(null);
+  const [githubStars, setGithubStars] = useState<GithubStarsSessionStorage>(null);
 
   useEffect(() => {
     const getData = async () => {
@@ -43,7 +43,10 @@ export default function NavbarNavLink({
           const cacheExpiryTime = new Date(cachedGithubStars.retrievedTime);
           cacheExpiryTime.setDate(cacheExpiryTime.getDate() + 1);
           if (cacheExpiryTime.getTime() > Date.now()) {
-            setGithubStars(cachedGithubStars.count);
+            setGithubStars({
+              count: cachedGithubStars.count,
+              retrievedTime: new Date(),
+            });
             return;
           }
         }
@@ -54,8 +57,8 @@ export default function NavbarNavLink({
           throw new Error(`This is an HTTP error: The status is ${response.status}`);
         }
         const actualData = await response.json();
-        setGithubStars(actualData.stargazers_count);
-        const newCachedGithubStars: githubStarsSessionStorage = {
+        setGithubStars(newCachedGithubStars);
+        const newCachedGithubStars: GithubStarsSessionStorage = {
           count: actualData.stargazers_count,
           retrievedTime: Date.now(),
         };
@@ -75,7 +78,7 @@ export default function NavbarNavLink({
     }
   }, []);
 
-  const newLabel = label === 'GitHub' && githubStars ? `GitHub | ${githubStars}` : label;
+  const newLabel = label === 'GitHub' && githubStars ? `GitHub | ${githubStars.count}` : label;
 
   // Link content is set through html XOR label
   const linkContentProps = html
