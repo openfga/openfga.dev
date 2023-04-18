@@ -124,7 +124,9 @@ data, response, err := fgaClient.${languageMappings['go'].apiName}.Check(context
     case SupportedLanguage.DOTNET_SDK:
       return `
 // Run a check
-var response = await fgaClient.Check{TupleKey = new CheckRequest(new TupleKey() {
+var response = await fgaClient.Check(new CheckRequest
+{
+TupleKey = new TupleKey() {
   User = "${user}",
   Relation = "${relation}",
   Object = "${object}"
@@ -137,7 +139,7 @@ var response = await fgaClient.Check{TupleKey = new CheckRequest(new TupleKey() 
       .join(',\n    ')}
 }))`
           : ''
-      }, AuthorizationModelId = "${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}"};
+      }, AuthorizationModelId = "${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}")};
 
 // response.Allowed = ${allowed}`;
     case SupportedLanguage.PYTHON_SDK:
