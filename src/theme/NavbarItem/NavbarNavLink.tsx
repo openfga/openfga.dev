@@ -37,7 +37,7 @@ export default function NavbarNavLink({
     const getData = async () => {
       const cachedGithubStars = JSON.parse(
         sessionStorage.getItem(GITHUB_STARS_SESSION_STORAGE_NAME),
-      ) as unknown as githubStarsSessionStorage;
+      ) as unknown as GithubStarsSessionStorage;
       try {
         if (cachedGithubStars) {
           const cacheExpiryTime = new Date(cachedGithubStars.retrievedTime);
@@ -45,7 +45,7 @@ export default function NavbarNavLink({
           if (cacheExpiryTime.getTime() > Date.now()) {
             setGithubStars({
               count: cachedGithubStars.count,
-              retrievedTime: new Date(),
+              retrievedTime: Date.now(),
             });
             return;
           }
@@ -57,19 +57,15 @@ export default function NavbarNavLink({
           throw new Error(`This is an HTTP error: The status is ${response.status}`);
         }
         const actualData = await response.json();
-        setGithubStars(newCachedGithubStars);
         const newCachedGithubStars: GithubStarsSessionStorage = {
           count: actualData.stargazers_count,
           retrievedTime: Date.now(),
         };
+        setGithubStars(newCachedGithubStars);
         sessionStorage.setItem(GITHUB_STARS_SESSION_STORAGE_NAME, JSON.stringify(newCachedGithubStars));
       } catch (err) {
         // try to use old cache if available (even if it is out of date)
-        if (cachedGithubStars) {
-          setGithubStars(cachedGithubStars.count);
-        } else {
-          setGithubStars(null);
-        }
+        setGithubStars(cachedGithubStars || null);
       }
     };
 
