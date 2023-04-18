@@ -6,7 +6,12 @@ import { isRegexpStringMatch } from '@docusaurus/theme-common';
 import IconExternalLink from '@theme/Icon/ExternalLink';
 import type { Props } from '@theme/NavbarItem/NavbarNavLink';
 
-const github_stars = 'openfga_github_stars';
+const GITHUB_STARS_SESSION_STORAGE_NAME = 'openfga_github_stars';
+
+interface githubStarsSessionStorage {
+  count: number;
+  retrievedTime: number;
+}
 
 export default function NavbarNavLink({
   activeBasePath,
@@ -26,34 +31,51 @@ export default function NavbarNavLink({
   const normalizedHref = useBaseUrl(href, { forcePrependBaseUrl: true });
   const isExternalLink = label && href && !isInternalUrl(href);
 
-  const [data, setData] = useState(null);
+  const [githubStars, setGithubStars] = useState(null);
 
   useEffect(() => {
     const getData = async () => {
+      const cachedGithubStars = JSON.parse(
+        sessionStorage.getItem(GITHUB_STARS_SESSION_STORAGE_NAME),
+      ) as unknown as githubStarsSessionStorage;
       try {
-        const cached_github_stars = sessionStorage.getItem(github_stars);
-        if (cached_github_stars) {
-          setData(cached_github_stars);
-          return;
+        if (cachedGithubStars) {
+          const cacheExpiryTime = new Date(cachedGithubStars.retrievedTime);
+          cacheExpiryTime.setDate(cacheExpiryTime.getDate() + 1)
+          if ( cacheExpiryTime.getTime() > Date.now()) {
+            setGithubStars(cachedGithubStars.count);
+            return;
+          }
         }
 
+        // cache should have been expired.  Let's fetch more recent data
         const response = await fetch(`https://api.github.com/repos/openfga/openfga`);
         if (!response.ok) {
           throw new Error(`This is an HTTP error: The status is ${response.status}`);
         }
         const actualData = await response.json();
-        setData(actualData.stargazers_count);
-        sessionStorage.setItem(cached_github_stars, actualData.stargazers_count);
+        setGithubStars(actualData.stargazers_count);
+        const newCachedGithubStars: githubStarsSessionStorage = {
+          count: actualData.stargazers_count,
+          retrievedTime: Date.now(),
+        };
+        sessionStorage.setItem(GITHUB_STARS_SESSION_STORAGE_NAME, JSON.stringify(newCachedGithubStars));
       } catch (err) {
-        setData(null);
+        // try to use old cache if available (even if it is out of date)
+        if (cachedGithubStars) {
+          setGithubStars(cachedGithubStars.count);
+        } else {
+          setGithubStars(null);
+        }
       }
     };
-    if (!data) {
+
+    if (!githubStars) {
       getData();
     }
   }, []);
 
-  const newLabel = label === 'GitHub' && data ? `GitHub | ${data}` : label;
+  const newLabel = label === 'GitHub' && githubStars ? `GitHub | ${githubStars}` : label;
 
   // Link content is set through html XOR label
   const linkContentProps = html
