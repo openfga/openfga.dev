@@ -254,6 +254,16 @@ Type `feature` has two relations, associated_plan and access. Relation `associat
   or `this`
 - object to object relationship where a user can access because it is a subscriber_member of a particular plan AND that plan is associated with the feature.
 
+Here, we define `plan` as the user of object `feature` with relationship `associated_plan` rather than defining `feature` as the user of object `plan` with relationship `feature`. The reason we choose the former is that we want to describe our system in the following [plain language](../getting-started.mdx#write-it-in-plain-language):
+
+<CardBox monoFontChildren appearance='filled'>
+
+- A user can access a feature in a plan if they are a subscriber member of a plan that is the associated plan of a feature.
+
+</CardBox>
+
+This will give us a flow of user->organization->plan->feature and allows us to answer the question of whether user can access a feature rather than whether user is subscriber of a plan.
+
 ### 02. Adding Relationship Tuples
 
 To realize the relationship, we will need to add the following relationship tuples.
