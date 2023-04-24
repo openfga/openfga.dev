@@ -12,7 +12,7 @@ import { SchemaVersion } from '@openfga/syntax-transformer';
 
 type AuthzModelSnippetViewerProps = {
   // Authorization Model in api syntax
-  configuration: WriteAuthorizationModelRequest;
+  configuration: WriteAuthorizationModelRequest & Required<Pick<WriteAuthorizationModelRequest, 'schema_version'>>;
   // optional description
   description?: string;
   onlyShow?: SyntaxFormat;
