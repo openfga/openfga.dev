@@ -44,7 +44,7 @@ function writeRequestViewer(lang: SupportedLanguage, opts: WriteRequestViewerOpt
   -H "content-type: application/json" \\
   -d '{${opts.relationshipTuples ? writes : ''}${separator}${
         opts.deleteRelationshipTuples ? deletes : ''
-      }, authorization_model_id: "${
+      }, "authorization_model_id": "${
         opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId
       }"}'`;
     }
