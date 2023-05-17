@@ -98,7 +98,7 @@ const HeroHeader = () => {
                     fill="#D3D8DF"
                   />
                 </svg>
-                Join us on Github
+                Join us on GitHub
               </ButtonLink>
             </div>
           </div>

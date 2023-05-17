@@ -232,7 +232,7 @@ And ask some questions to <ProductName format={ProductNameFormat.ShortForm}/>:
 <CheckRequestViewer user={'user:beth'} relation={'reader'} object={'repo:contoso/tooling'} allowed={false} />
 
 The first reply makes sense but the second one does not. Intuitively, if `beth` was writer, she was also be a reader. In fact, GitHub explains this in [their documentation](https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/repository-permission-levels-for-an-organization#repository-access-for-each-permission-level)
-![Showing various Github repo access level](./assets/github-repo-access-level.svg)
+![Showing various GitHub repo access level](./assets/github-repo-access-level.svg)
 
 To make <ProductName format={ProductNameFormat.ShortForm}/> aware of this "concentric" permission model we need to update our definitions:
 
