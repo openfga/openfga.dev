@@ -30,6 +30,7 @@ hide_title: true
   - [Configure Authorization Model](./content/getting-started/configure-model.mdx)
   - [Update Relationship Tuples](./content/getting-started/update-tuples.mdx)
   - [Perform a Check](./content/getting-started/perform-check.mdx)
+  - [Perform a List Objects Request](./content/getting-started/perform-list-objects.mdx)
   - [Integrate Within a Framework](./content/getting-started/framework.mdx)
   - [Production Best Practices](./content/getting-started/production-best-practices.mdx)
   - [Managing Tuples and Invoking API Best Practices](./content/getting-started/tuples-api-best-practices.mdx)
