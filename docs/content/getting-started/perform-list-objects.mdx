@@ -1,0 +1,149 @@
+---
+title: Perform a List Objects call
+sidebar_position: 4
+slug: /getting-started/perform-list-objects
+description: List all objects a user is authorized to perform a specified action for a given resource type
+---
+
+import {
+  SupportedLanguage,
+  languageLabelMap,
+  ListObjectsRequestViewer,
+  DocumentationNotice,
+  ProductConcept,
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+  SdkSetupHeader,
+  SdkSetupPrerequisite,
+} from '@components/Docs';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Perform a Check
+
+<DocumentationNotice />
+
+This section will illustrate how to perform a <ProductConcept section="what-is-a-list-objects-request" linkName="list objects" /> request to determine all the <ProductConcept section="what-is-an-object" linkName="objects" /> of a given <ProductConcept section="what-is-a-type" linkName="type" /> a <ProductConcept section="what-is-a-user" linkName="user" /> has a specified <ProductConcept section="what-is-a-relationship" linkName="relationship" /> with.
+
+## Before You Start
+
+<Tabs groupId="languages">
+
+<TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](./install-sdk.mdx).
+3. You have [configured the _authorization model_](./configure-model.mdx) and [updated the _relationship tuples_](./update-tuples.mdx).
+4. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
+
+</TabItem>
+
+<TabItem value={SupportedLanguage.GO_SDK} label={languageLabelMap.get(SupportedLanguage.GO_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](./install-sdk.mdx).
+3. You have [configured the _authorization model_](./configure-model.mdx) and [updated the _relationship tuples_](./update-tuples.mdx).
+4. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
+
+</TabItem>
+
+<TabItem value={SupportedLanguage.DOTNET_SDK} label={languageLabelMap.get(SupportedLanguage.DOTNET_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](./install-sdk.mdx).
+3. You have [configured the _authorization model_](./configure-model.mdx) and [updated the _relationship tuples_](./update-tuples.mdx).
+4. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
+
+</TabItem>
+
+<TabItem value={SupportedLanguage.PYTHON_SDK} label={languageLabelMap.get(SupportedLanguage.PYTHON_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](./install-sdk.mdx).
+3. You have [configured the _authorization model_](./configure-model.mdx) and [updated the _relationship tuples_](./update-tuples.mdx).
+4. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
+
+</TabItem>
+
+<TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [configured the _authorization model_](./configure-model.mdx) and [updated the _relationship tuples_](./update-tuples.mdx).
+3. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
+
+</TabItem>
+</Tabs>
+
+## Step By Step
+
+Assume that you want to list all objects of type document that  user `anne` has `reader` relationship with:
+
+### 01. Configure the <ProductName format={ProductNameFormat.ShortForm}/> API Client
+
+Before calling the check API, you will need to configure the API client.
+
+<Tabs groupId="languages">
+<TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
+
+<SdkSetupHeader lang={SupportedLanguage.JS_SDK} />
+
+</TabItem>
+<TabItem value={SupportedLanguage.GO_SDK} label={languageLabelMap.get(SupportedLanguage.GO_SDK)}>
+
+<SdkSetupHeader lang={SupportedLanguage.GO_SDK} />
+
+</TabItem>
+<TabItem value={SupportedLanguage.DOTNET_SDK} label={languageLabelMap.get(SupportedLanguage.DOTNET_SDK)}>
+
+<SdkSetupHeader lang={SupportedLanguage.DOTNET_SDK} />
+
+</TabItem>
+<TabItem value={SupportedLanguage.PYTHON_SDK} label={languageLabelMap.get(SupportedLanguage.PYTHON_SDK)}>
+
+<SdkSetupHeader lang={SupportedLanguage.PYTHON_SDK} />
+
+</TabItem>
+<TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
+
+To obtain the [access token](https://auth0.com/docs/get-started/authentication-and-authorization-flow/call-your-api-using-the-client-credentials-flow):
+
+<SdkSetupHeader lang={SupportedLanguage.CURL} />
+
+</TabItem>
+</Tabs>
+
+### 02. Calling List Objects API
+
+To return all documents that user `user:anne` has relationship `reader` with:
+
+<ListObjectsRequestViewer
+  authorizationModelId="1uHxCSuTP0VKPYSnkq1pbb1jeZw"
+  objectType="document"
+  relation="reader"
+  user="user:anne"
+  expectedResults={['document:otherdoc', 'document:planning']}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+The result `document:otherdoc` and `document:planning` are the document objects that `user:anne` has `reader` relationship with.
+
+## Related Sections
+
+<RelatedSection
+  description="Take a look at the following section for more on how to perform authorization checks in your system"
+  relatedLinks={[
+    {
+      title: '{ProductName} List Objects API',
+      description: 'Read the List Objects API documentation and see how it works.',
+      link: '/api/service#Relationship%20Queries/ListObjects',
+    },
+  ]}
+/>

@@ -80,6 +80,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Perform a List Objects Request',
+          id: 'content/getting-started/perform-list-objects',
+        },
+        {
+          type: 'doc',
           label: 'Integrate Within a Framework',
           id: 'content/getting-started/framework',
         },

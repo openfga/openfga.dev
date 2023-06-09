@@ -10,6 +10,7 @@ import {
   CheckRequestViewer,
   DocumentationNotice,
   IntroductionSection,
+  ListObjectsRequestViewer,
   Playground,
   ProductName,
   ProductNameFormat,
@@ -528,6 +529,32 @@ For more information, please see the [Relationship Queries page](./interacting/r
 
 </details>
 
+<details>
+<summary>
+
+## What Is A List Objects Request?
+
+A **list objects request** is a call to the <ProductName format={ProductNameFormat.LongForm}/> check endpoint that returns all the objects of a given type that a user has a specified relationship with.
+
+</summary>
+
+This can be done using the `listobjects` methods in the <ProductName format={ProductNameFormat.ShortForm}/> SDKs ([JavaScript SDK](https://www.npmjs.com/package/@openfga/sdk)/[Go SDK](https://github.com/openfga/go-sdk)/[.NET SDK](https://www.nuget.org/packages/OpenFga.Sdk)), by manually calling the [list objects endpoint](/api/service#Relationship%20Queries/ListObjects) using curl, or in your code.
+
+The list objects endpoint responds with a list of objects for a given type that the user has the specified relationship with.
+
+For example, the following will return all the objects with document type for which `anne` of type user has a `viewer` relation with:
+
+<ListObjectsRequestViewer
+  authorizationModelId="1uHxCSuTP0VKPYSnkq1pbb1jeZw"
+  objectType="document"
+  relation="viewer"
+  user="user:anne"
+  expectedResults={['document:otherdoc', 'document:planning']}
+/>
+
+For more information, please see the [Relationship Queries page](./interacting/relationship-queries.mdx) and the official [Check API Reference](/api/service#Relationship%20Queries/ListObjects).
+
+</details>
 <details>
 <summary>
 
