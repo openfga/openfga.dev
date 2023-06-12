@@ -28,7 +28,7 @@
     "@docusaurus/preset-classic": "2.4.1",
     "@easyops-cn/docusaurus-search-local": "0.35.0",
     "@lottiefiles/react-lottie-player": "3.5.3",
-    "@openfga/sdk": "0.2.5",
+    "@openfga/sdk": "0.2.6",
     "@openfga/syntax-transformer": "0.1.2",
     "assert-never": "1.2.1",
     "clsx": "1.2.1",

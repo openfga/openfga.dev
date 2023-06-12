@@ -211,11 +211,6 @@ from openfga_sdk.api import open_fga_api`,
         defaultMode: 'dark',
         disableSwitch: true,
       },
-      announcementBar: {
-        id: 'announcementBar.4', // Increment on change
-        // eslint-disable-next-line max-len
-        content: `OpenFGA is deprecating model schema v1.0. Read about when support will be dropped and how to migrate in the <a href="/docs/modeling/migrating/migrating-schema-1-1#deprecation-timeline">deprecation timeline</a>.`,
-      },
       navbar: {
         // style: "primary",
         // title: "OpenFGA",
