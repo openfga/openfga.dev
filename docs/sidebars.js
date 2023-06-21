@@ -90,6 +90,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Immutable Authorization Models',
+          id: 'content/getting-started/immutable-models',
+        },
+        {
+          type: 'doc',
           label: 'Production Best Practices',
           id: 'content/getting-started/production-best-practices',
         },
