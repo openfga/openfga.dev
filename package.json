@@ -60,7 +60,8 @@
   "overrides": {
     "gauge": "5.0.0",
     "package-json@6.5.0": "7.0.0",
-    "trim": "0.0.3"
+    "trim": "0.0.3",
+    "semver": "^7.5.3"
   },
   "keywords": [
     "authorization",
