@@ -14,7 +14,7 @@ import {
 
 <DocumentationNotice />
 
-The following list outlines some guidelines and best-practices for running OpenFGA in a production environment:
+The following list outlines some guidelines and best practices for running OpenFGA in a production environment:
 
 - [Configure Authentication](./setup-openfga/docker-setup.mdx#configuring-authentication)
 - Enable HTTP TLS or gRPC TLS or both
@@ -25,8 +25,12 @@ The following list outlines some guidelines and best-practices for running OpenF
 ## Database Recommendations
 
 To ensure good performance for OpenFGA, it is recommended that the [database](./setup-openfga/docker-setup.mdx#configuring-data-storage) be:
-- Used exclusively for OpenFGA and not shared with other applications. This allows scaling the OpenFGA database independently and avoiding contention with your application database. 
-- Bootstrapped and managed with the `openfga migrate` tool. This will ensure the appropriate indexes are created for any specific version of OpenFGA.
+- Used exclusively for OpenFGA and not shared with other applications. This allows scaling the database independently and avoiding contention with your database.
+- Bootstrapped and managed with the `openfga migrate` command. This will ensure the appropriate database indexes are created.
+
+In addition, it's strongly recommended to fine-tune your server settings:
+
+- The server setting `OPENFGA_DATASTORE_MAX_OPEN_CONNS` should be set to be equal to your database's max connections. For example, in Postgres, you can see this value via running the SQL query `SHOW max_connections;`. If you are running multiple instances of the OpenFGA server, you should divide this setting equally among the instances. For example, if your database's `max_connections` is 100, and you have 2 OpenFGA instances, `OPENFGA_DATASTORE_MAX_OPEN_CONNS` should be set to 50 for each instance.
 
 ## Related Sections
 
