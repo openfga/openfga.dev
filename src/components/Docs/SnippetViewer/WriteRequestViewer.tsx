@@ -62,8 +62,8 @@ ${
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
   -d '{${opts.relationshipTuples ? writes : ''}${separator}${
-        opts.deleteRelationshipTuples ? deletes : ''
-      }, "authorization_model_id": "${modelId}"}'`;
+    opts.deleteRelationshipTuples ? deletes : ''
+  }, "authorization_model_id": "${modelId}"}'`;
     }
 
     case SupportedLanguage.JS_SDK: {

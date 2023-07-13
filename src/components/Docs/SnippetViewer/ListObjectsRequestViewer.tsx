@@ -40,8 +40,8 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
         "type": "${objectType}",
         "relation": "${relation}",
         "user":"${user}"${
-        contextualTuples
-          ? `,
+          contextualTuples
+            ? `,
         "contextual_tuples": {
           "tuple_keys": [${contextualTuples
             .map(
@@ -52,9 +52,9 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
           ]
         }
       }'`
-          : `
+            : `
       }'`
-      }
+        }
 
 # Response: {"objects": [${expectedResults.map((r) => `"${r}"`).join(', ')}]}`;
     /* eslint-enable max-len */
@@ -63,8 +63,8 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
   user: "${user}",
   relation: "${relation}",
   type: "${objectType}",${
-        contextualTuples?.length
-          ? `
+    contextualTuples?.length
+      ? `
   contextual_tuples: {
     tuple_keys: [${contextualTuples
       .map(
@@ -76,8 +76,8 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
       )
       .join(', ')}]
   },`
-          : ''
-      }
+      : ''
+  }
 }, {
   authorization_model_id: "${modelId}",
 });
@@ -127,15 +127,15 @@ var body = new ClientListObjectsRequest {
     User = "${user}",
     Relation = "${relation}",
     Type = "${objectType}",${
-        contextualTuples
-          ? `,
+      contextualTuples
+        ? `,
     ContextualTuples = new List<ClientTupleKey>({
     ${contextualTuples
       .map((tuple) => `new(user: "${tuple.user}", relation: "${tuple.relation}", _object: "${tuple.object}")`)
       .join(',\n    ')}
 })`
-          : ''
-      }
+        : ''
+    }
 };
 
 var response = await fgaClient.ListObjects(body, options);
@@ -150,8 +150,8 @@ body = ClientListObjectsRequest(
     user="${user}",
     relation="${relation}",
     type="${objectType}",${
-        contextualTuples
-          ? `
+      contextualTuples
+        ? `
     contextual_tuples=[
         ${contextualTuples
           .map(
@@ -159,8 +159,8 @@ body = ClientListObjectsRequest(
           )
           .join(',\n                ')}
     ],`
-          : ``
-      }
+        : ``
+    }
 )
 
 response = await fga_client.list_objects(body, options)
@@ -173,15 +173,15 @@ response = await fga_client.list_objects(body, options)
   "${relation}", // has an \`${relation}\` relation
   "${objectType}", // and that are of type \`${objectType}\`
   authorization_model_id = "${modelId}", // for this particular authorization model id ${
-        contextualTuples
-          ? `
+    contextualTuples
+      ? `
   contextual_tuples = [ // Assuming the following is true
     ${contextualTuples
       .map((tuple) => `{user = "${tuple.user}", relation = "${tuple.relation}", object = "${tuple.object}"}`)
       .join(',\n    ')}
   ]`
-          : ''
-      }
+      : ''
+  }
 );
 
 Reply: [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
