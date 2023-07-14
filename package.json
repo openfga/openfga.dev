@@ -38,7 +38,7 @@
     "react-dom": "17.0.2",
     "react-feather": "2.0.10",
     "sanitize-html": "2.11.0",
-    "swagger-ui-react": "5.1.0"
+    "swagger-ui-react": "5.1.1"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "2.4.1",
@@ -47,14 +47,14 @@
     "@types/react": "17.0.41",
     "@types/react-router-dom": "5.3.3",
     "@types/sanitize-html": "2.9.0",
-    "@typescript-eslint/eslint-plugin": "5.61.0",
-    "@typescript-eslint/parser": "5.61.0",
+    "@typescript-eslint/eslint-plugin": "6.0.0",
+    "@typescript-eslint/parser": "6.0.0",
     "docusaurus-plugin-module-alias": "0.0.2",
     "eslint": "8.44.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-react": "7.32.2",
     "husky": "8.0.3",
-    "prettier": "2.8.8",
+    "prettier": "3.0.0",
     "typescript": "5.1.6"
   },
   "overrides": {

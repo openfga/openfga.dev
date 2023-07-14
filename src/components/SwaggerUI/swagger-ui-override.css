@@ -2446,7 +2446,10 @@
   font-family: Consolas, monaco, monospace;
 }
 .swagger-ui .courier {
-  font-family: Courier Next, courier, monospace;
+  font-family:
+    Courier Next,
+    courier,
+    monospace;
 }
 .swagger-ui .i {
   font-style: italic;
@@ -7736,8 +7739,12 @@
   transform: translate(-50%, -50%);
 }
 .swagger-ui .loading-container .loading:before {
-  -webkit-animation: rotation 1s linear infinite, opacity 0.5s;
-  animation: rotation 1s linear infinite, opacity 0.5s;
+  -webkit-animation:
+    rotation 1s linear infinite,
+    opacity 0.5s;
+  animation:
+    rotation 1s linear infinite,
+    opacity 0.5s;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   border: 2px solid var(--ofga-neutral-dark);

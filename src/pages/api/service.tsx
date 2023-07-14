@@ -1,9 +1,8 @@
 import * as React from 'react';
 import Layout from '@theme/Layout';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
-
-import { SwaggerUI } from '../../components/SwaggerUI/swagger-ui';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
 const ApiService = () => {
   const { siteConfig } = useDocusaurusContext();
@@ -16,7 +15,13 @@ const ApiService = () => {
 
   return (
     <Layout title="Open FGA API Explorer">
-      <SwaggerUI apiDocsBasePath={apiDocsBasePath} />
+      <BrowserOnly fallback={<div>Loading...</div>}>
+        {() => {
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          const { SwaggerUI } = require('../../components/SwaggerUI/swagger-ui');
+          return <SwaggerUI apiDocsBasePath={apiDocsBasePath} />;
+        }}
+      </BrowserOnly>
     </Layout>
   );
 };

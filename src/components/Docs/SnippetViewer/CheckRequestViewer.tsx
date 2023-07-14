@@ -48,12 +48,12 @@ ${
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
   -d '{"authorization_model_id": "${modelId}", "tuple_key":{"user":"${user}","relation":"${relation}","object":"${object}"}${
-        contextualTuples
-          ? `,"contextual_tuples":{"tuple_keys":[${contextualTuples
-              .map((tuple) => `{"user":"${tuple.user}","relation":"${tuple.relation}","object":"${tuple.object}"}`)
-              .join(',')}]}}`
-          : '}'
-      }'
+    contextualTuples
+      ? `,"contextual_tuples":{"tuple_keys":[${contextualTuples
+          .map((tuple) => `{"user":"${tuple.user}","relation":"${tuple.relation}","object":"${tuple.object}"}`)
+          .join(',')}]}}`
+      : '}'
+  }'
 
 # Response: {"allowed":${allowed}}`;
     /* eslint-enable max-len */
@@ -64,10 +64,10 @@ const { allowed } = await fgaClient.check({
     user: '${user}',
     relation: '${relation}',
     object: '${object}',${
-        !contextualTuples
-          ? `
+      !contextualTuples
+        ? `
 `
-          : `
+        : `
   contextual_tuples: [${contextualTuples
     .map(
       (tuple) => `
@@ -79,7 +79,7 @@ const { allowed } = await fgaClient.check({
     )
     .join(',')}
     ]`
-      }}, {
+    }}, {
   authorization_model_id: '${modelId}',
 });
 
@@ -127,15 +127,15 @@ var body = new ClientCheckRequest {
     User = "${user}",
     Relation = "${relation}",
     Object = "${object}",${
-        contextualTuples
-          ? `,
+      contextualTuples
+        ? `,
     ContextualTuples = new List<ClientTupleKey>({
     ${contextualTuples
       .map((tuple) => `new(user: "${tuple.user}", relation: "${tuple.relation}", _object: "${tuple.object}")`)
       .join(',\n    ')}
 })`
-          : ''
-      }
+        : ''
+    }
 };
 var response = await fgaClient.Check(body, options);
 
@@ -148,8 +148,8 @@ body = ClientCheckRequest(
     user="${user}",
     relation="${relation}",
     object="${object}",${
-        contextualTuples
-          ? `
+      contextualTuples
+        ? `
     contextual_tuples=[
         ${contextualTuples
           .map(
@@ -157,8 +157,8 @@ body = ClientCheckRequest(
           )
           .join(',\n                ')}
     ],`
-          : ``
-      }
+        : ``
+    }
 )
 
 response = await fga_client.check(body, options)
