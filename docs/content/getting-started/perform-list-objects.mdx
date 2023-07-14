@@ -65,6 +65,13 @@ This section will illustrate how to perform a <ProductConcept section="what-is-a
 4. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
 
 </TabItem>
+<TabItem value={SupportedLanguage.CLI} label={languageLabelMap.get(SupportedLanguage.CLI)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [configured the _authorization model_](./configure-model.mdx).
+3. You have loaded `FGA_STORE_ID` and `FGA_SERVER_URL` as environment variables.
+
+</TabItem>
 
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
@@ -104,6 +111,11 @@ Before calling the check API, you will need to configure the API client.
 <SdkSetupHeader lang={SupportedLanguage.PYTHON_SDK} />
 
 </TabItem>
+<TabItem value={SupportedLanguage.CLI} label={languageLabelMap.get(SupportedLanguage.CLI)}>
+
+<SdkSetupHeader lang={SupportedLanguage.CLI} />
+
+</TabItem>
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
 To obtain the [access token](https://auth0.com/docs/get-started/authentication-and-authorization-flow/call-your-api-using-the-client-credentials-flow):
@@ -129,6 +141,7 @@ To return all documents that user `user:anne` has relationship `reader` with:
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.CLI,
     SupportedLanguage.CURL,
   ]}
 />

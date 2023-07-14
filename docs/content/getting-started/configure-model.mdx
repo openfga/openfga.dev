@@ -59,6 +59,14 @@ This article explains how to configure an <ProductConcept section="what-is-an-au
 
 </TabItem>
 
+<TabItem value={SupportedLanguage.CLI} label={languageLabelMap.get(SupportedLanguage.CLI)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the CLI](./install-sdk.mdx), [created the store](./create-store.mdx) and [setup your environment variables](./setup-sdk-client.mdx).
+3. You have loaded `FGA_STORE_ID` and `FGA_SERVER_URL` as environment variables.
+
+</TabItem>
+
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
 1. <SdkSetupPrerequisite />
@@ -140,6 +148,7 @@ To configure authorization model, we can invoke the [write authorization models 
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.CLI,
     SupportedLanguage.CURL,
   ]}
 />

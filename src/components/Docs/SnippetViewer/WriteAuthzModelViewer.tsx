@@ -9,9 +9,13 @@ interface WriteAuthzModelViewerOpts {
   allowedLanguages?: SupportedLanguage[];
 }
 
+function writeAuthZModelViewerCli(authorizationModel: AuthorizationModel): string {
+  return `fga model write --store-id=\${FGA_STORE_ID} ${JSON.stringify(authorizationModel)}`;
+}
+
 function writeAuthZModelViewerCurl(authorizationModel: AuthorizationModel): string {
-  return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/authorization-models \\
-  -H "Authorization: Bearer $FGA_BEARER_TOKEN" \\ # Not needed if service does not require authorization
+  return `curl -X POST $FGA_SERVER_URL/stores/$FGA_STORE_ID/authorization-models \\
+  -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
   -d '${JSON.stringify(authorizationModel)}'`;
 }
@@ -72,6 +76,10 @@ function writeAuthZModelViewer(
   languageMappings: LanguageMappings,
 ) {
   switch (lang) {
+    case SupportedLanguage.CLI: {
+      return writeAuthZModelViewerCli(opts.authorizationModel);
+    }
+
     case SupportedLanguage.CURL: {
       return writeAuthZModelViewerCurl(opts.authorizationModel);
     }
@@ -106,6 +114,7 @@ export function WriteAuthzModelViewer(opts: WriteAuthzModelViewerOpts): JSX.Elem
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.CLI,
     SupportedLanguage.CURL,
   ];
   const allowedLanguages = getFilteredAllowedLangs(opts.allowedLanguages, defaultLangs);
