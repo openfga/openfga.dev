@@ -1,5 +1,6 @@
 import siteConfig from '@generated/docusaurus.config';
 import type * as PrismNamespace from 'prismjs';
+import { syntaxHighlighters } from '@openfga/syntax-transformer';
 
 export default function prismIncludeLanguages(PrismObject: typeof PrismNamespace): void {
   const {
@@ -19,7 +20,8 @@ export default function prismIncludeLanguages(PrismObject: typeof PrismNamespace
     require(`prismjs/components/prism-${lang}`);
   });
 
-  require('../utils/prism-openfga-dsl');
+  PrismObject.languages[syntaxHighlighters.PrismExtensions.LANGUAGE_NAME] =
+    syntaxHighlighters.PrismExtensions.languageDefinition;
 
   delete (globalThis as unknown as Global & { Prism?: typeof PrismNamespace }).Prism;
 }
