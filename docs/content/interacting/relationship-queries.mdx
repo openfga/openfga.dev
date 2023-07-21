@@ -274,10 +274,6 @@ From there, we will learn that
 - those related to `document:planning` as `reader` are all those who are related to that document as `writer`
 - `bob` is related to `document:planning` as `writer`
 
-### Caveats And When Not To Use It
-
-The Expand call is expensive and has high latency. As such, it is designed to be used for debugging and understanding why a user has a particular relationship with a specific object. It is not designed for checking whether a user has a particular relationship with a specific object. In that case the Check API call should be used instead.
-
 ## ListObjects
 
 ### What Is It For?
@@ -285,10 +281,6 @@ The Expand call is expensive and has high latency. As such, it is designed to be
 The [ListObjects API](/api/service#/Relationship%20Queries/ListObjects) is an API endpoint that returns the list of all the objects of a particular type that a specific user has a specific relationship with.
 
 It provides a solution to the [Search with Permissions (Option 3)](./search-with-permissions.mdx#option-3-build-a-list-of-ids-then-search) use case for access-aware filtering on small object collections.
-
-:::caution Warning
-Make sure to read the [caveats](./relationship-queries.mdx#caveats-and-when-not-to-use-it-3) when using ListObjects.
-:::
 
 ### When To Use?
 
@@ -308,7 +300,7 @@ There's two variations of the List Objects API.
 - The [standard version](/api/service#Relationship%20Queries/ListObjects), which waits until all results are ready and sends them in one response.
 - The [streaming version](/api/service#Relationship%20Queries/StreamedListObjects), which should be used if you want the individual results as soon as they become available.
 
-### Caveats And When Not To Use It
+### Caveats
 
 ListObjects will return the results found within the time allotted (`listObjectsDeadline`, default: `3s`) up to the maximum number of results configured (`listObjectsMaxResults`, default: `1000`). See [Configuring the Server](../getting-started/setup-openfga/docker-setup.mdx#configuring-the-server)) for more on how to change the default configuration.
 
@@ -316,10 +308,6 @@ ListObjects will return the results found within the time allotted (`listObjects
 - If you set `listObjectsMaxResults` to `10`, the server will return, at most, 10 objects.
 
 If the number of objects of that type is high, you should set a high value for `listObjectsDeadline`. If the number of objects of that type the user could have access to is high, you should set a high value for `listObjectsMaxResults`.
-
-:::caution Warning
-ListObjects has sub-optimal performance if there are `and` or `but not` in your Authorization Model. Proceed with care if you intend to use this combination in production.
-:::
 
 ## Summary
 
