@@ -198,10 +198,10 @@ Finally, update `app.js` to register the newly added hooks.
 
 ```javascript
 const fastify = require('fastify')({ logger: true });
-const jwt-authenticate = require('./jwt-authenticate');
+const jwtAuthenticate = require('./jwt-authenticate');
 const routeread = require('./route-read');
 
-fastify.register(jwt-authenticate);
+fastify.register(jwtAuthenticate);
 fastify.register(routeread);
 
 // Run the server!
@@ -366,12 +366,12 @@ Finally, we will register the new hooks in `app.js`:
 
 ```javascript
 const fastify = require('fastify')({ logger: true });
-const jwt-authenticate = require('./jwt-authenticate');
+const jwtAuthenticate = require('./jwt-authenticate');
 const preauthorize = require('./preauthorize');
 const authorize = require('./authorize');
 const routeread = require('./route-read');
 
-fastify.register(jwt-authenticate);
+fastify.register(jwtAuthenticate);
 fastify.register(preauthorize);
 fastify.register(authorize);
 fastify.register(routeread);
