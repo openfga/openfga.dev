@@ -21,6 +21,7 @@ The following list outlines some guidelines and best practices for running OpenF
 - Set the log.format to "json"
 - Set the log.level to "info"
 - [Disable the Playground](./setup-openfga/docker-setup.mdx#playground).
+- [Set Concurrency Limits](#concurrency-limits)
 
 ## Database Recommendations
 
@@ -31,6 +32,16 @@ To ensure good performance for OpenFGA, it is recommended that the [database](./
 In addition, it's strongly recommended to fine-tune your server settings:
 
 - The server setting `OPENFGA_DATASTORE_MAX_OPEN_CONNS` should be set to be equal to your database's max connections. For example, in Postgres, you can see this value via running the SQL query `SHOW max_connections;`. If you are running multiple instances of the OpenFGA server, you should divide this setting equally among the instances. For example, if your database's `max_connections` is 100, and you have 2 OpenFGA instances, `OPENFGA_DATASTORE_MAX_OPEN_CONNS` should be set to 50 for each instance.
+
+## Concurrency Limits
+Check and ListObjects queries can potentially involve a high-degree of depth or breadth to resolve the query. If a query involves a lot of recursion or indirect group lookups, then it's possible that a single query could dominate the server's resources and the database connections. For this reason, we recommend setting some concurrency limits to protect OpenFGA servers.
+
+| Flag                                      | Env                                           | Config                           |
+|-------------------------------------------|-----------------------------------------------|----------------------------------|
+| ----max-concurrent-reads-for-list-objects | OPENFGA_MAX_CONCURRENT_READS_FOR_LIST_OBJECTS | maxConcurrentReadsForListObjects |
+| --max-concurrent-reads-for-check          | OPENFGA_MAX_CONCURRENT_READS_FOR_CHECK        | maxConcurrentReadsForCheck       |
+
+Developers can configure the server settings above to limit the amount of concurrent evaluations/reads that can be in effect per request. These settings will effectively queue/throttle evaluation paths so as to reduce the total concurrency from a single query. The default values for these are essentially unbounded (e.g. `MaxUint32`).
 
 ## Related Sections
 
