@@ -52,7 +52,7 @@
     "docusaurus-plugin-module-alias": "0.0.2",
     "eslint": "8.46.0",
     "eslint-config-prettier": "8.8.0",
-    "eslint-plugin-react": "7.32.2",
+    "eslint-plugin-react": "7.33.1",
     "husky": "8.0.3",
     "prettier": "3.0.0",
     "typescript": "5.1.6"
