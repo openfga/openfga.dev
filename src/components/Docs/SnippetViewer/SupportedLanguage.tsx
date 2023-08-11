@@ -1,4 +1,5 @@
 export enum SupportedLanguage {
+  CLI = 'cli',
   JS_SDK = 'js-sdk',
   GO_SDK = 'go-sdk',
   DOTNET_SDK = 'dotnet-sdk',
@@ -9,6 +10,7 @@ export enum SupportedLanguage {
 }
 
 export const languageLabelMap: Map<SupportedLanguage, string> = new Map([
+  [SupportedLanguage.CLI, 'CLI'],
   [SupportedLanguage.JS_SDK, 'Node.js'],
   [SupportedLanguage.GO_SDK, 'Go'],
   [SupportedLanguage.DOTNET_SDK, '.NET'],
@@ -19,6 +21,7 @@ export const languageLabelMap: Map<SupportedLanguage, string> = new Map([
 ]);
 
 export const languageCodeMap: Map<SupportedLanguage, string> = new Map([
+  [SupportedLanguage.CLI, 'shell'],
   [SupportedLanguage.JS_SDK, 'javascript'],
   [SupportedLanguage.GO_SDK, 'go'],
   [SupportedLanguage.DOTNET_SDK, 'dotnet'],

@@ -423,7 +423,9 @@ In this section, we will investigate the effect of disabling _direct relationshi
           },
         },
         metadata: {
-          relations: {},
+          relations: {
+            editor: { directly_related_user_types: [{ type: 'user' },{ type: 'team', relation: 'member' }] },
+          },
         },
       },
       {
