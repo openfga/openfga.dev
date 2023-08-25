@@ -476,10 +476,11 @@ docker run -p 8080:8080 -p 8081:8081 openfga/openfga -e OPENFGA_EXPERIMENTALS="f
 
 The following table enumerates the experimental flags, a description of what they do, and the versions of OpenFGA the flag is supported in:
 
-| Name         | Description                                                        | OpenFGA Version       | Status                     |
-|--------------|--------------------------------------------------------------------|-----------------------|----------------------------|
-| otel-metrics | Enables support for exposing OpenFGA metrics through OpenTelemetry | `0.3.2 <= v < v0.3.5` | became default in `v0.3.5` |
-| list-objects | Enables ListObjects API                                            | `0.2.0 <= v < v0.3.3` | became default in `v0.3.3` |
+| Name              | Description                                                        | OpenFGA Version       | Status                     |
+|-------------------|--------------------------------------------------------------------|-----------------------|----------------------------|
+| otel-metrics      | Enables support for exposing OpenFGA metrics through OpenTelemetry | `0.3.2 <= v < v0.3.5` | became default in `v0.3.5` |
+| list-objects      | Enables ListObjects API                                            | `0.2.0 <= v < v0.3.3` | became default in `v0.3.3` |
+| check-query-cache | Enables caching of check subproblem result                         | `1.3.1 <= v `         | currently experimental     |
 
 
 :::caution Warning
