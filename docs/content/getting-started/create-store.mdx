@@ -108,7 +108,7 @@ from openfga_sdk.client import OpenFgaClient
 from openfga_sdk.models.create_store_request import CreateStoreRequest
 
 configuration = openfga_sdk.Configuration(
-    scheme = os.environ.get('FGA_API_SCHEME')
+    scheme = os.environ.get('FGA_API_SCHEME'),
     api_host = os.environ.get('FGA_API_HOST'),
 )
 
