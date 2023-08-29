@@ -58,6 +58,11 @@ In this scenario, you will migrate the following model:
             },
           },
         },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
       {
         type: 'user',
@@ -100,6 +105,11 @@ This is the authorization model that you will want to migrate to:
               object: '',
               relation: 'writer',
             },
+          },
+        },
+        metadata: {
+          relations: {
+            writer: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -153,6 +163,12 @@ In the example below, `user:Anne` still has write privileges to the `document:ro
               object: '',
               relation: 'writer',
             },
+          },
+        },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{ type: 'user' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
@@ -275,6 +291,11 @@ After you remove the previous relationship tuples, update your authorization mod
               object: '',
               relation: 'writer',
             },
+          },
+        },
+        metadata: {
+          relations: {
+            writer: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
       },
