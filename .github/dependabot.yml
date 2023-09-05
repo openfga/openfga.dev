@@ -13,6 +13,15 @@ updates:
     ignore:
       # Ignore updates to webpack as it has breaking changes
       - dependency-name: "@svgr/webpack"
+    groups:
+     dependencies:
+        dependency-type: "production"
+        patterns:
+          - "*"
+     dev-dependencies:
+        dependency-type: "development"
+        patterns:
+          - "*"
 
   # Enable version updates for Docker
   - package-ecosystem: "docker"
