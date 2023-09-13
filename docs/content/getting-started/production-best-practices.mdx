@@ -66,7 +66,7 @@ If you still see high request latencies despite the guidance above, then you may
 
 * `OPENFGA_RESOLVE_NODE_LIMIT` limits the resolution depth of a single query, and thus it sets an upper bound on how deep a relationship hierarchy may be. A high value will allow a single query to involve more hierarchical resolution and therefore more database queries, while a low value will reduce the number of hierarchical resolutions that will be allowed and thus reduce the number of database queries.
 
-* `OPENFGA_RESOLVE_NODE_BREADTH_LIMIT` limits the resolution breadth. It sets an upper bound on the number of in-flight resolutions that can be taking place on one or more [usersets](../concepts#what-is-a-user). A high value will allow a single query to involve more concurrent evaluations to take place and therefore more database queries and server processes, while a low value will reduce the overall number of concurrent resolutions that will be allowed and thus reduce the number of database queries and server processes.
+* `OPENFGA_RESOLVE_NODE_BREADTH_LIMIT` limits the resolution breadth. It sets an upper bound on the number of in-flight resolutions that can be taking place on one or more [usersets](../concepts.mdx#what-is-a-user). A high value will allow a single query to involve more concurrent evaluations to take place and therefore more database queries and server processes, while a low value will reduce the overall number of concurrent resolutions that will be allowed and thus reduce the number of database queries and server processes.
 
 ## Related Sections
 
