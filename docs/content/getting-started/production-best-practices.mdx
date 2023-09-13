@@ -35,7 +35,7 @@ It's strongly recommended to fine-tune your server database connection settings 
 
 - The `OPENFGA_DATASTORE_MAX_IDLE_CONNS` should be set to a value no greater than the maximum open connections (see the bullet point above), but it should be set sufficiently high enough to avoid having to recreate connections on each request.
 
-  If you see a lot of database connections being closed and subsequently reopened, then you should consider increasing the maximum number of idle connections.
+  If, when monitoring your database stats, you see a lot of database connections being closed and subsequently reopened, then you should consider increasing the maximum number of idle connections.
 
 - If idle connections are getting reaped frequently, then consider increasing the `OPENFGA_DATASTORE_CONN_MAX_IDLE_TIME` to a large value. When in doubt, prioritize keeping connections around for longer rather than shorter, because doing so will drastically improve performance.
 
