@@ -21,6 +21,7 @@ The following list outlines some guidelines and best practices for running OpenF
 - Set the log.format to "json"
 - Set the log.level to "info"
 - [Disable the Playground](./setup-openfga/docker-setup.mdx#playground).
+- [Set Concurrency Limits](#concurrency-limits)
 
 ## Database Recommendations
 
@@ -28,9 +29,44 @@ To ensure good performance for OpenFGA, it is recommended that the [database](./
 - Used exclusively for OpenFGA and not shared with other applications. This allows scaling the database independently and avoiding contention with your database.
 - Bootstrapped and managed with the `openfga migrate` command. This will ensure the appropriate database indexes are created.
 
-In addition, it's strongly recommended to fine-tune your server settings:
+It's strongly recommended to fine-tune your server database connection settings to avoid having to re-establish database connections frequently. Establishing database connections is slow and will negatively impact performance, and so here are some guidelines for managing database connection settings:
 
 - The server setting `OPENFGA_DATASTORE_MAX_OPEN_CONNS` should be set to be equal to your database's max connections. For example, in Postgres, you can see this value via running the SQL query `SHOW max_connections;`. If you are running multiple instances of the OpenFGA server, you should divide this setting equally among the instances. For example, if your database's `max_connections` is 100, and you have 2 OpenFGA instances, `OPENFGA_DATASTORE_MAX_OPEN_CONNS` should be set to 50 for each instance.
+
+- The `OPENFGA_DATASTORE_MAX_IDLE_CONNS` should be set to a value no greater than the maximum open connections (see the bullet point above), but it should be set sufficiently high enough to avoid having to recreate connections on each request.
+
+  If, when monitoring your database stats, you see a lot of database connections being closed and subsequently reopened, then you should consider increasing the maximum number of idle connections.
+
+- If idle connections are getting reaped frequently, then consider increasing the `OPENFGA_DATASTORE_CONN_MAX_IDLE_TIME` to a large value. When in doubt, prioritize keeping connections around for longer rather than shorter, because doing so will drastically improve performance.
+
+## Concurrency Limits
+:::note
+Before modifying concurrency limits please make sure you've followed the guidance for [Database Recommendations](./#database-recommendations)
+:::
+
+OpenFGA queries such as Check and ListObjects can be quite database and CPU intensive in some cases. If you notice that a single request is consuming a lot of CPU or creating a high degree of database contention, then you may consider setting some concurrency limits to protect other requests from being negatively impacted by overly aggressive queries. 
+
+The following table enumerates the server's concurrency specific settings:
+
+| flag                                    | env                                           | config                           |
+|-----------------------------------------|-----------------------------------------------|----------------------------------|
+| --max-concurrent-reads-for-list-objects | OPENFGA_MAX_CONCURRENT_READS_FOR_LIST_OBJECTS | maxConcurrentReadsForListObjects |
+| --max-concurrent-reads-for-check        | OPENFGA_MAX_CONCURRENT_READS_FOR_CHECK        | maxConcurrentReadsForCheck       |
+| --resolve-node-limit                    | OPENFGA_RESOLVE_NODE_LIMIT                    | resolveNodeLimit                 |
+| --resolve-node-breadth-limit            | OPENFGA_RESOLVE_NODE_BREADTH_LIMIT            | resolveNodeBreadthLimit          |
+
+
+Determining the right values for these settings will be based on a variety of factors including, but not limited to, the database specific deployment topology, the FGA model(s) involved, and the relationship tuples in the system. However, here are some high-level guidelines:
+
+* If a single ListObjects query is negatively impacting other query endpoints by increasing their latency or their error rate, then consider setting a lower value for `OPENFGA_MAX_CONCURRENT_READS_FOR_LIST_OBJECTS`.
+
+* If a single Check query is negatively impacting other query endpoints by increasing their latency or their error rate, then consider setting a lower value for `OPENFGA_MAX_CONCURRENT_READS_FOR_CHECK`.
+
+If you still see high request latencies despite the guidance above, then you may additionally consider setting stricter limits on the query resolution behavior by limiting the resolution depth and resolution breadth. These can be controlled with the `OPENFGA_RESOLVE_NODE_LIMIT` and `OPENFGA_RESOLVE_NODE_BREADTH_LIMIT` settings, respectively. Consider these guidelines:
+
+* `OPENFGA_RESOLVE_NODE_LIMIT` limits the resolution depth of a single query, and thus it sets an upper bound on how deep a relationship hierarchy may be. A high value will allow a single query to involve more hierarchical resolution and therefore more database queries, while a low value will reduce the number of hierarchical resolutions that will be allowed and thus reduce the number of database queries.
+
+* `OPENFGA_RESOLVE_NODE_BREADTH_LIMIT` limits the resolution breadth. It sets an upper bound on the number of in-flight resolutions that can be taking place on one or more [usersets](../concepts.mdx#what-is-a-user). A high value will allow a single query to involve more concurrent evaluations to take place and therefore more database queries and server processes, while a low value will reduce the overall number of concurrent resolutions that will be allowed and thus reduce the number of database queries and server processes.
 
 ## Related Sections
 
