@@ -830,9 +830,8 @@ Why? This relation definition states that:
   - `{ user: "folder:{id}", relation: "parent", object: "document:{id}" }`
   - `{ user: "drive:{id}", relation: "parent", object: "document:{id}" }`
 
-:::caution Important
-In the current <ProductName format={ProductNameFormat.ShortForm}/> version, there is no way to state that a document's parent is either a drive or folder. The application must enforce this.
-:::
+
+We can use [direct type restriction](../configuration-language.mdx#the-direct-relationship-type-restrictions) to ensure a document's parent can only be an object of type either drive or folder.
 
 :::note Side note
 You might have noticed that the "user" in the tuple is an object. This is a special syntax <ProductName format={ProductNameFormat.ShortForm}/> accepts in the "user" parameter to write [object to object relationships](./building-blocks/object-to-object-relationships.mdx). You can read more about writing data to manage object to object relationships in [Managing Relationships Between Objects](../interacting/managing-relationships-between-objects.mdx).
