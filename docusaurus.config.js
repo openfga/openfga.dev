@@ -40,7 +40,7 @@ const config = {
         icon: 'ZanzibarIcon',
       },
       {
-        text: 'Auth0 FGA Playground →',
+        text: 'Okta FGA Playground →',
         href: 'https://play.fga.dev/',
         icon: 'ModelIcon',
       },
