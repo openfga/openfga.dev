@@ -14,6 +14,7 @@ import {
   RelatedSection,
   RelationshipTuplesViewer,
   WriteRequestViewer,
+  SupportedLanguage,
 } from '@components/Docs';
 
 # Transactional Writes
@@ -155,6 +156,14 @@ The Write API allows you to send up to 10 unique tuples in the request. (This li
       relation: 'viewer',
       object: 'tweet:1',
     },
+  ]}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.CURL,
+    SupportedLanguage.RPC,
   ]}
 />
 

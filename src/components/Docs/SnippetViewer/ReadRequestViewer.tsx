@@ -1,4 +1,4 @@
-import { getFilteredAllowedLangs, SupportedLanguage, LanguageMappings } from './SupportedLanguage';
+import { getFilteredAllowedLangs, SupportedLanguage } from './SupportedLanguage';
 import { defaultOperationsViewer } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
 
@@ -18,7 +18,7 @@ interface ReadRequestViewerOpts {
   allowedLanguages?: SupportedLanguage[];
 }
 
-function readRequestViewer(lang: SupportedLanguage, opts: ReadRequestViewerOpts, languageMappings: LanguageMappings) {
+function readRequestViewer(lang: SupportedLanguage, opts: ReadRequestViewerOpts) {
   const readTuples = opts.tuples
     ? opts.tuples
         .map(
@@ -30,6 +30,11 @@ function readRequestViewer(lang: SupportedLanguage, opts: ReadRequestViewerOpts,
     : '';
 
   switch (lang) {
+    case SupportedLanguage.CLI: {
+      return `fga tuple read --store-id=\${FGA_STORE_ID}${opts.user ? ` --user ${opts.user}` : ''}${
+        opts.relation ? ` --relation ${opts.relation}` : ''
+      }${opts.object ? ` --object ${opts.object}` : ''}`;
+    }
     case SupportedLanguage.CURL: {
       const requestTuples = opts.object
         ? (opts.user ? `"user":"${opts.user}",` : '') +
@@ -43,8 +48,8 @@ function readRequestViewer(lang: SupportedLanguage, opts: ReadRequestViewerOpts,
         : '';
 
       // eslint-disable-next-line max-len
-      return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/read \\
-  -H "Authorization: Bearer $FGA_BEARER_TOKEN" \\ # Not needed if service does not require authorization
+      return `curl -X POST $FGA_SERVER_URL/stores/$FGA_STORE_ID/read \\
+  -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" ${requestTuplePayload}'
 
 # Response: "tuples": {[${readTuples}]}`;
@@ -52,20 +57,15 @@ function readRequestViewer(lang: SupportedLanguage, opts: ReadRequestViewerOpts,
 
     case SupportedLanguage.JS_SDK: {
       const requestTuples = opts.object
-        ? (opts.user ? `    user:'${opts.user}',\n` : '') +
-          (opts.relation ? `    relation:'${opts.relation}',\n` : '') +
-          `    object:'${opts.object}',`
-        : '';
-      const requestTuplesPayload = requestTuples
-        ? `
-  tuple_key: {
-${requestTuples}
-  },
-`
+        ? (opts.user ? `user:'${opts.user}',\n` : '') +
+          (opts.relation ? `relation:'${opts.relation}',\n` : '') +
+          `object:'${opts.object}',`
         : '';
       return `
 // Execute a read
-const { tuples } = await fgaClient.read({${requestTuplesPayload}});
+const { tuples } = await fgaClient.read({
+  ${requestTuples}
+});
 
 // tuples = [${readTuples}]
 `;
@@ -73,22 +73,18 @@ const { tuples } = await fgaClient.read({${requestTuplesPayload}});
 
     case SupportedLanguage.GO_SDK: {
       const requestTuples = opts.object
-        ? (opts.user ? `\t\tUser: fgaSdk.PtrString("${opts.user}"),\n` : '') +
-          (opts.relation ? `\t\tRelation: fgaSdk.PtrString("${opts.relation}"),\n` : '') +
-          `\t\tObject: fgaSdk.PtrString("${opts.object}"),\n`
-        : '';
-      const requestTuplePayload = requestTuples
-        ? `
-  TupleKey: fgaSdk.TupleKey{
-${requestTuples}
-  },
-`
+        ? (opts.user ? `\tUser: openfga.PtrString("${opts.user}"),\n` : '') +
+          (opts.relation ? `\tRelation: openfga.PtrString("${opts.relation}"),\n` : '') +
+          `\tObject: openfga.PtrString("${opts.object}"),\n`
         : '';
 
       /* eslint-disable no-tabs */
-      return `
-body := fgaSdk.ReadRequest{${requestTuplePayload}}
-data, response, err := fgaClient.${languageMappings['go'].apiName}.Read(context.Background()).Body(body).Execute()
+      return `options := ClientReadOptions{}
+body := ClientReadRequest{
+${requestTuples}
+}
+
+data, err := fgaClient.Read(context.Background()).Body(requestBody).Options(options).Execute()
 
 // data = { "tuples": [${readTuples}] }`;
     }
@@ -100,15 +96,13 @@ data, response, err := fgaClient.${languageMappings['go'].apiName}.Read(context.
           `  Object = "${opts.object}",`
         : '';
 
-      const requestTuplePayload = requestTuples
-        ? `new TupleKey() {
-${requestTuples}
-}`
-        : '';
-
       /* eslint-disable no-tabs */
-      return `
-var response = fgaClient.Read(new ReadRequest(${requestTuplePayload}));
+      return `var options = new ClientReadOptions {}
+var body = new ClientReadRequest() {
+${requestTuples}
+};
+
+var response = await fgaClient.Read(body, options);
 
 // data = { "tuples": [${readTuples}] }`;
     }
@@ -119,22 +113,15 @@ var response = fgaClient.Read(new ReadRequest(${requestTuplePayload}));
           `            object="${opts.object}",\n`
         : '';
 
-      const requestTuplePayload = requestTuples
-        ? `
-        tuple_key=TupleKey(
-${requestTuples}
-        ),
-    `
-        : '';
       return `
-# from openfga_sdk.models.read_request import ReadRequest
-# from openfga_sdk.models.read_response import ReadResponse
-# from openfga_sdk.models.tuple_key import TupleKey
+options = {}
+body = TupleKey(
+${requestTuples}
+)
 
-async def read():
-    body = ReadRequest(${requestTuplePayload})
-    response = await fga_client_instance.read(body)
-    # response = ReadResponse({"tuples":[${readTuples}]})`;
+response = await fga_client.read(body, options)
+
+# response = ReadResponse({"tuples":[${readTuples}]})`;
     }
     case SupportedLanguage.RPC: {
       const objectOrType = opts.object ? (opts.object.slice(-1) === ':' ? 'type' : 'object') : '';
@@ -178,6 +165,7 @@ export function ReadRequestViewer(opts: ReadRequestViewerOpts): JSX.Element {
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.CLI,
     SupportedLanguage.CURL,
     SupportedLanguage.RPC,
   ];

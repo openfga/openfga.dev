@@ -79,27 +79,28 @@ const config = {
 
     languageMapping: {
       js: {
-        importStatement: `const { OpenFgaApi } = require('@openfga/sdk');`,
-        apiName: `OpenFgaApi`,
+        importStatement: `const { OpenFgaClient } = require('@openfga/sdk');`,
+        apiName: `OpenFgaClient`,
         setupNote: `// ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`,
       },
       go: {
-        importStatement: `fgaSdk "github.com/openfga/go-sdk"`,
-        apiName: `OpenFgaApi`,
+        importStatement: `. "github.com/openfga/go-sdk/client"`,
+        apiName: `OpenFgaClient`,
         setupNote: `// ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`,
       },
       dotnet: {
-        importStatement: `using OpenFga.Sdk.Api;
-using OpenFga.Sdk.Configuration;`,
-        apiName: `OpenFgaApi`,
+        importStatement: `using OpenFga.Sdk.Client;
+using OpenFga.Sdk.Client.Model;
+using OpenFga.Sdk.Model;`,
+        apiName: `OpenFgaClient`,
         setupNote: `// ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`,
       },
       python: {
         importStatement: `import os
 import json
 import openfga_sdk
-from openfga_sdk.api import open_fga_api`,
-        apiName: `OpenFgaApi`,
+from openfga_sdk.client import OpenFgaClient`,
+        apiName: `OpenFgaClient`,
         setupNote: `# ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`,
       },
     },
@@ -234,7 +235,7 @@ from openfga_sdk.api import open_fga_api`,
           },
           { to: '/api/service', label: 'API', position: 'left' },
           {
-            to: 'https://github.com/openfga/openfga/stargazers',
+            to: 'https://github.com/openfga/openfga',
             position: 'right',
             label: 'GitHub',
             className: 'header-social header-github-link',

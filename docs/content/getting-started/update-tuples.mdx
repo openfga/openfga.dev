@@ -61,6 +61,13 @@ This section will illustrate how to update _<ProductConcept section="what-is-a-r
 4. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
 
 </TabItem>
+<TabItem value={SupportedLanguage.CLI} label={languageLabelMap.get(SupportedLanguage.CLI)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [configured the _authorization model_](./configure-model.mdx).
+3. You have loaded `FGA_STORE_ID` and `FGA_SERVER_URL` as environment variables.
+
+</TabItem>
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
 1. <SdkSetupPrerequisite />
@@ -107,6 +114,11 @@ Before calling the write API, you will need to configure the API client.
 <SdkSetupHeader lang={SupportedLanguage.PYTHON_SDK} />
 
 </TabItem>
+<TabItem value={SupportedLanguage.CLI} label={languageLabelMap.get(SupportedLanguage.CLI)}>
+
+<SdkSetupHeader lang={SupportedLanguage.CLI} />
+
+</TabItem>
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
 To obtain the [access token](https://auth0.com/docs/authorization/flows/call-your-api-using-the-client-credentials-flow):
@@ -134,6 +146,7 @@ To add the relationship tuples, we can invoke the write API.
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.CLI,
     SupportedLanguage.CURL,
   ]}
 />
@@ -166,6 +179,7 @@ Assume that you want to delete user `user:anne`'s `reader` relationship with obj
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.CLI,
     SupportedLanguage.CURL,
   ]}
 />

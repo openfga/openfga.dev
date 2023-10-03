@@ -1,9 +1,4 @@
-import {
-  getFilteredAllowedLangs,
-  SupportedLanguage,
-  LanguageMappings,
-  DefaultAuthorizationModelId,
-} from './SupportedLanguage';
+import { getFilteredAllowedLangs, SupportedLanguage, DefaultAuthorizationModelId } from './SupportedLanguage';
 import { defaultOperationsViewer } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
 import { TupleKey } from '@openfga/sdk';
@@ -19,27 +14,34 @@ interface ListObjectsRequestViewerOpts {
   allowedLanguages?: SupportedLanguage[];
 }
 
-function listObjectsRequestViewer(
-  lang: SupportedLanguage,
-  opts: ListObjectsRequestViewerOpts,
-  languageMappings: LanguageMappings,
-): string {
-  const { authorizationModelId, user, relation, objectType, contextualTuples, expectedResults } = opts;
+function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequestViewerOpts): string {
+  const { user, relation, objectType, contextualTuples, expectedResults } = opts;
+  const modelId = opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId;
 
   switch (lang) {
     case SupportedLanguage.PLAYGROUND:
       return `# Note: List Objects is not currently supported on the playground`;
+    case SupportedLanguage.CLI:
+      return `fga query list-objects --store-id=\${FGA_STORE_ID} --model-id=${modelId} ${user} ${relation} ${objectType}${
+        contextualTuples
+          ? ` --contextual_tuples ${contextualTuples
+              .map((tuple) => `"${tuple.user} ${tuple.relation} ${tuple.object}"`)
+              .join(' ')}`
+          : ''
+      }
+
+# Response: {"objects": [${expectedResults.map((r) => `"${r}"`).join(', ')}]}`;
     case SupportedLanguage.CURL:
       /* eslint-disable max-len */
-      return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/list-objects \\
-  -H "Authorization: Bearer $FGA_BEARER_TOKEN" \\ # Not needed if service does not require authorization
+      return `curl -X POST $FGA_SERVER_URL/stores/$FGA_STORE_ID/list-objects \\
+  -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
-  -d '{ "authorization_model_id": "${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}",
+  -d '{ "authorization_model_id": "${modelId}",
         "type": "${objectType}",
         "relation": "${relation}",
         "user":"${user}"${
-        contextualTuples
-          ? `,
+          contextualTuples
+            ? `,
         "contextual_tuples": {
           "tuple_keys": [${contextualTuples
             .map(
@@ -50,20 +52,19 @@ function listObjectsRequestViewer(
           ]
         }
       }'`
-          : `
+            : `
       }'`
-      }
+        }
 
 # Response: {"objects": [${expectedResults.map((r) => `"${r}"`).join(', ')}]}`;
     /* eslint-enable max-len */
     case SupportedLanguage.JS_SDK:
       return `const response = await fgaClient.listObjects({
-  authorization_model_id: "${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}",
   user: "${user}",
   relation: "${relation}",
   type: "${objectType}",${
-        contextualTuples?.length
-          ? `
+    contextualTuples?.length
+      ? `
   contextual_tuples: {
     tuple_keys: [${contextualTuples
       .map(
@@ -75,110 +76,112 @@ function listObjectsRequestViewer(
       )
       .join(', ')}]
   },`
-          : ''
-      }
+      : ''
+  }
+}, {
+  authorization_model_id: "${modelId}",
 });
 // response.objects = [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
     case SupportedLanguage.GO_SDK:
       /* eslint-disable no-tabs */
-      return `body := fgaSdk.ListObjectsRequest{
-    AuthorizationModelId: PtrString("${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}"),
-    User:                 "${user}",
-    Relation:             "${relation}",
-    Type:                 "${objectType}",${
-        contextualTuples?.length
-          ? `
-    ContextualTuples: &ContextualTupleKeys{
-        TupleKeys: []TupleKey{${contextualTuples
-          .map(
-            (tupleKey) => `{
-            User:     PtrString("${tupleKey.user}"),
-            Relation: PtrString("${tupleKey.relation}"),
-            Object:   PtrString("${tupleKey.object}"),
-        }`,
-          )
-          .join(', ')},
-    },`
-          : ''
+      return `
+options := ClientListObjectsOptions{
+    AuthorizationModelId: openfga.PtrString("${modelId}"),
+}
+body := ClientListObjectsRequest{
+\tUser:     "${user}",
+\tRelation: "${relation}",
+\tType:     "${objectType}",${
+        !contextualTuples
+          ? ''
+          : `
+\tContextualTuples: &[]ClientTupleKey{
+${
+  !contextualTuples
+    ? ''
+    : contextualTuples
+        .map(
+          (tuple) => `\t\t{
+\t\t\tUser:     "${tuple.user}",
+\t\t\tRelation: "${tuple.relation}",
+\t\t\tObject:   "${tuple.object}",
+\t\t}`,
+        )
+        .join(',\n')
+}
+\t}`
       }
 }
-
-data, response, err := apiClient.${
-        languageMappings['go'].apiName
-      }.ListObjects(context.Background()).Body(body).Execute()
+data, err := fgaClient.ListObjects(context.Background()).
+  Body(requestBody).
+  Options(options).
+  Execute()
 
 // data = { "objects": [${expectedResults.map((r) => `"${r}"`).join(', ')}] }`;
     case SupportedLanguage.DOTNET_SDK:
-      return `var body = new ListObjectsRequest{
-    AuthorizationModelId = "${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}",
+      return `
+var options = new ClientListObjectsOptions {
+    AuthorizationModelId = "${modelId}",
+};
+var body = new ClientListObjectsRequest {
     User = "${user}",
     Relation = "${relation}",
     Type = "${objectType}",${
-        contextualTuples?.length
-          ? `
-    ContextualTuples = new ContextualTupleKeys() {
-        TupleKeys = new List<TupleKey> {${contextualTuples
-          .map(
-            (tupleKey) => `
-            new("${tupleKey.object}", "${tupleKey.relation}", "${tupleKey.user}")`,
-          )
-          .join(',')}
-        }
-    }`
-          : ''
-      }
+      contextualTuples
+        ? `,
+    ContextualTuples = new List<ClientTupleKey>({
+    ${contextualTuples
+      .map((tuple) => `new(user: "${tuple.user}", relation: "${tuple.relation}", _object: "${tuple.object}")`)
+      .join(',\n    ')}
+})`
+        : ''
+    }
 };
-var response = await openFgaApi.ListObjects(body);
+
+var response = await fgaClient.ListObjects(body, options);
 
 // response.Objects = [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
     case SupportedLanguage.PYTHON_SDK:
       return `
-# from openfga_sdk.models.list_objects_request import ListObjectsRequest
-# from openfga_sdk.models.tuple_key import TupleKey
-# from openfga_sdk.models.contextual_tuple_keys import ContextualTupleKeys
+options = {
+    "authorization_model_id": "${modelId}"
+}
+body = ClientListObjectsRequest(
+    user="${user}",
+    relation="${relation}",
+    type="${objectType}",${
+      contextualTuples
+        ? `
+    contextual_tuples=[
+        ${contextualTuples
+          .map(
+            (tuple) => `ClientTupleKey(user="${tuple.user}", relation="${tuple.relation}", object="${tuple.object}")`,
+          )
+          .join(',\n                ')}
+    ],`
+        : ``
+    }
+)
 
-async def list_objects():
-    body = ListObjectsRequest(
-        authorization_model_id="${authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId}",
-        user="${user}",
-        relation="${relation}",
-        type="${objectType}",${
-        contextualTuples?.length
-          ? `
-        contextual_tuples=ContextualTupleKeys(
-            tuple_keys=[
-                ${contextualTuples
-                  .map(
-                    (tupleKey) => `TupleKey(
-                    user="${tupleKey.user}",
-                    relation="${tupleKey.relation}",
-                    object="${tupleKey.object}")`,
-                  )
-                  .join(',\n            ')}
-            ]
-        )`
-          : ``
-      }
-    )
-    response = await fga_client_instance.list_objects(body)
+response = await fga_client.list_objects(body, options)
+
+# response.objects = [${expectedResults.map((r) => `"${r}"`).join(', ')}]
 `;
     case SupportedLanguage.RPC:
       return `listObjects(
   "${user}", // list the objects that the user \`${user}\`
   "${relation}", // has an \`${relation}\` relation
   "${objectType}", // and that are of type \`${objectType}\`
-  authorization_model_id = "${
-    authorizationModelId ? authorizationModelId : DefaultAuthorizationModelId
-  }", // for this particular authorization model id ${
-        contextualTuples
-          ? `
+  authorization_model_id = "${modelId}", // for this particular authorization model id ${
+    contextualTuples
+      ? `
   contextual_tuples = [ // Assuming the following is true
     ${contextualTuples
       .map((tuple) => `{user = "${tuple.user}", relation = "${tuple.relation}", object = "${tuple.object}"}`)
       .join(',\n    ')}
   ]`
-          : ''
-      }
+      : ''
+  }
 );
 
 Reply: [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
@@ -193,6 +196,7 @@ export function ListObjectsRequestViewer(opts: ListObjectsRequestViewerOpts): JS
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.CLI,
     SupportedLanguage.CURL,
     SupportedLanguage.RPC,
   ];
