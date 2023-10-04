@@ -18,14 +18,16 @@ const SocialMedia: React.FC = () => {
   const navbarItems = navbar.items;
   const filteredItems: NavbarItem[] & Props[] = navbarItems
     .filter(({ label }) => SOCIAL_MEDIA_ITEMS.includes(label))
-    .sort(({ label: labelA }, { label: labelB}) => SOCIAL_MEDIA_ITEMS.indexOf(labelA) - SOCIAL_MEDIA_ITEMS.indexOf(labelB))
+    .sort(
+      ({ label: labelA }, { label: labelB }) => SOCIAL_MEDIA_ITEMS.indexOf(labelA) - SOCIAL_MEDIA_ITEMS.indexOf(labelB),
+    );
 
   return (
     <div className={styles[baseClassName]}>
-      {filteredItems.map(({ label, to, ["aria-label"]: ariaLabel }) => (
-        <Link 
-          to={useBaseUrl(to as string)} 
-          className={clsx(styles[baseClassName + '-item'], styles[baseClassName + '-' + label.toLowerCase()])} 
+      {filteredItems.map(({ label, to, ['aria-label']: ariaLabel }) => (
+        <Link
+          to={useBaseUrl(to as string)}
+          className={clsx(styles[baseClassName + '-item'], styles[baseClassName + '-' + label.toLowerCase()])}
           aria-label={ariaLabel as string}
         >
           {label}
