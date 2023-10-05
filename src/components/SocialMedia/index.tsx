@@ -16,8 +16,7 @@ const SocialMedia: React.FC = () => {
   const { siteConfig } = useDocusaurusContext();
   const { navbar }: ThemeConfig = siteConfig.themeConfig;
   const navbarItems = navbar.items;
-  const filteredItems: NavbarItem[] & Props[] = navbarItems
-    .filter(({ label }) => SOCIAL_MEDIA_ITEMS.includes(label))
+  const filteredItems: NavbarItem[] & Props[] = navbarItems.filter(({ label }) => SOCIAL_MEDIA_ITEMS.includes(label));
 
   return (
     <div className={styles[baseClassName]}>
