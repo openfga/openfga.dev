@@ -18,7 +18,7 @@ We'll have a packed agenda for the week:
 
 - [Maria Ines Parnisari](https://www.linkedin.com/in/miparnisari/) and [Andres Aguiar](https://www.linkedin.com/in/aaguiar/) will be presenting in [AppDeveloperCon](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/co-located-events/appdevelopercon/) about modernizing authorization for cloud native applications using OpenFGA. Learn more [here](https://colocatedeventsna2023.sched.com/event/1Rj2j/modernizing-authorization-for-cloud-native-applications-using-openfga-andres-aguiar-maria-ines-parnisari-okta).
 
-- We'll host a Project Meeting on Monday 9.30 AM in the Hudson room at the [Hilton Garden Inn](https://maps.app.goo.gl/77FwgGdpsWK5jWHd6). We'll share the product is being used, demo the latests features like our new CLI, the VS Code Extension, Conditional Relationships, the Java SDK... and more! 
+- We'll host a Project Meeting on Monday 9.30 AM in the Hudson room at the [Hilton Garden Inn](https://maps.app.goo.gl/77FwgGdpsWK5jWHd6). We'll share how the product is being used, demo the latests features like our new CLI, the VS Code Extension, Conditional Relationships, the Java SDK... and more! 
 
 - We'll be in the CNCF Project Pavilion during the afternoons.
 
