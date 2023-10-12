@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>OpenFGA Blog</title>
+        <link>https://openfga.dev/blog</link>
+        <description>OpenFGA Blog</description>
+        <lastBuildDate>Thu, 12 Oct 2023 00:00:00 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <language>en</language>
+        <item>
+            <title><![CDATA[Join the OpenFGA team at KubeCon NA 2023]]></title>
+            <link>https://openfga.dev/blog/kubecon-na-2023</link>
+            <guid>https://openfga.dev/blog/kubecon-na-2023</guid>
+            <pubDate>Thu, 12 Oct 2023 00:00:00 GMT</pubDate>
+            <description><![CDATA[OpenFGA at KubeCon]]></description>
+            <content:encoded><![CDATA[<p>As you'd expect, the OpenFGA team will be at KubeCon NA 2023 in Chicago, IL!</p><p>We'll have a packed agenda for the week:</p><ul><li><p><a href="https://www.linkedin.com/in/jonathan-whitaker-5a8b2484/" target="_blank" rel="noopener noreferrer">Jonathan Whitaker</a> and <a href="https://www.linkedin.com/in/luxas/" target="_blank" rel="noopener noreferrer">Lucas Käldström</a> will be presenting in <a href="https://cloud-native.rejekts.io/" target="_blank" rel="noopener noreferrer">Could_Native Rejects</a> on how to use OpenFGA to manage authorization in Kubernetes. Learn more <a href="https://cfp.cloud-native.rejekts.io/cloud-native-rejekts-na-chicago-2023/speaker/XB7EUR/" target="_blank" rel="noopener noreferrer">here</a>.</p></li><li><p><a href="https://www.linkedin.com/in/miparnisari/" target="_blank" rel="noopener noreferrer">Maria Ines Parnisari</a> and <a href="https://www.linkedin.com/in/aaguiar/" target="_blank" rel="noopener noreferrer">Andres Aguiar</a> will be presenting in <a href="https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/co-located-events/appdevelopercon/" target="_blank" rel="noopener noreferrer">AppDeveloperCon</a> about modernizing authorization for cloud native applications using OpenFGA. Learn more <a href="https://colocatedeventsna2023.sched.com/event/1Rj2j/modernizing-authorization-for-cloud-native-applications-using-openfga-andres-aguiar-maria-ines-parnisari-okta" target="_blank" rel="noopener noreferrer">here</a>.</p></li><li><p>We'll host a Project Meeting on Monday 9.30 AM in the Hudson room at the <a href="https://maps.app.goo.gl/77FwgGdpsWK5jWHd6" target="_blank" rel="noopener noreferrer">Hilton Garden Inn</a>. We'll share the product is being used, demo the latests features like our new CLI, the VS Code Extension, Conditional Relationships, the Java SDK... and more! </p></li><li><p>We'll be in the CNCF Project Pavilion during the afternoons.</p></li><li><p>We'll host our <a href="https://github.com/openfga/community/blob/main/community-meetings.md" target="_blank" rel="noopener noreferrer">OpenFGA community meeting</a> directly from KubeCon on Thursday 9th  at 3PM UTC (8AM PST/11AM EST).</p></li></ul><p>If you want to meet with the team outside of these events, please pick any spot that works for you in our <a href="https://calendar.app.google/GonEwLboKvPkG8pL6" target="_blank" rel="noopener noreferrer">calendar</a>.</p><p>See you in Chicago!</p>]]></content:encoded>
+            <category>conferences</category>
+            <category>kubecon</category>
+        </item>
+    </channel>
+</rss>
