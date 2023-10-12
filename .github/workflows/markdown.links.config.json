@@ -34,7 +34,7 @@
 		"pattern": "^https://app.fossa.com"
 	  },
 	  {
-		"pattern": "^https://linkedin.com"
+		"pattern": "^https://www.linkedin.com"
 	  }
 	],
 	"httpHeaders": [
