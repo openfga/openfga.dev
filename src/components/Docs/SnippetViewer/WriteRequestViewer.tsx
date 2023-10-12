@@ -27,7 +27,7 @@ function writeRequestViewer(lang: SupportedLanguage, opts: WriteRequestViewerOpt
           ? opts.relationshipTuples
               .map(
                 (tuple) =>
-                  `fga write --store-id=\${FGA_STORE_ID} --model-id=${modelId} ${tuple.user} ${tuple.relation} ${tuple.object}`,
+                  `fga tuple write --store-id=\${FGA_STORE_ID} --model-id=${modelId} ${tuple.user} ${tuple.relation} ${tuple.object}`,
               )
               .join('\n')
           : ''
@@ -36,10 +36,7 @@ function writeRequestViewer(lang: SupportedLanguage, opts: WriteRequestViewerOpt
 ${
   opts.deleteRelationshipTuples?.length
     ? opts.deleteRelationshipTuples
-        .map(
-          (tuple) =>
-            `fga delete --store-id=\${FGA_STORE_ID} --model-id=${modelId} ${tuple.user} ${tuple.relation} ${tuple.object}`,
-        )
+        .map((tuple) => `fga tuple delete --store-id=\${FGA_STORE_ID} ${tuple.user} ${tuple.relation} ${tuple.object}`)
         .join('\n')
     : ''
 }`;

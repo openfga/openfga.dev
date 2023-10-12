@@ -40,7 +40,7 @@ const config = {
         icon: 'ZanzibarIcon',
       },
       {
-        text: 'Auth0 FGA Playground →',
+        text: 'Okta FGA Playground →',
         href: 'https://play.fga.dev/',
         icon: 'ModelIcon',
       },
@@ -234,6 +234,7 @@ from openfga_sdk.client import OpenFgaClient`,
             label: 'Docs',
           },
           { to: '/api/service', label: 'API', position: 'left' },
+          { to: '/blog', label: 'Blog', position: 'left' },
           {
             to: 'https://github.com/openfga/openfga',
             position: 'right',
