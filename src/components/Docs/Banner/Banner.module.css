@@ -14,7 +14,9 @@
   font-family: 'Inter';
 }
 .documentation-banner:hover {
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1), 0px 6px 8px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0px 0px 5px rgba(0, 0, 0, 0.1),
+    0px 6px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease 0s;
 }
 .documentation-banner:not(:hover) {

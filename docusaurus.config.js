@@ -1,8 +1,9 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const lightCodeTheme = require('prism-react-renderer').themes.github;
+const darkCodeTheme = require('prism-react-renderer').themes.dracula;
+
 const path = require('path');
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -39,7 +40,7 @@ const config = {
         icon: 'ZanzibarIcon',
       },
       {
-        text: 'Auth0 FGA Playground →',
+        text: 'Okta FGA Playground →',
         href: 'https://play.fga.dev/',
         icon: 'ModelIcon',
       },
@@ -78,27 +79,28 @@ const config = {
 
     languageMapping: {
       js: {
-        importStatement: `const { OpenFgaApi } = require('@openfga/sdk');`,
-        apiName: `OpenFgaApi`,
+        importStatement: `const { OpenFgaClient } = require('@openfga/sdk');`,
+        apiName: `OpenFgaClient`,
         setupNote: `// ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`,
       },
       go: {
-        importStatement: `fgaSdk "github.com/openfga/go-sdk"`,
-        apiName: `OpenFgaApi`,
+        importStatement: `. "github.com/openfga/go-sdk/client"`,
+        apiName: `OpenFgaClient`,
         setupNote: `// ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`,
       },
       dotnet: {
-        importStatement: `using OpenFga.Sdk.Api;
-using OpenFga.Sdk.Configuration;`,
-        apiName: `OpenFgaApi`,
+        importStatement: `using OpenFga.Sdk.Client;
+using OpenFga.Sdk.Client.Model;
+using OpenFga.Sdk.Model;`,
+        apiName: `OpenFgaClient`,
         setupNote: `// ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`,
       },
       python: {
         importStatement: `import os
 import json
 import openfga_sdk
-from openfga_sdk.api import open_fga_api`,
-        apiName: `OpenFgaApi`,
+from openfga_sdk.client import OpenFgaClient`,
+        apiName: `OpenFgaClient`,
         setupNote: `# ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`,
       },
     },
@@ -107,16 +109,16 @@ from openfga_sdk.api import open_fga_api`,
       block-all-mixed-content;
       child-src www.youtube-nocookie.com;
       prefetch-src 'self';
-      connect-src 'self' https://raw.githubusercontent.com https://s3.amazonaws.com https://cdn.cookielaw.org https://privacyportal.onetrust.com https://heapanalytics.com;
+      connect-src 'self' https://raw.githubusercontent.com https://s3.amazonaws.com https://cdn.cookielaw.org https://privacyportal.onetrust.com https://heapanalytics.com https://js.hs-scripts.com https://api.github.com https://js.hscollectedforms.net https://js.hs-analytics.net https://js.hs-banner.com https://forms.hscollectedforms.net ;
       font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;
       form-action 'none';
       frame-src www.youtube-nocookie.com;
-      img-src 'self' data: https://pbs.twimg.com https://docs.github.com https://heapanalytics.com;
+      img-src 'self' data: https://pbs.twimg.com https://docs.github.com https://heapanalytics.com https://forms.hsforms.com https://track.hubspot.com ;
       media-src 'self';
       object-src 'none';
       script-src 'self' ${
         process.env.NODE_ENV === 'development' ? `'unsafe-eval'` : ``
-      } 'unsafe-inline' https://cdn.cookielaw.org https://geolocation.onetrust.com https://cdn.heapanalytics.com;
+      } 'unsafe-inline' https://cdn.cookielaw.org https://geolocation.onetrust.com https://cdn.heapanalytics.com https://js.hs-scripts.com https://api.github.com https://js.hscollectedforms.net https://js.hs-analytics.net https://js.hs-banner.com;
       style-src 'unsafe-inline' 'self' https://fonts.googleapis.com;`,
   },
 
@@ -210,11 +212,6 @@ from openfga_sdk.api import open_fga_api`,
         defaultMode: 'dark',
         disableSwitch: true,
       },
-      announcementBar: {
-        id: 'announcementBar.4', // Increment on change
-        // eslint-disable-next-line max-len
-        content: `OpenFGA is deprecating model schema v1.0. Read about when support will be dropped and how to migrate in the <a href="/docs/modeling/migrating/migrating-schema-1-1#deprecation-timeline">deprecation timeline</a>.`,
-      },
       navbar: {
         // style: "primary",
         // title: "OpenFGA",
@@ -238,6 +235,13 @@ from openfga_sdk.api import open_fga_api`,
           },
           { to: '/api/service', label: 'API', position: 'left' },
           {
+            to: 'https://github.com/openfga/openfga',
+            position: 'right',
+            label: 'GitHub',
+            className: 'header-social header-github-link',
+            'aria-label': 'OpenFGA on GitHub',
+          },
+          {
             to: 'https://twitter.com/OpenFGA',
             label: 'Twitter',
             position: 'right',
@@ -250,13 +254,6 @@ from openfga_sdk.api import open_fga_api`,
             position: 'right',
             className: 'header-social header-discord-link',
             'aria-label': 'OpenFGA on Discord',
-          },
-          {
-            to: 'https://github.com/openfga',
-            position: 'right',
-            label: 'GitHub',
-            className: 'header-social header-github-link',
-            'aria-label': 'OpenFGA on GitHub',
           },
         ],
       },
@@ -278,7 +275,7 @@ from openfga_sdk.api import open_fga_api`,
             to: 'https://github.com/openfga',
             className: 'header-social header-github-link',
             'aria-label': 'OpenFGA on GitHub',
-            label: 'Github',
+            label: 'GitHub',
           },
         ],
         copyright: `<div><a href="https://www.linuxfoundation.org/trademark-usage"><img src="/img/cncf-icon-white.svg" alt="CNCF" style="vertical-align:middle; margin-right:8px;" /></a> &copy; ${new Date().getFullYear()} <a href="https://www.linuxfoundation.org/" target="_blank">The Linux Foundation</a>®. All rights reserved. <span class="display-on-desktop">For a list of trademarks of The Linux Foundation, see our <a href="https://www.linuxfoundation.org/trademark-usage" class="light-text" target="blank">Trademark Usage page</a>.</span></div>`,
@@ -296,5 +293,18 @@ from openfga_sdk.api import open_fga_api`,
       },
     }),
 };
+
+if (process.env.HUBSPOT_TRACKING_ID) {
+  config.scripts = [
+    {
+      src: `https://js.hs-scripts.com/${process.env.HUBSPOT_TRACKING_ID}.js`,
+      type: "text/javascript",
+      charset: "UTF-8",
+      id: "hs-script-loader",
+      async: true,
+      defer: true,
+    },
+  ];
+}
 
 module.exports = config;

@@ -29,7 +29,7 @@ const NotFound = (): JSX.Element => (
             <p>
               If you navigated here from a broken link on the OpenFGA website, please{' '}
               <Link href="https://github.com/openfga/openfga.dev/issues" target="_blank">
-                open an issue on Github
+                open an issue on GitHub
               </Link>
               .
             </p>

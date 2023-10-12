@@ -12,7 +12,7 @@ import { SchemaVersion } from '@openfga/syntax-transformer';
 
 type AuthzModelSnippetViewerProps = {
   // Authorization Model in api syntax
-  configuration: WriteAuthorizationModelRequest;
+  configuration: WriteAuthorizationModelRequest & Required<Pick<WriteAuthorizationModelRequest, 'schema_version'>>;
   // optional description
   description?: string;
   onlyShow?: SyntaxFormat;
@@ -109,7 +109,7 @@ const AuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
             <div>
               To convert between the API Syntax and the friendly DSL, you can use the{' '}
               <Link href={'https://github.com/openfga/syntax-transformer/'}>syntax transformer</Link> or{' '}
-              <Link href={'https://play.fga.dev'}>Auth0 FGA&#39;s Playground</Link>.
+              <Link href={'https://play.fga.dev'}>Okta FGA&#39;s Playground</Link>.
             </div>
           </Admonition>
 

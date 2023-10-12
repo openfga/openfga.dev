@@ -198,10 +198,10 @@ Finally, update `app.js` to register the newly added hooks.
 
 ```javascript
 const fastify = require('fastify')({ logger: true });
-const jwt-authenticate = require('./jwt-authenticate');
+const jwtAuthenticate = require('./jwt-authenticate');
 const routeread = require('./route-read');
 
-fastify.register(jwt-authenticate);
+fastify.register(jwtAuthenticate);
 fastify.register(routeread);
 
 // Run the server!
@@ -317,23 +317,21 @@ In `authorize.js`:
 
 ```javascript
 const fp = require('fastify-plugin');
-const { OpenFgaApi } = require('@openfga/sdk'); // OR import { OpenFgaApi } from '@openfga/sdk';
+const { OpenFgaClient } = require('@openfga/sdk'); // OR import { OpenFgaClient } from '@openfga/sdk';
 
 module.exports = fp(async function (fastify, opts) {
   fastify.decorate('authorize', async function (request, reply) {
     try {
       // configure the openfga api client
-      const fgaClient = new OpenFgaApi({
+      const fgaClient = new OpenFgaClient({
         apiScheme: process.env.FGA_API_SCHEME, // Optional. Can be "http" or "https". Defaults to "https"
         apiHost: process.env.FGA_API_HOST,
         storeId: process.env.FGA_STORE_ID,
       });
       const { allowed } = await fgaClient.check({
-        tuple_key: {
-          user: request.user,
-          relation: request.relation,
-          object: request.object,
-        },
+        user: request.user,
+        relation: request.relation,
+        object: request.object,
       });
       if (!allowed) {
         reply.code(401).send(`Not authenticated`);
@@ -368,12 +366,12 @@ Finally, we will register the new hooks in `app.js`:
 
 ```javascript
 const fastify = require('fastify')({ logger: true });
-const jwt-authenticate = require('./jwt-authenticate');
+const jwtAuthenticate = require('./jwt-authenticate');
 const preauthorize = require('./preauthorize');
 const authorize = require('./authorize');
 const routeread = require('./route-read');
 
-fastify.register(jwt-authenticate);
+fastify.register(jwtAuthenticate);
 fastify.register(preauthorize);
 fastify.register(authorize);
 fastify.register(routeread);
@@ -411,7 +409,8 @@ import (
 
   jwtware "github.com/gofiber/jwt/v3"
   "github.com/golang-jwt/jwt/v4"
-  fgaSdk "github.com/openfga/go-sdk"
+  openfga "github.com/openfga/go-sdk"
+  . "github.com/openfga/go-sdk/client"
 )
 
 var (
@@ -480,26 +479,23 @@ func preauthorize(c *fiber.Ctx) error {
 
 // Middleware to check whether user is authorized to access document
 func checkAuthorization(c *fiber.Ctx) error {
-  configuration, err := fgaSdk.NewConfiguration(fgaSdk.UserConfiguration{
-    ApiScheme:      os.Getenv("FGA_API_SCHEME"), // Optional. Can be "http" or "https". Defaults to "https"
-    ApiHost:        os.Getenv("FGA_API_HOST"),
-    StoreId:        os.Getenv("FGA_STORE_ID"),
+  fgaClient, err := NewSdkClient(&ClientConfiguration{
+    ApiScheme:      os.Getenv("FGA_API_SCHEME"), // optional. Can be "http" or "https". Defaults to "https"
+    ApiHost:        os.Getenv("FGA_API_HOST"), // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
+    StoreId:        os.Getenv("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+    AuthorizationModelId: openfga.PtrString(os.Getenv("FGA_MODEL_ID")),  // optional, can be overridden per request
   })
 
   if err != nil {
     return fiber.NewError(fiber.StatusServiceUnavailable, "Unable to build OpenFGA client")
   }
 
-  fgaClient := fgaSdk.NewAPIClient(configuration)
-
-  body := fgaSdk.CheckRequest{
-    TupleKey: fgaSdk.TupleKey{
-      User: fgaSdk.PtrString(c.Locals("username").(string)),
-      Relation: fgaSdk.PtrString(c.Locals("relation").(string)),
-      Object: fgaSdk.PtrString(c.Locals("object").(string)),
-    },
+  body := ClientCheckRequest{
+    User: c.Locals("username").(string),
+    Relation: c.Locals("relation").(string),
+    Object: c.Locals("object").(string),
   }
-  data, _, err := fgaClient.OpenFga.Check(context.Background()).Body(body).Execute()
+  data, err := fgaClient.OpenFga.Check(context.Background()).Body(body).Execute()
 
   if err != nil {
     return fiber.NewError(fiber.StatusServiceUnavailable, "Unable to check for authorization")

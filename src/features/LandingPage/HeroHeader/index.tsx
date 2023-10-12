@@ -5,6 +5,7 @@ import BrowserOnly from '@docusaurus/BrowserOnly';
 
 import styles from './HeroHeader.module.css';
 
+import { SocialMedia } from '@components/SocialMedia';
 import { HeroLogo } from './HeroLogo';
 import { ButtonLink } from '@components/ButtonLink';
 import { StyleGrid } from '../StyleGrid';
@@ -60,6 +61,7 @@ const HeroHeader = () => {
     <header>
       <div className="container__no-padding">
         <StyleGrid />
+        <SocialMedia />
         <div className={styles.container}>
           <div className={styles.content}>
             <h1 className={styles.heading} ref={headingRef}>
@@ -98,7 +100,7 @@ const HeroHeader = () => {
                     fill="#D3D8DF"
                   />
                 </svg>
-                Join us on Github
+                Join us on GitHub
               </ButtonLink>
             </div>
           </div>

@@ -32,7 +32,8 @@ export function importSdkStatement(lang: SupportedLanguage, languageMappings: La
 export function sdkSetupHeader(lang: SupportedLanguage, languageMappings: LanguageMappings) {
   switch (lang) {
     case SupportedLanguage.CURL:
-      return `Set FGA_API_URL according to the service you are using
+    case SupportedLanguage.CLI:
+      return `Set FGA_SERVER_URL according to the service you are using (e.g. https://api.fga.example)
 `;
 
     case SupportedLanguage.JS_SDK:
@@ -42,8 +43,9 @@ ${importSdkStatement(lang, languageMappings)}
 // Initialize the SDK with no auth - see "How to setup SDK client" for more options
 const fgaClient = new ${languageMappings['js'].apiName}({
   apiScheme: process.env.FGA_API_SCHEME, // Either "http" or "https", defaults to "https"
-  apiHost: process.env.FGA_API_HOST, // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
-  storeId: process.env.FGA_STORE_ID, // Either "http" or "https", defaults to "https"
+  apiHost: process.env.FGA_API_HOST, // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
+  storeId: process.env.FGA_STORE_ID,
+  authorizationModelId: process.env.FGA_MODEL_ID, // Optional, can be overridden per request
 });`;
 
     case SupportedLanguage.GO_SDK:
@@ -55,17 +57,16 @@ const fgaClient = new ${languageMappings['js'].apiName}({
 
 func main() {
     // Initialize the SDK with no auth - see "How to setup SDK client" for more options
-    configuration, err := fgaSdk.NewConfiguration(fgaSdk.UserConfiguration{
-        ApiScheme:      os.Getenv("FGA_SCHEME"), // Either "http" or "https", defaults to "https"
-        ApiHost:        os.Getenv("FGA_API_HOST"), // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
-        StoreId:        os.Getenv("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+    fgaClient, err := NewSdkClient(&ClientConfiguration{
+        ApiScheme:            os.Getenv("FGA_SCHEME"), // Either "http" or "https", defaults to "https"
+        ApiHost:              os.Getenv("FGA_API_HOST"), // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
+        StoreId:              os.Getenv("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+        AuthorizationModelId: openfga.PtrString(os.Getenv("FGA_MODEL_ID")),  // Optional, can be overridden per request
     })
 
     if err != nil {
     // .. Handle error
     }
-
-    fgaClient := fgaSdk.NewAPIClient(configuration)
 }`;
 
     /* eslint-enable no-tabs */
@@ -74,15 +75,16 @@ func main() {
 ${importSdkStatement(lang, languageMappings)}
 using Environment = System.Environment;
 
-namespace ExampleApp;
+namespace Example;
 
-class MyProgram {
-    static async Task Main() {
+class Example {
+    public static async Task Main() {
         // Initialize the SDK with no auth - see "How to setup SDK client" for more options
-        var configuration = new Configuration() {
+        var configuration = new ClientConfiguration() {
           ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // Either "http" or "https", defaults to "https"
-          ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST"), // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
+          ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST"), // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
           StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+          AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"), // Optional, can be overridden per request
         };
         var fgaClient = new ${languageMappings['js'].apiName}(configuration);
     }
@@ -92,14 +94,17 @@ class MyProgram {
       return `
 ${importSdkStatement(lang, languageMappings)}
 
-configuration = openfga_sdk.Configuration(
+configuration = openfga_sdk.ClientConfiguration(
     api_scheme = os.environ.get('FGA_API_SCHEME'), # Either "http" or "https", defaults to "https"
-    api_host = os.environ.get('FGA_API_HOST'), # required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
+    api_host = os.environ.get('FGA_API_HOST'), # required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
     store_id = os.environ.get('FGA_STORE_ID') # optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+    authorization_model_id = os.environ.get('FGA_MODEL_ID'), # Optional, can be overridden per request
 )
 
-# Create an instance of the API class
-fga_client_instance = open_fga_api.OpenFgaApi(openfga_sdk.ApiClient(configuration))
+# Enter a context with an instance of the OpenFgaClient
+async with OpenFgaClient(configuration) as fga_client:
+    api_response = await fga_client.read_authorization_models()
+    await fga_client.close()
 `;
     case SupportedLanguage.RPC:
     case SupportedLanguage.PLAYGROUND:
@@ -134,9 +139,13 @@ export function GenerateSetupHeader(lang: SupportedLanguage, skipSetup?: boolean
     case SupportedLanguage.PYTHON_SDK:
       content = getMapping(lang, configuredLanguage).setupNote + sdkSetupHeader(lang, configuredLanguage);
       break;
+    case SupportedLanguage.CLI:
+      content = sdkSetupHeader(SupportedLanguage.CLI, configuredLanguage);
+      summary = 'Set FGA_SERVER_URL according to the service you are using (e.g. https://api.fga.example)';
+      break;
     case SupportedLanguage.CURL:
       content = sdkSetupHeader(SupportedLanguage.CURL, configuredLanguage);
-      summary = 'Get the Bearer Token and set up the FGA_API_URL environment variable';
+      summary = 'Set FGA_SERVER_URL according to the service you are using (e.g. https://api.fga.example)';
       break;
 
     case SupportedLanguage.PLAYGROUND:

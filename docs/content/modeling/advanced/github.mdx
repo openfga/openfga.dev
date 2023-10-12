@@ -232,7 +232,7 @@ And ask some questions to <ProductName format={ProductNameFormat.ShortForm}/>:
 <CheckRequestViewer user={'user:beth'} relation={'reader'} object={'repo:contoso/tooling'} allowed={false} />
 
 The first reply makes sense but the second one does not. Intuitively, if `beth` was writer, she was also be a reader. In fact, GitHub explains this in [their documentation](https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/repository-permission-levels-for-an-organization#repository-access-for-each-permission-level)
-![Showing various Github repo access level](./assets/github-repo-access-level.svg)
+![Showing various GitHub repo access level](./assets/github-repo-access-level.svg)
 
 To make <ProductName format={ProductNameFormat.ShortForm}/> aware of this "concentric" permission model we need to update our definitions:
 
@@ -731,32 +731,47 @@ We express it like this:
     schema_version: '1.1',
     type_definitions: [
       {
-        admin: {
-          union: {
-            child: [
-              {
-                this: {},
-              },
-              {
-                tupleToUserset: {
-                  // read all tuples related to tooling as owner
-                  // which returns [{ "user": "organization:contoso", "relation": "owner", "object": "repo:contoso/tooling" }]
-                  tupleset: {
-                    relation: 'owner',
-                  },
-                  // and for each tuple return all usersets that match the following, replacing $TUPLE_USERSET_OBJECT with organization:contoso
-                  // this will return tuples of shape { object: "organization:contoso", "repo_admin", "user": ??? }
-                  computedUserset: {
-                    relation: 'repo_admin',
+        type: 'repo',
+        relations: {
+          admin: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  tupleToUserset: {
+                    // read all tuples related to tooling as owner
+                    // which returns [{ "user": "organization:contoso", "relation": "owner", "object": "repo:contoso/tooling" }]
+                    tupleset: {
+                      relation: 'owner',
+                    },
+                    // and for each tuple return all usersets that match the following, replacing $TUPLE_USERSET_OBJECT with organization:contoso
+                    // this will return tuples of shape { object: "organization:contoso", "repo_admin", "user": ??? }
+                    computedUserset: {
+                      relation: 'repo_admin',
+                    },
                   },
                 },
-              },
-            ],
+              ],
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            admin: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'team', relation: 'member' },
+                { type: 'organization', relation: 'member' },
+              ],
+            },
           },
         },
       },
     ],
-  }} skipVersion={true}
+}}
+skipVersion={true}
 />
 
 :::info
@@ -784,7 +799,7 @@ What should the **users** in those relationship tuples with **???** be?
   - If the base permission for org contoso is repo_admin then it should be **organization:contoso#member**.
   - If the base permission for org contoso is NOT repo_admin, then it should be empty (no relationship tuple).
 - Whenever the value of this dropdown changes:
-  ![Selecting new permission level from base permissions drop-down](https://docs.github.com/assets/images/help/organizations/base-permissions-drop-down.png)
+  ![Selecting new permission level from base permissions drop-down](./assets/github-org-base-permissions-drop-down.png)
   - Delete the previous relationship tuple and create a new one:
     <WriteRequestViewer
       relationshipTuples={[

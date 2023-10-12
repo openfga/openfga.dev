@@ -26,9 +26,9 @@ This article explains how to setup an OpenFGA store.
 <TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
 
 ```javascript
-const { OpenFgaApi } = require('@openfga/sdk'); // OR import { OpenFgaApi } from '@openfga/sdk';
+const { OpenFgaClient } = require('@openfga/sdk'); // OR import { OpenFgaClient } from '@openfga/sdk';
 
-const openFga = new OpenFgaApi({
+const openFga = new OpenFgaClient({
     apiScheme: process.env.FGA_API_SCHEME, // optional, defaults to "https"
     apiHost: process.env.FGA_API_HOST // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
 });
@@ -44,24 +44,23 @@ const { id: storeId } = await openFga.createStore({
 ```go
 import (
     openfga "github.com/openfga/go-sdk"
+    . "github.com/openfga/go-sdk/client"
     "os"
 )
 
 func main() {
-    configuration, err := openfga.NewConfiguration(openfga.Configuration{
-        ApiScheme:      os.Getenv("FGA_API_SCHEME"), // optional, defaults to "https"
-        ApiHost:        os.Getenv("FGA_API_HOST"), // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
+    fgaClient, err := NewSdkClient(&ClientConfiguration{
+        ApiScheme:      os.Getenv("FGA_API_SCHEME"), // optional. Can be "http" or "https". Defaults to "https"
+        ApiHost:        os.Getenv("FGA_API_HOST"), // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
+        StoreId:        os.Getenv("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+        AuthorizationModelId: openfga.PtrString(os.Getenv("FGA_MODEL_ID")),  // optional, can be overridden per request
     })
 
     if err != nil {
         // .. Handle error
     }
 
-    apiClient := openfga.NewAPIClient(configuration)
-
-    resp, _, err := apiClient.OpenFgaApi.CreateStore(context.Background()).Body(openfga.CreateStoreRequest{
-        Name: openfga.PtrString("FGA Demo Store"),
-    }).Execute()
+    resp, err := fgaClient.CreateStore(context.Background()).Body(ClientCreateStoreRequest{Name: "FGA Demo"}).Execute()
     if err != nil {
         // .. Handle error
     }
@@ -73,21 +72,24 @@ func main() {
 <TabItem value={SupportedLanguage.DOTNET_SDK} label={languageLabelMap.get(SupportedLanguage.DOTNET_SDK)}>
 
 ```dotnet
-using OpenFga.Sdk.Api;
-using OpenFga.Sdk.Configuration;
+using OpenFga.Sdk.Client;
+using OpenFga.Sdk.Client.Model;
+using OpenFga.Sdk.Model;
 using Environment = System.Environment;
 
 namespace ExampleApp;
 
 class MyProgram {
     static async Task Main() {
-        var configuration = new Configuration() {
-            ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // optional, defaults to "https"
-            ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST") // required, define without the scheme (e.g. api.openfga.example instead of https://api.openfga.example)
+        var configuration = new ClientConfiguration() {
+            ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // optional. Can be "http" or "https". Defaults to "https"
+            ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST"), // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
+            StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+            AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"), // optional, can be overridden per request
         };
-        var fgaClient = new OpenFgaApi(configuration);
+        var fgaClient = new OpenFgaClient(configuration);
 
-        var store = await fgaClient.CreateStore(new OpenFga.Sdk.Model.CreateStoreRequest()
+        var store = await fgaClient.CreateStore(new ClientCreateStoreRequest(){Name = "FGA Demo"})
         {
             Name = "FGA Demo Store"
         });
@@ -102,17 +104,19 @@ class MyProgram {
 ```python
 import os
 import openfga_sdk
-from openfga_sdk.api import open_fga_api
+from openfga_sdk.client import OpenFgaClient
 from openfga_sdk.models.create_store_request import CreateStoreRequest
 
-
 configuration = openfga_sdk.Configuration(
-    scheme = os.environ.get('FGA_API_SCHEME')
+    scheme = os.environ.get('FGA_API_SCHEME'),
     api_host = os.environ.get('FGA_API_HOST'),
 )
 
-# Create an instance of the API class
-fga_client_instance = open_fga_api.OpenFgaApi(openfga_sdk.ApiClient(configuration))
+async with OpenFgaClient(configuration) as fga_client:
+  body = CreateStoreRequest(
+      name = "FGA Demo Store",
+  )
+  response = await fga_client.create_store(body)
 
 async def create_store():
     try:
@@ -122,12 +126,22 @@ async def create_store():
         )
         api_response = await fga_client_instance.create_store(body)
     except openfga_sdk.ApiException as e:
-        print("Exception when calling OpenFgaApi->create_store: %s\n" % e)
+        print("Exception when calling OpenFgaClient->create_store: %s\n" % e)
 
 ```
 
 </TabItem>
 
+<TabItem value={SupportedLanguage.CLI} label={languageLabelMap.get(SupportedLanguage.CLI)}>
+
+```shell
+fga store create --name "FGA Demo Store"
+
+# To create the store and directly put the Store ID into an env variable:
+# export FGA_STORE_ID=$(fga store create --name "FGA Demo Store" | jq -r .id)
+```
+
+</TabItem>
 
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
