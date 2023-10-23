@@ -5,7 +5,7 @@
       "reason": ""
     },
     "@types/react": {
-      "versions": "18.2.15",
+      "versions": "18.*.*",
       "reason": ""
     },
     "react-dom": {
