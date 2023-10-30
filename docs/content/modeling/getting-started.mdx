@@ -817,7 +817,7 @@ When a document is created a relationship tuple will be stored in <ProductName f
 Why? This relation definition states that:
 
 - documents may have a parent
-- the parent(s) of a document with id {id} (either a folder a folder or drive, as set by the system) described by one of these relationship tuples:
+- the parent(s) of a document with id {id} is either a folder or a drive, described by one of these relationship tuples:
   - `{ user: "folder:{id}", relation: "parent", object: "document:{id}" }`
   - `{ user: "drive:{id}", relation: "parent", object: "document:{id}" }`
 
