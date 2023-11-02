@@ -28,7 +28,7 @@
     "@docusaurus/preset-classic": "2.4.3",
     "@easyops-cn/docusaurus-search-local": "0.36.0",
     "@lottiefiles/react-lottie-player": "3.5.3",
-    "@openfga/sdk": "0.2.8",
+    "@openfga/sdk": "0.2.10",
     "@openfga/syntax-transformer": "0.1.6",
     "assert-never": "1.2.1",
     "clsx": "2.0.0",
@@ -42,15 +42,15 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "2.4.3",
-    "@tsconfig/docusaurus": "2.0.1",
-    "@types/prismjs": "1.26.1",
+    "@tsconfig/docusaurus": "2.0.2",
+    "@types/prismjs": "1.26.2",
     "@types/react": "17.0.41",
     "@types/react-router-dom": "5.3.3",
-    "@types/sanitize-html": "2.9.1",
-    "@typescript-eslint/eslint-plugin": "6.7.4",
-    "@typescript-eslint/parser": "6.7.4",
+    "@types/sanitize-html": "2.9.3",
+    "@typescript-eslint/eslint-plugin": "6.9.0",
+    "@typescript-eslint/parser": "6.9.0",
     "docusaurus-plugin-module-alias": "0.0.2",
-    "eslint": "8.50.0",
+    "eslint": "8.52.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-plugin-react": "7.33.2",
     "husky": "8.0.3",
@@ -58,9 +58,9 @@
     "typescript": "5.2.2"
   },
   "overrides": {
-    "gauge": "5.0.0",
-    "package-json@6.5.0": "7.0.0",
-    "trim": "0.0.3",
+    "gauge": "^5.0.0",
+    "package-json@6.5.0": "^7.0.0",
+    "trim@0.0.1": "0.0.3",
     "semver": "^7.5.3"
   },
   "keywords": [
