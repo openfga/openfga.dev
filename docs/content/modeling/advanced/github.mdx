@@ -198,7 +198,7 @@ Objects of type "repo" have users related to them as "reader" if those users bel
 
 :::
 
-If we want to say `anne` is a reader of repository **repo:contoso/tooling** we had create this <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple" />:
+If we want to say `anne` is a reader of repository **repo:contoso/tooling** we create this <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple" />:
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -553,8 +553,9 @@ At the end of this section ended with the following permissions represented:
 
 In GitHub, ["you can set base permissions that apply to all members of an organization when accessing any of the organization's repositories"](https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/setting-base-permissions-for-an-organization). For our purposes this means that if:
 
-- _and_ contoso has a repository tooling
-- _and_ contoso has configured base permission to be "write"
+- User `erik` is a member of an organization `contoso`
+- _and_ `contoso` has a repository `tooling`
+- _and_ `contoso` has configured base permission to be "write"
 
 then `erik` has write permissions to tooling.
 
@@ -770,8 +771,8 @@ We express it like this:
         },
       },
     ],
-}}
-skipVersion={true}
+  }}
+  skipVersion={true}
 />
 
 :::info
@@ -779,17 +780,17 @@ skipVersion={true}
 The users with an admin relationship to a certain object of type "repo" are any of:
 
 - the "admins": the set of users who are <ProductConcept section="what-are-direct-and-implied-relationships" linkName="directly related" /> to the repo as an "admin"
-- the "repository admins of the org that owns the repo": from the objects who are related to the doc as parent, return the sets of users who are related to those objects as "repo_admin"
+- the "repository admins of the org that owns the repo": from the objects who are related to the doc as owner, return the sets of users who are related to those objects as "repo_admin"
 
 What the added section is doing is:
 
-1. read all relationship tuples related to repo:contoso/tooling as parent which returns:
+1. read all relationship tuples related to repo:contoso/tooling as owner which returns:
 
-`[{ "object": "repo:contoso/tooling", "relation": "parent", "user": "organization:contoso" }]`
+`[{ "object": "repo:contoso/tooling", "relation": "owner", "user": "organization:contoso" }]`
 
 2. for each relationship tuple read, return all usersets that match the following, returning tuples of shape:
 
-`{ "object": "organization:contoso", "repo_admin", "user": ??? }`
+`{ "object": "organization:contoso", "relation": "repo_admin", "user": ??? }`
 
 :::
 
