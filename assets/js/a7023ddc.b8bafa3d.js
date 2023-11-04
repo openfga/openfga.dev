@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkopenfga_dev=self.webpackChunkopenfga_dev||[]).push([[1713],{53457:e=>{e.exports=JSON.parse('[{"label":"conferences","permalink":"/blog/tags/conferences","count":1},{"label":"kubecon","permalink":"/blog/tags/kubecon","count":1}]')}}]);
