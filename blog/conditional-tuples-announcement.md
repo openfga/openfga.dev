@@ -48,7 +48,7 @@ You'll get the following results for the [Check](https://openfga.dev/api/service
 |------|---------|-------|---|---|
 | user:bob | viewer| document:1|  | `allowed` : `true` |
 | user:anne | viewer| document:1| `current_time` : `2023-01-01T00:10:00Z` | `allowed` : `true` |
-|11 user:anne | viewer| document:1| `current_time` : `2023-01-01T02:00:00Z` | `allowed` : `false` |
+| user:anne | viewer| document:1| `current_time` : `2023-01-01T02:00:00Z` | `allowed` : `false` |
 | user:anne | viewer| document:1 | | `error` : "failed to evaluate relationship condition 'non_expired_grant': context is missing parameters '[current_time]' |
 
 You'll get the following results for the [ListObjects](https://openfga.dev/api/service#/Relationship%20Queries/ListObjects) operations below:
@@ -77,7 +77,7 @@ The [OpenFGA Sample Stores repository](https://github.com/openfga/sample-stores)
 
 ## How to use it?
 
-Conditional Relationship Tuples are included in OpenFGA 1.4 RC version. You can run it by pulling it from docker:
+Conditional Relationship Tuples are included in OpenFGA 1.4.0-rc1 version. You can run it by pulling it from docker:
 
 ```
 docker pull openfga/openfga:v1.4.0-rc1
@@ -88,15 +88,15 @@ OpenFGA has a rich ecosystem of developer tools. The following have been updated
 
 - [Visual Studio Code integration](https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode) which provides syntax highlighting and model validations for conditions.
 
-- Beta version of the [Javscript SDK](https://www.npmjs.com/package/@openfga/sdk/v/0.3.0-beta.1) and the [Go SDK](https://github.com/openfga/go-sdk/releases/tag/v0.3.0-beta.1), which allows using the additional parameters.
+- Beta versions of the [Javascript SDK](https://www.npmjs.com/package/@openfga/sdk/v/0.3.0-beta.1) and the [Go SDK](https://github.com/openfga/go-sdk/releases/tag/v0.3.0-beta.1), which allows using the additional parameters.
 
-- The [OpenFGA CLI](https://github.com/openfga/cli) allows validate models and run tests that use conditional tuples. You can use it to test the new features by pointing to a “fga.yaml” file that [defines the tests you want to run](https://github.com/openfga/cli#run-tests-on-an-authorization-model), without having to deploy OpenFGA.
+- The [OpenFGA CLI](https://github.com/openfga/cli) allows validate models and run tests that use conditional tuples. You can use it to test the new features by pointing to a “.fga.yaml” file that [defines the tests you want to run](https://github.com/openfga/cli#run-tests-on-an-authorization-model), without having to deploy OpenFGA.
 
 ## What’s Next?
 
 We’ll address some limitations of the current implementation:
 
-- The Expand() API does not consider conditions.
+- The [Expand()](https://openfga.dev/api/service#/Relationship%20Queries/Expand) API does not consider conditions.
 - The Visual Studio Code integration is not validating the expressions in conditions. 
 
 We'll also improve ListObjects scenarios when it's called with missing context.  For example, consider the following model that enables access only to documents with a specific status:
@@ -117,10 +117,9 @@ If you want to list all the documents a user can view, you'll need to know the s
 Our goal is to return a structure that you can use to filter documents on your side, similar to `(document.id = ‘1’ and document.status = ‘draft’) or 
 (document.id = ‘2’ and.status = draft)`. This won’t scale to a large number of documents, but would be useful in some scenarios.
 
-## We want to learn from you!
+## Reach out!
 
 We want to learn how you use this feature and how we can improve it! 
 
 Please reach out to us in [Discord](https://discord.gg/8naAwJfWN6) or [Github](https://github.com/orgs/openfga/discussions) with any questions or feedback.
-
 
