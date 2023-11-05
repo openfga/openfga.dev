@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { WriteAuthorizationModelRequest } from '@openfga/sdk';
-import { apiSyntaxToFriendlySyntax } from '@openfga/syntax-transformer';
+import { AuthorizationModel } from '@openfga/sdk';
+import { transformer } from '@openfga/syntax-transformer';
 
 export enum SyntaxFormat {
   Api = 'api',
@@ -9,15 +9,15 @@ export enum SyntaxFormat {
 }
 
 export const loadSyntax = (
-  configuration: WriteAuthorizationModelRequest,
+  configuration: AuthorizationModel,
   format: SyntaxFormat = SyntaxFormat.Api,
   skipVersion?: boolean,
 ) => {
   switch (format) {
     case SyntaxFormat.Friendly2:
       return skipVersion
-        ? apiSyntaxToFriendlySyntax(configuration).replace('model\n  schema 1.1\n', '')
-        : apiSyntaxToFriendlySyntax(configuration);
+        ? transformer.transformJSONToDSL(configuration).replace('model\n  schema 1.1\n', '')
+        : transformer.transformJSONToDSL(configuration);
     case SyntaxFormat.Api:
     default: {
       return skipVersion

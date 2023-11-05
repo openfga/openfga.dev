@@ -1,19 +1,26 @@
 import siteConfig from '@generated/docusaurus.config';
 import type * as PrismNamespace from 'prismjs';
-import { syntaxHighlighters } from '@openfga/syntax-transformer';
-import { OpenFgaDslThemeTokenType } from '@openfga/syntax-transformer/dist/theme';
+import { tools, theming } from '@openfga/frontend-utils';
+
+const { OpenFgaDslThemeTokenType } = theming;
+
+const { PrismExtensions } = tools;
 
 const languageDefinition = {
-  ...syntaxHighlighters.PrismExtensions.languageDefinition,
-  [OpenFgaDslThemeTokenType.TYPE]: {
-    ...syntaxHighlighters.PrismExtensions.languageDefinition[OpenFgaDslThemeTokenType.TYPE],
+  ...PrismExtensions.languageDefinition,
+  [OpenFgaDslThemeTokenType.KEYWORD]: /\b(type|relations|define|and|or|but not|from|as|model|schema|condition)\b/,
+  condition: {
+    pattern: /(\bcondition\s+)\w+/i,
+    lookbehind: true,
     greedy: true,
   },
-  [OpenFgaDslThemeTokenType.RELATION]: {
-    ...syntaxHighlighters.PrismExtensions.languageDefinition[OpenFgaDslThemeTokenType.RELATION],
-    greedy: true,
+  'condition-params': {
+    pattern: /\(.*\)\s*{/,
+    inside: {
+      'condition-param': /\b(\w+)\s*:/i,
+      'condition-param-type': /\b(string|int|map|uint|list|timestamp|bool|duration|double|ipaddress)\b/,
+    },
   },
-  [OpenFgaDslThemeTokenType.DIRECTLY_ASSIGNABLE]: /\[.*]|self/,
 };
 
 export default function prismIncludeLanguages(PrismObject: typeof PrismNamespace): void {
@@ -34,7 +41,7 @@ export default function prismIncludeLanguages(PrismObject: typeof PrismNamespace
     require(`prismjs/components/prism-${lang}`);
   });
 
-  PrismObject.languages[syntaxHighlighters.PrismExtensions.LANGUAGE_NAME] = languageDefinition;
+  PrismObject.languages[PrismExtensions.LANGUAGE_NAME] = languageDefinition;
 
   delete (globalThis as unknown as Global & { Prism?: typeof PrismNamespace }).Prism;
 }

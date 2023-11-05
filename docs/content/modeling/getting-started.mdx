@@ -503,46 +503,37 @@ In <ProductName format={ProductNameFormat.ShortForm}/>, relations can only have 
 
 Using the <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" /> we can enumerate the relations for each type:
 
-<AuthzModelSnippetViewer
-  onlyShow={SyntaxFormat.Friendly2}
-  configuration={{
-    schema_version: '1.1',
-    type_definitions: [
-      {
-        type: 'user',
-      },
-      {
-        type: 'document',
-        relations: {
-          parent: {},
-          owner: {},
-          editor: {},
-          viewer: {},
-          can_share: {},
-          can_view: {},
-          can_write: {},
-          can_change_owner: {},
-        },
-      },
-      {
-        type: 'folder',
-        relations: {
-          owner: {},
-          parent: {},
-          viewer: {},
-          can_create_folder: {},
-          can_create_document: {},
-          can_view: {},
-        },
-      },
-      { type: 'organization', relations: { member: {} } },
-      {
-        type: 'drive',
-        relations: { owner: {}, can_create_document: {}, can_create_folder: {} },
-      },
-    ],
-  }}
-/>
+```dsl.openfga
+model
+  schema 1.1
+type user
+type document
+  relations
+    define parent:
+    define owner:
+    define editor:
+    define viewer:
+    define can_share:
+    define can_view:
+    define can_write:
+    define can_change_owner:
+type folder
+  relations
+    define owner:
+    define parent:
+    define viewer:
+    define can_create_folder:
+    define can_create_document:
+    define can_view:
+type organization
+  relations
+    define member:
+type drive
+  relations
+    define owner:
+    define can_create_document:
+    define can_create_folder:
+```
 
 :::info Caution
 You're now in the process of building a version you can use. The model above is not yet a valid authorization model accepted by <ProductName format={ProductNameFormat.ShortForm}/>.
@@ -1385,7 +1376,7 @@ Combining the type definitions for document and organization, we have
 
 :::note
 
-The <ProductName /> authorization model API and SDK only accepts JSON in its input. To convert from DSL to JSON, you may define and save the model in [Playground](https://play.fga.dev/) first. After that, click the JSON button where the JSON configuration will be copied to your clipboard.
+The <ProductName /> authorization model API and SDK only accepts JSON in its input. To convert from DSL to JSON, you may use the [FGA CLI](https://github.com/openfga/cli) to run `fga model transform`.
 
 :::
 
