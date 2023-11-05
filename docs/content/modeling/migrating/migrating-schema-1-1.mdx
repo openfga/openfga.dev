@@ -479,49 +479,15 @@ In schema 1.0, because type restrictions were not available, the validation erro
 </summary>
   In the case below, the write request will fail in the new schema 1.1 version, but would have succeeded in schema version 1.0:
 
-  <AuthzModelSnippetViewer
-    showSchemaOneDotZero={true}
-    configuration={{
-      schema_version: "1.1",
-      type_definitions: [
-        {
-          type: 'user',
-        },
-        {
-          type: 'folder',
-          relations: {
-            parent: {
-              this: {},
-            },
-            editor: {
-              union: {
-                child: [
-                  {
-                    this: {},
-                  },
-                  {
-                    tupleToUserset: {
-                      tupleset: {
-                        relation: 'parent',
-                      },
-                      computedUserset: {
-                        relation: 'editor',
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-          },
-          metadata: {
-            relations: {
-              parent: { directly_related_user_types: [{ type: 'folder' }, { type: 'folder', relation: "parent" }] },
-              editor: { directly_related_user_types: [{ type: 'user' }] },
-            },
-          }
-        },
-      ],
-    }}
+  ```dsl.openfga
+model
+  schema 1.1
+type user
+type folder
+  relations
+    define parent: [folder,folder#parent]
+    define editor: [user] or editor from parent
+  ```
   />
 
   In schema 1.0, the `WriteAuthorizationModel` would have succeeded, but when attempting to write a tuple such as the one below, you would have received an error:

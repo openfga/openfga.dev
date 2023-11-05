@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { AuthorizationModel } from "@openfga/sdk";
+import { AuthorizationModel } from '@openfga/sdk';
 import { transformer } from '@openfga/syntax-transformer';
 
 export enum SyntaxFormat {
