@@ -20,7 +20,7 @@ In our ongoing efforts to expand OpenFGA’s capacity for articulating a broader
 
 Consider the following example, where we utilize Conditional Tuples to grant access for a user over a specified time duration. We stipulate that a user may be granted either unconditional access or access constrained to a certain time period:
 
-```python
+```dsl.openfga
 model
   schema 1.1
 
@@ -31,7 +31,7 @@ type document
     define viewer: [user, user with non_expired_grant]
 
 condition non_expired_grant(current_time: timestamp, grant_time: timestamp, grant_duration: duration) {
-    current_time < grant_time + grant_duration
+  current_time < grant_time + grant_duration
 }
 ```
 
@@ -79,7 +79,7 @@ The [OpenFGA Sample Stores repository](https://github.com/openfga/sample-stores)
 
 Conditional Relationship Tuples are included in OpenFGA 1.4.0-rc1 version. You can run it by pulling it from docker:
 
-```
+```shell
 docker pull openfga/openfga:v1.4.0-rc1
 docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 openfga/openfga:v1.4.0-rc1 run`
 ```
@@ -90,32 +90,37 @@ OpenFGA has a rich ecosystem of developer tools. The following have been updated
 
 - Beta versions of the [Javascript SDK](https://www.npmjs.com/package/@openfga/sdk/v/0.3.0-beta.1) and the [Go SDK](https://github.com/openfga/go-sdk/releases/tag/v0.3.0-beta.1), which allows using the additional parameters.
 
-- The [OpenFGA CLI](https://github.com/openfga/cli) allows validate models and run tests that use conditional tuples. You can use it to test the new features by pointing to a “.fga.yaml” file that [defines the tests you want to run](https://github.com/openfga/cli#run-tests-on-an-authorization-model), without having to deploy OpenFGA.
+- The [OpenFGA CLI](https://github.com/openfga/cli) allows validating models and runing tests that use conditional tuples. You can use it to test the new features by pointing to a `“.fga.yaml”` file that [defines the tests you want to run](https://github.com/openfga/cli#run-tests-on-an-authorization-model), without having to deploy OpenFGA.
 
 ## What’s Next?
 
 We’ll address some limitations of the current implementation:
 
-- The [Expand()](https://openfga.dev/api/service#/Relationship%20Queries/Expand) API does not consider conditions.
+- The [Expand API](https://openfga.dev/api/service#/Relationship%20Queries/Expand) does not consider conditions.
 - The Visual Studio Code integration is not validating the expressions in conditions. 
 
 We'll also improve ListObjects scenarios when it's called with missing context.  For example, consider the following model that enables access only to documents with a specific status:
 
-```python
-  type user
-  type document
-    relations
-      define can_access: [user with docs_in_draft_status]
+```dsl.openfga
+model
+  schema 1.1
 
-  condition docs_in_draft_status(status: string) {
-    status == "draft"
-  }
+type user
+
+type document
+  relations
+    define can_access: [user with docs_in_draft_status]
+
+condition docs_in_draft_status(status: string) {
+  status == "draft"
+}
 ```
 
 If you want to list all the documents a user can view, you'll need to know the status of all of those documents. Given you don't know the documents the user has access too, you can't send the status of those as a parameter to ListObjects.
 
-Our goal is to return a structure that you can use to filter documents on your side, similar to `(document.id = ‘1’ and document.status = ‘draft’) or 
-(document.id = ‘2’ and.status = draft)`. This won’t scale to a large number of documents, but would be useful in some scenarios.
+Our goal is to return a structure that you can use to filter documents on your side, similar to:
+`(document.id = ‘1’ and document.status = ‘draft’) or (document.id = ‘2’ and.status = draft)` <br />
+This won’t scale to a large number of documents, but would be useful in some scenarios.
 
 ## Reach out!
 
