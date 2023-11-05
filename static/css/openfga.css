@@ -582,11 +582,23 @@ pre {
   color: var(--ofga-color-keyword) !important;
 }
 
+.language-dsl\.openfga .token.condition-param-type {
+  color: var(--ofga-color-keyword) !important;
+}
+
 .language-dsl\.openfga .token.type {
   color: var(--ofga-color-type);
 }
 
+.language-dsl\.openfga .token.condition {
+  color: var(--ofga-color-type);
+}
+
 .language-dsl\.openfga .token.relation {
+  color: var(--ofga-color-relation);
+}
+
+.language-dsl\.openfga .token.condition-param {
   color: var(--ofga-color-relation);
 }
 

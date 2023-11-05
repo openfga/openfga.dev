@@ -8,18 +8,18 @@ const { PrismExtensions } = tools;
 
 const languageDefinition = {
   ...PrismExtensions.languageDefinition,
-  [OpenFgaDslThemeTokenType.TYPE]: {
-    ...PrismExtensions.languageDefinition[OpenFgaDslThemeTokenType.TYPE],
-    greedy: true,
-  },
-  [OpenFgaDslThemeTokenType.RELATION]: {
-    ...PrismExtensions.languageDefinition[OpenFgaDslThemeTokenType.RELATION],
-    greedy: true,
-  },
-  [OpenFgaDslThemeTokenType.DIRECTLY_ASSIGNABLE]: /\[.*]|self/,
+  [OpenFgaDslThemeTokenType.KEYWORD]: /\b(type|relations|define|and|or|but not|from|as|model|schema|condition)\b/,
   condition: {
-    ...PrismExtensions.languageDefinition[OpenFgaDslThemeTokenType.TYPE],
+    pattern: /(\bcondition\s+)\w+/i,
+    lookbehind: true,
     greedy: true,
+  },
+  'condition-params': {
+    pattern: /\(.*\)\s*{/,
+    inside: {
+      'condition-param': /\b(\w+)\s*:/i,
+      'condition-param-type': /\b(string|int|map|uint|list|timestamp|bool|duration|double|ipaddress)\b/,
+    },
   },
 };
 
