@@ -8,7 +8,7 @@ import Admonition from '@theme/Admonition';
 
 import { SyntaxFormat, WriteAuthzModelViewer } from '@components/Docs';
 import { AuthzModelCodeBlock } from './AuthzModelCodeBlock';
-import { SchemaVersion } from '@openfga/syntax-transformer';
+import { constants } from '@openfga/frontend-utils';
 
 type AuthzModelSnippetViewerProps = {
   // Authorization Model in api syntax
@@ -68,7 +68,7 @@ const BaseAuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
         </TabItem>
         <TabItem value="dsl-onedotzero" label="DSL (Version 1.0)">
           <AuthzModelCodeBlock
-            configuration={{ ...configuration, schema_version: SchemaVersion.OneDotZero }}
+            configuration={{ ...configuration, schema_version: constants.enums.SchemaVersion.OneDotZero }}
             syntaxFormat={SyntaxFormat.Friendly2}
             skipVersion={skipVersion}
           />
@@ -108,8 +108,7 @@ const AuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
             <div>The OpenFGA API only accepts an authorization model in the API&#39;s JSON syntax.</div>
             <div>
               To convert between the API Syntax and the friendly DSL, you can use the{' '}
-              <Link href={'https://github.com/openfga/syntax-transformer/'}>syntax transformer</Link> or{' '}
-              <Link href={'https://play.fga.dev'}>Okta FGA&#39;s Playground</Link>.
+              <Link href={'https://github.com/openfga/cli/'}>FGA CLI</Link>.
             </div>
           </Admonition>
 

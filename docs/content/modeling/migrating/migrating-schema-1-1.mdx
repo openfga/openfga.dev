@@ -43,7 +43,7 @@ To facilitate migration to the new DSL schema, you will need to update tuples th
 
 :::info
 
-Before starting to migrate to the new model schema, it is recommended that you obtain your current [authorization model ID](/api/service#/Authorization%20Models/ReadAuthorizationModels) and ensure that all your [check](../../concepts.mdx#what-is-a-check-request), [write](../../getting-started/update-tuples.mdx), [expand](../../interacting/relationship-queries.mdx#expand) and [list object](../../interacting/relationship-queries.mdx#listobjects) are performed against that model id. This allows consistent behavior in your production system until you are ready to switch to the new model. 
+Before starting to migrate to the new model schema, it is recommended that you obtain your current [authorization model ID](/api/service#/Authorization%20Models/ReadAuthorizationModels) and ensure that all your [check](../../concepts.mdx#what-is-a-check-request), [write](../../getting-started/update-tuples.mdx), [expand](../../interacting/relationship-queries.mdx#expand) and [list object](../../interacting/relationship-queries.mdx#listobjects) are performed against that model id. This allows consistent behavior in your production system until you are ready to switch to the new model.
 
 :::
 
@@ -67,54 +67,23 @@ be posted in GitHub, Discord and Twitter before this change occurs.
 
 We’ll use the following version 1.0 model and tuples to illustrate the changes we’ll need to make:
 
-<AuthzModelSnippetViewer
-  configuration={{
-    type_definitions: [
-      { type: 'user', relations: {} },
-      { type: 'group', relations: { member: { this: {} } } },
-      {
-        type: 'folder',
-        relations: {
-          parent: { this: {} },
-          viewer: {
-            union: {
-              child: [
-                { this: {} },
-                {
-                  tupleToUserset: {
-                    tupleset: { object: '', relation: 'parent' },
-                    computedUserset: { object: '', relation: 'viewer' },
-                  },
-                },
-              ],
-            },
-          },
-        },
-      },
-      {
-        type: 'document',
-        relations: {
-          parent: { this: {} },
-          viewer: { this: {} },
-          can_read: {
-            union: {
-              child: [
-                { computedUserset: { object: '', relation: 'viewer' } },
-                {
-                  tupleToUserset: {
-                    tupleset: { object: '', relation: 'parent' },
-                    computedUserset: { object: '', relation: 'viewer' },
-                  },
-                },
-              ],
-            },
-          },
-        },
-      },
-    ],
-    schema_version: '1.0',
-  }}
-/>
+```dsl.openfga
+model
+  schema 1.0
+type user
+type group
+  relations
+    define member as self
+type folder
+  relations
+    define parent as self
+    define viewer as self or viewer from parent
+type document
+  relations
+    define parent as self
+    define viewer as self
+    define can_read as viewer or viewer from parent
+```
 
 <RelationshipTuplesViewer
   relationshipTuples={[
@@ -579,7 +548,7 @@ In schema 1.0, because type restrictions were not available, the validation erro
 
 3- **March 31st 2023**: Default model version in Syntax Transformer, Playground and Docs switch to `1.1`
   - The model schema version will be required in all new authorization models, and new authorization models without the version will be rejected.
-  ```
+  ```dsl.openfga
    model
      schema 1.1
   ```
