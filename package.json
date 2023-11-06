@@ -23,9 +23,9 @@
     "format:fix": "prettier --write src/**"
   },
   "dependencies": {
-    "@docusaurus/core": "2.4.3",
-    "@docusaurus/plugin-client-redirects": "2.4.3",
-    "@docusaurus/preset-classic": "2.4.3",
+    "@docusaurus/core": "3.0.0",
+    "@docusaurus/plugin-client-redirects": "3.0.0",
+    "@docusaurus/preset-classic": "3.0.0",
     "@easyops-cn/docusaurus-search-local": "0.36.0",
     "@lottiefiles/react-lottie-player": "3.5.3",
     "@openfga/sdk": "^0.2.10",
@@ -35,17 +35,17 @@
     "clsx": "2.0.0",
     "path-browserify": "1.0.1",
     "prism-react-renderer": "2.1.0",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "react-feather": "2.0.10",
     "sanitize-html": "2.11.0",
-    "swagger-ui-react": "5.9.0"
+    "swagger-ui-react": "5.9.1"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "2.4.3",
     "@tsconfig/docusaurus": "2.0.2",
     "@types/prismjs": "1.26.2",
-    "@types/react": "17.0.41",
+    "@types/react": "18.2.35",
     "@types/react-router-dom": "5.3.3",
     "@types/sanitize-html": "2.9.3",
     "@typescript-eslint/eslint-plugin": "6.9.0",
