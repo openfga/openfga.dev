@@ -98,6 +98,7 @@ We’ll address some limitations of the current implementation:
 
 - The [Expand API](https://openfga.dev/api/service#/Relationship%20Queries/Expand) does not consider conditions.
 - The Visual Studio Code integration is not validating the expressions in conditions. 
+- The Playground does not let you add context for tuples and assertions.
 
 We'll also improve ListObjects scenarios when it's called with missing context.  For example, consider the following model that enables access only to documents with a specific status:
 
