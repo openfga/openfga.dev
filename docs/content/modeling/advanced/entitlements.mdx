@@ -341,7 +341,8 @@ Add it now. Like so:
         access: { directly_related_user_types: [{ type: 'user' }] },
       },
     },
-  }} skipVersion={true}
+  }}
+  skipVersion={true}
 />
 
 :::info
@@ -433,17 +434,25 @@ If you have already completed some of the other tutorials you might have encount
 <AuthzModelSnippetViewer
   configuration={{
     schema_version: '1.1',
-    viewer: {
-      tupleToUserset: {
-        tupleset: {
-          relation: 'parent',
-        },
-        computedUserset: {
-          relation: 'all_objects_viewer',
+    type_definitions: [
+      {
+        type: 'object',
+        relations: {
+          viewer: {
+            tupleToUserset: {
+              tupleset: {
+                relation: 'parent',
+              },
+              computedUserset: {
+                relation: 'all_objects_viewer',
+              },
+            },
+          },
         },
       },
-    },
-  }} skipVersion={true}
+    ],
+  }}
+  skipVersion={true}
 />
 
 :::info
@@ -453,6 +462,7 @@ With this, when asked to check a user's `viewer` relationship with the object, <
 2. For each relationship tuple, return all _usersets_ that have `all_objects_viewer` relation to the objects in those relationship tuples
 3. If the user is in any of those _usersets_, return yes, as the user is a `viewer` on this object.
    In other words, users related as `all_objects_viewer` to any of this object's `parents` are related as `viewer` to this object.
+
 :::
 
 If you want to give all subscribers on a plan access to a feature, you can do it like so:
@@ -493,21 +503,24 @@ If you want to give all subscribers on a plan access to a feature, you can do it
         },
       },
     },
-  }} skipVersion={true}
+  }}
+  skipVersion={true}
 />
 
 :::info
-users related to `feature` as `access` are the union of (any of):
-_ the set of users with a direct `access` relation
-_ the set of users related to the `associated_plan` as `subscriber` (the feature's associated plans' subscribers)
+Users related to `feature` as `access` are the union of (any of):
+
+- the set of users with a direct `access` relation
+- the set of users related to the `associated_plan` as `subscriber` (the feature's associated plans' subscribers)
+
 So everyone who has direct access, as well as the subscribers of the associated plan
 :::
 
-That would mean that in order for an object to have an `access` relation to a feature y, there needs to be either a:
+That would mean that in order for an object to have an `access` relation to a feature y, there needs to be either:
 
 - a <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" /> via a relationship tuple:
   e.g. `{ "user": "user:x", "relation": "access", "object": "feature:y" }`
-- subscriber relationship with another object related to x associated_plan:
+- a subscriber relationship with another object related to x associated_plan:
   e.g. `{ "user": "user:x", "relation": "subscriber", "object": "plan:z" } { "user": "plan:z", "relation": "associated_plan", "object": "feature:y" }`
 
 That brings you close. That will allow you to grant organizations access to the feature (as organizations have a subscriber relation with the plan).
@@ -705,9 +718,9 @@ Now ask the following query: `is anne related to feature:issues as access?`
 
 <CheckRequestViewer user={'user:anne'} relation={'access'} object={'feature:issues'} allowed={true} />
 
-#### Disallow Direction Relationship
+#### Disallow Direct Relationship
 
-So far, with just a <ProductName format={ProductNameFormat.ShortForm}/> authorization model, and the initial relationship tuples indication the relations you know, you configured <ProductName format={ProductNameFormat.LongForm}/> to give you the correct response.
+So far, with just a <ProductName format={ProductNameFormat.ShortForm}/> authorization model, and the initial relationship tuples indicating the relations you know, you configured <ProductName format={ProductNameFormat.LongForm}/> to give you the correct response.
 
 Earlier on, the idea of not allowing a direct `access` relation between a user and a `feature` was discussed, e.g. adding a relationship tuple like `{ "user": "user:anne", "relation": "access", "object": "feature:y" }`. You will remove it now.
 
@@ -749,7 +762,8 @@ To disallow a direct relationship, you need to remove the direct relationship ty
         },
       },
     },
-  }} skipVersion={true}
+  }}
+  skipVersion={true}
 />
 
 becomes
@@ -778,7 +792,8 @@ becomes
         associated_plan: { directly_related_user_types: [{ type: 'plan' }] },
       },
     },
-  }} skipVersion={true}
+  }}
+  skipVersion={true}
 />
 
 With this change, even if your app layer added the following relationship tuple:
