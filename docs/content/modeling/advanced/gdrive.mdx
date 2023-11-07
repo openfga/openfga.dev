@@ -178,7 +178,8 @@ The <ProductName format={ProductNameFormat.LongForm}/> service determines if a <
         viewer: { directly_related_user_types: [{ type: 'user' }] },
       },
     },
-  }} skipVersion={true}
+  }}
+  skipVersion={true}
 />
 
 :::info
@@ -582,36 +583,49 @@ We express it like this:
 <AuthzModelSnippetViewer
   configuration={{
     schema_version: '1.1',
-    viewer: {
-      union: {
-        child: [
-          {
-            this: {},
-          },
-          {
-            computedUserset: {
-              relation: 'commenter',
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          viewer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'commenter',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      // read all relationship tuples related to document:2021-budget as parent
+                      // which returns [{ "object": "document:2021-budget", "relation": "parent", "user": "document:2021-planning"}]
+                      relation: 'parent',
+                    },
+                    computedUserset: {
+                      // and for each relationship tuple return all usersets that match the following, replacing $TUPLE_USERSET_OBJECT with document:2021-planning
+                      // this will return relationship tuples of shape { "object": "document:2021-planning", "viewer", "user": ??? }
+                      // including { "object": "document:2021-planning", "viewer", "user": "user:diane" }
+                      relation: 'viewer',
+                    },
+                  },
+                },
+              ],
             },
           },
-          {
-            tupleToUserset: {
-              tupleset: {
-                // read all relationship tuples related to document:2021-budget as parent
-                // which returns [{ "object": "document:2021-budget", "relation": "parent", "user": "document:2021-planning"}]
-                relation: 'parent',
-              },
-              computedUserset: {
-                // and for each relationship tuple return all usersets that match the following, replacing $TUPLE_USERSET_OBJECT with document:2021-planning
-                // this will return relationship tuples of shape { "object": "document:2021-planning", "viewer", "user": ??? }
-                // including { "object": "document:2021-planning", "viewer", "user": "user:diane" }
-                relation: 'viewer',
-              },
-            },
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
           },
-        ],
+        },
       },
-    },
-  }} skipVersion={true}
+    ],
+  }}
+  skipVersion={true}
 />
 
 :::info
@@ -893,7 +907,13 @@ First, we will need to update our model to allow for public access with type `us
             owner: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
             writer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
             commenter: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
-            viewer: { directly_related_user_types: [{ type: 'user' },{type: 'user', wildcard: {}} , { type: 'domain', relation: 'member' }] },
+            viewer: {
+              directly_related_user_types: [
+                { type: 'user' },
+                { type: 'user', wildcard: {} },
+                { type: 'domain', relation: 'member' },
+              ],
+            },
           },
         },
       },
@@ -913,8 +933,6 @@ First, we will need to update our model to allow for public access with type `us
     ],
   }}
 />
-
-
 
 To mark Anne as the owner, the domain members as commenters and the public as viewers, we need to add the following relationship tuples:
 

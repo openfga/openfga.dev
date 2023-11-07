@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { AuthorizationModel } from '@openfga/sdk';
+import { AuthorizationModel, TypeDefinition } from '@openfga/sdk';
 import { transformer } from '@openfga/syntax-transformer';
+import { constants } from '@openfga/frontend-utils';
+
+const { SchemaVersion } = constants.enums;
 
 export enum SyntaxFormat {
   Api = 'api',
@@ -13,16 +16,24 @@ export const loadSyntax = (
   format: SyntaxFormat = SyntaxFormat.Api,
   skipVersion?: boolean,
 ) => {
+  let config = configuration;
   switch (format) {
     case SyntaxFormat.Friendly2:
+      if (!config.type_definitions && (config as unknown as TypeDefinition).type) {
+        config = {
+          schema_version: SchemaVersion.OneDotOne,
+          type_definitions: [config as unknown as TypeDefinition],
+        };
+        skipVersion = true;
+      }
       return skipVersion
-        ? transformer.transformJSONToDSL(configuration).replace('model\n  schema 1.1\n', '')
-        : transformer.transformJSONToDSL(configuration);
+        ? transformer.transformJSONToDSL(config).replace('model\n  schema 1.1\n', '')
+        : transformer.transformJSONToDSL(config);
     case SyntaxFormat.Api:
     default: {
       return skipVersion
-        ? JSON.stringify(configuration, null, '  ').replace('  "schema_version": "1.1",\n', '')
-        : JSON.stringify(configuration, null, '  ');
+        ? JSON.stringify(config, null, '  ').replace('  "schema_version": "1.1",\n', '')
+        : JSON.stringify(config, null, '  ');
     }
   }
 };
