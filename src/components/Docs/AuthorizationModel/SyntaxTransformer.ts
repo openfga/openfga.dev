@@ -25,6 +25,8 @@ export const loadSyntax = (
           type_definitions: [config as unknown as TypeDefinition],
         };
         skipVersion = true;
+      } else if (!config.type_definitions) {
+        throw new Error('invalid partial model');
       }
       return skipVersion
         ? transformer.transformJSONToDSL(config).replace('model\n  schema 1.1\n', '')

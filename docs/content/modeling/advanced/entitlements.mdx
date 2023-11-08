@@ -325,7 +325,6 @@ Add it now. Like so:
 
 <AuthzModelSnippetViewer
   configuration={{
-    schema_version: '1.1',
     type: 'feature',
     relations: {
       associated_plan: {
@@ -433,24 +432,19 @@ If you have already completed some of the other tutorials you might have encount
 
 <AuthzModelSnippetViewer
   configuration={{
-    schema_version: '1.1',
-    type_definitions: [
-      {
-        type: 'object',
-        relations: {
-          viewer: {
-            tupleToUserset: {
-              tupleset: {
-                relation: 'parent',
-              },
-              computedUserset: {
-                relation: 'all_objects_viewer',
-              },
-            },
+    type: 'resource',
+    relations: {
+      viewer: {
+        tupleToUserset: {
+          tupleset: {
+            relation: 'parent',
+          },
+          computedUserset: {
+            relation: 'all_objects_viewer',
           },
         },
       },
-    ],
+    },
   }}
   skipVersion={true}
 />
@@ -469,7 +463,6 @@ If you want to give all subscribers on a plan access to a feature, you can do it
 
 <AuthzModelSnippetViewer
   configuration={{
-    schema_version: '1.1',
     type: 'feature',
     relations: {
       associated_plan: {
@@ -728,7 +721,6 @@ To disallow a direct relationship, you need to remove the direct relationship ty
 
 <AuthzModelSnippetViewer
   configuration={{
-    schema_version: '1.1',
     type: 'feature',
     relations: {
       associated_plan: {
@@ -770,7 +762,6 @@ becomes
 
 <AuthzModelSnippetViewer
   configuration={{
-    schema_version: '1.1',
     type: 'feature',
     relations: {
       associated_plan: {
@@ -812,7 +803,6 @@ Ensure that your authorization model matches the one below
 
 <AuthzModelSnippetViewer
   configuration={{
-    schema_version: '1.1',
     type_definitions: [
       {
         type: 'user',

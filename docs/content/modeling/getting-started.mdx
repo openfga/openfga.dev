@@ -795,9 +795,7 @@ When a document is created a relationship tuple will be stored in <ProductName f
 
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
-  configuration={{
-    schema_version: '1.1',
-    type_definitions: [
+  configuration={
       {
         type: 'document',
         relations: {
@@ -808,8 +806,6 @@ When a document is created a relationship tuple will be stored in <ProductName f
             parent: { directly_related_user_types: [{ type: 'folder' }, { type: 'drive' }] },
           },
         },
-      },
-    ],
   }}
   skipVersion={true}
 />
@@ -839,10 +835,10 @@ We can achieve that with the following definition using <UpdateProductNameInLink
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
   skipVersion={true}
-  configuration={{
-    schema_version: '1.1',
-    type_definitions: [
-      {
+  configuration={
+    {
+      type: 'document',
+      relations: {
         can_share: {
           union: {
             child: [
@@ -873,8 +869,7 @@ We can achieve that with the following definition using <UpdateProductNameInLink
             ],
           },
         },
-      },
-    ],
+      }
   }}
 />
 
@@ -900,8 +895,8 @@ Similar to the [can_share relation](#relation-can_share), we can achieve that wi
   onlyShow={SyntaxFormat.Friendly2}
   skipVersion={true}
   configuration={{
-    schema_version: '1.1',
-    type_definitions: [
+    type: 'document',
+    relations:
       {
         can_view: {
           union: {
@@ -952,7 +947,6 @@ Similar to the [can_share relation](#relation-can_share), we can achieve that wi
           },
         },
       },
-    ],
   }}
 />
 
@@ -968,8 +962,8 @@ Similar to the [can_share relation](#relation-can_share), we can achieve that wi
   onlyShow={SyntaxFormat.Friendly2}
   skipVersion={true}
   configuration={{
-    schema_version: '1.1',
-    type_definitions: [
+    type: 'document',
+    relations:
       {
         can_write: {
           union: {
@@ -1002,7 +996,6 @@ Similar to the [can_share relation](#relation-can_share), we can achieve that wi
           },
         },
       },
-    ],
   }}
 />
 
@@ -1018,8 +1011,8 @@ Similar to the [can_share relation](#relation-can_share), we can achieve that wi
   onlyShow={SyntaxFormat.Friendly2}
   skipVersion={true}
   configuration={{
-    schema_version: '1.1',
-    type_definitions: [
+    type: 'document',
+    relations:
       {
         can_change_owner: {
           computedUserset: {
@@ -1028,7 +1021,6 @@ Similar to the [can_share relation](#relation-can_share), we can achieve that wi
           },
         },
       },
-    ],
   }}
 />
 
