@@ -98,7 +98,7 @@ using OpenFga.Sdk.Model;`,
       python: {
         importStatement: `import os
 import json
-import openfga_sdk
+from openfga_sdk.client import ClientConfiguration
 from openfga_sdk.client import OpenFgaClient`,
         apiName: `OpenFgaClient`,
         setupNote: `# ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`,

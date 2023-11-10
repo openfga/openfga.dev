@@ -203,18 +203,18 @@ ${_description ? `                    # ${_description}\n                    ` :
             )
             .join('')
         : '';
-      const writes = `    writes=[${writeTuples},
-        ),
+      const writes = `    writes=[${writeTuples}
+        ],
 `;
-      const deletes = `    deletes==[${deleteTuples}],
-        ),
+      const deletes = `    deletes=[${deleteTuples}
+        ],
 `;
 
       return `options = {
     "authorization_model_id": "${modelId}"
 }
-body = body = ClientWriteRequest(
-    ${opts.relationshipTuples ? writes : ''}${opts.deleteRelationshipTuples ? deletes : ''}",
+body = ClientWriteRequest(
+    ${opts.relationshipTuples ? writes : ''}${opts.deleteRelationshipTuples ? deletes : ''}
 )
 
 response = await fga_client.write(body, options)
