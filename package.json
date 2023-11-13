@@ -55,7 +55,7 @@
     "eslint-config-prettier": "9.0.0",
     "eslint-plugin-react": "7.33.2",
     "husky": "8.0.3",
-    "prettier": "3.0.3",
+    "prettier": "3.1.0",
     "typescript": "5.2.2"
   },
   "overrides": {
