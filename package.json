@@ -26,7 +26,7 @@
     "@docusaurus/core": "2.4.3",
     "@docusaurus/plugin-client-redirects": "2.4.3",
     "@docusaurus/preset-classic": "2.4.3",
-    "@easyops-cn/docusaurus-search-local": "0.36.0",
+    "@easyops-cn/docusaurus-search-local": "0.37.4",
     "@lottiefiles/react-lottie-player": "3.5.3",
     "@openfga/sdk": "^0.2.10",
     "@openfga/frontend-utils": "^0.2.0-beta.2",
