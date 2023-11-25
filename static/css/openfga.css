@@ -97,7 +97,7 @@ a:visited {
 /* Navbar */
 .navbar {
   border-bottom: 1px solid var(--ofga-neutral-darker);
-  height: 6.5rem;
+  height: var(--ifm-navbar-height);
   display: flex;
   justify-content: center;
 }
