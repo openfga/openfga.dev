@@ -570,6 +570,10 @@ pre {
   font-size: 1rem;
 }
 
+pre code {
+  background-color: var(--ofga-neutral-black);
+}
+
 /* Prism - DSL */
 .language-dsl\.openfga .token.plain {
   color: var(--ofga-color-default);
