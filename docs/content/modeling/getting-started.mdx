@@ -601,7 +601,7 @@ Why? This relation definition states:
 - That organizations have members
 - That the members of an organization with id \{id\} are all users described by tuples of the form:
 
-  `{ user: {user-id}, relation: "member", object: "organization:\{id\}" }`
+  `{ user: {user-id}, relation: "member", object: "organization:{id}" }`
 
 :::info Important
 Relation definitions of the form “define \{relation\}: [user, organization#member]" are fairly common. They are used to express that relationships "to the object with that relation" (e.g. "users" of type user or "member of organization") can be assigned by your system and that only the users that have that relation are those with a [direct relationship](./building-blocks/direct-relationships.mdx).
@@ -705,7 +705,7 @@ Why? This <ProductConcept section="what-is-a-relation" linkName="relation defini
 
 - each document can have one or more owners
 - owners of a document are assignable by creating a tuple of the format
-  `{ user: "{user_id}", relation: "owner", object: "document:\{id\}" }` for individual users
+  `{ user: "{user_id}", relation: "owner", object: "document:{id}" }` for individual users
 
 ##### Relation: Editor
 
@@ -740,7 +740,7 @@ Why? This relation definition states that:
 
 - each document can have editors
 - the editor(s) of a document are assignable by creating a tuple with shape
-  `{ user: "{user_id}", relation: "editor", object: "document:\{id\}" }` for individual users
+  `{ user: "{user_id}", relation: "editor", object: "document:{id}" }` for individual users
 
 This also supports making all members in an organization editors of the document, through a [group to object relationship](./user-groups.mdx). A relationship tuple like the following one states that the members of organization A are editors of document 0001.
 
@@ -814,8 +814,8 @@ Why? This relation definition states that:
 
 - documents may have a parent
 - the parent(s) of a document with id \{id\} is either a folder or a drive, described by one of these relationship tuples:
-  - `{ user: "folder:\{id\}", relation: "parent", object: "document:\{id\}" }`
-  - `{ user: "drive:\{id\}", relation: "parent", object: "document:\{id\}" }`
+  - `{ user: "folder:{id}", relation: "parent", object: "document:{id}" }`
+  - `{ user: "drive:{id}", relation: "parent", object: "document:{id}" }`
 
 
 We can use [direct type restriction](../configuration-language.mdx#the-direct-relationship-type-restrictions) to ensure a document's parent can only be an object of type either drive or folder.

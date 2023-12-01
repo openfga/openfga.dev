@@ -25,6 +25,7 @@ export type CardBoxProps = {
     shouldBold?: boolean;
     shouldShowArrowOnHover?: boolean;
   };
+  children?: React.ReactNode;
 };
 
 const CardBox: React.FC<CardBoxProps> = (props) => {

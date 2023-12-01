@@ -9,6 +9,7 @@ type ButtonLinkProps = {
   href?: string;
   variant?: string;
   icon?: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 const ButtonLink: React.FC<ButtonLinkProps> = ({ to, href, variant = 'default', icon, children }) => {
