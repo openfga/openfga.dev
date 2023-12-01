@@ -97,7 +97,7 @@ a:visited {
 /* Navbar */
 .navbar {
   border-bottom: 1px solid var(--ofga-neutral-darker);
-  height: 6.5rem;
+  height: var(--ifm-navbar-height);
   display: flex;
   justify-content: center;
 }
@@ -521,7 +521,7 @@ a.table-of-contents__link.table-of-contents__link--active {
 }
 
 .markdown pre {
-  margin: 2rem 0 3rem;
+  margin: 2rem 0 2rem;
 }
 
 .markdown details {
@@ -540,7 +540,7 @@ a.table-of-contents__link.table-of-contents__link--active {
 }
 
 .markdown details summary ~ div > div {
-  padding: 2rem;
+  padding: 0rem 2rem;
   margin: unset;
 }
 

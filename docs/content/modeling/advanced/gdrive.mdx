@@ -582,48 +582,43 @@ We express it like this:
 
 <AuthzModelSnippetViewer
   configuration={{
-    schema_version: '1.1',
-    type_definitions: [
-      {
-        type: 'document',
-        relations: {
-          viewer: {
-            union: {
-              child: [
-                {
-                  this: {},
-                },
-                {
-                  computedUserset: {
-                    relation: 'commenter',
-                  },
-                },
-                {
-                  tupleToUserset: {
-                    tupleset: {
-                      // read all relationship tuples related to document:2021-budget as parent
-                      // which returns [{ "object": "document:2021-budget", "relation": "parent", "user": "document:2021-planning"}]
-                      relation: 'parent',
-                    },
-                    computedUserset: {
-                      // and for each relationship tuple return all usersets that match the following, replacing $TUPLE_USERSET_OBJECT with document:2021-planning
-                      // this will return relationship tuples of shape { "object": "document:2021-planning", "viewer", "user": ??? }
-                      // including { "object": "document:2021-planning", "viewer", "user": "user:diane" }
-                      relation: 'viewer',
-                    },
-                  },
-                },
-              ],
+    type: 'document',
+    relations: {
+      viewer: {
+        union: {
+          child: [
+            {
+              this: {},
             },
-          },
-        },
-        metadata: {
-          relations: {
-            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
-          },
+            {
+              computedUserset: {
+                relation: 'commenter',
+              },
+            },
+            {
+              tupleToUserset: {
+                tupleset: {
+                  // read all relationship tuples related to document:2021-budget as parent
+                  // which returns [{ "object": "document:2021-budget", "relation": "parent", "user": "document:2021-planning"}]
+                  relation: 'parent',
+                },
+                computedUserset: {
+                  // and for each relationship tuple return all usersets that match the following, replacing $TUPLE_USERSET_OBJECT with document:2021-planning
+                  // this will return relationship tuples of shape { "object": "document:2021-planning", "viewer", "user": ??? }
+                  // including { "object": "document:2021-planning", "viewer", "user": "user:diane" }
+                  relation: 'viewer',
+                },
+              },
+            },
+          ],
         },
       },
-    ],
+    },
+    metadata: {
+      relations: {
+        viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+      },
+    },
   }}
   skipVersion={true}
 />
