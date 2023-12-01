@@ -6,6 +6,7 @@ import styles from './Section.module.css';
 type SectionProps = {
   id: string;
   className?: string;
+  children?: React.ReactNode;
 };
 
 const Section: React.FC<SectionProps> = ({ id, children, className }) => {

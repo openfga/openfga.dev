@@ -23,7 +23,7 @@ import {
 
 In this guide you will learn how to indicate <ProductConcept section="what-is-a-relationship" linkName="relationships" /> between <ProductConcept section="what-is-an-object" linkName="objects" />, and how users' relationships to one object can affect their relationship with another. For example: how a `editor` of a `folder` can be an `editor` of all `documents` the `folder` is a `parent` of.
 
-<CardBox title="When to use" appearance="filled" description=<div>
+<CardBox title="When to use" appearance="filled" description={<div>
 
 Object-to-Object relationships, combined with a configured authorization model can be used to indicate that a user's relation with one object can influence their relationship with another object. This can also be used in some cases to remove the need to modify relations between objects using [user groups](./user-groups.mdx#03-assign-the-team-members-a-relation-to-an-object).
 
@@ -33,7 +33,7 @@ Object-to-object relationships can be used:
 - To indicate that users who have a repository admin role (`repo_admin`) in an organization automatically have `admin` access to all repositories in that organization
 - To indicate that users who are `subscribed` to a `plan`, get access to all the `features` in that `plan`
 
-</div> />
+</div>} />
 
 ## Before You Start
 

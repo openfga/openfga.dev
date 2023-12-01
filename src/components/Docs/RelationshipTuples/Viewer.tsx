@@ -37,7 +37,7 @@ function relationshipTuplesViewer(lang: RelationshipTuplesLang, opts: Relationsh
 export function RelationshipTuplesViewer(opts: RelationshipTuplesViewerOpts): JSX.Element {
   return (
     <>
-      <CodeBlock className="language-json5">{relationshipTuplesViewer(RelationshipTuplesLang.JSON, opts)}</CodeBlock>
+      <CodeBlock className="language-json">{relationshipTuplesViewer(RelationshipTuplesLang.JSON, opts)}</CodeBlock>
     </>
   );
 }

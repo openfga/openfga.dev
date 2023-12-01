@@ -18,7 +18,7 @@ export function ProductName(opts: ProductNameOpts): JSX.Element {
     ((siteConfig.customFields.introLink as string) + siteConfig.customFields.productDescriptionSection)) as string;
   switch (opts.format) {
     case ProductNameFormat.ProductLink:
-      return <a href={productLink}>{siteConfig.customFields.productName}</a>;
+      return <a href={productLink}>{siteConfig.customFields.productName as string}</a>;
     case ProductNameFormat.LongForm:
       return <>{siteConfig.customFields.longProductName}</>;
     case ProductNameFormat.ShortForm:

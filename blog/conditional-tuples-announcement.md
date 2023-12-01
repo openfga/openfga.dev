@@ -40,7 +40,7 @@ If we write the following tuples:
 | user | relation| object| condition | 
 |------|---------|-------|---|
 | user:bob | viewer| document:1| |
-| user:anne | viewer| document:1| `name` : `non_expired_grant`, `context` : { `grant_time` : `2023-01-01T00:00:00Z`, `grant_duration` : `1h` } |
+| user:anne | viewer| document:1| `name` : `non_expired_grant`, `context` : \{ `grant_time` : `2023-01-01T00:00:00Z`, `grant_duration` : `1h` \} |
 
 You'll get the following results for the [Check](https://openfga.dev/api/service#/Relationship%20Queries/Check) operations below:
 
