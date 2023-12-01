@@ -284,7 +284,7 @@ Let's highlight all object types in <span className="blue-highlight-text">blue</
 </CardBox>
 </div>
 
-However, the list of object types is not finished. To complete the list of object types you must also add all the second nouns that appear in conditions as part of expressions of this format: **"{first noun} of a/the {second noun}"**.
+However, the list of object types is not finished. To complete the list of object types you must also add all the second nouns that appear in conditions as part of expressions of this format: **"\{first noun\} of a/the \{second noun\}"**.
 
 <div style={{ marginBottom: '2rem' }}>
   <CardBox centerTitle title="... IF {first noun} of a/the {second noun}" appearance="filled" />
@@ -394,10 +394,10 @@ Each of the previously defined types has a set of relations. <ProductConcept sec
 
 To identify relations for a type we in the write-up we can perform an exercise similar to the one we did in [list the type of objects in your system](#02-list-the-object-types).
 
-Relations for a type {type} will be all of these:
+Relations for a type \{type\} will be all of these:
 
-- any noun that is the {noun} of a "{noun} of a/an/the {type}" expression. **These are typically the Foreign Keys in a database.** We'll highlight these in <span className="green-highlight-text">green</span>.
-- any verb or action that is the {action} of a "can {action} (in) a/an {type}" expression. **These are typically the permissions for a type.** We'll highlight these in <span className="yellow-highlight-text">yellow</span>.
+- any noun that is the \{noun\} of a "\{noun\} of a/an/the \{type\}" expression. **These are typically the Foreign Keys in a database.** We'll highlight these in <span className="green-highlight-text">green</span>.
+- any verb or action that is the \{action\} of a "can \{action\} (in) a/an \{type\}" expression. **These are typically the permissions for a type.** We'll highlight these in <span className="yellow-highlight-text">yellow</span>.
 
 <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
 <CardBox monoFontChildren appearance='filled'>
@@ -599,12 +599,12 @@ Remember _"How a user is added as a member to an organization is beyond the scop
 Why? This relation definition states:
 
 - That organizations have members
-- That the members of an organization with id {id} are all users described by tuples of the form:
+- That the members of an organization with id \{id\} are all users described by tuples of the form:
 
   `{ user: {user-id}, relation: "member", object: "organization:{id}" }`
 
 :::info Important
-Relation definitions of the form “define {relation}: [user, organization#member]" are fairly common. They are used to express that relationships "to the object with that relation" (e.g. "users" of type user or "member of organization") can be assigned by your system and that only the users that have that relation are those with a [direct relationship](./building-blocks/direct-relationships.mdx).
+Relation definitions of the form “define \{relation\}: [user, organization#member]" are fairly common. They are used to express that relationships "to the object with that relation" (e.g. "users" of type user or "member of organization") can be assigned by your system and that only the users that have that relation are those with a [direct relationship](./building-blocks/direct-relationships.mdx).
 :::
 
 You can read more about group membership and types in [Modeling User Groups](./user-groups.mdx).
@@ -813,7 +813,7 @@ When a document is created a relationship tuple will be stored in <ProductName f
 Why? This relation definition states that:
 
 - documents may have a parent
-- the parent(s) of a document with id {id} is either a folder or a drive, described by one of these relationship tuples:
+- the parent(s) of a document with id \{id\} is either a folder or a drive, described by one of these relationship tuples:
   - `{ user: "folder:{id}", relation: "parent", object: "document:{id}" }`
   - `{ user: "drive:{id}", relation: "parent", object: "document:{id}" }`
 
