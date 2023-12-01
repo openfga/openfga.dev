@@ -1,10 +1,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer').themes.github;
-const darkCodeTheme = require('prism-react-renderer').themes.dracula;
-
-const path = require('path');
+import { themes } from "prism-react-renderer";
+import * as path from "path";
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -145,6 +143,7 @@ from openfga_sdk.client import OpenFgaClient`,
       /** @type {import('@docusaurus/plugin-client-redirects').Options} */
       ({
         fromExtensions: ['html'],
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         createRedirects: (path) => {},
         redirects: [
           {
@@ -281,11 +280,13 @@ from openfga_sdk.client import OpenFgaClient`,
         ],
         copyright: `<div><a href="https://www.linuxfoundation.org/trademark-usage"><img src="/img/cncf-icon-white.svg" alt="CNCF" style="vertical-align:middle; margin-right:8px;" /></a> &copy; ${new Date().getFullYear()} <a href="https://www.linuxfoundation.org/" target="_blank">The Linux Foundation</a>®. All rights reserved. <span class="display-on-desktop">For a list of trademarks of The Linux Foundation, see our <a href="https://www.linuxfoundation.org/trademark-usage" class="light-text" target="blank">Trademark Usage page</a>.</span></div>`,
       },
+      
       prism: {
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme,
-        additionalLanguages: ['json5', 'csharp'],
+        theme: themes.github,
+        darkTheme: themes.dracula,
+        additionalLanguages: ['bash', 'csharp', 'json'],
       },
+      
       docs: {
         sidebar: {
           hideable: true,
