@@ -7333,8 +7333,13 @@
 
   .swagger-ui .opblock .opblock-summary-path {
     flex-shrink: 0;
-    max-width: calc(100% - 110px - 15rem);
   }
+}
+
+.swagger-ui .opblock .opblock-summary-path-description-wrapper {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .swagger-ui .opblock .opblock-summary-path__deprecated {
@@ -8074,8 +8079,8 @@
     min-width: 180px;
   }
 }
+
 .swagger-ui label {
-  color: #3b4151;
   font-size: 12px;
   font-weight: 700;
   margin: 0 0 5px;
