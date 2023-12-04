@@ -57,7 +57,7 @@ const config = {
     // location of the swagger file
     apiDocsBasePath: process.env.API_DOCS_PATH
       ? process.env.API_DOCS_PATH
-      : 'https://raw.githubusercontent.com/openfga/api/main/docs/openapiv2/apidocs.swagger.json',
+      : 'https://raw.githubusercontent.com/openfga/api/0f1d73e766d26ac5c004383d741ee0f815c9b1e6/docs/openapiv2/apidocs.swagger.json',
 
     // Customization for product information
     /* eslint-disable max-len */
@@ -280,13 +280,13 @@ from openfga_sdk.client import OpenFgaClient`,
         ],
         copyright: `<div><a href="https://www.linuxfoundation.org/trademark-usage"><img src="/img/cncf-icon-white.svg" alt="CNCF" style="vertical-align:middle; margin-right:8px;" /></a> &copy; ${new Date().getFullYear()} <a href="https://www.linuxfoundation.org/" target="_blank">The Linux Foundation</a>®. All rights reserved. <span class="display-on-desktop">For a list of trademarks of The Linux Foundation, see our <a href="https://www.linuxfoundation.org/trademark-usage" class="light-text" target="blank">Trademark Usage page</a>.</span></div>`,
       },
-      
+
       prism: {
         theme: themes.github,
         darkTheme: themes.dracula,
         additionalLanguages: ['bash', 'csharp', 'json'],
       },
-      
+
       docs: {
         sidebar: {
           hideable: true,
