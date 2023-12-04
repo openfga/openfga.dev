@@ -7597,6 +7597,7 @@
   padding: 10px 0;
 }
 .swagger-ui .body-param-options label {
+  color: var(--ifm-color-primary-contrast-foreground);
   padding: 8px 0;
 }
 .swagger-ui .body-param-options label select {
@@ -7648,7 +7649,7 @@
 }
 .swagger-ui .opblock-body pre.microlight {
   word-wrap: break-word;
-  background: #333;
+  background: var(--ofga-neutral-black) !important;
   border-radius: 4px;
   color: #fff;
   font-family: monospace;
@@ -7707,7 +7708,7 @@
   align-items: flex-end;
   display: flex;
 }
-.swagger-ui .scheme-container .schemes > label {
+.swagger-ui .scheme-container .schemes label {
   color: var(--ifm-color-primary-contrast-foreground);
 
   display: flex;
@@ -7716,7 +7717,7 @@
   font-weight: 700;
   margin: -20px 15px 0 0;
 }
-.swagger-ui .scheme-container .schemes > label select {
+.swagger-ui .scheme-container .schemes label select {
   min-width: 130px;
   text-transform: uppercase;
 }
@@ -8796,7 +8797,7 @@
 }
 
 .swagger-ui .description p {
-  font-size: 18px;
+  font-size: 18px !important;
 }
 
 .swagger-ui .info .description {
