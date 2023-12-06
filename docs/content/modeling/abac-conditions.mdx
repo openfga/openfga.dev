@@ -1,0 +1,146 @@
+---
+sidebar_position: 8
+slug: /modeling/abac-conditions
+description: Modeling relationships with ABAC Conditions
+---
+
+import {
+  AuthzModelSnippetViewer,
+  languageLabelMap,
+  SdkSetupPrerequisite,
+  SupportedLanguage,
+  WriteAuthzModelViewer,
+} from '@components/Docs';
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# ABAC Conditions
+
+## Overview
+ABAC Conditions allow you to model more complex authorization modeling scenarios involving Attribute-based Access Control (ABAC) policies. Conditions are used in [Conditional Relationship Tuples](../concepts#what-is-a-conditional-relationship-tuple)
+
+There are various use cases where ABAC Conditions can be helpful. These include, but are not limited to:
+
+* **Temporal Access Policies** - manage user access for a window of time.
+* **IP Allowlists or Geo-fencing Policies** - limit or grant access based on an IP Address range or corporate network policy.
+* **Usage-based/Feature-based Policies (Entitlements)** - enforce quoata or usage of some resource or feature.
+* **Resource-attribute Policies** - define policies to access resources based on attributes/fields of the resource(s).
+
+For more information and background context on why we added this feature, please see our blog post on [Conditional Relationship Tuples for OpenFGA](https://openfga.dev/blog/conditional-tuples-announcement).
+
+## Defining ABAC Conditions in Models
+
+## Writing Conditional Relationship Tuples
+
+## Queries with Condition Context
+
+## Example
+:::note
+For more examples take a look at our [Sample Stores](https://github.com/openfga/sample-stores) repository. There are various examples with ABAC models in that repository.
+:::
+
+For this example we'll use the following authorization model to demonstrate a temporal based access policy. A user can view a document if and only if they have been granted the viewer relationship AND their temporal grant policy is met.
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type document
+  relations
+    define viewer: [user with temporal_grant]
+
+condition temporal_grant(grant_duration: duration, current_time: timestamp, grant_time: timestamp) {
+  current_time <= grant_time + grant_duration
+}
+```
+
+### Write the Authorization Model
+
+<WriteAuthzModelViewer
+  authorizationModel={{
+    "schema_version":"1.1",
+    "type_definitions": [
+      {
+        "type":"user"
+      },
+      {
+        "type":"document",
+        "relations": {
+          "viewer": {
+            "this": {}
+          }
+        },
+        "metadata": {
+          "relations": {
+            "viewer": {
+              "directly_related_user_types": [
+                {
+                    "type":"user",
+                    "condition":"temporal_grant"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "conditions": {
+      "temporal_grant": {
+        "name":"temporal_grant",
+        "expression":"current_time <= grant_time + grant_duration",
+        "parameters": {
+          "current_time": {
+              "type_name":"TYPE_NAME_TIMESTAMP"
+          },
+          "grant_duration": {
+              "type_name":"TYPE_NAME_DURATION"
+          },
+          "grant_time": {
+              "type_name":"TYPE_NAME_TIMESTAMP"
+          }
+        }
+      }
+    }
+  }}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.CLI,
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+### Write the Conditional Relationship Tuple
+
+### Check and ListObjects with Context
+
+
+
+## Supported Parameter Types
+The following table enumerates the lsit of supported parameter types. The more formal list is defined in specifically in https://github.com/openfga/openfga/tree/main/internal/condition/types.
+
+Note that some of the types support generics, these types are indicated with `<T>`.
+
+| Friendly Type Name | Type Name (Protobuf Enum) | Description                                                                                                                                                                                                                                                       | Examples                                                                                |
+|--------------------|---------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| int                | TYPE_NAME_INT             | A 64-bit signed integer value.                                                                                                                                                                                                                                    | -1<br />"-1"                                                                              |
+| uint               | TYPE_NAME_UINT            | A 64-bit unsigned integer value.                                                                                                                                                                                                                                  | 1<br />"1"                                                                                |
+| double             | TYPE_NAME_DOUBLE          | A double-width floating point value, represented equivalently as a Go `float64` value.<br /><br />If the value is provided as a string we parse it with `strconv.ParseFloat(s, 64)`. See [`strconv.ParseFloat`](https://pkg.go.dev/strconv#ParseFloat) for more info. | 3.14159<br />-0.75<br />"1"<br />"-2.5"                                                       |
+| bool               | TYPE_NAME_BOOL            | A boolean value.                                                                                                                                                                                                                                                  | true<br />false<br /><br />"true"<br />"false"                                                  |
+| bytes              | TYPE_NAME_BYTES           | An array of byte values specified as a byte string.                                                                                                                                                                                                               | "bytestring"                                                                            |
+| string             | TYPE_NAME_STRING          | A string value.                                                                                                                                                                                                                                                   | "hello, world"                                                                          |
+| duration           | TYPE_NAME_DURATION        | A value representing a duration of time specified using Go duration string format.<br /><br />See [time.Duration#ParseDuration](https://pkg.go.dev/time#ParseDuration)                                                                                                | "120s"<br />"2m"                                                                          |
+| timestamp          | TYPE_NAME_TIMESTAMP       | A timestamp value that follows the RFC3339 specification.                                                                                                                                                                                                         | "2023-01-01T00:00:00Z"                                                                    |
+| any                | TYPE_NAME_ANY             | A variant type which permits any value to be provided.                                                                                                                                                                                                            | \{"x": 1\}<br />"hello"<br />["a", "b"]                                                       |
+| list\<T\>            | TYPE_NAME_LIST            | A list of values of generic type T.                                                                                                                                                                                                                               | list\<string\> - ["a", "b", "c"]<br />list\<int\> - [-1, 1]<br />list\<duration\> - ["60s", "1m"] |
+| map\<T\>             | TYPE_NAME_MAP             | A map whose keys are strings and whose values are values of generic type T.<br /><br />Any map value must have string keys, only the value types can vary.                                                                                                            | map\<int\> - \{"x": -1, "y": 1\}<br />map\<string\> - \{"key": "value"\}                          |
+| ipaddress          | TYPE_NAME_IPADDRESS       | A custom value type specified as a string representation of an IP Address.                                                                                                                                                                                        | "192.168.0.1"                                                                           |
+
+
+## Limitations
+* todo: mention limits on `context` input (for both queries and writes)

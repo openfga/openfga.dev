@@ -162,6 +162,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'ABAC Conditions',
+          id: 'content/modeling/abac-conditions',
+        },
+        {
+          type: 'doc',
           label: 'Contextual and Time-Based Authorization',
           id: 'content/modeling/contextual-time-based-authorization',
         },

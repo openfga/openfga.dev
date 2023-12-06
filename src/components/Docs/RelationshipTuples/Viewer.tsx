@@ -5,7 +5,13 @@ interface RelationshipTuple {
   user: string;
   relation: string;
   object: string;
+  condition?: RelationshipCondition;
   _description?: string; // Optional comment describing what this tuple represents
+}
+
+interface RelationshipCondition {
+  name: string;
+  context: object;
 }
 
 interface RelationshipTuplesViewerOpts {
@@ -22,7 +28,7 @@ function relationshipTuplesViewer(lang: RelationshipTuplesLang, opts: Relationsh
     default:
       return `[${opts.relationshipTuples
         .map(
-          ({ user, relation, object, _description }) => `
+          ({ user, relation, object, condition, _description }) => `
   ${_description ? `// ${_description}\n  ` : ''}{
     "user": "${user}",
     "relation": "${relation}",
