@@ -6,6 +6,9 @@ description: Modeling relationships with ABAC Conditions
 
 import {
   AuthzModelSnippetViewer,
+  WriteRequestViewer,
+  CheckRequestViewer,
+  ListObjectsRequestViewer,
   languageLabelMap,
   SdkSetupPrerequisite,
   SupportedLanguage,
@@ -30,17 +33,7 @@ There are various use cases where ABAC Conditions can be helpful. These include,
 For more information and background context on why we added this feature, please see our blog post on [Conditional Relationship Tuples for OpenFGA](https://openfga.dev/blog/conditional-tuples-announcement).
 
 ## Defining ABAC Conditions in Models
-
-## Writing Conditional Relationship Tuples
-
-## Queries with Condition Context
-
-## Example
-:::note
-For more examples take a look at our [Sample Stores](https://github.com/openfga/sample-stores) repository. There are various examples with ABAC models in that repository.
-:::
-
-For this example we'll use the following authorization model to demonstrate a temporal based access policy. A user can view a document if and only if they have been granted the viewer relationship AND their temporal grant policy is met.
+For this example we'll use the following authorization model to demonstrate a temporal based access policy. Namely, a user can view a document if and only if they have been granted the viewer relationship AND their temporal grant policy is met.
 
 ```dsl.openfga
 model
@@ -57,8 +50,11 @@ condition temporal_grant(grant_duration: duration, current_time: timestamp, gran
 }
 ```
 
-### Write the Authorization Model
+:::note
+The type restriction for `document#viewer` requires than any `user` subject that is written in the relationship tuple must be accompanied by the `temporal_grant` condition. This is denoted by the `user with temporal_grant` specification.
+:::
 
+Now we transform the DSL model into JSON syntax and write the model.
 <WriteAuthzModelViewer
   authorizationModel={{
     "schema_version":"1.1",
@@ -115,10 +111,94 @@ condition temporal_grant(grant_duration: duration, current_time: timestamp, gran
   ]}
 />
 
-### Write the Conditional Relationship Tuple
+## Writing Conditional Relationship Tuples
+Using the model above, when we [Write](https://openfga.dev/api/service#/Relationship%20Tuples/Write) relationship tuples to the OpenFGA store, then any `document#viewer` relationship with `user` objects must be accompanied by the condition `temporal_grant` because the type restriction requires it.
 
-### Check and ListObjects with Context
+For example, we can give `user:anne` viewer access to `document:1` for 10 minutes by writing the following relationship tuple:
 
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'viewer',
+      object: 'document:1',
+      condition: {
+        name: 'temporal_grant',
+        context: {
+          grant_time: '2023-01-01T00:00:00Z',
+          grant_duration: '10m'
+        }
+      }
+    }
+  ]}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.CLI,
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+## Queries with Condition Context
+Now that we have written a [Conditional Relationship Tuple](../concepts#what-is-a-conditional-relationship-tuple), we can query OpenFGA using the [Check API](https://openfga.dev/api/service#/Relationship%20Queries/Check) to see if `user:anne` has viewer access to `document:1` under certain conditions/context. That is, `user:anne` should only have access is the current timestamp is less than or equal to the grant timestamp (e.g. the time which the tuple was written) plus the duration of the grant (10 minutes). If the current timestamp is less than or equal, then you'll get a permit decision. For example,
+
+<CheckRequestViewer
+  user={'user:anne'}
+  relation={'viewer'}
+  object={'document:1'}
+  allowed={true}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.CLI,
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+but if the current time is outside the grant window then you get a deny decision. For example,
+
+<CheckRequestViewer
+  user={'user:anne'}
+  relation={'viewer'}
+  object={'document:1'}
+  allowed={false}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.CLI,
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+Similarly, we can use the [ListObjects API](https://openfga.dev/api/service#/Relationship%20Queries/ListObjects) to return all of the documents that `user:anne` has viewer access to given the current time. For example,
+
+<ListObjectsRequestViewer
+  objectType="document"
+  relation="viewer"
+  user="user:anne"
+  expectedResults={['document:1']}
+/>
+
+but if the current time is outside the grant window then we don't get the object in the response. For example,
+
+<ListObjectsRequestViewer
+  objectType="document"
+  relation="viewer"
+  user="user:anne"
+  expectedResults={['document:1']}
+/>
+
+## Examples
+For more examples take a look at our [Sample Stores](https://github.com/openfga/sample-stores) repository. There are various examples with ABAC models in that repository.
 
 
 ## Supported Parameter Types
