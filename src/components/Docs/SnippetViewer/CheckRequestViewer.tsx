@@ -10,13 +10,13 @@ interface CheckRequestViewerOpts {
   object: string;
   allowed: boolean;
   contextualTuples?: TupleKey[];
-  context?:Record<string, any>;
+  context?: Record<string, any>;
   skipSetup?: boolean;
   allowedLanguages?: SupportedLanguage[];
 }
 
 function checkRequestViewer(lang: SupportedLanguage, opts: CheckRequestViewerOpts): string {
-  const { user, relation, object, allowed, contextualTuples } = opts;
+  const { user, relation, object, allowed, contextualTuples, context } = opts;
   const modelId = opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId;
 
   switch (lang) {
@@ -66,21 +66,14 @@ const { allowed } = await fgaClient.check({
     relation: '${relation}',
     object: '${object}',${
       !contextualTuples
-        ? `
-`
+        ? ``
         : `
-  contextual_tuples: [${contextualTuples
+    contextual_tuples: [\n      ${contextualTuples
     .map(
-      (tuple) => `
-      {
-        user: "${tuple.user}",
-        relation: "${tuple.relation}",
-        object: "${tuple.object}"
-      }`,
+      (tuple) => `${JSON.stringify(tuple)}`
     )
     .join(',')}
-    ]`
-    }}, {
+    ],`}${!context ?  `\n  }` : `,\n    context: ${JSON.stringify(context)}\n  }` }, {
   authorization_model_id: '${modelId}',
 });
 

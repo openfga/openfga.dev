@@ -147,6 +147,7 @@ Now that we have written a [Conditional Relationship Tuple](../concepts#what-is-
   user={'user:anne'}
   relation={'viewer'}
   object={'document:1'}
+  context={{current_time: "2023-01-01T00:09:50Z"}}
   allowed={true}
   skipSetup={true}
   allowedLanguages={[
@@ -162,6 +163,7 @@ but if the current time is outside the grant window then you get a deny decision
   user={'user:anne'}
   relation={'viewer'}
   object={'document:1'}
+  context={{current_time: "2023-01-01T00:10:01Z"}}
   allowed={false}
   skipSetup={true}
   allowedLanguages={[
