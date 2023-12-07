@@ -9,9 +9,9 @@ interface RelationshipTuple {
   _description?: string; // Optional comment describing what this tuple represents
 }
 
-interface RelationshipCondition {
+export interface RelationshipCondition {
   name: string;
-  context: object;
+  context?: Record<string, any>;
 }
 
 interface RelationshipTuplesViewerOpts {
@@ -28,15 +28,9 @@ function relationshipTuplesViewer(lang: RelationshipTuplesLang, opts: Relationsh
     default:
       return `[${opts.relationshipTuples
         .map(
-          ({ user, relation, object, condition, _description }) => `
-  ${_description ? `// ${_description}\n  ` : ''}{
-    "user": "${user}",
-    "relation": "${relation}",
-    "object": "${object}",
-  },`,
+          (tuple) => `${tuple._description ? `// ${tuple._description}\n  ` : ''}${JSON.stringify(tuple, null, "  ")}`,
         )
-        .join('')}
-]`;
+        .join('')}]`;
   }
 }
 

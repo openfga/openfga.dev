@@ -10,6 +10,7 @@ interface CheckRequestViewerOpts {
   object: string;
   allowed: boolean;
   contextualTuples?: TupleKey[];
+  context?:Record<string, any>;
   skipSetup?: boolean;
   allowedLanguages?: SupportedLanguage[];
 }

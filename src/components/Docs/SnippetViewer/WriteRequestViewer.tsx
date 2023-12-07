@@ -1,8 +1,17 @@
 import { getFilteredAllowedLangs, SupportedLanguage, DefaultAuthorizationModelId } from './SupportedLanguage';
 import { defaultOperationsViewer } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
+import { RelationshipCondition } from '@components/Docs/RelationshipTuples'
 
 interface RelationshipTuple {
+  user: string;
+  relation: string;
+  object: string;
+  condition?: RelationshipCondition
+  _description?: string; // Optional comment describing what this tuple represents
+}
+
+interface RelationshipTupleWithoutCondition {
   user: string;
   relation: string;
   object: string;
@@ -12,7 +21,7 @@ interface RelationshipTuple {
 interface WriteRequestViewerOpts {
   authorizationModelId?: string;
   relationshipTuples: RelationshipTuple[];
-  deleteRelationshipTuples: RelationshipTuple[];
+  deleteRelationshipTuples: RelationshipTupleWithoutCondition[];
   isDelete?: boolean;
   skipSetup?: boolean;
   allowedLanguages?: SupportedLanguage[];
