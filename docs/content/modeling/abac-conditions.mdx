@@ -101,6 +101,7 @@ Now we transform the DSL model into JSON syntax and write the model.
       }
     }
   }}
+  skipSetup={true}
   allowedLanguages={[
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
@@ -135,9 +136,6 @@ For example, we can give `user:anne` viewer access to `document:1` for 10 minute
   allowedLanguages={[
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
-    SupportedLanguage.DOTNET_SDK,
-    SupportedLanguage.PYTHON_SDK,
-    SupportedLanguage.CLI,
     SupportedLanguage.CURL,
   ]}
 />
@@ -154,9 +152,6 @@ Now that we have written a [Conditional Relationship Tuple](../concepts#what-is-
   allowedLanguages={[
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
-    SupportedLanguage.DOTNET_SDK,
-    SupportedLanguage.PYTHON_SDK,
-    SupportedLanguage.CLI,
     SupportedLanguage.CURL,
   ]}
 />
@@ -172,9 +167,6 @@ but if the current time is outside the grant window then you get a deny decision
   allowedLanguages={[
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
-    SupportedLanguage.DOTNET_SDK,
-    SupportedLanguage.PYTHON_SDK,
-    SupportedLanguage.CLI,
     SupportedLanguage.CURL,
   ]}
 />
@@ -186,6 +178,12 @@ Similarly, we can use the [ListObjects API](https://openfga.dev/api/service#/Rel
   relation="viewer"
   user="user:anne"
   expectedResults={['document:1']}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.CURL,
+  ]}
 />
 
 but if the current time is outside the grant window then we don't get the object in the response. For example,
@@ -195,6 +193,12 @@ but if the current time is outside the grant window then we don't get the object
   relation="viewer"
   user="user:anne"
   expectedResults={['document:1']}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.CURL,
+  ]}
 />
 
 ## Examples
@@ -223,4 +227,10 @@ Note that some of the types support generics, these types are indicated with `<T
 
 
 ## Limitations
-* todo: mention limits on `context` input (for both queries and writes)
+* The size of the condition `context` parameter that can be written alongside a relationship tuple is limited to 32KB in size.
+
+* The size of the condition `context` parameter for query requests (e.g. Check, ListObjects, etc..) is not explicitly limited, but the OpenFGA server has an overall request size limit of 4MB at this time.
+
+* We're still working on the changes to support ABAC Conditions in the official FGA CLI and various OpenFGA SDKs including: .Net and Python. At this moment you cannot Write conditional relationship tuples with these tools and/or query (e.g. Check, ListObjects, etc..) OpenFGA with condition context.
+
+* We enforce a maximum Google CEL expression evaluation cost of 100 (by default) to protect the server from malicious conditions. The evaluation cost of a CEL expression is a function of the size the input that is being compared and the composition of the expression. For more general information please see the official [Language Definition for Google CEL](https://github.com/google/cel-spec/blob/master/doc/langdef.md). If you hit these limits with practical use-cases, please reach out to the maintainer team and we can discuss.

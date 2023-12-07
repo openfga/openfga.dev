@@ -53,12 +53,12 @@ ${
     case SupportedLanguage.CURL: {
       const writeTuples = opts.relationshipTuples
         ? opts.relationshipTuples
-            .map(({ user, relation, object }) => `{"user":"${user}","relation":"${relation}","object":"${object}"}`)
+            .map((tuple) => `${JSON.stringify(tuple)}`)
             .join(',')
         : '';
       const deleteTuples = opts.deleteRelationshipTuples
         ? opts.deleteRelationshipTuples
-            .map(({ user, relation, object }) => `{"user":"${user}","relation":"${relation}","object":"${object}"}`)
+            .map((tuple) => `${JSON.stringify(tuple)}`)
             .join(',')
         : '';
       const writes = `"writes": { "tuple_keys" : [${writeTuples}] }`;
