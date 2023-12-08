@@ -21,14 +21,14 @@ import TabItem from '@theme/TabItem';
 # ABAC Conditions
 
 ## Overview
-ABAC Conditions allow you to model more complex authorization modeling scenarios involving Attribute-based Access Control (ABAC) policies. Take a look at the [Conditions](../concepts.mdx#what-is-a-condition?) and [Conditional Relationship Tuples](../concepts.mdx#what-is-a-conditional-relationship-tuple?) concepts for a quick overview.
+ABAC Conditions allow you to model more complex authorization modeling scenarios involving Attribute-based Access Control (ABAC) policies. Take a look at the [Conditions](../concepts.mdx#what-is-an-abac-condition) and [Conditional Relationship Tuples](../concepts.mdx#what-is-a-conditional-relationship-tuple) concepts for a quick overview.
 
 There are various use cases where ABAC Conditions can be helpful. These include, but are not limited to:
 
-* **Temporal Access Policies** - manage user access for a window of time.
-* **IP Allowlists or Geo-fencing Policies** - limit or grant access based on an IP Address range or corporate network policy.
-* **Usage-based/Feature-based Policies (Entitlements)** - enforce quoata or usage of some resource or feature.
-* **Resource-attribute Policies** - define policies to access resources based on attributes/fields of the resource(s).
+* [**Temporal Access Policies**](https://github.com/openfga/sample-stores/tree/main/stores/temporal-access) - manage user access for a window of time.
+* [**IP Allowlists or Geo-fencing Policies**](https://github.com/openfga/sample-stores/tree/main/stores/ip-based-access) - limit or grant access based on an IP Address range or corporate network policy.
+* [**Usage-based/Feature-based Policies (Entitlements)**](https://github.com/openfga/sample-stores/tree/main/stores/advanced-entitlements) - enforce quoata or usage of some resource or feature.
+* [**Resource-attribute Policies**](https://github.com/openfga/sample-stores/tree/main/stores/groups-resource-attributes) - define policies to access resources based on attributes/fields of the resource(s).
 
 For more information and background context on why we added this feature, please see our blog post on [Conditional Relationship Tuples for OpenFGA](https://openfga.dev/blog/conditional-tuples-announcement). 
 
