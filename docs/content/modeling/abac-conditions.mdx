@@ -205,6 +205,12 @@ but if the current time is outside the grant window then we don't get the object
   ]}
 />
 
+:::note
+When evaluating a condition at request time, the context written/persisted in the relationship tuple and the context provided at request-time are merged together into a single evaluation context.
+
+If you provide a context value in the request context that is also written/persisted in the relationship tuple, then the context values written in the relationship tuple take precedence. That is, the merge strategy is such that persisted context has higher precedence than request context.
+:::
+
 ## Examples
 For more examples take a look at our [Sample Stores](https://github.com/openfga/sample-stores) repository. There are various examples with ABAC models in that repository.
 
