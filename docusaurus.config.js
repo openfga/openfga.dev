@@ -57,7 +57,7 @@ const config = {
     // location of the swagger file
     apiDocsBasePath: process.env.API_DOCS_PATH
       ? process.env.API_DOCS_PATH
-      : 'https://raw.githubusercontent.com/openfga/api/0f1d73e766d26ac5c004383d741ee0f815c9b1e6/docs/openapiv2/apidocs.swagger.json',
+      : 'https://raw.githubusercontent.com/openfga/api/main/docs/openapiv2/apidocs.swagger.json',
 
     // Customization for product information
     /* eslint-disable max-len */
