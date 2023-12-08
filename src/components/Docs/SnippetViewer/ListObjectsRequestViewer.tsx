@@ -9,6 +9,8 @@ interface ListObjectsRequestViewerOpts {
   relation: string;
   objectType: string;
   contextualTuples?: TupleKey[];
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context?: Record<string, any>
   expectedResults: string[];
   skipSetup?: boolean;

@@ -10,6 +10,8 @@ interface CheckRequestViewerOpts {
   object: string;
   allowed: boolean;
   contextualTuples?: TupleKey[];
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context?: Record<string, any>;
   skipSetup?: boolean;
   allowedLanguages?: SupportedLanguage[];
