@@ -354,7 +354,7 @@ This will affect only relations that are [directly related](#what-are-direct-and
 <summary>
 ## What is an ABAC Condition?
 
-An **ABAC Condition** defines a function which must evalute to a boolean outcome that is composed of one or more parameters and an expression. Expressions are defined using [Google's Common Expression Language (CEL)](https://github.com/google/cel-spec).
+An **ABAC Condition** is a function composed of one or more parameters and an expression which must evaluate to a boolean outcome. Expressions are defined using [Google's Common Expression Language (CEL)](https://github.com/google/cel-spec).
 </summary>
 
 For example, the following condition `mycondition` defines an ABAC Condition which evaluates to a boolean outcome. The provided parameter `x`, defined as an integer type, is used in the boolean expression `x < 100`. The condition will return a truthy outcome if the expression returns a truthy outcome and false otherwise.
