@@ -179,6 +179,8 @@ Similarly, we can use the [ListObjects API](https://openfga.dev/api/service#/Rel
   objectType="document"
   relation="viewer"
   user="user:anne"
+  context={{current_time: "2023-01-01T00:09:50Z"}}
+  contextualTuples={[{object: "1"}]}
   expectedResults={['document:1']}
   skipSetup={true}
   allowedLanguages={[
@@ -194,7 +196,8 @@ but if the current time is outside the grant window then we don't get the object
   objectType="document"
   relation="viewer"
   user="user:anne"
-  expectedResults={['document:1']}
+  context={{current_time: "2023-01-01T00:10:01Z"}}
+  expectedResults={[]}
   skipSetup={true}
   allowedLanguages={[
     SupportedLanguage.JS_SDK,
@@ -232,6 +235,10 @@ Note that some of the types support generics, these types are indicated with `<T
 * The size of the condition `context` parameter that can be written alongside a relationship tuple is limited to 32KB in size.
 
 * The size of the condition `context` parameter for query requests (e.g. Check, ListObjects, etc..) is not explicitly limited, but the OpenFGA server has an overall request size limit of 4MB at this time.
+
+:::warning
+We're likely to lower this 4MB overall request size limit to 512KB in the near future. We do not advise creating a hard dependency on this upper limit at this time.
+:::
 
 * We're still working on the changes to support ABAC Conditions in the official FGA CLI and various OpenFGA SDKs including: .Net and Python. At this moment you cannot Write conditional relationship tuples with these tools and/or query (e.g. Check, ListObjects, etc..) OpenFGA with condition context.
 

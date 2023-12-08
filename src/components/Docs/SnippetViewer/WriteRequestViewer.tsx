@@ -155,11 +155,17 @@ body := fgaClient.ClientWriteRequest{
 ${opts.relationshipTuples ? writes : ''}${opts.deleteRelationshipTuples ? deletes : ''} 
 }
 
-data, err := fgaClient.Write(context.Background()).Body(requestBody).Options(options).Execute()
+data, err := fgaClient.Write(context.Background()).
+    Body(requestBody).
+    Options(options).
+    Execute()
 
 if err != nil {
     // .. Handle error
-}`;
+}
+
+_ = data // use the response
+`;
     }
 
     case SupportedLanguage.DOTNET_SDK: {

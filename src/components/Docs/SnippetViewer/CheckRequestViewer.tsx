@@ -52,9 +52,11 @@ ${
     contextualTuples
       ? `,"contextual_tuples":{"tuple_keys":[${contextualTuples
           .map((tuple) => `{"user":"${tuple.user}","relation":"${tuple.relation}","object":"${tuple.object}"}`)
-          .join(',')}]}}`
-      : '}'
-  }'
+          .join(',')}]}`
+      : ''
+  }${
+    context
+      ? `,"context":${JSON.stringify(context)}}` : '}'}'
 
 # Response: {"allowed":${allowed}}`;
     /* eslint-enable max-len */
@@ -82,34 +84,38 @@ const { allowed } = await fgaClient.check({
       /* eslint-disable no-tabs */
       return `
 options := ClientCheckOptions{
-\tAuthorizationModelId: "${modelId}",
+    AuthorizationModelId: "${modelId}",
 }
+
 body := ClientCheckRequest{
-\tUser:     "${user}",
-\tRelation: "${relation}",
-\tObject:   "${object}",${
+    User:     "${user}",
+    Relation: "${relation}",
+    Object:   "${object}",${
         !contextualTuples
           ? ''
           : `
-\tContextualTuples: &[]ClientTupleKey{
+    ContextualTuples: []ClientTupleKey{
 ${
   !contextualTuples
     ? ''
     : contextualTuples
         .map(
-          (tuple) => `\t\t{
-\t\t\tUser:     "${tuple.user}",
-\t\t\tRelation: "${tuple.relation}",
-\t\t\tObject:   "${tuple.object}",
-\t\t}`,
-        )
-        .join(',\n')
+          (tuple) =>
+`        {
+            User:     "${tuple.user}",
+            Relation: "${tuple.relation}",
+            Object:   "${tuple.object}",
+        },`)
+        .join('\n')
 }
-\t}`
-      }
+    },`}${context ? `
+    Context: &map[string]interface{}${JSON.stringify(context)},` : ''}
 }
 
-data, err := fgaClient.Check(context.Background()).Body(body).Options(options).Execute()
+data, err := fgaClient.Check(context.Background()).
+    Body(body).
+    Options(options).
+    Execute()
 
 // data = { allowed: ${allowed} }`;
     case SupportedLanguage.DOTNET_SDK:
