@@ -239,11 +239,7 @@ Note that some of the types support generics, these types are indicated with `<T
 ## Limitations
 * The size of the condition `context` parameter that can be written alongside a relationship tuple is limited to 32KB in size.
 
-* The size of the condition `context` parameter for query requests (e.g. Check, ListObjects, etc..) is not explicitly limited, but the OpenFGA server has an overall request size limit of 4MB at this time.
-
-:::warning
-We're likely to lower this 4MB overall request size limit to 512KB in the near future. We do not advise creating a hard dependency on this upper limit at this time.
-:::
+* The size of the condition `context` parameter for query requests (e.g. Check, ListObjects, etc..) is not explicitly limited, but the OpenFGA server has an overall request size limit of 512KB at this time.
 
 * We're still working on the changes to support ABAC Conditions in the official FGA CLI and various OpenFGA SDKs including: .Net and Python. At this moment you cannot Write conditional relationship tuples with these tools and/or query (e.g. Check, ListObjects, etc..) OpenFGA with condition context.
 
