@@ -73,7 +73,7 @@ const { allowed } = await fgaClient.check({
       (tuple) => `${JSON.stringify(tuple)}`
     )
     .join(',')}
-    ],`}${!context ?  `\n  }` : `,\n    context: ${JSON.stringify(context)}\n  }` }, {
+    ],`}${!context ?  `\n  }` : `\n    context: ${JSON.stringify(context)}\n  }` }, {
   authorization_model_id: '${modelId}',
 });
 
@@ -82,7 +82,7 @@ const { allowed } = await fgaClient.check({
       /* eslint-disable no-tabs */
       return `
 options := ClientCheckOptions{
-\tAuthorizationModelId: openfga.PtrString("${modelId}"),
+\tAuthorizationModelId: "${modelId}",
 }
 body := ClientCheckRequest{
 \tUser:     "${user}",
