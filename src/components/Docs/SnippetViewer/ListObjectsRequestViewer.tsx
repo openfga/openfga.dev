@@ -11,7 +11,7 @@ interface ListObjectsRequestViewerOpts {
   contextualTuples?: TupleKey[];
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  context?: Record<string, any>
+  context?: Record<string, any>;
   expectedResults: string[];
   skipSetup?: boolean;
   allowedLanguages?: SupportedLanguage[];
@@ -42,7 +42,9 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
   -d '{ "authorization_model_id": "${modelId}",
         "type": "${objectType}",
         "relation": "${relation}",
-        "user":"${user}"${ contextualTuples ? `,
+        "user":"${user}"${
+          contextualTuples
+            ? `,
         "contextual_tuples": {
           "tuple_keys": [${contextualTuples
             .map(
@@ -51,9 +53,15 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
             )
             .join(',')}
           ]
-        }${ context ? `,
-        "context":${JSON.stringify(context)},` : '' }
-      }'` : ''}
+        }${
+          context
+            ? `,
+        "context":${JSON.stringify(context)},`
+            : ''
+        }
+      }'`
+            : ''
+        }
 
 
 # Response: {"objects": [${expectedResults.map((r) => `"${r}"`).join(', ')}]}`;
@@ -77,8 +85,12 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
       .join(', ')}]
   },`
       : ''
-  }${ context ? `
-  context:${JSON.stringify(context)},` : '' }
+  }${
+    context
+      ? `
+  context:${JSON.stringify(context)},`
+      : ''
+  }
 }, {
   authorization_model_id: "${modelId}",
 });
@@ -94,22 +106,31 @@ body := ClientListObjectsRequest{
     User:     "${user}",
     Relation: "${relation}",
     Type:     "${objectType}",${
-    !contextualTuples
-          ? ''
-          : `
+      !contextualTuples
+        ? ''
+        : `
     ContextualTuples: []ClientTupleKey{
-${ !contextualTuples ? ''
+${
+  !contextualTuples
+    ? ''
     : contextualTuples
         .map(
           (tuple) =>
-`        {
+            `        {
              User:     "${tuple.user}",
              Relation: "${tuple.relation}",
              Object:   "${tuple.object}",
-        },`).join('\n')
+        },`,
+        )
+        .join('\n')
 }
-    },`}${ context ? `
-    Context: &map[string]interface{}${JSON.stringify(context)},` : '' }
+    },`
+    }${
+      context
+        ? `
+    Context: &map[string]interface{}${JSON.stringify(context)},`
+        : ''
+    }
 }
 
 data, err := fgaClient.ListObjects(context.Background()).

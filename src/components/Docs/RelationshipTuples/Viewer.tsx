@@ -30,7 +30,7 @@ function relationshipTuplesViewer(lang: RelationshipTuplesLang, opts: Relationsh
     default:
       return `[${opts.relationshipTuples
         .map(
-          (tuple) => `${tuple._description ? `// ${tuple._description}\n  ` : ''}${JSON.stringify(tuple, null, "  ")}`,
+          (tuple) => `${tuple._description ? `// ${tuple._description}\n  ` : ''}${JSON.stringify(tuple, null, '  ')}`,
         )
         .join('')}]`;
   }

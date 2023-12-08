@@ -1,13 +1,13 @@
 import { getFilteredAllowedLangs, SupportedLanguage, DefaultAuthorizationModelId } from './SupportedLanguage';
 import { defaultOperationsViewer } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
-import { RelationshipCondition } from '@components/Docs/RelationshipTuples'
+import { RelationshipCondition } from '@components/Docs/RelationshipTuples';
 
 interface RelationshipTuple {
   user: string;
   relation: string;
   object: string;
-  condition?: RelationshipCondition
+  condition?: RelationshipCondition;
   _description?: string; // Optional comment describing what this tuple represents
 }
 
@@ -52,14 +52,10 @@ ${
     }
     case SupportedLanguage.CURL: {
       const writeTuples = opts.relationshipTuples
-        ? opts.relationshipTuples
-            .map((tuple) => `${JSON.stringify(tuple)}`)
-            .join(',')
+        ? opts.relationshipTuples.map((tuple) => `${JSON.stringify(tuple)}`).join(',')
         : '';
       const deleteTuples = opts.deleteRelationshipTuples
-        ? opts.deleteRelationshipTuples
-            .map((tuple) => `${JSON.stringify(tuple)}`)
-            .join(',')
+        ? opts.deleteRelationshipTuples.map((tuple) => `${JSON.stringify(tuple)}`).join(',')
         : '';
       const writes = `"writes": { "tuple_keys" : [${writeTuples}] }`;
       const deletes = `"deletes": { "tuple_keys" : [${deleteTuples}] }`;
@@ -77,9 +73,7 @@ ${
         ? opts.relationshipTuples
             .map(
               (tuple) => `
-      ${
-        tuple._description ? `// ${tuple._description}\n      ` : ''
-      }${ JSON.stringify(tuple)}`,
+      ${tuple._description ? `// ${tuple._description}\n      ` : ''}${JSON.stringify(tuple)}`,
             )
             .join(',')
         : '';
@@ -110,26 +104,39 @@ await fgaClient.write({
       const writeTuples = opts.relationshipTuples
         ? opts.relationshipTuples
             .map(
-              ({ user, relation, object, condition, _description }) => 
-`        {${_description ? `
-             // ${_description}` : '' }
+              ({ user, relation, object, condition, _description }) =>
+                `        {${
+                  _description
+                    ? `
+             // ${_description}`
+                    : ''
+                }
              User: "${user}",
              Relation: "${relation}",
-             Object: "${object}",${ condition ? `
+             Object: "${object}",${
+               condition
+                 ? `
              Condition: &RelationshipCondition{
                  Name: "${condition.name}",
                  Context: &map[string]interface{}${JSON.stringify(condition.context)},
-             },` : '' }
-        }, `)
+             },`
+                 : ''
+             }
+        }, `,
+            )
             .join('')
         : '';
-      
-        const deleteTuples = opts.deleteRelationshipTuples
+
+      const deleteTuples = opts.deleteRelationshipTuples
         ? opts.deleteRelationshipTuples
             .map(
-              ({ user, relation, object, _description }) => 
-`        {${ _description ? `
-             // ${_description}` : '' }
+              ({ user, relation, object, _description }) =>
+                `        {${
+                  _description
+                    ? `
+             // ${_description}`
+                    : ''
+                }
              User: "${user}",
              Relation: "${relation}",
              Object: "${object}",
@@ -138,13 +145,19 @@ await fgaClient.write({
             .join('')
         : '';
 
-      const writes = 
-`    Writes: []ClientTupleKey{${writeTuples.length > 0 ? `\n${writeTuples}
-    },` : '},'}`
+      const writes = `    Writes: []ClientTupleKey{${
+        writeTuples.length > 0
+          ? `\n${writeTuples}
+    },`
+          : '},'
+      }`;
 
-      const deletes = 
-`\n    Deletes: []ClientTupleKeyWithoutCondition{${deleteTuples.length > 0 ? `\n${deleteTuples}
-    },` : '},'}`
+      const deletes = `\n    Deletes: []ClientTupleKeyWithoutCondition{${
+        deleteTuples.length > 0
+          ? `\n${deleteTuples}
+    },`
+          : '},'
+      }`;
 
       return `
 options := ClientWriteOptions{

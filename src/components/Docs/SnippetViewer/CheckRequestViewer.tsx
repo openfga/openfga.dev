@@ -56,9 +56,7 @@ ${
           .map((tuple) => `{"user":"${tuple.user}","relation":"${tuple.relation}","object":"${tuple.object}"}`)
           .join(',')}]}`
       : ''
-  }${
-    context
-      ? `,"context":${JSON.stringify(context)}}` : '}'}'
+  }${context ? `,"context":${JSON.stringify(context)}}` : '}'}'
 
 # Response: {"allowed":${allowed}}`;
     /* eslint-enable max-len */
@@ -72,12 +70,9 @@ const { allowed } = await fgaClient.check({
       !contextualTuples
         ? ``
         : `
-    contextual_tuples: [\n      ${contextualTuples
-    .map(
-      (tuple) => `${JSON.stringify(tuple)}`
-    )
-    .join(',')}
-    ],`}${!context ?  `\n  }` : `\n    context: ${JSON.stringify(context)}\n  }` }, {
+    contextual_tuples: [\n      ${contextualTuples.map((tuple) => `${JSON.stringify(tuple)}`).join(',')}
+    ],`
+    }${!context ? `\n  }` : `\n    context: ${JSON.stringify(context)}\n  }`}, {
   authorization_model_id: '${modelId}',
 });
 
@@ -93,9 +88,9 @@ body := ClientCheckRequest{
     User:     "${user}",
     Relation: "${relation}",
     Object:   "${object}",${
-        !contextualTuples
-          ? ''
-          : `
+      !contextualTuples
+        ? ''
+        : `
     ContextualTuples: []ClientTupleKey{
 ${
   !contextualTuples
@@ -103,15 +98,21 @@ ${
     : contextualTuples
         .map(
           (tuple) =>
-`        {
+            `        {
             User:     "${tuple.user}",
             Relation: "${tuple.relation}",
             Object:   "${tuple.object}",
-        },`)
+        },`,
+        )
         .join('\n')
 }
-    },`}${context ? `
-    Context: &map[string]interface{}${JSON.stringify(context)},` : ''}
+    },`
+    }${
+      context
+        ? `
+    Context: &map[string]interface{}${JSON.stringify(context)},`
+        : ''
+    }
 }
 
 data, err := fgaClient.Check(context.Background()).
