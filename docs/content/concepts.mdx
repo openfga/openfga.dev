@@ -403,12 +403,12 @@ For more information, please see [Direct Access](./modeling/direct-access.mdx).
 <summary>
 ## What Is A Conditional Relationship Tuple?
 
-A **conditional relationship tuple** is a [relationship tuple](#what-is-a-relationship-tuple?) which represents a [relationship](#what-is-a-relationship?) conditioned upon the evaluation of the boolean outcome the relationship tuple is conditioned upon.
+A **conditional relationship tuple** is a [relationship tuple](#what-is-a-relationship-tuple?) which represents a [relationship](#what-is-a-relationship?) conditioned upon the evaluation of some [ABAC Condition](#what-is-an-abac-condition?).
 </summary>
 
 If a relationship tuple is conditioned, then the condition which the tuple is conditioned upon must evaluate to a truthy outcome for the relationship tuple to be considered a permissible relationship.
 
-The following relationship tuple is a conditional relationship tuple because it is conditioned on `mycondition`. The relationship is considered permissible because the expression `x < 100` for the condition evaluates to a truthy outcome since `20 < 100`.
+The following relationship tuple is a conditional relationship tuple because it is conditioned on `mycondition`. If the expression for `mycondition` is defined as `x < 100`, then the relationship is considered permissible because the expression evaluates to a truthy outcome since `20 < 100`.
 
 <RelationshipTuplesViewer
   relationshipTuples={[

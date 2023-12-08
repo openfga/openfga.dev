@@ -21,7 +21,7 @@ import TabItem from '@theme/TabItem';
 # ABAC Conditions
 
 ## Overview
-ABAC Conditions allow you to model more complex authorization modeling scenarios involving Attribute-based Access Control (ABAC) policies. Conditions are used in [Conditional Relationship Tuples](../concepts.mdx#what-is-a-conditional-relationship-tuple)
+ABAC Conditions allow you to model more complex authorization modeling scenarios involving Attribute-based Access Control (ABAC) policies. Take a look at the [Conditions](../concepts.mdx#what-is-a-condition?) and [Conditional Relationship Tuples](../concepts.mdx#what-is-a-conditional-relationship-tuple?) concepts for a quick overview.
 
 There are various use cases where ABAC Conditions can be helpful. These include, but are not limited to:
 
@@ -30,7 +30,7 @@ There are various use cases where ABAC Conditions can be helpful. These include,
 * **Usage-based/Feature-based Policies (Entitlements)** - enforce quoata or usage of some resource or feature.
 * **Resource-attribute Policies** - define policies to access resources based on attributes/fields of the resource(s).
 
-For more information and background context on why we added this feature, please see our blog post on [Conditional Relationship Tuples for OpenFGA](https://openfga.dev/blog/conditional-tuples-announcement).
+For more information and background context on why we added this feature, please see our blog post on [Conditional Relationship Tuples for OpenFGA](https://openfga.dev/blog/conditional-tuples-announcement). 
 
 ## Defining ABAC Conditions in Models
 For this example we'll use the following authorization model to demonstrate a temporal based access policy. Namely, a user can view a document if and only if they have been granted the viewer relationship AND their temporal grant policy is met.
@@ -141,7 +141,7 @@ For example, we can give `user:anne` viewer access to `document:1` for 10 minute
 />
 
 ## Queries with Condition Context
-Now that we have written a [Conditional Relationship Tuple](../concepts.mdx#what-is-a-conditional-relationship-tuple), we can query OpenFGA using the [Check API](https://openfga.dev/api/service#/Relationship%20Queries/Check) to see if `user:anne` has viewer access to `document:1` under certain conditions/context. That is, `user:anne` should only have access is the current timestamp is less than or equal to the grant timestamp (e.g. the time which the tuple was written) plus the duration of the grant (10 minutes). If the current timestamp is less than or equal, then you'll get a permit decision. For example,
+Now that we have written a [Conditional Relationship Tuple](../concepts.mdx#what-is-a-conditional-relationship-tuple), we can query OpenFGA using the [Check API](https://openfga.dev/api/service#/Relationship%20Queries/Check) to see if `user:anne` has viewer access to `document:1` under certain conditions/context. That is, `user:anne` should only have access is the current timestamp is less than or equal to the grant timestamp (e.g. the time which the tuple was written) plus the duration of the grant (10 minutes). If the current timestamp is less than or equal, then you'll get a permissive decision. For example,
 
 <CheckRequestViewer
   user={'user:anne'}
