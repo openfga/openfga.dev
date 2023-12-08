@@ -21,7 +21,7 @@ import TabItem from '@theme/TabItem';
 # ABAC Conditions
 
 ## Overview
-ABAC Conditions allow you to model more complex authorization modeling scenarios involving Attribute-based Access Control (ABAC) policies. Conditions are used in [Conditional Relationship Tuples](../concepts#what-is-a-conditional-relationship-tuple)
+ABAC Conditions allow you to model more complex authorization modeling scenarios involving Attribute-based Access Control (ABAC) policies. Conditions are used in [Conditional Relationship Tuples](../concepts.mdx#what-is-a-conditional-relationship-tuple)
 
 There are various use cases where ABAC Conditions can be helpful. These include, but are not limited to:
 
@@ -141,7 +141,7 @@ For example, we can give `user:anne` viewer access to `document:1` for 10 minute
 />
 
 ## Queries with Condition Context
-Now that we have written a [Conditional Relationship Tuple](../concepts#what-is-a-conditional-relationship-tuple), we can query OpenFGA using the [Check API](https://openfga.dev/api/service#/Relationship%20Queries/Check) to see if `user:anne` has viewer access to `document:1` under certain conditions/context. That is, `user:anne` should only have access is the current timestamp is less than or equal to the grant timestamp (e.g. the time which the tuple was written) plus the duration of the grant (10 minutes). If the current timestamp is less than or equal, then you'll get a permit decision. For example,
+Now that we have written a [Conditional Relationship Tuple](../concepts.mdx#what-is-a-conditional-relationship-tuple), we can query OpenFGA using the [Check API](https://openfga.dev/api/service#/Relationship%20Queries/Check) to see if `user:anne` has viewer access to `document:1` under certain conditions/context. That is, `user:anne` should only have access is the current timestamp is less than or equal to the grant timestamp (e.g. the time which the tuple was written) plus the duration of the grant (10 minutes). If the current timestamp is less than or equal, then you'll get a permit decision. For example,
 
 <CheckRequestViewer
   user={'user:anne'}
