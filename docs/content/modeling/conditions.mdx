@@ -54,7 +54,7 @@ condition non_expired_grant(current_time: timestamp, grant_time: timestamp, gran
 The type restriction for `document#viewer` requires that any user of type `user` that is written in the relationship tuple must be accompanied by the `non_expired_grant` condition. This is denoted by the `user with non_expired_grant` specification.
 :::
 
-Now we transform the DSL model into JSON syntax and write the model.
+Write the model to the FGA store:
 <WriteAuthzModelViewer
   authorizationModel={{
     "schema_version":"1.1",
