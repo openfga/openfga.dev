@@ -1,7 +1,7 @@
 ---
 sidebar_position: 8
-slug: /modeling/abac-conditions
-description: Modeling relationships with ABAC Conditions
+slug: /modeling/conditions
+description: Modeling relationships with Conditions
 ---
 
 import {
@@ -18,12 +18,12 @@ import {
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# ABAC Conditions
+# Conditions
 
 ## Overview
-ABAC Conditions allow you to model more complex authorization modeling scenarios involving Attribute-based Access Control (ABAC) policies. Take a look at the [Conditions](../concepts.mdx#what-is-an-abac-condition) and [Conditional Relationship Tuples](../concepts.mdx#what-is-a-conditional-relationship-tuple) concepts for a quick overview.
+Conditions allow you to model more complex authorization modeling scenarios involving attributes and can be used to represent some Attribute-based Access Control (ABAC) policies. Take a look at the [Conditions](../concepts.mdx#what-is-a-condition) and [Conditional Relationship Tuples](../concepts.mdx#what-is-a-conditional-relationship-tuple) concepts for a quick overview.
 
-There are various use cases where ABAC Conditions can be helpful. These include, but are not limited to:
+There are various use cases where Conditions can be helpful. These include, but are not limited to:
 
 * [**Temporal Access Policies**](https://github.com/openfga/sample-stores/tree/main/stores/temporal-access) - manage user access for a window of time.
 * [**IP Allowlists or Geo-fencing Policies**](https://github.com/openfga/sample-stores/tree/main/stores/ip-based-access) - limit or grant access based on an IP Address range or corporate network policy.
@@ -32,8 +32,8 @@ There are various use cases where ABAC Conditions can be helpful. These include,
 
 For more information and background context on why we added this feature, please see our blog post on [Conditional Relationship Tuples for OpenFGA](https://openfga.dev/blog/conditional-tuples-announcement). 
 
-## Defining ABAC Conditions in Models
-For this example we'll use the following authorization model to demonstrate a temporal based access policy. Namely, a user can view a document if and only if they have been granted the viewer relationship AND their temporal grant policy is met.
+## Defining Conditions in Models
+For this example we'll use the following authorization model to demonstrate a temporal based access policy. Namely, a user can view a document if and only if they have been granted the viewer relationship AND their non-expired grant policy is met.
 
 ```dsl.openfga
 model
@@ -43,15 +43,15 @@ type user
 
 type document
   relations
-    define viewer: [user with temporal_grant]
+    define viewer: [user with non_expired_grant]
 
-condition temporal_grant(grant_duration: duration, current_time: timestamp, grant_time: timestamp) {
-  current_time <= grant_time + grant_duration
+condition non_expired_grant(current_time: timestamp, grant_time: timestamp, grant_duration: duration) {
+  current_time < grant_time + grant_duration
 }
 ```
 
 :::note
-The type restriction for `document#viewer` requires that any user of type `user` that is written in the relationship tuple must be accompanied by the `temporal_grant` condition. This is denoted by the `user with temporal_grant` specification.
+The type restriction for `document#viewer` requires that any user of type `user` that is written in the relationship tuple must be accompanied by the `non_expired_grant` condition. This is denoted by the `user with non_expired_grant` specification.
 :::
 
 Now we transform the DSL model into JSON syntax and write the model.
@@ -75,7 +75,7 @@ Now we transform the DSL model into JSON syntax and write the model.
               "directly_related_user_types": [
                 {
                     "type":"user",
-                    "condition":"temporal_grant"
+                    "condition":"non_expired_grant"
                 }
               ]
             }
@@ -84,9 +84,9 @@ Now we transform the DSL model into JSON syntax and write the model.
       }
     ],
     "conditions": {
-      "temporal_grant": {
-        "name":"temporal_grant",
-        "expression":"current_time <= grant_time + grant_duration",
+      "non_expired_grant": {
+        "name":"non_expired_grant",
+        "expression":"current_time < grant_time + grant_duration",
         "parameters": {
           "current_time": {
               "type_name":"TYPE_NAME_TIMESTAMP"
@@ -113,7 +113,7 @@ Now we transform the DSL model into JSON syntax and write the model.
 />
 
 ## Writing Conditional Relationship Tuples
-Using the model above, when we [Write](https://openfga.dev/api/service#/Relationship%20Tuples/Write) relationship tuples to the OpenFGA store, then any `document#viewer` relationship with `user` objects must be accompanied by the condition `temporal_grant` because the type restriction requires it.
+Using the model above, when we [Write](https://openfga.dev/api/service#/Relationship%20Tuples/Write) relationship tuples to the OpenFGA store, then any `document#viewer` relationship with `user` objects must be accompanied by the condition `non_expired_grant` because the type restriction requires it.
 
 For example, we can give `user:anne` viewer access to `document:1` for 10 minutes by writing the following relationship tuple:
 
@@ -124,7 +124,7 @@ For example, we can give `user:anne` viewer access to `document:1` for 10 minute
       relation: 'viewer',
       object: 'document:1',
       condition: {
-        name: 'temporal_grant',
+        name: 'non_expired_grant',
         context: {
           grant_time: '2023-01-01T00:00:00Z',
           grant_duration: '10m',
@@ -141,7 +141,7 @@ For example, we can give `user:anne` viewer access to `document:1` for 10 minute
 />
 
 ## Queries with Condition Context
-Now that we have written a [Conditional Relationship Tuple](../concepts.mdx#what-is-a-conditional-relationship-tuple), we can query OpenFGA using the [Check API](https://openfga.dev/api/service#/Relationship%20Queries/Check) to see if `user:anne` has viewer access to `document:1` under certain conditions/context. That is, `user:anne` should only have access is the current timestamp is less than or equal to the grant timestamp (e.g. the time which the tuple was written) plus the duration of the grant (10 minutes). If the current timestamp is less than or equal, then you'll get a permissive decision. For example,
+Now that we have written a [Conditional Relationship Tuple](../concepts.mdx#what-is-a-conditional-relationship-tuple), we can query OpenFGA using the [Check API](https://openfga.dev/api/service#/Relationship%20Queries/Check) to see if `user:anne` has viewer access to `document:1` under certain conditions/context. That is, `user:anne` should only have access if the current timestamp is less than the grant timestamp (e.g. the time which the tuple was written) plus the duration of the grant (10 minutes). If the current timestamp is less than, then you'll get a permissive decision. For example,
 
 <CheckRequestViewer
   user={'user:anne'}
@@ -241,6 +241,6 @@ Note that some of the types support generics, these types are indicated with `<T
 
 * The size of the condition `context` parameter for query requests (e.g. Check, ListObjects, etc..) is not explicitly limited, but the OpenFGA server has an overall request size limit of 512KB at this time.
 
-* We're still working on the changes to support ABAC Conditions in the official FGA CLI and various OpenFGA SDKs including: .Net and Python. At this moment you cannot Write conditional relationship tuples with these tools and/or query (e.g. Check, ListObjects, etc..) OpenFGA with condition context.
+* We're still working on the changes to support Conditions in the official FGA CLI and various OpenFGA SDKs including: .Net and Python. At this moment you cannot Write conditional relationship tuples with these tools and/or query (e.g. Check, ListObjects, etc..) OpenFGA with condition context.
 
 * We enforce a maximum Google CEL expression evaluation cost of 100 (by default) to protect the server from malicious conditions. The evaluation cost of a CEL expression is a function of the size the input that is being compared and the composition of the expression. For more general information please see the official [Language Definition for Google CEL](https://github.com/google/cel-spec/blob/master/doc/langdef.md). If you hit these limits with practical use-cases, please reach out to the maintainer team and we can discuss.

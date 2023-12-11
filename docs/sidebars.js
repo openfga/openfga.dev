@@ -162,8 +162,8 @@ const sidebars = {
         },
         {
           type: 'doc',
-          label: 'ABAC Conditions',
-          id: 'content/modeling/abac-conditions',
+          label: 'Conditions',
+          id: 'content/modeling/conditions',
         },
         {
           type: 'doc',

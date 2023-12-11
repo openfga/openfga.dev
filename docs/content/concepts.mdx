@@ -352,14 +352,14 @@ This will affect only relations that are [directly related](#what-are-direct-and
 
 <details>
 <summary>
-## What is an ABAC Condition?
+## What is a Condition?
 
 A **Condition** is a function composed of one or more parameters and an expression which must evaluate to a boolean outcome. Expressions are defined using [Google's Common Expression Language (CEL)](https://github.com/google/cel-spec).
 </summary>
 
-For example, the following condition `mycondition` defines an ABAC Condition which evaluates to a boolean outcome. The provided parameter `x`, defined as an integer type, is used in the boolean expression `x < 100`. The condition will return a truthy outcome if the expression returns a truthy outcome and false otherwise.
+For example, in the following snippet `less_than_hundred` defines a Condition which evaluates to a boolean outcome. The provided parameter `x`, defined as an integer type, is used in the boolean expression `x < 100`. The condition will return a truthy outcome if the expression returns a truthy outcome and false otherwise.
 ```
-condition mycondition(x: int) {
+condition less_than_hundred(x: int) {
   x < 100
 }
 ```
@@ -370,7 +370,7 @@ condition mycondition(x: int) {
 
 ## What Is A Relationship Tuple?
 
-A **relationship tuple** is composed of a base tuple/triplet consisting of a user, relation and object and it can optionally include a condition which applies to it (see [Conditional Relationship Tuples](#what-is-a-conditional-relationship-tuple) for more info). Relationship tuples are written and stored in <ProductName format={ProductNameFormat.ShortForm}/>.
+A **relationship tuple** is composed of a base tuple/triplet consisting of a user, relation and object and an optional condition which applies to it (see [Conditional Relationship Tuples](#what-is-a-conditional-relationship-tuple) for more info). Relationship tuples are written and stored in <ProductName format={ProductNameFormat.ShortForm}/>.
 
 </summary>
 
@@ -379,7 +379,7 @@ A **relationship tuple** consists of a:
 - **[user](#what-is-a-user)**, e.g. `user:anne`, `user:3f7768e0-4fa7-4e93-8417-4da68ce1846c`, `workspace:auth0` or `folder:planning#editor`
 - **[relation](#what-is-a-relation)**, e.g. `editor`, `member` or `parent_workspace`
 - **[object](#what-is-an-object)**, e.g `repo:auth0/express_jwt`, `domain:auth0.com` or `channel:marketing`
-- **[condition](#what-is-an-abac-condition)** (optional), e.g. `{"condition": "mycondition", "context": {...}}`
+- **[condition](#what-is-a-condition)** (optional), e.g. `{"condition": "in_allowed_ip_range", "context": {...}}`
 
 An [authorization model](#what-is-an-authorization-model), together with _relationship tuples_, allow the determination of whether a [relationship](#what-is-a-relationship) exists between a [user](#what-is-a-user) and an [object](#what-is-an-object).
 
@@ -403,12 +403,12 @@ For more information, please see [Direct Access](./modeling/direct-access.mdx).
 <summary>
 ## What Is A Conditional Relationship Tuple?
 
-A **conditional relationship tuple** is a [relationship tuple](#what-is-a-relationship-tuple?) which represents a [relationship](#what-is-a-relationship?) conditioned upon the evaluation of some [ABAC Condition](#what-is-an-abac-condition?).
+A **conditional relationship tuple** is a [relationship tuple](#what-is-a-relationship-tuple) which represents a [relationship](#what-is-a-relationship) conditioned upon the evaluation of some [Condition](#what-is-a-condition).
 </summary>
 
 If a relationship tuple is conditioned, then the condition which the tuple is conditioned upon must evaluate to a truthy outcome for the relationship tuple to be considered a permissible relationship.
 
-The following relationship tuple is a conditional relationship tuple because it is conditioned on `mycondition`. If the expression for `mycondition` is defined as `x < 100`, then the relationship is considered permissible because the expression evaluates to a truthy outcome since `20 < 100`.
+The following relationship tuple is a conditional relationship tuple because it is conditioned on `less_than_hundred`. If the expression for `less_than_hundred` is defined as `x < 100`, then the relationship is considered permissible because the expression evaluates to a truthy outcome since `20 < 100`.
 
 <RelationshipTuplesViewer
   relationshipTuples={[
@@ -417,7 +417,7 @@ The following relationship tuple is a conditional relationship tuple because it 
       relation: 'editor',
       object: 'document:new-roadmap',
       condition: {
-        "name": "mycondition",
+        "name": "less_than_hundred",
         "context": {
           "x": 20
         }
