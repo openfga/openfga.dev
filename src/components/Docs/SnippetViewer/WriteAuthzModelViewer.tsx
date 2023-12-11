@@ -41,7 +41,7 @@ function writeAuthZModelViewerGo(authorizationModel: AuthorizationModel, apiName
       return
   }
 
-  data, response, err := fgaClient.${apiName}.WriteAuthorizationModel(context.Background()).
+  data, err := fgaClient.${apiName}.WriteAuthorizationModel(context.Background()).
       Body(body).
       Execute()
 
