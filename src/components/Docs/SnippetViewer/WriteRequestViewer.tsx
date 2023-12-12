@@ -1,8 +1,17 @@
 import { getFilteredAllowedLangs, SupportedLanguage, DefaultAuthorizationModelId } from './SupportedLanguage';
 import { defaultOperationsViewer } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
+import { RelationshipCondition } from '@components/Docs/RelationshipTuples';
 
 interface RelationshipTuple {
+  user: string;
+  relation: string;
+  object: string;
+  condition?: RelationshipCondition;
+  _description?: string; // Optional comment describing what this tuple represents
+}
+
+interface RelationshipTupleWithoutCondition {
   user: string;
   relation: string;
   object: string;
@@ -12,7 +21,7 @@ interface RelationshipTuple {
 interface WriteRequestViewerOpts {
   authorizationModelId?: string;
   relationshipTuples: RelationshipTuple[];
-  deleteRelationshipTuples: RelationshipTuple[];
+  deleteRelationshipTuples: RelationshipTupleWithoutCondition[];
   isDelete?: boolean;
   skipSetup?: boolean;
   allowedLanguages?: SupportedLanguage[];
@@ -43,14 +52,10 @@ ${
     }
     case SupportedLanguage.CURL: {
       const writeTuples = opts.relationshipTuples
-        ? opts.relationshipTuples
-            .map(({ user, relation, object }) => `{"user":"${user}","relation":"${relation}","object":"${object}"}`)
-            .join(',')
+        ? opts.relationshipTuples.map((tuple) => `${JSON.stringify(tuple)}`).join(',')
         : '';
       const deleteTuples = opts.deleteRelationshipTuples
-        ? opts.deleteRelationshipTuples
-            .map(({ user, relation, object }) => `{"user":"${user}","relation":"${relation}","object":"${object}"}`)
-            .join(',')
+        ? opts.deleteRelationshipTuples.map((tuple) => `${JSON.stringify(tuple)}`).join(',')
         : '';
       const writes = `"writes": { "tuple_keys" : [${writeTuples}] }`;
       const deletes = `"deletes": { "tuple_keys" : [${deleteTuples}] }`;
@@ -67,13 +72,12 @@ ${
       const writeTuples = opts.relationshipTuples
         ? opts.relationshipTuples
             .map(
-              ({ user, relation, object, _description }) => `
-      ${
-        _description ? `// ${_description}\n      ` : ''
-      }{ user: '${user}', relation: '${relation}', object: '${object}'}`,
+              (tuple) => `
+      ${tuple._description ? `// ${tuple._description}\n      ` : ''}${JSON.stringify(tuple)}`,
             )
             .join(',')
         : '';
+
       const deleteTuples = opts.deleteRelationshipTuples
         ? opts.deleteRelationshipTuples
             .map(
@@ -84,10 +88,8 @@ ${
             )
             .join(',')
         : '';
-      const writes = `writes: [${writeTuples}]
-  }`;
-      const deletes = `deletes: [${deleteTuples}]
-  }`;
+      const writes = `writes: [${writeTuples.length > 0 ? `${writeTuples}\n  ]` : ']'}`;
+      const deletes = `deletes: [${deleteTuples.length > 0 ? `${deleteTuples}\n  ]` : ']'}`;
       const separator = `${opts.deleteRelationshipTuples && opts.relationshipTuples ? ',\n  ' : ''}`;
       return `
 await fgaClient.write({
@@ -102,41 +104,80 @@ await fgaClient.write({
       const writeTuples = opts.relationshipTuples
         ? opts.relationshipTuples
             .map(
-              ({ user, relation, object, _description }) => `
-\t\t\t{
-\t\t\t\t${_description ? `// ${_description}\n\t\t\t\t` : ''}User: openfga.PtrString("${user}"),
-\t\t\t\tRelation: openfga.PtrString("${relation}"),
-\t\t\t\tObject: openfga.PtrString("${object}"),
-\t\t\t}, `,
+              ({ user, relation, object, condition, _description }) =>
+                `        {${
+                  _description
+                    ? `
+             // ${_description}`
+                    : ''
+                }
+             User: "${user}",
+             Relation: "${relation}",
+             Object: "${object}",${
+               condition
+                 ? `
+             Condition: &RelationshipCondition{
+                 Name: "${condition.name}",
+                 Context: &map[string]interface{}${JSON.stringify(condition.context)},
+             },`
+                 : ''
+             }
+        }, `,
             )
             .join('')
         : '';
+
       const deleteTuples = opts.deleteRelationshipTuples
         ? opts.deleteRelationshipTuples
             .map(
-              ({ user, relation, object, _description }) => `
-\t\t\t{
-\t\t\t\t${_description ? `// ${_description}\n\t\t\t\t` : ''}User: openfga.PtrString("${user}"),
-\t\t\t\tRelation: openfga.PtrString("${relation}"),
-\t\t\t\tObject: openfga.PtrString("${object}"),
-\t\t\t}, `,
+              ({ user, relation, object, _description }) =>
+                `        {${
+                  _description
+                    ? `
+             // ${_description}`
+                    : ''
+                }
+             User: "${user}",
+             Relation: "${relation}",
+             Object: "${object}",
+        }, `,
             )
             .join('')
         : '';
-      const writes = `\tWrites: &[]ClientTupleKey{${writeTuples}}`;
-      const deletes = `\tDeletes: &[]ClientTupleKey{${deleteTuples}}`;
+
+      const writes = `    Writes: []ClientTupleKey{${
+        writeTuples.length > 0
+          ? `\n${writeTuples}
+    },`
+          : '},'
+      }`;
+
+      const deletes = `\n    Deletes: []ClientTupleKeyWithoutCondition{${
+        deleteTuples.length > 0
+          ? `\n${deleteTuples}
+    },`
+          : '},'
+      }`;
 
       return `
 options := ClientWriteOptions{
-\tAuthorizationModelId: openfga.PtrString("${modelId}"),
+    AuthorizationModelId: "${modelId}",
 }
+
 body := fgaClient.ClientWriteRequest{
-${opts.relationshipTuples ? writes : ''}${opts.deleteRelationshipTuples ? deletes : ''} }
-data, err := fgaClient.Write(context.Background()).Body(requestBody).Options(options).Execute()
+${opts.relationshipTuples ? writes : ''}${opts.deleteRelationshipTuples ? deletes : ''} 
+}
+
+data, err := fgaClient.Write(context.Background()).
+    Body(requestBody).
+    Options(options).
+    Execute()
 
 if err != nil {
     // .. Handle error
 }
+
+_ = data // use the response
 `;
     }
 
