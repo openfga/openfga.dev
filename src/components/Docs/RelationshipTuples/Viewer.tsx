@@ -5,7 +5,15 @@ interface RelationshipTuple {
   user: string;
   relation: string;
   object: string;
+  condition?: RelationshipCondition;
   _description?: string; // Optional comment describing what this tuple represents
+}
+
+export interface RelationshipCondition {
+  name: string;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  context?: Record<string, any>;
 }
 
 interface RelationshipTuplesViewerOpts {
@@ -22,15 +30,9 @@ function relationshipTuplesViewer(lang: RelationshipTuplesLang, opts: Relationsh
     default:
       return `[${opts.relationshipTuples
         .map(
-          ({ user, relation, object, _description }) => `
-  ${_description ? `// ${_description}\n  ` : ''}{
-    "user": "${user}",
-    "relation": "${relation}",
-    "object": "${object}",
-  },`,
+          (tuple) => `${tuple._description ? `// ${tuple._description}\n  ` : ''}${JSON.stringify(tuple, null, '  ')}`,
         )
-        .join('')}
-]`;
+        .join('')}]`;
   }
 }
 
