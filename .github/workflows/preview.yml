@@ -29,6 +29,6 @@ jobs:
           npm run build
 
       - name: Deploy preview
-        uses: rossjrw/pr-preview-action@183082fd714654433c8e2f6daedbfb4f20f2a94a
+        uses: rossjrw/pr-preview-action@022361539c71c58a7141d4fe8c3e0e4a1c34f9c5
         with:
           source-dir: ./build/
