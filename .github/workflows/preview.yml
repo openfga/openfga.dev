@@ -1,0 +1,34 @@
+# .github/workflows/preview.yml
+name: Deploy PR previews
+concurrency:
+  group: preview-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cached LFS checkout
+        uses: nschloe/action-cached-lfs-checkout@d481127c3821f9c278a6019c39a108ac7004c133
+
+      - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65
+        with:
+          node-version: 18.x
+          cache: npm
+
+      - name: Install and Build
+        run: |
+          npm clean-install
+          npm run build
+
+      - name: Deploy preview
+        uses: rossjrw/pr-preview-action@022361539c71c58a7141d4fe8c3e0e4a1c34f9c5
+        with:
+          source-dir: ./build/

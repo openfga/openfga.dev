@@ -98,6 +98,17 @@ Run
 docker run --init --rm -p 3000:80 fga-docs
 ```
 
+## PR Preview
+GitHub Action [Deploy PR Preview](https://github.com/marketplace/actions/deploy-pr-preview) allows previewing of proposed changes. The URL for the changes can be previewed via
+```
+https://openfga.dev/pr-preview/pr-[number]
+```
+
+For example, previewing changes on PR-589 for changes on docs/modeling/public-access is available via
+```
+https://openfga.dev/pr-preview/pr-589/docs/modeling/public-access
+```
+
 ## Contributing
 Please review the [Contributing Guidelines](https://github.com/openfga/.github/blob/main/CONTRIBUTING.md) before sending a PR or opening an issue.
 
