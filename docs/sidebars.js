@@ -38,6 +38,11 @@ const sidebars = {
           items: [
             {
               type: 'doc',
+              label: 'Configure OpenFGA',
+              id: 'content/getting-started/setup-openfga/configuring-openfga',
+            },
+            {
+              type: 'doc',
               label: '🐳 Docker',
               id: 'content/getting-started/setup-openfga/docker-setup',
             },
@@ -45,6 +50,11 @@ const sidebars = {
               type: 'doc',
               label: '☸️ Kubernetes',
               id: 'content/getting-started/setup-openfga/kubernetes-setup',
+            },
+            {
+              type: 'doc',
+              label: 'Playground',
+              id: 'content/getting-started/setup-openfga/playground',
             }
           ]
         },
