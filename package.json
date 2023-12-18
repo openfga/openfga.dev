@@ -26,11 +26,11 @@
     "@docusaurus/core": "3.0.1",
     "@docusaurus/plugin-client-redirects": "3.0.1",
     "@docusaurus/preset-classic": "3.0.1",
-    "@easyops-cn/docusaurus-search-local": "0.38.1",
+    "@easyops-cn/docusaurus-search-local": "0.39.0",
     "@lottiefiles/react-lottie-player": "3.5.3",
     "@openfga/frontend-utils": "^0.2.0-beta.3",
-    "@openfga/sdk": "^0.2.10",
-    "@openfga/syntax-transformer": "^0.2.0-beta.6",
+    "@openfga/sdk": "^0.3.0",
+    "@openfga/syntax-transformer": "^0.2.0-beta.7",
     "assert-never": "1.2.1",
     "clsx": "2.0.0",
     "path-browserify": "1.0.1",
@@ -39,7 +39,7 @@
     "react-dom": "18.2.0",
     "react-feather": "2.0.10",
     "sanitize-html": "2.11.0",
-    "swagger-ui-react": "5.10.3"
+    "swagger-ui-react": "5.10.5"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.0.1",
