@@ -152,7 +152,7 @@ http:
 
 To learn how to run in in Docker, check our [Docker documentation](./docker-setup.mdx#pre-shared-key-authentication).
 
-#### OIDC
+### OIDC
 
 To configure with OIDC authentication, you will first need to obtain the OIDC issuer and audience from your provider.
 
@@ -198,7 +198,7 @@ http:
 
 To learn how to run in in Docker, check our [Docker documentation](./docker-setup.mdx#oidc-authentication).
 
-### Profiler (pprof)
+## Profiler (pprof)
 :::caution Warning
 Continuous profiling can be used in production deployments, but we recommend disabling it unless it is needed to troubleshoot specific performance or memory problems.
 :::
@@ -284,7 +284,7 @@ OpenFGA telemetry data is collected by default starting on version `v0.3.5`. The
 Please refer to the [docker-compose.yaml](https://github.com/openfga/openfga/blob/main/docker-compose.yaml) file as an example of how to collect Metrics and Tracing in OpenFGA in a Docker environment using the [OpenTelemetry Collector](https://opentelemetry.io/docs/concepts/data-collection/). This should serve as a good example that you can adjust for your specific deployment scenario.
 :::
 
-### Metrics
+## Metrics
 
 OpenFGA metrics are collected with the [Prometheus data format](https://prometheus.io/docs/concepts/data_model/) and exposed on address `0.0.0.0:2112/metrics`.
 
@@ -298,7 +298,7 @@ openfga run --metrics-addr=0.0.0.0:2114
 
 To see the request latency per endpoint of your OpenFGA deployment, you can provide the `--metrics-enable-rpc-histograms` flag (`OPENFGA_METRICS_ENABLE_RPC_HISTOGRAMS` environment variable).
 
-### Tracing
+## Tracing
 
 OpenFGA traces can be collected with the [OTLP data format](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md).
 
@@ -312,7 +312,7 @@ Tracing by default uses a insecure connection. You can enable TLS by using `--tr
 It is not recommended to sample all traces (e.g. `--trace-sample-ratio=1`). You will need to adjust your sampling ratio based on the amount of traffic your deployment receives. Higher traffic will require less sampling and lower traffic can tolerate higher sampling ratios.
 :::
 
-### Logging
+## Logging
 
 OpenFGA generates structured logs by default, and it can be configured with the following flags:
 
