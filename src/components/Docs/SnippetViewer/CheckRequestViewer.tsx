@@ -10,12 +10,15 @@ interface CheckRequestViewerOpts {
   object: string;
   allowed: boolean;
   contextualTuples?: TupleKey[];
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  context?: Record<string, any>;
   skipSetup?: boolean;
   allowedLanguages?: SupportedLanguage[];
 }
 
 function checkRequestViewer(lang: SupportedLanguage, opts: CheckRequestViewerOpts): string {
-  const { user, relation, object, allowed, contextualTuples } = opts;
+  const { user, relation, object, allowed, contextualTuples, context } = opts;
   const modelId = opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId;
 
   switch (lang) {
@@ -51,9 +54,9 @@ ${
     contextualTuples
       ? `,"contextual_tuples":{"tuple_keys":[${contextualTuples
           .map((tuple) => `{"user":"${tuple.user}","relation":"${tuple.relation}","object":"${tuple.object}"}`)
-          .join(',')}]}}`
-      : '}'
-  }'
+          .join(',')}]}`
+      : ''
+  }${context ? `,"context":${JSON.stringify(context)}}` : '}'}'
 
 # Response: {"allowed":${allowed}}`;
     /* eslint-enable max-len */
@@ -65,21 +68,11 @@ const { allowed } = await fgaClient.check({
     relation: '${relation}',
     object: '${object}',${
       !contextualTuples
-        ? `
-`
+        ? ``
         : `
-  contextual_tuples: [${contextualTuples
-    .map(
-      (tuple) => `
-      {
-        user: "${tuple.user}",
-        relation: "${tuple.relation}",
-        object: "${tuple.object}"
-      }`,
-    )
-    .join(',')}
-    ]`
-    }}, {
+    contextual_tuples: [\n      ${contextualTuples.map((tuple) => `${JSON.stringify(tuple)}`).join(',')}
+    ],`
+    }${!context ? `\n  }` : `\n    context: ${JSON.stringify(context)}\n  }`}, {
   authorization_model_id: '${modelId}',
 });
 
@@ -88,34 +81,44 @@ const { allowed } = await fgaClient.check({
       /* eslint-disable no-tabs */
       return `
 options := ClientCheckOptions{
-\tAuthorizationModelId: openfga.PtrString("${modelId}"),
+    AuthorizationModelId: "${modelId}",
 }
+
 body := ClientCheckRequest{
-\tUser:     "${user}",
-\tRelation: "${relation}",
-\tObject:   "${object}",${
-        !contextualTuples
-          ? ''
-          : `
-\tContextualTuples: &[]ClientTupleKey{
+    User:     "${user}",
+    Relation: "${relation}",
+    Object:   "${object}",${
+      !contextualTuples
+        ? ''
+        : `
+    ContextualTuples: []ClientTupleKey{
 ${
   !contextualTuples
     ? ''
     : contextualTuples
         .map(
-          (tuple) => `\t\t{
-\t\t\tUser:     "${tuple.user}",
-\t\t\tRelation: "${tuple.relation}",
-\t\t\tObject:   "${tuple.object}",
-\t\t}`,
+          (tuple) =>
+            `        {
+            User:     "${tuple.user}",
+            Relation: "${tuple.relation}",
+            Object:   "${tuple.object}",
+        },`,
         )
-        .join(',\n')
+        .join('\n')
 }
-\t}`
-      }
+    },`
+    }${
+      context
+        ? `
+    Context: &map[string]interface{}${JSON.stringify(context)},`
+        : ''
+    }
 }
 
-data, err := fgaClient.Check(context.Background()).Body(body).Options(options).Execute()
+data, err := fgaClient.Check(context.Background()).
+    Body(body).
+    Options(options).
+    Execute()
 
 // data = { allowed: ${allowed} }`;
     case SupportedLanguage.DOTNET_SDK:

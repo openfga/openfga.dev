@@ -9,13 +9,16 @@ interface ListObjectsRequestViewerOpts {
   relation: string;
   objectType: string;
   contextualTuples?: TupleKey[];
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  context?: Record<string, any>;
   expectedResults: string[];
   skipSetup?: boolean;
   allowedLanguages?: SupportedLanguage[];
 }
 
 function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequestViewerOpts): string {
-  const { user, relation, objectType, contextualTuples, expectedResults } = opts;
+  const { user, relation, objectType, contextualTuples, context, expectedResults } = opts;
   const modelId = opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId;
 
   switch (lang) {
@@ -50,11 +53,16 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
             )
             .join(',')}
           ]
+        }${
+          context
+            ? `,
+        "context":${JSON.stringify(context)},`
+            : ''
         }
       }'`
-            : `
-      }'`
+            : ''
         }
+
 
 # Response: {"objects": [${expectedResults.map((r) => `"${r}"`).join(', ')}]}`;
     /* eslint-enable max-len */
@@ -77,6 +85,11 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
       .join(', ')}]
   },`
       : ''
+  }${
+    context
+      ? `
+  context:${JSON.stringify(context)},`
+      : ''
   }
 }, {
   authorization_model_id: "${modelId}",
@@ -88,30 +101,38 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
 options := ClientListObjectsOptions{
     AuthorizationModelId: openfga.PtrString("${modelId}"),
 }
+
 body := ClientListObjectsRequest{
-\tUser:     "${user}",
-\tRelation: "${relation}",
-\tType:     "${objectType}",${
-        !contextualTuples
-          ? ''
-          : `
-\tContextualTuples: &[]ClientTupleKey{
+    User:     "${user}",
+    Relation: "${relation}",
+    Type:     "${objectType}",${
+      !contextualTuples
+        ? ''
+        : `
+    ContextualTuples: []ClientTupleKey{
 ${
   !contextualTuples
     ? ''
     : contextualTuples
         .map(
-          (tuple) => `\t\t{
-\t\t\tUser:     "${tuple.user}",
-\t\t\tRelation: "${tuple.relation}",
-\t\t\tObject:   "${tuple.object}",
-\t\t}`,
+          (tuple) =>
+            `        {
+             User:     "${tuple.user}",
+             Relation: "${tuple.relation}",
+             Object:   "${tuple.object}",
+        },`,
         )
-        .join(',\n')
+        .join('\n')
 }
-\t}`
-      }
+    },`
+    }${
+      context
+        ? `
+    Context: &map[string]interface{}${JSON.stringify(context)},`
+        : ''
+    }
 }
+
 data, err := fgaClient.ListObjects(context.Background()).
   Body(requestBody).
   Options(options).

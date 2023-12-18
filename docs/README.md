@@ -48,6 +48,7 @@ It offers an HTTP API, a gRPC API, and has SDKs for programming languages includ
   - [Public Access](./content/modeling/public-access.mdx)
   - [Multiple Restrictions](./content/modeling/multiple-restrictions.mdx)
   - [Custom Roles](./content/modeling/custom-roles.mdx)
+  - [Conditions](./content/modeling/conditions.mdx)
   - [Contextual and Time-Based Authorization](./content/modeling/contextual-time-based-authorization.mdx)
   - [Authorization Through Organization Context](./content/modeling/organization-context-authorization.mdx)
   - [Building Blocks](./content/modeling/building-blocks/overview.mdx)

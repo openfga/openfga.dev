@@ -583,7 +583,7 @@ Remember _"How a user is added as a member to an organization is beyond the scop
       {
         type: 'organization',
         relations: {
-          member: { this: '' },
+          member: { this: {} },
         },
         metadata: {
           relations: {
@@ -688,7 +688,7 @@ The relation definition then should be:
       {
         type: 'document',
         relations: {
-          owner: { this: '' },
+          owner: { this: {} },
         },
         metadata: {
           relations: {
@@ -723,7 +723,7 @@ The relation definition then should be:
       {
         type: 'document',
         relations: {
-          editor: { this: '' },
+          editor: { this: {} },
         },
         metadata: {
           relations: {
@@ -768,7 +768,7 @@ The viewer relation is similar to the document's [editor relation](#relation-edi
       {
         type: 'document',
         relations: {
-          viewer: { this: '' },
+          viewer: { this: {} },
         },
         metadata: {
           relations: {
@@ -799,7 +799,7 @@ When a document is created a relationship tuple will be stored in <ProductName f
       {
         type: 'document',
         relations: {
-          parent: { this: '' },
+          parent: { this: {} },
         },
         metadata: {
           relations: {
