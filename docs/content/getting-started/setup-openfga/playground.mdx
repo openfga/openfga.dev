@@ -1,0 +1,40 @@
+---
+title: Using OpenFGA Playground 
+description: Setting up an OpenFGA server
+sidebar_position: 4
+slug: /getting-started/setup-openfga/playground
+---
+### Playground
+
+The Playground facilitates rapid development by allowing you to visualize and model your application's authorization models and manage relationship tuples with a locally running OpenFGA instance.
+
+It is enabled on port 3000 by default and accessible at http://localhost:3000/playground. 
+
+The Playground is designed for early prototyping and learning. It has serveral limitations:
+
+- It works by embedding the public [Playground website](https://play.fga.dev) in an `<iframe>`. To do this securely, the public Playground configures its Content Security Policies to enable running it from `localhost`. **You can't run the Playground in a host different than `localhost`.
+- It does not support OIDC authentication. 
+- It's loads up to 100 tuples.
+- It does not support conditional tuples or contextual tuples.
+
+We have [the intention](https://github.com/openfga/roadmap/issues/7) to rewrite the Playground code and open source it, which will make it possible to overcome some of those limitations. 
+
+However, we recommend that for managing a production OpenFGA deployment, you use the [Visual Studio Code integration](https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode), [OpenFGA CLI](https://github.com/openfga/cli), combined with the ability to specify a model + tuples + assertions in [.fga.yaml](https://github.com/openfga/cli#run-tests-on-an-authorization-model) files.
+
+## Running the Playground in a different port
+
+You can change the playground port using the `--playground-port` flag. For example,
+
+```sh
+openfga run --playground-enabled --playground-port 3001
+```
+
+## Disabling the Playground
+
+As the Playground allows performing any action in the OpenFGA server, it's not recommended to have it enabled in production deployments.
+
+To run OpenFGA with the Playground disabled, provide the `--playground-enabled=false` flag.
+
+```shell
+openfga run --playground-enabled=false
+```

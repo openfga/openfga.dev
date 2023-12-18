@@ -1,0 +1,334 @@
+---
+title: Configuring OpenFGA
+description: Configuring an OpenFGA Server
+sidebar_position: 1
+slug: /getting-started/setup-openfga/configure-openfga
+---
+import {
+  DocumentationNotice,
+  RelatedSection,
+} from "@components/Docs";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Configuring OpenFGA
+
+You can configure the OpenFGA server in three ways:
+
+- Using a configuration file.
+- Using environment variables.
+- Using command line parameters.
+
+If the same option is configured in multiple ways the command line parameters will take precedence over environment variables, which will take precedence over the configuration file.
+
+The configuration options and their default values are defined in [config-schema.json](https://github.com/openfga/openfga/blob/main/.config-schema.json).
+
+## Using a configuration file
+
+You can configure the OpenFGA server with a `config.yaml` file, which can be specified in either:
+- `/etc/openfga`
+- `$HOME/.openfga`
+- `.` (i.e., the current working directory).
+
+The OpenFGA server will search for the configuration file in the above order.
+
+Here is a sample configuration to run OpenFGA with a Postgres database and using a preshared key for authentication:
+
+```yaml
+datastore:
+  engine: postgres
+  uri: postgres://user:password@localhost:5432/mydatabase
+authn:
+  method: preshared
+  preshared:
+    keys: ["key1", "key2"]
+```
+
+## Using environment variables
+
+The OpenFGA server supports **environment variables** for configuration, and they will take priority over your configuration file.
+Each variable must be prefixed with `OPENFGA_` and followed by your option in uppercase (e.g `--grpc-tls-key` becomes `OPENFGA_GRPC_TLS_KEY`).
+
+## Using command line variables
+
+Command line parameters take precedence over environment variables and options in the configuration file. They are prefixed with `--` , e.g.
+
+```shell
+openfga run
+    --datastore-engine postgres \
+    --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
+```
+
+## Configuring Data Storage
+
+OpenFGA supports multiple storage engine options, including:
+
+- `memory` - A memory storage engine, which is the default. Data is lost between server restarts.
+- `postgres` - A Postgres storage engine. 
+- `mysql` - A MySQL storage engine.
+
+The first time you run OpenFGA, or when you install a new version, you need to run the `openfga migrate` command. This will create the required database tables or perform the database migration required for a new version.
+
+### Postgres
+
+```shell
+openfga migrate
+    --datastore-engine postgres \
+    --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
+
+openfga run
+    --datastore-engine postgres \
+    --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
+```
+
+To learn how to run in in Docker, check our [Docker documentation](./docker-setup.mdx#using-postgres).
+### MySQL
+
+The MySQL datastore has stricter limits for the max length of some fields for tuples compared to other datastore engines, in particular:
+
+- object type is at most 128 characters (down from 256)
+- object id is at most 128 characters (down from 256)
+- user is at most 256 characters (down from 512)
+
+The connection URI needs to specify the query `parseTime=true`.
+
+```shell
+openfga migrate \
+    --datastore-engine mysql \
+    --datastore-uri 'root:secret@tcp(mysql:3306)/openfga?parseTime=true'
+
+openfga run \
+    --datastore-engine mysql \
+    --datastore-uri 'root:secret@tcp(mysql:3306)/openfga?parseTime=true'
+```
+
+To learn how to run in in Docker, check our [Docker documentation](./docker-setup.mdx#using-mysql).
+
+## Configuring Authentication
+
+You can configure authentication in three ways: 
+
+  - no authentication (default)
+  - pre-shared key authentication
+  - OIDC
+  
+### Pre-shared Key Authentication
+
+If using **Pre-shared key authentication**, you will configure OpenFGA with a secret key and your application calling OpenFGA will have to set an `Authorization: Bearer <YOUR-KEY-HERE>` header. You can configure multiple keys.
+
+:::caution Warning
+If you are going to use this setup in production, you should enable HTTP TLS in your OpenFGA server. You will need to configure the TLS certificate and key.
+:::
+
+<Tabs groupId={"configuration"}>
+<TabItem value={"configuration file"} label={"Configuration File"}>
+
+Update the config.yaml file to 
+
+```yaml
+authn:
+  method: preshared
+  preshared:
+    keys: ["key1", "key2"]
+http:
+  tls:
+    enabled: true
+    cert: /Users/myuser/key/server.crt
+    key: /Users/myuser/key/server.key
+```
+
+</TabItem>
+
+<TabItem value={"environment variables"} label={"Environment Variables"}>
+
+1. Configure the authentication method to preshared: `export OPENFGA_AUTHN_METHOD=preshared`.
+2. Configure the authentication keys: `export OPENFGA_AUTHN_PRESHARED_KEYS="key1,key2"`
+3. Enable the HTTP TLS configuration: `export OPENFGA_HTTP_TLS_ENABLED=true`
+4. Configure the HTTP TLS certificate location: `export OPENFGA_HTTP_TLS_CERT=/Users/myuser/key/server.crt`
+5. Configure the HTTP TLS key location: `export OPENFGA_HTTP_TLS_KEY=/Users/myuser/key/server.key`
+
+</TabItem>
+</Tabs>
+
+To learn how to run in in Docker, check our [Docker documentation](./docker-setup.mdx#pre-shared-key-authentication).
+
+#### OIDC
+
+To configure with OIDC authentication, you will first need to obtain the OIDC issuer and audience from your provider.
+
+:::caution Warning
+If you are going to use this setup in production, you should enable HTTP TLS in your OpenFGA server. You will need to configure the TLS certificate and key.
+:::
+
+<Tabs groupId={"configuration"}>
+<TabItem value={"configuration file"} label={"Configuration File"}>
+
+Update the config.yaml file to 
+
+```yaml
+authn:
+  method: oidc
+  oidc:
+    issuer: "oidc-issuer"
+    audience: "oidc-audience"
+
+http:
+  tls:
+    enabled: true
+    cert: /Users/myuser/key/server.crt
+    key: /Users/myuser/key/server.key
+```
+
+</TabItem>
+
+<TabItem value={"environment variables"} label={"Environment Variables"}>
+
+1. Configure the authentication method to preshared: `export OPENFGA_AUTHN_METHOD=oidc`.
+2. Configure the authentication keys: `export OPENFGA_AUTHN_OIDC_ISSUER=oidc-issuer`
+2. Configure the authentication keys: `export OPENFGA_AUTHN_OIDC_audience=oidc-audience`
+3. Enable the HTTP TLS configuration: `export OPENFGA_HTTP_TLS_ENABLED=true`
+4. Configure the HTTP TLS certificate location: 
+`export OPENFGA_HTTP_TLS_CERT=/Users/myuser/key/server.crt`
+5. Configure the HTTP TLS key location: 
+`export OPENFGA_HTTP_TLS_KEY=/Users/myuser/key/server.key`
+
+</TabItem>
+
+</Tabs>
+
+To learn how to run in in Docker, check our [Docker documentation](./docker-setup.mdx#oidc-authentication).
+
+### Profiler (pprof)
+:::caution Warning
+Continuous profiling can be used in production deployments, but we recommend disabling it unless it is needed to troubleshoot specific performance or memory problems.
+:::
+
+Profiling through [`pprof`](https://github.com/google/pprof/blob/main/doc/README.md) can be enabled on the OpenFGA server by providing the `--profiler-enabled` flag. For example:
+
+```sh
+openfga run --profiler-enabled
+```
+
+If you need to serve the profiler on a different port than the default `3001`, you can do so by specifying the `--profiler-addr` flag. For example:
+
+```sh
+openfga/openfga run --profiler-enabled --profiler-addr :3002
+```
+
+If you want to run it in docker:
+```sh
+docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3002:3002 openfga/openfga run --profiler-enabled --profiler-addr :3002
+```
+
+## Health Check
+
+OpenFGA is configured with an HTTP health check endpoint `/healthz` and a gRPC health check `grpc.health.v1.Health/Check`, which is wired to datastore testing. Possible response values are
+- UNKNOWN
+- SERVING
+- NOT_SERVING
+- SERVICE_UNKNOWN
+
+<Tabs groupId={"healthcheck"}>
+<TabItem value={"health-curl"} label={"cURL"}>
+
+```shell
+curl -X GET $FGA_API_HOST/healthz
+
+# {"status":"SERVING"}
+```
+
+</TabItem>
+
+<TabItem value={"health-grpc"} label={"gRPC"}>
+
+```shell
+# See https://github.com/fullstorydev/grpcurl#installation
+grpcurl -plaintext $FGA_API_HOST grpc.health.v1.Health/Check
+
+# {"status":"SERVING"}
+```
+</TabItem>
+</Tabs>
+
+## Experimental Features
+Various releases of OpenFGA may have experimental features that can be enabled by providing the `--experimentals` flag or the `experimentals` config.
+
+```
+openfga run --experimentals="feature1, feature2"
+```
+or if you're using environment variables,
+```
+openfga -e OPENFGA_EXPERIMENTALS="feature1, feature2" run
+```
+
+The following table enumerates the experimental flags, a description of what they do, and the versions of OpenFGA the flag is supported in:
+
+| Name              | Description                                                        | OpenFGA Version       |
+|-------------------|--------------------------------------------------------------------|-----------------------|
+| otel-metrics      | Enables support for exposing OpenFGA metrics through OpenTelemetry | `0.3.2 <= v < v0.3.5` | 
+| list-objects      | Enables ListObjects API                                            | `0.2.0 <= v < v0.3.3` | 
+| check-query-cache | Enables caching of check subproblem result                         | `1.3.1 <= v < v1.3.6` | 
+| enable-conditions | Enables conditional relationship tuples                            | `1.3.8 <= v < v1.4.0` | 
+
+:::caution Warning
+Experimental features are not guaranteed to be stable and may lead to server instabilities. It is not recommended to enable experimental features for anything other than experimentation.
+
+Experimental feature flags are also not considered part of API compatibility and are subject to change, so please refer to each OpenFGA specific release for a list of the experimental feature flags that can be enabled for that release.
+:::
+
+## Telemetry
+
+OpenFGA telemetry data is collected by default starting on version `v0.3.5`. The telemetry information that is captured includes Metrics, Traces, and Logs.
+
+:::note
+Please refer to the [docker-compose.yaml](https://github.com/openfga/openfga/blob/main/docker-compose.yaml) file as an example of how to collect Metrics and Tracing in OpenFGA in a Docker environment using the [OpenTelemetry Collector](https://opentelemetry.io/docs/concepts/data-collection/). This should serve as a good example that you can adjust for your specific deployment scenario.
+:::
+
+### Metrics
+
+OpenFGA metrics are collected with the [Prometheus data format](https://prometheus.io/docs/concepts/data_model/) and exposed on address `0.0.0.0:2112/metrics`.
+
+Metrics are exposed by default, but you can disable this with `--metrics-enabled=false` (or `OPENFGA_METRICS_ENABLED=false` environment variable).
+
+To set an alternative address, you can provide the `--metrics-addr` flag (`OPENFGA_METRICS_ADDR` environment variable). For example:
+
+```shell
+openfga run --metrics-addr=0.0.0.0:2114
+```
+
+To see the request latency per endpoint of your OpenFGA deployment, you can provide the `--metrics-enable-rpc-histograms` flag (`OPENFGA_METRICS_ENABLE_RPC_HISTOGRAMS` environment variable).
+
+### Tracing
+
+OpenFGA traces can be collected with the [OTLP data format](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md).
+
+Tracing is disabled by default, but you can enable this with the `--trace-enabled=true` (`OPENFGA_TRACE_ENABLED=true` environment variable). Traces will be exported by default to address `0.0.0.0:4317`. You can change this address with the `--trace-otlp-endpoint` flag (`OPENFGA_TRACE_OTLP_ENDPOINT` environment variable).
+
+To increase or decrease the trace sampling ratio, you can provide the `--trace-sample-ratio` flag (`OPENFGA_TRACE_SAMPLE_RATIO` env variable).
+
+Tracing by default uses a insecure connection. You can enable TLS by using `--trace-otlp-tls-enabled=true` flag or the environment variable `OPENFGA_TRACE_OTLP_TLS_ENABLED`.
+
+:::caution Warning
+It is not recommended to sample all traces (e.g. `--trace-sample-ratio=1`). You will need to adjust your sampling ratio based on the amount of traffic your deployment receives. Higher traffic will require less sampling and lower traffic can tolerate higher sampling ratios.
+:::
+
+### Logging
+
+OpenFGA generates structured logs by default, and it can be configured with the following flags:
+
+- `--log-format`: sets the log format. Today we support `text` and `json` format.
+- `--log-level`: sets the minimum log level (defaults to `info`). It can be set to `none` to turn off logging.
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more on how to use OpenFGA."
+  relatedLinks={[
+    {
+      title: 'Production Best Practices',
+      description: 'Learn the best practices of running OpenFGA in a production environment',
+      link: '../running-in-production',
+      id: './running-in-production',
+    }
+  ]}
+/>
