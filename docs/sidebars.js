@@ -39,7 +39,7 @@ const sidebars = {
             {
               type: 'doc',
               label: 'Configure OpenFGA',
-              id: 'content/getting-started/setup-openfga/configuring-openfga',
+              id: 'content/getting-started/setup-openfga/configure-openfga',
             },
             {
               type: 'doc',
