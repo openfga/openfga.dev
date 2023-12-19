@@ -73,7 +73,7 @@ The syntax is still not supported in the FGA CLI, but we are pretty close. Danie
 
 We have also been improving tuple validation when writing `fga.yaml` files, and it's pretty cool! Works on Daniel's machine for now :).
 
-![bdd demo](/img/blog/fgn-2023-12-validation.png)
+![Tuple Validation Demo](/img/blog/fgn-2023-12-validation.png)
 
 Daniel also demoed it in our latest community meeting, watch it [here](https://youtu.be/xXhwPPcGRqE?t=1598).
 
