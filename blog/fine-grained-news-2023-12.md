@@ -26,7 +26,7 @@ In our last Community Meeting, the [Agicap](https://agicap.com/en) team (Pauline
 
 The screenshot below might be enough to understand what they are doing, but if you want to know more, you can watch the full presentation [here](https://youtu.be/xXhwPPcGRqE?t=765).
 
-![bdd demo](/static/img/blog/fgn-2023-12-bdd.png)
+![bdd demo](/img/blog/fgn-2023-12-bdd.png)
 
 ## GoDaddy & OpenFGA
 
@@ -43,7 +43,7 @@ Read the full article [here](https://www.godaddy.com/engineering/2023/12/12/auth
 
 Canonical has also been working with OpenFGA for a while, and it's adding OpenFGA to different layers in their stack. 
 
-![OpenFGA at Canonical](/static/img/blog/fgn-2023-12-canonical.png)
+![OpenFGA at Canonical](/img/blog/fgn-2023-12-canonical.png)
 
 They just announced that OpenFGA support is included [in LXD](https://discourse.ubuntu.com/t/lxd-5-20-has-been-released/40865) and [MicroCloud](https://www.gamingdeputy.com/canonical-unveils-microcloud-a-toolkit-for-rapid-cluster-deployment/).
 
@@ -65,15 +65,15 @@ You can read more about it [here](https://openfga.dev/docs/modeling/conditions).
 
 We've been working on the OpenFGA language with some long-due improvements. Soon, you'll be able to use parentheses to group expressions when defining relations:
 
-![DSL improvements](/static/img/blog/fgn-2023-12-language.png)
+![DSL improvements](/img/blog/fgn-2023-12-language.png)
 
 The syntax is still not supported in the FGA CLI, but we are pretty close. Daniel demoed it in our latest community meeting, you can see the full demo [here](https://youtu.be/xXhwPPcGRqE?t=1313).
 
 ## VS Code Extension Improvements
 
-We have also been improving tuple validation when writing `fga.yaml` files, and it's pretty cool! Works on Daniel's machine for now :)
+We have also been improving tuple validation when writing `fga.yaml` files, and it's pretty cool! Works on Daniel's machine for now :).
 
-![bdd demo](/static/img/blog/fgn-2023-12-validation.png)
+![bdd demo](/img/blog/fgn-2023-12-validation.png)
 
 Daniel also demoed it in our latest community meeting, watch it [here](https://youtu.be/xXhwPPcGRqE?t=1598).
 
@@ -85,9 +85,9 @@ We are getting ready for KubeCon Europe 2024, in Paris. We'll have a Project Kio
 
 We have a very welcoming community, and we'd love to have you there! You can join us in different ways:
 
-- Join our [community meetings](https://github.com/openfga/community/blob/main/community-meetings.md), the second Thursday of every month. All the recordings are [here](https://www.youtube.com/@OpenFGA).
+- Join our [community meetings](https://github.com/openfga/community/blob/main/community-meetings.md), the second Thursday of every month. All the recordings are [here].(https://www.youtube.com/@OpenFGA).
 - Join our [Discord](https://discord.gg/8naAwJfWN6)
-- Stay up to date by following us on [X](https://twitter.com/openfga)
+- Stay up to date by following us on [X](https://twitter.com/openfga).
 - Ask questions, submit ideas, or just say hi in our [GitHub Discussions](https://github.com/orgs/openfga/discussions).
 
 ## See you next month!
