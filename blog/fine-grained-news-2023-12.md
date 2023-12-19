@@ -5,7 +5,7 @@ slug: fine-grained-news-2023-12
 date: 2023-12-18
 authors: aaguiar
 tags: [newsletter]
-image: https://openfga.dev/img/openfga_logo.svg
+image: https://openfga.dev/img/og-rich-embed.png
 hide_table_of_contents: false
 ---
 # Fine Grained News
