@@ -26,7 +26,7 @@ In our last Community Meeting, the [Agicap](https://agicap.com/en) team (Pauline
 
 The screenshot below might be enough to understand what they are doing, but if you want to know more, you can watch the full presentation [here](https://youtu.be/xXhwPPcGRqE?t=765).
 
-![bdd demo](/img/blog/fgn-2023-12-bdd.png)
+![bdd demo](../static/img/blog/fgn-2023-12-bdd.png)
 
 ## GoDaddy & OpenFGA
 
@@ -37,13 +37,14 @@ Some interesting tidbits:
 - They implemented their own DynamoDB Storage Adapter, as they were heavy Dynamo DB users and liked the eventual consistency model it provided.
 - They needed [Contextual Tuples](https://docs.fga.dev/modeling/basics/contextual-time-based-authorization#use-contextual-tuples-for-context-related-checks) to fully support their use case.
 
+<!-- markdown-link-check-disable -->
 Read the full article [here](https://www.godaddy.com/engineering/2023/12/12/authorization-oauth-openfga/).
 
 ## Canonical & OpenFGA
 
 Canonical has also been working with OpenFGA for a while, and it's adding OpenFGA to different layers in their stack. 
 
-![OpenFGA at Canonical](/img/blog/fgn-2023-12-canonical.png)
+![OpenFGA at Canonical](../static/img/blog/fgn-2023-12-canonical.png)
 
 They just announced that OpenFGA support is included [in LXD](https://discourse.ubuntu.com/t/lxd-5-20-has-been-released/40865) and [MicroCloud](https://www.gamingdeputy.com/canonical-unveils-microcloud-a-toolkit-for-rapid-cluster-deployment/).
 
@@ -65,7 +66,7 @@ You can read more about it [here](https://openfga.dev/docs/modeling/conditions).
 
 We've been working on the OpenFGA language with some long-due improvements. Soon, you'll be able to use parentheses to group expressions when defining relations:
 
-![DSL improvements](/img/blog/fgn-2023-12-language.png)
+![DSL improvements](../static/img/blog/fgn-2023-12-language.png)
 
 The syntax is still not supported in the FGA CLI, but we are pretty close. Daniel demoed it in our latest community meeting, you can see the full demo [here](https://youtu.be/xXhwPPcGRqE?t=1313).
 
@@ -73,7 +74,7 @@ The syntax is still not supported in the FGA CLI, but we are pretty close. Danie
 
 We have also been improving tuple validation when writing `fga.yaml` files, and it's pretty cool! Works on Daniel's machine for now :).
 
-![Tuple Validation Demo](/img/blog/fgn-2023-12-validation.png)
+![Tuple Validation Demo](../static/img/blog/fgn-2023-12-validation.png)
 
 Daniel also demoed it in our latest community meeting, watch it [here](https://youtu.be/xXhwPPcGRqE?t=1598).
 
