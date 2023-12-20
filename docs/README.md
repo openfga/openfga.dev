@@ -6,7 +6,9 @@ hide_title: true
 
 ## About OpenFGA
 
-[OpenFGA](https://github.com/openfga/openfga) is an open source Fine-Grained Authorization solution based on Google's Zanzibar. It was created by the Okta FGA team and welcomes community contribution. OpenFGA is designed to make it easy for application builders to quickly add fine-grained authorization to their applications. It offers an HTTP API and has SDKs for programming languages including [JavaScript](https://github.com/openfga/js-sdk), [GoLang](https://github.com/openfga/go-sdk), [.NET](https://github.com/openfga/dotnet-sdk) and [Python](https://github.com/openfga/python-sdk). More SDKs and integrations such as Rego are planned for the future. OpenFGA is designed and optimized for reliability and low latency at a high scale.
+[OpenFGA](https://github.com/openfga/openfga) is an open source Fine-Grained Authorization solution based on Google's Zanzibar. It was created by the Okta FGA team and welcomes community contribution. OpenFGA is designed to make it easy for application builders to quickly add fine-grained authorization to their applications. OpenFGA is designed and optimized for reliability and low latency at a high scale.
+
+It offers an HTTP API, a gRPC API, and has SDKs for programming languages including [JavaScript](https://github.com/openfga/js-sdk), [GoLang](https://github.com/openfga/go-sdk), [.NET](https://github.com/openfga/dotnet-sdk) and [Python](https://github.com/openfga/python-sdk) and [Java](https://github.com/openfga/java-sdk). 
 
 ## Resources
 
@@ -22,8 +24,10 @@ hide_title: true
 - [Configuration Language](./content/configuration-language.mdx)
 - [Getting Started](./content/getting-started/overview.mdx)
   - [Setup OpenFGA](./content/getting-started/setup-openfga/overview.mdx)
+    - [Configure OpenFGA](./content/getting-started/setup-openfga/configure-openfga.mdx)
     - [Docker](./content/getting-started/setup-openfga/docker-setup.mdx)
     - [Kubernetes](./content/getting-started/setup-openfga/kubernetes-setup.mdx)
+    - [Playground](./content/getting-started/setup-openfga/playground.mdx)
   - [Install SDK Client](./content/getting-started/install-sdk.mdx)
   - [Create a Store](./content/getting-started/create-store.mdx)
   - [Setup SDK Client for Store](./content/getting-started/setup-sdk-client.mdx)
