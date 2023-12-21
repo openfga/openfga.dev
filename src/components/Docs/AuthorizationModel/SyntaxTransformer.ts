@@ -23,6 +23,7 @@ export const loadSyntax = (
         config = {
           schema_version: SchemaVersion.OneDotOne,
           type_definitions: [config as unknown as TypeDefinition],
+          id: ""
         };
         skipVersion = true;
       } else if (!config.type_definitions) {
@@ -34,8 +35,8 @@ export const loadSyntax = (
     case SyntaxFormat.Api:
     default: {
       return skipVersion
-        ? JSON.stringify(config, null, '  ').replace('  "schema_version": "1.1",\n', '')
-        : JSON.stringify(config, null, '  ');
+        ? JSON.stringify(config, null, '  ').replace('  "schema_version": "1.1",\n', '').replace(',\n  "id": ""', '')
+        : JSON.stringify(config, null, '  ').replace(',\n  "id": ""', '');
     }
   }
 };
