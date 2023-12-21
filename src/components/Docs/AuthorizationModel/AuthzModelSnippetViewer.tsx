@@ -30,7 +30,13 @@ const BaseAuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
   showSchemaOneDotZero,
 }) => {
   if (onlyShow) {
-    return <AuthzModelCodeBlock configuration={{ ...configuration, id: "" }} syntaxFormat={onlyShow} skipVersion={skipVersion} />;
+    return (
+      <AuthzModelCodeBlock
+        configuration={{ ...configuration, id: '' }}
+        syntaxFormat={onlyShow}
+        skipVersion={skipVersion}
+      />
+    );
   }
 
   if (!showSchemaOneDotZero) {
@@ -39,14 +45,14 @@ const BaseAuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
         <Tabs groupId="dsl">
           <TabItem value="dsl" label="DSL">
             <AuthzModelCodeBlock
-              configuration={{ ...configuration, id: "" }}
+              configuration={{ ...configuration, id: '' }}
               syntaxFormat={SyntaxFormat.Friendly2}
               skipVersion={skipVersion}
             />
           </TabItem>
           <TabItem value="json" label="JSON">
             <AuthzModelCodeBlock
-              configuration={{ ...configuration, id: "" }}
+              configuration={{ ...configuration, id: '' }}
               syntaxFormat={SyntaxFormat.Api}
               skipVersion={skipVersion}
             />
@@ -61,21 +67,21 @@ const BaseAuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
       <Tabs groupId="dsl">
         <TabItem value="dsl" label="DSL">
           <AuthzModelCodeBlock
-            configuration={{ ...configuration, id: "" }}
+            configuration={{ ...configuration, id: '' }}
             syntaxFormat={SyntaxFormat.Friendly2}
             skipVersion={skipVersion}
           />
         </TabItem>
         <TabItem value="dsl-onedotzero" label="DSL (Version 1.0)">
           <AuthzModelCodeBlock
-            configuration={{ ...configuration, schema_version: constants.enums.SchemaVersion.OneDotZero, id: "" }}
+            configuration={{ ...configuration, schema_version: constants.enums.SchemaVersion.OneDotZero, id: '' }}
             syntaxFormat={SyntaxFormat.Friendly2}
             skipVersion={skipVersion}
           />
         </TabItem>
         <TabItem value="json" label="JSON">
           <AuthzModelCodeBlock
-            configuration={{ ...configuration, id: "" }}
+            configuration={{ ...configuration, id: '' }}
             syntaxFormat={SyntaxFormat.Api}
             skipVersion={skipVersion}
           />
@@ -112,7 +118,7 @@ const AuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
             </div>
           </Admonition>
 
-          <WriteAuthzModelViewer authorizationModel={{ ...configuration, id: "" }} skipSetup={true} />
+          <WriteAuthzModelViewer authorizationModel={{ ...configuration, id: '' }} skipSetup={true} />
         </details>
       ) : undefined}
     </>

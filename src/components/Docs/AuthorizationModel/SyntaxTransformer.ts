@@ -23,7 +23,7 @@ export const loadSyntax = (
         config = {
           schema_version: SchemaVersion.OneDotOne,
           type_definitions: [config as unknown as TypeDefinition],
-          id: ""
+          id: '',
         };
         skipVersion = true;
       } else if (!config.type_definitions) {
