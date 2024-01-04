@@ -15,6 +15,8 @@ function getMapping(lang: SupportedLanguage, languageMappings: LanguageMappings)
       return languageMappings['dotnet'];
     case SupportedLanguage.PYTHON_SDK:
       return languageMappings['python'];
+    case SupportedLanguage.JAVA_SDK:
+      return languageMappings['java'];
   }
   return {
     importStatement: '',
@@ -109,6 +111,21 @@ async def main():
 
 asyncio.run(main())
 `;
+    case SupportedLanguage.JAVA_SDK:
+      return `
+${importSdkStatement(lang, languageMappings)}
+
+public class Example {
+  public static void main(String[] args) throws Exception {
+      var config = new ClientConfiguration()
+              .apiUrl(System.getenv("FGA_API_URL")) // If not specified, will default to "https://localhost:8080"
+              .storeId(System.getenv("FGA_STORE_ID")) // Not required when calling createStore() or listStores()
+              .authorizationModelId(System.getenv("FGA_AUTHORIZATION_MODEL_ID")); // Optional, can be overridden per request
+
+      var fgaClient = new OpenFgaClient(config);
+  }
+}
+`;
     case SupportedLanguage.RPC:
     case SupportedLanguage.PLAYGROUND:
       throw new Error(`Lang ${lang} support has not been implemented`);
@@ -140,6 +157,7 @@ export function GenerateSetupHeader(lang: SupportedLanguage, skipSetup?: boolean
     case SupportedLanguage.GO_SDK:
     case SupportedLanguage.DOTNET_SDK:
     case SupportedLanguage.PYTHON_SDK:
+    case SupportedLanguage.JAVA_SDK:
       content = getMapping(lang, configuredLanguage).setupNote + sdkSetupHeader(lang, configuredLanguage);
       break;
     case SupportedLanguage.CLI:

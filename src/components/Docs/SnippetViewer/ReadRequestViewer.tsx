@@ -154,6 +154,19 @@ ${requestTuples}
 Reply: tuples:[${readTuples}]`;
     }
 
+    case SupportedLanguage.JAVA_SDK: {
+      const requestTuples = opts.object
+        ? (opts.user ? `\n        .user("${opts.user}")` : '') +
+          (opts.relation ? `\n        .relation("${opts.relation}")` : '') +
+          `\n        ._object("${opts.object}")`
+        : '';
+      return `var body = new ClientReadRequest()${requestTuples};
+
+var response = fgaClient.read(body).get();
+
+// response = { "tuples": [${readTuples}] }`;
+    }
+
     case SupportedLanguage.PLAYGROUND:
       return '';
     default:
@@ -168,6 +181,7 @@ export function ReadRequestViewer(opts: ReadRequestViewerOpts): JSX.Element {
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
     SupportedLanguage.CLI,
     SupportedLanguage.CURL,
     SupportedLanguage.RPC,

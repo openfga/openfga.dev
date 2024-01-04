@@ -71,6 +71,19 @@ async def write_authorization_model():
 `;
 }
 
+function writeAuthZModelViewerJava(authorizationModel: AuthorizationModel): string {
+  return `// import com.fasterxml.jackson.databind.ObjectMapper;
+// import dev.openfga.sdk.api.model.WriteAuthorizationModelRequest;
+
+var mapper = new ObjectMapper().findAndRegisterModules();
+var authorizationModel = fgaClient
+            .writeAuthorizationModel(mapper.readValue(${JSON.stringify(
+              JSON.stringify(authorizationModel),
+            )}, WriteAuthorizationModelRequest.class))
+            .get();
+`;
+}
+
 function writeAuthZModelViewer(lang: SupportedLanguage, opts: WriteAuthzModelViewerOpts) {
   switch (lang) {
     case SupportedLanguage.CLI: {
@@ -97,6 +110,10 @@ function writeAuthZModelViewer(lang: SupportedLanguage, opts: WriteAuthzModelVie
       return writeAuthZModelViewerPython(opts.authorizationModel);
     }
 
+    case SupportedLanguage.JAVA_SDK: {
+      return writeAuthZModelViewerJava(opts.authorizationModel);
+    }
+
     case SupportedLanguage.RPC:
     case SupportedLanguage.PLAYGROUND:
       return '';
@@ -111,6 +128,7 @@ export function WriteAuthzModelViewer(opts: WriteAuthzModelViewerOpts): JSX.Elem
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
     SupportedLanguage.CLI,
     SupportedLanguage.CURL,
   ];

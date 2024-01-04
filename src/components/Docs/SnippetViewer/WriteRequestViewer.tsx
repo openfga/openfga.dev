@@ -339,6 +339,58 @@ ${opts.deleteRelationshipTuples ? deletes : ''}`;
       /* eslint-enable no-tabs */
     }
 
+    case SupportedLanguage.JAVA_SDK: {
+      const writeTuples = opts.relationshipTuples
+        ? opts.relationshipTuples
+            .map(
+              ({ user, relation, object, condition, _description }) => `
+    ${_description ? `            // ${_description}\n    ` : ''}            new ClientTupleKey()
+                        .user("${user}")
+                        .relation("${relation}")
+                        ._object("${object}")${
+                          condition
+                            ? `
+                        .condition(new ClientRelationshipCondition()
+                                .name("${condition.name}")
+                                .context(Map.of(${Object.entries(condition.context)
+                                  .map(([k, v]) => `"${k}", "${v}"`)
+                                  .join(',')}))
+                        )
+                        `
+                            : ''
+                        }`,
+            )
+            .join(',')
+        : '';
+
+      const deleteTuples = opts.deleteRelationshipTuples
+        ? opts.deleteRelationshipTuples
+            .map(
+              ({ user, relation, object, _description }) => `
+    ${_description ? `            // ${_description}\n    ` : ''}            new ClientTupleKey()
+                        .user("${user}")
+                        .relation("${relation}")
+                        ._object("${object}")`,
+            )
+            .join(',')
+        : '';
+
+      const writes = `
+        .writes(List.of(${writeTuples}
+        ))`;
+      const deletes = `
+        .deletes(List.of(${deleteTuples}
+        ))`;
+
+      return `var options = new ClientWriteOptions()
+        .authorizationModelId("${modelId}");
+
+var body = new ClientWriteRequest()${opts.relationshipTuples ? writes : ' '}${
+        opts.deleteRelationshipTuples ? deletes : ''
+      };
+
+var response = fgaClient.write(body, options).get();`;
+    }
     case SupportedLanguage.PLAYGROUND:
       return '';
     default:
@@ -352,6 +404,7 @@ export function WriteRequestViewer(opts: WriteRequestViewerOpts): JSX.Element {
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
     SupportedLanguage.CURL,
     SupportedLanguage.CLI,
     SupportedLanguage.RPC,
