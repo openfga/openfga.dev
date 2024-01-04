@@ -65,6 +65,16 @@ This section will illustrate how to perform a <ProductConcept section="what-is-a
 4. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
 
 </TabItem>
+
+<TabItem value={SupportedLanguage.JAVA_SDK} label={languageLabelMap.get(SupportedLanguage.JAVA_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](./install-sdk.mdx).
+3. You have [configured the _authorization model_](./configure-model.mdx) and [updated the _relationship tuples_](./update-tuples.mdx).
+4. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
+
+</TabItem>
+
 <TabItem value={SupportedLanguage.CLI} label={languageLabelMap.get(SupportedLanguage.CLI)}>
 
 1. <SdkSetupPrerequisite />
@@ -111,6 +121,11 @@ Before calling the check API, you will need to configure the API client.
 <SdkSetupHeader lang={SupportedLanguage.PYTHON_SDK} />
 
 </TabItem>
+<TabItem value={SupportedLanguage.JAVA_SDK} label={languageLabelMap.get(SupportedLanguage.JAVA_SDK)}>
+
+<SdkSetupHeader lang={SupportedLanguage.JAVA_SDK} />
+
+</TabItem>
 <TabItem value={SupportedLanguage.CLI} label={languageLabelMap.get(SupportedLanguage.CLI)}>
 
 <SdkSetupHeader lang={SupportedLanguage.CLI} />
@@ -141,6 +156,7 @@ To return all documents that user `user:anne` has relationship `reader` with:
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
     SupportedLanguage.CLI,
     SupportedLanguage.CURL,
   ]}

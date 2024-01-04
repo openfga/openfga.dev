@@ -35,6 +35,12 @@
 	  },
 	  {
 		"pattern": "^https://www.linkedin.com"
+	  },
+	  {
+		"pattern": "https://gradle.org/"
+	  },
+	  {
+		"pattern": "https://github.com/openfga/java-sdk"
 	  }
 	],
 	"httpHeaders": [

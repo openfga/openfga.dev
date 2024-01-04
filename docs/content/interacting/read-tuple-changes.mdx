@@ -61,6 +61,14 @@ This section illustrates how to call the Read Changes API to get the list of rel
 4. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
 
 </TabItem>
+<TabItem value={SupportedLanguage.JAVA_SDK} label={languageLabelMap.get(SupportedLanguage.JAVA_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](../getting-started/install-sdk.mdx).
+3. You have [configured the _authorization model_](../modeling).
+4. You have loaded `FGA_STORE_ID` and `FGA_API_HOST` as environment variables.
+
+</TabItem>
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
 1. <SdkSetupPrerequisite />
@@ -102,6 +110,13 @@ First you will need to configure the API client.
 
 </TabItem>
 
+<TabItem value={SupportedLanguage.JAVA_SDK} label={languageLabelMap.get(SupportedLanguage.JAVA_SDK)}>
+
+<SdkSetupHeader lang="java-sdk" />
+
+</TabItem>
+
+
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
 To obtain the [access token](https://auth0.com/docs/authorization/flows/call-your-api-using-the-client-credentials-flow):
@@ -124,6 +139,7 @@ To get a paginated list of changes that happened in your store:
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
     SupportedLanguage.CLI,
     SupportedLanguage.CURL,
   ]}
@@ -142,6 +158,7 @@ You can then use this token to get the next set of changes:
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
     SupportedLanguage.CLI,
     SupportedLanguage.CURL,
   ]}
@@ -222,6 +239,7 @@ It is possible to get a list of changes that happened in your store that relate 
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
     SupportedLanguage.CLI,
     SupportedLanguage.CURL,
   ]}
@@ -239,6 +257,7 @@ The response will include a continuation token. In subsequent calls, you have to
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
     SupportedLanguage.CLI,
     SupportedLanguage.CURL,
   ]}
