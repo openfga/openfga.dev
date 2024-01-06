@@ -25,14 +25,15 @@ import {
 
 This section explores some methods available to you to tackle some use-cases where the expected authorization check may depend on certain dynamic or contextual data (such as time, location, ip address, weather) that have not been written to the <ProductName format={ProductNameFormat.ShortForm}/> store.
 
-<CardBox title="When to use" appearance="filled" description={<div>
+<CardBox title="When to use" appearance="filled">
+
 Contextual Tuples should be used when modeling cases where a user's access to an object depends on the context of their request. For example:
 
 - An employee’s ability to access a document when they are connected to the company VPN or the api call is originating from an internal IP address.
 - A support engineer is only able to access a user's account during office hours.
 - If a user belongs to multiple organizations, they are only able to access a resource if they set a specific organization in their current context.
 
-</div>} />
+</CardBox>
 
 ## Before You Start
 

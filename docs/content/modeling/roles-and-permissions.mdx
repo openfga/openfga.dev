@@ -28,7 +28,7 @@ In this guide you will learn how to model roles and permissions model within <Pr
 
 For example, the role `viewer` of a `trip` can have **permissions to view bookings** or the role `owners` can have **permissions to add/view bookings to a trip.**
 
-<CardBox title="When to use" appearance="filled" description={<div>
+<CardBox title="When to use" appearance="filled">
 
 When trying to create a role and permissions model within <ProductName format={ProductNameFormat.ShortForm}/>.:
 
@@ -46,7 +46,7 @@ There are advantages to implementing roles and permissions within <ProductName f
 - Breaking down existing roles to have more fine grained permissions. This allows your application to check whether a _user_ has access to a certain object without having to explicitly check that specific _users_ role.
 - Introduce new roles/permissions or consolidate roles without affecting your application behavior. For example: if in your app all the checks are for the fine permissions `check('bob', 'booking_adder', 'trip:Europe')` instead of `check('bob', 'owner', 'trip:Europe')`, and then you later decide `owners` can no longer add bookings to a `trip`, you can remove the relation within the `trip` type with no code changes in your application, and all the permissions will automatically honor the change.
 
-</div>} />
+</CardBox>
 
 ## Before you start
 

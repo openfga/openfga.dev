@@ -53,45 +53,23 @@ If that sounds hard, don't worry! We'll guide you through it.
 ReBAC systems determine access from a <ProductConcept section="what-is-a-user" linkName="user's" /> <ProductConcept section="what-is-a-relation" linkName="relation" /> to an <ProductConcept section="what-is-an-object" linkName="object" />. Authorization decisions are then yes or no answers to the question: "Does user U have relation R with object O?".
 
 <ColumnLayout cols={2} style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-  <CardBox
-    title="General Authorization Check"
-    description={
-      <p>
-        "Can user <b>U</b> <u>perform an action</u> <b>A</b> on object <b>O</b>?"
-      </p>
-    }
-    appearance="filled"
-  />
-  <CardBox
-    title="{ProductName} (ReBAC) Authorization Check"
-    description={
-      <p>
-        "Does user <b>U</b> <u>have relation</u> <b>R</b> with object <b>O</b>?"
-      </p>
-    }
-  />
+  <CardBox title="General Authorization Check" appearance="filled">
+    "Can user <b>U</b> <u>perform an action</u> <b>A</b> on object <b>O</b>?"
+  </CardBox>
+  <CardBox title="{ProductName} (ReBAC) Authorization Check">
+    "Does user <b>U</b> <u>have relation</u> <b>R</b> with object <b>O</b>?"
+  </CardBox>
 </ColumnLayout>
 
 In the previous example, a relation R should be defined that implies permission to action A. For example:
 
 <ColumnLayout cols={2} style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-  <CardBox
-    title="General Authorization Check"
-    description={
-      <p>
-        "Can user <b>Jane</b> <u>perform action</u> <b>view</b> on object <b>project sandcastle</b>?"
-      </p>
-    }
-    appearance="filled"
-  />
-  <CardBox
-    title="{ProductName} (ReBAC) Authorization Check"
-    description={
-      <p>
-        "Can user <b>Jane</b> <u>have relation</u> <b>view</b> with object <b>project sandcastle</b>?"
-      </p>
-    }
-  />
+  <CardBox title="General Authorization Check" appearance="filled">
+    "Can user <b>Jane</b> <u>perform action</u> <b>view</b> on object <b>project sandcastle</b>?"
+  </CardBox>
+  <CardBox title="{ProductName} (ReBAC) Authorization Check">
+    "Can user <b>Jane</b> <u>have relation</u> <b>view</b> with object <b>project sandcastle</b>?"
+  </CardBox>
 </ColumnLayout>
 
 We'll provide more detailed examples throughout this article.
@@ -1387,23 +1365,12 @@ How? Remember from the introduction that **<ProductName format={ProductNameForma
 The <ProductName format={ProductNameFormat.ShortForm}/> service does that by checking if a user has a particular relationship to an object, based on your authorization model and relationship tuples.
 
 <ColumnLayout cols={2} style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-  <CardBox
-    title="General Authorization Check"
-    description={
-      <p>
-        "Can user <b>U</b> <u>perform action</u> <b>A</b> on object <b>O</b>?"
-      </p>
-    }
-    appearance="filled"
-  />
-  <CardBox
-    title="{ProductName} (ReBAC) Authorization Check"
-    description={
-      <p>
-        "Can user <b>U</b> <u>have relation</u> <b>R</b> with object <b>O</b>?"
-      </p>
-    }
-  />
+  <CardBox title="General Authorization Check" appearance="filled">
+    "Can user <b>U</b> <u>perform action</u> <b>A</b> on object <b>O</b>?"
+  </CardBox>
+  <CardBox title="{ProductName} (ReBAC) Authorization Check">
+    "Can user <b>U</b> <u>have relation</u> <b>R</b> with object <b>O</b>?"
+  </CardBox>
 </ColumnLayout>
 
 What we want is to ensure that given our current authorization model and some sample relationship tuples, we get the expected results for those questions.

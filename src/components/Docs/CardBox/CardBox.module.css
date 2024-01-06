@@ -12,9 +12,8 @@
 .documentation-card-box-children {
   margin: 0 !important;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 28px;
-  letter-spacing: -0.1px;
 }
 .documentation-card-box-children-small ul {
   padding-left: 14px;
