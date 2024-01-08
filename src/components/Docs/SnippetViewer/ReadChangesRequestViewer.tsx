@@ -40,12 +40,15 @@ await fgaClient.readChanges({ type }, { pageSize, continuationToken });`;
     case SupportedLanguage.GO_SDK: {
       // eslint-disable-next-line max-len
       return `options := ClientReadChangesOptions{${
-        opts.pageSize ? `\n\tPageSize: openfga.PtrInt32(${opts.pageSize}),\n` : ''
-      }${opts.continuationToken ? `\n\tContinuationToken: openfga.PtrString("${opts.continuationToken}"),\n` : ''}}
+        opts.pageSize ? `\n\tPageSize: PtrInt32(${opts.pageSize}),\n` : ''
+      }${opts.continuationToken ? `\n\tContinuationToken: PtrString("${opts.continuationToken}"),\n` : ''}}
 body := ClientReadChangesRequest{${opts.type ? `\n\tType: "${opts.type}",` : ''}
 }
 
-data, err := fgaClient.ReadChanges(context.Background()).Body(body).Options(options).Execute()
+data, err := fgaClient.ReadChanges(context.Background()).
+    Body(body).
+    Options(options).
+    Execute()
 
 if err != nil {
     // .. Handle error

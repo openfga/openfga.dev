@@ -145,7 +145,7 @@ await fgaClient.write({
             .join('')
         : '';
 
-      const writes = `    Writes: []ClientTupleKey{${
+      const writes = `\n    Writes: []ClientTupleKey{${
         writeTuples.length > 0
           ? `\n${writeTuples}
     },`
@@ -161,15 +161,14 @@ await fgaClient.write({
 
       return `
 options := ClientWriteOptions{
-    AuthorizationModelId: "${modelId}",
+    AuthorizationModelId: PtrString("${modelId}"),
 }
 
-body := fgaClient.ClientWriteRequest{
-${opts.relationshipTuples ? writes : ''}${opts.deleteRelationshipTuples ? deletes : ''} 
+body := ClientWriteRequest{${opts.relationshipTuples ? writes : ''}${opts.deleteRelationshipTuples ? deletes : ''} 
 }
 
 data, err := fgaClient.Write(context.Background()).
-    Body(requestBody).
+    Body(body).
     Options(options).
     Execute()
 

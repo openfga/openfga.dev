@@ -82,7 +82,8 @@ const config = {
         setupNote: `// ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`,
       },
       go: {
-        importStatement: `. "github.com/openfga/go-sdk/client"`,
+        importStatement: `. "github.com/openfga/go-sdk"
+    . "github.com/openfga/go-sdk/client"`,
         apiName: `OpenFgaClient`,
         setupNote: `// ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`,
       },

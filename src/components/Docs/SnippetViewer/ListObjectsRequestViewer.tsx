@@ -97,9 +97,8 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
 // response.objects = [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
     case SupportedLanguage.GO_SDK:
       /* eslint-disable no-tabs */
-      return `
-options := ClientListObjectsOptions{
-    AuthorizationModelId: openfga.PtrString("${modelId}"),
+      return `options := ClientListObjectsOptions{
+    AuthorizationModelId: PtrString("${modelId}"),
 }
 
 body := ClientListObjectsRequest{
@@ -134,9 +133,9 @@ ${
 }
 
 data, err := fgaClient.ListObjects(context.Background()).
-  Body(requestBody).
-  Options(options).
-  Execute()
+    Body(body).
+    Options(options).
+    Execute()
 
 // data = { "objects": [${expectedResults.map((r) => `"${r}"`).join(', ')}] }`;
     case SupportedLanguage.DOTNET_SDK:

@@ -47,16 +47,15 @@ const openFga = new OpenFgaClient({
 import (
     "os"
 
-    openfga "github.com/openfga/go-sdk"
     . "github.com/openfga/go-sdk/client"
 )
 
 func main() {
     fgaClient, err := NewSdkClient(&ClientConfiguration{
-        ApiScheme:      os.Getenv("FGA_API_SCHEME"), // optional. Can be "http" or "https". Defaults to "https"
-        ApiHost:        os.Getenv("FGA_API_HOST"), // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
-        StoreId:        os.Getenv("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
-        AuthorizationModelId: openfga.PtrString(os.Getenv("FGA_MODEL_ID")),  // optional, can be overridden per request
+        ApiScheme:            os.Getenv("FGA_API_SCHEME"), // optional. Can be "http" or "https". Defaults to "https"
+        ApiHost:              os.Getenv("FGA_API_HOST"),   // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
+        StoreId:              os.Getenv("FGA_STORE_ID"),   // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+        AuthorizationModelId: os.Getenv("FGA_MODEL_ID"),   // optional, can be overridden per request
     })
 
     if err != nil {
@@ -158,17 +157,16 @@ const openFga = new OpenFgaClient({
 import (
     "os"
 
-    openfga "github.com/openfga/go-sdk"
     . "github.com/openfga/go-sdk/client"
     "github.com/openfga/go-sdk/credentials"
 )
 
 func main() {
     fgaClient, err := NewSdkClient(&ClientConfiguration{
-        ApiScheme:      os.Getenv("FGA_API_SCHEME"), // optional. Can be "http" or "https". Defaults to "https"
-        ApiHost:        os.Getenv("FGA_API_HOST"), // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
-        StoreId:        os.Getenv("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
-        AuthorizationModelId: openfga.PtrString(os.Getenv("FGA_MODEL_ID")),  // optional, can be overridden per request
+        ApiScheme:            os.Getenv("FGA_API_SCHEME"), // optional. Can be "http" or "https". Defaults to "https"
+        ApiHost:              os.Getenv("FGA_API_HOST"),   // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
+        StoreId:              os.Getenv("FGA_STORE_ID"),   // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+        AuthorizationModelId: os.Getenv("FGA_MODEL_ID"),   // optional, can be overridden per request
         Credentials: &credentials.Credentials{
             Method: credentials.CredentialsMethodApiToken,
             Config: &credentials.Config{
@@ -286,17 +284,16 @@ const openFga = new OpenFgaClient({
 import (
     "os"
 
-    openfga "github.com/openfga/go-sdk"
     . "github.com/openfga/go-sdk/client"
     "github.com/openfga/go-sdk/credentials"
 )
 
 func main() {
     fgaClient, err := NewSdkClient(&ClientConfiguration{
-        ApiScheme:      os.Getenv("FGA_API_SCHEME"), // optional. Can be "http" or "https". Defaults to "https"
-        ApiHost:        os.Getenv("FGA_API_HOST"), // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
-        StoreId:        os.Getenv("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
-        AuthorizationModelId: openfga.PtrString(os.Getenv("FGA_MODEL_ID")),  // optional, can be overridden per request
+        ApiScheme:            os.Getenv("FGA_API_SCHEME"), // optional. Can be "http" or "https". Defaults to "https"
+        ApiHost:              os.Getenv("FGA_API_HOST"),   // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
+        StoreId:              os.Getenv("FGA_STORE_ID"),   // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+        AuthorizationModelId: os.Getenv("FGA_MODEL_ID"),   // optional, can be overridden per request
         Credentials: &credentials.Credentials{
             Method: credentials.CredentialsMethodClientCredentials,
             Config: &credentials.Config{

@@ -51,8 +51,9 @@ const fgaClient = new ${languageMappings['js'].apiName}({
     case SupportedLanguage.GO_SDK:
       /* eslint-disable no-tabs */
       return `import (
-    ${importSdkStatement(lang, languageMappings)}
     "os"
+
+    ${importSdkStatement(lang, languageMappings)}
 )
 
 func main() {
@@ -61,7 +62,7 @@ func main() {
         ApiScheme:            os.Getenv("FGA_SCHEME"), // Either "http" or "https", defaults to "https"
         ApiHost:              os.Getenv("FGA_API_HOST"), // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
         StoreId:              os.Getenv("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
-        AuthorizationModelId: openfga.PtrString(os.Getenv("FGA_MODEL_ID")),  // Optional, can be overridden per request
+        AuthorizationModelId: os.Getenv("FGA_MODEL_ID"),  // Optional, can be overridden per request
     })
 
     if err != nil {
