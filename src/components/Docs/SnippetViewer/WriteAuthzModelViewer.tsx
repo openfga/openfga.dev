@@ -1,4 +1,4 @@
-import { getFilteredAllowedLangs, SupportedLanguage, LanguageMappings } from './SupportedLanguage';
+import { getFilteredAllowedLangs, SupportedLanguage } from './SupportedLanguage';
 import { defaultOperationsViewer } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
 import { AuthorizationModel } from '@openfga/sdk';
@@ -30,18 +30,17 @@ const { authorization_model_id: id } = await fgaClient.writeAuthorizationModel($
 // id = "1uHxCSuTP0VKPYSnkq1pbb1jeZw"`;
 }
 
-function writeAuthZModelViewerGo(authorizationModel: AuthorizationModel, apiName: string): string {
+function writeAuthZModelViewerGo(authorizationModel: AuthorizationModel): string {
   /* eslint-disable no-tabs */
   return `
   var writeAuthorizationModelRequestString = ${JSON.stringify(JSON.stringify(authorizationModel))}
   var body WriteAuthorizationModelRequest
   if err := json.Unmarshal([]byte(writeAuthorizationModelRequestString), &body); err != nil {
-      t.Errorf("%v", err)
       // .. Handle error
       return
   }
 
-  data, err := fgaClient.${apiName}.WriteAuthorizationModel(context.Background()).
+  data, err := fgaClient.WriteAuthorizationModel(context.Background()).
       Body(body).
       Execute()
 
@@ -49,8 +48,7 @@ function writeAuthZModelViewerGo(authorizationModel: AuthorizationModel, apiName
       // .. Handle error
   }
 
-  // data.AuthorizationModelId = "1uHxCSuTP0VKPYSnkq1pbb1jeZw"
-  `;
+  // data.AuthorizationModelId = "1uHxCSuTP0VKPYSnkq1pbb1jeZw"`;
 }
 
 function writeAuthZModelViewerDotnet(authorizationModel: AuthorizationModel): string {
@@ -73,11 +71,7 @@ async def write_authorization_model():
 `;
 }
 
-function writeAuthZModelViewer(
-  lang: SupportedLanguage,
-  opts: WriteAuthzModelViewerOpts,
-  languageMappings: LanguageMappings,
-) {
+function writeAuthZModelViewer(lang: SupportedLanguage, opts: WriteAuthzModelViewerOpts) {
   switch (lang) {
     case SupportedLanguage.CLI: {
       return writeAuthZModelViewerCli(opts.authorizationModel);
@@ -92,7 +86,7 @@ function writeAuthZModelViewer(
     }
 
     case SupportedLanguage.GO_SDK: {
-      return writeAuthZModelViewerGo(opts.authorizationModel, languageMappings['go'].apiName);
+      return writeAuthZModelViewerGo(opts.authorizationModel);
     }
 
     case SupportedLanguage.DOTNET_SDK: {

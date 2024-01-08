@@ -73,9 +73,9 @@ const { tuples } = await fgaClient.read({
 
     case SupportedLanguage.GO_SDK: {
       const requestTuples = opts.object
-        ? (opts.user ? `\tUser: openfga.PtrString("${opts.user}"),\n` : '') +
-          (opts.relation ? `\tRelation: openfga.PtrString("${opts.relation}"),\n` : '') +
-          `\tObject: openfga.PtrString("${opts.object}"),\n`
+        ? (opts.user ? `\tUser: PtrString("${opts.user}"),\n` : '') +
+          (opts.relation ? `\tRelation: PtrString("${opts.relation}"),\n` : '') +
+          `\tObject: PtrString("${opts.object}"),\n`
         : '';
 
       /* eslint-disable no-tabs */
@@ -84,7 +84,10 @@ body := ClientReadRequest{
 ${requestTuples}
 }
 
-data, err := fgaClient.Read(context.Background()).Body(requestBody).Options(options).Execute()
+data, err := fgaClient.Read(context.Background()).
+    Body(body).
+    Options(options).
+    Execute()
 
 // data = { "tuples": [${readTuples}] }`;
     }

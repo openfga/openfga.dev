@@ -409,7 +409,6 @@ import (
 
   jwtware "github.com/gofiber/jwt/v3"
   "github.com/golang-jwt/jwt/v4"
-  openfga "github.com/openfga/go-sdk"
   . "github.com/openfga/go-sdk/client"
 )
 
@@ -483,7 +482,7 @@ func checkAuthorization(c *fiber.Ctx) error {
     ApiScheme:      os.Getenv("FGA_API_SCHEME"), // optional. Can be "http" or "https". Defaults to "https"
     ApiHost:        os.Getenv("FGA_API_HOST"), // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
     StoreId:        os.Getenv("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
-    AuthorizationModelId: openfga.PtrString(os.Getenv("FGA_MODEL_ID")),  // optional, can be overridden per request
+    AuthorizationModelId: os.Getenv("FGA_MODEL_ID"),  // optional, can be overridden per request
   })
 
   if err != nil {
@@ -495,7 +494,7 @@ func checkAuthorization(c *fiber.Ctx) error {
     Relation: c.Locals("relation").(string),
     Object: c.Locals("object").(string),
   }
-  data, err := fgaClient.OpenFga.Check(context.Background()).Body(body).Execute()
+  data, err := fgaClient.Check(context.Background()).Body(body).Execute()
 
   if err != nil {
     return fiber.NewError(fiber.StatusServiceUnavailable, "Unable to check for authorization")

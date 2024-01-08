@@ -81,7 +81,7 @@ const { allowed } = await fgaClient.check({
       /* eslint-disable no-tabs */
       return `
 options := ClientCheckOptions{
-    AuthorizationModelId: "${modelId}",
+    AuthorizationModelId: PtrString("${modelId}"),
 }
 
 body := ClientCheckRequest{

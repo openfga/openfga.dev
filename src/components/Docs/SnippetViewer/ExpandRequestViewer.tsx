@@ -41,13 +41,16 @@ const { tree } = await fgaClient.expand({
       /* eslint-disable no-tabs */
       return `
 options := ClientExpandOptions{
-    AuthorizationModelId: openfga.PtrString("${modelId}"),
+    AuthorizationModelId: PtrString("${modelId}"),
 }
 body := ClientExpandRequest{
     Relation: "${opts.relation}", // expand all who has "${opts.relation}" relation
     Object:   "${opts.object}", // with the object "${opts.object}"
 }
-data, err := fgaClient.Expand(context.Background()).Body(requestBody).Options(options).Execute()
+data, err := fgaClient.Expand(context.Background()).
+    Body(body).
+    Options(options).
+    Execute()
 
 // data = { tree: ...}`;
 
