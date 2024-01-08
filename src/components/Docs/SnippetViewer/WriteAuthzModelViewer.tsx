@@ -71,10 +71,7 @@ async def write_authorization_model():
 `;
 }
 
-function writeAuthZModelViewer(
-  lang: SupportedLanguage,
-  opts: WriteAuthzModelViewerOpts,
-) {
+function writeAuthZModelViewer(lang: SupportedLanguage, opts: WriteAuthzModelViewerOpts) {
   switch (lang) {
     case SupportedLanguage.CLI: {
       return writeAuthZModelViewerCli(opts.authorizationModel);
