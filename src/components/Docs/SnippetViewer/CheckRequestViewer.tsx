@@ -41,8 +41,10 @@ ${
           ? ` --contextual_tuples ${contextualTuples
               .map((tuple) => `"${tuple.user} ${tuple.relation} ${tuple.object}"`)
               .join(' ')}`
-          : ''
-      }
+          : ''}${
+            context ? ` --context='${JSON.stringify(context)}'`
+            : ''
+          }
 
 # Response: {"allowed":${allowed}}`;
     case SupportedLanguage.CURL:
