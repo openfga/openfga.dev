@@ -12,7 +12,9 @@ interface ReadChangesRequestViewerOpts {
 function readChangesRequestViewer(lang: SupportedLanguage, opts: ReadChangesRequestViewerOpts) {
   switch (lang) {
     case SupportedLanguage.CLI: {
-      return `fga tuple changes --store-id=\${FGA_STORE_ID}${opts.type ? ` --type ${opts.type}` : ''}${opts.continuationToken ? ` --continuation-token ${opts.continuationToken}` : ''}`;
+      return `fga tuple changes --store-id=\${FGA_STORE_ID}${opts.type ? ` --type ${opts.type}` : ''}${
+        opts.continuationToken ? ` --continuation-token ${opts.continuationToken}` : ''
+      }`;
     }
     case SupportedLanguage.CURL: {
       const typeString = `${opts.type ? '"type": ' + opts.type + '", ' : ''}`;

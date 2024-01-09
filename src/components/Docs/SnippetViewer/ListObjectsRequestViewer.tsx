@@ -31,10 +31,7 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
               .map((tuple) => ` --contextual-tuple "${tuple.user} ${tuple.relation} ${tuple.object}"`)
               .join(' ')}`
           : ''
-      }${
-        context ? ` --context='${JSON.stringify(context)}'`
-        : ''
-      }
+      }${context ? ` --context='${JSON.stringify(context)}'` : ''}
 
 # Response: {"objects": [${expectedResults.map((r) => `"${r}"`).join(', ')}]}`;
     case SupportedLanguage.CURL:
