@@ -38,11 +38,11 @@ ${
     case SupportedLanguage.CLI:
       return `fga query check --store-id=$FGA_STORE_ID --model-id=${modelId} ${user} ${relation} ${object}${
         contextualTuples
-          ? ` --contextual_tuples ${contextualTuples
-              .map((tuple) => `"${tuple.user} ${tuple.relation} ${tuple.object}"`)
+          ? `${contextualTuples
+              .map((tuple) => ` --contextual-tuple "${tuple.user} ${tuple.relation} ${tuple.object}"`)
               .join(' ')}`
           : ''
-      }
+      }${context ? ` --context='${JSON.stringify(context)}'` : ''}
 
 # Response: {"allowed":${allowed}}`;
     case SupportedLanguage.CURL:

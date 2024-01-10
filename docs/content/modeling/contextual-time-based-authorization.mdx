@@ -470,7 +470,7 @@ On the "transaction" type:
 
 Now that we have updated our authorization model to take time and ip address into consideration, you will notice that Anne has lost access because nothing indicates that Anne is connecting from an approved ip address and time. You can verify that by issuing the following check:
 
-<CheckRequestViewer user={'anne'} relation={'can_view'} object={'transaction:A'} allowed={false} />
+<CheckRequestViewer user={'user:anne'} relation={'can_view'} object={'transaction:A'} allowed={false} />
 
 We need to add relationship tuples to mark some approved timeslots and ip address ranges:
 

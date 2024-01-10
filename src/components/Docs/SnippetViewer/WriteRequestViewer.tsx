@@ -36,7 +36,15 @@ function writeRequestViewer(lang: SupportedLanguage, opts: WriteRequestViewerOpt
           ? opts.relationshipTuples
               .map(
                 (tuple) =>
-                  `fga tuple write --store-id=\${FGA_STORE_ID} --model-id=${modelId} ${tuple.user} ${tuple.relation} ${tuple.object}`,
+                  `fga tuple write --store-id=\${FGA_STORE_ID} --model-id=${modelId} ${tuple.user} ${tuple.relation} ${
+                    tuple.object
+                  } ${
+                    tuple.condition
+                      ? `--condition-name ${tuple.condition.name} --condition-context '${JSON.stringify(
+                          tuple.condition.context,
+                        )}'`
+                      : ''
+                  }`,
               )
               .join('\n')
           : ''

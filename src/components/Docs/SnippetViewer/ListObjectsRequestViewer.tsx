@@ -27,11 +27,11 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
     case SupportedLanguage.CLI:
       return `fga query list-objects --store-id=\${FGA_STORE_ID} --model-id=${modelId} ${user} ${relation} ${objectType}${
         contextualTuples
-          ? ` --contextual_tuples ${contextualTuples
-              .map((tuple) => `"${tuple.user} ${tuple.relation} ${tuple.object}"`)
+          ? `${contextualTuples
+              .map((tuple) => ` --contextual-tuple "${tuple.user} ${tuple.relation} ${tuple.object}"`)
               .join(' ')}`
           : ''
-      }
+      }${context ? ` --context='${JSON.stringify(context)}'` : ''}
 
 # Response: {"objects": [${expectedResults.map((r) => `"${r}"`).join(', ')}]}`;
     case SupportedLanguage.CURL:
