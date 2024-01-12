@@ -230,11 +230,18 @@ var response = await fgaClient.Write(body, options);`;
       const writeTuples = opts.relationshipTuples
         ? opts.relationshipTuples
             .map(
-              ({ user, relation, object, _description }) => `
+              ({ user, relation, object, _description, condition }) => `
                 ClientTuple(
 ${_description ? `                    # ${_description}\n                    ` : '                    '}user="${user}",
                     relation="${relation}",
-                    object="${object}",
+                    object="${object}",${
+                      condition ? `
+                    condition=RelationshipCondition(
+                        name='${condition.name}',
+                        context=dict(${Object.entries(condition.context).map(([k,v]) => `
+                            ${k}="${v}"`).join(',')}
+                        )
+                    )` : ''}
                 ),`,
             )
             .join('')
@@ -252,11 +259,9 @@ ${_description ? `                    # ${_description}\n                    ` :
             .join('')
         : '';
       const writes = `    writes=[${writeTuples}
-        ],
-`;
+        ],`;
       const deletes = `    deletes=[${deleteTuples}
-        ],
-`;
+        ],`;
 
       return `options = {
     "authorization_model_id": "${modelId}"

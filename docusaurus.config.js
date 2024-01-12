@@ -95,10 +95,10 @@ using OpenFga.Sdk.Model;`,
         setupNote: `// ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`,
       },
       python: {
-        importStatement: `import os
+        importStatement: `import asyncio
+import os
 import json
-from openfga_sdk.client import ClientConfiguration
-from openfga_sdk.client import OpenFgaClient`,
+from openfga_sdk.client import ClientConfiguration, OpenFgaClient`,
         apiName: `OpenFgaClient`,
         setupNote: `# ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`,
       },

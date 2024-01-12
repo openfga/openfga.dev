@@ -161,6 +161,13 @@ body = ClientCheckRequest(
           .join(',\n                ')}
     ],`
         : ``
+    }${
+      context ?
+      `
+    context=dict(${Object.entries(context).map(([k,v]) => `
+        ${k}="${v}"`).join(',')}
+    )`
+      : ''
     }
 )
 

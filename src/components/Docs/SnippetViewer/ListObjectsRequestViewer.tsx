@@ -180,7 +180,10 @@ body = ClientListObjectsRequest(
           .join(',\n                ')}
     ],`
         : ``
-    }
+    }${context ? `
+    context=dict(${Object.entries(context).map(([k,v]) => `
+        ${k}="${v}"`).join(',')}
+    )`: ''}
 )
 
 response = await fga_client.list_objects(body, options)
