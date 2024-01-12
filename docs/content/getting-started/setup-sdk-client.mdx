@@ -78,8 +78,7 @@ namespace ExampleApp;
 class MyProgram {
     static async Task Main() {
         var configuration = new ClientConfiguration() {
-            ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // optional. Can be "http" or "https". Defaults to "https"
-            ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST"), // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
+            ApiUrl = Environment.GetEnvironmentVariable("FGA_API_URL") ?? "http://localhost:8080", // required, e.g. https://api.fga.example
             StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
             AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"), // optional, can be overridden per request
         };
@@ -190,8 +189,7 @@ func main() {
 
 ```dotnet
 using OpenFga.Sdk.Client;
-using OpenFga.Sdk.Client.Model;
-using OpenFga.Sdk.Model;
+using OpenFga.Sdk.Configuration;
 using Environment = System.Environment;
 
 namespace ExampleApp;
@@ -199,8 +197,7 @@ namespace ExampleApp;
 class MyProgram {
     static async Task Main() {
         var configuration = new ClientConfiguration() {
-            ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // optional. Can be "http" or "https". Defaults to "https"
-            ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST"), // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
+            ApiUrl = Environment.GetEnvironmentVariable("FGA_API_URL") ?? "http://localhost:8080", // required, e.g. https://api.fga.example
             StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
             AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"), // optional, can be overridden per request
             Credentials = new Credentials() {
@@ -329,8 +326,7 @@ func main() {
 
 ```dotnet
 using OpenFga.Sdk.Client;
-using OpenFga.Sdk.Client.Model;
-using OpenFga.Sdk.Model;
+using OpenFga.Sdk.Configuration;
 using Environment = System.Environment;
 
 namespace ExampleApp;
@@ -338,19 +334,18 @@ namespace ExampleApp;
 class MyProgram {
     static async Task Main() {
         var configuration = new ClientConfiguration() {
-            ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // optional. Can be "http" or "https". Defaults to "https"
-            ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST"), // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
+            ApiUrl = Environment.GetEnvironmentVariable("FGA_API_URL") ?? "http://localhost:8080", // required, e.g. https://api.fga.example
             StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
             AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"), // optional, can be overridden per request
-                   Credentials = new Credentials() {
-                        Method = CredentialsMethod.ClientCredentials,
-                        Config = new CredentialsConfig() {
-                            ApiTokenIssuer = Environment.GetEnvironmentVariable("FGA_API_TOKEN_ISSUER"),
-                            ApiAudience = Environment.GetEnvironmentVariable("FGA_API_AUDIENCE"),
-                            ClientId = Environment.GetEnvironmentVariable("FGA_CLIENT_ID"),
-                            ClientSecret = Environment.GetEnvironmentVariable("FGA_CLIENT_SECRET"),
-                        }
-                    }
+            Credentials = new Credentials() {
+                Method = CredentialsMethod.ClientCredentials,
+                Config = new CredentialsConfig() {
+                    ApiTokenIssuer = Environment.GetEnvironmentVariable("FGA_API_TOKEN_ISSUER"),
+                    ApiAudience = Environment.GetEnvironmentVariable("FGA_API_AUDIENCE"),
+                    ClientId = Environment.GetEnvironmentVariable("FGA_CLIENT_ID"),
+                    ClientSecret = Environment.GetEnvironmentVariable("FGA_CLIENT_SECRET"),
+                }
+            }
         };
         var fgaClient = new OpenFgaClient(configuration);
     }

@@ -140,7 +140,7 @@ data, err := fgaClient.ListObjects(context.Background()).
 // data = { "objects": [${expectedResults.map((r) => `"${r}"`).join(', ')}] }`;
     case SupportedLanguage.DOTNET_SDK:
       return `
-var options = new ClientListObjectsOptions {
+var options = new ClientCheckOptions {
     AuthorizationModelId = "${modelId}",
 };
 var body = new ClientListObjectsRequest {
@@ -154,6 +154,13 @@ var body = new ClientListObjectsRequest {
       .map((tuple) => `new(user: "${tuple.user}", relation: "${tuple.relation}", _object: "${tuple.object}")`)
       .join(',\n    ')}
 })`
+        : ''
+    }
+    ${
+      context
+        ? `Context = new { ${Object.entries(context)
+            .map(([k, v]) => `${k}="${v}"`)
+            .join(',')} }`
         : ''
     }
 };
@@ -180,10 +187,18 @@ body = ClientListObjectsRequest(
           .join(',\n                ')}
     ],`
         : ``
-    }${context ? `
-    context=dict(${Object.entries(context).map(([k,v]) => `
-        ${k}="${v}"`).join(',')}
-    )`: ''}
+    }${
+      context
+        ? `
+    context=dict(${Object.entries(context)
+      .map(
+        ([k, v]) => `
+        ${k}="${v}"`,
+      )
+      .join(',')}
+    )`
+        : ''
+    }
 )
 
 response = await fga_client.list_objects(body, options)

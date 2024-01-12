@@ -82,8 +82,7 @@ class Example {
     public static async Task Main() {
         // Initialize the SDK with no auth - see "How to setup SDK client" for more options
         var configuration = new ClientConfiguration() {
-          ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // Either "http" or "https", defaults to "https"
-          ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST"), // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
+          ApiUrl = Environment.GetEnvironmentVariable("FGA_API_URL") ?? "http://localhost:8080", // required, e.g. https://api.fga.example
           StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
           AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"), // Optional, can be overridden per request
         };
