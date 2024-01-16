@@ -82,18 +82,14 @@ namespace ExampleApp;
 
 class MyProgram {
     static async Task Main() {
-        var configuration = new ClientConfiguration() {
-            ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // optional. Can be "http" or "https". Defaults to "https"
-            ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST"), // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
+         var configuration = new ClientConfiguration() {
+            ApiUrl = Environment.GetEnvironmentVariable("FGA_API_URL") ?? "http://localhost:8080", // required, e.g. https://api.fga.example
             StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
             AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"), // optional, can be overridden per request
         };
         var fgaClient = new OpenFgaClient(configuration);
 
-        var store = await fgaClient.CreateStore(new ClientCreateStoreRequest(){Name = "FGA Demo"})
-        {
-            Name = "FGA Demo Store"
-        });
+        var store = await fgaClient.CreateStore(new ClientCreateStoreRequest(){Name = "FGA Demo Store"});
     }
 }
 ```
@@ -103,32 +99,25 @@ class MyProgram {
 <TabItem value={SupportedLanguage.PYTHON_SDK} label={languageLabelMap.get(SupportedLanguage.PYTHON_SDK)}>
 
 ```python
+import asyncio
 import os
 import openfga_sdk
 from openfga_sdk.client import OpenFgaClient
 from openfga_sdk.models.create_store_request import CreateStoreRequest
 
-configuration = openfga_sdk.Configuration(
-    scheme = os.environ.get('FGA_API_SCHEME'),
-    api_host = os.environ.get('FGA_API_HOST'),
-)
+async def main():
+    configuration = openfga_sdk.Configuration(
+        api_scheme = os.environ.get('FGA_API_SCHEME'),
+        api_host = os.environ.get('FGA_API_HOST'),
+    )
 
-async with OpenFgaClient(configuration) as fga_client:
-  body = CreateStoreRequest(
-      name = "FGA Demo Store",
-  )
-  response = await fga_client.create_store(body)
-
-async def create_store():
-    try:
-        # Create a store
+    async with OpenFgaClient(configuration) as fga_client:
         body = CreateStoreRequest(
-            name = "FGA Demo",
+            name = "FGA Demo Store",
         )
-        api_response = await fga_client_instance.create_store(body)
-    except openfga_sdk.ApiException as e:
-        print("Exception when calling OpenFgaClient->create_store: %s\n" % e)
+        response = await fga_client.create_store(body)
 
+asyncio.run(main())
 ```
 
 </TabItem>

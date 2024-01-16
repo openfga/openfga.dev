@@ -139,6 +139,13 @@ var body = new ClientCheckRequest {
 })`
         : ''
     }
+    ${
+      context
+        ? `Context = new { ${Object.entries(context)
+            .map(([k, v]) => `${k}="${v}"`)
+            .join(',')} }`
+        : ''
+    }
 };
 var response = await fgaClient.Check(body, options);
 
@@ -161,6 +168,17 @@ body = ClientCheckRequest(
           .join(',\n                ')}
     ],`
         : ``
+    }${
+      context
+        ? `
+    context=dict(${Object.entries(context)
+      .map(
+        ([k, v]) => `
+        ${k}="${v}"`,
+      )
+      .join(',')}
+    )`
+        : ''
     }
 )
 

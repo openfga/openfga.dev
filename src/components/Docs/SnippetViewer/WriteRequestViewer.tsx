@@ -192,10 +192,26 @@ _ = data // use the response
       const writeTuples = opts.relationshipTuples
         ? opts.relationshipTuples
             .map(
-              ({ user, relation, object, _description }) =>
-                `${
-                  _description ? `    // ${_description}\n` : ''
-                }    new() { User = "${user}", Relation = "${relation}", Object = "${object}" }`,
+              ({ user, relation, object, _description, condition }) =>
+                `${_description ? `    // ${_description}\n` : ''}       new() {
+                  User = "${user}",
+                  Relation = "${relation}",
+                  Object = "${object}"${
+                    condition
+                      ? `,
+                  Condition = new RelationshipCondition(){
+                    Name = "${condition.name}",
+                    Context = new { ${Object.entries(condition.context)
+                      .map(
+                        ([k, v]) => `
+                        ${k}="${v}"`,
+                      )
+                      .join(',')}
+                    }
+                  }`
+                      : ''
+                  }
+              }`,
             )
             .join(',\n')
         : '';
@@ -212,12 +228,12 @@ _ = data // use the response
       const writes = `Writes = new List<ClientTupleKey>() {
 ${writeTuples}
   }`;
-      const deletes = `Deletes = new List<ClientTupleKey>() {
+      const deletes = `Deletes = new List<ClientTupleKeyWithoutCondition>() {
 ${deleteTuples}
   }`;
       const separator = `${opts.deleteRelationshipTuples && opts.relationshipTuples ? ',\n  ' : ''}`;
       return `
-var options = new ClientListObjectsOptions {
+var options = new ClientWriteOptions {
     AuthorizationModelId = "${modelId}",
 };
 var body = new ClientWriteRequest() {
@@ -230,11 +246,25 @@ var response = await fgaClient.Write(body, options);`;
       const writeTuples = opts.relationshipTuples
         ? opts.relationshipTuples
             .map(
-              ({ user, relation, object, _description }) => `
+              ({ user, relation, object, _description, condition }) => `
                 ClientTuple(
 ${_description ? `                    # ${_description}\n                    ` : '                    '}user="${user}",
                     relation="${relation}",
-                    object="${object}",
+                    object="${object}",${
+                      condition
+                        ? `
+                    condition=RelationshipCondition(
+                        name='${condition.name}',
+                        context=dict(${Object.entries(condition.context)
+                          .map(
+                            ([k, v]) => `
+                            ${k}="${v}"`,
+                          )
+                          .join(',')}
+                        )
+                    )`
+                        : ''
+                    }
                 ),`,
             )
             .join('')
@@ -252,11 +282,9 @@ ${_description ? `                    # ${_description}\n                    ` :
             .join('')
         : '';
       const writes = `    writes=[${writeTuples}
-        ],
-`;
+        ],`;
       const deletes = `    deletes=[${deleteTuples}
-        ],
-`;
+        ],`;
 
       return `options = {
     "authorization_model_id": "${modelId}"

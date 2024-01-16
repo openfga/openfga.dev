@@ -82,8 +82,7 @@ class Example {
     public static async Task Main() {
         // Initialize the SDK with no auth - see "How to setup SDK client" for more options
         var configuration = new ClientConfiguration() {
-          ApiScheme = Environment.GetEnvironmentVariable("FGA_API_SCHEME"), // Either "http" or "https", defaults to "https"
-          ApiHost = Environment.GetEnvironmentVariable("FGA_API_HOST"), // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
+          ApiUrl = Environment.GetEnvironmentVariable("FGA_API_URL") ?? "http://localhost:8080", // required, e.g. https://api.fga.example
           StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
           AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"), // Optional, can be overridden per request
         };
@@ -95,17 +94,20 @@ class Example {
       return `
 ${importSdkStatement(lang, languageMappings)}
 
-configuration = ClientConfiguration(
-    api_scheme = os.environ.get('FGA_API_SCHEME'), # Either "http" or "https", defaults to "https"
-    api_host = os.environ.get('FGA_API_HOST'), # required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
-    store_id = os.environ.get('FGA_STORE_ID') # optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
-    authorization_model_id = os.environ.get('FGA_MODEL_ID'), # Optional, can be overridden per request
-)
+async def main():
+    configuration = ClientConfiguration(
+        api_scheme = os.environ.get('FGA_API_SCHEME'), # Either "http" or "https", defaults to "https"
+        api_host = os.environ.get('FGA_API_HOST'), # required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
+        store_id = os.environ.get('FGA_STORE_ID'), # optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+        authorization_model_id = os.environ.get('FGA_MODEL_ID'), # Optional, can be overridden per request
+    )
 
-# Enter a context with an instance of the OpenFgaClient
-async with OpenFgaClient(configuration) as fga_client:
-    api_response = await fga_client.read_authorization_models()
-    await fga_client.close()
+    # Enter a context with an instance of the OpenFgaClient
+    async with OpenFgaClient(configuration) as fga_client:
+        api_response = await fga_client.read_authorization_models()
+        await fga_client.close()
+
+asyncio.run(main())
 `;
     case SupportedLanguage.RPC:
     case SupportedLanguage.PLAYGROUND:
