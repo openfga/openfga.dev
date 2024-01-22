@@ -121,6 +121,27 @@ import openfga_sdk
 ```
 
 </TabItem>
+<TabItem value={SupportedLanguage.JAVA_SDK} label={languageLabelMap.get(SupportedLanguage.JAVA_SDK)}>
+
+You can find the Java package on [Maven Central](https://central.sonatype.com/artifact/dev.openfga/openfga-sdk).
+
+Using [Maven](https://maven.apache.org/):
+
+```
+<dependency>
+    <groupId>dev.openfga</groupId>
+    <artifactId>openfga-sdk</artifactId>
+    <version>0.3.1</version>
+</dependency>
+```
+
+Using [Gradle](https://gradle.org/):
+
+```groovy
+implementation 'dev.openfga:openfga-sdk:0.3.1'
+```
+
+</TabItem>
 <TabItem value={SupportedLanguage.CLI} label={languageLabelMap.get(SupportedLanguage.CLI)}>
 
 The <ProductName format={ProductNameFormat.ShortForm}/> CLI is available on [GitHub](https://github.com/openfga/cli).
@@ -196,5 +217,10 @@ Download the pre-compiled binaries from the [releases page](https://github.com/o
       description: 'Connect your Python service with {ProductName} using our Python SDK',
       link: 'https://github.com/openfga/python-sdk',
     },
+    {
+      title: '{ProductName} Java SDK',
+      description: 'Connect your Java service with {ProductName} using our Java SDK',
+      link: 'https://github.com/openfga/java-sdk',
+    }
   ]}
 />

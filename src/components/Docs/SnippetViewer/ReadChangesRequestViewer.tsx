@@ -77,6 +77,16 @@ options = new ClientReadChangesOptions {
 response = await fga_client.read_changes(body, options)`;
     }
 
+    case SupportedLanguage.JAVA_SDK: {
+      return `var options = new ClientReadChangesOptions()${
+        opts.pageSize ? `\n        .pageSize(${opts.pageSize})` : ''
+      }${opts.continuationToken ? `\n        .continuationToken("${opts.continuationToken}")` : ''};
+
+var body = new ClientReadChangesRequest()${opts.type ? `\n        .type("${opts.type}")` : ''};
+
+var response = fgaClient.readChanges(body, options).get();`;
+    }
+
     default: {
       return ``;
     }
@@ -89,6 +99,7 @@ export function ReadChangesRequestViewer(opts: ReadChangesRequestViewerOpts): JS
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
     SupportedLanguage.CLI,
     SupportedLanguage.CURL,
   ];

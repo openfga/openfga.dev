@@ -203,6 +203,38 @@ response = await fga_client.check(body, options)
 );
 
 Reply: ${allowed}`;
+
+    case SupportedLanguage.JAVA_SDK: {
+      const contextualTuplesList = contextualTuples
+        ? `
+        .contextualTuples(
+                List.of(${contextualTuples.map(
+                  (tuple) => `
+                        new ClientTupleKey()
+                                .user("${tuple.user}")
+                                .relation("${tuple.relation}")
+                                ._object("${tuple.object}")`,
+                )}
+                ))`
+        : '';
+      const contextCall = context
+        ? `
+        .context(Map.of(${Object.entries(context)
+          .map(([k, v]) => `"${k}", "${v}"`)
+          .join(',')}))`
+        : '';
+      return `var options = new ClientCheckOptions()
+        .authorizationModelId("${modelId}");
+
+var body = new ClientCheckRequest()
+        .user("${user}")
+        .relation("${relation}")
+        ._object("${object}")${contextualTuplesList}${contextCall};
+
+var response = fgaClient.check(body, options).get();
+
+// response.getAllowed() = true `;
+    }
     default:
       assertNever(lang);
   }
@@ -215,6 +247,7 @@ export function CheckRequestViewer(opts: CheckRequestViewerOpts): JSX.Element {
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
     SupportedLanguage.CLI,
     SupportedLanguage.CURL,
     SupportedLanguage.RPC,

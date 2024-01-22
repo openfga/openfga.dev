@@ -91,6 +91,16 @@ response = await fga_client.expand(body. options)
 # response = ExpandResponse({"tree":...})
 `;
 
+    case SupportedLanguage.JAVA_SDK:
+      return `var options = new ClientExpandOptions()
+        .authorizationModelId("${modelId}");
+
+var body = new ClientExpandRequest()
+        .relation("${opts.relation}") // expand all who has "${opts.relation}" relation
+        ._object("${opts.object}"); // with the object "${opts.object}"
+
+var response = fgaClient.expand(body, options).get()
+  `;
     case SupportedLanguage.PLAYGROUND:
       return '';
     default:
@@ -104,6 +114,7 @@ export function ExpandRequestViewer(opts: ExpandRequestViewerOpts): JSX.Element 
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
     SupportedLanguage.CLI,
     SupportedLanguage.CURL,
     SupportedLanguage.RPC,

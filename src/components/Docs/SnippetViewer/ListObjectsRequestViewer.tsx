@@ -223,6 +223,38 @@ response = await fga_client.list_objects(body, options)
 );
 
 Reply: [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
+
+    case SupportedLanguage.JAVA_SDK: {
+      const contextualTuplesList = contextualTuples
+        ? `
+        .contextualTupleKeys(
+                List.of(${contextualTuples.map(
+                  (tuple) => `
+                        new ClientTupleKey()
+                                .user("${tuple.user}")
+                                .relation("${tuple.relation}")
+                                ._object("${tuple.object}")
+                ))`,
+                )}`
+        : '';
+      const contextCall = context
+        ? `
+        .context(Map.of(${Object.entries(context)
+          .map(([k, v]) => `"${k}", "${v}"`)
+          .join(',')}))`
+        : '';
+      return `var options = new ClientListObjectsOptions()
+        .authorizationModelId("${modelId}");
+
+var body = new ClientListObjectsRequest()
+        .user("${user}")
+        .relation("${relation}")
+        .type("${objectType}")${contextualTuplesList}${contextCall};
+
+var response = fgaClient.listObjects(body, options).get();
+
+// response.getObjects() = [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
+    }
     default:
       assertNever(lang);
   }
@@ -234,6 +266,7 @@ export function ListObjectsRequestViewer(opts: ListObjectsRequestViewerOpts): JS
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
     SupportedLanguage.CLI,
     SupportedLanguage.CURL,
     SupportedLanguage.RPC,

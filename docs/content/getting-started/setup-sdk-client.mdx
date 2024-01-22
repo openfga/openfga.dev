@@ -112,6 +112,27 @@ asyncio.run(main())
 ```
 
 </TabItem>
+
+<TabItem value={SupportedLanguage.JAVA_SDK} label={languageLabelMap.get(SupportedLanguage.JAVA_SDK)}>
+
+```java
+import dev.openfga.sdk.api.client.OpenFgaClient;
+import dev.openfga.sdk.api.configuration.ClientConfiguration;
+
+public class Example {
+    public static void main(String[] args) {
+        var config = new ClientConfiguration()
+                .apiUrl(System.getenv("FGA_API_URL")) // If not specified, will default to "https://localhost:8080"
+                .storeId(System.getenv("FGA_STORE_ID")) // Not required when calling createStore() or listStores()
+                .authorizationModelId(System.getenv("FGA_AUTHORIZATION_MODEL_ID")); // Optional, can be overridden per request
+
+        var fgaClient = new OpenFgaClient(config);
+    }
+}
+```
+
+</TabItem>
+
 <TabItem value={SupportedLanguage.CLI} label={languageLabelMap.get(SupportedLanguage.CLI)}>
 
 ```shell
@@ -243,6 +264,30 @@ async def main():
         await fga_client.close() # close when done
 
 asyncio.run(main())
+```
+
+</TabItem>
+<TabItem value={SupportedLanguage.JAVA_SDK} label={languageLabelMap.get(SupportedLanguage.JAVA_SDK)}>
+
+```java
+import dev.openfga.sdk.api.client.OpenFgaClient;
+import dev.openfga.sdk.api.configuration.ApiToken;
+import dev.openfga.sdk.api.configuration.ClientConfiguration;
+import dev.openfga.sdk.api.configuration.Credentials;
+
+public class Example {
+    public static void main(String[] args) {
+        var config = new ClientConfiguration()
+                .apiUrl(System.getenv("FGA_API_URL")) // If not specified, will default to "https://localhost:8080"
+                .storeId(System.getenv("FGA_STORE_ID")) // Not required when calling createStore() or listStores()
+                .authorizationModelId(System.getenv("FGA_AUTHORIZATION_MODEL_ID")) // Optional, can be overridden per request
+                .credentials(new Credentials(
+                    new ApiToken(System.getenv("FGA_API_TOKEN")) // will be passed as the "Authorization: Bearer ${ApiToken}" request header
+                ));
+
+        var fgaClient = new OpenFgaClient(config);
+    }
+}
 ```
 
 </TabItem>
@@ -386,6 +431,34 @@ async def main():
         await fga_client.close() # close when done
 
 asyncio.run(main())
+```
+
+</TabItem>
+<TabItem value={SupportedLanguage.JAVA_SDK} label={languageLabelMap.get(SupportedLanguage.JAVA_SDK)}>
+
+```java
+import dev.openfga.sdk.api.client.OpenFgaClient;
+import dev.openfga.sdk.api.configuration.ClientConfiguration;
+import dev.openfga.sdk.api.configuration.ClientCredentials;
+import dev.openfga.sdk.api.configuration.Credentials;
+
+public class Example {
+    public static void main(String[] args) {
+        var config = new ClientConfiguration()
+                .apiUrl(System.getenv("FGA_API_URL")) // If not specified, will default to "https://localhost:8080"
+                .storeId(System.getenv("FGA_STORE_ID")) // Not required when calling createStore() or listStores()
+                .authorizationModelId(System.getenv("FGA_AUTHORIZATION_MODEL_ID")) // Optional, can be overridden per request
+                .credentials(new Credentials(
+                    new ClientCredentials()
+                            .apiTokenIssuer(System.getenv("FGA_API_TOKEN_ISSUER"))
+                            .apiAudience(System.getenv("FGA_API_AUDIENCE"))
+                            .clientId(System.getenv("FGA_CLIENT_ID"))
+                            .clientSecret(System.getenv("FGA_CLIENT_SECRET"))
+                ));
+
+        var fgaClient = new OpenFgaClient(config);
+    }
+}
 ```
 
 </TabItem>

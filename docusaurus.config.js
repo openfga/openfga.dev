@@ -102,6 +102,12 @@ from openfga_sdk.client import ClientConfiguration, OpenFgaClient`,
         apiName: `OpenFgaClient`,
         setupNote: `# ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`,
       },
+      java: {
+        importStatement: `import dev.openfga.sdk.api.client.OpenFgaClient;
+import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
+        apiName: `OpenFgaClient`,
+        setupNote: `// ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.\n`,
+      }
     },
     contentSecurityPolicy: `default-src 'none';
       base-uri 'self';
@@ -292,7 +298,7 @@ from openfga_sdk.client import ClientConfiguration, OpenFgaClient`,
       prism: {
         theme: themes.github,
         darkTheme: themes.dracula,
-        additionalLanguages: ['bash', 'csharp', 'json'],
+        additionalLanguages: ['bash', 'csharp', 'json', 'java', 'clike'],
       },
 
       docs: {
