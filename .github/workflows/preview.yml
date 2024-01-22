@@ -14,6 +14,7 @@ on:
 jobs:
   deploy-preview:
     runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
     steps:
       - name: Cached LFS checkout
         uses: nschloe/action-cached-lfs-checkout@d481127c3821f9c278a6019c39a108ac7004c133
