@@ -47,12 +47,13 @@ We are identifying:
 This helps authoring/testing models, making the whole process less error prone and more fun!
 
 ![VS Code](../static/img/blog/fgn-2024-01-vscode.gif)
+![DSL imp](../static/img/blog/fgn-2023-12-language.png)
 
 ## CLI improvements
 
 We love the FGA CLI and we keep making it even better. 
 
-We had a few of contributions from new team members and the community :slight_smile::
+We had a few of contributions from new team members and the community :).
 
 - You can now import tuples from a CSV file. We supported JSON/YAML, but if you are exporting data from a database, producing to CSV is way simpler. 
 - You can take a .fga.yaml file with a model and tuples, and get it imported in OpenFGA.
@@ -87,6 +88,15 @@ It's available in the VS Code extension, the CLI and the Playground.
 ## Github Actions
 
 We shipped a couple of Github Actions that help you deploy FGA models, and run model tests as part of your CI/CD build. Find them [here](https://github.com/marketplace?query=openfga).
+
+## What's Next? Check our RFCs!
+
+We've been discussing with the OpenFGA community a couple of RFCs that we are planning to implement in the next few weeks:
+
+- [Support for modular models](https://github.com/openfga/rfcs/pull/14).
+- [ListUsers API](https://github.com/openfga/rfcs/pull/15).
+
+Please take a look at them and let us know what you think!
 
 ## OpenFGA Community 
 
