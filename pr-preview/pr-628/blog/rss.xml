@@ -41,10 +41,11 @@
 <li>User id or object id that was not included in any tuple in check tests.</li>
 </ul>
 <p>This helps authoring/testing models, making the whole process less error prone and more fun!</p>
-<p><img loading="lazy" alt="VS Code" src="https://openfga.dev/assets/images/fgn-2024-01-vscode-c1b061afd1ba2e44fd1113f725423b82.gif" width="1980" height="1494" class="img_ev3q"></p>
+<p><img loading="lazy" alt="VS Code" src="https://openfga.dev/assets/images/fgn-2024-01-vscode-c1b061afd1ba2e44fd1113f725423b82.gif" width="1980" height="1494" class="img_ev3q">
+<img loading="lazy" alt="DSL imp" src="https://openfga.dev/assets/images/fgn-2023-12-language-8a3e7f852814fa536430c8e3f81e57f1.png" width="1712" height="858" class="img_ev3q"></p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="cli-improvements">CLI improvements<a href="https://openfga.dev/blog/fine-grained-news-2024-01#cli-improvements" class="hash-link" aria-label="Direct link to CLI improvements" title="Direct link to CLI improvements">​</a></h2>
 <p>We love the FGA CLI and we keep making it even better.</p>
-<p>We had a few of contributions from new team members and the community :slight_smile::</p>
+<p>We had a few of contributions from new team members and the community :).</p>
 <ul>
 <li>You can now import tuples from a CSV file. We supported JSON/YAML, but if you are exporting data from a database, producing to CSV is way simpler.</li>
 <li>You can take a .fga.yaml file with a model and tuples, and get it imported in OpenFGA.</li>
@@ -69,6 +70,13 @@
 <p>It's available in the VS Code extension, the CLI and the Playground.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="github-actions">Github Actions<a href="https://openfga.dev/blog/fine-grained-news-2024-01#github-actions" class="hash-link" aria-label="Direct link to Github Actions" title="Direct link to Github Actions">​</a></h2>
 <p>We shipped a couple of Github Actions that help you deploy FGA models, and run model tests as part of your CI/CD build. Find them <a href="https://github.com/marketplace?query=openfga" target="_blank" rel="noopener noreferrer">here</a>.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="whats-next-check-our-rfcs">What's Next? Check our RFCs!<a href="https://openfga.dev/blog/fine-grained-news-2024-01#whats-next-check-our-rfcs" class="hash-link" aria-label="Direct link to What's Next? Check our RFCs!" title="Direct link to What's Next? Check our RFCs!">​</a></h2>
+<p>We've been discussing with the OpenFGA community a couple of RFCs that we are planning to implement in the next few weeks:</p>
+<ul>
+<li><a href="https://github.com/openfga/rfcs/pull/14" target="_blank" rel="noopener noreferrer">Support for modular models</a>.</li>
+<li><a href="https://github.com/openfga/rfcs/pull/15" target="_blank" rel="noopener noreferrer">ListUsers API</a>.</li>
+</ul>
+<p>Please take a look at them and let us know what you think!</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="openfga-community">OpenFGA Community<a href="https://openfga.dev/blog/fine-grained-news-2024-01#openfga-community" class="hash-link" aria-label="Direct link to OpenFGA Community" title="Direct link to OpenFGA Community">​</a></h2>
 <p>We have a very welcoming community, and we'd love to have you there! You can join us in different ways:</p>
 <ul>
