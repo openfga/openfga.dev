@@ -47,7 +47,6 @@ We are identifying:
 This helps authoring/testing models, making the whole process less error prone and more fun!
 
 ![VS Code](../static/img/blog/fgn-2024-01-vscode.gif)
-![DSL imp](../static/img/blog/fgn-2023-12-language.png)
 
 ## CLI improvements
 
@@ -60,6 +59,8 @@ We had a few of contributions from new team members and the community :).
 - Added support for specifying an external tuple_file in .fga.yaml files.
 - Added support for specifying a continuation_token when calling fga tuple changes.
 - Support for configuring OAuth scopes to authenticate to OIDC servers.
+
+Check the updated documentation in our [CLI repository](https://github.com/openfga/cli)
 
 Thanks to [Yann D'Isanto](https://github.com/le-yams) for all your help on this!
 
