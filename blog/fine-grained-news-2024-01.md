@@ -22,9 +22,9 @@ The OpenFGA team got bigger, and we met in person in Toronto for the first time!
 
 We got two presentations accepted in KubeCon Europe! 
 
-- Jonathan Whitaker will talk about [Federated IAM for Kubernetes with OpenFGA](https://kccnceu2024.sched.com/event/1YeQD)
+- [Jonathan Whitaker](https://www.linkedin.com/in/jonathan-whitaker-5a8b2484/) from Okta will talk about [Federated IAM for Kubernetes with OpenFGA](https://kccnceu2024.sched.com/event/1YeQD)
 
-- Andres Aguiar and Pauline Jamin from Agicap will present on [Implementing Modern Cloud Native Authorization Using OpenFGA](https://colocatedeventseu2024.sched.com/event/1YFhM/implementing-modern-cloud-native-authorization-using-openfga-andres-aguiar-okta-pauline-jamin-agicap)
+- [Pauline Jamin](https://www.linkedin.com/in/paulinejamin/) from Agicap and [Andres Aguiar](https://www.linkedin.com/in/aaguiar/) from Okta will present on [Implementing Modern Cloud Native Authorization Using OpenFGA](https://colocatedeventseu2024.sched.com/event/1YFhM/implementing-modern-cloud-native-authorization-using-openfga-andres-aguiar-okta-pauline-jamin-agicap)
 
 We'll also have a Project Kiosk, so if you plan to attend let us know and we can schedule some time together!
 
