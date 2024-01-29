@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://openfga.dev/blog</id>
     <title>OpenFGA Blog</title>
-    <updated>2024-01-26T00:00:00.000Z</updated>
+    <updated>2024-01-29T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://openfga.dev/blog"/>
     <subtitle>OpenFGA Blog</subtitle>
@@ -11,7 +11,7 @@
         <title type="html"><![CDATA[Fine Grained News - January 2024]]></title>
         <id>https://openfga.dev/blog/fine-grained-news-2024-01</id>
         <link href="https://openfga.dev/blog/fine-grained-news-2024-01"/>
-        <updated>2024-01-26T00:00:00.000Z</updated>
+        <updated>2024-01-29T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[Fine Grained News]]></summary>
         <content type="html"><![CDATA[<p>Welcome to the 2nd edition of Fine Grained News!</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="team-news">Team News<a href="https://openfga.dev/blog/fine-grained-news-2024-01#team-news" class="hash-link" aria-label="Direct link to Team News" title="Direct link to Team News">​</a></h2>

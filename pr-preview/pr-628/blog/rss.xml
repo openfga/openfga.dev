@@ -4,7 +4,7 @@
         <title>OpenFGA Blog</title>
         <link>https://openfga.dev/blog</link>
         <description>OpenFGA Blog</description>
-        <lastBuildDate>Fri, 26 Jan 2024 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 29 Jan 2024 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
@@ -12,7 +12,7 @@
             <title><![CDATA[Fine Grained News - January 2024]]></title>
             <link>https://openfga.dev/blog/fine-grained-news-2024-01</link>
             <guid>https://openfga.dev/blog/fine-grained-news-2024-01</guid>
-            <pubDate>Fri, 26 Jan 2024 00:00:00 GMT</pubDate>
+            <pubDate>Mon, 29 Jan 2024 00:00:00 GMT</pubDate>
             <description><![CDATA[Fine Grained News]]></description>
             <content:encoded><![CDATA[<p>Welcome to the 2nd edition of Fine Grained News!</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="team-news">Team News<a href="https://openfga.dev/blog/fine-grained-news-2024-01#team-news" class="hash-link" aria-label="Direct link to Team News" title="Direct link to Team News">​</a></h2>
