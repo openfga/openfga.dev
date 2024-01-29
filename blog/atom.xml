@@ -2,11 +2,96 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://openfga.dev/blog</id>
     <title>OpenFGA Blog</title>
-    <updated>2023-12-18T00:00:00.000Z</updated>
+    <updated>2024-01-29T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://openfga.dev/blog"/>
     <subtitle>OpenFGA Blog</subtitle>
     <icon>https://openfga.dev/img/openfga-icon.svg</icon>
+    <entry>
+        <title type="html"><![CDATA[Fine Grained News - January 2024]]></title>
+        <id>https://openfga.dev/blog/fine-grained-news-2024-01</id>
+        <link href="https://openfga.dev/blog/fine-grained-news-2024-01"/>
+        <updated>2024-01-29T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Fine Grained News]]></summary>
+        <content type="html"><![CDATA[<p>Welcome to the 2nd edition of Fine Grained News!</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="team-news">Team News<a href="https://openfga.dev/blog/fine-grained-news-2024-01#team-news" class="hash-link" aria-label="Direct link to Team News" title="Direct link to Team News">​</a></h2>
+<p>The OpenFGA team got bigger, and we met in person in Toronto for the first time! We got to know each other better, helped new team members to get familiar with the project, hacked some code, had some fun with ax throwing, and loved Toronto's weather!</p>
+<p><img decoding="async" loading="lazy" alt="OpenFGA Team" src="https://openfga.dev/assets/images/fgn-2024-01-team-177a01b7f5d72a65b5364842e86e5a7b.png" width="800" height="502" class="img_ev3q"></p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="kubecon-europe-2024">KubeCon Europe 2024!<a href="https://openfga.dev/blog/fine-grained-news-2024-01#kubecon-europe-2024" class="hash-link" aria-label="Direct link to KubeCon Europe 2024!" title="Direct link to KubeCon Europe 2024!">​</a></h2>
+<p>We got two presentations accepted in KubeCon Europe!</p>
+<ul>
+<li>
+<p><a href="https://www.linkedin.com/in/jonathan-whitaker-5a8b2484/" target="_blank" rel="noopener noreferrer">Jonathan Whitaker</a> from Okta will talk about <a href="https://kccnceu2024.sched.com/event/1YeQD" target="_blank" rel="noopener noreferrer">Federated IAM for Kubernetes with OpenFGA</a></p>
+</li>
+<li>
+<p><a href="https://www.linkedin.com/in/paulinejamin/" target="_blank" rel="noopener noreferrer">Pauline Jamin</a> from Agicap and <a href="https://www.linkedin.com/in/aaguiar/" target="_blank" rel="noopener noreferrer">Andres Aguiar</a> from Okta will present on <a href="https://colocatedeventseu2024.sched.com/event/1YFhM/implementing-modern-cloud-native-authorization-using-openfga-andres-aguiar-okta-pauline-jamin-agicap" target="_blank" rel="noopener noreferrer">Implementing Modern Cloud Native Authorization Using OpenFGA</a></p>
+</li>
+</ul>
+<p>We'll also have a Project Kiosk, so if you plan to attend let us know and we can schedule some time together!</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="openfga-️enlightning-session">OpenFGA ⚡️Enlightning Session!<a href="https://openfga.dev/blog/fine-grained-news-2024-01#openfga-%EF%B8%8Fenlightning-session" class="hash-link" aria-label="Direct link to OpenFGA ⚡️Enlightning Session!" title="Direct link to OpenFGA ⚡️Enlightning Session!">​</a></h2>
+<p>Our own <a href="https://www.linkedin.com/in/raghdhamzeh/" target="_blank" rel="noopener noreferrer">Raghd Hamzeh</a> will join <a href="https://twitter.com/wiggitywhitney" target="_blank" rel="noopener noreferrer">Whitney Lee</a> in a Tanzu ⚡️Enlightning session on <strong>February 8th at 9am PT</strong>.</p>
+<p>Join their Youtube stream <a href="https://www.youtube.com/watch?v=yTgtAzhvC28" target="_blank" rel="noopener noreferrer">here</a>.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="visual-studio-code-integration-enhancements">Visual Studio Code Integration Enhancements<a href="https://openfga.dev/blog/fine-grained-news-2024-01#visual-studio-code-integration-enhancements" class="hash-link" aria-label="Direct link to Visual Studio Code Integration Enhancements" title="Direct link to Visual Studio Code Integration Enhancements">​</a></h2>
+<p>We keep investing in improving our VS Code experience. The video below shows how, in addition to validating the model, we can validate the tuple content and the tests.</p>
+<p>We are identifying:</p>
+<ul>
+<li>Invalid object types, user types, and relations when defining tuples.</li>
+<li>Invalid object types, user types, and relations when defining tests.</li>
+<li>User id or object id that was not included in any tuple in check tests.</li>
+</ul>
+<p>This helps authoring/testing models, making the whole process less error prone and more fun!</p>
+<p><img decoding="async" loading="lazy" alt="VS Code" src="https://openfga.dev/assets/images/fgn-2024-01-vscode-c1b061afd1ba2e44fd1113f725423b82.gif" width="1980" height="1494" class="img_ev3q">
+<img decoding="async" loading="lazy" alt="DSL imp" src="https://openfga.dev/assets/images/fgn-2023-12-language-8a3e7f852814fa536430c8e3f81e57f1.png" width="1712" height="858" class="img_ev3q"></p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="cli-improvements">CLI improvements<a href="https://openfga.dev/blog/fine-grained-news-2024-01#cli-improvements" class="hash-link" aria-label="Direct link to CLI improvements" title="Direct link to CLI improvements">​</a></h2>
+<p>We love the FGA CLI and we keep making it even better.</p>
+<p>We had a few of contributions from new team members and the community :).</p>
+<ul>
+<li>You can now import tuples from a CSV file. We supported JSON/YAML, but if you are exporting data from a database, producing to CSV is way simpler.</li>
+<li>You can take a .fga.yaml file with a model and tuples, and get it imported in OpenFGA.</li>
+<li>Added support for specifying an external tuple_file in .fga.yaml files.</li>
+<li>Added support for specifying a continuation_token when calling fga tuple changes.</li>
+<li>Support for configuring OAuth scopes to authenticate to OIDC servers.</li>
+</ul>
+<p>Thanks to <a href="https://github.com/le-yams" target="_blank" rel="noopener noreferrer">Yann D'Isanto</a> for all your help on this!</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="openfga-v143">OpenFGA v1.4.3<a href="https://openfga.dev/blog/fine-grained-news-2024-01#openfga-v143" class="hash-link" aria-label="Direct link to OpenFGA v1.4.3" title="Direct link to OpenFGA v1.4.3">​</a></h2>
+<p>We just shipped OpenFGA <a href="https://github.com/openfga/openfga/releases/tag/v1.4.3" target="_blank" rel="noopener noreferrer">v1.4.3</a>, with performance improvements and <a href="https://github.com/openfga/openfga/security/advisories/GHSA-rxpw-85vw-fx87" target="_blank" rel="noopener noreferrer">one security issue</a> fixed. We recommend everyone to upgrade to the latest release.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="sdk-improvements">SDK Improvements<a href="https://openfga.dev/blog/fine-grained-news-2024-01#sdk-improvements" class="hash-link" aria-label="Direct link to SDK Improvements" title="Direct link to SDK Improvements">​</a></h2>
+<p>New releases with bug fixes and improvements:</p>
+<ul>
+<li><a href="https://github.com/openfga/java-sdk/releases/tag/v0.3.2" target="_blank" rel="noopener noreferrer">Java SDK v0.3.2</a>. If you are using the Java SDK please upgrade to this version.</li>
+<li><a href="https://github.com/openfga/go-sdk/releases/tag/v0.3.4" target="_blank" rel="noopener noreferrer">Go SDK v0.3.4</a></li>
+<li><a href="https://github.com/openfga/python-sdk/releases/tag/v0.4.0" target="_blank" rel="noopener noreferrer">Python SDK v0.4.0</a>, which has breaking changes.</li>
+</ul>
+<p>Thanks again to <a href="https://github.com/le-yams" target="_blank" rel="noopener noreferrer">Yann D'Isanto</a> for your help on the Java SDK!</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="language-improvements">Language Improvements<a href="https://openfga.dev/blog/fine-grained-news-2024-01#language-improvements" class="hash-link" aria-label="Direct link to Language Improvements" title="Direct link to Language Improvements">​</a></h2>
+<p>The DSL language now has better support for comments and mixed operator support, where you can use parentheses to group expressions when defining relations:</p>
+<p><img decoding="async" loading="lazy" alt="DSL improvements" src="https://openfga.dev/assets/images/fgn-2023-12-language-8a3e7f852814fa536430c8e3f81e57f1.png" width="1712" height="858" class="img_ev3q"></p>
+<p>It's available in the VS Code extension, the CLI and the Playground.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="github-actions">Github Actions<a href="https://openfga.dev/blog/fine-grained-news-2024-01#github-actions" class="hash-link" aria-label="Direct link to Github Actions" title="Direct link to Github Actions">​</a></h2>
+<p>We shipped a couple of Github Actions that help you deploy FGA models, and run model tests as part of your CI/CD build. Find them <a href="https://github.com/marketplace?query=openfga" target="_blank" rel="noopener noreferrer">here</a>.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="whats-next-check-our-rfcs">What's Next? Check our RFCs!<a href="https://openfga.dev/blog/fine-grained-news-2024-01#whats-next-check-our-rfcs" class="hash-link" aria-label="Direct link to What's Next? Check our RFCs!" title="Direct link to What's Next? Check our RFCs!">​</a></h2>
+<p>We've been discussing with the OpenFGA community a couple of RFCs that we are planning to implement in the next few weeks:</p>
+<ul>
+<li><a href="https://github.com/openfga/rfcs/pull/14" target="_blank" rel="noopener noreferrer">Support for modular models</a>.</li>
+<li><a href="https://github.com/openfga/rfcs/pull/15" target="_blank" rel="noopener noreferrer">ListUsers API</a>.</li>
+</ul>
+<p>Please take a look at them and let us know what you think!</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="openfga-community">OpenFGA Community<a href="https://openfga.dev/blog/fine-grained-news-2024-01#openfga-community" class="hash-link" aria-label="Direct link to OpenFGA Community" title="Direct link to OpenFGA Community">​</a></h2>
+<p>We have a very welcoming community, and we'd love to have you there! You can join us in different ways:</p>
+<ul>
+<li>Join our <a href="https://github.com/openfga/community/blob/main/community-meetings.md" target="_blank" rel="noopener noreferrer">community meetings</a>, the second Thursday of every month. All the recordings are <a href="https://www.youtube.com/@OpenFGA" target="_blank" rel="noopener noreferrer">here</a>.</li>
+<li>Join our <a href="https://discord.gg/8naAwJfWN6" target="_blank" rel="noopener noreferrer">Discord</a></li>
+<li>Stay up to date by following us on <a href="https://twitter.com/openfga" target="_blank" rel="noopener noreferrer">X</a>.</li>
+<li>Ask questions, submit ideas, or just say hi in our <a href="https://github.com/orgs/openfga/discussions" target="_blank" rel="noopener noreferrer">GitHub Discussions</a>.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="see-you-next-month">See you next month!<a href="https://openfga.dev/blog/fine-grained-news-2024-01#see-you-next-month" class="hash-link" aria-label="Direct link to See you next month!" title="Direct link to See you next month!">​</a></h2>
+<p>Fine Grained News are published every month, after the OpenFGA community meeting. If you have any feedback, you want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!</p>]]></content>
+        <author>
+            <name>Andres Aguiar</name>
+            <uri>https://github.com/aaguiarz</uri>
+        </author>
+        <category label="newsletter" term="newsletter"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Fine Grained News - December 2023]]></title>
         <id>https://openfga.dev/blog/fine-grained-news-2023-12</id>
