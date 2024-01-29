@@ -16,7 +16,7 @@
         <content type="html"><![CDATA[<p>Welcome to the 2nd edition of Fine Grained News!</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="team-news">Team News<a href="https://openfga.dev/blog/fine-grained-news-2024-01#team-news" class="hash-link" aria-label="Direct link to Team News" title="Direct link to Team News">​</a></h2>
 <p>The OpenFGA team got bigger, and we met in person in Toronto for the first time! We got to know each other better, helped new team members to get familiar with the project, hacked some code, had some fun with ax throwing, and loved Toronto's weather!</p>
-<p><img decoding="async" loading="lazy" alt="OpenFGA Team" src="https://openfga.dev/assets/images/fgn-2024-01-team-177a01b7f5d72a65b5364842e86e5a7b.png" width="800" height="502" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="OpenFGA Team" src="https://openfga.dev/assets/images/fgn-2024-01-team-fdc90c95b67c4a2f60a3235944480b1d.png" width="800" height="502" class="img_ev3q"></p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="kubecon-europe-2024">KubeCon Europe 2024!<a href="https://openfga.dev/blog/fine-grained-news-2024-01#kubecon-europe-2024" class="hash-link" aria-label="Direct link to KubeCon Europe 2024!" title="Direct link to KubeCon Europe 2024!">​</a></h2>
 <p>We got two presentations accepted in KubeCon Europe!</p>
 <ul>
@@ -40,7 +40,7 @@
 <li>User id or object id that was not included in any tuple in check tests.</li>
 </ul>
 <p>This helps authoring/testing models, making the whole process less error prone and more fun!</p>
-<p><img decoding="async" loading="lazy" alt="VS Code" src="https://openfga.dev/assets/images/fgn-2024-01-vscode-c1b061afd1ba2e44fd1113f725423b82.gif" width="1980" height="1494" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="VS Code" src="https://openfga.dev/assets/images/fgn-2024-01-vscode-d007f1d2381717433705be88761959e2.gif" width="794" height="599" class="img_ev3q"></p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="cli-improvements">CLI improvements<a href="https://openfga.dev/blog/fine-grained-news-2024-01#cli-improvements" class="hash-link" aria-label="Direct link to CLI improvements" title="Direct link to CLI improvements">​</a></h2>
 <p>We love the FGA CLI and we keep making it even better.</p>
 <p>We had a few of contributions from new team members and the community :).</p>
