@@ -40,8 +40,7 @@
 <li>User id or object id that was not included in any tuple in check tests.</li>
 </ul>
 <p>This helps authoring/testing models, making the whole process less error prone and more fun!</p>
-<p><img decoding="async" loading="lazy" alt="VS Code" src="https://openfga.dev/assets/images/fgn-2024-01-vscode-c1b061afd1ba2e44fd1113f725423b82.gif" width="1980" height="1494" class="img_ev3q">
-<img decoding="async" loading="lazy" alt="DSL imp" src="https://openfga.dev/assets/images/fgn-2023-12-language-8a3e7f852814fa536430c8e3f81e57f1.png" width="1712" height="858" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="VS Code" src="https://openfga.dev/assets/images/fgn-2024-01-vscode-c1b061afd1ba2e44fd1113f725423b82.gif" width="1980" height="1494" class="img_ev3q"></p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="cli-improvements">CLI improvements<a href="https://openfga.dev/blog/fine-grained-news-2024-01#cli-improvements" class="hash-link" aria-label="Direct link to CLI improvements" title="Direct link to CLI improvements">​</a></h2>
 <p>We love the FGA CLI and we keep making it even better.</p>
 <p>We had a few of contributions from new team members and the community :).</p>
@@ -52,6 +51,7 @@
 <li>Added support for specifying a continuation_token when calling fga tuple changes.</li>
 <li>Support for configuring OAuth scopes to authenticate to OIDC servers.</li>
 </ul>
+<p>Check the updated documentation in our <a href="https://github.com/openfga/cli" target="_blank" rel="noopener noreferrer">CLI repository</a></p>
 <p>Thanks to <a href="https://github.com/le-yams" target="_blank" rel="noopener noreferrer">Yann D'Isanto</a> for all your help on this!</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="openfga-v143">OpenFGA v1.4.3<a href="https://openfga.dev/blog/fine-grained-news-2024-01#openfga-v143" class="hash-link" aria-label="Direct link to OpenFGA v1.4.3" title="Direct link to OpenFGA v1.4.3">​</a></h2>
 <p>We just shipped OpenFGA <a href="https://github.com/openfga/openfga/releases/tag/v1.4.3" target="_blank" rel="noopener noreferrer">v1.4.3</a>, with performance improvements and <a href="https://github.com/openfga/openfga/security/advisories/GHSA-rxpw-85vw-fx87" target="_blank" rel="noopener noreferrer">one security issue</a> fixed. We recommend everyone to upgrade to the latest release.</p>
