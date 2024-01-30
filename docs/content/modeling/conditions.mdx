@@ -21,7 +21,7 @@ import TabItem from '@theme/TabItem';
 # Conditions
 
 ## Overview
-Conditions allow you to model more complex authorization modeling scenarios involving attributes and can be used to represent some Attribute-based Access Control (ABAC) policies. Take a look at the [Conditions](../concepts.mdx#what-is-a-condition) and [Conditional Relationship Tuples](../concepts.mdx#what-is-a-conditional-relationship-tuple) concepts for a quick overview.
+**Conditions** allow more complex authorization modeling scenarios involving attributes and can be used to represent some Attribute-based Access Control (ABAC) policies. Take a look at the [Conditions](../concepts.mdx#what-is-a-condition) and [Conditional Relationship Tuples](../concepts.mdx#what-is-a-conditional-relationship-tuple).
 
 There are various use cases where Conditions can be helpful. These include, but are not limited to:
 
@@ -30,10 +30,10 @@ There are various use cases where Conditions can be helpful. These include, but 
 * [**Usage-based/Feature-based Policies (Entitlements)**](https://github.com/openfga/sample-stores/tree/main/stores/advanced-entitlements) - enforce quoata or usage of some resource or feature.
 * [**Resource-attribute Policies**](https://github.com/openfga/sample-stores/tree/main/stores/groups-resource-attributes) - define policies to access resources based on attributes/fields of the resource(s).
 
-For more information and background context on why we added this feature, please see our blog post on [Conditional Relationship Tuples for OpenFGA](https://openfga.dev/blog/conditional-tuples-announcement). 
+For background information, see our blog post: [Conditional Relationship Tuples for OpenFGA](https://openfga.dev/blog/conditional-tuples-announcement). 
 
 ## Defining Conditions in Models
-For this example we'll use the following authorization model to demonstrate a temporal based access policy. Namely, a user can view a document if and only if they have been granted the viewer relationship AND their non-expired grant policy is met.
+The following authorization model to demonstrates a temporal-based access policy in which a given user can view a document if (and only if) they have been granted the viewer relationship and their grant policy not expired.
 
 ```dsl.openfga
 model
@@ -51,7 +51,7 @@ condition non_expired_grant(current_time: timestamp, grant_time: timestamp, gran
 ```
 
 :::note
-The type restriction for `document#viewer` requires that any user of type `user` that is written in the relationship tuple must be accompanied by the `non_expired_grant` condition. This is denoted by the `user with non_expired_grant` specification.
+The type restriction for `document#viewer` requires that any user of type `user` in the relationship tuple must be accompanied by the `non_expired_grant` condition. This is denoted by `user with non_expired_grant`.
 :::
 
 Write the model to the FGA store:
@@ -114,9 +114,9 @@ Write the model to the FGA store:
 />
 
 ## Writing Conditional Relationship Tuples
-Using the model above, when we [Write](https://openfga.dev/api/service#/Relationship%20Tuples/Write) relationship tuples to the OpenFGA store, then any `document#viewer` relationship with `user` objects must be accompanied by the condition `non_expired_grant` because the type restriction requires it.
+When you [Write](https://openfga.dev/api/service#/Relationship%20Tuples/Write) relationship tuples to the OpenFGA store, as in the model above, any `document#viewer` relationship with `user` objects must be accompanied by the condition `non_expired_grant` because the type restriction requires it.
 
-For example, we can give `user:anne` viewer access to `document:1` for 10 minutes by writing the following relationship tuple:
+For example,  `user:anne` can be given viewer access to `document:1` for 10 minutes by writing the following relationship tuple:
 
 <WriteRequestViewer
   relationshipTuples={[
