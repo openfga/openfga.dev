@@ -21,7 +21,15 @@ The following list outlines some guidelines and best practices for running OpenF
 - Set the log.format to "json"
 - Set the log.level to "info"
 - [Disable the Playground](./setup-openfga/docker-setup.mdx#playground).
+- [Set Deployment Topology](#deployment-recommendations)
+- [Set Database Options](#database-recommendations)
 - [Set Concurrency Limits](#concurrency-limits)
+
+## Deployment Recommendations
+
+To ensure good performance, we recommend that:
+- Your database and your OpenFGA servers are co-located in the same physical datacenter. This will minimize latency of database calls.
+
 
 ## Database Recommendations
 
