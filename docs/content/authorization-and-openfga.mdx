@@ -15,7 +15,7 @@ OpenFGA reies on several understandings of [authorization](#authentication-vs-au
 
 ## What Is OpenFGA?
 
-**OpenFGA** is an open source solution to [Fine-Grained Authorization](#what-is-fine-grained-authorization-fga), or **FGA**, that applies the concept of [relationship-based access control](#what-is-relationship-based-access-control-rebac), or **ReBAC**. It was created by the [Okta FGA](https://docs.fga.dev/) team and inspired by [Zanzibar](#what-is-zanzibar). Designed for reliability and low latency at a high scale, FGA offers an HTTP API and SDKs for programming languages like [Node.js/JavaScript](https://www.npmjs.com/package/@openfga/sdk), [GoLang](https://github.com/openfga/go-sdk), [.NET](https://www.nuget.org/packages/OpenFga.Sdk), [Python](https://pypi.org/project/openfga-sdk), and [Java](https://central.sonatype.com/artifact/dev.openfga/openfga-sdk), with additional SDKs and integrations (including Rego) planned for future releases.
+**OpenFGA** is an open source solution to [Fine-Grained Authorization](#what-is-fine-grained-authorization-fga), or **FGA**, that applies the concept of [relationship-based access control](#what-is-relationship-based-access-control-rebac), or **ReBAC**. It was created by the [Okta FGA](https://docs.fga.dev/) team and inspired by [Zanzibar](#what-is-zanzibar). Designed for reliability and low latency at a high scale, OpenFGA offers both HTTP and GRPC APIs, as well as SDKs for programming languages like [Node.js/JavaScript](https://www.npmjs.com/package/@openfga/sdk), [GoLang](https://github.com/openfga/go-sdk), [.NET](https://www.nuget.org/packages/OpenFga.Sdk), [Python](https://pypi.org/project/openfga-sdk), and [Java](https://central.sonatype.com/artifact/dev.openfga/openfga-sdk), with additional SDKs and integrations (including Rego) planned for future releases.
 
 <Playground intro={true} />
 
@@ -23,7 +23,7 @@ OpenFGA reies on several understandings of [authorization](#authentication-vs-au
 
 [**Authentication**](https://auth0.com/intro-to-iam/what-is-authentication/) (or **AuthN**) ensures a user's identity. [**Authorization**](https://en.wikipedia.org/wiki/Authorization) (or **AuthZ**) determines if a user can perform a certain action on a particular resource.
 
-For example, when you log in to Okta, Authorization verifies that your username and password are correct. Authorization checks if you can access a given Okta tile. [For more information about AuthN vs AuthZ, click here.](https://www.okta.com/identity-101/authentication-vs-authorization/).
+For example, when you log in to Google, Authorization verifies that your username and password are correct. Authorization checks if you can access a given Google service. [For more information about AuthN vs AuthZ, click here.](https://www.okta.com/identity-101/authentication-vs-authorization/).
 
 ## What Is Fine-Grained Authorization?
 
