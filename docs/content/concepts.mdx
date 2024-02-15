@@ -147,12 +147,12 @@ Below is an example of an authorization model:
   }}
 />
 
-Together with [relationship tuples](#what-is-a-relationship-tuple), authorization model determine whether a [relationship](#what-is-a-relationship) exists between a [user](#what-is-a-user) and an [object](#what-is-an-object).
+Together with [relationship tuples](#what-is-a-relationship-tuple), the authorization model determines whether a [relationship](#what-is-a-relationship) exists between a [user](#what-is-a-user) and an [object](#what-is-an-object).
 
 <ProductName format={ProductNameFormat.LongForm}/> uses two different syntaxes to define the authorization model:
 
 - A JSON syntax accepted by the <ProductName format={ProductNameFormat.ShortForm}/> API that closely follows the original syntax in the [Zanzibar Paper](https://research.google/pubs/pub48190/). For more information, see [Equivalent Zanzibar Concepts](./configuration-language.mdx#equivalent-zanzibar-concepts).
-- A DSL that is simpler to use showcased in the Okta FGA Playground as a modeling example. This is translated to the API-supported syntax before being sent to the API.
+- A simpler-to-use DSL that's accepted by both the [OpenFGA VS Code extension](https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode) and [OpenFGA CLI](https://github.com/openfga/cli/) and offers syntax highlighting and validation in the VS Code extension. The DSL is used in the [Sample Stores](https://github.com/openfga/sample-stores) modeling examples and is translated to API-supported syntax using the CLI or [OpenFGA language](https://github.com/openfga/language) before being sent to the API.
 
 Click here to learn more about the <UpdateProductNameInLinks link="./configuration-language" name="{ProductName} Configuration Language" />.
 
@@ -178,7 +178,7 @@ Separate stores can be created for separate authorization needs or isolated envi
 
 ## What Is An Object?
 
-An **object** represents an entity in the system. Users' relationship to it are defined by relationship tuples and the authorization model.
+An **object** represents an entity in the system. Users' relationships to it are defined by relationship tuples and the authorization model.
 
 </summary>
 
@@ -193,7 +193,7 @@ For example:
 
 [User](#what-is-a-user), [relation](#what-is-a-relation) and object are the building blocks for [relationship tuples](#what-is-a-relationship-tuple).
 
-For more information, see [Direct Access](./modeling/direct-access.mdx).
+For an example, see [Direct Access](./modeling/direct-access.mdx).
 
 </details>
 
@@ -226,7 +226,7 @@ For more information, see [Direct Access](./modeling/direct-access.mdx).
 
 ## What Is A Relation?
 
-A **relation** is a string defined in the type definition of an authorization model. Relations define the relationship between an object (of the same type as the type definition) and a user in the system.
+A **relation** is a string defined in the type definition of an authorization model. Relations define a possible relationship between an object (of the same type as the type definition) and a user in the system.
 
 </summary>
 
@@ -304,7 +304,7 @@ There are four relations in the document type configuration: `viewer`, `commente
 
 [User](#what-is-a-user), relation and [object](#what-is-an-object) are the building blocks for [relationship tuples](#what-is-a-relationship-tuple).
 
-For more information, see [Direct Access](./modeling/direct-access.mdx).
+For an example, see [Direct Access](./modeling/direct-access.mdx).
 
 </details>
 
@@ -340,8 +340,8 @@ For the following model, only [relationship tuples](#what-is-a-relationship-tupl
   }} skipVersion={true}
 />
 
-Relationship tuple writes with user `user:anne` or `user:3f7768e0-4fa7-4e93-8417-4da68ce1846c` may be written for objects with type `document` and relation `viewer`, so writing `{"user": "user:anne","relation":"viewer","object":"document:roadmap"}` succeeds.
-Relationship tuple writes with a disallowed user type for the `viewer` relation on objects of type `document` - for example `workspace:auth0` or `folder:planning#editor` - will be rejected, so writing `{"user": "folder:product","relation":"viewer","object":"document:roadmap"}` will fail.
+A relationship tuple with user `user:anne` or `user:3f7768e0-4fa7-4e93-8417-4da68ce1846c` may be written for objects with type `document` and relation `viewer`, so writing `{"user": "user:anne","relation":"viewer","object":"document:roadmap"}` succeeds.
+A relationship tuple with a disallowed user type for the `viewer` relation on objects of type `document` - for example `workspace:auth0` or `folder:planning#editor` - will be rejected, so writing `{"user": "folder:product","relation":"viewer","object":"document:roadmap"}` will fail.
 This affects only relations that are [directly related](#what-are-direct-and-implied-relationships) and have [direct relationship type restrictions](./configuration-language.mdx#the-direct-relationship-type-restrictions) in their relation definition.
 
 </details>
