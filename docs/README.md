@@ -64,7 +64,6 @@ It offers an HTTP API, a gRPC API, and has SDKs for programming languages includ
     - [Entitlements](./content/modeling/advanced/entitlements.mdx)
   - [Migrating](./content/modeling/migrating/overview.mdx)
     - [Migrating Relations](./content/modeling/migrating/migrating-relations.mdx)
-    - [Migrating to Schema 1.1](./content/modeling/migrating/migrating-schema-1-1.mdx)
 - [Interacting with the API](./content/interacting/overview.mdx)
   - [Manage User Access](./content/interacting/managing-group-access.mdx)
   - [Manage Group Access](./content/interacting/managing-user-access.mdx)
