@@ -1,0 +1,198 @@
+---
+sidebar_position: 9
+slug: /modeling/token-claims-contextual-tuples
+description: Using identity token claims to define contextual relations
+---
+
+import {
+  AuthzModelSnippetViewer,
+  CardBox,
+  CheckRequestViewer,
+  DocumentationNotice,
+  Playground,
+  ProductConcept,
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+  RelationshipTuplesViewer,
+  UpdateProductNameInLinks,
+  WriteRequestViewer,
+} from '@components/Docs';
+
+# Using token claims as Contextual Tuples
+
+<DocumentationNotice />
+
+Contextual Tuples are used where an authorization check depends on certain dynamic or contextual relationships that have not been written to the <ProductName format={ProductNameFormat.ShortForm}/> store.
+
+Conceptually, they can be used to define Attribute Based Access Control (ABAC) policies based on relationships that are contextual to a request. To define ABAC policies that rely on specific attributes and conditions you can also use {ProductNameFormat.ShortForm}/>`s [conditions](./conditions.mdx).
+
+## Before You Start
+
+To follow this guide, you should be familiar with some <ProductConcept />.
+
+### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+
+- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system.
+- A <ProductConcept section="what-is-a-check-request" linkName="Check Request" />: is a call to the <ProductName format={ProductNameFormat.ShortForm}/> check endpoint that returns whether the user has a certain relationship with an object.
+- A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>
+
+## User directories, identity tokens and relationships
+
+User directories have information about users that is valuable when making authorization decisions, like the group the user belongs to, their roles, their department, their manager, etc. 
+
+When using a Relationship Based Access Control system like <ProductName format={ProductNameFormat.ShortForm}/>, the natural way of using those relationships for access control checks is to create tuples for each relation. However, implementing a synchronization mechanism to keep the user directory data up to date with tuples in the store can be challenging.  
+
+When applications implement authentication using an OIDC authorization service, they receive an ID Token or an Access token, with certain claims, that can be usually customized based on the application's needs.
+
+Instead of writing the tuples to the <ProductName format={ProductNameFormat.ShortForm}/>, you can use Contextual Tuples when making authorization checks. The trade off is that if those relationships change while the token has not expired, users will still get access to whatever resources the content of the token entitled them.
+
+## Example
+
+For this example, the application will use the following authorization model below, where documents can be viewed by members of a group:
+
+<AuthzModelSnippetViewer
+  configuration={{
+  "schema_version":"1.1",
+  "type_definitions": [
+    {
+      "type":"user"
+    },
+    {
+      "metadata": {
+        "relations": {
+          "member": {
+            "directly_related_user_types": [
+              {
+                "type":"user"
+              }
+            ]
+          }
+        }
+      },
+      "relations": {
+        "member": {
+          "this": {}
+        }
+      },
+      "type":"group"
+    },
+    {
+      "metadata": {
+        "relations": {
+          "viewer": {
+            "directly_related_user_types": [
+              {
+                "relation":"member",
+                "type":"group"
+              }
+            ]
+          }
+        }
+      },
+      "relations": {
+        "viewer": {
+          "this": {}
+        }
+      },
+      "type":"document"
+    }
+  ]
+}}
+/>
+
+When a group is added as a viewer of a document, the application will write tuples like the ones below:
+
+<WriteRequestViewer relationshipTuples={[
+  {
+    "_description": "Members of the marketing group can view the product-launch document",
+    "user": "group:marketing#member",
+    "relation": "viewer",
+    "object": "document:product-launch"
+  },
+  {
+  "_description": "Members of the everyone group can view the welcome document",
+  "user": "group:everyone#member",
+  "relation": "viewer",
+  "object": "document:welcome"
+}
+]} />
+
+The Access token that the application receives will have a list of the groups the user belongs to:
+
+```json
+{
+  "iss": "https://id.company.com",
+  "sub": "6b0b14af-59dc-4ff3-a46f-ad351f428726",
+  "name": "John Doe",
+  "iat": 1516239022,
+  "exp": 1516239022,
+  "azp" : "yz54KAoW1KGFAUU982CEUqZgxGIdrpgg",
+  "groups": ["marketing", "everyone"]
+}
+```
+
+When making a authorization check, the application will use the `groups` claim in the token and add contextual tuple for each group, indicating that the user is a member of that group:
+
+<CheckRequestViewer
+  user={'user:6b0b14af-59dc-4ff3-a46f-ad351f428726'}
+  relation={'viewer'}
+  object={'document:product-launch'}
+  allowed={true}
+  contextualTuples={[
+    {
+      _description: 'user 6b0b14af-59dc-4ff3-a46f-ad351f428726 is a member of the marketing group',
+      user: 'user:6b0b14af-59dc-4ff3-a46f-ad351f428726',
+      relation: 'member',
+      object: 'group:marketing',
+    },
+    {
+      _description: 'user 6b0b14af-59dc-4ff3-a46f-ad351f428726 is a member of the everyone group',
+      user: 'user:anne',
+      relation: 'member',
+      object: 'group:everyone',
+    },
+  ]}
+/>
+
+The authorization check will return `allowed = true`, as there's a stored tuple saying that members of the `marketing` group are viewers of the `product-launch` document, and there's a contextual tuple indicating that the user is a member of the `marketing` group.
+
+:::caution Warning
+Contextual tuples:
+- Are not persisted in the store.
+
+- Are only supported on the <UpdateProductNameInLinks link="/api/service#Relationship%20Queries/Check" name="Check API endpoint" /> and <UpdateProductNameInLinks link="/api/service#Relationship%20Queries/ListObjects" name="ListObjects API endpoint" />. They are not supported on read, expand and other endpoints.
+
+- If you are using the <UpdateProductNameInLinks link="/api/service#Relationship%20Tuples/ReadChanges" name="Read Changes API endpoint" /> to build a permission aware search index, note that it will not be trivial to take contextual tuples into account.
+:::
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more on how user contextual tuples can be used."
+  relatedLinks={[
+    {
+      title: 'Contextual and Time-Based Authorization',
+      description: 'Learn how to authorize access that depends on dynamic or contextual criteria.',
+      link: './contextual-time-based-authorization',
+      id: './contextual-time-based-authorization.mdx',
+    },
+    {
+      title: 'Authorization Through Organization Context',
+      description: 'Learn to model and authorize when a user belongs to multiple organizations.',
+      link: './organization-context-authorization',
+      id: './organization-context-authorization.mdx',
+    },
+    {
+      title: 'Conditions',
+      description: 'Learn to model requring dynamic attributes.',
+      link: './conditions',
+      id: './conditions.mdx',
+    },
+    {
+      title: '{ProductName} API',
+      description: 'Details on the Check API in the {ProductName} reference guide.',
+      link: '/api/service#Relationship%20Queries/Check',
+    }
+  ]}
+/>
