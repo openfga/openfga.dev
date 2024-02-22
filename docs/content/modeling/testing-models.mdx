@@ -85,13 +85,13 @@ Tests have the following structure:
 
 ## Write Check tests
 
-Check tests verify the results of the [check API](../getting-started/perform-check) calls to validate access requirements for a user. Each check verification has the following structure:
+Check tests verify the results of the [check API](../getting-started/perform-check.mdx) calls to validate access requirements for a user. Each check verification has the following structure:
 
 | Object  | Description |
 | -------- | -------- | 
 |`user` | The user type and user id you are checking for access | 
 |`object` | The object type and object id related to the user | 
-|`context` | A set of tests for contextual parameters used to evaluate [conditions](./conditions)|
+|`context` | A set of tests for contextual parameters used to evaluate [conditions](./conditions.mdx)|
 |`assertions` | A list of `relation:expected-result` pairs |
 |`<relation>: <true or false>` | The name of the relation you want to verify and the expected result |
 
@@ -118,7 +118,7 @@ tests:
 
 ## Write List Objects tests
 
-A good test covers scenarios that specify every relation for every object type that your application will need to call the [list-objects API](../getting-started/perform-list-objects) for.
+A good test covers scenarios that specify every relation for every object type that your application will need to call the [list-objects API](../getting-started/perform-list-objects.mdx) for.
 
 The following verifies the expected results using the `list_objects` option in <ProductName format={ProductNameFormat.ShortForm}/> tests:
 
