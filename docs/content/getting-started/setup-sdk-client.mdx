@@ -97,11 +97,11 @@ import openfga_sdk
 from openfga_sdk.client import OpenFgaClient
 
 async def main():
-    configuration = openfga_sdk.Configuration(
+    configuration = openfga_sdk.ClientConfiguration(
         api_scheme = os.environ.get('FGA_API_SCHEME'), # optional. Can be "http" or "https". Defaults to "https"
         api_host = os.environ.get('FGA_API_HOST'), # required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
         store_id = os.environ.get('FGA_STORE_ID'), # optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
-        model_id = os.environ.get('FGA_MODEL_ID'), # optional, can be overridden per request
+        authorization_model_id = os.environ.get('FGA_MODEL_ID'), # optional, can be overridden per request
     )
 
     async with OpenFgaClient(configuration) as fga_client:
@@ -251,11 +251,11 @@ async def main():
             api_token=os.environ.get('FGA_API_TOKEN')
         )
     )
-    configuration = openfga_sdk.Configuration(
+    configuration = openfga_sdk.ClientConfiguration(
         api_scheme = os.environ.get('FGA_API_SCHEME'), # optional. Can be "http" or "https". Defaults to "https"
         api_host = os.environ.get('FGA_API_HOST'), # required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
         store_id = os.environ.get('FGA_STORE_ID'), # optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
-        model_id = os.environ.get('FGA_MODEL_ID'), # optional, can be overridden per request
+        authorization_model_id = os.environ.get('FGA_MODEL_ID'), # optional, can be overridden per request
         credentials = credentials,
     )
 
@@ -418,11 +418,11 @@ async def main():
             client_secret= os.environ.get('FGA_CLIENT_SECRET'),
         )
     )
-    configuration = openfga_sdk.Configuration(
+    configuration = openfga_sdk.ClientConfiguration(
         api_scheme = os.environ.get('FGA_API_SCHEME'), # optional. Can be "http" or "https". Defaults to "https"
         api_host = os.environ.get('FGA_API_HOST'), # required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
         store_id = os.environ.get('FGA_STORE_ID'), # optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
-        model_id = os.environ.get('FGA_MODEL_ID'), # optional, can be overridden per request
+        authorization_model_id = os.environ.get('FGA_MODEL_ID'), # optional, can be overridden per request
         credentials = credentials,
     )
 
