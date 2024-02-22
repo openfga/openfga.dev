@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkopenfga_dev=self.webpackChunkopenfga_dev||[]).push([[9661],{41892:(e,s,r)=>{r.r(s),r.d(s,{default:()=>t});r(67294);var a=r(90512),n=r(1944),u=r(35281),c=r(18790),d=r(87099),p=r(85893);function t(e){return(0,p.jsx)(n.FG,{className:(0,a.Z)(u.k.wrapper.docsPages),children:(0,p.jsx)(d.Z,{children:(0,c.H)(e.route.routes)})})}}}]);
