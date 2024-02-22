@@ -191,6 +191,11 @@ const sidebars = {
           id: 'content/modeling/organization-context-authorization',
         },
         {
+          type: 'doc',
+          label: "Testing Models",
+          id: 'content/modeling/testing-models',
+        },
+        {
           type: 'category',
           collapsed: true,
           collapsible: true,
