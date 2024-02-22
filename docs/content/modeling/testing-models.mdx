@@ -15,9 +15,9 @@ import {
 
 <DocumentationNotice />
 
-You must test every <ProductName format={ProductNameFormat.ShortForm}/> model before deployment to ensure your authorization model is correctly designed.
+Every <ProductName format={ProductNameFormat.ShortForm}/> model should be tested before deployment to ensure your authorization model is correctly designed.
 
-The `.fga.yaml` file provides a way to test <ProductName format={ProductNameFormat.ShortForm}/> authorization models. If you are using Visual Studio Code as your IDE, install the [OpenFGA extension](https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode), to enable syntax coloring and validation.
+The `.fga.yaml` contains tests for <ProductName format={ProductNameFormat.ShortForm}/> tauthorization models. If you are using Visual Studio Code as your IDE, install the [OpenFGA extension](https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode) to enable syntax coloring and validation.
 
 ## Define the model and tuples
 
@@ -74,7 +74,7 @@ tuples:
 
 Always write tests to verify that the calls your application will make return the results you expect. A good test covers scenarios that verify every relation.
 
-Tests have have the following structure:
+Tests have the following structure:
 
 | Object  | Description |
 | -------- | -------- | 
@@ -85,7 +85,7 @@ Tests have have the following structure:
 
 ## Write Check tests
 
-Check tests verify the results of the [check API](../getting-started/perform-check) calls to validate the access requirements for a user. Each check verification has the following structure:
+Check tests verify the results of the [check API](../getting-started/perform-check) calls to validate access requirements for a user. Each check verification has the following structure:
 
 | Object  | Description |
 | -------- | -------- | 
@@ -152,7 +152,7 @@ Tests are run using the `model test` CLI command. For instructions on installing
 fga model test --tests <filename>.fga.yaml
 ```
 
-When all test pass a summary with the number of tests passed is displayed. When a test fails, a line for every test is displayed.
+When all tests pass, a summary with the number of tests passed is displayed. When a test fails, a line for every test is displayed.
 
 ```shell
 $ fga model test --tests docs.fga.yaml
