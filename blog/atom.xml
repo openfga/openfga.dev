@@ -198,7 +198,7 @@
 <p>OpenFGA has a rich ecosystem of developer tools. The following have been updated to support Conditional Relationship Tuples:</p>
 <ul>
 <li>
-<p><a href="https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode" target="_blank" rel="noopener noreferrer">Visual Studio Code integration</a> which provides syntax highlighting and model validations for conditions.</p>
+<p><a href="https://github.com/openfga/vscode-ext" target="_blank" rel="noopener noreferrer">Visual Studio Code integration</a> which provides syntax highlighting and model validations for conditions.</p>
 </li>
 <li>
 <p>Beta versions of the <a href="https://www.npmjs.com/package/@openfga/sdk/v/0.3.0-beta.1" target="_blank" rel="noopener noreferrer">Javascript SDK</a> and the <a href="https://github.com/openfga/go-sdk/releases/tag/v0.3.0-beta.1" target="_blank" rel="noopener noreferrer">Go SDK</a>, which allows using the additional parameters.</p>
