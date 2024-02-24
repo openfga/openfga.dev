@@ -95,6 +95,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Use the FGA CLI',
+          id: 'content/getting-started/cli',
+        },
+        {
+          type: 'doc',
           label: 'Integrate Within a Framework',
           id: 'content/getting-started/framework',
         },
