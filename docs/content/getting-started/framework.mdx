@@ -324,8 +324,7 @@ module.exports = fp(async function (fastify, opts) {
     try {
       // configure the openfga api client
       const fgaClient = new OpenFgaClient({
-        apiScheme: process.env.FGA_API_SCHEME, // Optional. Can be "http" or "https". Defaults to "https"
-        apiHost: process.env.FGA_API_HOST,
+        apiUrl: process.env.FGA_API_URL, // required, e.g. https://api.fga.example
         storeId: process.env.FGA_STORE_ID,
       });
       const { allowed } = await fgaClient.check({
@@ -479,8 +478,7 @@ func preauthorize(c *fiber.Ctx) error {
 // Middleware to check whether user is authorized to access document
 func checkAuthorization(c *fiber.Ctx) error {
   fgaClient, err := NewSdkClient(&ClientConfiguration{
-    ApiScheme:      os.Getenv("FGA_API_SCHEME"), // optional. Can be "http" or "https". Defaults to "https"
-    ApiHost:        os.Getenv("FGA_API_HOST"), // required, define without the scheme (e.g. api.fga.example instead of https://api.fga.example)
+    ApiUrl:               os.Getenv("FGA_API_URL"), // required, e.g. https://api.fga.example
     StoreId:        os.Getenv("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
     AuthorizationModelId: os.Getenv("FGA_MODEL_ID"),  // optional, can be overridden per request
   })
