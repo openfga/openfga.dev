@@ -1,0 +1,369 @@
+---
+title: Use the FGA CLI
+description: Use the FGA CLI
+sidebar_position: 10
+slug: /getting-started/cli
+---
+
+import {
+  DocumentationNotice,
+  RelatedSection,
+  ProductName,
+  ProductNameFormat
+} from "@components/Docs";
+
+# Use the FGA CLI
+
+The  <ProductName format={ProductNameFormat.ShortForm}/> Command Line Interface (CLI) enables you to interact with an FGA store, where you can manage tasks, create stores, and update FGA models, among other actions. For more information on FGA stores, see [What Is A Store](../concepts.mdx#what-is-a-store).
+
+For instructions on installing it, visit the [OpenFGA CLI Github repository](https://github.com/openfga/cli).
+
+## Configuration 
+
+The CLI is configured to use a specific FGA server in one of three ways:
+
+- Using CLI flags.
+- Using environment variables.
+- Storing configuration values in a .fga.yaml located in the user’s root directory.
+
+The API Url setting needs to point to the OpenFGA server:
+
+|Name            | Flag               |Environment           |~/.fga.yaml|Default Value          |
+|----------------|--------------------|----------------------|-----------|-----------------------|
+|API Url         | --api-url          | FGA_API_URL          | api-url   | http://localhost:8080 |
+
+If you use [pre-shared key authentication](./setup-openfga/configure-openfga.mdx#pre-shared-key-authentication), configure the following parameters based on the OIDC server that’s used to issue tokens:
+
+| Name           | Flag               |Environment           | ~/.fga.yaml      |
+| ---------------|--------------------|----------------------|------------------|
+| Client ID      | --client-id        | FGA_CLIENT_ID        | client-id        |
+| Client Secret  | --client-secret    | FGA_CLIENT_SECRET    | client-secret    |
+| Scopes         | --api-scopes       | FGA_API_SCOPES       | api-scopes       |
+| Token Issuer   | --api-token-issuer | FGA_API_TOKEN_ISSUER | api-token-issuer |
+| Token Audience | --api-audience     | FGA_API_AUDIENCE     | api-audience     |
+
+A default store Id and authorization model Id can also be configured:
+
+| Name                  | Flag               | Environment   | ~/.fga.yaml     |
+| ----------------------|--------------------|-------------- | ----------------|
+| Store ID              |--store-id          |FGA_STORE_ID   |store-id         |
+| Authorization Model ID|--model-id          |FGA_MODEL_ID   |model-id         |
+
+All of the examples in this document assume the CLI is properly configured and that the Store ID is set either in an environment variable or the `~/.fga.yaml` file. 
+
+## Basic Operations
+
+The CLI commands below show you how to create a store and run your application’s most common operations, including how to write a model and write/delete/read tuples, and run queries.
+
+```bash
+
+# Create a store with a model
+$ fga store create --model docs.fga
+{
+  "store": {
+    "created_at":"2024-02-09T23:20:28.637533296Z",
+    "id":"01HP82R96XEJX1Q9YWA9XRQ4PM",
+    "name":"docs",
+    "updated_at":"2024-02-09T23:20:28.637533296Z"
+  },
+  "model": {
+    "authorization_model_id":"01HP82R97B448K89R45PW7NXD8"
+  }
+}
+
+# Keep the returned store id in an environment variable
+$ export FGA_STORE_ID=01HP82R96XEJX1Q9YWA9XRQ4PM
+
+# Get the latest model
+$ fga model get
+model
+  schema 1.1
+
+type user
+
+type organization
+  relations
+    define admin: [user with non_expired_grant]
+    define member: [user]
+
+type document
+  relations
+    define editor: admin from organization
+    define organization: [organization]
+    define viewer: editor or member from organization
+
+condition non_expired_grant(current_time: timestamp, grant_duration: duration, grant_time: timestamp) {
+  current_time < grant_time + grant_duration
+  
+}
+
+# Write a tuple
+$ fga tuple write user:anne member organization:acme
+{
+  "successful": [
+    {
+      "object":"organization:acme",
+      "relation":"member",
+      "user":"user:anne"
+    }
+  ]
+}
+
+# Read all tuples. It returns the one added above
+$ fga tuple read
+{
+  "continuation_token":"",
+  "tuples": [
+    {
+      "key": {
+        "object":"organization:acme",
+        "relation":"member",
+        "user":"user:anne"
+      },
+      "timestamp":"2024-02-09T23:05:43.586Z"
+    }
+  ]
+}
+
+# Write another tuple, adding a document for the acme organization
+$ fga tuple write organization:acme organization document:readme
+{
+  "successful": [
+    {
+      "object":"document:readme",
+      "relation":"organization",
+      "user":"organization:acme"
+    }
+  ]
+}
+
+# Check if anne can view the document. 
+# Anne can view it as she's a member of organization:acme, which is the organization that owns the document
+$ fga query check user:anne viewer document:readme  
+{
+  "allowed":true,
+  "resolution":""
+}
+
+# List all the documents user:anne can view
+$ fga query list-objects user:anne viewer document  
+{
+  "objects": [
+    "document:readme"
+  ]
+}
+
+# List all the relations that user:anne has with document:readme
+$ fga query list-relations user:anne document:readme
+{
+  "relations": [
+    "viewer"
+  ]
+}
+
+# Delete user:anne as a member of organization:acme
+$ fga tuple delete user:anne member organization:acme
+{}
+
+# Verify that user:anne is no longer a viewer of document:readme
+$ fga query check user:anne viewer document:readme
+{
+  "allowed":false,
+  "resolution":""
+}
+```
+
+## Work with Authorization Model versions
+
+<ProductName format={ProductNameFormat.ShortForm}/> models are [immutable](../getting-started/immutable-models.mdx); each time a model is written to a store, a new version of the model is created. 
+
+All <ProductName format={ProductNameFormat.ShortForm}/> API endpoints receive an optional authorization model ID that points to a specific version of the model and defaults to the latest model version. Always use a specific model ID and update it each time a new model version is used in production.
+
+The following CLI commands lists the model Ids and find the latest one:
+
+```shell
+# List all the authorization models
+$ fga model list
+{
+  "authorization_models": [
+    {
+      "id":"01HPJ8JZV091THNTDFE2SFYNNJ",
+      "created_at":"2024-02-13T22:14:50Z"
+    },
+    {
+      "id":"01HPJ808Q8J56QMK4WNT7MG7P7",
+      "created_at":"2024-02-13T22:04:37Z"
+    },
+    {
+      "id":"01HPJ7YKNV0QT0S6CFRJMK231P",
+      "created_at":"2024-02-13T22:03:43Z"
+    }
+  ]
+}
+
+# List the last model, displaying just the model ID
+$ fga model get --field id                   
+# Model ID: 01HPJ8JZV091THNTDFE2SFYNNJ
+
+# List the last model, displaying just the model ID, in JSON format, to make it simpler to parse
+$ fga model get --field id --format json
+{
+  "id":"01HPJ8JZV091THNTDFE2SFYNNJ"
+}
+```
+
+When using the CLI, the model ID can be specified as a `--model-id` parameter or as part of the configuration.
+
+## Import tuples
+To import tuples, use the`fga tuple write` command. It has the following parameters:
+
+| Parameter                                            | Description | 
+| -----------------------------------------------------|----------------------------------------
+| --file                                               | Specifies the file name  json, yaml and csv files are supported |
+| --max-tuples-per-write (optional, default=1, max=40) | Maximum number of tuples to send in a single write |
+| --max-parallel-requests (optional, default=4)        | Maximum number of requests to send in parallel. Make it larger if you want to import a large number of tuples faster|
+
+The CLI returns a list of tuples that were successfully written and a list of tuples that were not, with details of the write failure. If you specify `-max-tuples-per-write` greater than one, an error in one of the tuples implies none of the tuples get written.
+
+
+```bash
+$ fga tuple write --file tuples.yaml
+
+{
+  "successful": [
+    {
+      "object":"organization:acme",
+      "relation":"member",
+      "user":"user:anne"
+    }
+  ],
+  "failed":null
+}
+
+$ fga tuple write --file tuples.yaml
+{
+   "successful":null,
+  "failed": [
+    {
+      "tuple_key": {
+        "object":"organization:acme",
+        "relation":"member",
+        "user":"user:anne"
+      },
+    "reason":"Write validation error for POST Write with body {\"code\":\"write_failed_due_to_invalid_input\",\"message\":\"cannot write a tuple which already exists: user: 'user:anne', relation: 'member', object: 'organization:acme': invalid write input\"}\n with error code write_failed_due_to_invalid_input error message: cannot write a tuple which already exists: user: 'user:anne', relation: 'member', object: 'organization:acme': invalid write input"
+    }
+}
+```
+Below are examples of the different file formats the CLI accepts when writing tuples:
+
+### yaml
+```yaml
+- user: user:peter
+  relation: admin
+  object: organization:acme
+  condition: 
+    name: non_expired_grant
+    context: 
+      grant_time : "2024-02-01T00:00:00Z"
+      grant_duration : 1h
+- user: user:anne
+  relation: member
+  object: organization:acme
+```
+### JSON
+```
+[
+    {
+        "user": "user:peter",
+        "relation": "admin",
+        "object": "organization:acme",
+        "condition": {
+            "context": {
+                "grant_duration": "1h",
+                "grant_time": "2024-02-01T00:00:00Z"
+            },
+            "name": "non_expired_grant"
+        }
+    },
+    {
+        "user": "user:anne",
+        "relation": "member",
+        "object": "organization:acme"
+    }
+]
+```
+
+### CSV
+
+```csv
+user_type,user_id,user_relation,relation,object_type,object_id,condition_name,condition_context
+user,anne,member,,organization,acme,,
+user,peter1,admin,,organization,acme,non_expired_grant,"{""grant_duration"": ""1h"", ""grant_time"": ""2024-02-01T00:00:00Z""}"
+```
+
+When using the CSV format, you can omit certain headers, and you don’t need to specify the value for those fields.
+
+## Delete Tuples
+
+To delete a tuple, specify the user/relation/object you want to delete. To delete a group of tuples, specify a file that contains those tuples.
+
+```bash
+$ fga tuple delete --file tuples.yaml
+{
+  "successful": [
+    {
+      "object":"organization:acme",
+      "relation":"admin",
+      "user":"user:peter"
+    },
+    {
+      "object":"organization:acme",
+      "relation":"member",
+      "user":"user:anne"
+    }
+  ],
+  "failed":null
+}
+```
+
+Delete all tuples from a store by reading all the tuples first and then deleting them:
+
+```bash
+# Reads all the tuples and outputs them in a json format that can be used by 'fga tuple delete' and 'fga tuple write'.
+
+$ fga tuple read --simple-output --max-pages 0    > tuples.json
+$ fga tuple delete --file  tuples.json
+```
+
+## Import Stores
+
+The CLI can import an [FGA Test file](../modeling/testing) in a store. It writes the model included and imports the tuples in the fga test file. 
+
+Given the following `.fga.yaml` file:
+
+```yaml
+model: |
+  model
+    schema 1.1
+
+  type user
+  type organization
+   relations
+     define member : [user]
+  }
+
+tuples:
+  # Anne is a member of the Acme organization
+  - user: user:anne
+    relation: member
+    object: organization:acme
+```
+
+The following command is used to import the file contents in a store:
+
+```bash
+$ fga store import --file <filename>.fga.yaml
+```
+
+Use the `fga model get` command is used to verify that the model was correctly written, and the `fga tuple read` command is used to verify that the tuples were properly imported.
+
