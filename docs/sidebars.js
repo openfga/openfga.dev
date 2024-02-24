@@ -177,6 +177,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Token claims as Contextual Tuples',
+          id: 'content/modeling/token-claims-contextual-tuples',
+        },
+        {
+          type: 'doc',
           label: 'Contextual and Time-Based Authorization',
           id: 'content/modeling/contextual-time-based-authorization',
         },
@@ -184,6 +189,11 @@ const sidebars = {
           type: 'doc',
           label: 'Authorization Through Organization Context',
           id: 'content/modeling/organization-context-authorization',
+        },
+        {
+          type: 'doc',
+          label: "Testing Models",
+          id: 'content/modeling/testing-models',
         },
         {
           type: 'category',

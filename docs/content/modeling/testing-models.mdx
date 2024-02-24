@@ -1,0 +1,190 @@
+---
+sidebar_position: 6
+slug: /modeling/testing
+description: Testing Models
+---
+
+import {
+  DocumentationNotice,
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+} from '@components/Docs';
+
+# Testing Models
+
+<DocumentationNotice />
+
+Every <ProductName format={ProductNameFormat.ShortForm}/> model should be tested before deployment to ensure your authorization model is correctly designed.
+
+The `.fga.yaml` contains tests for <ProductName format={ProductNameFormat.ShortForm}/> authorization models. If you are using Visual Studio Code as your IDE, install the [OpenFGA extension](https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode) to enable syntax coloring and validation.
+
+## Define the model and tuples
+
+`.fga.yaml` files have the following top level items:
+
+| Object  | Description |
+| -------- | -------- | 
+| `name` (optional)   | A descriptive name for the test file   | 
+| `model` or `model_file`   | An <ProductName format={ProductNameFormat.ShortForm}/> model or a reference to an external model file in `fga` or `json` format  | 
+|`tuples or tuple_file` (optional) | A set of tuples or a reference to an external tuple file in `json`, `yaml` or `csv` format. These are considered for all tests. |
+|`tests` | A set of tests that verify the return values of <ProductName format={ProductNameFormat.ShortForm}/> API calls |
+
+The example below defines a model and tuples:
+
+```yaml
+name: Model Tests # optional
+
+# model_file: ./model.fga # you can specify an external .fga file, or include it inline
+model: |
+  model
+    schema 1.1
+
+  type user
+
+  type organization
+     relations:
+       define member : [user]
+       define admin : [user with non_expired_grant]
+
+   condition non_expired_grant(current_time: timestamp, grant_time: timestamp, grant_duration: duration) {
+     current_time < grant_time + grant_duration
+  }
+
+# tuple_file: ./tuples.yaml # you can specify an external file, or include it inline
+tuples: 
+
+   # Anne is a member of the Acme organization
+  - user: user:anne
+    relation: member
+    object: organization:acme
+
+  # Peter has the admin role from February 2nd 2024 0AM to 1AM
+  - user: user:peter
+    relation: admin
+    object: organization:acme
+    condition: 
+      name: non_expired_grant
+      context: 
+        grant_time : "2024-02-01T00:00:00Z"
+        grant_duration : 1h
+
+```
+## Write tests
+
+Always write tests to verify that the calls your application will make return the results you expect. A good test covers scenarios that verify every relation.
+
+Tests have the following structure:
+
+| Object  | Description |
+| -------- | -------- | 
+|`name` (optional) | A descriptive name for the test, like “Organization Membership”  | 
+|`tuples` | A set of tuples that are only considered for the test | 
+|`check` | A set of tests for Check calls, each with a user/object and a set of assertions |
+|`list_objects` | A set of tests for ListObjects calls, each one with a user/type and a set of assertions for any number of relations|
+
+## Write Check tests
+
+Check tests verify the results of the [check API](../getting-started/perform-check.mdx) calls to validate access requirements for a user. Each check verification has the following structure:
+
+| Object  | Description |
+| -------- | -------- | 
+|`user` | The user type and user id you are checking for access | 
+|`object` | The object type and object id related to the user | 
+|`context` | A set of tests for contextual parameters used to evaluate [conditions](./conditions.mdx)|
+|`assertions` | A list of `relation:expected-result` pairs |
+|`<relation>: <true or false>` | The name of the relation you want to verify and the expected result |
+
+The following example adds multiple check verifications in every test:
+
+```yaml
+tests:
+  - name: Test
+    check:
+      - user: user:anne
+        object: organization:acme
+        assertions:
+          member: true
+          admin: false
+
+      - user: user:peter
+        object: organization:acme
+        context: 
+          current_time : "2024-02-01T00:10:00Z"
+        assertions:
+          member: false
+          admin: true
+```
+
+## Write List Objects tests
+
+A good test covers scenarios that specify every relation for every object type that your application will need to call the [list-objects API](../getting-started/perform-list-objects.mdx) for.
+
+The following verifies the expected results using the `list_objects` option in <ProductName format={ProductNameFormat.ShortForm}/> tests:
+
+```yaml
+    list_objects:
+      - user: user:anne
+        type: organization
+        assertions:
+            member: 
+                - organization:acme
+            admin: []
+              
+      - user: user:peter
+        type: organization
+        context: 
+          current_time : "2024-02-01T00:10:00Z"
+
+        assertions:
+            member: []
+            admin: 
+                - organization:acme
+
+```
+The example above checks that `user:anne` has access to the `organization:acme` as a member and is not an admin of any organization. It also checks that `user:peter`, given the current time is February 1st 2024, 0:10 AM, is not related to any organization as a member, but is related to `organization:acme` as an admin.
+
+## Running tests
+
+Tests are run using the `model test` CLI command. For instructions on installing the OpenFGA CLI, visit the [OpenFGA CLI Github repository](https://github.com/openfga/cli).
+
+```shell
+fga model test --tests <filename>.fga.yaml
+```
+
+When all tests pass, a summary with the number of tests passed is displayed. When a test fails, a line for every test is displayed.
+
+```shell
+$ fga model test --tests docs.fga.yaml
+(PASSING) Test: Checks (4/4 passing) | ListObjects (4/4 passing)
+
+$ fga model test --tests docs.fga.yaml
+(FAILING) Test: Checks (4/4 passing) | ListObjects (3/4 passing)
+✓ ListObjects(user=user:anne,relation=member,type=organization, context=<nil>)
+✓ ListObjects(user=user:anne,relation=admin,type=organization, context=<nil>)
+✓ ListObjects(user=user:peter,relation=member,type=organization, context=&map[current_time:2024-02-01T00:10:00Z])
+ⅹ ListObjects(user=user:peter,relation=admin,type=organization, context=&map[current_time:2024-02-01T00:10:00Z]): expected=[organization:acm], got=[organization:acme], error=<nil>
+```
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more on how to learn how to write tests."
+  relatedLinks={[
+    {
+      title: 'Super Admin Example ',
+      description: 'Define a model and tests for modeling a super-admin role.',
+      link: 'https://github.com/openfga/sample-stores/blob/main/stores/superadmin/store.fga.yaml'
+    }, 
+    {
+      title: 'Banking Example ',
+      description: 'Define a model and tests for banking application.',
+      link: 'https://github.com/openfga/sample-stores/blob/main/stores/banking/store.fga.yaml'
+    },
+    {
+      title: 'Entitlements Example ',
+      description: 'Define a model and tests for B2B application entitlements.',
+      link: 'https://github.com/openfga/sample-stores/blob/main/stores/advanced-entitlements/store.fga.yaml'
+    },
+  ]}
+/>
