@@ -25,13 +25,11 @@ import {
 
 Contextual Tuples allow authorization checks that depend on dynamic or contextual relationships that have not been written to the <ProductName format={ProductNameFormat.ShortForm}/> store, enabling some Attribute Based Access Control (ABAC) use cases. 
 
-To enable more ABAC use-cases that rely on specific attributes and conditions, you can also use {ProductNameFormat.ShortForm}/>`s [conditions](./conditions.mdx).
+To enable more ABAC use-cases that rely on specific attributes and conditions, you can also use <ProductName format={ProductNameFormat.ShortForm}/>`s [conditions](./conditions.mdx).
 
 ## Before You Start
 
 To follow this guide, familiarize yourself with the following <ProductConcept />:
-
-### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
 
 - A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system.
 - A <ProductConcept section="what-is-a-check-request" linkName="Check Request" />: is a call to the <ProductName format={ProductNameFormat.ShortForm}/> check endpoint that returns whether the user has a certain relationship with an object.
@@ -41,7 +39,7 @@ To follow this guide, familiarize yourself with the following <ProductConcept />
 
 User directories store user information that's accessed when making authorization decisions, like the group the user belongs to, their roles, or their department. The natural way to use those relationships in a Relationship-Based Access Control system like <ProductName format={ProductNameFormat.ShortForm}/> is to create tuples for each relation. However, implementing a synchronization mechanism to keep the user directory data up to date with tuples in the store can be challenging.  
 
-When applications implement authentication using an OIDC authorization service, they receive an ID Token or an Access token, with certain claims that can be customized based on the application's needs. Instead of writing tuples to the <ProductName format={ProductNameFormat.ShortForm}/>, you can use Contextual Tuples to make authorization checks, understanding that, if those relationships change while the token has not expired, users will still get access to the resources the content of the token entitled them to.
+When applications implement authentication using an OIDC authorization service, they receive an ID Token or an Access token, with certain claims that can be customized based on the application's needs. Instead of writing tuples to the <ProductName format={ProductNameFormat.ShortForm}/>, you can use the content of the token in Contextual Tuples to make authorization checks, understanding that, if those relationships change while the token has not expired, users will still get access to the resources the content of the token entitled them to.
 
 ## Example
 
@@ -114,7 +112,7 @@ When a group is added as a viewer of a document, the application writes tuples l
 }
 ]} />
 
-The Access Token the application receives has a list of the groups the user belongs to:
+Let's assume that the Access Token the application receives has a list of the groups the user belongs to:
 
 ```json
 {
