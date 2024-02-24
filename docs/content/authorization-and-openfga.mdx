@@ -11,40 +11,34 @@ import { DocumentationNotice, Playground, ProductName, ProductNameFormat } from 
 
 <DocumentationNotice />
 
-This section explains [authorization](#authentication-vs-authorization), [fine-grained authorization](#what-is-fine-grained-authorization-fga), [RBAC](#what-are-role-based-access-control-rbac-and-attribute-based-access-control-abac), [ABAC](#what-are-role-based-access-control-rbac-and-attribute-based-access-control-abac), [ReBAC](#what-is-relationship-based-access-control-rebac).
+OpenFGA reies on several understandings of [authorization](#authentication-vs-authorization), including [fine-grained authorization](#what-is-fine-grained-authorization-fga), [role-based access control](#what-are-role-based-access-control-rbac-and-attribute-based-access-control-abac), [attribute-based access control](#what-are-role-based-access-control-rbac-and-attribute-based-access-control-abac), and [relationship-based access control](#what-is-relationship-based-access-control-rebac).
 
 ## What Is OpenFGA?
 
-**OpenFGA** is an open source solution to [Fine-Grained Authorization](#what-is-fine-grained-authorization-fga) that applies the concept of [ReBAC](#what-is-relationship-based-access-control-rebac). It was created by the [Okta FGA](https://docs.fga.dev/) team and was inspired by [Zanzibar](#what-is-zanzibar). It was designed for reliability and low latency at a high scale. It offers an HTTP API and has SDKs for programming languages including [Node.js/JavaScript](https://www.npmjs.com/package/@openfga/sdk), [GoLang](https://github.com/openfga/go-sdk), [.NET](https://www.nuget.org/packages/OpenFga.Sdk), [Python](https://pypi.org/project/openfga-sdk), [Java](https://central.sonatype.com/artifact/dev.openfga/openfga-sdk). More SDKs and integrations such as Rego are planned for the future.
+**OpenFGA** is an open source solution to [Fine-Grained Authorization](#what-is-fine-grained-authorization-fga), or **FGA**, that applies the concept of [relationship-based access control](#what-is-relationship-based-access-control-rebac), or **ReBAC**. It was created by the [Okta FGA](https://docs.fga.dev/) team and inspired by [Zanzibar](#what-is-zanzibar). Designed for reliability and low latency at a high scale, OpenFGA offers both HTTP and GRPC APIs, as well as SDKs for programming languages like [Node.js/JavaScript](https://www.npmjs.com/package/@openfga/sdk), [GoLang](https://github.com/openfga/go-sdk), [.NET](https://www.nuget.org/packages/OpenFga.Sdk), [Python](https://pypi.org/project/openfga-sdk), and [Java](https://central.sonatype.com/artifact/dev.openfga/openfga-sdk), with additional SDKs and integrations (including Rego) planned for future releases.
 
 <Playground intro={true} />
 
 ## Authentication vs Authorization
 
-[**Authentication**](https://auth0.com/intro-to-iam/what-is-authentication/) (or AuthN) is a process that ensures a user's identity. [**Authorization**](https://en.wikipedia.org/wiki/Authorization) (or AuthZ) means determining if a user can perform a certain action on a particular resource.
+[**Authentication**](https://auth0.com/intro-to-iam/what-is-authentication/) (or **AuthN**) ensures a user's identity. [**Authorization**](https://en.wikipedia.org/wiki/Authorization) (or **AuthZ**) determines if a user can perform a certain action on a particular resource.
 
-For example, when logging in to Twitter, the process in which Twitter verifies the user's username and password are correct is Authentication. The process of checking if that user can view or reply to a certain Tweet is Authorization.
+For example, when you log in to Google, Authentication verifies that your username and password are correct. Authorization checks if you can access a given Google service. [For more information about AuthN vs AuthZ, click here.](https://www.okta.com/identity-101/authentication-vs-authorization/).
 
-[Read more about AuthN vs AuthZ](https://www.okta.com/identity-101/authentication-vs-authorization/).
+## What Is Fine-Grained Authorization?
 
-## What Is Fine-Grained Authorization (FGA)?
+**Fine-Grained Authorization** (FGA) allows admininstrators to to grant individual users access to specific objects or resources in a system. Well-designed FGA systems allow millions of objects, users and relations to change rapidly as objects are added and access permissions are updated. A notable example of fine-grained authorization is Google Drive: access can be granted either to documents or to folders, as well as to individual users or users as a group, and access rights regularly change as new documents are created and shared with specific users or groups.
 
-**Fine-Grained Authorization** is being able to grant individual users access to specific objects or resources in a system. FGA at scale means being able to do so in a system that can have millions of objects, users and relations, and has a high change rate - objects are regularly added and access permissions are constantly being updated. A good example of this is Google Drive, where access can be granted either to documents, or folders; it can be granted to users individually or as a group. Access regularly changes as new documents are created and shared with specific users, whether inside the same company or outside.
+## What Are Role-Based Access Control And Attribute-Based Access Control?
 
-## What Are Role-Based Access Control (RBAC) And Attribute-Based Access Control (ABAC)?
+In [**Role-Based Access Control**](https://en.wikipedia.org/wiki/Role-based_access_control) (RBAC), permissions are assigned to users based on their role in a system. For example, a user needs the `editor` role to edit content. [For more information about RBAC, click here.](https://auth0.com/docs/manage-users/access-control/rbac)
 
-In [**Role-Based Access Control**](https://en.wikipedia.org/wiki/Role-based_access_control), permissions are assigned to users based on their role in a system (e.g. a user would need an `editor` role to edit posts).
+In [**Attribute-Based Access Control**](https://en.wikipedia.org/wiki/Attribute-based_access_control) (ABAC), permissions are granted based on a set of attributes that a user or resource possess. For example, a user assigned both `marketing` and `manager` attributes is entitled to publish and delete posts that have a `marketing` attribute. [For more information about ABAC, click here.](https://www.okta.com/blog/2020/09/attribute-based-access-control-abac/)
 
-In [**Attribute-Based Access Control**](https://en.wikipedia.org/wiki/Attribute-based_access_control), instead of permissions being granted based on roles, they are granted based on a set of attributes on a user or resource (e.g. if a user has both `marketing` and `manager` attributes they can publish and delete posts that have a `marketing` attribute, but not others).
+## What Is Relationship-Based Access Control?
 
-If you are interested you can read more about [RBAC](https://auth0.com/docs/manage-users/access-control/rbac) and [ABAC](https://www.okta.com/blog/2020/09/attribute-based-access-control-abac/).
-
-## What Is Relationship Based Access Control (ReBAC)?
-
-**ReBAC** allows expressing rules based on relations that users have with objects and that objects have with other objects. For example, a user can view a document if they can view its parent folder.
+**Relationship-Based Access Control** (ReBAC) allows user access rules to be conditional on relations that a given user has with a given object *and* that object's relationship other objects. For example, a given user can view a given document if the user has access to the document's parent folder.
 
 ## What Is Zanzibar?
 
-**[Zanzibar](https://research.google/pubs/pub48190/)** is "Google's Consistent, Global Authorization System" for "determining whether online users are authorized to access digital objects" across their products (Google Drive, YouTube, Google Photos, etc..). It uses (object, relation, user) tuples to store relation data and traverses those relations to check if there is a relation between a user and an object.
-
-Learn more about Zanzibar at the [Zanzibar Academy](https://zanzibar.academy).
+**[Zanzibar](https://research.google/pubs/pub48190/)** is Google's global authorization system across Google's product suite. It uses object-relation-user tuples to store relation data, then checks those relations for a match between a user and an object. [For more information about Zanzibar, click here](https://zanzibar.academy).

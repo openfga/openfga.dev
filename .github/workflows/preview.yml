@@ -19,7 +19,7 @@ jobs:
       - name: Cached LFS checkout
         uses: nschloe/action-cached-lfs-checkout@d481127c3821f9c278a6019c39a108ac7004c133
 
-      - uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
         with:
           node-version: 18.x
           cache: npm
@@ -30,6 +30,6 @@ jobs:
           npm run build
 
       - name: Deploy preview
-        uses: rossjrw/pr-preview-action@4668d7cb417ce7067b0b59bc152b1ae1513010de
+        uses: rossjrw/pr-preview-action@f31d5aa7b364955ea86228b9dcd346dc3f29c408
         with:
           source-dir: ./build/

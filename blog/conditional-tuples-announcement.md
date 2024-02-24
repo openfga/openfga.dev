@@ -86,7 +86,7 @@ docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 openfga/openfga:v1.4.0-rc1 run
 
 OpenFGA has a rich ecosystem of developer tools. The following have been updated to support Conditional Relationship Tuples:
 
-- [Visual Studio Code integration](https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode) which provides syntax highlighting and model validations for conditions.
+- [Visual Studio Code integration](https://github.com/openfga/vscode-ext) which provides syntax highlighting and model validations for conditions.
 
 - Beta versions of the [Javascript SDK](https://www.npmjs.com/package/@openfga/sdk/v/0.3.0-beta.1) and the [Go SDK](https://github.com/openfga/go-sdk/releases/tag/v0.3.0-beta.1), which allows using the additional parameters.
 
