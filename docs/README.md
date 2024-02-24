@@ -50,7 +50,7 @@ It offers an HTTP API, a gRPC API, and has SDKs for programming languages includ
   - [Multiple Restrictions](./content/modeling/multiple-restrictions.mdx)
   - [Custom Roles](./content/modeling/custom-roles.mdx)
   - [Conditions](./content/modeling/conditions.mdx)
-  - [Testing Models](./content/modeling/testing.mdx)
+  - [Testing Models](./content/modeling/testing-models.mdx)
   - [Token Claims as Contextual Tuples](./content/modeling/token-claims-contextual-tuples.mdx)
   - [Contextual and Time-Based Authorization](./content/modeling/contextual-time-based-authorization.mdx)
   - [Authorization Through Organization Context](./content/modeling/organization-context-authorization.mdx)
