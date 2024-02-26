@@ -166,11 +166,11 @@ $ fga model test --tests docs.fga.yaml
 ⅹ ListObjects(user=user:peter,relation=admin,type=organization, context=&map[current_time:2024-02-01T00:10:00Z]): expected=[organization:acm], got=[organization:acme], error=<nil>
 ```
 
-## Running tests using GitHub Actions
+## Running tests using Github Actions
 
 Use the [OpenFGA Model Testing Action](https://github.com/marketplace/actions/openfga-model-testing-action) to running tests from CI/CD flows in GitHub.
 
-Point the `store-file-path` parameter to the `.fga.yaml` file to when configuring the action:
+Set the path to the `.fga.yaml` file as the `store-file-path` parameter when configuring the action:
 
 ```yaml
 name: Test Action
