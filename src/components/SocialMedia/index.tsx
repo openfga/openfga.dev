@@ -9,7 +9,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 import styles from './SocialMedia.module.css';
 
-const SOCIAL_MEDIA_ITEMS = ['Twitter', 'Discord', 'GitHub'];
+const SOCIAL_MEDIA_ITEMS = ['Twitter', 'CNCF Slack', 'GitHub'];
 
 const SocialMedia: React.FC = () => {
   const baseClassName = 'social-media-banner';
