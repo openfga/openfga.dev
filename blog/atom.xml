@@ -80,9 +80,8 @@
 <p>We have a very welcoming community, and we'd love to have you there! You can join us in different ways:</p>
 <ul>
 <li>Join our <a href="https://github.com/openfga/community/blob/main/community-meetings.md" target="_blank" rel="noopener noreferrer">community meetings</a>, the second Thursday of every month. All the recordings are <a href="https://www.youtube.com/@OpenFGA" target="_blank" rel="noopener noreferrer">here</a>.</li>
-<li>Join our <a href="https://discord.gg/8naAwJfWN6" target="_blank" rel="noopener noreferrer">Discord</a></li>
 <li>Stay up to date by following us on <a href="https://twitter.com/openfga" target="_blank" rel="noopener noreferrer">X</a>.</li>
-<li>Ask questions, submit ideas, or just say hi in our <a href="https://github.com/orgs/openfga/discussions" target="_blank" rel="noopener noreferrer">GitHub Discussions</a>.</li>
+<li>Join our <a href="https://openfga.dev/community" target="_blank" rel="noopener noreferrer">community channels</a> in Slack or GitHub.</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="see-you-next-month">See you next month!<a href="https://openfga.dev/blog/fine-grained-news-2024-01#see-you-next-month" class="hash-link" aria-label="Direct link to See you next month!" title="Direct link to See you next month!">​</a></h2>
 <p>Fine Grained News are published every month, after the OpenFGA community meeting. If you have any feedback, you want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!</p>]]></content>
@@ -146,7 +145,7 @@
 <p>We have a very welcoming community, and we'd love to have you there! You can join us in different ways:</p>
 <ul>
 <li>Join our <a href="https://github.com/openfga/community/blob/main/community-meetings.md" target="_blank" rel="noopener noreferrer">community meetings</a>, the second Thursday of every month. All the recordings are <a href="https://www.youtube.com/@OpenFGA" target="_blank" rel="noopener noreferrer">here</a>.</li>
-<li>Join our <a href="https://discord.gg/8naAwJfWN6" target="_blank" rel="noopener noreferrer">Discord</a></li>
+<li>Join our <a href="https://openfga.dev/community" target="_blank" rel="noopener noreferrer">community channels</a> in Slack or GitHub.</li>
 <li>Stay up to date by following us on <a href="https://twitter.com/openfga" target="_blank" rel="noopener noreferrer">X</a>.</li>
 <li>Ask questions, submit ideas, or just say hi in our <a href="https://github.com/orgs/openfga/discussions" target="_blank" rel="noopener noreferrer">GitHub Discussions</a>.</li>
 </ul>
@@ -222,7 +221,7 @@
 This won’t scale to a large number of documents, but would be useful in some scenarios.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="reach-out">Reach out!<a href="https://openfga.dev/blog/conditional-tuples-announcement#reach-out" class="hash-link" aria-label="Direct link to Reach out!" title="Direct link to Reach out!">​</a></h2>
 <p>We want to learn how you use this feature and how we can improve it!</p>
-<p>Please reach out to us in <a href="https://discord.gg/8naAwJfWN6" target="_blank" rel="noopener noreferrer">Discord</a> or <a href="https://github.com/orgs/openfga/discussions" target="_blank" rel="noopener noreferrer">Github</a> with any questions or feedback.</p>]]></content>
+<p>Please reach out through our <a href="https://openfga.dev/community" target="_blank" rel="noopener noreferrer">community channels</a> with any questions or feedback.</p>]]></content>
         <author>
             <name>Andres Aguiar</name>
             <uri>https://github.com/aaguiarz</uri>
