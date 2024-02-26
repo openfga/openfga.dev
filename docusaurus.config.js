@@ -158,9 +158,13 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
             from: ['/api'],
           },
           {
+            to: '/docs/support',
+            from: '/support',
+          },
+          {
             to: '/docs/authorization-and-openfga',
             from: '/docs',
-          },
+          }
         ],
       }),
     ],
