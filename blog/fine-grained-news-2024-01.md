@@ -104,9 +104,8 @@ Please take a look at them and let us know what you think!
 We have a very welcoming community, and we'd love to have you there! You can join us in different ways:
 
 - Join our [community meetings](https://github.com/openfga/community/blob/main/community-meetings.md), the second Thursday of every month. All the recordings are [here](https://www.youtube.com/@OpenFGA).
-- Join our [Discord](https://discord.gg/8naAwJfWN6)
 - Stay up to date by following us on [X](https://twitter.com/openfga).
-- Ask questions, submit ideas, or just say hi in our [GitHub Discussions](https://github.com/orgs/openfga/discussions).
+- Join our [community channels](https://openfga.dev/community) in Slack or GitHub.
 
 ## See you next month!
 

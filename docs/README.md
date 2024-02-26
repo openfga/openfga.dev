@@ -15,7 +15,7 @@ It offers an HTTP API, a gRPC API, and has SDKs for programming languages includ
 - [Okta FGA Playground](https://play.fga.dev)
 - [Zanzibar Academy](https://zanzibar.academy)
 - [OpenFGA on Twitter](https://twitter.com/OpenFGA)
-- [Discord Community](https://discord.gg/pvbNmqC)
+- [OpenFGA Community](https://openfga.dev/community) in Slack and GitHub
 
 ## Documentation
 
