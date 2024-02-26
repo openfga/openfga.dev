@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkopenfga_dev=self.webpackChunkopenfga_dev||[]).push([[9979],{59136:e=>{e.exports=JSON.parse('{"label":"openfga","permalink":"/pr-preview/pr-664/blog/tags/openfga","allTagsPath":"/pr-preview/pr-664/blog/tags","count":1,"unlisted":false}')}}]);
