@@ -278,7 +278,7 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
           },
           {
             to: 'https://openfga.dev/community',
-            className: 'header-social header-discord-link',
+            className: 'header-social header-slack-link',
             'aria-label': 'OpenFGA on Slack',
             label: 'CNCF Slack',
           },
