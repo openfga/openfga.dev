@@ -59,7 +59,7 @@ const features = [
     icon: <CommunityAnimatedIcon />,
     title: 'Get Involved',
     content: [
-      "Join OpenFGA's active <a href='https://discord.gg/8naAwJfWN6' target='_blank'>Discord community</a>, check out existing <a href='https://github.com/openfga/rfcs' target='_blank'>RFCs</a> to understand where the project is headed, start a <a href='https://github.com/orgs/openfga/discussions' target='_blank'>discussion</a> about your authorization needs or questions, and learn more about how to take part by reading our <a href='https://github.com/openfga/.github/blob/main/CONTRIBUTING.md' target='_blank'>CONTRIBUTING.md</a>.",
+      "Join OpenFGA's active <a href='https://openfga.dev/community' target='_blank'>Slack and GitHub community</a>, check out existing <a href='https://github.com/openfga/rfcs' target='_blank'>RFCs</a> to understand where the project is headed, and learn more about how to take part by reading our <a href='https://github.com/openfga/.github/blob/main/CONTRIBUTING.md' target='_blank'>CONTRIBUTING.md</a>.",
       '<a target="_blank" href="https://github.com/openfga/.github/blob/main/CONTRIBUTING.md#contribution-process" >Learn how to get involved → </a>',
     ],
   },
