@@ -14,7 +14,7 @@ Welcome to the 3rd edition of Fine Grained News!
 
 ## KubeCon Europe 2024 getting closer!
 
-We'll be pretty busy during KubeCon Europe 2024:
+We'll be pretty busy during [KubeCon Europe 2024](https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/):
 
 - [Jonathan Whitaker](https://www.linkedin.com/in/jonathan-whitaker-5a8b2484/) from Okta will talk about [Federated IAM for Kubernetes with OpenFGA](https://kccnceu2024.sched.com/event/1YeQD)
 
