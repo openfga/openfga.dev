@@ -52,7 +52,7 @@ New releases with bug fixes and improvements:
 
 ## Modular Models
 
-We wrapped up the [RFC for Modular Models](https://github.com/openfga/rfcs/pull/14), which will enable multiple teams to work on different parts of the model independently and we are now working on the implementation. We'd love feedback on the RFC.
+We wrapped up the [RFC for Modular Models](https://github.com/openfga/rfcs/blob/main/20231212-modular-models.md), which will enable multiple teams to work on different parts of the model independently and we are now working on the implementation. We'd love feedback on the RFC.
 
 Wait for a demo on our next Community Meeting! 
 
