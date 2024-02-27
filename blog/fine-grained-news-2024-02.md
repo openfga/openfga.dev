@@ -2,7 +2,7 @@
 title: Fine Grained News - February 2024
 description: Fine Grained News
 slug: fine-grained-news-2024-02
-date: 2024-01-28
+date: 2024-02-27
 authors: aaguiar
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
