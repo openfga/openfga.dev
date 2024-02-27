@@ -12,7 +12,7 @@ hide_table_of_contents: false
 
 Welcome to the 3rd edition of Fine Grained News! 
 
-## KubeCon Europe 2024 getting closer!
+## KubeCon Europe 2024 is getting closer!
 
 We'll be pretty busy during [KubeCon Europe 2024](https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/):
 
@@ -30,8 +30,10 @@ We'll also have a kiosk in the CNCF Project Pavilion, so if you plan to attend l
 
 We keep improving our documentation, and added a few new documents that you might find interesting:
 
-- Learn how to [using the FGA CLI](https://openfga.dev/docs/getting-started/cli) to perform every possible operation on OpenFGA and simplify most common workflows.
+- Learn how to [use the FGA CLI](https://openfga.dev/docs/getting-started/cli) to perform every possible operation on OpenFGA and simplify most common workflows.
+
 - Learn how you can [test FGA models](https://openfga.dev/docs/modeling/testing) as part of your development flow or CI/CD pipelines, without the need to run an OpenFGA server.
+
 - Learn how you can include [identity token claims contextual tuples](https://openfga.dev/docs/modeling/token-claims-contextual-tuples) to model ABAC-like scenarios or simplify data integrations with OpenFGA. 
 
 ## OpenFGA in the Java Ecosystem
@@ -54,18 +56,19 @@ New releases with bug fixes and improvements:
 
 We wrapped up the [RFC for Modular Models](https://github.com/openfga/rfcs/blob/main/20231212-modular-models.md), which will enable multiple teams to work on different parts of the model independently and we are now working on the implementation. We'd love feedback on the RFC.
 
-Wait for a demo on our next Community Meeting! 
+Wait for a demo on our next [Community Meeting](https://github.com/openfga/community/blob/main/community-meetings.md)! 
 
 ## Community News
 
 - Learn [how stacklok is using OpenFGA](https://stacklok.com/blog/using-openfga-to-build-a-relationship-based-authorization-model-in-minder) to implement authorization in Minder, an open source project that makes it easier to apply and automate the enforcement of security checks and policies across multiple GitHub repositories.
+
 - Check this [OpenFGA tutorial](https://www.albertcoronado.com/2024/02/08/tutorial-openfga/) by [Alberto Coronado](https://twitter.com/acoronadoc) (in Spanish!).
 
 - [Raghd Hamzeh](https://www.linkedin.com/in/raghdhamzeh/) joined [Whitney Lee](https://twitter.com/wiggitywhitney) in an in-depth Tanzu ⚡️Enlightning [session](https://www.youtube.com/watch?v=yTgtAzhvC28) about OpenFGA.
 
 ## Transitioning from Discord to CNCF's Slack
 
-As you may know, we've been using Discord for the OpenFGA community. We’ll transition it to the CNCF [OpenFGA Slack channel](https://cloud-native.slack.com/archives/C06G1NNH47N). If you are not part of the CNCF Slack workspace,  you need to join to the [CNCF Slack](https://slack.cncf.io) first.
+As you may know, we've been using Discord for the OpenFGA community. We’ll transition it to the CNCF [OpenFGA Slack channel](https://cloud-native.slack.com/archives/C06G1NNH47N). If you are not part of the CNCF Slack workspace, you need to join the [CNCF Slack](https://slack.cncf.io) first.
 
 ## See you next month!
 
