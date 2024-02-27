@@ -63,9 +63,6 @@ Wait for a demo on our next Community Meeting!
 
 - [Raghd Hamzeh](https://www.linkedin.com/in/raghdhamzeh/) joined [Whitney Lee](https://twitter.com/wiggitywhitney) in an in-depth Tanzu ⚡️Enlightning [session](https://www.youtube.com/watch?v=yTgtAzhvC28) about OpenFGA.
 
-
-- Check  their Youtube stream [here]
-
 ## Transitioning from Discord to CNCF's Slack
 
 As you may know, we've been using Discord for the OpenFGA community. We’ll transition it to the CNCF [OpenFGA Slack channel](https://cloud-native.slack.com/archives/C06G1NNH47N). If you are not part of the CNCF Slack workspace,  you need to join to the [CNCF Slack](https://slack.cncf.io) first.
