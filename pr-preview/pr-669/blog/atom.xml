@@ -99,7 +99,7 @@
         <summary type="html"><![CDATA[Fine Grained News]]></summary>
         <content type="html"><![CDATA[<p>Welcome to the 3rd edition of Fine Grained News!</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="kubecon-europe-2024-getting-closer">KubeCon Europe 2024 getting closer!<a href="https://openfga.dev/pr-preview/pr-669/blog/fine-grained-news-2024-02#kubecon-europe-2024-getting-closer" class="hash-link" aria-label="Direct link to KubeCon Europe 2024 getting closer!" title="Direct link to KubeCon Europe 2024 getting closer!">​</a></h2>
-<p>We'll be pretty busy during KubeCon Europe 2024:</p>
+<p>We'll be pretty busy during <a href="https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/" target="_blank" rel="noopener noreferrer">KubeCon Europe 2024</a>:</p>
 <ul>
 <li>
 <p><a href="https://www.linkedin.com/in/jonathan-whitaker-5a8b2484/" target="_blank" rel="noopener noreferrer">Jonathan Whitaker</a> from Okta will talk about <a href="https://kccnceu2024.sched.com/event/1YeQD" target="_blank" rel="noopener noreferrer">Federated IAM for Kubernetes with OpenFGA</a></p>
