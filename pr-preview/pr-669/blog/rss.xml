@@ -95,7 +95,7 @@
             <pubDate>Sun, 28 Jan 2024 00:00:00 GMT</pubDate>
             <description><![CDATA[Fine Grained News]]></description>
             <content:encoded><![CDATA[<p>Welcome to the 3rd edition of Fine Grained News!</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="kubecon-europe-2024-getting-closer">KubeCon Europe 2024 getting closer!<a href="https://openfga.dev/pr-preview/pr-669/blog/fine-grained-news-2024-02#kubecon-europe-2024-getting-closer" class="hash-link" aria-label="Direct link to KubeCon Europe 2024 getting closer!" title="Direct link to KubeCon Europe 2024 getting closer!">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="kubecon-europe-2024-is-getting-closer">KubeCon Europe 2024 is getting closer!<a href="https://openfga.dev/pr-preview/pr-669/blog/fine-grained-news-2024-02#kubecon-europe-2024-is-getting-closer" class="hash-link" aria-label="Direct link to KubeCon Europe 2024 is getting closer!" title="Direct link to KubeCon Europe 2024 is getting closer!">​</a></h2>
 <p>We'll be pretty busy during <a href="https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/" target="_blank" rel="noopener noreferrer">KubeCon Europe 2024</a>:</p>
 <ul>
 <li>
@@ -115,9 +115,15 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="documentation-improvements">Documentation Improvements<a href="https://openfga.dev/pr-preview/pr-669/blog/fine-grained-news-2024-02#documentation-improvements" class="hash-link" aria-label="Direct link to Documentation Improvements" title="Direct link to Documentation Improvements">​</a></h2>
 <p>We keep improving our documentation, and added a few new documents that you might find interesting:</p>
 <ul>
-<li>Learn how to <a href="https://openfga.dev/docs/getting-started/cli" target="_blank" rel="noopener noreferrer">using the FGA CLI</a> to perform every possible operation on OpenFGA and simplify most common workflows.</li>
-<li>Learn how you can <a href="https://openfga.dev/docs/modeling/testing" target="_blank" rel="noopener noreferrer">test FGA models</a> as part of your development flow or CI/CD pipelines, without the need to run an OpenFGA server.</li>
-<li>Learn how you can include <a href="https://openfga.dev/docs/modeling/token-claims-contextual-tuples" target="_blank" rel="noopener noreferrer">identity token claims contextual tuples</a> to model ABAC-like scenarios or simplify data integrations with OpenFGA.</li>
+<li>
+<p>Learn how to <a href="https://openfga.dev/docs/getting-started/cli" target="_blank" rel="noopener noreferrer">use the FGA CLI</a> to perform every possible operation on OpenFGA and simplify most common workflows.</p>
+</li>
+<li>
+<p>Learn how you can <a href="https://openfga.dev/docs/modeling/testing" target="_blank" rel="noopener noreferrer">test FGA models</a> as part of your development flow or CI/CD pipelines, without the need to run an OpenFGA server.</p>
+</li>
+<li>
+<p>Learn how you can include <a href="https://openfga.dev/docs/modeling/token-claims-contextual-tuples" target="_blank" rel="noopener noreferrer">identity token claims contextual tuples</a> to model ABAC-like scenarios or simplify data integrations with OpenFGA.</p>
+</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="openfga-in-the-java-ecosystem">OpenFGA in the Java Ecosystem<a href="https://openfga.dev/pr-preview/pr-669/blog/fine-grained-news-2024-02#openfga-in-the-java-ecosystem" class="hash-link" aria-label="Direct link to OpenFGA in the Java Ecosystem" title="Direct link to OpenFGA in the Java Ecosystem">​</a></h2>
 <p>OpenFGA is getting bigger on the Java world! We are <a href="https://github.com/spring-projects/spring-security/issues/14121" target="_blank" rel="noopener noreferrer">working with the Spring Security team</a> to build an Spring Security integration for OpenFGA. You can check the ideas we are exploring in <a href="https://github.com/jimmyjames/fga-spring-examples" target="_blank" rel="noopener noreferrer">this repository</a>.</p>
@@ -131,8 +137,8 @@
 <li><a href="https://github.com/openfga/python-sdk/releases/tag/v0.4.1" target="_blank" rel="noopener noreferrer">Python SDK v0.4.1</a></li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="modular-models">Modular Models<a href="https://openfga.dev/pr-preview/pr-669/blog/fine-grained-news-2024-02#modular-models" class="hash-link" aria-label="Direct link to Modular Models" title="Direct link to Modular Models">​</a></h2>
-<p>We wrapped up the <a href="https://github.com/openfga/rfcs/pull/14" target="_blank" rel="noopener noreferrer">RFC for Modular Models</a>, which will enable multiple teams to work on different parts of the model independently and we are now working on the implementation. We'd love feedback on the RFC.</p>
-<p>Wait for a demo on our next Community Meeting!</p>
+<p>We wrapped up the <a href="https://github.com/openfga/rfcs/blob/main/20231212-modular-models.md" target="_blank" rel="noopener noreferrer">RFC for Modular Models</a>, which will enable multiple teams to work on different parts of the model independently and we are now working on the implementation. We'd love feedback on the RFC.</p>
+<p>Wait for a demo on our next <a href="https://github.com/openfga/community/blob/main/community-meetings.md" target="_blank" rel="noopener noreferrer">Community Meeting</a>!</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="community-news">Community News<a href="https://openfga.dev/pr-preview/pr-669/blog/fine-grained-news-2024-02#community-news" class="hash-link" aria-label="Direct link to Community News" title="Direct link to Community News">​</a></h2>
 <ul>
 <li>
@@ -146,7 +152,7 @@
 </li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="transitioning-from-discord-to-cncfs-slack">Transitioning from Discord to CNCF's Slack<a href="https://openfga.dev/pr-preview/pr-669/blog/fine-grained-news-2024-02#transitioning-from-discord-to-cncfs-slack" class="hash-link" aria-label="Direct link to Transitioning from Discord to CNCF's Slack" title="Direct link to Transitioning from Discord to CNCF's Slack">​</a></h2>
-<p>As you may know, we've been using Discord for the OpenFGA community. We’ll transition it to the CNCF <a href="https://cloud-native.slack.com/archives/C06G1NNH47N" target="_blank" rel="noopener noreferrer">OpenFGA Slack channel</a>. If you are not part of the CNCF Slack workspace,  you need to join to the <a href="https://slack.cncf.io/" target="_blank" rel="noopener noreferrer">CNCF Slack</a> first.</p>
+<p>As you may know, we've been using Discord for the OpenFGA community. We’ll transition it to the CNCF <a href="https://cloud-native.slack.com/archives/C06G1NNH47N" target="_blank" rel="noopener noreferrer">OpenFGA Slack channel</a>. If you are not part of the CNCF Slack workspace, you need to join the <a href="https://slack.cncf.io/" target="_blank" rel="noopener noreferrer">CNCF Slack</a> first.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="see-you-next-month">See you next month!<a href="https://openfga.dev/pr-preview/pr-669/blog/fine-grained-news-2024-02#see-you-next-month" class="hash-link" aria-label="Direct link to See you next month!" title="Direct link to See you next month!">​</a></h2>
 <p>Fine Grained News are published every month, after the OpenFGA community meeting. If you have any feedback, you want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!</p>]]></content:encoded>
             <category>newsletter</category>
