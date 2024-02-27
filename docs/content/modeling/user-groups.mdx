@@ -21,11 +21,11 @@ import {
 
 <DocumentationNotice />
 
-In this guide you will learn how to add users to groups and grant groups access to an <ProductConcept section="what-is-an-object" linkName="object" /> using <ProductName format={ProductNameFormat.ProductLink}/>.
+This guide explains how to add users to groups and grant groups access to an <ProductConcept section="what-is-an-object" linkName="object" /> using <ProductName format={ProductNameFormat.ProductLink}/>.
 
 <CardBox title="When to use" appearance="filled">
 
-Adding a relationship tuple specifying that a group has a relation to an object is helpful in cases where you want to encompass a set of users with the same relation to an object. For example:
+Relationship tuples can specify that an entire group has a relation to an object, which is helpful when you want to encompass a set of users with the same relation to an object. For example:
 
 - Grant a group of `engineers` `viewer` access to `roadmap.doc`
 - Create a `block_list` of `members` who can't access a `document`
@@ -38,13 +38,12 @@ Adding a relationship tuple specifying that a group has a relation to an object 
 
 ## Before you start
 
-In order to understand this guide correctly you must be familiar with some <ProductConcept /> and know how to develop the things that we will list below.
+Familiarize yourself with the <ProductConcept />.
 
 <details>
 <summary>
 
-Assume that you have the following <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />.<br />
-You have an _<ProductConcept section="what-is-an-object" linkName="object" />_ called `document` that _users_ can be related to as an `editor`.
+Assume you have the following <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />.<br />: you have an _<ProductConcept section="what-is-an-object" linkName="object" />_ called `document` that users can relate to as an `editor`.
 
 </summary>
 
@@ -78,15 +77,15 @@ In addition, you will need to know the following:
 
 ### Direct Access
 
-You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](./direct-access.mdx)
+You need to know how to create an authorization model and a relationship tuple to grant a user access to an object. To learn more, see [direct access](./direct-access.mdx).
 
 ### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
 
-- A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics
-- A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
-- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
-- An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
-- A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>
+- A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics.
+- A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object.
+- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system.
+- An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be defined with relationship tuples and the authorization model.
+- A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>.
 
 </details>
 
@@ -94,18 +93,18 @@ You need to know how to create an authorization model and create a relationship 
 
 ## Step By Step
 
-As we develop our application, we might encounter use cases where a group of users have a certain role or permission on an object. For example, `members` of a certain `team` might have an `editor` relation to a certain `document`.
+You will encounter use cases where a group of users have a certain role on or permission to an object. For example, `members` of a certain `team` could have an `editor` relation to a certain `document`.
 
-In order to represent this in <ProductName format={ProductNameFormat.ShortForm}/>, we need:
+To represent this in <ProductName format={ProductNameFormat.ShortForm}/>, we need to:
 
-1. Introduce the concept of a `team` to the authorization model
-2. Add _users_ as `members` to the `team`
-3. Assign the `team` members a relation to an _object_
-4. Checking an individual member's access to the _object_
+1. Introduce the concept of a `team` to the authorization model.
+2. Add users as `members` to the `team`.
+3. Assign the `team` members a relation to an object.
+4. Checking an individual member's access to the object.
 
 ### 01. Introduce The Concept Of A Team To The Authorization Model
 
-We need to define the _<ProductConcept section="what-is-an-object" linkName="object" />_ `team` in our authorization model. In our use case, a `team` can have `member`s, so we make the following changes to our authorization model:
+First, define the _<ProductConcept section="what-is-an-object" linkName="object" />_ `team` in your authorization model. In this use case, a `team` can have `member`s, so you make the following changes to our authorization model:
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -146,7 +145,7 @@ We need to define the _<ProductConcept section="what-is-an-object" linkName="obj
 
 ### 02. Add Users As Members To The Team
 
-We can now assign _<ProductConcept section="what-is-a-user" linkName="users" />_ as `member`s of `team`s. Let's create a new _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple" />_ that states **alice is a member of team:writers**.
+You can now assign _<ProductConcept section="what-is-a-user" linkName="users" />_ as `member`s of `team`s. Create a new _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple" />_ that states `user:alice` is a member of `team:writers`.
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -160,9 +159,9 @@ We can now assign _<ProductConcept section="what-is-a-user" linkName="users" />_
 
 ### 03. Assign The Team Members A Relation To An Object
 
-To represent groups we use the `type:object_id#relation` format, which represents the set of users related to the `type:object_id` as a certain relation. For example, `team:writers#members` is used to represent the set of users related to the **team:writers** _object_ as `member`s.
+To represent groups, use the `type:object_id#relation` format, which represents the set of users related to the `type:object_id` as a certain relation. For example, `team:writers#members` represents the set of users related to the `team:writers` object as `member`s.
 
-In order to assign `member`s of a `team` a relation to a `document`, we can create the following _relationship tuple_ that states that **members of team:writers are editors of document:meeting_notes.doc**.
+In order to assign `member`s of a `team` a relation to a `document`, create the following relationship tuple stating that members of `team:writers` are editors of `document:meeting_notes.doc`.
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -175,31 +174,31 @@ In order to assign `member`s of a `team` a relation to a `document`, we can crea
   ]}
 />
 
-### 04. Checking An Individual Member's Access To An Object
+### 04. Check An Individual Member's Access To An Object
 
-Now that we have:
+Now that you have:
 
-- a relationship tuple indicating that **alice** is an `member` of **team:writers**
-- a relationship tuple indicating that **members of team:writers are editors of document:meeting_notes.doc**
+- a relationship tuple indicating that `alice` is an `member` of `team:writers`
+- a relationship tuple indicating that `members` of `team:writers` are editors of `document:meeting_notes.doc`
 
-This means that if we \*<ProductConcept section="what-is-a-check-request" linkName="check" />**\*is alice an editor of document:meeting_notes.doc**? We would get the following:
+The \*<ProductConcept section="what-is-a-check-request" linkName="check" />\ `is alice an editor of document:meeting_notes.doc` returns the following:
 
 <CheckRequestViewer user={'user:alice'} relation={'editor'} object={'document:meeting_notes.doc'} allowed={true} />
 
-The chain of resolution becomes:
+The chain of resolution is:
 
-- **alice** is `member` of **team:writers**
-- `member`s of **team:writers** are `editor`s of **document:meeting_notes**
-- therefore, **alice** is `editor` of **document:meeting_notes**
+- `alice` is `member` of `team:writers`
+- `member`s of `team:writers` are `editor`s of `document:meeting_notes`  
+- therefore, `alice` is `editor` of `document:meeting_notes`
 
 :::caution
-**Note:** When creating relationship tuples for <ProductName format={ProductNameFormat.ShortForm}/> make sure to use unique ids for each object and user within your application domain. We're using first names and simple ids to just illustrate an easy-to-follow example.
+**Note:** When creating relationship tuples for <ProductName format={ProductNameFormat.ShortForm}/>,  use unique ids for each object and user in your application domain. This example uses first names and simple ids as an easy-to-follow example.
 :::
 
 ## Related Sections
 
 <RelatedSection
-  description="Check the following sections for more on how user groups can be used."
+  description="Check the following sections for more on user groups."
   relatedLinks={[
     {
       title: 'Managing Group Membership',
