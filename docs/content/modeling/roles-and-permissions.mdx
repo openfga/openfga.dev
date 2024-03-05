@@ -26,11 +26,11 @@ This guide explains how to model roles and permissions in <ProductName format={P
 - **Roles** are assigned to <ProductConcept section="what-is-a-user" linkName="users" /> or groups of users, where any user can have more than one role, like `editor` or `owner`.
 - **Permissions** allow users to access certain <ProductConcept section="what-is-an-object" linkName="objects" /> based on their specific roles, like `device_renamer` or `channel_archiver`.
 
-For example, the role `viewer` of a `trip` can have permissions to view bookings, while the role `owners` has permissions to add/view bookings to a trip.
+For example, the role `viewer` of a `trip` can have permissions to view bookings, while the role `owners` has permissions to add or view bookings to a trip.
 
 <CardBox title="When to use" appearance="filled">
 
-When trying to create a role and permissions model within <ProductName format={ProductNameFormat.ShortForm}/>, you should:
+When creating a role and permissions model within <ProductName format={ProductNameFormat.ShortForm}/>, you should:
 
 - Create roles by creating relations that can be directly assigned to users
 - Assign permissions by creating relations that users get through other relations
