@@ -32,8 +32,8 @@ For example, the role `viewer` of a `trip` can have permissions to view bookings
 
 When creating a role and permissions model within <ProductName format={ProductNameFormat.ShortForm}/>, you should:
 
-- Create roles by creating relations that can be directly assigned to users
-- Assign permissions by creating relations that users get through other relations
+- Create roles by creating relations that can be directly assigned to users.
+- Assign permissions by creating relations that users get through other relations.
 
 For example:
 
@@ -43,7 +43,7 @@ For example:
 
 There are advantages to implementing roles and permissions within <ProductName format={ProductNameFormat.ShortForm}/>, such as:
 
-- Breaking down existing roles to have more fine grained permission, whucg allows your application to check whether a user has access to a certain object without having to explicitly check that specific users role.
+- Breaking down existing roles to have more fine grained permission, which enables your application to check whether a user has access to a certain object without having to explicitly check that specific user's role.
 - Introduce new roles/permissions or consolidate roles without affecting your application behavior. For example: if your app's checks are for the fine permissions `check('bob', 'booking_adder', 'trip:Europe')` instead of `check('bob', 'owner', 'trip:Europe')`, and you later decide `owners` can no longer add bookings to a `trip`, you can remove the relation within the `trip` type with no code changes in your application, and all the permissions will automatically honor the change.
 
 </CardBox>
@@ -89,7 +89,7 @@ Assume you have the following <ProductConcept section="what-is-an-authorization-
 
 <hr />
 
-In addition, you will need to know the following:
+In addition, you need to know the following:
 
 ### Direct Access
 
@@ -112,7 +112,7 @@ Learn how to create an authorization model and create a relationship tuple to gr
 
 ## Step By Step
 
-To illustrate modeling Roles and Permissions in <ProductName format={ProductNameFormat.ShortForm}/>, imagine a trip booking system that has `owners` and/or `viewers`. It can also have granular permissions like adding bookings to or viewing bookings on a trip.
+To illustrate modeling Roles and Permissions in <ProductName format={ProductNameFormat.ShortForm}/>, imagine a trip booking system that has `owners` and/or `viewers`. It can also have granular permissions like adding bookings or viewing bookings on a trip.
 
 To represent this, you need to:
 
@@ -159,7 +159,7 @@ In <ProductName format={ProductNameFormat.ShortForm}/>, roles are relations that
 
 In <ProductName format={ProductNameFormat.LongForm}/>, permissions are relations that users get only through other relations. To represent permissions, define the relation by other relations to indicate that it is a permission both granted to and implied from a different relation. Doing so avoids adding a [direct relationship type restriction](../configuration-language.mdx#the-direct-relationship-type-restrictions) to the relation in the authorization model.
 
-To add permissions related to bookings, add new relations to the `trip` object type denoting the various actions a user can take on `trips`, like view, edit, or delete,.
+To add permissions related to bookings, add new relations to the `trip` object type denoting the various actions a user can take on `trips`, like view, edit, or delete.
 
 To allow `viewers` of a `trip` permission to view bookings and `owners` to have permissions to add/view bookings, modify the type as seen below:
 
@@ -218,11 +218,11 @@ To allow `viewers` of a `trip` permission to view bookings and `owners` to have 
   }}
 />
 
-> Note: both `booking_viewer` and `booking_adder` don't have [direct relationship type restrictions](../configuration-language.mdx#the-direct-relationship-type-restrictions). This ensures that the relation can only be assigned through the role and not directly.
+> Note: Both `booking_viewer` and `booking_adder` don't have [direct relationship type restrictions](../configuration-language.mdx#the-direct-relationship-type-restrictions). This ensures that the relation can only be assigned through the role and not directly.
 
 ### 03. Checking User Roles And Their Permissions
 
-Now that your type definitions reflect the roles and permissions governing how bookings can be viewed/added, create <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" /> to assign roles to users, then *<ProductConcept section="what-is-a-check-request" linkName="check" />* if users have the proper permissions.
+Now that your type definitions reflect the roles and permissions governing how bookings can be viewed and added, create <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" /> to assign roles to users, then *<ProductConcept section="what-is-a-check-request" linkName="check" />* if users have the proper permissions.
 
 Create two relationship tuples:
 
@@ -256,7 +256,7 @@ Now check: `is bob allowed to view bookings on trip Europe?`
 2. Any user related to the object `trip:` `Europe` as `viewer` is also related as a `booking_viewer` (i.e `usersRelatedToObjectAs: viewer`)
 3. Therefore, all `viewers` on a given `trip` are `booking_viewers`
 
-To confirm that `bob` is not allowed to add bookings on trip `Europe`, do the following check:
+To confirm that `bob` is not allowed to add bookings on trip `Europe`, perform the following check:
 
 <CheckRequestViewer user={'user:bob'} relation={'booking_adder'} object={'trip:Europe'} allowed={false} />
 
@@ -273,7 +273,7 @@ You can also check: is `alice` allowed to view and add bookings on trip `Europe`
 4. Therefore, all `owners` on a given `trip` are `booking_viewers` and `booking_adders` on that trip
 
 :::caution
-Note: use unique ids for each object and user within your application domain when creating relationship tuples for <ProductName format={ProductNameFormat.LongForm}/>. This guide uses first names and simple ids as an easy-to-follow example.
+Note: Use unique IDs for each object and user within your application domain when creating relationship tuples for <ProductName format={ProductNameFormat.LongForm}/>. This guide uses first names and simple IDs as an easy-to-follow example.
 :::
 
 ## Related Sections
