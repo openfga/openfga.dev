@@ -162,7 +162,7 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
             from: '/community',
           },
           {
-            to: '/docs/intro',
+            to: '/docs/fga',
             from: '/docs',
           }
         ],
