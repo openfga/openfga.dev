@@ -17,9 +17,9 @@ For example, when you log in to Google, Authentication is the process of verifyi
 
 ## What is Fine-Grained Authorization?
 
-Fine-Grained Authorization (FGA) implies the ability of grant specific users permission to perform certain actions in specific resources.
+Fine-Grained Authorization (FGA) implies the ability to grant specific users permission to perform certain actions in specific resources.
 
-Well-designed FGA systems allow to manage permissions for millions of objects and users. These permissions can change rapidly as a system continually adds objects and updates access permissions for its users. 
+Well-designed FGA systems allow you to manage permissions for millions of objects and users. These permissions can change rapidly as a system continually adds objects and updates access permissions for its users. 
 
 A notable example of FGA is Google Drive: access can be granted either to documents or to folders, as well as to individual users or users as a group, and access rights regularly change as new documents are created and shared with specific users or groups.
 
@@ -33,7 +33,7 @@ RBAC systems enable you to define users, groups, roles, and permissions, then st
 
 In [Attribute-Based Access Control](https://en.wikipedia.org/wiki/Attribute-based_access_control) (ABAC), permissions are granted based on a set of attributes that a user or resource possesses. For example, a user assigned both `marketing` and `manager` attributes is entitled to publish and delete posts that have a `marketing` attribute.
 
-Applications implementing ABAC need to retrieve information that’s stored in multiple data sources - like RBAC services, user directories, and application-specific data sources - to make authorization decisions.
+Applications implementing ABAC need to retrieve information stored in multiple data sources - like RBAC services, user directories, and application-specific data sources - to make authorization decisions.
 
 ## What is Policy-Based Access Control?
 
@@ -46,13 +46,13 @@ Policy-Based Access Control (PBAC) is the ability to manage authorization polici
 ReBAC is a superset of RBAC: you can fully implement RBAC with ReBAC. 
 ReBAC also lets you natively solve for ABAC when attributes can be expressed in the form of relationships. For example ‘a user’s manager’, ‘the parent folder’,  ‘the owner of a document’, ‘the user’s department’ can be defined as relationships. 
 
-<ProductName format={ProductNameFormat.ShortForm}/> extends ReBAC by making it simpler to express additional ABAC scenarios using [Conditions](./modeling/conditions.mdx) or [Contextual Tuples](./modeling/token-claims-contextual-tuples.mdx)
+<ProductName format={ProductNameFormat.ShortForm}/> extends ReBAC by making it simpler to express additional ABAC scenarios using [Conditions](./modeling/conditions.mdx) or [Contextual Tuples](./modeling/token-claims-contextual-tuples.mdx).
 
 ReBAC can also be consided PBAC, as authorization policies are centralized.
 
 ## What is Zanzibar?
 
-**[Zanzibar](https://research.google/pubs/pub48190/)**  is Google's global authorization system across Google's product suite. It’s based on ReBAC and uses object-relation-user tuples to store relationship data, then checks those relations for a match between a user and an object. For more information, see [Zanzibar Academy](https://zanzibar.academy).
+[Zanzibar](https://research.google/pubs/pub48190/) is Google's global authorization system across Google's product suite. It’s based on ReBAC and uses object-relation-user tuples to store relationship data, then checks those relations for a match between a user and an object. For more information, see [Zanzibar Academy](https://zanzibar.academy).
 
 ReBAC systems based on Zanzibar store the data necessary to make authorization decisions in a centralized database. Applications only need to call an API to make authorization decisions.
 
