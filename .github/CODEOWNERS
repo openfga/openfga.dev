@@ -3,3 +3,5 @@
 docs/ @openfga/docs
 blog/ @openfga/docs @openfga/community
 src/components/Docs @openfga/frontend @openfga/dx
+README.md @openfga/product @openfga/community
+docs/content/community.mdx @openfga/product @openfga/community
