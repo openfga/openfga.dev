@@ -9,37 +9,37 @@ import { ProductName, ProductNameFormat, RelatedSection } from '@components/Docs
 
 # Authorization Concepts 
 
-## Authentication vs. Authorization
+## Authentication and Authorization
 
-[**Authentication**](https://auth0.com/intro-to-iam/what-is-authentication/) (or **AuthN**) ensures a user's identity. [**Authorization**](https://en.wikipedia.org/wiki/Authorization) (or **AuthZ**) determines if a user can perform a certain action on a particular resource.
+[Authentication](https://en.wikipedia.org/wiki/Authentication) ensures a user's identity. [Authorization](https://en.wikipedia.org/wiki/Authorization) determines if a user can perform a certain action on a particular resource.
 
-For example, when you log in to Google, Authentication is the process of verifying that your username and password are correct. Authorization is the process of ensuring that you can access a given Google service or feature. For more information about AuthN vs AuthZ, see [Authentication vs. Authorization](https://www.okta.com/identity-101/authentication-vs-authorization/).
+For example, when you log in to Google, Authentication is the process of verifying that your username and password are correct. Authorization is the process of ensuring that you can access a given Google service or feature.
 
-## What Is Fine-Grained Authorization?
+## What is Fine-Grained Authorization?
 
-**Fine-Grained Authorization** (FGA) implies the ability of granting specific users permission to perform certain actions in specific resources.
+Fine-Grained Authorization (FGA) implies the ability of grant specific users permission to perform certain actions in specific resources.
 
-Well-designed FGA systems allow for the managing of permissions to millions of objects and users. These permissions can change rapidly as a system continually adds objects and updates access permissions for its users. 
+Well-designed FGA systems allow to manage permissions for millions of objects and users. These permissions can change rapidly as a system continually adds objects and updates access permissions for its users. 
 
-A notable example of fine-grained authorization is Google Drive: access can be granted either to documents or to folders, as well as to individual users or users as a group, and access rights regularly change as new documents are created and shared with specific users or groups.
+A notable example of FGA is Google Drive: access can be granted either to documents or to folders, as well as to individual users or users as a group, and access rights regularly change as new documents are created and shared with specific users or groups.
 
-## What Is Role-Based Access Control?
+## What is Role-Based Access Control?
 
-In [**Role-Based Access Control**](https://en.wikipedia.org/wiki/Role-based_access_control) (RBAC), permissions are assigned to users based on their role in a system. For example, a user needs the `editor` role to edit content.
+In [Role-Based Access Control](https://en.wikipedia.org/wiki/Role-based_access_control) (RBAC), permissions are assigned to users based on their role in a system. For example, a user needs the `editor` role to edit content.
 
 RBAC systems enable you to define users, groups, roles, and permissions, then store them in a centralized location. Applications access that information to make authorization decisions.
 
-## What Is Attribute-Based Access Control?
+## What is Attribute-Based Access Control?
 
-In [**Attribute-Based Access Control**](https://www.okta.com/blog/2020/09/attribute-based-access-control-abac/) (ABAC), permissions are granted based on a set of attributes that a user or resource possesses. For example, a user assigned both `marketing` and `manager` attributes is entitled to publish and delete posts that have a `marketing` attribute.
+In [Attribute-Based Access Control](https://en.wikipedia.org/wiki/Attribute-based_access_control) (ABAC), permissions are granted based on a set of attributes that a user or resource possesses. For example, a user assigned both `marketing` and `manager` attributes is entitled to publish and delete posts that have a `marketing` attribute.
 
 Applications implementing ABAC need to retrieve information that’s stored in multiple data sources - like RBAC services, user directories, and application-specific data sources - to make authorization decisions.
 
-## What Is Policy-Based Access Control?
+## What is Policy-Based Access Control?
 
 Policy-Based Access Control (PBAC) is the ability to manage authorization policies in a centralized way that’s external to the application code. Most implementations of ABAC are also PBAC.
 
-## What Is Relationship-Based Access Control?
+## What is Relationship-Based Access Control?
 
 [Relationship-Based Access Control](https://en.wikipedia.org/wiki/Relationship-based_access_control) (ReBAC) enables user access rules to be conditional on relations that a given user has with a given object _and_ that object's relationship with other objects. For example, a given user can view a given document if the user has access to the document's parent folder.
 
@@ -50,14 +50,13 @@ ReBAC also lets you natively solve for ABAC when attributes can be expressed in 
 
 ReBAC can also be consided PBAC, as authorization policies are centralized.
 
-## What Is Zanzibar?
+## What is Zanzibar?
 
-**[Zanzibar](https://research.google/pubs/pub48190/)**  is Google's global authorization system across Google's product suite. It’s based on ReBAC and uses object-relation-user tuples to store relationship data, then checks those relations for a match between a user and an object. For more information, see [Zanzibar](https://zanzibar.academy).
+**[Zanzibar](https://research.google/pubs/pub48190/)**  is Google's global authorization system across Google's product suite. It’s based on ReBAC and uses object-relation-user tuples to store relationship data, then checks those relations for a match between a user and an object. For more information, see [Zanzibar Academy](https://zanzibar.academy).
 
 ReBAC systems based on Zanzibar store the data necessary to make authorization decisions in a centralized database. Applications only need to call an API to make authorization decisions.
 
 <ProductName format={ProductNameFormat.ShortForm}/> is an example of a Zanzibar-based authorization system.
-
 
 <RelatedSection
   description="Learn about {ProductName}."
