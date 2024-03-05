@@ -1,0 +1,79 @@
+---
+title: Authorization Concepts
+description: Introduction to Authorization 
+sidebar_position: 1
+slug: /intro/authorization-concepts
+---
+
+import { ProductName, ProductNameFormat, RelatedSection } from '@components/Docs';
+
+# Authorization Concepts 
+
+## Authentication vs Authorization
+
+[**Authentication**](https://auth0.com/intro-to-iam/what-is-authentication/) (or **AuthN**) ensures a user's identity. [**Authorization**](https://en.wikipedia.org/wiki/Authorization) (or **AuthZ**) determines if a user can perform a certain action on a particular resource.
+
+For example, when you log in to Google, Authentication verifies that your username and password are correct. Authorization checks if you can access a given Google service. [For more information about AuthN vs AuthZ, click here.](https://www.okta.com/identity-101/authentication-vs-authorization/)
+
+## What Is Fine-Grained Authorization?
+
+**Fine-Grained Authorization** (FGA) implies the ability of granting specific users permission to perform certain actions in specific resources.
+
+Well-designed FGA systems allow managing permissions to millions of objects and users that change rapidly as objects are added and access permissions are updated. 
+
+A notable example of fine-grained authorization is Google Drive: access can be granted either to documents or to folders, as well as to individual users or users as a group, and access rights regularly change as new documents are created and shared with specific users or groups.
+
+## What Is Role-Based Access Control?
+
+In [**Role-Based Access Control**](https://en.wikipedia.org/wiki/Role-based_access_control) (RBAC), permissions are assigned to users based on their role in a system. For example, a user needs the `editor` role to edit content. [For more information about RBAC, click here.](https://auth0.com/docs/manage-users/access-control/rbac)
+
+RBAC systems allow you to define users, groups, roles, and permissions, then store them in a centralized location. Applications access that information to make authorization decisions.
+
+## What Is Attribute-Based Access Control?
+
+In [**Attribute-Based Access Control**](https://en.wikipedia.org/wiki/Attribute-based_access_control) (ABAC), permissions are granted based on a set of attributes that a user or resource possesses. For example, a user assigned both `marketing` and `manager` attributes is entitled to publish and delete posts that have a `marketing` attribute. [For more information about ABAC, click here.](https://www.okta.com/blog/2020/09/attribute-based-access-control-abac/)
+
+Applications implementing ABAC need to retrieve information that’s stored in multiple data sources - like RBAC services, user directories, and application-specific data sources - to make authorization decisions.
+
+## What Is Policy-Based Access Control?
+
+Policy-Based Access Control (PBAC) is the ability to manage authorization policies in a centralized way that’s external to the application code. Most implementations of ABAC are also PBAC.
+
+## What Is Relationship-Based Access Control?
+
+[Relationship-Based Access Control](https://en.wikipedia.org/wiki/Relationship-based_access_control) (ReBAC) allows user access rules to be conditional on relations that a given user has with a given object _and_ that object's relationship with other objects. For example, a given user can view a given document if the user has access to the document's parent folder.
+
+ReBAC is a superset of RBAC: you can fully implement RBAC with ReBAC. 
+ReBAC also enables natively to solve for ABAC when attributes can be expressed in the form of relationships. For example ‘a user’s manager’, ‘the parent folder’,  ‘the owner of a document’, ‘the user’s department’ can be defined as relationships. 
+
+<ProductName format={ProductNameFormat.ShortForm}/> extends ReBAC by making it simpler to express additional ABAC scenarios using [Conditions](./modeling/conditions.mdx) or [Contextual Tuples](./modeling/token-claims-contextual-tuples.mdx)
+
+ReBAC can also be consided PBAC, as authorization policies are centralized.
+
+## What Is Zanzibar?
+
+**[Zanzibar](https://research.google/pubs/pub48190/)**  is Google's global authorization system across Google's product suite. It’s based on Relationship-Based Access Control, and uses object-relation-user tuples to store relationship data, then checks those relations for a match between a user and an object. [For more information about Zanzibar, click here](https://zanzibar.academy).
+
+ReBAC systems based on Zanzibar store the data necessary to make authorization decisions in a centralized database. Applications only need to call an API to make authorization decisions.
+
+<ProductName format={ProductNameFormat.ShortForm}/> is an example of a Zanzibar-based authorization system.
+
+
+<RelatedSection
+  description="Learn about {ProductName}."
+  relatedLinks={[
+    {
+      title: '{ProductName} Concepts',
+      description: 'Learn about the {ProductName} Concepts',
+      link: '../concepts',
+      id: '../concepts',
+    },    
+    {
+      title: 'Modeling: Getting Started',
+      description: 'Learn about how to get started with modeling your permission system in {ProductName}.',
+      link: './modeling/getting-started',
+      id: './modeling/getting-started',
+    }
+  ]}
+  />
+  
