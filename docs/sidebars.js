@@ -4,11 +4,16 @@ const sidebars = {
     {
       type: 'doc',
       label: 'What is OpenFGA',
-      id: 'content/authorization-and-openfga',
+      id: 'content/intro',
     },
     {
       type: 'doc',
-      label: 'Concepts',
+      label: 'Authorization Concepts',
+      id: 'content/authorization-concepts',
+    },
+    {
+      type: 'doc',
+      label: 'OpenFGA Concepts',
       id: 'content/concepts',
     },
     {
