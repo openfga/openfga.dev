@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkopenfga_dev=self.webpackChunkopenfga_dev||[]).push([[9649],{67632:e=>{e.exports=JSON.parse('{"label":"conferences","permalink":"/pr-preview/pr-681/blog/tags/conferences","allTagsPath":"/pr-preview/pr-681/blog/tags","count":1,"unlisted":false}')}}]);
