@@ -125,7 +125,7 @@ You need to know how to add users to groups and grant groups access to resources
 - A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
 - An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
 - A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm} />
-- [Exclusion Operator](../configuration-language.mdx#the-exclusion-operator): the exclusion operator can be used to exclude certain usersets from being related to an object
+- [Exclusion Operator](../modeling-language.mdx#the-exclusion-operator): the exclusion operator can be used to exclude certain usersets from being related to an object
 
 </details>
 
@@ -206,7 +206,7 @@ Now we can add relationship tuples indicating that a certain user is `blocked` f
 
 ### 02. Modify Our Model So Users Who Are Blocked Can No Longer Edit The Document
 
-Now that we can mark users as `blocked` from editing documents, we need to support denying the `editor` relationship when a user is `blocked`. We do that by modifying the relation definition of `editor`, and making use of the [**the exclusion operator**](../configuration-language.mdx#the-exclusion-operator) to exclude the set of `blocked` users, as we can see here:
+Now that we can mark users as `blocked` from editing documents, we need to support denying the `editor` relationship when a user is `blocked`. We do that by modifying the relation definition of `editor`, and making use of the [**the exclusion operator**](../modeling-language.mdx#the-exclusion-operator) to exclude the set of `blocked` users, as we can see here:
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -311,10 +311,10 @@ The response is `true`, indicating our model change did not inadvertently deny a
       id: './getting-started',
     },
     {
-      title: 'Configuration Language',
-      description: 'Learn about {ProductName} Configuration Language.',
-      link: '../configuration-language',
-      id: '../configuration-language',
+      title: 'Modeling Language',
+      description: 'Learn about {ProductName} Modeling Language.',
+      link: '../modeling-language',
+      id: '../modeling-language',
     },
     {
       title: 'Public Access',

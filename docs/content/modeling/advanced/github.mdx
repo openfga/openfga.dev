@@ -29,7 +29,7 @@ This tutorial explains how to model GitHub's Organization permission model using
   Used here to indicate that all members of an organization are repository admins on the organization.
 - Modeling **concentric relationship** to have a certain <ProductConcept section="what-is-a-relation" linkName="relation" /> on an object imply another relation on the same object. See [Modeling Concepts: Concentric Relationships](../building-blocks/concentric-relationships.mdx) for more.<br />
   Used here to indicate that maintainers of a repository are also writers of that repository.
-- Using [**the union operator**](../../configuration-language.mdx#the-union-operator) condition to indicate that a user might have a certain relation with an object if they match any of the criteria indicated.<br />
+- Using [**the union operator**](../../modeling-language.mdx#the-union-operator) condition to indicate that a user might have a certain relation with an object if they match any of the criteria indicated.<br />
   Used here to indicate that a user can be a reader on a repository, or can have the reader relationship implied through triager.
 - Model [**parent-child objects**](../parent-child.mdx) to indicate that a user having a relationship with a certain object implies having a relationship with another object in <ProductName format={ProductNameFormat.ShortForm}/>.<br />
   Used here to indicate that a repository admin on a GitHub organization, is an admin on all repositories that organization owns.
@@ -61,10 +61,10 @@ You need to know how to create relationships between objects and how that might 
 
 Used here to indicate that users who have repo admin access on an organization, have admin access to all repositories owned by that organization.
 
-#### Concepts & Configuration Language
+#### Concepts & Modeling Language
 
 - Some <ProductConcept />
-- [Configuration Language](../../configuration-language.mdx)
+- [Modeling Language](../../modeling-language.mdx)
 
 </details>
 

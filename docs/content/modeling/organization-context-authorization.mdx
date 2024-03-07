@@ -299,7 +299,7 @@ Note that so far, we have not prevented Anne from viewing "Project X" even if An
 
 ##### Extend The Authorization Model
 
-In order to add a restriction based on the current organization context, we will make use of <ProductName format={ProductNameFormat.ShortForm}/> configuration language's support for [intersection](../configuration-language.mdx#the-intersection-operator) to specify that a user has to both have access _and_ be in the correct context in order to be authorized.
+In order to add a restriction based on the current organization context, we will make use of <ProductName format={ProductNameFormat.ShortForm}/> modeling language's support for [intersection](../modeling-language.mdx#the-intersection-operator) to specify that a user has to both have access _and_ be in the correct context in order to be authorized.
 
 We can do that by introducing some new relations and updating existing relation definitions:
 

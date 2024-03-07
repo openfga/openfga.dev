@@ -1,8 +1,8 @@
 ---
-title: Configuration Language
+title: Modeling Language
 sidebar_position: 2
-slug: /configuration-language
-description: Learning about the FGA configuration language and using it to build a representation of a system's authorization model
+slug: /modeling-language
+description: Learning about the FGA modeling language and using it to build a representation of a system's authorization model
 ---
 
 import {
@@ -19,21 +19,21 @@ import {
   WriteRequestViewer,
 } from '@components/Docs';
 
-# Configuration Language
+# Modeling Language
 
 <DocumentationNotice />
 
-The <ProductName format={ProductNameFormat.LongForm}/>'s Configuration Language is used to build a representation of a system's _<ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />_. It informs <UpdateProductNameInLinks link="/api/service" name="{ProductName}'s API" /> on what the <ProductConcept section="what-is-a-type" linkName="object types" /> in the system are and how they could relate to one another. It describes the <ProductConcept section="what-is-a-relation" linkName="relations" /> possible on an object of a certain type and lists the conditions under which one is related to that object.
+The <ProductName format={ProductNameFormat.LongForm}/>'s Modeling Language is used to build a representation of a system's _<ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />_. It informs <UpdateProductNameInLinks link="/api/service" name="{ProductName}'s API" /> on what the <ProductConcept section="what-is-a-type" linkName="object types" /> in the system are and how they could relate to one another. It describes the <ProductConcept section="what-is-a-relation" linkName="relations" /> possible on an object of a certain type and lists the conditions under which one is related to that object.
 
-The **DSL** and the **JSON** syntax are two presentations of that configuration language. The JSON syntax is accepted by the API and closely matches the API described in the [Zanzibar paper](https://research.google/pubs/pub48190/). The DSL is syntactic sugar on top of the JSON syntax and compiles down to it before being sent to <ProductName format={ProductNameFormat.ShortForm}/>'s API. The DSL is meant to make modeling easier and more intuitive.
+The **DSL** and the **JSON** syntax are two presentations of that modeling language. The JSON syntax is accepted by the API and closely matches the API described in the [Zanzibar paper](https://research.google/pubs/pub48190/). The DSL is syntactic sugar on top of the JSON syntax and compiles down to it before being sent to <ProductName format={ProductNameFormat.ShortForm}/>'s API. The DSL is meant to make modeling easier and more intuitive.
 
 You'll encounter the JSON syntax when calling the API directly or through the [SDKs](./getting-started), and the DSL when interacting with <ProductName format={ProductNameFormat.ShortForm}/> through the [Playground](https://play.fga.dev/). Throughout the documentation you can switch between the two presentations.
 
 To understand this guide better, you should be familiar with some <ProductConcept /> and [How to get started on modeling](./modeling/getting-started.mdx).
 
-## What Does The Configuration Language Look Like?
+## What Does The Modeling Language Look Like?
 
-Below is a sample authorization model. In the next sections we'll go over the building blocks that make the <ProductName format={ProductNameFormat.ShortForm}/> configuration language.
+Below is a sample authorization model. In the next sections we'll go over the building blocks that make the <ProductName format={ProductNameFormat.ShortForm}/> modeling language.
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -299,7 +299,7 @@ For example, let's take a closer look at the `team` type.
 
 This `team` _<ProductConcept section="what-is-a-type-definition" linkName="type definition" />_ defines all the _<ProductConcept section="what-is-a-relation" linkName="relations" />_ that _<ProductConcept section="what-is-a-user" linkName="users" />_ can have with an _<ProductConcept section="what-is-an-object" linkName="object" />_ of _type_ `team`. In this case the _relation_ is: `member`.
 
-Due to the direct relationship type restrictions (`[user, team#member]`) being used, a user in the system can have a **<ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" />** with the `team` type as a `member` for objects of 
+Due to the direct relationship type restrictions (`[user, team#member]`) being used, a user in the system can have a **<ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" />** with the `team` type as a `member` for objects of
 - type `user`
 - the `user` <ProductConcept section="what-is-type-bound-public-access" linkName="type bound public access" /> (`user:*`)
 - [usersets](./modeling/building-blocks/usersets.mdx) that have a `team` type and a `member` relation (e.g. `team:product#member`)
@@ -1058,7 +1058,7 @@ Learn more about Zanzibar at the [Zanzibar Academy](https://zanzibar.academy).
 ## Related Sections
 
 <RelatedSection
-  description="Check the following sections for more on how to use the configuration language in modeling authorization."
+  description="Check the following sections for more on how to use the modeling language in modeling authorization."
   relatedLinks={[
     {
       title: '{ProductName} Concepts',
