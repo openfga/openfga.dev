@@ -45,18 +45,18 @@
     "@docusaurus/module-type-aliases": "3.1.1",
     "@tsconfig/docusaurus": "2.0.2",
     "@types/prismjs": "1.26.3",
-    "@types/react": "18.2.61",
+    "@types/react": "18.2.64",
     "@types/react-router-dom": "5.3.3",
     "@types/sanitize-html": "2.11.0",
-    "@typescript-eslint/eslint-plugin": "7.1.0",
-    "@typescript-eslint/parser": "7.1.0",
+    "@typescript-eslint/eslint-plugin": "7.1.1",
+    "@typescript-eslint/parser": "7.1.1",
     "docusaurus-plugin-module-alias": "0.0.2",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-react": "7.34.0",
     "husky": "9.0.11",
     "prettier": "3.2.5",
-    "typescript": "5.3.3"
+    "typescript": "5.4.2"
   },
   "overrides": {
     "gauge": "^5.0.0",
