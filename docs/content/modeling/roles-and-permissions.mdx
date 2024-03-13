@@ -267,7 +267,7 @@ You can also check: is `alice` allowed to view and add bookings on trip `Europe`
 
 `alice` is a `booking_viewer` and `booking_adder` because of the following chain of resolution:
 
-1. `alice` is a `owner` on `trip`: `Europe`
+1. `alice` is a `owner` on `trip:Europe`
 2. Any user related to the _object_ `trip:` `Europe` as `owner` is also related as a `booking_viewer`
 3. Any user related to the _object_ `trip:` `Europe` as `owner` is also related as a `booking_adder`
 4. Therefore, all `owners` on a given `trip` are `booking_viewers` and `booking_adders` on that trip
