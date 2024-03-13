@@ -253,7 +253,7 @@ Now check: `is bob allowed to view bookings on trip Europe?`
 `bob` is a `booking_viewer` because of the following chain of resolution:
 
 1. `bob` is a `viewer` on `trip:Europe`
-2. Any user related to the object `trip:` `Europe` as `viewer` is also related as a `booking_viewer` (i.e `usersRelatedToObjectAs: viewer`)
+2. Any user related to the object `trip:Europe` as `viewer` is also related as a `booking_viewer` (i.e `usersRelatedToObjectAs: viewer`)
 3. Therefore, all `viewers` on a given `trip` are `booking_viewers`
 
 To confirm that `bob` is not allowed to add bookings on trip `Europe`, perform the following check:
