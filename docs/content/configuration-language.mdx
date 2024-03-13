@@ -816,7 +816,7 @@ but not in:
 
 `anne` must be both a `viewer` and not `blocked` for the <ProductConcept section="what-is-a-check-request" linkName="check" /> on `{"user": "user:anne", "relation": "viewer", "object": "document:new-roadmap"}` to return `{"allowed": true}`.
 
-`anne` is ot a viewer for document:new-roadmap if either of the following is true:
+`anne` is not a viewer for document:new-roadmap if either of the following is true:
 
 - `anne` is **not** assigned direct relationship as _viewer_ to _document:new-roadmap_: **no relationship tuple of** `{"user": "user:anne", "relation": "viewer", "object": "document:new-roadmap"}`
 - `anne` is blocked on the document:new-roadmap `{"user": "user:anne", "relation": "blocked", "object": "document:new-roadmap"}`
