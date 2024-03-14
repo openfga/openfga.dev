@@ -57,6 +57,8 @@ Call the `GET /list-objects` API to get a list of object IDs the user has access
 1. Pass in the set of object IDs to the database query to limit the search.
 1. Return the filtered result to the user.
 
+Be aware that the performance characteristics of the ListObjects endpoint vary drastically depending on the model complexity, number of tuples, and the relations it needs to evaluate. Relations with `and` or `but not` are more expensive to evaluate than relations with `or`.
+
 ## Choosing The Best Option
 
 Which option to choose among the three listed above depends on the following criteria:
@@ -79,13 +81,13 @@ Use-case: Situations where the search query can be optimized to return a small n
 
 Note that this use case, because the user has access to a low number of objects which are still a high percentage of the total objects in the system, that means that the total number of objects in the system is low.
 
-**C.** The _number of objects of a certain type the user could have access to_ is _low_ (~ 100), and the _percentage of the total objects that the user can have access to_ is also _low_.
+**C.** The _number of objects of a certain type the user could have access to_ is _low_ (~ 1000), and the _percentage of the total objects that the user can have access to_ is also _low_.
 
-In this case, an API to return the list of all objects a user can access would make sense. You can query this API to get a list of object IDs and then pass these IDs to your filter function to limit the search to them.
+In this case, using the `GET /list-objects` would make sense. You can query this API to get a list of object IDs and then pass these IDs to your filter function to limit the search to them.
 
 As this number increases, this solution becomes impractical, because you would need to paginate over multiple pages to get the entire list before being able to search and sort. A partial list from the API is not enough, because you won't be able to sort using it.
 
-So while **[List of IDs then Search](#option-3-build-a-list-of-ids-then-search)** would be useful for this in some situations, we would recommend **[Local Index from Changes Endpoint, Search then Check](#option-2-build-a-local-index-from-changes-endpoint-search-then-check)** for the cases when the number of objects is high enough. Until <ProductName format={ProductNameFormat.ShortForm}/> implements an endpoint to return a list of object IDs, local index is recommended for all situations.
+So while **[List of IDs then Search](#option-3-build-a-list-of-ids-then-search)** would be useful for this in some situations, we would recommend **[Local Index from Changes Endpoint, Search then Check](#option-2-build-a-local-index-from-changes-endpoint-search-then-check)** for the cases when the number of objects is high enough. 
 
 **D.** The _number of objects of a certain type the user could have access to_ is _high_, and the _percentage of the total objects that the user can have access to_ is _low_.
 
