@@ -166,11 +166,46 @@ $ fga model test --tests docs.fga.yaml
 ⅹ ListObjects(user=user:peter,relation=admin,type=organization, context=&map[current_time:2024-02-01T00:10:00Z]): expected=[organization:acm], got=[organization:acme], error=<nil>
 ```
 
+## Running tests using GitHub Actions
+
+Use the [OpenFGA Model Testing Action](https://github.com/marketplace/actions/openfga-model-testing-action) to run tests from CI/CD flows in GitHub.
+
+Set the path to the `.fga.yaml` file as the `store-file-path` parameter when configuring the action:
+
+```yaml
+name: Test Action
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Run test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v4
+      - name: Run Test
+        uses: openfga/action-openfga-test@v0.1.0
+        with:
+          store-file-path: ./example/model.fga.yaml
+
+```
+
 ## Related Sections
 
 <RelatedSection
   description="Check the following sections for more on how to learn how to write tests."
   relatedLinks={[
+    {
+      title: 'Use the FGA CLI ',
+      description: 'Learn how to use the FGA CLI.',
+      link: '../getting-started/cli',
+      id:  '../getting-started/cli.mdx',
+    },
     {
       title: 'Super Admin Example ',
       description: 'Define a model and tests for modeling a super-admin role.',
@@ -185,6 +220,6 @@ $ fga model test --tests docs.fga.yaml
       title: 'Entitlements Example ',
       description: 'Define a model and tests for B2B application entitlements.',
       link: 'https://github.com/openfga/sample-stores/blob/main/stores/advanced-entitlements/store.fga.yaml'
-    },
+    }
   ]}
 />

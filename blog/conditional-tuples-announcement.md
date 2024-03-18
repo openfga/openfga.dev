@@ -127,5 +127,5 @@ This won’t scale to a large number of documents, but would be useful in some s
 
 We want to learn how you use this feature and how we can improve it! 
 
-Please reach out to us in [Discord](https://discord.gg/8naAwJfWN6) or [Github](https://github.com/orgs/openfga/discussions) with any questions or feedback.
+Please reach out through our [community channels](https://openfga.dev/community) with any questions or feedback.
 
