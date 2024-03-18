@@ -164,6 +164,10 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
           {
             to: '/docs/fga',
             from: '/docs',
+          },
+          {
+            to: '/docs/modeling-language',
+            from: '/docs/configuration-language',
           }
         ],
       }),

@@ -32,7 +32,7 @@ This tutorial explains how to model permissions for a communication platform lik
 - How to Model **concentric relationship** to have a certain <ProductConcept section="what-is-a-relation" linkName="relation" /> on an object imply another relation on the same object.<br />
   Used here to indicate that legacy admins have all the permissions of the more granular channels admin.<br />
   See [Modeling Concentric Relationships](../building-blocks/concentric-relationships.mdx) for more.
-- How to use [**the union operator**](../../configuration-language.mdx#the-union-operator) condition to indicate that a user might have a certain relation with an object if they match any of the criteria indicated.
+- How to use [**the union operator**](../../modeling-language.mdx#the-union-operator) condition to indicate that a user might have a certain relation with an object if they match any of the criteria indicated.
 
 </CardBox>
 
@@ -59,10 +59,10 @@ You need to know how to create an authorization model and create a relationship 
 
 You need to know how to update the authorization model to allow having nested relations such as all writers are readers. [Learn more →](../building-blocks/concentric-relationships.mdx)
 
-#### Concepts & Configuration Language
+#### Concepts & Modeling Language
 
 - Some <ProductConcept />
-- [Configuration Language](../../configuration-language.mdx)
+- [Modeling Language](../../modeling-language.mdx)
 
 </details>
 
@@ -201,7 +201,7 @@ Here is how you would express than in <ProductName format={ProductNameFormat.Sho
 - Member (`member`)
 - Guest (`guest`)
 
-[Direct relationship type restrictions](../../configuration-language.mdx#the-direct-relationship-type-restrictions) indicate that a user can have a <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" /> with an object of the type the relation specifies.
+[Direct relationship type restrictions](../../modeling-language.mdx#the-direct-relationship-type-restrictions) indicate that a user can have a <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" /> with an object of the type the relation specifies.
 
 :::
 

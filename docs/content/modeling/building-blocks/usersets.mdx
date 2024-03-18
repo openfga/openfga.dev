@@ -170,14 +170,14 @@ If we wanted to see which users and usersets have a `reader` relationship with `
 }
 ```
 
-As you can see from the response above, with usersets we can express [unions](../../configuration-language.mdx#the-union-operator) of user groups. We can also express [intersections](../../configuration-language.mdx#the-intersection-operator) and [exclusions](../../configuration-language.mdx#the-exclusion-operator).
+As you can see from the response above, with usersets we can express [unions](../../modeling-language.mdx#the-union-operator) of user groups. We can also express [intersections](../../modeling-language.mdx#the-intersection-operator) and [exclusions](../../modeling-language.mdx#the-exclusion-operator).
 
 ## Internals
 
 Using the type definitions in the authorization model, some of the situations we can represent are:
 
 - that a user is **not** in a set of users having a certain relation to an object, even if a relationship tuple exists in the system. See [Disabling Direct Relationships](./direct-relationships.mdx#2-with-direct-relationships-disabled)
-- that a user has a certain relationship with an object if they are in the [union](../../configuration-language.mdx#the-union-operator), [intersection](../../configuration-language.mdx#the-intersection-operator) or [exclusion](../../configuration-language.mdx#the-exclusion-operator) of usersets.
+- that a user has a certain relationship with an object if they are in the [union](../../modeling-language.mdx#the-union-operator), [intersection](../../modeling-language.mdx#the-intersection-operator) or [exclusion](../../modeling-language.mdx#the-exclusion-operator) of usersets.
 - that a user being in a set of users having a certain relation to an object can result in them having another relation to the object. See [Concentric Relationships](./concentric-relationships.mdx)
 - that the user being in a set of users having a certain relation to an object and that object is in a set of users having a certain relation to another object, can imply that the original user has a certain relationship to the final object. See [Object-to-Object Relationships](./object-to-object-relationships.mdx)
 

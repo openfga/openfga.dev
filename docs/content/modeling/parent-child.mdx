@@ -102,7 +102,7 @@ You need to know how to create an authorization model and create a relationship 
 - A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
 - An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
 - A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>
-- [Union Operator](../configuration-language.mdx#the-union-operator): the union operator can be used to indicate that the user has multiple ways of being related to an object
+- [Union Operator](../modeling-language.mdx#the-union-operator): the union operator can be used to indicate that the user has multiple ways of being related to an object
 
 </details>
 
@@ -298,7 +298,7 @@ The chain of resolution becomes:
 :::caution
 Note that when searching tuples that are related to the object (the word after `from`, also called the tupleset), <ProductName format={ProductNameFormat.LongForm}/> will not do any evaluation and will only consider concrete objects (of the form `<object_type>:<object_id>`) that were directly assigned, and will throw an error if it encounters any rewrites, or a `*`, a type bound public access (`<object_type>:*`) or a userset (`<object_type>:<object_id>#<relation>`).
 
-See [Referencing Relations on Related Objects](../configuration-language.mdx#referencing-relations-on-related-objects) for more.
+See [Referencing Relations on Related Objects](../modeling-language.mdx#referencing-relations-on-related-objects) for more.
 :::
 
 ## Related Sections

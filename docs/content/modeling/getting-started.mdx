@@ -328,7 +328,7 @@ We will also need to add "User" to the list as it establishes the type of user w
   <CardBox icon={{ icon: <DriveIcon />, alignment: 'left', label: 'Drive' }} />
 </ColumnLayout>
 
-Now that we have a list of object types we can start defining them using the <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" />:
+Now that we have a list of object types we can start defining them using the <UpdateProductNameInLinks link="../modeling-language" name="{ProductName} Modeling Language" />:
 
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
@@ -479,7 +479,7 @@ The resulting list is:
 In <ProductName format={ProductNameFormat.ShortForm}/>, relations can only have alphanumeric characters, underscores and hyphens. We recommend using underscore (\_) to separate words and removing prepositions. E.g.: "can create a document" can become "can_create_document" or "create_document" if you are into brevity.
 :::
 
-Using the <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" /> we can enumerate the relations for each type:
+Using the <UpdateProductNameInLinks link="../modeling-language" name="{ProductName} Modeling Language" /> we can enumerate the relations for each type:
 
 ```dsl.openfga
 model
@@ -521,7 +521,7 @@ You're now in the process of building a version you can use. The model above is 
 
 ![Define relations](./assets/getting-started-diagram-05.svg)
 
-We will use the <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" /> to create a <ProductConcept section="what-is-a-relation" linkName="relation definition" /> for each of the relations we identified. At this stage we will encode the answers to the question we asked at the beginning of the document:.
+We will use the <UpdateProductNameInLinks link="../modeling-language" name="{ProductName} Modeling Language" /> to create a <ProductConcept section="what-is-a-relation" linkName="relation definition" /> for each of the relations we identified. At this stage we will encode the answers to the question we asked at the beginning of the document:.
 
 <div style={{ marginBottom: '2rem' }}>
   <CardBox
@@ -796,7 +796,7 @@ Why? This relation definition states that:
   - `{ user: "drive:{id}", relation: "parent", object: "document:{id}" }`
 
 
-We can use [direct type restriction](../configuration-language.mdx#the-direct-relationship-type-restrictions) to ensure a document's parent can only be an object of type either drive or folder.
+We can use [direct type restriction](../modeling-language.mdx#the-direct-relationship-type-restrictions) to ensure a document's parent can only be an object of type either drive or folder.
 
 :::note Side note
 You might have noticed that the "user" in the tuple is an object. This is a special syntax <ProductName format={ProductNameFormat.ShortForm}/> accepts in the "user" parameter to write [object to object relationships](./building-blocks/object-to-object-relationships.mdx). You can read more about writing data to manage object to object relationships in [Managing Relationships Between Objects](../interacting/managing-relationships-between-objects.mdx).
@@ -808,7 +808,7 @@ We need to express the following in the <ProductConcept section="what-is-a-relat
 
 _A user can share a document with another user or an organization as either editor or viewer if they are an owner or editor of a document or if they are an owner of the folder that is the parent of the document._
 
-We can achieve that with the following definition using <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" />:
+We can achieve that with the following definition using <UpdateProductNameInLinks link="../modeling-language" name="{ProductName} Modeling Language" />:
 
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
@@ -853,8 +853,8 @@ We can achieve that with the following definition using <UpdateProductNameInLink
 
 There are a few key things here:
 
-- **We don't use a [direct relationship type restriction](../configuration-language.mdx#the-direct-relationship-type-restrictions) as part of the definition.** can_share is a common example of representing a permission that is defined in terms of other relations but is not directly assignable by the system.
-- The relation definition contains a [union operator](../configuration-language.mdx#the-union-operator) separating a list of relations that the user must have with the object in order to "be able to share the document". It is any of:
+- **We don't use a [direct relationship type restriction](../modeling-language.mdx#the-direct-relationship-type-restrictions) as part of the definition.** can_share is a common example of representing a permission that is defined in terms of other relations but is not directly assignable by the system.
+- The relation definition contains a [union operator](../modeling-language.mdx#the-union-operator) separating a list of relations that the user must have with the object in order to "be able to share the document". It is any of:
   - Being an owner of the document
   - Being an editor of the document
   - Being an owner of the parent of the document. Whether the parent is a drive or a folder is not important, as they both have an owner relation.
@@ -867,7 +867,7 @@ We need to express the following in the <ProductConcept section="what-is-a-relat
 
 _A user can view a document if they are an owner, viewer or editor of a document or if they are a viewer, owner of the folder/drive that is the parent of the document._
 
-Similar to the [can_share relation](#relation-can_share), we can achieve that with the following definition using <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" />:
+Similar to the [can_share relation](#relation-can_share), we can achieve that with the following definition using <UpdateProductNameInLinks link="../modeling-language" name="{ProductName} Modeling Language" />:
 
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
@@ -934,7 +934,7 @@ We need to express the following in the <ProductConcept section="what-is-a-relat
 
 _A user can write a document if they are an owner or editor of a document or if they are an owner or editor of the folder/drive that is the parent of the document._
 
-Similar to the [can_share relation](#relation-can_share), we can achieve that with the following definition using <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" />:
+Similar to the [can_share relation](#relation-can_share), we can achieve that with the following definition using <UpdateProductNameInLinks link="../modeling-language" name="{ProductName} Modeling Language" />:
 
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
@@ -983,7 +983,7 @@ We need to express the following in the <ProductConcept section="what-is-a-relat
 
 _A user can change the owner of a document if they are an owner of the document._
 
-Similar to the [can_share relation](#relation-can_share), we can achieve that with the following definition using <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" />:
+Similar to the [can_share relation](#relation-can_share), we can achieve that with the following definition using <UpdateProductNameInLinks link="../modeling-language" name="{ProductName} Modeling Language" />:
 
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
@@ -1459,10 +1459,10 @@ When defining the authorization model for your own system, you would continue it
       id: '../concepts',
     },
     {
-      title: 'Configuration Language',
-      description: 'Learn about {ProductName} Configuration Language.',
-      link: '../configuration-language',
-      id: '../configuration-language',
+      title: 'Modeling Language',
+      description: 'Learn about {ProductName} Modeling Language.',
+      link: '../modeling-language',
+      id: '../modeling-language',
     },
     {
       title: 'Direct Access',

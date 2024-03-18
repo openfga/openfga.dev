@@ -18,8 +18,8 @@ const sidebars = {
     },
     {
       type: 'doc',
-      label: 'Configuration Language',
-      id: 'content/configuration-language',
+      label: 'Modeling Language',
+      id: 'content/modeling-language',
     },
     {
       type: 'category',
