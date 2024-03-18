@@ -577,8 +577,6 @@ Referencing relations on related objects defines transitive implied relationship
 
 :::caution
 <ProductName format={ProductNameFormat.LongForm}/> does not allow the referenced relation (the word after `from`, also called the tupleset) to reference another relation and does not allow non-concrete types (type bound public access (`<object_type>:*`) or usersets (`<object_type>#<relation>`)) in its type restrictions; adding them throws a validation error when calling `WriteAuthorizationModel`.
-
-In the [deprecated 1.0 schema](./modeling/migrating/migrating-schema-1-1.mdx), the validation error is thrown at the time of evaluation or `check`.
 :::
 
 For more examples, see [Modeling: Parent-Child Objects](./modeling/parent-child.mdx), [Advanced Modeling: Google Drive](./modeling/advanced/gdrive.mdx), [Advanced Modeling: GitHub](./modeling/advanced/github.mdx), and [Advanced Modeling: Entitlements](./modeling/advanced/entitlements.mdx).

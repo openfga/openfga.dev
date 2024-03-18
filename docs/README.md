@@ -15,11 +15,11 @@ It offers an HTTP API, a gRPC API, and has SDKs for programming languages includ
 - [Okta FGA Playground](https://play.fga.dev)
 - [Zanzibar Academy](https://zanzibar.academy)
 - [OpenFGA on Twitter](https://twitter.com/OpenFGA)
-- [Discord Community](https://discord.gg/pvbNmqC)
+- [OpenFGA Community](https://openfga.dev/community) in Slack and GitHub
 
 ## Documentation
 
-- [What is OpenFGA](./content/authorization-and-openfga.mdx)
+- [What is OpenFGA](./content/intro.mdx)
 - [Concepts](./content/concepts.mdx)
 - [Configuration Language](./content/configuration-language.mdx)
 - [Getting Started](./content/getting-started/overview.mdx)
@@ -35,6 +35,7 @@ It offers an HTTP API, a gRPC API, and has SDKs for programming languages includ
   - [Update Relationship Tuples](./content/getting-started/update-tuples.mdx)
   - [Perform a Check](./content/getting-started/perform-check.mdx)
   - [Perform a List Objects Request](./content/getting-started/perform-list-objects.mdx)
+  - [Use the FGA CLI](./content/getting-started/cli.mdx)
   - [Integrate Within a Framework](./content/getting-started/framework.mdx)
   - [Production Best Practices](./content/getting-started/production-best-practices.mdx)
   - [Managing Tuples and Invoking API Best Practices](./content/getting-started/tuples-api-best-practices.mdx)
@@ -49,6 +50,8 @@ It offers an HTTP API, a gRPC API, and has SDKs for programming languages includ
   - [Multiple Restrictions](./content/modeling/multiple-restrictions.mdx)
   - [Custom Roles](./content/modeling/custom-roles.mdx)
   - [Conditions](./content/modeling/conditions.mdx)
+  - [Testing Models](./content/modeling/testing-models.mdx)
+  - [Token Claims as Contextual Tuples](./content/modeling/token-claims-contextual-tuples.mdx)
   - [Contextual and Time-Based Authorization](./content/modeling/contextual-time-based-authorization.mdx)
   - [Authorization Through Organization Context](./content/modeling/organization-context-authorization.mdx)
   - [Building Blocks](./content/modeling/building-blocks/overview.mdx)
@@ -64,7 +67,6 @@ It offers an HTTP API, a gRPC API, and has SDKs for programming languages includ
     - [Entitlements](./content/modeling/advanced/entitlements.mdx)
   - [Migrating](./content/modeling/migrating/overview.mdx)
     - [Migrating Relations](./content/modeling/migrating/migrating-relations.mdx)
-    - [Migrating to Schema 1.1](./content/modeling/migrating/migrating-schema-1-1.mdx)
 - [Interacting with the API](./content/interacting/overview.mdx)
   - [Manage User Access](./content/interacting/managing-group-access.mdx)
   - [Manage Group Access](./content/interacting/managing-user-access.mdx)

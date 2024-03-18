@@ -164,6 +164,10 @@ To return all documents that user `user:anne` has relationship `reader` with:
 
 The result `document:otherdoc` and `document:planning` are the document objects that `user:anne` has `reader` relationship with.
 
+:::caution Warning
+The performance characteristics of the ListObjects endpoint vary drastically depending on the model complexity, number of tuples, and the relations it needs to evaluate. Relations with 'and' or 'but not' are more expensive to evaluate than relations with 'or'."
+:::
+
 ## Related Sections
 
 <RelatedSection

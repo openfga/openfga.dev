@@ -50,9 +50,9 @@ const config = {
     ],
     feedback: {
       defaultTitle: 'Have Feedback?',
-      defaultText: 'Join us on the Discord community if you have any questions or suggestions.',
-      defaultButtonText: 'Join Discord',
-      defaultLink: 'https://discord.gg/8naAwJfWN6',
+      defaultText: 'Join us on the CNCF Slack OpenFGA channel if you have any questions or suggestions.',
+      defaultButtonText: 'Join Slack',
+      defaultLink: 'https://openfga.dev/community',
     },
     // location of the swagger file
     apiDocsBasePath: process.env.API_DOCS_PATH
@@ -64,7 +64,7 @@ const config = {
     description: `OpenFGA is an open source Fine-Grained Authorization solution based on Google's Zanzibar.`,
     productName: `OpenFGA`,
     // link to product description section (relative to baseURL)
-    introLink: `docs/authorization-and-openfga`,
+    introLink: `docs/intro`,
     productDescriptionSection: `#what-is-openfga`,
     // link to the concept page (relative to baseURL)
     conceptLink: `docs/concepts`,
@@ -158,9 +158,13 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
             from: ['/api'],
           },
           {
-            to: '/docs/authorization-and-openfga',
-            from: '/docs',
+            to: '/docs/community',
+            from: '/community',
           },
+          {
+            to: '/docs/fga',
+            from: '/docs',
+          }
         ],
       }),
     ],
@@ -256,11 +260,11 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
             'aria-label': 'OpenFGA on Twitter',
           },
           {
-            to: 'https://discord.gg/8naAwJfWN6',
-            label: 'Discord',
+            to: 'https://openfga.dev/community',
+            label: 'CNCF Slack',
             position: 'right',
-            className: 'header-social header-discord-link',
-            'aria-label': 'OpenFGA on Discord',
+            className: 'header-social header-slack-link',
+            'aria-label': 'OpenFGA on Slack',
           },
         ],
       },
@@ -273,10 +277,10 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
             label: 'Twitter',
           },
           {
-            to: 'https://discord.gg/8naAwJfWN6',
-            className: 'header-social header-discord-link',
-            'aria-label': 'OpenFGA on Discord',
-            label: 'Discord',
+            to: 'https://openfga.dev/community',
+            className: 'header-social header-slack-link',
+            'aria-label': 'OpenFGA on Slack',
+            label: 'CNCF Slack',
           },
           {
             to: 'https://github.com/openfga',

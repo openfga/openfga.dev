@@ -44,6 +44,9 @@
 	  },
 	  {
 		"pattern": "https://maven.apache.org/"
+	  },
+	  {
+		"pattern": "https://calendar.google.com"
 	  }
 	],
 	"httpHeaders": [

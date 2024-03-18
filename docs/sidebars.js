@@ -4,11 +4,16 @@ const sidebars = {
     {
       type: 'doc',
       label: 'What is OpenFGA',
-      id: 'content/authorization-and-openfga',
+      id: 'content/intro',
     },
     {
       type: 'doc',
-      label: 'Concepts',
+      label: 'Authorization Concepts',
+      id: 'content/authorization-concepts',
+    },
+    {
+      type: 'doc',
+      label: 'OpenFGA Concepts',
       id: 'content/concepts',
     },
     {
@@ -95,6 +100,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Use the FGA CLI',
+          id: 'content/getting-started/cli',
+        },
+        {
+          type: 'doc',
           label: 'Integrate Within a Framework',
           id: 'content/getting-started/framework',
         },
@@ -177,6 +187,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Token claims as Contextual Tuples',
+          id: 'content/modeling/token-claims-contextual-tuples',
+        },
+        {
+          type: 'doc',
           label: 'Contextual and Time-Based Authorization',
           id: 'content/modeling/contextual-time-based-authorization',
         },
@@ -184,6 +199,11 @@ const sidebars = {
           type: 'doc',
           label: 'Authorization Through Organization Context',
           id: 'content/modeling/organization-context-authorization',
+        },
+        {
+          type: 'doc',
+          label: "Testing Models",
+          id: 'content/modeling/testing-models',
         },
         {
           type: 'category',
@@ -268,12 +288,6 @@ const sidebars = {
               type: 'doc',
               label: 'Migrating Relations',
               id: 'content/modeling/migrating/migrating-relations',
-            },
-            // for now, do not show the migrating schema page
-            {
-              type: 'doc',
-              label: 'Migrating to Schema 1.1',
-              id: 'content/modeling/migrating/migrating-schema-1-1',
             },
           ],
         },

@@ -23,9 +23,7 @@ import {
 
 <DocumentationNotice />
 
-The <ProductName format={ProductNameFormat.ProductLink}/> service answers <IntroductionSection linkName="authorization" section="authentication-vs-authorization"/> [checks](#what-is-a-check-request) by determining whether a **[relationship](#what-is-a-relation)** exists between an [object](#what-is-an-object) and a [user](#what-is-a-user). Checks takes into consideration the **[authorization model](#what-is-an-authorization-model)** of the system and the **[relationship tuples](#what-is-a-relationship-tuple)** present in the system at that time in order to make a decision.
-
-In this guide you will learn about the most relevant FGA concepts, such as a type or an authorization model, and you will be able to explore them using the [FGA playground](https://play.fga.dev/).
+The <ProductName format={ProductNameFormat.ProductLink}/> service answers <IntroductionSection linkName="authorization" section="authentication-vs-authorization"/> [checks](#what-is-a-check-request) by determining whether a **[relationship](#what-is-a-relation)** exists between an [object](#what-is-an-object) and a [user](#what-is-a-user). Checks reference your **[authorization model](#what-is-an-authorization-model)** against your **[relationship tuples](#what-is-a-relationship-tuple)** for authorization authority. Below are explanations of basic FGA concepts, like type and authorization model, and a [playground](https://play.fga.dev/) to test your knowledge.
 
 <Playground />
 
@@ -34,11 +32,11 @@ In this guide you will learn about the most relevant FGA concepts, such as a typ
 
 ## What Is A Type?
 
-A **type** is a string. It should define a class of objects with similar characteristics.
+A **type** is a string. It defines a class of objects with similar characteristics.
 
 </summary>
 
-Examples of types:
+The following are examples of types:
 
 - `workspace`
 - `repository`
@@ -52,11 +50,11 @@ Examples of types:
 
 ## What Is A Type Definition?
 
-A **type definition** is a configuration that defines all possible relations a user or another object can have in relation to this type.
+A **type definition** defines all possible relations a user or another object can have in relation to this type.
 
 </summary>
 
-Code snippet below is an example of a type definition:
+Below is an example of a type definition:
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -94,11 +92,11 @@ Code snippet below is an example of a type definition:
 
 ## What Is An Authorization Model?
 
-An **authorization model** is a combination of one or more type definitions. This is used to define the permission model of a system.
+An **authorization model** combines one or more type definitions. This is used to define the permission model of a system.
 
 </summary>
 
-Code snippet below is an example of an authorization model:
+Below is an example of an authorization model:
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -149,14 +147,14 @@ Code snippet below is an example of an authorization model:
   }}
 />
 
-_Authorization model_, together with [relationship tuples](#what-is-a-relationship-tuple), allow determination of whether a [relationship](#what-is-a-relationship) exists between a [user](#what-is-a-user) and an [object](#what-is-an-object).
+Together with [relationship tuples](#what-is-a-relationship-tuple), the authorization model determines whether a [relationship](#what-is-a-relationship) exists between a [user](#what-is-a-user) and an [object](#what-is-an-object).
 
-The <ProductName format={ProductNameFormat.LongForm}/> service has two different syntaxes to define the authorization model:
+<ProductName format={ProductNameFormat.LongForm}/> uses two different syntaxes to define the authorization model:
 
-- A JSON syntax accepted by the <ProductName format={ProductNameFormat.ShortForm}/> API that follows closely the original syntax discussed in the [Zanzibar Paper](https://research.google/pubs/pub48190/). See [Equivalent Zanzibar Concepts](./configuration-language.mdx#equivalent-zanzibar-concepts).
-- A DSL that we believe is easier to use and is used in the Okta FGA Playground to help with modeling. This is translated to the API-supported syntax before being sent to the API.
+- A JSON syntax accepted by the <ProductName format={ProductNameFormat.ShortForm}/> API that closely follows the original syntax in the [Zanzibar Paper](https://research.google/pubs/pub48190/). For more information, see [Equivalent Zanzibar Concepts](./configuration-language.mdx#equivalent-zanzibar-concepts).
+- A simpler-to-use DSL that's accepted by both the [OpenFGA VS Code extension](https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode) and [OpenFGA CLI](https://github.com/openfga/cli/) and offers syntax highlighting and validation in the VS Code extension. The DSL is used in the [Sample Stores](https://github.com/openfga/sample-stores) modeling examples and is translated to API-supported syntax using the CLI or [OpenFGA language](https://github.com/openfga/language) before being sent to the API.
 
-Learn more about the <UpdateProductNameInLinks link="./configuration-language" name="{ProductName} Configuration Language" />.
+Click here to learn more about the <UpdateProductNameInLinks link="./configuration-language" name="{ProductName} Configuration Language" />.
 
 </details>
 
@@ -165,15 +163,13 @@ Learn more about the <UpdateProductNameInLinks link="./configuration-language" n
 
 ## What Is A Store?
 
-A "store" is a <ProductName format={ProductNameFormat.LongForm}/> entity used for organizing data needed to answer authorization checks.
+A **store** is an <ProductName format={ProductNameFormat.LongForm}/> entity used to organize authorization check data.
 
 </summary>
 
-Each store contains one or more versions of an [authorization model](#what-is-an-authorization-model) and may contain various [relationship tuples](#what-is-a-relationship-tuple).
+Each store contains one or more versions of an [authorization model](#what-is-an-authorization-model) and can contain various [relationship tuples](#what-is-a-relationship-tuple). Store data cannot be shared across stores; we recommended storing all data that may be related or affect your authorization result in a single store.
 
-Store data such as the authorization model and relationship tuples cannot be shared across stores, so it is highly recommended to store all data that may be related and may affect your authorization result in a single store.
-
-For completely separate authorization needs or isolated environments where data from one should not affect another (e.g. development/prod), you may want to create separate stores.
+Separate stores can be created for separate authorization needs or isolated environments, e.g. development/prod.
 
 </details>
 
@@ -182,7 +178,7 @@ For completely separate authorization needs or isolated environments where data 
 
 ## What Is An Object?
 
-An **object** represents an entity in the system. We can define how various users have a relationship to it through relationship tuples and the authorization model.
+An **object** represents an entity in the system. Users' relationships to it are defined by relationship tuples and the authorization model.
 
 </summary>
 
@@ -195,9 +191,9 @@ For example:
 - `organization:org_ajUc9kJ`
 - `document:new-roadmap`
 
-[User](#what-is-a-user), [relation](#what-is-a-relation) and _object_ are the building blocks for [relationship tuples](#what-is-a-relationship-tuple).
+[User](#what-is-a-user), [relation](#what-is-a-relation) and object are the building blocks for [relationship tuples](#what-is-a-relationship-tuple).
 
-For more information, please see [Direct Access](./modeling/direct-access.mdx).
+For an example, see [Direct Access](./modeling/direct-access.mdx).
 
 </details>
 
@@ -210,7 +206,7 @@ A **user** is an entity in the system that can be related to an object.
 
 </summary>
 
-A **user** is is a combination of a [type](#what-is-a-type), an identifier and an optional relation.
+A user is is a combination of a [type](#what-is-a-type), an identifier, and an optional relation.
 
 For example,
 
@@ -219,9 +215,9 @@ For example,
 - a group or a set of users (also called a **userset**): e.g. `organization:org_ajUc9kJ#members`, which represents the set of users related to the object `organization:org_ajUc9kJ` as `member`
 - everyone, using the special syntax: `*`
 
-_User_, [relation](#what-is-a-relation) and [object](#what-is-an-object) are the building blocks for [relationship tuples](#what-is-a-relationship-tuple).
+User, [relation](#what-is-a-relation) and [object](#what-is-an-object) are the building blocks for [relationship tuples](#what-is-a-relationship-tuple).
 
-For more information, please see [Direct Access](./modeling/direct-access.mdx).
+For more information, see [Direct Access](./modeling/direct-access.mdx).
 
 </details>
 
@@ -230,7 +226,7 @@ For more information, please see [Direct Access](./modeling/direct-access.mdx).
 
 ## What Is A Relation?
 
-A **relation** is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system.
+A **relation** is a string defined in the type definition of an authorization model. Relations define a possible relationship between an object (of the same type as the type definition) and a user in the system.
 
 </summary>
 
@@ -247,7 +243,7 @@ Examples of relation:
 
 ## What Is A Relation Definition?
 
-A **relation definition** lists the conditions or requirements under which this relationship would be possible.
+A **relation definition** lists the conditions or requirements under which a relationship is possible.
 
 </summary>
 
@@ -257,12 +253,12 @@ For example:
   - **user identifier to object relationship**: the user id `anne` of type `user` is related to the object `document:roadmap` as `editor`
   - **object to object relationship**: the object `application:ifft` is related to the object `document:roadmap` as `editor`
   - **userset to object relationship**: the userset `organization:auth0.com#member` is related to `document:roadmap` as `editor`
-    - indicating that the set of users who are related to the object `organization:auth0.com` as `member` are related to the object `document:roadmap` as `editor`s
-    - this allows for potential solutions to use-cases like sharing a document internally with all members of a company or a team
+    - indicates that the set of users who are related to the object `organization:auth0.com` as `member` are related to the object `document:roadmap` as `editor`s
+    - allows for potential solutions to use-cases like sharing a document internally with all members of a company or a team
   - **everyone to object relationship**: everyone (`*`) is related to `document:roadmap` as `editor`
     - this is how one could model publicly editable documents
 
-These would be defined in the [authorization model](#what-is-an-authorization-model) as such:
+These would be defined in the [authorization model](#what-is-an-authorization-model):
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -302,13 +298,13 @@ These would be defined in the [authorization model](#what-is-an-authorization-mo
 
 :::info
 
-In the configuration of the document type, we have four relations: `viewer`, `commenter`, `editor` and `owner`.
+There are four relations in the document type configuration: `viewer`, `commenter`, `editor` and `owner`.
 
 :::
 
-[User](#what-is-a-user), _relation_ and [object](#what-is-an-object) are the building blocks for [relationship tuples](#what-is-a-relationship-tuple).
+[User](#what-is-a-user), relation and [object](#what-is-an-object) are the building blocks for [relationship tuples](#what-is-a-relationship-tuple).
 
-For more information, please see [Direct Access](./modeling/direct-access.mdx).
+For an example, see [Direct Access](./modeling/direct-access.mdx).
 
 </details>
 
@@ -317,11 +313,11 @@ For more information, please see [Direct Access](./modeling/direct-access.mdx).
 
 ## What Is A Directly Related User Type?
 
-A **directly related user type** is an array specified in the type definition to indicate what types of users can be directly related to that relation.
+A **directly related user type** is an array specified in the type definition to indicate which types of users can be directly related to that relation.
 
 </summary>
 
-For the following model, only [relationship tuple](#what-is-a-relationship-tuple) with [user](#what-is-a-user) [type](#what-is-a-type) `user` may be assigned to document.
+For the following model, only [relationship tuples](#what-is-a-relationship-tuple) with [user](#what-is-a-user) of [type](#what-is-a-type) `user` may be assigned to document.
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -344,9 +340,9 @@ For the following model, only [relationship tuple](#what-is-a-relationship-tuple
   }} skipVersion={true}
 />
 
-Relationship tuple with user `user:anne` or `user:3f7768e0-4fa7-4e93-8417-4da68ce1846c` may be written for objects with type `document` and relation `viewer`, so writing `{"user": "user:anne","relation":"viewer","object":"document:roadmap"}` will succeed.
-Relationship tuple writes with user type that is not allowed for the `viewer` relation on objects of type `document`, for example `workspace:auth0` or `folder:planning#editor` will be rejected, so writing `{"user": "folder:product","relation":"viewer","object":"document:roadmap"}` will fail.
-This will affect only relations that are [directly related](#what-are-direct-and-implied-relationships) and have [the direct relationship type restrictions](./configuration-language.mdx#the-direct-relationship-type-restrictions) in their relation definition.
+A relationship tuple with user `user:anne` or `user:3f7768e0-4fa7-4e93-8417-4da68ce1846c` may be written for objects with type `document` and relation `viewer`, so writing `{"user": "user:anne","relation":"viewer","object":"document:roadmap"}` succeeds.
+A relationship tuple with a disallowed user type for the `viewer` relation on objects of type `document` - for example `workspace:auth0` or `folder:planning#editor` - will be rejected, so writing `{"user": "folder:product","relation":"viewer","object":"document:roadmap"}` will fail.
+This affects only relations that are [directly related](#what-are-direct-and-implied-relationships) and have [direct relationship type restrictions](./configuration-language.mdx#the-direct-relationship-type-restrictions) in their relation definition.
 
 </details>
 
@@ -354,10 +350,10 @@ This will affect only relations that are [directly related](#what-are-direct-and
 <summary>
 ## What is a Condition?
 
-A **Condition** is a function composed of one or more parameters and an expression which must evaluate to a boolean outcome. Expressions are defined using [Google's Common Expression Language (CEL)](https://github.com/google/cel-spec).
+A **condition** is a function composed of one or more parameters and an expression. Every condition evaluates to a boolean outcome, and expressions are defined using [Google's Common Expression Language (CEL)](https://github.com/google/cel-spec).
 </summary>
 
-For example, in the following snippet `less_than_hundred` defines a Condition which evaluates to a boolean outcome. The provided parameter `x`, defined as an integer type, is used in the boolean expression `x < 100`. The condition will return a truthy outcome if the expression returns a truthy outcome and false otherwise.
+In the following snippet `less_than_hundred` defines a Condition that evaluates to a boolean outcome. The provided parameter `x`, defined as an integer type, is used in the boolean expression `x < 100`. The condition returns a truthy outcome if the expression returns a truthy outcome, but is otherwise false.
 ```
 condition less_than_hundred(x: int) {
   x < 100
@@ -370,20 +366,20 @@ condition less_than_hundred(x: int) {
 
 ## What Is A Relationship Tuple?
 
-A **relationship tuple** is composed of a base tuple/triplet consisting of a user, relation and object and an optional condition which applies to it (see [Conditional Relationship Tuples](#what-is-a-conditional-relationship-tuple) for more info). Relationship tuples are written and stored in <ProductName format={ProductNameFormat.ShortForm}/>.
+A **relationship tuple** is a base tuple/triplet consisting of a user, relation, and object. Tuples may add an optional condition, like [Conditional Relationship Tuples](#what-is-a-conditional-relationship-tuple). Relationship tuples are written and stored in <ProductName format={ProductNameFormat.ShortForm}/>.
 
 </summary>
 
-A **relationship tuple** consists of a:
+A relationship tuple consists of:
 
-- **[user](#what-is-a-user)**, e.g. `user:anne`, `user:3f7768e0-4fa7-4e93-8417-4da68ce1846c`, `workspace:auth0` or `folder:planning#editor`
-- **[relation](#what-is-a-relation)**, e.g. `editor`, `member` or `parent_workspace`
-- **[object](#what-is-an-object)**, e.g `repo:auth0/express_jwt`, `domain:auth0.com` or `channel:marketing`
-- **[condition](#what-is-a-condition)** (optional), e.g. `{"condition": "in_allowed_ip_range", "context": {...}}`
+- a **[user](#what-is-a-user)**, e.g. `user:anne`, `user:3f7768e0-4fa7-4e93-8417-4da68ce1846c`, `workspace:auth0` or `folder:planning#editor`
+- a **[relation](#what-is-a-relation)**, e.g. `editor`, `member` or `parent_workspace`
+- an **[object](#what-is-an-object)**, e.g `repo:auth0/express_jwt`, `domain:auth0.com` or `channel:marketing`
+- a **[condition](#what-is-a-condition)** (optional), e.g. `{"condition": "in_allowed_ip_range", "context": {...}}`
 
-An [authorization model](#what-is-an-authorization-model), together with _relationship tuples_, allow the determination of whether a [relationship](#what-is-a-relationship) exists between a [user](#what-is-a-user) and an [object](#what-is-an-object).
+An [authorization model](#what-is-an-authorization-model), together with relationship tuples, determinate whether a [relationship](#what-is-a-relationship) exists between a [user](#what-is-a-user) and an [object](#what-is-an-object).
 
-Throughout the documentation, you will encounter relationship tuples represented as:
+Relationship tuples are usually shown in the following format:
 
 <RelationshipTuplesViewer
   relationshipTuples={[
@@ -395,7 +391,7 @@ Throughout the documentation, you will encounter relationship tuples represented
   ]}
 />
 
-For more information, please see [Direct Access](./modeling/direct-access.mdx).
+For more information, see [Direct Access](./modeling/direct-access.mdx).
 
 </details>
 
@@ -403,12 +399,12 @@ For more information, please see [Direct Access](./modeling/direct-access.mdx).
 <summary>
 ## What Is A Conditional Relationship Tuple?
 
-A **conditional relationship tuple** is a [relationship tuple](#what-is-a-relationship-tuple) which represents a [relationship](#what-is-a-relationship) conditioned upon the evaluation of some [Condition](#what-is-a-condition).
+A **conditional relationship tuple** is a [relationship tuple](#what-is-a-relationship-tuple) that represents a [relationship](#what-is-a-relationship) conditioned upon the evaluation of a [condition](#what-is-a-condition).
 </summary>
 
-If a relationship tuple is conditioned, then the condition which the tuple is conditioned upon must evaluate to a truthy outcome for the relationship tuple to be considered a permissible relationship.
+If a relationship tuple is conditioned, then that condition must to a truthy outcome for the relationship tuple to be permissible.
 
-The following relationship tuple is a conditional relationship tuple because it is conditioned on `less_than_hundred`. If the expression for `less_than_hundred` is defined as `x < 100`, then the relationship is considered permissible because the expression evaluates to a truthy outcome since `20 < 100`.
+The following relationship tuple is a conditional relationship tuple because it is conditioned on `less_than_hundred`. If the expression for `less_than_hundred` is defined as `x < 100`, then the relationship is permissible because the expression - `20 < 100` - evaluates to a truthy outcome.
 
 <RelationshipTuplesViewer
   relationshipTuples={[
@@ -437,7 +433,7 @@ A **relationship** is the realization of a relation between a user and an object
 
 </summary>
 
-An [authorization model](#what-is-an-authorization-model), together with [relationship tuples](#what-is-a-relationship-tuple), allow the determination of whether a _relationship_ exists between a user and an object. Relationships may be classified as [_direct_](#what-are-direct-and-implied-relationships) or [_implied_](#what-are-direct-and-implied-relationships).
+An [authorization model](#what-is-an-authorization-model), together with [relationship tuples](#what-is-a-relationship-tuple), determine whether a relationship exists between a user and an object. Relationships may be [direct](#what-are-direct-and-implied-relationships) or [implied](#what-are-direct-and-implied-relationships).
 
 </details>
 
@@ -446,13 +442,13 @@ An [authorization model](#what-is-an-authorization-model), together with [relati
 
 ## What Are Direct And Implied Relationships?
 
-A **direct relationship** R between user X and object Y means the relationship tuple (user=X, relation=R, object=Y) exists, and the <ProductName format={ProductNameFormat.ShortForm}/> authorization model for that relation allows this direct relationship (by use of [direct relationship type restrictions](./configuration-language.mdx#the-direct-relationship-type-restrictions)).
+A **direct relationship** (R) between user X and object Y means the relationship tuple (user=X, relation=R, object=Y) exists, and the <ProductName format={ProductNameFormat.ShortForm}/> authorization model for that relation allows the direct relationship because of [direct relationship type restrictions](./configuration-language.mdx#the-direct-relationship-type-restrictions)).
 
-An **implied (or computed) relationship** R exists between user X and object Y if user X is related to an object Z that is in a direct or implied relationship with object Y, and the <ProductName format={ProductNameFormat.ShortForm}/> authorization model allows it.
+An **implied (or computed) relationship** (R) exists between user X and object Y if user X is related to an object Z that is in a direct or implied relationship with object Y, and the <ProductName format={ProductNameFormat.ShortForm}/> authorization model allows it.
 
 </summary>
 
-- `user:anne` has a **direct relationship** with `document:new-roadmap` as `viewer` if the [type definition](#what-is-a-type-definition) allows it (allows [`direct relationship type restrictions`](./configuration-language.mdx#the-direct-relationship-type-restrictions)), and one of the following [relationship tuples](#what-is-a-relationship-tuple) exist:
+- `user:anne` has a direct relationship with `document:new-roadmap` as `viewer` if the [type definition](#what-is-a-type-definition) allows it with [direct relationship type restrictions](./configuration-language.mdx#the-direct-relationship-type-restrictions), and one of the following [relationship tuples](#what-is-a-relationship-tuple) exist:
 
   - <RelationshipTuplesViewer
       relationshipTuples={[
@@ -495,7 +491,7 @@ An **implied (or computed) relationship** R exists between user X and object Y i
 
 - `user:anne` has an **implied relationship** with `document:new-roadmap` as `viewer` if the type definition allows it, and the presence of relationship tuples satisfying the relationship exist.
 
-  For example, assuming the following type definition:
+  For example, assume the following type definition:
 
   <AuthzModelSnippetViewer
     configuration={{
@@ -535,7 +531,7 @@ An **implied (or computed) relationship** R exists between user X and object Y i
     }} skipVersion={true}
   />
 
-  And assuming the following relationship tuple exists in the system:
+  And assume the following relationship tuple exists in the system:
 
   <RelationshipTuplesViewer
     relationshipTuples={[
@@ -558,19 +554,17 @@ An **implied (or computed) relationship** R exists between user X and object Y i
 
 ## What Is A Check Request?
 
-A **check request** is a call to the <ProductName format={ProductNameFormat.LongForm}/> check endpoint that returns whether the user has a certain relationship with an object.
+A **check request** is a call to the <ProductName format={ProductNameFormat.LongForm}/> check endpoint, returning whether the user has a certain relationship with an object.
 
 </summary>
 
-This can be done using the `check` methods in the <ProductName format={ProductNameFormat.ShortForm}/> SDKs ([JavaScript SDK](https://www.npmjs.com/package/@openfga/sdk)/[Go SDK](https://github.com/openfga/go-sdk)/[.NET SDK](https://www.nuget.org/packages/OpenFga.Sdk)), by manually calling the [check endpoint](/api/service#Relationship%20Queries/Check) using curl, or in your code.
-
-The check endpoint responds with `{ "allowed": true }` if a relationship exists, and with `{ "allowed": false }` if the relationship does not.
+Check requests use the `check` methods in the <ProductName format={ProductNameFormat.ShortForm}/> SDKs ([JavaScript SDK](https://www.npmjs.com/package/@openfga/sdk)/[Go SDK](https://github.com/openfga/go-sdk)/[.NET SDK](https://www.nuget.org/packages/OpenFga.Sdk)) by manually calling the [check endpoint](/api/service#Relationship%20Queries/Check) using curl or in your code. The check endpoint responds with `{ "allowed": true }` if a relationship exists, and with `{ "allowed": false }` if the relationship does not.
 
 For example, the following will check whether `anne` of type user has a `viewer` relation to `document:new-roadmap`:
 
 <CheckRequestViewer user={'user:anne'} relation={'viewer'} object={'document:new-roadmap'} allowed={true} />
 
-For more information, please see the [Relationship Queries page](./interacting/relationship-queries.mdx) and the official [Check API Reference](/api/service#Relationship%20Queries/Check).
+For more information, see the [Relationship Queries page](./interacting/relationship-queries.mdx) and the official [Check API Reference](/api/service#Relationship%20Queries/Check).
 
 </details>
 
@@ -579,15 +573,15 @@ For more information, please see the [Relationship Queries page](./interacting/r
 
 ## What Is A List Objects Request?
 
-A **list objects request** is a call to the <ProductName format={ProductNameFormat.LongForm}/> list objects endpoint that returns all the objects of a given type that a user has a specified relationship with.
+A **list objects request** is a call to the <ProductName format={ProductNameFormat.LongForm}/> list objects endpoint that returns all objects of a given type that a user has a specified relationship with.
 
 </summary>
 
-This can be done using the `listobjects` methods in the <ProductName format={ProductNameFormat.ShortForm}/> SDKs ([JavaScript SDK](https://www.npmjs.com/package/@openfga/sdk)/[Go SDK](https://github.com/openfga/go-sdk)/[.NET SDK](https://www.nuget.org/packages/OpenFga.Sdk)), by manually calling the [list objects endpoint](/api/service#Relationship%20Queries/ListObjects) using curl, or in your code.
+List object requests are completed using the `listobjects` methods in the <ProductName format={ProductNameFormat.ShortForm}/> SDKs ([JavaScript SDK](https://www.npmjs.com/package/@openfga/sdk)/[Go SDK](https://github.com/openfga/go-sdk)/[.NET SDK](https://www.nuget.org/packages/OpenFga.Sdk)) by manually calling the [list objects endpoint](/api/service#Relationship%20Queries/ListObjects) using curl or in your code.
 
 The list objects endpoint responds with a list of objects for a given type that the user has the specified relationship with.
 
-For example, the following will return all the objects with document type for which `anne` of type user has a `viewer` relation with:
+For example, the following returns all the objects with document type for which `anne` of type user has a `viewer` relation with:
 
 <ListObjectsRequestViewer
   authorizationModelId="1uHxCSuTP0VKPYSnkq1pbb1jeZw"
@@ -597,7 +591,7 @@ For example, the following will return all the objects with document type for wh
   expectedResults={['document:otherdoc', 'document:planning']}
 />
 
-For more information, please see the [Relationship Queries page](./interacting/relationship-queries.mdx) and the official [Check API Reference](/api/service#Relationship%20Queries/ListObjects).
+For more information, see the [Relationship Queries page](./interacting/relationship-queries.mdx) and the official [Check API Reference](/api/service#Relationship%20Queries/ListObjects).
 
 </details>
 <details>
@@ -605,17 +599,15 @@ For more information, please see the [Relationship Queries page](./interacting/r
 
 ## What Are Contextual Tuples?
 
-Contextual tuples are tuples that can be added to a check request, and only exist within the context of that particular request.
+Contextual tuples are tuples that can be added to a check request and only exist within the context of that particular request.
 
 </summary>
 
-Similar to [relationship tuples](#what-is-a-relationship-tuple), contextual tuples are composed of a user, relation and object.
-
-Unlike relationship tuples, they are not written to the store. However, if contextual tuples are sent alongside a check request, in the context of this particular check request, they are treated if they had been written in the store.
+Similar to [relationship tuples](#what-is-a-relationship-tuple), contextual tuples are composed of a user, relation and object. Unlike relationship tuples, they are not written to the store. However, if contextual tuples are sent alongside a check request in the context of a particular check request, they are treated if they had been written in the store.
 
 <!-- markdown-link-check-disable -->
 
-For more information, please see [Contextual and Time-Based Authorization](./modeling/contextual-time-based-authorization.mdx), [Authorization Through Organization Context](./modeling/organization-context-authorization.mdx) and [Check API Request Documentation](/api/service#Relationship%20Queries/Check).
+For more information, see [Contextual and Time-Based Authorization](./modeling/contextual-time-based-authorization.mdx), [Authorization Through Organization Context](./modeling/organization-context-authorization.mdx) and [Check API Request Documentation](/api/service#Relationship%20Queries/Check).
 
 <!-- markdown-link-check-enable -->
 
@@ -626,11 +618,11 @@ For more information, please see [Contextual and Time-Based Authorization](./mod
 
 ## What Is Type Bound Public Access?
 
-In <ProductName format={ProductNameFormat.LongForm}/>, type bound public access (represented by `<type>:*`) is a special <ProductName format={ProductNameFormat.ShortForm}/> syntax meaning **every object of that type** when used as a _user_ within a _relationship tuple_. For example, `user:*` represents every object of type `user` (including those not currently present in the system).
+In <ProductName format={ProductNameFormat.LongForm}/>, type bound public access (represented by `<type>:*`) is a special <ProductName format={ProductNameFormat.ShortForm}/> syntax meaning "every object of [type]" when invoked as a user within a relationship tuple. For example, `user:*` represents every object of type `user` , including those not currently present in the system.
 
 </summary>
 
-For example, in a case where you would like to indicate a certain document `document:new-roadmap` is publicly writable (i.e. has everyone of type user as an editor), you can add the following [relationship tuple](#what-is-a-relationship-tuple):
+For example, to indicate `document:new-roadmap` is publicly writable (in other words, has everyone of type `user` as an editor, add the following [relationship tuple](#what-is-a-relationship-tuple):
 
 <RelationshipTuplesViewer
   relationshipTuples={[
@@ -642,8 +634,8 @@ For example, in a case where you would like to indicate a certain document `docu
   ]}
 />
 
-Note that you cannot use `<type>:*` in the `relation` or `object` properties. In addition, you cannot use `<type>:*` as part of a userset in the tuple's user field.
-For more information, please see [Modeling Public Access](./modeling/public-access.mdx) and [Advanced Modeling: Modeling Google Drive](./modeling/advanced/gdrive.mdx).
+Note: `<type>:*` cannot be used in the `relation` or `object` properties. In addition, `<type>:*` cannot be used as part of a userset in the tuple's user field.
+For more information, see [Modeling Public Access](./modeling/public-access.mdx) and [Advanced Modeling: Modeling Google Drive](./modeling/advanced/gdrive.mdx).
 
 </details>
 
@@ -653,8 +645,14 @@ For more information, please see [Modeling Public Access](./modeling/public-acce
   description="Check the following sections for more on how object-to-object relationships can be used."
   relatedLinks={[
     {
-      title: '{ProductName} Concepts',
-      description: 'Learn about the {ProductName} Concepts',
+      title: 'Authorization Concepts',
+      description: 'Learn about Authorization.',
+      link: './authorization-concepts',
+      id: './authorization-concepts',
+    },
+    {
+      title: 'Configuration Language',
+      description: 'Learning about the FGA configuration language',
       link: './configuration-language',
       id: './configuration-language',
     },
