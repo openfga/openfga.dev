@@ -27,7 +27,7 @@ Modular models is currently shipped as experimental while we gather feedback, in
   * As this is currently in RC you will need to start OpenFGA with `openfga run --experimental enable-modular-models`.
 * Check out the modular models sample store in the [sample-stores repo](https://github.com/openfga/sample-stores/tree/main/stores/modular)
 * The latest version of VS Code contains support for modular models, so ensure you're updated
-* Review the [documentation for this feature](../docs/modeling/modular-models)
+* Review the [documentation for this feature](/docs/modeling/modular-models)
 
 ## What's next?
 
