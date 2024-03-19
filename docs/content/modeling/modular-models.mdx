@@ -1,0 +1,189 @@
+---
+sidebar_position: 6
+slug: /modeling/modular-models
+description: Modular Models
+---
+
+import {
+  AuthzModelSnippetViewer,
+  CardBox,
+  CheckRequestViewer,
+  DocumentationNotice,
+  Playground,
+  ProductConcept,
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+  RelationshipTuplesViewer,
+  SyntaxFormat,
+  WriteRequestViewer,
+  SupportedLanguage,
+} from '@components/Docs';
+
+# Modular Models
+
+<DocumentationNotice />
+
+Modular models allows splitting your authorization module across multiple files and modules, improving upon some of the challenges that may be faced when operating an authorization model within a company, such as:
+
+- A model can grow large and difficult to understand
+- As more teams begin to contribute to a model, the ownership boundaries may not be clear and code review processes might not scale
+
+With modular models, a single model can be split across multiple files in a project. Organized in a way that makes sense for the project or teams, and then ownership for reviews can be expressed using a feature such as [GitHub](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners) or [GitLab](https://docs.gitlab.com/ee/user/project/codeowners/) code owners.
+
+## Key Concepts
+
+### `fga.mod`
+
+The `fga.mod` is the project file for modular models. This file is used to track the schema version for the final combined model and the individual files that make up the modular model.
+
+| Property | Description |
+| -------- | -------- | 
+| `schema` | The schema version to be used for the combined model |
+| `contents` | The individual files that make up the modular model |
+
+### Modules
+
+Modules are declared using the `module` keyword in the DSL, and a module can be written across multiple files.
+
+Currently, modules are stored as metadata but are not used by <ProductName format={ProductNameFormat.ShortForm}/>. However, modules will be the basis of future features such as applying authorization to writing and reading/querying tuples.
+
+### Type Extensions
+
+As teams implement features, they might find that core types they are dependent upon might not contain all the realtions they need. However, it might not make sense for these relations to be owned by the owner of that type if they aren't needed across the system.
+
+To solve this, individual types can be extended within other modules to implement the relations needed.
+
+In order to allow this, there are certain requirements for type extension:
+
+- The extended type must exist
+- A single type can only be extended once per file
+- The relations added must not already exist, or be part of another type extension
+
+## Example
+
+In this example we'll look at how an authorization model for a SaaS compny with a issue tracking and wiki software could implement modular models.
+
+### Core
+
+It's likely there will be a core set of types owned by a team that manages the overall identity for the company, this would provide the basics usch as users, organizations and groups that can be used by each respective product area.
+
+```
+module core
+
+type user
+
+type organization
+  relations
+    define member: [user]
+    define admin: [user]
+
+type group
+  relations
+    define member: [user]
+```
+
+### Issue tracking
+
+In the issue tracking software we'd likely separate out the project and issue model into separate files, we'll also extend the `organization` type here so that we can add a relation to track who can create a project.
+
+```
+module issue-tracker
+
+extend type organization
+    define can_create_project: admin
+
+type project
+  relations
+    define organization: [organization]
+    define viewer: member from organization
+```
+
+```
+module issue-tracker
+
+type ticket
+  relations
+    define project: [project]
+    define owner: [user]
+```
+
+### Wiki
+
+Our wiki model we'll handle in one file for now until it grows some more. Again, we'll also extend the `organization` type here so that we can add a relation to track who can create a space.
+
+```
+module wiki
+
+extend type organization
+  relations
+    define can_create_space: admin
+
+
+type space
+  relations
+    define organization: [organization]
+    define can_view_pages: member from organization
+
+type page
+  relations
+    define space: [space]
+    define owner: [user]
+```
+
+### `fga.mod`
+
+In order to deploy this model we'll need to create our `fga.mod` manifest file, in here we'll set our schema version and list the individual module files that make up our model.
+
+```yaml
+schema: '1.2'
+contents:
+  - core.fga
+  - issue-tracker/projects.fga
+  - issue-tracker//tickets.fga
+  - wiki.fga
+```
+
+### Putting it all together
+
+Now that we have our individual parts of the modular model, we're able to write this model to <ProductName format={ProductNameFormat.ShortForm}/> and then run tests against it.
+
+In order to write out model we need to use the CLI and run
+
+```shell
+fga model write --store-id=$FGA_STORE_ID --file fga.mod
+```
+
+We can then write tuples and query this model as you would expect with a singular file authorization model.
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'admin',
+      object: 'organization:acme',
+    },
+    {
+      user: 'organization:acme',
+      relation: 'organization',
+      object: 'space:acme',
+    },
+    {
+      user: 'organization:acme',
+      relation: 'organization',
+      object: 'project:acme',
+    },
+  ]}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
+    SupportedLanguage.CLI,
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+<CheckRequestViewer user={'user:anne'} relation={'can_create_space'} object={'organization:acme'} allowed={true} />
