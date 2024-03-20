@@ -31,50 +31,39 @@ import FGAIcon from '@site/static/img/getting-started-fga-logo.svg';
 
 <DocumentationNotice />
 
-Creating a <IntroductionSection linkName="Relationship Based Access Control (ReBAC)" section="what-is-relationship-based-access-control-rebac"/> authorization model might feel odd at first. Most of us tend to think about authorization models in terms of roles and permissions. After all, most software works like that. Your existing systems are likely built on a model using roles and permissions.
-
-This guide outlines a process for defining your <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" /> with <ProductName format={ProductNameFormat.ProductLink}/>.
+This guide outlines how to define a <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" /> with <ProductName format={ProductNameFormat.ProductLink}/>.
 
 ## Introduction To Modeling
 
-To define a ReBAC model in <ProductName format={ProductNameFormat.ShortForm}/> we recommend:
-
-- If you have an existing system: forget about how your system works today and start thinking about how you want it to work in the future.
-- Thinking about authorization starting from the resources, or objects as <ProductName format={ProductNameFormat.ShortForm}/> calls them.
-
-If that sounds hard, don't worry! We'll guide you through it.
-
-<ProductName format={ProductNameFormat.ShortForm} /> is built to quickly and reliably make <ProductConcept
+<ProductName format={ProductNameFormat.ShortForm} /> is built to quickly and reliably perform <ProductConcept
   section="what-is-a-check-request"
   linkName="authorization checks"
 />
-. This means providing an answer to a question: "Can user U perform action A on object O?"
+, which answers ReBAC's basic question: "Can user U perform action A on object O?"
 
 ReBAC systems determine access from a <ProductConcept section="what-is-a-user" linkName="user's" /> <ProductConcept section="what-is-a-relation" linkName="relation" /> to an <ProductConcept section="what-is-an-object" linkName="object" />. Authorization decisions are then yes or no answers to the question: "Does user U have relation R with object O?".
 
 <ColumnLayout cols={2} style={{ marginTop: '2rem', marginBottom: '2rem' }}>
   <CardBox title="General Authorization Check" appearance="filled">
-    "Can user <b>U</b> <u>perform an action</u> <b>A</b> on object <b>O</b>?"
+    "Can user <b>U</b> perform an action <b>A</b> on object <b>O</b>?"
   </CardBox>
   <CardBox title="{ProductName} (ReBAC) Authorization Check">
-    "Does user <b>U</b> <u>have relation</u> <b>R</b> with object <b>O</b>?"
+    "Does user <b>U</b> have relation <b>R</b> with object <b>O</b>?"
   </CardBox>
 </ColumnLayout>
 
-In the previous example, a relation R should be defined that implies permission to action A. For example:
+In the previous example, relation R is defined so permission to perform action A is implied. For example:
 
 <ColumnLayout cols={2} style={{ marginTop: '2rem', marginBottom: '2rem' }}>
   <CardBox title="General Authorization Check" appearance="filled">
-    "Can user <b>Jane</b> <u>perform action</u> <b>view</b> on object <b>project sandcastle</b>?"
+    "Can user <b>Jane</b> perform action <b>view</b> on object <b>project sandcastle</b>?"
   </CardBox>
   <CardBox title="{ProductName} (ReBAC) Authorization Check">
-    "Can user <b>Jane</b> <u>have relation</u> <b>view</b> with object <b>project sandcastle</b>?"
+    "Can user <b>Jane</b> have relation <b>view</b> with object <b>project sandcastle</b>?"
   </CardBox>
 </ColumnLayout>
 
-We'll provide more detailed examples throughout this article.
-
-When you are modeling, you need to answer a more general question:
+While modeling, the general question to answer is:
 
 <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
   <CardBox
@@ -83,17 +72,13 @@ When you are modeling, you need to answer a more general question:
   />
 </div>
 
-If you can answer that question for all types of objects in your system, then you can codify that into an authorization model.
-
-Let's get started!
+Answering that question for all object types in your system codifies your authorization model.
 
 ---
 
 ## A Process For Defining Authorization Models
 
-Defining an authorization model requires codifying an answer to the question "why could user U perform an action A on an object O?" for all use cases or actions in your system. This is an iterative process. For the purpose of this guide, we'll go through one iteration of this process using a simplified Google Drive like system as an example.
-
-Steps for defining your authorization model:
+Below is one iteration of defining an authorization model for your system, using a simplified Google Drive-like system as an example. The following are the steps for this iteration:
 
 1.  [Pick the most important feature](#01-pick-the-most-important-feature)
 2.  [List the object types](#02-list-the-object-types)
@@ -108,26 +93,24 @@ Steps for defining your authorization model:
 
 ![Pick the most important feature](./assets/getting-started-diagram-02.svg)
 
-A feature, in the context of this document, is an action or related set of actions your users can perform in your system. We'll introduce an example feature later in this section.
-
-Start with the most important feature. It doesn't have to be the most complex one, but it should be the most important one. You're probably more familiar with the authorization requirements for this feature than other less important use cases.
+In this context, a **feature** is an action or related set of actions your users can perform in your system. Start your model with the most important feature and ensure you're familiar with its authorization requirements. 
 
 :::caution Important
 
 - Requirement clarity is fundamental when defining an authorization model.
-- The scope of the feature is not important at this point. You can always iterate later.
+- You can always iterate; the scope of the feature is not important.
 
 :::
 
 #### Write It In Plain Language
 
-Once you've picked a feature, describe its authorization related scope using simple language. Avoid using the word "roles", as this ties you to an RBAC way of thinking.
+Describe your feature's authorization related scope in simple language; avoid using the word "roles" to train yourself away from RBAC-style thinking.
 
 :::info
-Roles don't "disappear" in ReBAC systems like <ProductName format={ProductNameFormat.ShortForm}/>. Your users might [have roles on a given object, rather than the entire system](./roles-and-permissions.mdx). But starting from the term "role" might lead you down the wrong path. Instead it is better to discover roles while you are modeling.
+Roles don't "disappear" in ReBAC systems like <ProductName format={ProductNameFormat.ShortForm}/> and your users might [have roles on a given object instead of the entire system](./roles-and-permissions.mdx). Discover roles while you are modeling instead of determining in advance which roles will be defined.
 :::
 
-Your feature description should include the <ProductConcept section="what-is-an-object" linkName="objects" />, <ProductConcept section="what-is-a-user" linkName="users" /> and <ProductConcept section="what-is-a-user" linkName="groups of users" /> participating in the system. Sentences should look like this:
+Your feature description includes the <ProductConcept section="what-is-an-object" linkName="objects" />, <ProductConcept section="what-is-a-user" linkName="users" /> and <ProductConcept section="what-is-a-user" linkName="groups of users" /> participating in the system. Sentences look like this:
 
 <div style={{ marginBottom: '2rem' }}>
   <CardBox
@@ -136,13 +119,13 @@ Your feature description should include the <ProductConcept section="what-is-an-
     centerTitle
   />
 </div>
-Let's look at an example of a simplified Google Drive like system. We'll focus on the feature allowing users to create, read,
+The following is a simplified Google Drive-like system focused on a feature allowing users to create, read,
 update, delete, and share documents with other users.
 
 <br />
 <br />
 
-This feature can be described with these sentences:
+This feature can be described with the following sentences:
 
 <CardBox appearance='filled' monoFontChildren>
 
@@ -193,7 +176,7 @@ This feature can be described with these sentences:
 
 ![List the object types](./assets/getting-started-diagram-03.svg)
 
-Next make a list of the <ProductConcept section="what-is-a-type" linkName="types" /> of objects in your system. You might be able to identify the objects in your system from your existing domain/database model.
+Make a list of the <ProductConcept section="what-is-a-type" linkName="types" /> of objects in your system. You can likely identify the objects in your system from your existing domain/database model.
 
 Find all the objects in the previous step using this template:
 
@@ -205,7 +188,7 @@ Find all the objects in the previous step using this template:
   />
 </div>
 
-These are all the object types from the previous step (in order of appearance) based on that template:
+Returned are all the object types from the previous step (in order of appearance) based on that template:
 
 <ColumnLayout cols={3} style={{ marginTop: '2rem', marginBottom: '2rem' }}>
   <CardBox icon={{ icon: <DocIcon />, alignment: 'left', label: 'Document' }} />
@@ -213,7 +196,7 @@ These are all the object types from the previous step (in order of appearance) b
   <CardBox icon={{ icon: <OrgIcon />, alignment: 'left', label: 'Organization' }} />
 </ColumnLayout>
 
-Let's highlight all object types in <span className="blue-highlight-text">blue</span>:
+Highlight all object types in <span className="blue-highlight-text">blue</span>:
 
 <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
 <CardBox appearance='filled' monoFontChildren>
@@ -262,13 +245,13 @@ Let's highlight all object types in <span className="blue-highlight-text">blue</
 </CardBox>
 </div>
 
-However, the list of object types is not finished. To complete the list of object types you must also add all the second nouns that appear in conditions as part of expressions of this format: **"\{first noun\} of a/the \{second noun\}"**.
+To complete the list of object types, add all the second nouns that appear in conditions as part of expressions of this format: **"\{first noun\} of a/the \{second noun\}"**.
 
 <div style={{ marginBottom: '2rem' }}>
   <CardBox centerTitle title="... IF {first noun} of a/the {second noun}" appearance="filled" />
 </div>
 
-Let's highlight those expressions in <span className="green-highlight-text">green</span>:
+Highlight those expressions in <span className="green-highlight-text">green</span>:
 
 <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
 <CardBox monoFontChildren appearance='filled'>
@@ -317,8 +300,7 @@ Let's highlight those expressions in <span className="green-highlight-text">gree
 </CardBox>
 </div>
 
-The only second noun we didn't have in our object type list is "Drive", so we'll add it to the list.
-We will also need to add "User" to the list as it establishes the type of user who can establish relations.
+The object type list is missing `Drive`, so we'll add it to the list. In addition, `User` must be added to establish the type of user who can create relations.
 
 <ColumnLayout cols={5} style={{ marginTop: '2rem', marginBottom: '2rem' }}>
   <CardBox icon={{ alignment: 'left', label: 'User' }} />
@@ -328,7 +310,7 @@ We will also need to add "User" to the list as it establishes the type of user w
   <CardBox icon={{ icon: <DriveIcon />, alignment: 'left', label: 'Drive' }} />
 </ColumnLayout>
 
-Now that we have a list of object types we can start defining them using the <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" />:
+Now we define them using the <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" />:
 
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
@@ -354,28 +336,23 @@ Now that we have a list of object types we can start defining them using the <Up
   }}
 />
 
-:::info Caution
-You're now in the process of building a version you can use. The model above is not yet a valid authorization model accepted by <ProductName format={ProductNameFormat.ShortForm}/>.
-:::
-
 :::info Important
-In a few cases other users can be part of determining whether an action can be performed on an action or not. Social media is an example of this "a user can comment on a picture if they are a friend of the user that published it".
 
-In those cases [**User** should also be an object type](./building-blocks/object-to-object-relationships.mdx). Following the last recommendation, we would discover the User type because it is a second noun in an expression: "friend of the user".
+In a few cases, other users can determine whether one action can be performed on another action. For example, on social media, sometimes a user can comment on a picture if they are a friend of the user that published it.
+
+In those cases [**User** must be an object type](./building-blocks/object-to-object-relationships.mdx), and you would discover the User type because it is a second noun in an expression `friend of the user`.
 :::
 
 ### 03. List Relations For Those Types
 
 ![List relations for those types](./assets/getting-started-diagram-04.svg)
 
-Each of the previously defined types has a set of relations. <ProductConcept section="what-is-a-relation" linkName="Relations" /> are an important component in your model. After all, <ProductName format={ProductNameFormat.ShortForm}/> is a <IntroductionSection linkName="Relationship Based Access Control (ReBAC)" section="what-is-relationship-based-access-control-rebac"/> system.
-
-To identify relations for a type we in the write-up we can perform an exercise similar to the one we did in [list the type of objects in your system](#02-list-the-object-types).
+Each previously defined type has a set of relations. A process similar to that above to [list the type of objects in your system](#02-list-the-object-types) defines your system's relations.
 
 Relations for a type \{type\} will be all of these:
 
-- any noun that is the \{noun\} of a "\{noun\} of a/an/the \{type\}" expression. **These are typically the Foreign Keys in a database.** We'll highlight these in <span className="green-highlight-text">green</span>.
-- any verb or action that is the \{action\} of a "can \{action\} (in) a/an \{type\}" expression. **These are typically the permissions for a type.** We'll highlight these in <span className="yellow-highlight-text">yellow</span>.
+- any noun that is the \{noun\} of a "\{noun\} of a/an/the \{type\}" expression. These are typically the Foreign Keys in a database, highlighted below in <span className="green-highlight-text">green</span>.
+- any verb or action that is the \{action\} of a "can \{action\} (in) a/an \{type\}" expression. These are typically the permissions for a type, highlighted below in <span className="yellow-highlight-text">yellow</span>.
 
 <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
 <CardBox monoFontChildren appearance='filled'>
@@ -476,10 +453,10 @@ The resulting list is:
 </ColumnLayout>
 
 :::info
-In <ProductName format={ProductNameFormat.ShortForm}/>, relations can only have alphanumeric characters, underscores and hyphens. We recommend using underscore (\_) to separate words and removing prepositions. E.g.: "can create a document" can become "can_create_document" or "create_document" if you are into brevity.
+In <ProductName format={ProductNameFormat.ShortForm}/>, relations may only use alphanumeric characters, underscores and hyphens. We recommend using underscore (\_) to separate words and removing prepositions, so `can create a document` becomes `can_create_document`.
 :::
 
-Using the <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" /> we can enumerate the relations for each type:
+Enumerate relations for each type with the <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" />:
 
 ```dsl.openfga
 model
@@ -514,14 +491,14 @@ type drive
 ```
 
 :::info Caution
-You're now in the process of building a version you can use. The model above is not yet a valid authorization model accepted by <ProductName format={ProductNameFormat.ShortForm}/>.
+Though you're in the process of building a version you can use, the model above is not yet a valid authorization model accepted by <ProductName format={ProductNameFormat.ShortForm}/>.
 :::
 
 ### 04. Define Relations
 
 ![Define relations](./assets/getting-started-diagram-05.svg)
 
-We will use the <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" /> to create a <ProductConcept section="what-is-a-relation" linkName="relation definition" /> for each of the relations we identified. At this stage we will encode the answers to the question we asked at the beginning of the document:.
+Use the <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" /> to create a <ProductConcept section="what-is-a-relation" linkName="relation definition" /> for each of the relations we identified, then encode the answers to the question we asked at the beginning of the document:.
 
 <div style={{ marginBottom: '2rem' }}>
   <CardBox
@@ -530,7 +507,7 @@ We will use the <UpdateProductNameInLinks link="../configuration-language" name=
   />
 </div>
 
-We are going to go over each type and each of its relations and create a definition for it.
+Go over each type and each relation, then create a definitions for them.
 
 <div style={{ display: 'inline-block' }}>
 <OrgIcon />
@@ -541,17 +518,17 @@ We are going to go over each type and each of its relations and create a definit
 </div>
 </div>
 
-We recommend starting from objects that represent groups/containers of users. For features in most systems these are easy to define and help reason about the other types. Examples of type names for these are "team", "group", "organization", etc.
+Start from objects that represent groups/containers of users, like `team`, `group`, or `organization`. They are easy to define for features in most systems and help reason out the other types.
 
 ##### Relation: Member
 
-The member relation is used to tell <ProductName format={ProductNameFormat.ShortForm}/> about the members of an organization.
+The member relation tells <ProductName format={ProductNameFormat.ShortForm}/> about the members of an organization.
 
 :::info Important
-Relation names in <ProductName format={ProductNameFormat.ShortForm}/> are arbitrary strings. There are no reserved relation names. You can use "member" or "part_of" or anything else to refer to a user that is part of a team/organization.
+Relation names in <ProductName format={ProductNameFormat.ShortForm}/> are arbitrary strings. There are no reserved relation names; you can use `member` or `part_of` or anything else to refer to a user that is part of a team/organization.
 :::
 
-Remember _"How a user is added as a member to an organization is beyond the scope of this feature."_ For the purposes of this model the relation definition should be:
+Remember that how a user is added as a member to an organization is beyond the scope of this feature. For the purposes of this model the relation definition should be:
 
 <AuthzModelSnippetViewer
   onlyShow={SyntaxFormat.Friendly2}
@@ -574,36 +551,34 @@ Remember _"How a user is added as a member to an organization is beyond the scop
   skipVersion={true}
 />
 
-Why? This relation definition states:
+This relation definition states:
 
 - That organizations have members
-- That the members of an organization with id \{id\} are all users described by tuples of the form:
+- That the members of an organization with id \{id\} are all users described by tuples of the form below:
 
   `{ user: {user-id}, relation: "member", object: "organization:{id}" }`
 
 :::info Important
-Relation definitions of the form “define \{relation\}: [user, organization#member]" are fairly common. They are used to express that relationships "to the object with that relation" (e.g. "users" of type user or "member of organization") can be assigned by your system and that only the users that have that relation are those with a [direct relationship](./building-blocks/direct-relationships.mdx).
+Relation definitions of the form `define \{relation\}: [user, organization#member]` are common and are used to express that relationships to the object with that relation (meaning users of type `user` or `member of organization`) can be assigned by your system. The only users with that relation are those with a [direct relationship](./building-blocks/direct-relationships.mdx).
 :::
 
 You can read more about group membership and types in [Modeling User Groups](./user-groups.mdx).
 
-For the direct relationships, we need to figure out the object types that makes sense for the relationship tuples' user. In our organization example, it makes sense for member relations to have user of type
+You must determine the object types that makes sense for the relationship tuples' user when creating direct relationships. In the organization example, it makes sense for member relations to have user of type
 
 - user
 - organization#member (i.e., other organization's member)
 
-However, it will not make sense for organization member's user to be of type document, folder or drive.
+However, it does not make sense for an organization member's user to be of type `document`, `folder`, or `drive`. We specify this logic as part of a <ProductConcept section="what-is-a-directly-related-user-type" linkName="directly related user type" />.
 
-We will specify this logic as part of directly <ProductConcept section="what-is-a-directly-related-user-type" linkName="directly related user type" />.
-
-:::note Side note
-This also automatically supports nested organizational membership if you want such a feature in your system. You could use relationship tuples like the following one to express that "members of organization A are members of organization B":
+:::note Note
+This also automatically supports nested organizational membership. You can use relationship tuples like the following to express that members of organization A are members of organization B:
 
 ```
 { user: "organization:A#member", relation: "member", object: "organization:B"}
 ```
 
-If you want to learn more, you can read further about this in [Modeling User Groups](./user-groups.mdx) and [Managing Relationships Between Objects](../interacting/managing-relationships-between-objects.mdx).
+To learn more, see [Modeling User Groups](./user-groups.mdx) and [Managing Relationships Between Objects](../interacting/managing-relationships-between-objects.mdx).
 :::
 
 ##### Complete Type Definition
