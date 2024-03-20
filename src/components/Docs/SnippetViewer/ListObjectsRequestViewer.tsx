@@ -39,7 +39,8 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
       return `curl -X POST $FGA_SERVER_URL/stores/$FGA_STORE_ID/list-objects \\
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
-  -d '{ "authorization_model_id": "${modelId}",
+  -d '{
+        "authorization_model_id": "${modelId}",
         "type": "${objectType}",
         "relation": "${relation}",
         "user":"${user}"${
@@ -53,15 +54,15 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
             )
             .join(',')}
           ]
+        }`
+            : ''
         }${
           context
             ? `,
-        "context":${JSON.stringify(context)},`
+        "context":${JSON.stringify(context)}`
             : ''
         }
-      }'`
-            : ''
-        }
+    }'
 
 
 # Response: {"objects": [${expectedResults.map((r) => `"${r}"`).join(', ')}]}`;

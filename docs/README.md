@@ -19,7 +19,7 @@ It offers an HTTP API, a gRPC API, and has SDKs for programming languages includ
 
 ## Documentation
 
-- [What is OpenFGA](./content/authorization-and-openfga.mdx)
+- [What is OpenFGA](./content/intro.mdx)
 - [Concepts](./content/concepts.mdx)
 - [Configuration Language](./content/configuration-language.mdx)
 - [Getting Started](./content/getting-started/overview.mdx)
