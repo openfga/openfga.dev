@@ -29,13 +29,13 @@ Modular models allows splitting your authorization module across multiple files 
 - A model can grow large and difficult to understand
 - As more teams begin to contribute to a model, the ownership boundaries may not be clear and code review processes might not scale
 
-With modular models, a single model can be split across multiple files in a project. Organized in a way that makes sense for the project or teams, and then ownership for reviews can be expressed using a feature such as [GitHub](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners) or [GitLab](https://docs.gitlab.com/ee/user/project/codeowners/) code owners.
+With modular models, a single model can be split across multiple files in a project. It can be organized in a way that makes sense for the project or teams collaborating on it, and it enables ownership for reviews to be expressed using a feature such as [GitHub's](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners), [GitLab's](https://docs.gitlab.com/ee/user/project/codeowners/) or [Gitea's](https://docs.gitea.com/usage/code-owners) code owners.
 
 ## Key Concepts
 
 ### `fga.mod`
 
-The `fga.mod` is the project file for modular models. This file is used to track the schema version for the final combined model and the individual files that make up the modular model.
+The `fga.mod` is the project file for modular models. This file specifies the schema version for the final combined model and lists the individual files that make up the modular model.
 
 | Property | Description |
 | -------- | -------- | 
@@ -44,7 +44,7 @@ The `fga.mod` is the project file for modular models. This file is used to track
 
 ### Modules
 
-Modules are declared using the `module` keyword in the DSL, and a module can be written across multiple files.
+Modules are declared using the `module` keyword in the DSL, and a module can be written across multiple files. A single file cannot have more than one module.
 
 Currently, modules are stored as metadata but are not used by <ProductName format={ProductNameFormat.ShortForm}/>. However, modules will be the basis of future features such as applying authorization to writing and reading/querying tuples.
 
@@ -85,12 +85,13 @@ type group
 
 ### Issue tracking
 
-In the issue tracking software we'd likely separate out the project and issue model into separate files, we'll also extend the `organization` type here so that we can add a relation to track who can create a project.
+In the issue tracking software we'd likely separate out the project and issue related types into separate files, we'll also extend the `organization` type here so that we can add a relation specific to the issue tracking feature, which is the ability to authorize who can create a project.
 
 ```
 module issue-tracker
 
 extend type organization
+  relations
     define can_create_project: admin
 
 type project
