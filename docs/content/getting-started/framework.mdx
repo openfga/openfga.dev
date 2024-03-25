@@ -333,7 +333,7 @@ module.exports = fp(async function (fastify, opts) {
         object: request.object,
       });
       if (!allowed) {
-        reply.code(401).send(`Not authenticated`);
+        reply.code(403).send(`forbidden`);
       }
     } catch (err) {
       reply.send(err);
@@ -499,7 +499,7 @@ func checkAuthorization(c *fiber.Ctx) error {
   }
 
   if !(*data.Allowed) {
-    return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized to access document")
+    return fiber.NewError(fiber.StatusForbidden, "Forbidden to access document")
   }
 
   // Go to the next middleware
