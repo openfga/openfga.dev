@@ -68,7 +68,7 @@ In this example we'll look at how an authorization model for a SaaS compny with 
 
 It's likely there will be a core set of types owned by a team that manages the overall identity for the company, this would provide the basics usch as users, organizations and groups that can be used by each respective product area.
 
-```
+```dsl.openfga
 module core
 
 type user
@@ -87,7 +87,7 @@ type group
 
 In the issue tracking software we'd likely separate out the project and issue related types into separate files, we'll also extend the `organization` type here so that we can add a relation specific to the issue tracking feature, which is the ability to authorize who can create a project.
 
-```
+```dsl.openfga
 module issue-tracker
 
 extend type organization
@@ -100,7 +100,7 @@ type project
     define viewer: member from organization
 ```
 
-```
+```dsl.openfga
 module issue-tracker
 
 type ticket
@@ -113,7 +113,7 @@ type ticket
 
 Our wiki model we'll handle in one file for now until it grows some more. Again, we'll also extend the `organization` type here so that we can add a relation to track who can create a space.
 
-```
+```dsl.openfga
 module wiki
 
 extend type organization
