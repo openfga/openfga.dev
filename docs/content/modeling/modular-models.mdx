@@ -46,7 +46,7 @@ The `fga.mod` is the project file for modular models. This file specifies the sc
 
 Modules are declared using the `module` keyword in the DSL, and a module can be written across multiple files. A single file cannot have more than one module.
 
-Currently, modules are stored as metadata but are not used by <ProductName format={ProductNameFormat.ShortForm}/>. However, modules will be the basis of future features such as applying authorization to writing and reading/querying tuples.
+Currently, modules are stored as metadata but are not used by <ProductName format={ProductNameFormat.ShortForm}/>. Module metadata will be used in upcoming features, such as applying authorization to writing and reading/querying tuples.
 
 ### Type Extensions
 
@@ -149,7 +149,7 @@ contents:
 
 Now that we have our individual parts of the modular model, we're able to write this model to <ProductName format={ProductNameFormat.ShortForm}/> and then run tests against it.
 
-In order to write out model we need to use the CLI and run
+In order to write our model we need to use the CLI and run:
 
 ```shell
 fga model write --store-id=$FGA_STORE_ID --file fga.mod
