@@ -19,9 +19,9 @@
 <li>A model can grow large and difficult to understand</li>
 <li>As more teams begin to contribute to a model, the ownership boundaries may not be clear and code review processes might not scale</li>
 </ul>
-<p>With modular models, a single model can be separated across multiple files allow grouping of types and conditions into modules. This means a model can more easily be organized in terms of team or organizational structure and by using a feature such as <a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners" target="_blank" rel="noopener noreferrer">GitHub</a> or <a href="https://docs.gitlab.com/ee/user/project/codeowners/" target="_blank" rel="noopener noreferrer">GitLab</a> code owners, it should become easier to ensure the owners of an portion of your model are correctly assigned to review it.</p>
+<p>With modular models, a single model can be separated across multiple files allow grouping of types and conditions into modules. This means that a model can be organized more easily in terms of team or organizational structure. Used in conjunction with features such as <a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners" target="_blank" rel="noopener noreferrer">GitHub</a>, <a href="https://docs.gitlab.com/ee/user/project/codeowners/" target="_blank" rel="noopener noreferrer">GitLab</a> or <a href="https://docs.gitea.com/usage/code-owners" target="_blank" rel="noopener noreferrer">Gitea's</a> code owners. code owners, it should become easier to ensure the owners of an portion of your model are correctly assigned to review it.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="how-to-use-it">How to use it?<a href="https://openfga.dev/pr-preview/pr-697/blog/modular-models-announcement#how-to-use-it" class="hash-link" aria-label="Direct link to How to use it?" title="Direct link to How to use it?">​</a></h2>
-<p>Modular models is currently shipped as experimental while we gather feedback, in order to try it out.</p>
+<p>Modular models is currently shipped as an experimental feature while we gather feedback, in order for you to try it out.</p>
 <ul>
 <li>Download the <a href="https://github.com/openfga/cli/releases/tag/v0.3.0-beta.1" target="_blank" rel="noopener noreferrer">beta release</a> of the CLI<!-- -->
 <ul>
@@ -30,7 +30,7 @@
 </li>
 <li>Download <a href="https://github.com/openfga/openfga/releases/tag/v1.5.1" target="_blank" rel="noopener noreferrer">v1.5.1</a> of OpenFGA<!-- -->
 <ul>
-<li>As this is currently in RC you will need to start OpenFGA with <code>openfga run --experimental enable-modular-models</code>.</li>
+<li>As this is currently experimental, you will need to start OpenFGA with <code>openfga run --experimental enable-modular-models</code>.</li>
 </ul>
 </li>
 <li>Check out the modular models sample store in the <a href="https://github.com/openfga/sample-stores/tree/main/stores/modular" target="_blank" rel="noopener noreferrer">sample-stores repo</a></li>
