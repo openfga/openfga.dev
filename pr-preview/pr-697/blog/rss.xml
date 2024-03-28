@@ -35,7 +35,7 @@
 </li>
 <li>Check out the modular models sample store in the <a href="https://github.com/openfga/sample-stores/tree/main/stores/modular" target="_blank" rel="noopener noreferrer">sample-stores repo</a></li>
 <li>The latest version of VS Code contains support for modular models, so ensure you're updated</li>
-<li>Review the <a href="https://openfga.dev/pr-preview/pr-697/docs/modeling/modular-models">documentation for this feature</a></li>
+<li>Review the <a href="https://openfga.dev/docs/modeling/modular-models" target="_blank" rel="noopener noreferrer">documentation for this feature</a></li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="whats-next">What's next?<a href="https://openfga.dev/pr-preview/pr-697/blog/modular-models-announcement#whats-next" class="hash-link" aria-label="Direct link to What's next?" title="Direct link to What's next?">​</a></h2>
 <p>We intend to move this feature out of RC within the next few weeks, so as we gather feedback we'll deal with any issues that arise and look to improve upon any areas of the developer experience as needed.</p>
