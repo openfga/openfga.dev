@@ -23,18 +23,18 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="how-to-use-it">How to use it?<a href="https://openfga.dev/pr-preview/pr-697/blog/modular-models-announcement#how-to-use-it" class="hash-link" aria-label="Direct link to How to use it?" title="Direct link to How to use it?">​</a></h2>
 <p>Modular models is currently shipped as an experimental feature while we gather feedback, in order for you to try it out.</p>
 <ul>
-<li>Download the <a href="https://github.com/openfga/cli/releases/tag/v0.3.0-beta.1" target="_blank" rel="noopener noreferrer">beta release</a> of the CLI<!-- -->
+<li>Update to the <a href="https://github.com/openfga/cli/releases/tag/v0.3.0" target="_blank" rel="noopener noreferrer">v0.3.0 release</a> of the CLI<!-- -->
 <ul>
 <li>With the CLI you will be able to write your modular model and test it against a store file you have, but you will not be able to write your model to any OpenFGA server that does not enable this feature.</li>
 </ul>
 </li>
+<li>Update to <a href="https://github.com/openfga/vscode-ext/releases/tag/v0.2.20" target="_blank" rel="noopener noreferrer">v0.2.20</a> of the VS Code Extension</li>
 <li>Download <a href="https://github.com/openfga/openfga/releases/tag/v1.5.1" target="_blank" rel="noopener noreferrer">v1.5.1</a> of OpenFGA<!-- -->
 <ul>
 <li>As this is currently experimental, you will need to start OpenFGA with <code>openfga run --experimental enable-modular-models</code>.</li>
 </ul>
 </li>
 <li>Check out the modular models sample store in the <a href="https://github.com/openfga/sample-stores/tree/main/stores/modular" target="_blank" rel="noopener noreferrer">sample-stores repo</a></li>
-<li>The latest version of VS Code contains support for modular models, so ensure you're updated</li>
 <li>Review the <a href="https://openfga.dev/docs/modeling/modular-models" target="_blank" rel="noopener noreferrer">documentation for this feature</a></li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="whats-next">What's next?<a href="https://openfga.dev/pr-preview/pr-697/blog/modular-models-announcement#whats-next" class="hash-link" aria-label="Direct link to What's next?" title="Direct link to What's next?">​</a></h2>
