@@ -21,12 +21,12 @@ With modular models, a single model can be separated across multiple files allow
 
 Modular models is currently shipped as an experimental feature while we gather feedback, in order for you to try it out.
 
-* Download the [beta release](https://github.com/openfga/cli/releases/tag/v0.3.0-beta.1) of the CLI
+* Update to the [v0.3.0 release](https://github.com/openfga/cli/releases/tag/v0.3.0) of the CLI
   * With the CLI you will be able to write your modular model and test it against a store file you have, but you will not be able to write your model to any OpenFGA server that does not enable this feature.
+* Update to [v0.2.20](https://github.com/openfga/vscode-ext/releases/tag/v0.2.20) of the VS Code Extension
 * Download [v1.5.1](https://github.com/openfga/openfga/releases/tag/v1.5.1) of OpenFGA
   * As this is currently experimental, you will need to start OpenFGA with `openfga run --experimental enable-modular-models`.
 * Check out the modular models sample store in the [sample-stores repo](https://github.com/openfga/sample-stores/tree/main/stores/modular)
-* The latest version of VS Code contains support for modular models, so ensure you're updated
 * Review the [documentation for this feature](https://openfga.dev/docs/modeling/modular-models)
 
 ## What's next?

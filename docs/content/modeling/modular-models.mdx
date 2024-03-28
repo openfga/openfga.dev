@@ -188,3 +188,18 @@ We can then write tuples and query this model as you would expect with a singula
 />
 
 <CheckRequestViewer user={'user:anne'} relation={'can_create_space'} object={'organization:acme'} allowed={true} />
+
+### Viewing the model
+
+When viewing the combined model DSL via the CLI with `fga model get --store-id=$FGA_STORE_ID`, the DSL will be annotated with comments defining the source module and file for types, relations and conditions.
+
+For example, if we look specifically at the `organization` type we can see that the type is defined in the `core.fga` file as part of the `core` module, and then the `can_create_project` relation is defined in `issue-tracker/projects.fga` as part of the `issuer-tracker` module and the `can_create_space` relation is defined in the `wiki.fga` file as part of the `wiki` module.
+
+```dsl.openfga
+type organization # module: core, file: core.fga
+  relations
+    define admin: [user]
+    define member: [user] or admin
+    define can_create_project: admin # extended by: module: issue-tracker, file: issue-tracker/projects.fga
+    define can_create_space: admin # extended by: module: wiki, file: wiki.fga
+```
