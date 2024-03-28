@@ -113,7 +113,7 @@ Once you add that relationship tuple to <ProductName format={ProductNameFormat.S
 
 <CheckRequestViewer user={'user:bob'} relation={'editor'} object={'document:meeting_notes.doc'} allowed={true} />
 
-Checking whether `bob` is an `editor` of `document:meeting_notes.doc` returns **false** because that relationship tuple does not exist in <ProductName format={ProductNameFormat.ShortForm}/> yet.
+Checking whether `bob` is an `viewer` of `document:meeting_notes.doc` returns **false** because that relationship tuple does not exist in <ProductName format={ProductNameFormat.ShortForm}/> yet.
 
 <CheckRequestViewer user={'user:bob'} relation={'viewer'} object={'document:meeting_notes.doc'} allowed={false} />
 
