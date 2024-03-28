@@ -33,7 +33,7 @@ Modular models is currently shipped as an experimental feature while we gather f
 
 We intend to move this feature out of RC within the next few weeks, so as we gather feedback we'll deal with any issues that arise and look to improve upon any areas of the developer experience as needed.
 
-Looking beyond the near term, modular models allows us to start evaluating other features such as per-module authorization (a.k.a FGA-on-FGA) that would allow providing restrictions on what applications can write tuples for or run queries against.
+Looking beyond the near term, modular models allows us to implement [additional API authorization options for OpenFGA](https://github.com/openfga/roadmap/issues/30).
 
 ## Reach out!
 
