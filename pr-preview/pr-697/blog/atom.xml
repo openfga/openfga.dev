@@ -38,7 +38,7 @@
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="whats-next">What's next?<a href="https://openfga.dev/pr-preview/pr-697/blog/modular-models-announcement#whats-next" class="hash-link" aria-label="Direct link to What's next?" title="Direct link to What's next?">​</a></h2>
 <p>We intend to move this feature out of RC within the next few weeks, so as we gather feedback we'll deal with any issues that arise and look to improve upon any areas of the developer experience as needed.</p>
-<p>Looking beyond the near term, modular models allows us to start evaluating other features such as per-module authorization (a.k.a FGA-on-FGA) that would allow providing restrictions on what applications can write tuples for or run queries against.</p>
+<p>Looking beyond the near term, modular models allows us to implement <a href="https://github.com/openfga/roadmap/issues/30" target="_blank" rel="noopener noreferrer">additional API authorization options for OpenFGA</a>.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="reach-out">Reach out!<a href="https://openfga.dev/pr-preview/pr-697/blog/modular-models-announcement#reach-out" class="hash-link" aria-label="Direct link to Reach out!" title="Direct link to Reach out!">​</a></h2>
 <p>We want to learn how you use this feature and how we can improve it!</p>
 <p>Please reach out through our <a href="https://openfga.dev/community" target="_blank" rel="noopener noreferrer">community channels</a> with any questions or feedback.</p>]]></content>
