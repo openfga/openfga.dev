@@ -28,9 +28,9 @@ Also, thanks to everyone who stopped by the OpenFGA Kiosk in the Project Pavilio
 
 ## CNCF incubation
 
-As you may know, the CNCF has three stages for projects: Sandbox, Incubating, and Graduated. OpenFGA is currently a Sandbox project.
+As you may know, the CNCF has three stages for projects: Sandbox, Incubation, and Graduation. OpenFGA is currently a Sandbox project.
 
-We are very happy to announce that we just [applied for Incubation](https://github.com/cncf/toc/pull/1276)!. We are excited about this step and will keep you posted on the progress.
+We are very happy to announce that we just [applied for Incubation](https://github.com/cncf/toc/pull/1276)! We are excited about this step and will keep you posted on the progress.
 
 ## New Adopters
 
@@ -70,8 +70,8 @@ We also shipped new version of our SDKs with several fixes:
 
 ## Transitioning from Discord to CNCF's Slack
 
-As we mentioned in the last edition, we transitioned out from Discord for OpenFGA and are now using the CNCF [OpenFGA Slack channel](https://cloud-native.slack.com/archives/C06G1NNH47N). If you are not part of the CNCF Slack workspace, you need to join the [CNCF Slack](https://slack.cncf.io) first.
+As we mentioned in the last edition, we transitioned out from Discord for OpenFGA and are now using the CNCF [#openfga Slack channel](https://cloud-native.slack.com/archives/C06G1NNH47N). If you are not part of the CNCF Slack workspace, you need to join the [CNCF Slack](https://slack.cncf.io) first.
 
 ## See you next month!
 
-Fine Grained News are published every month. If you have any feedback, you want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!
+Fine Grained News are published every month. If you have any feedback, want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!
