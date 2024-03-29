@@ -2,7 +2,7 @@
 title: Modular Models
 description: Modular Models 
 slug: modular-models-announcement
-date: 2024-04-21
+date: 2024-03-29
 authors: eharris
 tags: [openfga,features]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -15,7 +15,7 @@ Modular models aims to improve the model authoring experience when multiple team
 - A model can grow large and difficult to understand
 - As more teams begin to contribute to a model, the ownership boundaries may not be clear and code review processes might not scale
 
-With modular models, a single model can be separated across multiple files allow grouping of types and conditions into modules. This means that a model can be organized more easily in terms of team or organizational structure. Used in conjunction with features such as [GitHub](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners), [GitLab](https://docs.gitlab.com/ee/user/project/codeowners/) or [Gitea's](https://docs.gitea.com/usage/code-owners) code owners. code owners, it should become easier to ensure the owners of an portion of your model are correctly assigned to review it.
+With modular models, a single model can be separated across multiple files allow grouping of types and conditions into modules. This means that a model can be organized more easily in terms of team or organizational structure. Used in conjunction with features such as [GitHub](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners), [GitLab](https://docs.gitlab.com/ee/user/project/codeowners/) or [Gitea's](https://docs.gitea.com/usage/code-owners) code owners, it should become easier to ensure the owners of a portion of your model are correctly assigned to review it.
 
 ## How to use it?
 
