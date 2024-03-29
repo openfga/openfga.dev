@@ -8,7 +8,8 @@ const { PrismExtensions } = tools;
 
 const languageDefinition = {
   ...PrismExtensions.languageDefinition,
-  [OpenFgaDslThemeTokenType.KEYWORD]: /\b(type|relations|define|and|or|but not|from|as|model|schema|condition)\b/,
+  [OpenFgaDslThemeTokenType.KEYWORD]:
+    /\b(type|relations|define|and|or|but not|from|as|model|schema|condition|module|extend)\b/,
   condition: {
     pattern: /(\bcondition\s+)\w+/i,
     lookbehind: true,
