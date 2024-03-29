@@ -71,8 +71,8 @@
 </ul>
 <p>Also, thanks to everyone who stopped by the OpenFGA Kiosk in the Project Pavilion to share their feedback about the project or learn more about it!</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="cncf-incubation">CNCF incubation<a href="https://openfga.dev/pr-preview/pr-706/blog/fine-grained-news-2024-03#cncf-incubation" class="hash-link" aria-label="Direct link to CNCF incubation" title="Direct link to CNCF incubation">​</a></h2>
-<p>As you may know, the CNCF has three stages for projects: Sandbox, Incubating, and Graduated. OpenFGA is currently a Sandbox project.</p>
-<p>We are very happy to announce that we just <a href="https://github.com/cncf/toc/pull/1276" target="_blank" rel="noopener noreferrer">applied for Incubation</a>!. We are excited about this step and will keep you posted on the progress.</p>
+<p>As you may know, the CNCF has three stages for projects: Sandbox, Incubation, and Graduation. OpenFGA is currently a Sandbox project.</p>
+<p>We are very happy to announce that we just <a href="https://github.com/cncf/toc/pull/1276" target="_blank" rel="noopener noreferrer">applied for Incubation</a>! We are excited about this step and will keep you posted on the progress.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="new-adopters">New Adopters<a href="https://openfga.dev/pr-preview/pr-706/blog/fine-grained-news-2024-03#new-adopters" class="hash-link" aria-label="Direct link to New Adopters" title="Direct link to New Adopters">​</a></h2>
 <p>The OpenFGA community <a href="https://github.com/openfga/community/blob/main/ADOPTERS.md" target="_blank" rel="noopener noreferrer">maintains a list</a> of products/projects/companies that are using OpenFGA in production. We'd like to thank thank the following adopters for adding themselves to the list in the last month:</p>
 <ul>
@@ -111,9 +111,9 @@
 <li><a href="https://github.com/openfga/java-sdk/releases/tag/v0.4.0" target="_blank" rel="noopener noreferrer">Java SDK v0.4.0</a></li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="transitioning-from-discord-to-cncfs-slack">Transitioning from Discord to CNCF's Slack<a href="https://openfga.dev/pr-preview/pr-706/blog/fine-grained-news-2024-03#transitioning-from-discord-to-cncfs-slack" class="hash-link" aria-label="Direct link to Transitioning from Discord to CNCF's Slack" title="Direct link to Transitioning from Discord to CNCF's Slack">​</a></h2>
-<p>As we mentioned in the last edition, we transitioned out from Discord for OpenFGA and are now using the CNCF <a href="https://cloud-native.slack.com/archives/C06G1NNH47N" target="_blank" rel="noopener noreferrer">OpenFGA Slack channel</a>. If you are not part of the CNCF Slack workspace, you need to join the <a href="https://slack.cncf.io/" target="_blank" rel="noopener noreferrer">CNCF Slack</a> first.</p>
+<p>As we mentioned in the last edition, we transitioned out from Discord for OpenFGA and are now using the CNCF <a href="https://cloud-native.slack.com/archives/C06G1NNH47N" target="_blank" rel="noopener noreferrer">#openfga Slack channel</a>. If you are not part of the CNCF Slack workspace, you need to join the <a href="https://slack.cncf.io/" target="_blank" rel="noopener noreferrer">CNCF Slack</a> first.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="see-you-next-month">See you next month!<a href="https://openfga.dev/pr-preview/pr-706/blog/fine-grained-news-2024-03#see-you-next-month" class="hash-link" aria-label="Direct link to See you next month!" title="Direct link to See you next month!">​</a></h2>
-<p>Fine Grained News are published every month. If you have any feedback, you want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!</p>]]></content:encoded>
+<p>Fine Grained News are published every month. If you have any feedback, want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!</p>]]></content:encoded>
             <category>newsletter</category>
         </item>
         <item>
