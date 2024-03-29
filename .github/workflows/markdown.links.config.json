@@ -47,6 +47,9 @@
 	  },
 	  {
 		"pattern": "https://calendar.google.com"
+	  },
+	  {
+		"pattern": "https://openfga.dev/docs/modeling/modular-models"
 	  }
 	],
 	"httpHeaders": [

@@ -206,6 +206,11 @@ const sidebars = {
           id: 'content/modeling/testing-models',
         },
         {
+          type: 'doc',
+          label: "Modular Models",
+          id: 'content/modeling/modular-models',
+        },
+        {
           type: 'category',
           collapsed: true,
           collapsible: true,
