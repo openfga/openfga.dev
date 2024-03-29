@@ -50,6 +50,80 @@
         <category label="features" term="features"/>
     </entry>
     <entry>
+        <title type="html"><![CDATA[Fine Grained News - March 2024]]></title>
+        <id>https://openfga.dev/blog/fine-grained-news-2024-03</id>
+        <link href="https://openfga.dev/blog/fine-grained-news-2024-03"/>
+        <updated>2024-03-28T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Fine Grained News]]></summary>
+        <content type="html"><![CDATA[<p>Welcome to Fine Grained News, KubeCon Edition!</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="kubecon-europe-2024-was-super-busy">KubeCon Europe 2024 was super-busy!<a href="https://openfga.dev/blog/fine-grained-news-2024-03#kubecon-europe-2024-was-super-busy" class="hash-link" aria-label="Direct link to KubeCon Europe 2024 was super-busy!" title="Direct link to KubeCon Europe 2024 was super-busy!">​</a></h2>
+<p>You can now watch online:</p>
+<ul>
+<li>
+<p>An AppDeveloperCon session about <a href="https://www.youtube.com/watch?v=5NkJHeToEwo" target="_blank" rel="noopener noreferrer">Implementing Modern Cloud Native Authorization Using OpenFGA</a> where <a href="https://github.com/paulinejamin" target="_blank" rel="noopener noreferrer">Pauline Jamin</a> and <a href="https://github.com/aaguiarz" target="_blank" rel="noopener noreferrer">Andres Aguiar</a> go over how OpenFGA is helping Agicap to implement fine-grained authorization.</p>
+</li>
+<li>
+<p>A 7-min Lightning Talk about <a href="https://www.youtube.com/watch?v=K7Me3OjFxJ0" target="_blank" rel="noopener noreferrer">OpenFGA: The Cloud Native way to implement Fine Grained Authorization</a>.</p>
+</li>
+<li>
+<p><a href="https://www.linkedin.com/in/jonathan-whitaker-5a8b2484/" target="_blank" rel="noopener noreferrer">Jonathan Whitaker</a>'s talk about <a href="https://www.youtube.com/watch?v=UaK1EnRgrng" target="_blank" rel="noopener noreferrer">Federated IAM for Kubernetes with OpenFGA</a>, demoing how to use OpenFGA and KeyCloak to implement fine-grained authorization in a Kubernetes cluster, in ways it's not possible today, like giving access to a user for 90 seconds.</p>
+</li>
+<li>
+<p>We also participated in <a href="https://app.myonvent.com/event/operator-day" target="_blank" rel="noopener noreferrer">Canonical's Operator Day</a> sharing how Canonical is using OpenFGA, but the presentation is not online yet.</p>
+</li>
+</ul>
+<p>Also, thanks to everyone who stopped by the OpenFGA Kiosk in the Project Pavilion to share their feedback about the project or learn more about it!</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="cncf-incubation">CNCF incubation<a href="https://openfga.dev/blog/fine-grained-news-2024-03#cncf-incubation" class="hash-link" aria-label="Direct link to CNCF incubation" title="Direct link to CNCF incubation">​</a></h2>
+<p>As you may know, the CNCF has three stages for projects: Sandbox, Incubation, and Graduation. OpenFGA is currently a Sandbox project.</p>
+<p>We are very happy to announce that we just <a href="https://github.com/cncf/toc/pull/1276" target="_blank" rel="noopener noreferrer">applied for Incubation</a>! We are excited about this step and will keep you posted on the progress.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="new-adopters">New Adopters<a href="https://openfga.dev/blog/fine-grained-news-2024-03#new-adopters" class="hash-link" aria-label="Direct link to New Adopters" title="Direct link to New Adopters">​</a></h2>
+<p>The OpenFGA community <a href="https://github.com/openfga/community/blob/main/ADOPTERS.md" target="_blank" rel="noopener noreferrer">maintains a list</a> of products/projects/companies that are using OpenFGA in production. We'd like to thank thank the following adopters for adding themselves to the list in the last month:</p>
+<ul>
+<li><a href="https://www.instill.tech/" target="_blank" rel="noopener noreferrer">Instill AI</a></li>
+<li><a href="https://zuplo.com/" target="_blank" rel="noopener noreferrer">Zuplo</a></li>
+<li><a href="https://openobserve.ai/" target="_blank" rel="noopener noreferrer">OpenObserve</a></li>
+<li><a href="https://datum.net/" target="_blank" rel="noopener noreferrer">Datum</a></li>
+</ul>
+<p>If you are using OpenFGA in production, please consider adding your company/project to the list.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="community-news">Community News<a href="https://openfga.dev/blog/fine-grained-news-2024-03#community-news" class="hash-link" aria-label="Direct link to Community News" title="Direct link to Community News">​</a></h2>
+<ul>
+<li>
+<p><a href="https://github.com/rhamzeh/" target="_blank" rel="noopener noreferrer">Raghd Hamzeh</a> represented OpenFGA in an <a href="https://www.youtube.com/watch?v=VyHbFwfrf04" target="_blank" rel="noopener noreferrer">episode on Authorizing Access</a> within a series called "You Choose - Choose Your Own Adventure: The Treacherous Trek to Security”. This episode was comparing OpenFGA with Hexa and Paralus. OpenFGA was the project viewers voted for as most interested in being featured in a demo.</p>
+</li>
+<li>
+<p><a href="https://github.com/Sambego" target="_blank" rel="noopener noreferrer">Sam Bellen</a> published a <a href="https://github.com/Sambego/fga-drive-example/" target="_blank" rel="noopener noreferrer">Google Drive example</a> using OpenFGA. It's a Next.js project, written in TypeScript and ready to deploy on Vercel.</p>
+</li>
+<li>
+<p><a href="https://github.com/bytefish" target="_blank" rel="noopener noreferrer">Philipp Wagner</a> is working on a <a href="https://github.com/bytefish/gitclub-dotnet" target="_blank" rel="noopener noreferrer">.NET example</a> inspired by the Github model.</p>
+</li>
+<li>
+<p><a href="https://github.com/paulinejamin" target="_blank" rel="noopener noreferrer">Pauline Jamin</a> and <a href="https://github.com/geoffroybraun" target="_blank" rel="noopener noreferrer">Geoffroy Braun</a> will present about <a href="https://www.devoxx.fr/schedule/talk/?id=42356" target="_blank" rel="noopener noreferrer">Infuser du métier dans les autorisations avec ReBAC</a> at <a href="https://www.devoxx.fr/" target="_blank" rel="noopener noreferrer">Devoxx France 2024</a> in April 17th.</p>
+</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="new-releases">New Releases<a href="https://openfga.dev/blog/fine-grained-news-2024-03#new-releases" class="hash-link" aria-label="Direct link to New Releases" title="Direct link to New Releases">​</a></h2>
+<p>We just shipped a <a href="https://openfga.dev/blog/modular-models-announcement" target="_blank" rel="noopener noreferrer">release candidate of Modular Models</a>, that makes it easy for multiple teams to collaborate in a single OpenFGA model. It requires the following components:</p>
+<ul>
+<li><a href="https://github.com/openfga/js-sdk/releases/tag/v0.3.5" target="_blank" rel="noopener noreferrer">OpenFGA v.1.5.1</a></li>
+<li><a href="https://github.com/openfga/cli/releases/tag/v0.3.0" target="_blank" rel="noopener noreferrer">CLI v0.3.0</a></li>
+<li><a href="https://github.com/openfga/vscode-ext/releases/tag/v0.2.20" target="_blank" rel="noopener noreferrer">Visual Studio Code Extension v0.2.20</a></li>
+</ul>
+<p>We also shipped new version of our SDKs with several fixes:</p>
+<ul>
+<li><a href="https://github.com/openfga/js-sdk/releases/tag/v0.3.5" target="_blank" rel="noopener noreferrer">Javascript SDK 0.3.5</a>.</li>
+<li><a href="https://github.com/openfga/go-sdk/releases/tag/v0.3.5" target="_blank" rel="noopener noreferrer">Go SDK v0.3.5</a></li>
+<li><a href="https://github.com/openfga/java-sdk/releases/tag/v0.4.0" target="_blank" rel="noopener noreferrer">Java SDK v0.4.0</a></li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="transitioning-from-discord-to-cncfs-slack">Transitioning from Discord to CNCF's Slack<a href="https://openfga.dev/blog/fine-grained-news-2024-03#transitioning-from-discord-to-cncfs-slack" class="hash-link" aria-label="Direct link to Transitioning from Discord to CNCF's Slack" title="Direct link to Transitioning from Discord to CNCF's Slack">​</a></h2>
+<p>As we mentioned in the last edition, we transitioned out from Discord for OpenFGA and are now using the CNCF <a href="https://cloud-native.slack.com/archives/C06G1NNH47N" target="_blank" rel="noopener noreferrer">#openfga Slack channel</a>. If you are not part of the CNCF Slack workspace, you need to join the <a href="https://slack.cncf.io/" target="_blank" rel="noopener noreferrer">CNCF Slack</a> first.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="see-you-next-month">See you next month!<a href="https://openfga.dev/blog/fine-grained-news-2024-03#see-you-next-month" class="hash-link" aria-label="Direct link to See you next month!" title="Direct link to See you next month!">​</a></h2>
+<p>Fine Grained News are published every month. If you have any feedback, want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!</p>]]></content>
+        <author>
+            <name>Andres Aguiar</name>
+            <uri>https://github.com/aaguiarz</uri>
+        </author>
+        <category label="newsletter" term="newsletter"/>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[Fine Grained News - February 2024]]></title>
         <id>https://openfga.dev/blog/fine-grained-news-2024-02</id>
         <link href="https://openfga.dev/blog/fine-grained-news-2024-02"/>
