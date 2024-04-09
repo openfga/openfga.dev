@@ -331,7 +331,7 @@ Delete all tuples from a store by reading all the tuples first and then deleting
 ```bash
 # Reads all the tuples and outputs them in a json format that can be used by 'fga tuple delete' and 'fga tuple write'.
 
-$ fga tuple read --simple-output --max-pages 0    > tuples.json
+$ fga tuple read --output-format=simple-json --max-pages 0    > tuples.json
 $ fga tuple delete --file  tuples.json
 ```
 
