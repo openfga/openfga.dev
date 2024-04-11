@@ -232,7 +232,7 @@ OpenFGA is configured with an HTTP health check endpoint `/healthz` and a gRPC h
 <TabItem value={"health-curl"} label={"cURL"}>
 
 ```shell
-curl -X GET $FGA_API_HOST/healthz
+curl -X GET $FGA_API_URL/healthz
 
 # {"status":"SERVING"}
 ```
@@ -243,7 +243,7 @@ curl -X GET $FGA_API_HOST/healthz
 
 ```shell
 # See https://github.com/fullstorydev/grpcurl#installation
-grpcurl -plaintext $FGA_API_HOST grpc.health.v1.Health/Check
+grpcurl -plaintext $FGA_API_URL grpc.health.v1.Health/Check
 
 # {"status":"SERVING"}
 ```

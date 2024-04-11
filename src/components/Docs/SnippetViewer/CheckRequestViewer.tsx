@@ -47,7 +47,7 @@ ${
 # Response: {"allowed":${allowed}}`;
     case SupportedLanguage.CURL:
       /* eslint-disable max-len */
-      return `curl -X POST $FGA_SERVER_URL/stores/$FGA_STORE_ID/check \\
+      return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/check \\
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
   -d '{"authorization_model_id": "${modelId}", "tuple_key":{"user":"${user}","relation":"${relation}","object":"${object}"}${

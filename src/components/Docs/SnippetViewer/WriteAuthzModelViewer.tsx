@@ -14,7 +14,7 @@ function writeAuthZModelViewerCli(authorizationModel: AuthorizationModel): strin
 }
 
 function writeAuthZModelViewerCurl(authorizationModel: AuthorizationModel): string {
-  return `curl -X POST $FGA_SERVER_URL/stores/$FGA_STORE_ID/authorization-models \\
+  return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/authorization-models \\
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
   -d '${JSON.stringify(authorizationModel)}'`;

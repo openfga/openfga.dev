@@ -156,7 +156,7 @@ fga store create --name "FGA Demo Store"
 <TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
 
 ```shell
-curl -X POST $FGA_API_HOST/stores \
+curl -X POST $FGA_API_URL/stores \
   -H "content-type: application/json" \
   -d '{"name": "FGA Demo Store"}'
 ```

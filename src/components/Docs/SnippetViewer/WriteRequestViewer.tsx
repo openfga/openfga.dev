@@ -68,7 +68,7 @@ ${
       const writes = `"writes": { "tuple_keys" : [${writeTuples}] }`;
       const deletes = `"deletes": { "tuple_keys" : [${deleteTuples}] }`;
       const separator = `${opts.deleteRelationshipTuples && opts.relationshipTuples ? ',' : ''}`;
-      return `curl -X POST $FGA_SERVER_URL/stores/$FGA_STORE_ID/write \\
+      return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/write \\
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
   -d '{${opts.relationshipTuples ? writes : ''}${separator}${
