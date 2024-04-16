@@ -388,7 +388,7 @@ Above, `document` <ProductConcept section="what-is-a-type-definition" linkName="
 
 :::info
 
-`can_rename` does not reference the [direct relationship type restrictions](#the-direct-relationship-type-restrictions), which means a user cannot be directly assigned this relation and it must inherited when the `editor` relation is assigned. Conversely, the `viewer` relation allows both direct and indirect relationships using the [Union Operator](#the-union-operator).
+`can_rename` does not reference the [direct relationship type restrictions](#the-direct-relationship-type-restrictions), which means a user cannot be directly assigned this relation and it must be inherited when the `editor` relation is assigned. Conversely, the `viewer` relation allows both direct and indirect relationships using the [Union Operator](#the-union-operator).
 
 :::
 
@@ -1013,7 +1013,7 @@ The following snippet:
                   },
                 },
                 {
-                  // a user that is an viewer on any of the object's parents is also implicitly a viewer on the object
+                  // a user that is a viewer on any of the object's parents is also implicitly a viewer on the object
                   tupleToUserset: {
                     tupleset: {
                       relation: 'parent',

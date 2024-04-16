@@ -402,7 +402,7 @@ To add support for teams and memberships all we need to do is add this object to
   }}
 />
 
-In addition, the repo's relations should be add team member as a directly related user types.
+In addition, the repo's relations should have team member as a directly related user types.
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -714,7 +714,7 @@ We can now make Erik a member of contoso and make contoso own **contoso/tooling*
   ]}
 />
 
-What we still lack is the ability to create "default permissions" for the organization and have those be considered when determining if a user has a particular relation to a repository. Let's start with the simplest case **admin**. We want to say that a user is a admin of a repo if either:
+What we still lack is the ability to create "default permissions" for the organization and have those be considered when determining if a user has a particular relation to a repository. Let's start with the simplest case **admin**. We want to say that a user is an admin of a repo if either:
 
 - [done] they have a repo admin relation (directly or through team membership)
 - [pending] their organization is configured with **repo_admin** as the base permission
