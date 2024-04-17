@@ -347,7 +347,7 @@
 <table><thead><tr><th>user</th><th>relation</th><th>object</th><th>context</th><th>result</th></tr></thead><tbody><tr><td>user<!-- -->:anne</td><td>viewer</td><td>document:1</td><td><code>current_time</code> : <code>2023-01-01T00:10:00Z</code></td><td><code>objects</code>: <code>[ "document:1"]</code></td></tr><tr><td>user<!-- -->:anne</td><td>viewer</td><td>document:1</td><td></td><td><code>error</code>: "failed to evaluate relationship condition 'non_expired_grant': tuple 'document:1#viewer@user<!-- -->:anne<!-- -->' is missing context parameters '[current_time]'</td></tr></tbody></table>
 <p>Note that:</p>
 <ul>
-<li><code>user:bob</code> will always get <code>allowed:true</code> as we has assigned as as viewer unconditionally.</li>
+<li><code>user:bob</code> will always get <code>allowed:true</code> as we have assigned as viewer unconditionally.</li>
 <li><code>user:anne</code> will get <code>allowed:true</code> if the <code>current_time</code> is before the <code>grant_time</code> + <code>grant_duration</code> and <code>allowed:false</code> otherwise.</li>
 <li>If you don't provide the <code>current_time</code> in the context, the Check and ListObjects operations will fail.</li>
 </ul>
