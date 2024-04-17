@@ -47,7 +47,7 @@ authn:
 ## Using environment variables
 
 The OpenFGA server supports **environment variables** for configuration, and they will take priority over your configuration file.
-Each variable must be prefixed with `OPENFGA_` and followed by your option in uppercase (e.g `--grpc-tls-key` becomes `OPENFGA_GRPC_TLS_KEY`).
+Each variable must be prefixed with `OPENFGA_` and followed by your option in uppercase (e.g. `--grpc-tls-key` becomes `OPENFGA_GRPC_TLS_KEY`).
 
 ## Using command line variables
 
@@ -81,7 +81,7 @@ openfga run
     --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
 ```
 
-To learn how to run in in Docker, check our [Docker documentation](./docker-setup.mdx#using-postgres).
+To learn how to run in Docker, check our [Docker documentation](./docker-setup.mdx#using-postgres).
 ### MySQL
 
 The MySQL datastore has stricter limits for the max length of some fields for tuples compared to other datastore engines, in particular:
@@ -102,7 +102,7 @@ openfga run \
     --datastore-uri 'root:secret@tcp(mysql:3306)/openfga?parseTime=true'
 ```
 
-To learn how to run in in Docker, check our [Docker documentation](./docker-setup.mdx#using-mysql).
+To learn how to run in Docker, check our [Docker documentation](./docker-setup.mdx#using-mysql).
 
 ## Configuring Authentication
 
@@ -150,7 +150,7 @@ http:
 </TabItem>
 </Tabs>
 
-To learn how to run in in Docker, check our [Docker documentation](./docker-setup.mdx#pre-shared-key-authentication).
+To learn how to run in Docker, check our [Docker documentation](./docker-setup.mdx#pre-shared-key-authentication).
 
 ### OIDC
 
@@ -196,7 +196,7 @@ http:
 
 </Tabs>
 
-To learn how to run in in Docker, check our [Docker documentation](./docker-setup.mdx#oidc-authentication).
+To learn how to run in Docker, check our [Docker documentation](./docker-setup.mdx#oidc-authentication).
 
 ## Profiler (pprof)
 :::caution Warning

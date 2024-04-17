@@ -186,7 +186,7 @@ but if the current time is outside the grant window then you get a deny decision
   ]}
 />
 
-Similarly, we can use the [ListObjects API](https://openfga.dev/api/service#/Relationship%20Queries/ListObjects) to return all of the documents that `user:anne` has viewer access to given the current time. For example,
+Similarly, we can use the [ListObjects API](https://openfga.dev/api/service#/Relationship%20Queries/ListObjects) to return all of the documents that `user:anne` has viewer access given the current time. For example,
 
 <ListObjectsRequestViewer
   objectType="document"
@@ -260,8 +260,8 @@ Note that some of the types support generics, these types are indicated with `<T
 ## Limitations
 * The size of the condition `context` parameter that can be written alongside a relationship tuple is limited to 32KB in size.
 
-* The size of the condition `context` parameter for query requests (e.g. Check, ListObjects, etc..) is not explicitly limited, but the OpenFGA server has an overall request size limit of 512KB at this time.
+* The size of the condition `context` parameter for query requests (e.g. Check, ListObjects, etc.) is not explicitly limited, but the OpenFGA server has an overall request size limit of 512KB at this time.
 
-* We're still working on the changes to support Conditions in the official FGA CLI and various OpenFGA SDKs including: .NET and Python. At this moment you cannot Write conditional relationship tuples with these tools and/or query (e.g. Check, ListObjects, etc..) OpenFGA with condition context.
+* We're still working on the changes to support Conditions in the official FGA CLI and various OpenFGA SDKs including: .NET and Python. At this moment you cannot Write conditional relationship tuples with these tools and/or query (e.g. Check, ListObjects, etc.) OpenFGA with condition context.
 
 * We enforce a maximum Google CEL expression evaluation cost of 100 (by default) to protect the server from malicious conditions. The evaluation cost of a CEL expression is a function of the size the input that is being compared and the composition of the expression. For more general information please see the official [Language Definition for Google CEL](https://github.com/google/cel-spec/blob/master/doc/langdef.md). If you hit these limits with practical use-cases, please reach out to the maintainer team and we can discuss.
