@@ -22,7 +22,7 @@ function readChangesRequestViewer(lang: SupportedLanguage, opts: ReadChangesRequ
       const tokenString = `${opts.continuationToken ? '"continuation_token": "' + opts.continuationToken + '", ' : ''}`;
       // eslint-disable-next-line max-len
       const pageSizeString = `${opts.pageSize ? '"page_size": ' + opts.pageSize : ''}`;
-      return `curl -X POST $FGA_SERVER_URL/stores/$FGA_STORE_ID/changes \\
+      return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/changes \\
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
   -d '{${typeString}${tokenString}${pageSizeString}}'`;

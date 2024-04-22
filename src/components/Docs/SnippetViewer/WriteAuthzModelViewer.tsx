@@ -14,7 +14,7 @@ function writeAuthZModelViewerCli(authorizationModel: AuthorizationModel): strin
 }
 
 function writeAuthZModelViewerCurl(authorizationModel: AuthorizationModel): string {
-  return `curl -X POST $FGA_SERVER_URL/stores/$FGA_STORE_ID/authorization-models \\
+  return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/authorization-models \\
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
   -d '${JSON.stringify(authorizationModel)}'`;
@@ -27,7 +27,7 @@ const { authorization_model_id: id } = await fgaClient.writeAuthorizationModel($
     null,
     2,
   )});
-// id = "1uHxCSuTP0VKPYSnkq1pbb1jeZw"`;
+// id = "01HVMMBCMGZNT3SED4Z17ECXCA"`;
 }
 
 function writeAuthZModelViewerGo(authorizationModel: AuthorizationModel): string {
@@ -48,7 +48,7 @@ function writeAuthZModelViewerGo(authorizationModel: AuthorizationModel): string
       // .. Handle error
   }
 
-  // data.AuthorizationModelId = "1uHxCSuTP0VKPYSnkq1pbb1jeZw"`;
+  // data.AuthorizationModelId = "01HVMMBCMGZNT3SED4Z17ECXCA"`;
 }
 
 function writeAuthZModelViewerDotnet(authorizationModel: AuthorizationModel): string {
@@ -57,7 +57,7 @@ function writeAuthZModelViewerDotnet(authorizationModel: AuthorizationModel): st
   var body = JsonSerializer.Deserialize<OpenFga.Sdk.Model.WriteAuthorizationModelRequest>(modelJson);
 
   var response = await fgaClient.WriteAuthorizationModel(body);
-  // response.AuthorizationModelId = "1uHxCSuTP0VKPYSnkq1pbb1jeZw"`;
+  // response.AuthorizationModelId = "01HVMMBCMGZNT3SED4Z17ECXCA"`;
 }
 
 function writeAuthZModelViewerPython(authorizationModel: AuthorizationModel): string {
@@ -67,7 +67,7 @@ function writeAuthZModelViewerPython(authorizationModel: AuthorizationModel): st
 async def write_authorization_model():
     body_string = ${JSON.stringify(JSON.stringify(authorizationModel))}
     response = await fga_client_instance.write_authorization_model(json.loads(body))
-    # response.authorization_model_id = "1uHxCSuTP0VKPYSnkq1pbb1jeZw"
+    # response.authorization_model_id = "01HVMMBCMGZNT3SED4Z17ECXCA"
 `;
 }
 

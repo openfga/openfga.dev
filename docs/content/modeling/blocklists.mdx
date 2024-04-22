@@ -206,7 +206,7 @@ Now we can add relationship tuples indicating that a certain user is `blocked` f
 
 ### 02. Modify Our Model So Users Who Are Blocked Can No Longer Edit The Document
 
-Now that we can mark users as `blocked` from editing documents, we need to support denying the `editor` relationship when a user is `blocked`. We do that by modifying the relation definition of `editor`, and making use of the [**the exclusion operator**](../configuration-language.mdx#the-exclusion-operator) to exclude the set of `blocked` users, as we can see here:
+Now that we can mark users as `blocked` from editing documents, we need to support denying the `editor` relationship when a user is `blocked`. We do that by modifying the relation definition of `editor`, and making use of the [**exclusion operator**](../configuration-language.mdx#the-exclusion-operator) to exclude the set of `blocked` users, as we can see here:
 
 <AuthzModelSnippetViewer
   configuration={{

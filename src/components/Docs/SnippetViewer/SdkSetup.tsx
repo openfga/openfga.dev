@@ -35,7 +35,7 @@ export function sdkSetupHeader(lang: SupportedLanguage, languageMappings: Langua
   switch (lang) {
     case SupportedLanguage.CURL:
     case SupportedLanguage.CLI:
-      return `Set FGA_SERVER_URL according to the service you are using (e.g. https://api.fga.example)
+      return `Set FGA_API_URL according to the service you are using (e.g. https://api.fga.example)
 `;
 
     case SupportedLanguage.JS_SDK:
@@ -159,11 +159,11 @@ export function GenerateSetupHeader(lang: SupportedLanguage, skipSetup?: boolean
       break;
     case SupportedLanguage.CLI:
       content = sdkSetupHeader(SupportedLanguage.CLI, configuredLanguage);
-      summary = 'Set FGA_SERVER_URL according to the service you are using (e.g. https://api.fga.example)';
+      summary = 'Set FGA_API_URL according to the service you are using (e.g. https://api.fga.example)';
       break;
     case SupportedLanguage.CURL:
       content = sdkSetupHeader(SupportedLanguage.CURL, configuredLanguage);
-      summary = 'Set FGA_SERVER_URL according to the service you are using (e.g. https://api.fga.example)';
+      summary = 'Set FGA_API_URL according to the service you are using (e.g. https://api.fga.example)';
       break;
 
     case SupportedLanguage.PLAYGROUND:
