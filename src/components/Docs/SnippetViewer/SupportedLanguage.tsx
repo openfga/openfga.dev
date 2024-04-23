@@ -71,4 +71,4 @@ export interface LanguageMappings {
   [key: string]: LanguageMapping;
 }
 
-export const DefaultAuthorizationModelId = '1uHxCSuTP0VKPYSnkq1pbb1jeZw';
+export const DefaultAuthorizationModelId = '01HVMMBCMGZNT3SED4Z17ECXCA';

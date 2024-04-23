@@ -582,7 +582,7 @@ Why? This relation definition states:
   `{ user: {user-id}, relation: "member", object: "organization:{id}" }`
 
 :::info Important
-Relation definitions of the form “define \{relation\}: [user, organization#member]" are fairly common. They are used to express that relationships "to the object with that relation" (e.g. "users" of type user or "member of organization") can be assigned by your system and that only the users that have that relation are those with a [direct relationship](./building-blocks/direct-relationships.mdx).
+Relation definitions of the form "define \{relation\}: [user, organization#member]" are fairly common. They are used to express that relationships "to the object with that relation" (e.g. "users" of type user or "member of organization") can be assigned by your system and that only the users that have that relation are those with a [direct relationship](./building-blocks/direct-relationships.mdx).
 :::
 
 You can read more about group membership and types in [Modeling User Groups](./user-groups.mdx).
@@ -644,7 +644,7 @@ The complete <ProductConcept section="what-is-a-type-definition" linkName="type 
 
 After defining your "group" like types, continue with the most important type for the feature: the one that allows the main use case. In this case "document", since the main use case for users is to create, write, read and collaborate on documents.
 
-Defining relations for the main type lets you to focus on your core use case, and will likely make other type definitions easier.
+Defining relations for the main type lets you focus on your core use case, and will likely make other type definitions easier.
 
 ##### Relation: Owner
 
