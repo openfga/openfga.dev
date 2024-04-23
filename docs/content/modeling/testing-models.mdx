@@ -43,7 +43,7 @@ model: |
   type user
 
   type organization
-     relations:
+     relations
        define member : [user]
        define admin : [user with non_expired_grant]
 
