@@ -19,7 +19,7 @@ With modular models, a single model can be separated across multiple files allow
 
 ## How to use it?
 
-Modular models is available in the last version of OpenFGA. To use it you need to:
+Modular models is available in the latest version of OpenFGA. To use it you need to:
 
 * Update to the [v0.3.0 release](https://github.com/openfga/cli/releases/tag/v0.3.0) of the CLI
 * Update to [v0.2.21](https://github.com/openfga/vscode-ext/releases/tag/v0.2.21) of the VS Code Extension
