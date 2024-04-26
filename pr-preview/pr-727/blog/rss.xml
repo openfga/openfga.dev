@@ -21,7 +21,7 @@
 </ul>
 <p>With modular models, a single model can be separated across multiple files allow grouping of types and conditions into modules. This means that a model can be organized more easily in terms of team or organizational structure. Used in conjunction with features such as <a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners" target="_blank" rel="noopener noreferrer">GitHub</a>, <a href="https://docs.gitlab.com/ee/user/project/codeowners/" target="_blank" rel="noopener noreferrer">GitLab</a> or <a href="https://docs.gitea.com/usage/code-owners" target="_blank" rel="noopener noreferrer">Gitea's</a> code owners, it should become easier to ensure the owners of a portion of your model are correctly assigned to review it.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="how-to-use-it">How to use it?<a href="https://openfga.dev/pr-preview/pr-727/blog/modular-models-announcement#how-to-use-it" class="hash-link" aria-label="Direct link to How to use it?" title="Direct link to How to use it?">​</a></h2>
-<p>Modular models is available in the last version of OpenFGA. To use it you need to:</p>
+<p>Modular models is available in the latest version of OpenFGA. To use it you need to:</p>
 <ul>
 <li>Update to the <a href="https://github.com/openfga/cli/releases/tag/v0.3.0" target="_blank" rel="noopener noreferrer">v0.3.0 release</a> of the CLI</li>
 <li>Update to <a href="https://github.com/openfga/vscode-ext/releases/tag/v0.2.21" target="_blank" rel="noopener noreferrer">v0.2.21</a> of the VS Code Extension</li>
