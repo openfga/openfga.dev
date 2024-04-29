@@ -74,7 +74,7 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
   type: "${objectType}",${
     contextualTuples?.length
       ? `
-  contextual_tuples: {
+      contextualTuples: {
     tuple_keys: [${contextualTuples
       .map(
         (tupleKey) => `{
