@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://openfga.dev/pr-preview/pr-726/blog</id>
     <title>OpenFGA Blog</title>
-    <updated>2024-03-29T00:00:00.000Z</updated>
+    <updated>2024-04-25T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://openfga.dev/pr-preview/pr-726/blog"/>
     <subtitle>OpenFGA Blog</subtitle>
@@ -11,7 +11,7 @@
         <title type="html"><![CDATA[Modular Models]]></title>
         <id>https://openfga.dev/pr-preview/pr-726/blog/modular-models-announcement</id>
         <link href="https://openfga.dev/pr-preview/pr-726/blog/modular-models-announcement"/>
-        <updated>2024-03-29T00:00:00.000Z</updated>
+        <updated>2024-04-25T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[Modular Models]]></summary>
         <content type="html"><![CDATA[<p>Modular models aims to improve the model authoring experience when multiple teams are maintaining a model, such as:</p>
 <ul>
@@ -20,24 +20,16 @@
 </ul>
 <p>With modular models, a single model can be separated across multiple files allow grouping of types and conditions into modules. This means that a model can be organized more easily in terms of team or organizational structure. Used in conjunction with features such as <a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners" target="_blank" rel="noopener noreferrer">GitHub</a>, <a href="https://docs.gitlab.com/ee/user/project/codeowners/" target="_blank" rel="noopener noreferrer">GitLab</a> or <a href="https://docs.gitea.com/usage/code-owners" target="_blank" rel="noopener noreferrer">Gitea's</a> code owners, it should become easier to ensure the owners of a portion of your model are correctly assigned to review it.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="how-to-use-it">How to use it?<a href="https://openfga.dev/pr-preview/pr-726/blog/modular-models-announcement#how-to-use-it" class="hash-link" aria-label="Direct link to How to use it?" title="Direct link to How to use it?">​</a></h2>
-<p>Modular models is currently shipped as an experimental feature while we gather feedback, in order for you to try it out.</p>
+<p>Modular models is available in the latest version of OpenFGA. To use it you need to:</p>
 <ul>
-<li>Update to the <a href="https://github.com/openfga/cli/releases/tag/v0.3.0" target="_blank" rel="noopener noreferrer">v0.3.0 release</a> of the CLI<!-- -->
-<ul>
-<li>With the CLI you will be able to write your modular model and test it against a store file you have, but you will not be able to write your model to any OpenFGA server that does not enable this feature.</li>
-</ul>
-</li>
-<li>Update to <a href="https://github.com/openfga/vscode-ext/releases/tag/v0.2.20" target="_blank" rel="noopener noreferrer">v0.2.20</a> of the VS Code Extension</li>
-<li>Download <a href="https://github.com/openfga/openfga/releases/tag/v1.5.1" target="_blank" rel="noopener noreferrer">v1.5.1</a> of OpenFGA<!-- -->
-<ul>
-<li>As this is currently experimental, you will need to start OpenFGA with <code>openfga run --experimental enable-modular-models</code>.</li>
-</ul>
-</li>
+<li>Update to the <a href="https://github.com/openfga/cli/releases/tag/v0.3.0" target="_blank" rel="noopener noreferrer">v0.3.0 release</a> of the CLI</li>
+<li>Update to <a href="https://github.com/openfga/vscode-ext/releases/tag/v0.2.21" target="_blank" rel="noopener noreferrer">v0.2.21</a> of the VS Code Extension</li>
+<li>Download <a href="https://github.com/openfga/openfga/releases/tag/v1.5.3" target="_blank" rel="noopener noreferrer">v1.5.3</a> of OpenFGA</li>
 <li>Check out the modular models sample store in the <a href="https://github.com/openfga/sample-stores/tree/main/stores/modular" target="_blank" rel="noopener noreferrer">sample-stores repo</a></li>
 <li>Review the <a href="https://openfga.dev/docs/modeling/modular-models" target="_blank" rel="noopener noreferrer">documentation for this feature</a></li>
+<li>Check a <a href="https://youtu.be/oeqroL8-wCQ" target="_blank" rel="noopener noreferrer">demo video in Youtube</a></li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="whats-next">What's next?<a href="https://openfga.dev/pr-preview/pr-726/blog/modular-models-announcement#whats-next" class="hash-link" aria-label="Direct link to What's next?" title="Direct link to What's next?">​</a></h2>
-<p>We intend to move this feature out of RC within the next few weeks, so as we gather feedback we'll deal with any issues that arise and look to improve upon any areas of the developer experience as needed.</p>
 <p>Looking beyond the near term, modular models allows us to implement <a href="https://github.com/openfga/roadmap/issues/30" target="_blank" rel="noopener noreferrer">additional API authorization options for OpenFGA</a>.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="reach-out">Reach out!<a href="https://openfga.dev/pr-preview/pr-726/blog/modular-models-announcement#reach-out" class="hash-link" aria-label="Direct link to Reach out!" title="Direct link to Reach out!">​</a></h2>
 <p>We want to learn how you use this feature and how we can improve it!</p>
