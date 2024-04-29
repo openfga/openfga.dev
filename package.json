@@ -35,17 +35,17 @@
     "clsx": "2.1.1",
     "path-browserify": "1.0.1",
     "prism-react-renderer": "2.3.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
     "react-feather": "2.0.10",
     "sanitize-html": "2.13.0",
-    "swagger-ui-react": "5.17.0"
+    "swagger-ui-react": "5.17.2"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.2.1",
     "@tsconfig/docusaurus": "2.0.3",
     "@types/prismjs": "1.26.3",
-    "@types/react": "18.2.79",
+    "@types/react": "18.3.1",
     "@types/react-router-dom": "5.3.3",
     "@types/sanitize-html": "2.11.0",
     "@typescript-eslint/eslint-plugin": "7.7.1",
