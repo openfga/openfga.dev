@@ -27,7 +27,7 @@ We have plans to add a Streaming variant to this endpoint, which will allow you 
 Our roadmap looks as follows:
 
 1. Release candidate with experimental flag (now)
-2. Addition of Streaming variant,
+2. Addition of Streaming variant plus any fixes,
 3. Stable release with experimental flag,
 4. Stable release without experimental flag.
 
