@@ -16,9 +16,9 @@ This API will answer the question "what users have relation X with object Y?". T
 
 ## How to use it?
 
-ListUsers is available in the latest Release Candidate version of OpenFGA. To use it you need to download [v1.5.4-rc1](https://github.com/openfga/openfga/releases/tag/v1.5.4-rc1) of OpenFGA and enable the endpoint via the flag `--experimentals enable-list-users`. 
+ListUsers is available in the latest Release Candidate version of OpenFGA: [v1.5.4-rc1](https://github.com/openfga/openfga/releases/tag/v1.5.4-rc1).
 
-Be sure to check out the various configuration flags that were added, too.
+To be able to call this API, you must turn on this flag: `--experimentals enable-list-users`. Be sure to also check out the various configuration flags that were added to control its behavior.
 
 ## What's next?
 
