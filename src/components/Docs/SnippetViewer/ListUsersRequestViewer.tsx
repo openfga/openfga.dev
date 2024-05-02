@@ -20,7 +20,16 @@ interface ListUsersRequestViewerOpts {
 }
 
 function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestViewerOpts): string {
-  const { relation, objectType, objectId, userFilterType, userFilterRelation, contextualTuples, context, expectedResults } = opts;
+  const {
+    relation,
+    objectType,
+    objectId,
+    userFilterType,
+    userFilterRelation,
+    contextualTuples,
+    context,
+    expectedResults,
+  } = opts;
   const modelId = opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId;
 
   const response = `{"users": [${expectedResults.users.map((r) => JSON.stringify(r)).join(', ')}],"excluded_users":[${expectedResults.users.map((r) => JSON.stringify(r)).join(', ')}]}`;
@@ -29,8 +38,7 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
     case SupportedLanguage.PLAYGROUND:
       return `# Note: List Users is not currently supported on the playground`;
     case SupportedLanguage.CLI:
-
-      return `fga query list-users --store-id=\${FGA_STORE_ID} --model-id=${modelId} --object ${objectType}:${objectId} --relation ${relation} --user-filter ${userFilterType}${userFilterRelation ? `#${userFilterRelation}`: ""} ${
+      return `fga query list-users --store-id=\${FGA_STORE_ID} --model-id=${modelId} --object ${objectType}:${objectId} --relation ${relation} --user-filter ${userFilterType}${userFilterRelation ? `#${userFilterRelation}` : ''} ${
         contextualTuples
           ? `${contextualTuples
               .map((tuple) => ` --contextual-tuple "${tuple.user} ${tuple.relation} ${tuple.object}"`)
@@ -53,8 +61,12 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
         "relation": "${relation}",
         "user_filters": [
           { 
-            "type": "${userFilterType}"${userFilterRelation ? `,
-            "relation": "${userFilterRelation}"` : ""}
+            "type": "${userFilterType}"${
+              userFilterRelation
+                ? `,
+            "relation": "${userFilterRelation}"`
+                : ''
+            }
           }
         ]${
           contextualTuples
@@ -81,15 +93,18 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
 # Response: ${response}`;
     /* eslint-enable max-len */
     case SupportedLanguage.JS_SDK:
-
       return `const response = await fgaClient.listUsers({
   object: {
     type: "${objectType}",
     id: "${objectId}"
   },
   user_filters: [{
-    type: "${userFilterType}"${userFilterRelation ? `,
-    relation: "${userFilterRelation}"` : ""}
+    type: "${userFilterType}"${
+      userFilterRelation
+        ? `,
+    relation: "${userFilterRelation}"`
+        : ''
+    }
   }],
   relation: "${relation}",${
     contextualTuples?.length
@@ -115,15 +130,15 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
 }, {
   authorization_model_id: "${modelId}",
 });
-// response.getUsers() = ${expectedResults.users.map(u => JSON.stringify(u)).join(",")}
-// response.getExcludedUsers() = ${expectedResults.excluded_users.map(u => JSON.stringify(u)).join(",")}`;
+// response.getUsers() = ${expectedResults.users.map((u) => JSON.stringify(u)).join(',')}
+// response.getExcludedUsers() = ${expectedResults.excluded_users.map((u) => JSON.stringify(u)).join(',')}`;
     case SupportedLanguage.GO_SDK:
       /* eslint-disable no-tabs */
       return `options := ClientListUsersOptions{
     AuthorizationModelId: PtrString("${modelId}"),
 }
 
-userFilters := []openfga.UserTypeFilter{{ Type:"${userFilterType}"${userFilterRelation ? `,Relation:${userFilterRelation} ` : " "}}}
+userFilters := []openfga.UserTypeFilter{{ Type:"${userFilterType}"${userFilterRelation ? `,Relation:${userFilterRelation} ` : ' '}}}
 
 body := ClientListUsersRequest{
     Object:       openfga.Object{
@@ -179,9 +194,13 @@ var body = new ClientListUsersRequest {
     Relation = "${relation}",
     UserFilters = new List<UserTypeFilter> {
       new() {
-        Type = "${userFilterType}"${userFilterRelation ? `
+        Type = "${userFilterType}"${
+          userFilterRelation
+            ? `
         Relation = "${userFilterRelation}"
-        ` : ""}
+        `
+            : ''
+        }
       }
     }${
       contextualTuples
@@ -204,15 +223,15 @@ var body = new ClientListUsersRequest {
 
 var response = await fgaClient.ListUsers(body, options);
 
-// response.Users = [${expectedResults.users.map(u => JSON.stringify(u)).join(",")}]
-// response.ExcludedUsers = [${expectedResults.excluded_users.map(u => JSON.stringify(u)).join(",")}]`;
+// response.Users = [${expectedResults.users.map((u) => JSON.stringify(u)).join(',')}]
+// response.ExcludedUsers = [${expectedResults.excluded_users.map((u) => JSON.stringify(u)).join(',')}]`;
     case SupportedLanguage.PYTHON_SDK:
       return `
 options = {
     "authorization_model_id": "${modelId}"
 }
 
-userFilters=[UserTypeFilter(type="${userFilterType}"${userFilterRelation ? `, relation="${userFilterRelation}"` : ""})]
+userFilters=[UserTypeFilter(type="${userFilterType}"${userFilterRelation ? `, relation="${userFilterRelation}"` : ''})]
 
 body = ClientListUsersRequest(
     object=FgaObject(type="${objectId}, id="${objectId}"),
@@ -244,8 +263,8 @@ body = ClientListUsersRequest(
 
 response = await fga_client.list_objects(body, options)
 
-# response.users = [${expectedResults.users.map(u => JSON.stringify(u)).join(",")}]
-# response.excludedUsers = [${expectedResults.excluded_users.map(u => JSON.stringify(u)).join(",")}]`;
+# response.users = [${expectedResults.users.map((u) => JSON.stringify(u)).join(',')}]
+# response.excludedUsers = [${expectedResults.excluded_users.map((u) => JSON.stringify(u)).join(',')}]`;
     case SupportedLanguage.RPC:
       return `listUsers(
   "${objectId}", // list the objects that the user \`${objectId}\`
@@ -289,7 +308,7 @@ Reply: ${response}`;
 
 var userFilters = new ArrayList<UserTypeFilter>() {
   {
-      add(new UserTypeFilter().type("${userFilterType}")${userFilterRelation ? `.relation("${userFilterRelation}")` : ""});
+      add(new UserTypeFilter().type("${userFilterType}")${userFilterRelation ? `.relation("${userFilterRelation}")` : ''});
   }
 };
 
@@ -301,8 +320,8 @@ var body = new ClientListUsersRequest()
 
 var response = fgaClient.listUsers(body, options).get();
 
-// response.getUsers() = [${expectedResults.users.map(u => JSON.stringify(u)).join(",")}]
-// response.getExcludedUsers() = [${expectedResults.excluded_users.map(u => JSON.stringify(u)).join(",")}]`;
+// response.getUsers() = [${expectedResults.users.map((u) => JSON.stringify(u)).join(',')}]
+// response.getExcludedUsers() = [${expectedResults.excluded_users.map((u) => JSON.stringify(u)).join(',')}]`;
     }
     default:
       assertNever(lang);
