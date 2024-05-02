@@ -1,0 +1,190 @@
+---
+title: Perform a List Users call
+sidebar_position: 4
+slug: /getting-started/perform-list-users
+description: List all users that have a certain relation with a particular object
+---
+
+import {
+  SupportedLanguage,
+  languageLabelMap,
+  ListUsersRequestViewer,
+  DocumentationNotice,
+  ProductConcept,
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+  SdkSetupHeader,
+  SdkSetupPrerequisite,
+} from '@components/Docs';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Perform a List Users call
+
+:::caution Warning
+ListUsers is currently in an experimental release. Read [the announcement](https://openfga.dev/blog/list-users-announcement) for more information.
+:::
+
+<DocumentationNotice />
+
+This section will illustrate how to perform a <ProductConcept section="what-is-a-list-users-request" linkName="list users" /> request to determine all the <ProductConcept section="what-is-a-user" linkName="users" /> of a given <ProductConcept section="what-is-a-type" linkName="type" /> that have a specified <ProductConcept section="what-is-a-relationship" linkName="relationship" /> with a given <ProductConcept section="what-is-an-object" linkName="objects" />.
+
+## Before You Start
+
+<Tabs groupId="languages">
+
+<TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](./install-sdk.mdx).
+3. You have [configured the _authorization model_](./configure-model.mdx) and [updated the _relationship tuples_](./update-tuples.mdx).
+4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+
+</TabItem>
+
+<TabItem value={SupportedLanguage.GO_SDK} label={languageLabelMap.get(SupportedLanguage.GO_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](./install-sdk.mdx).
+3. You have [configured the _authorization model_](./configure-model.mdx) and [updated the _relationship tuples_](./update-tuples.mdx).
+4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+
+</TabItem>
+
+<TabItem value={SupportedLanguage.DOTNET_SDK} label={languageLabelMap.get(SupportedLanguage.DOTNET_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](./install-sdk.mdx).
+3. You have [configured the _authorization model_](./configure-model.mdx) and [updated the _relationship tuples_](./update-tuples.mdx).
+4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+
+</TabItem>
+
+<TabItem value={SupportedLanguage.PYTHON_SDK} label={languageLabelMap.get(SupportedLanguage.PYTHON_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](./install-sdk.mdx).
+3. You have [configured the _authorization model_](./configure-model.mdx) and [updated the _relationship tuples_](./update-tuples.mdx).
+4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+
+</TabItem>
+
+<TabItem value={SupportedLanguage.JAVA_SDK} label={languageLabelMap.get(SupportedLanguage.JAVA_SDK)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [installed the SDK](./install-sdk.mdx).
+3. You have [configured the _authorization model_](./configure-model.mdx) and [updated the _relationship tuples_](./update-tuples.mdx).
+4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+
+</TabItem>
+
+<TabItem value={SupportedLanguage.CLI} label={languageLabelMap.get(SupportedLanguage.CLI)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [configured the _authorization model_](./configure-model.mdx).
+3. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+
+</TabItem>
+
+<TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
+
+1. <SdkSetupPrerequisite />
+2. You have [configured the _authorization model_](./configure-model.mdx) and [updated the _relationship tuples_](./update-tuples.mdx).
+3. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+
+</TabItem>
+</Tabs>
+
+## Step By Step
+
+Assume that you want to list all objects of type document that  user `anne` has `reader` relationship with:
+
+### 01. Configure the <ProductName format={ProductNameFormat.ShortForm}/> API Client
+
+Before calling the check API, you will need to configure the API client.
+
+<Tabs groupId="languages">
+<TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
+
+<SdkSetupHeader lang={SupportedLanguage.JS_SDK} />
+
+</TabItem>
+<TabItem value={SupportedLanguage.GO_SDK} label={languageLabelMap.get(SupportedLanguage.GO_SDK)}>
+
+<SdkSetupHeader lang={SupportedLanguage.GO_SDK} />
+
+</TabItem>
+<TabItem value={SupportedLanguage.DOTNET_SDK} label={languageLabelMap.get(SupportedLanguage.DOTNET_SDK)}>
+
+<SdkSetupHeader lang={SupportedLanguage.DOTNET_SDK} />
+
+</TabItem>
+<TabItem value={SupportedLanguage.PYTHON_SDK} label={languageLabelMap.get(SupportedLanguage.PYTHON_SDK)}>
+
+<SdkSetupHeader lang={SupportedLanguage.PYTHON_SDK} />
+
+</TabItem>
+<TabItem value={SupportedLanguage.JAVA_SDK} label={languageLabelMap.get(SupportedLanguage.JAVA_SDK)}>
+
+<SdkSetupHeader lang={SupportedLanguage.JAVA_SDK} />
+
+</TabItem>
+<TabItem value={SupportedLanguage.CLI} label={languageLabelMap.get(SupportedLanguage.CLI)}>
+
+<SdkSetupHeader lang={SupportedLanguage.CLI} />
+
+</TabItem>
+<TabItem value={SupportedLanguage.CURL} label={languageLabelMap.get(SupportedLanguage.CURL)}>
+
+To obtain the [access token](https://auth0.com/docs/get-started/authentication-and-authorization-flow/call-your-api-using-the-client-credentials-flow):
+
+<SdkSetupHeader lang={SupportedLanguage.CURL} />
+
+</TabItem>
+</Tabs>
+
+### 02. Calling List Objects API
+
+To return all documents that user `user:anne` has relationship `reader` with:
+
+<ListUsersRequestViewer
+  authorizationModelId="01HVMMBCMGZNT3SED4Z17ECXCA"
+  objectType="document"
+  objectId="planning"
+  relation="reader"
+  userFilterType="user"
+  expectedResults={{
+    users: [{ object: { type: "user:anne" } }],
+    excluded_users: [{ object: { type: "user:beth" } }]
+  }}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
+    SupportedLanguage.CLI,
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+The result `document:otherdoc` and `document:planning` are the document objects that `user:anne` has `reader` relationship with.
+
+:::caution Warning
+The performance characteristics of the ListUsers endpoint vary drastically depending on the model complexity, number of tuples, and the relations it needs to evaluate. Relations with 'and' or 'but not' are more expensive to evaluate than relations with 'or'.
+:::
+
+## Related Sections
+
+<RelatedSection
+  description="Take a look at the following section for more on how to perform list users in your system"
+  relatedLinks={[
+    {
+      title: '{ProductName} List Users API',
+      description: 'Read the List Users API documentation and see how it works.',
+      link: '/api/service#Relationship%20Queries/ListUsers',
+    },
+  ]}
+/>
