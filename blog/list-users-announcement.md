@@ -18,13 +18,19 @@ This API will answer the question "what users have relation X with object Y?". T
 
 ListUsers is available in the latest Release Candidate version of OpenFGA: [v1.5.4-rc1](https://github.com/openfga/openfga/releases/tag/v1.5.4-rc1).
 
-To be able to call this API, you must turn on this flag: `--experimentals enable-list-users`. Be sure to also check out the various configuration flags that were added to control its behavior.
+To be able to call this API, you must turn on this flag on the server: `--experimentals enable-list-users`. Be sure to also check out the various configuration flags that were added to control its behavior.
+
+You can also call this API via the SDKs:
+- [Java v0.4.2](https://github.com/openfga/java-sdk/releases/tag/v0.4.2)
+- [.NET v0.3.2](https://github.com/openfga/dotnet-sdk/releases/tag/v0.3.2)
+- [Go v0.3.6](https://github.com/openfga/go-sdk/releases/tag/v0.3.6)
+- [Javascript v0.4.0](https://github.com/openfga/js-sdk/releases/tag/v0.4.0)
 
 ## What's next?
 
 We have plans to add a Streaming variant to this endpoint, which will allow you to get real-time results, as soon as they become available.
 
-Our roadmap looks as follows:
+Our next steps look as follows:
 
 1. Release candidate with experimental flag (now)
 2. Addition of Streaming variant plus any fixes,
