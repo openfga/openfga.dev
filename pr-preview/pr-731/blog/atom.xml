@@ -17,10 +17,17 @@
 <p>This API will answer the question "what users have relation X with object Y?". This will be useful, for example, in UIs that want to display the list of users that a resource has been shared with, e.g. the "share" dialog in Google Docs.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="how-to-use-it">How to use it?<a href="https://openfga.dev/pr-preview/pr-731/blog/list-users-announcement#how-to-use-it" class="hash-link" aria-label="Direct link to How to use it?" title="Direct link to How to use it?">​</a></h2>
 <p>ListUsers is available in the latest Release Candidate version of OpenFGA: <a href="https://github.com/openfga/openfga/releases/tag/v1.5.4-rc1" target="_blank" rel="noopener noreferrer">v1.5.4-rc1</a>.</p>
-<p>To be able to call this API, you must turn on this flag: <code>--experimentals enable-list-users</code>. Be sure to also check out the various configuration flags that were added to control its behavior.</p>
+<p>To be able to call this API, you must turn on this flag on the server: <code>--experimentals enable-list-users</code>. Be sure to also check out the various configuration flags that were added to control its behavior.</p>
+<p>You can also call this API via the SDKs:</p>
+<ul>
+<li><a href="https://github.com/openfga/java-sdk/releases/tag/v0.4.2" target="_blank" rel="noopener noreferrer">Java v0.4.2</a></li>
+<li><a href="https://github.com/openfga/dotnet-sdk/releases/tag/v0.3.2" target="_blank" rel="noopener noreferrer">.NET v0.3.2</a></li>
+<li><a href="https://github.com/openfga/go-sdk/releases/tag/v0.3.6" target="_blank" rel="noopener noreferrer">Go v0.3.6</a></li>
+<li><a href="https://github.com/openfga/js-sdk/releases/tag/v0.4.0" target="_blank" rel="noopener noreferrer">Javascript v0.4.0</a></li>
+</ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="whats-next">What's next?<a href="https://openfga.dev/pr-preview/pr-731/blog/list-users-announcement#whats-next" class="hash-link" aria-label="Direct link to What's next?" title="Direct link to What's next?">​</a></h2>
 <p>We have plans to add a Streaming variant to this endpoint, which will allow you to get real-time results, as soon as they become available.</p>
-<p>Our roadmap looks as follows:</p>
+<p>Our next steps look as follows:</p>
 <ol>
 <li>Release candidate with experimental flag (now)</li>
 <li>Addition of Streaming variant plus any fixes,</li>
