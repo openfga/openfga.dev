@@ -34,7 +34,7 @@ We are working with the CNCF Tag-Security team on a [joint security assessment](
 
 - We'll be [instrumenting our SDKs](https://github.com/openfga/roadmap/issues/41) to provide metrics / tracing and logging through OpenTelemetry APIs.
 
-- We'll be adding [additional consistency option](https://github.com/openfga/roadmap/issues/54) for OpenFGA query APIs.
+- We'll be adding [additional consistency options](https://github.com/openfga/roadmap/issues/54) for OpenFGA query APIs.
 
 - We'll be working on adding [authorization for OpenFGA APIs](https://github.com/openfga/roadmap/issues/30).
 
