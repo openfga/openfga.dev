@@ -15,6 +15,7 @@
         <summary type="html"><![CDATA[List Users API]]></summary>
         <content type="html"><![CDATA[<p>Today we are launching a new API for OpenFGA: ListUsers.</p>
 <p>This API will answer the question "what users have relation X with object Y?". This will be useful, for example, in UIs that want to display the list of users that a resource has been shared with, e.g. the "share" dialog in Google Docs.</p>
+<p>You can read more about this API <a href="https://openfga.dev/api/service#/Relationship%20Queries/ListUsers" target="_blank" rel="noopener noreferrer">here</a>.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="how-to-use-it">How to use it?<a href="https://openfga.dev/pr-preview/pr-731/blog/list-users-announcement#how-to-use-it" class="hash-link" aria-label="Direct link to How to use it?" title="Direct link to How to use it?">​</a></h2>
 <p>ListUsers is available in the latest Release Candidate version of OpenFGA: <a href="https://github.com/openfga/openfga/releases/tag/v1.5.4-rc1" target="_blank" rel="noopener noreferrer">v1.5.4-rc1</a>.</p>
 <p>To be able to call this API, you must turn on this flag on the server: <code>--experimentals enable-list-users</code>. Be sure to also check out the various configuration flags that were added to control its behavior.</p>
