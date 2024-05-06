@@ -27,13 +27,13 @@
 <li><a href="https://github.com/openfga/js-sdk/releases/tag/v0.4.0" target="_blank" rel="noopener noreferrer">Javascript v0.4.0</a></li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="whats-next">What's next?<a href="https://openfga.dev/pr-preview/pr-731/blog/list-users-announcement#whats-next" class="hash-link" aria-label="Direct link to What's next?" title="Direct link to What's next?">​</a></h2>
-<p>We have plans to add a Streaming variant to this endpoint, which will allow you to get real-time results, as soon as they become available.</p>
 <p>Our next steps look as follows:</p>
 <ol>
 <li>Release candidate with experimental flag (now)</li>
-<li>Addition of Streaming variant plus any fixes,</li>
-<li>Stable release with experimental flag,</li>
-<li>Stable release without experimental flag.</li>
+<li>Any bug fixes</li>
+<li>Stable release with experimental flag</li>
+<li>Any performance improvements</li>
+<li>Stable release without experimental flag</li>
 </ol>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="we-want-your-feedback">We want your feedback!<a href="https://openfga.dev/pr-preview/pr-731/blog/list-users-announcement#we-want-your-feedback" class="hash-link" aria-label="Direct link to We want your feedback!" title="Direct link to We want your feedback!">​</a></h2>
 <p>We want to learn how you use this API and how we can improve it!</p>
