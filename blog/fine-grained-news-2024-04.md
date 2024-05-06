@@ -18,7 +18,7 @@ Welcome to Fine Grained News, April edition!
 
 - Thanks to the help provided by the [Spring Security team](https://github.com/spring-projects/spring-security/issues/14121) there's now a [Spring Boot Starter for OpenFGA](https://github.com/openfga/spring-boot-starter)!
 
-- OpenFGA now has a new ListUsers API, that can be enabled with an experimental flag. ListUsers allow to retrieve all the users that have a specific relation with a resource, for example, all users that can view a document. The feature is not yet supported in SDKs/CLI. Stay tuned!
+- We shipped an OpenFGA Release Candidate with [a new ListUsers API](https://openfga.dev/blog/list-users-announcement), that can be enabled with an experimental flag. ListUsers allow to retrieve all the users that have a specific relation with a resource, for example, all users that can view a document.
 
 ## OpenFGA Hackathon
 
