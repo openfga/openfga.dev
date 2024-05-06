@@ -42,14 +42,14 @@
     "swagger-ui-react": "5.17.2"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "3.2.1",
+    "@docusaurus/module-type-aliases": "3.3.2",
     "@tsconfig/docusaurus": "2.0.3",
     "@types/prismjs": "1.26.3",
     "@types/react": "18.3.1",
     "@types/react-router-dom": "5.3.3",
     "@types/sanitize-html": "2.11.0",
-    "@typescript-eslint/eslint-plugin": "7.7.1",
-    "@typescript-eslint/parser": "7.7.1",
+    "@typescript-eslint/eslint-plugin": "7.8.0",
+    "@typescript-eslint/parser": "7.8.0",
     "docusaurus-plugin-module-alias": "0.0.2",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
