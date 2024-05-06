@@ -28,14 +28,13 @@ You can also call this API via the SDKs:
 
 ## What's next?
 
-We have plans to add a Streaming variant to this endpoint, which will allow you to get real-time results, as soon as they become available.
-
 Our next steps look as follows:
 
 1. Release candidate with experimental flag (now)
-2. Addition of Streaming variant plus any fixes,
-3. Stable release with experimental flag,
-4. Stable release without experimental flag.
+2. Any bug fixes
+3. Stable release with experimental flag
+4. Any performance improvements
+5. Stable release without experimental flag
 
 ## We want your feedback!
 
