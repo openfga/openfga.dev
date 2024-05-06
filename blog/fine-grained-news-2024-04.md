@@ -14,7 +14,7 @@ Welcome to Fine Grained News, April edition!
 
 ## New Releases!
 
-- [Modular Models](https://openfga.dev/blog/modular-models-announcement) is now part of the OpenFGA core, making it easy for multiple teams to collaborate single OpenFGA model. Check it out, we love the feature! :)
+- [Modular Models](https://openfga.dev/blog/modular-models-announcement) is now part of the OpenFGA core, making it easy for multiple teams to collaborate on a single OpenFGA model. Check it out, we love the feature! :)
 
 - Thanks to the help provided by the [Spring Security team](https://github.com/spring-projects/spring-security/issues/14121) there's now a [Spring Boot Starter for OpenFGA](https://github.com/openfga/spring-boot-starter)!
 
