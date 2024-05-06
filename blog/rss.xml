@@ -9,6 +9,51 @@
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
         <item>
+            <title><![CDATA[Fine Grained News - April 2024]]></title>
+            <link>https://openfga.dev/blog/fine-grained-news-2024-04</link>
+            <guid>https://openfga.dev/blog/fine-grained-news-2024-04</guid>
+            <pubDate>Tue, 30 Apr 2024 00:00:00 GMT</pubDate>
+            <description><![CDATA[Fine Grained News]]></description>
+            <content:encoded><![CDATA[<p>Welcome to Fine Grained News, April edition!</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="new-releases">New Releases!<a href="https://openfga.dev/blog/fine-grained-news-2024-04#new-releases" class="hash-link" aria-label="Direct link to New Releases!" title="Direct link to New Releases!">​</a></h2>
+<ul>
+<li>
+<p><a href="https://openfga.dev/blog/modular-models-announcement" target="_blank" rel="noopener noreferrer">Modular Models</a> is now part of the OpenFGA core, making it easy for multiple teams to collaborate on a single OpenFGA model. Check it out, we love the feature! :)</p>
+</li>
+<li>
+<p>Thanks to the help provided by the <a href="https://github.com/spring-projects/spring-security/issues/14121" target="_blank" rel="noopener noreferrer">Spring Security team</a> there's now a <a href="https://github.com/openfga/spring-boot-starter" target="_blank" rel="noopener noreferrer">Spring Boot Starter for OpenFGA</a>!</p>
+</li>
+<li>
+<p>We shipped an OpenFGA Release Candidate with <a href="https://openfga.dev/blog/list-users-announcement" target="_blank" rel="noopener noreferrer">a new ListUsers API</a>, that can be enabled with an experimental flag. ListUsers allows you to retrieve all the users that have a specific relation with a resource, for example, all users that can view a document.</p>
+</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="openfga-hackathon">OpenFGA Hackathon<a href="https://openfga.dev/blog/fine-grained-news-2024-04#openfga-hackathon" class="hash-link" aria-label="Direct link to OpenFGA Hackathon" title="Direct link to OpenFGA Hackathon">​</a></h2>
+<p>A few weeks ago we hosted a Hackathon where multiple team members experimented new ideas around OpenFGA. You'll need to wait until the next <a href="https://github.com/openfga/community/blob/main/community-meetings.md" target="_blank" rel="noopener noreferrer">community meeting</a> to learn more :).</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="openfga-security-assessment">OpenFGA Security Assessment<a href="https://openfga.dev/blog/fine-grained-news-2024-04#openfga-security-assessment" class="hash-link" aria-label="Direct link to OpenFGA Security Assessment" title="Direct link to OpenFGA Security Assessment">​</a></h2>
+<p>We are working with the CNCF Tag-Security team on a <a href="https://github.com/cncf/tag-security/issues/1236" target="_blank" rel="noopener noreferrer">joint security assessment</a>, which is a step required to get accepted as a CNCF Incubation project.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="whats-next">What's Next<a href="https://openfga.dev/blog/fine-grained-news-2024-04#whats-next" class="hash-link" aria-label="Direct link to What's Next" title="Direct link to What's Next">​</a></h2>
+<ul>
+<li>
+<p>In collaboration with <a href="https://github.com/le-yams" target="_blank" rel="noopener noreferrer">Yann D'Isanto</a> we are building a <a href="https://github.com/le-yams/openfga4intellij" target="_blank" rel="noopener noreferrer">plugin for JetBrain's IDEs</a> to allow syntax coloring and validation of OpenFGA models. Together with the <a href="https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode" target="_blank" rel="noopener noreferrer">Visual Studio Code integration</a> and the <a href="https://github.com/matoous/tree-sitter-fga" target="_blank" rel="noopener noreferrer">Tree sitter grammar</a> from <a href="https://github.com/matoous/" target="_blank" rel="noopener noreferrer">Matouš Dzivjak</a> OpenFGA will get great coverage for major IDEs and editors.</p>
+</li>
+<li>
+<p>We'll be <a href="https://github.com/openfga/roadmap/issues/41" target="_blank" rel="noopener noreferrer">instrumenting our SDKs</a> to provide metrics / tracing and logging through OpenTelemetry APIs.</p>
+</li>
+<li>
+<p>We'll be adding <a href="https://github.com/openfga/roadmap/issues/54" target="_blank" rel="noopener noreferrer">additional consistency options</a> for OpenFGA query APIs.</p>
+</li>
+<li>
+<p>We'll be working on adding <a href="https://github.com/openfga/roadmap/issues/30" target="_blank" rel="noopener noreferrer">authorization for OpenFGA APIs</a>.</p>
+</li>
+</ul>
+<p>Please check the items above and let us know if you have any feedback or idea.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="transitioning-from-discord-to-cncfs-slack">Transitioning from Discord to CNCF's Slack<a href="https://openfga.dev/blog/fine-grained-news-2024-04#transitioning-from-discord-to-cncfs-slack" class="hash-link" aria-label="Direct link to Transitioning from Discord to CNCF's Slack" title="Direct link to Transitioning from Discord to CNCF's Slack">​</a></h2>
+<p>As we mentioned in the last edition, we transitioned out from Discord for OpenFGA and are now using the CNCF <a href="https://cloud-native.slack.com/archives/C06G1NNH47N" target="_blank" rel="noopener noreferrer">#openfga Slack channel</a>. If you are not part of the CNCF Slack workspace, you need to join the <a href="https://slack.cncf.io/" target="_blank" rel="noopener noreferrer">CNCF Slack</a> first.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="see-you-next-month">See you next month!<a href="https://openfga.dev/blog/fine-grained-news-2024-04#see-you-next-month" class="hash-link" aria-label="Direct link to See you next month!" title="Direct link to See you next month!">​</a></h2>
+<p>Fine Grained News are published every month. If you have any feedback, want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!</p>]]></content:encoded>
+            <category>newsletter</category>
+        </item>
+        <item>
             <title><![CDATA[List Users API]]></title>
             <link>https://openfga.dev/blog/list-users-announcement</link>
             <guid>https://openfga.dev/blog/list-users-announcement</guid>
