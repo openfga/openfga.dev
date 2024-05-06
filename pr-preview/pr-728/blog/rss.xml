@@ -18,7 +18,7 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="new-releases">New Releases!<a href="https://openfga.dev/pr-preview/pr-728/blog/fine-grained-news-2024-04#new-releases" class="hash-link" aria-label="Direct link to New Releases!" title="Direct link to New Releases!">​</a></h2>
 <ul>
 <li>
-<p><a href="https://openfga.dev/blog/modular-models-announcement" target="_blank" rel="noopener noreferrer">Modular Models</a> is now part of the OpenFGA core, making it easy for multiple teams to collaborate single OpenFGA model. Check it out, we love the feature! :)</p>
+<p><a href="https://openfga.dev/blog/modular-models-announcement" target="_blank" rel="noopener noreferrer">Modular Models</a> is now part of the OpenFGA core, making it easy for multiple teams to collaborate on a single OpenFGA model. Check it out, we love the feature! :)</p>
 </li>
 <li>
 <p>Thanks to the help provided by the <a href="https://github.com/spring-projects/spring-security/issues/14121" target="_blank" rel="noopener noreferrer">Spring Security team</a> there's now a <a href="https://github.com/openfga/spring-boot-starter" target="_blank" rel="noopener noreferrer">Spring Boot Starter for OpenFGA</a>!</p>
