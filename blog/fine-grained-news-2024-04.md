@@ -22,7 +22,7 @@ Welcome to Fine Grained News, April edition!
 
 ## OpenFGA Hackathon
 
-A few weeks ago we hosted a Hackathon where multiple team members experimented new ideas around OpenFGA. You can get a preview by checking [a few](https://github.com/openfga/cli/tree/feat/support-gherkin-syntax)branches but you'll need to wait until the next [community meeting](https://github.com/openfga/community/blob/main/community-meetings.md) to learn more :).
+A few weeks ago we hosted a Hackathon where multiple team members experimented new ideas around OpenFGA. You'll need to wait until the next [community meeting](https://github.com/openfga/community/blob/main/community-meetings.md) to learn more :).
 
 ## OpenFGA Security Assessment
 
