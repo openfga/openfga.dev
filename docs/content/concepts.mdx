@@ -604,9 +604,9 @@ A **list users request** is a call to the <ProductName format={ProductNameFormat
 
 </summary>
 
-List object requests are completed using the `listUsers` methods in the <ProductName format={ProductNameFormat.ShortForm}/> SDKs ([JavaScript SDK](https://www.npmjs.com/package/@openfga/sdk)/[Go SDK](https://github.com/openfga/go-sdk)/[.NET SDK](https://www.nuget.org/packages/OpenFga.Sdk)) by manually calling the [list users endpoint](/api/service#Relationship%20Queries/ListUsers) using curl or in your code.
+List users requests are completed using the `listUsers` methods in the <ProductName format={ProductNameFormat.ShortForm}/> SDKs ([JavaScript SDK](https://www.npmjs.com/package/@openfga/sdk)/[Go SDK](https://github.com/openfga/go-sdk)/[.NET SDK](https://www.nuget.org/packages/OpenFga.Sdk)) by manually calling the [list users endpoint](/api/service#Relationship%20Queries/ListUsers) using curl or in your code.
 
-The list users endpoint responds with a list of users and excluded users for a given type that have the specificed relationship with an Object.
+The list users endpoint responds with a list of users and excluded users for a given type that have the specificed relationship with an object.
 
 For example, the following returns all the users of type `user` that have the `viewer` relationship for `document:planning`:
 
