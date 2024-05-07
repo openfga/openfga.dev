@@ -14,15 +14,24 @@ import {
 
 <DocumentationNotice />
 
-The following list outlines some guidelines and best practices for running OpenFGA in a production environment:
+The following list outlines best practices for running OpenFGA in a production environment:
 
 - [Configure Authentication](./setup-openfga/docker-setup.mdx#configuring-authentication)
 - Enable HTTP TLS or gRPC TLS or both
-- Set the log.format to "json"
-- Set the log.level to "info"
-- [Disable the Playground](./setup-openfga/docker-setup.mdx#playground).
+- Set the log format to "json" and log level to "info"
+- [Disable the Playground](./setup-openfga/docker-setup.mdx#playground)
+- [Set Cluster](#cluster-recommendations)
 - [Set Database Options](#database-recommendations)
 - [Set Concurrency Limits](#concurrency-limits)
+
+## Cluster Recommendations
+
+We recommend:
+
+1. Turn on caching via the flag `--check-query-cache-enabled`. This will reduce latency of requests, but it will increase the staleness of OpenFGA's responses. (The TTL is configurable).
+2. Prefer having a small pool of servers with high capacity (memory and CPU cores) instead of a big pool of servers, to increase cache hit ratios and simplify pool management.
+3. Turn on metrics collection via the flags `--metrics-enabled` and `--datastore-metrics-enabled`. This will allow you to debug issues.
+4. Turn on tracing via the flag `--trace-enabled`, but set sampling ratio to a low value, for example `--trace-sample-ratio=0.3`. This will allow you to debug issues without overwhelming the tracing server. However, keep in mind that enabling tracing comes with a slight performance cost.
 
 ## Database Recommendations
 
