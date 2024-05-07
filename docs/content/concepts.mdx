@@ -592,7 +592,7 @@ For example, the following returns all the objects with document type for which 
   expectedResults={['document:otherdoc', 'document:planning']}
 />
 
-For more information, see the [Relationship Queries page](./interacting/relationship-queries.mdx) and the official [List Objects API Reference](/api/service#Relationship%20Queries/ListObjects).
+For more information, see the [Relationship Queries page](./interacting/relationship-queries.mdx) and the [List Objects API Reference](/api/service#Relationship%20Queries/ListObjects).
 
 </details>
 <details>
@@ -604,7 +604,7 @@ A **list users request** is a call to the <ProductName format={ProductNameFormat
 
 </summary>
 
-List users requests are completed using the `listUsers` methods in the <ProductName format={ProductNameFormat.ShortForm}/> SDKs ([JavaScript SDK](https://www.npmjs.com/package/@openfga/sdk)/[Go SDK](https://github.com/openfga/go-sdk)/[.NET SDK](https://www.nuget.org/packages/OpenFga.Sdk)) by manually calling the [list users endpoint](/api/service#Relationship%20Queries/ListUsers) using curl or in your code.
+List users requests are completed using the relevant `ListUsers` method in SDKs, the `fga query list-users` command in the CLI, or by manually calling the [ListUsers endpoint](/api/service#Relationship%20Queries/ListUsers) using curl or in your code.
 
 The list users endpoint responds with a list of users and excluded users for a given type that have the specificed relationship with an object.
 
@@ -622,7 +622,7 @@ For example, the following returns all the users of type `user` that have the `v
   }}
 />
 
-For more information, see the the official [List Users API Reference](/api/service#Relationship%20Queries/ListUsers).
+For more information, see the the [ListUsers API Reference](/api/service#Relationship%20Queries/ListUsers).
 
 </details>
 <details>

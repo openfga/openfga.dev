@@ -64,6 +64,7 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
             "type": "${userFilterType}"${
               userFilterRelation
                 ? `,
+,
             "relation": "${userFilterRelation}"`
                 : ''
             }
@@ -99,7 +100,7 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
     id: "${objectId}"
   },
   user_filters: [{
-    type: "${userFilterType}"${
+    type: "${userFilterType}",${
       userFilterRelation
         ? `,
     relation: "${userFilterRelation}"`
@@ -130,8 +131,8 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
 }, {
   authorization_model_id: "${modelId}",
 });
-// response.getUsers() = [${expectedResults.users.map((u) => JSON.stringify(u)).join(',')}]
-// response.getExcludedUsers() = p${expectedResults.excluded_users.map((u) => JSON.stringify(u)).join(',')}]`;
+// response.users = [${expectedResults.users.map((u) => JSON.stringify(u)).join(',')}]
+// response.excluded_users = p${expectedResults.excluded_users.map((u) => JSON.stringify(u)).join(',')}]`;
     case SupportedLanguage.GO_SDK:
       /* eslint-disable no-tabs */
       return `options := ClientListUsersOptions{
@@ -146,7 +147,7 @@ body := ClientListUsersRequest{
         Id:      "${objectId}",
     },
     Relation:     "${relation}",
-    UserFilter:   userFilters,${
+    UserFilters:   userFilters,${
       !contextualTuples
         ? ''
         : `
@@ -261,7 +262,7 @@ body = ClientListUsersRequest(
     }
 )
 
-response = await fga_client.list_objects(body, options)
+response = await fga_client.list_users(body, options)
 
 # response.users = [${expectedResults.users.map((u) => JSON.stringify(u)).join(',')}]
 # response.excludedUsers = [${expectedResults.excluded_users.map((u) => JSON.stringify(u)).join(',')}]`;

@@ -171,7 +171,7 @@ In order to simplify test writing, the following syntax is supported for the var
 
 * `<type>:<id>` to represent a userset that is a user
 * `<type>:<id>#<relation>` to represent a userset that is a relation on a type
-* `<type>:*` to represent a userset that is a wildcard for a type
+* `<type>:*` to represent a userset that is a type bound public access for a type
 
 The following is an example of using the `list_users` option in <ProductName format={ProductNameFormat.ShortForm}/> tests:
 
@@ -191,7 +191,7 @@ The following is an example of using the `list_users` option in <ProductName for
               
       - object: organization:acme
         user_filter:
-          - type: user
+          - type: employee
         context: 
           current_time : "2024-02-01T00:10:00Z"
         assertions:
@@ -200,11 +200,11 @@ The following is an example of using the `list_users` option in <ProductName for
               excluded_users: []
             admin:
               users:
-                - user_peter
+                - employee:peter
               excluded_users: []
 
 ```
-The example above checks that `user:anne` has access to the `organization:acme` as a member and is not an admin of any organization. It also checks that `user:peter`, given the current time is February 1st 2024, 0:10 AM, is not related to any organization as a member, but is related to `organization:acme` as an admin.
+The example above checks that `user:anne` has access to the `organization:acme` as a member and is not an admin of any organization. It also checks that `employee:peter`, given the current time is February 1st 2024, 0:10 AM, is not related to any organization as a member, but is related to `organization:acme` as an admin.
 
 
 ## Running tests
