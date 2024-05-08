@@ -171,6 +171,10 @@ To return all users of type `user` that have have the `reader` relationship with
 
 The result `user:anne` and `user:beth` are the `user` objects that have the `reader` relationship with `document:planning`.
 
+:::caution Warning
+The performance characteristics of the ListUsers endpoint vary drastically depending on the model complexity, number of tuples, and the relations it needs to evaluate. Relations with 'and' or 'but not' are particularly expensive to evaluate.
+:::
+
 ## Related Sections
 
 <RelatedSection
