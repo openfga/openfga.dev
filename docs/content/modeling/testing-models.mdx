@@ -158,14 +158,14 @@ Each list users verification has the following structure:
 | Object  | Description |
 | -------- | -------- | 
 |`object` | The object to list users for |
-|`user_filter` | Specifies the type or userset to filter with |
-|`user_filter.type` | The specific type to filter with |
-|`user_filter.relation` | The specific relation to filter with (optional) |
+|`user_filter` | Specifies the type or userset to filter with, this must only contain one entry |
+|`user_filter.type` | The specific type of results to return with response |
+|`user_filter.relation` | The specific relation of results to return with response. Specify to return usersets (optional) |
 |`context` | A set of tests for contextual parameters used to evaluate [conditions](./conditions.mdx)|
 |`assertions` | A list of assertions to make |
 |`<relation>` | The name of the relation you want to verify |
 |`<relation>.users` | The users who should have the stated relation to the object |
-|`<relation>.excluded_users` | The users who should have explicitly not have access to the object due to negation in the model |
+|`<relation>.excluded_users` | The users who should have explicitly not have access to the object due to evaluations of typed wildcards and negation |
 
 In order to simplify test writing, the following syntax is supported for the various object types included in `users` and `excluded_users` from the API response:
 
