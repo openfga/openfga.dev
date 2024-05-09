@@ -165,7 +165,7 @@ Each list users verification has the following structure:
 |`assertions` | A list of assertions to make |
 |`<relation>` | The name of the relation you want to verify |
 |`<relation>.users` | The users who should have the stated relation to the object |
-|`<relation>.excluded_users` | The users who should have explicitly not have access to the object due to evaluations of typed wildcards and negation |
+|`<relation>.excluded_users` | The users who should have explicitly not have access to the object due to evaluations of type bound public access and negation (e.g. "all users except anne") |
 
 In order to simplify test writing, the following syntax is supported for the various object types included in `users` and `excluded_users` from the API response:
 
