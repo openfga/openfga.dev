@@ -17,6 +17,7 @@ import {
   RelatedSection,
   RelationshipTuplesViewer,
   UpdateProductNameInLinks,
+  ListUsersRequestViewer
 } from '@components/Docs';
 
 # Concepts
@@ -591,7 +592,37 @@ For example, the following returns all the objects with document type for which 
   expectedResults={['document:otherdoc', 'document:planning']}
 />
 
-For more information, see the [Relationship Queries page](./interacting/relationship-queries.mdx) and the official [Check API Reference](/api/service#Relationship%20Queries/ListObjects).
+For more information, see the [Relationship Queries page](./interacting/relationship-queries.mdx) and the [List Objects API Reference](/api/service#Relationship%20Queries/ListObjects).
+
+</details>
+<details>
+<summary>
+
+## What Is A List Users Request?
+
+A **list users request** is a call to the <ProductName format={ProductNameFormat.LongForm}/> list users endpoint that returns all users of a given type that have a specified relationship with an object.
+
+</summary>
+
+List users requests are completed using the relevant `ListUsers` method in SDKs, the `fga query list-users` command in the CLI, or by manually calling the [ListUsers endpoint](/api/service#Relationship%20Queries/ListUsers) using curl or in your code.
+
+The list users endpoint responds with a list of users and excluded users for a given type that have the specificed relationship with an object.
+
+For example, the following returns all the users of type `user` that have the `viewer` relationship for `document:planning`:
+
+<ListUsersRequestViewer
+  authorizationModelId="01HVMMBCMGZNT3SED4Z17ECXCA"
+  objectType="document"
+  objectId="planning"
+  relation="viewer"
+  userFilterType="user"
+  expectedResults={{
+    users: [{ object: { type: "user:anne" } }],
+    excluded_users: [{ object: { type: "user:beth" } }]
+  }}
+/>
+
+For more information, see the the [ListUsers API Reference](/api/service#Relationship%20Queries/ListUsers).
 
 </details>
 <details>

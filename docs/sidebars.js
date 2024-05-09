@@ -100,6 +100,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Perform a List Users Request',
+          id: 'content/getting-started/perform-list-users',
+        },
+        {
+          type: 'doc',
           label: 'Use the FGA CLI',
           id: 'content/getting-started/cli',
         },

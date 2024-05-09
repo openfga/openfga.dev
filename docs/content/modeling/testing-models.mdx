@@ -82,6 +82,7 @@ Tests have the following structure:
 |`tuples` | A set of tuples that are only considered for the test | 
 |`check` | A set of tests for Check calls, each with a user/object and a set of assertions |
 |`list_objects` | A set of tests for ListObjects calls, each one with a user/type and a set of assertions for any number of relations|
+|`list_users` | A set of tests for ListUsers calls, each one with an object and user filter and a set of assertions for the users and excluded_users for any number of relations |
 
 ## Write Check tests
 
@@ -143,6 +144,68 @@ The following verifies the expected results using the `list_objects` option in <
 
 ```
 The example above checks that `user:anne` has access to the `organization:acme` as a member and is not an admin of any organization. It also checks that `user:peter`, given the current time is February 1st 2024, 0:10 AM, is not related to any organization as a member, but is related to `organization:acme` as an admin.
+
+## Write List Users tests
+
+:::caution Warning
+ListUsers is currently in an experimental release. Read [the announcement](https://openfga.dev/blog/list-users-announcement) for more information.
+:::
+
+List users tests verify the results of the [list-users API](../getting-started/perform-list-users.mdx) to validate the users who or do not have access to an object
+
+Each list users verification has the following structure:
+
+| Object  | Description |
+| -------- | -------- | 
+|`object` | The object to list users for |
+|`user_filter` | Specifies the type or userset to filter with, this must only contain one entry |
+|`user_filter.type` | The specific type of results to return with response |
+|`user_filter.relation` | The specific relation of results to return with response. Specify to return usersets (optional) |
+|`context` | A set of tests for contextual parameters used to evaluate [conditions](./conditions.mdx)|
+|`assertions` | A list of assertions to make |
+|`<relation>` | The name of the relation you want to verify |
+|`<relation>.users` | The users who should have the stated relation to the object |
+|`<relation>.excluded_users` | The users who should have explicitly not have access to the object due to evaluations of type bound public access and negation (e.g. "all users except anne") |
+
+In order to simplify test writing, the following syntax is supported for the various object types included in `users` and `excluded_users` from the API response:
+
+* `<type>:<id>` to represent a userset that is a user
+* `<type>:<id>#<relation>` to represent a userset that is a relation on a type
+* `<type>:*` to represent a userset that is a type bound public access for a type
+
+The following is an example of using the `list_users` option in <ProductName format={ProductNameFormat.ShortForm}/> tests:
+
+```yaml
+    list_users:
+      - object: organization:acme
+        user_filter:
+          - type: user
+        assertions:
+            member:
+              users:
+                - user:anne
+              excluded_users: []
+            admin:
+              users: []
+              excluded_users: []
+              
+      - object: organization:acme
+        user_filter:
+          - type: employee
+        context: 
+          current_time : "2024-02-01T00:10:00Z"
+        assertions:
+            member:
+              users: []
+              excluded_users: []
+            admin:
+              users:
+                - employee:peter
+              excluded_users: []
+
+```
+The example above checks that `user:anne` has access to the `organization:acme` as a member and is not an admin of any organization. It also checks that `employee:peter`, given the current time is February 1st 2024, 0:10 AM, is not related to any organization as a member, but is related to `organization:acme` as an admin.
+
 
 ## Running tests
 
