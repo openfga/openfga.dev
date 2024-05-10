@@ -177,7 +177,7 @@ The performance characteristics of the ListUsers endpoint vary drastically depen
 
 ## Usersets
 
-In the above example, only specific subjects of the `user` type were returned. However, groups of users, known as [usersets](../modeling/usersets.mdx), can also be returned from the List Users API. This is done by specifying a `relation` field in the `user_filters` request object. Usersets will only expand to the underlying subjects if that `type` is specified as the user filter object.
+In the above example, only specific subjects of the `user` type were returned. However, groups of users, known as [usersets](../modeling/building-blocks/usersets.mdx), can also be returned from the List Users API. This is done by specifying a `relation` field in the `user_filters` request object. Usersets will only expand to the underlying subjects if that `type` is specified as the user filter object.
 
 Below is an example where usersets can be returned:
 
