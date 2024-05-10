@@ -28,7 +28,7 @@ ListUsers is currently in an experimental release. Read [the announcement](https
 
 <DocumentationNotice />
 
-This section will illustrate how to perform a <ProductConcept section="what-is-a-list-users-request" linkName="list users" /> request to determine all the <ProductConcept section="what-is-a-user" linkName="users" /> of a given <ProductConcept section="what-is-a-type" linkName="type" /> that have a specified <ProductConcept section="what-is-a-relationship" linkName="relationship" /> with a given <ProductConcept section="what-is-an-object" linkName="objects" />.
+This section will illustrate how to perform a <ProductConcept section="what-is-a-list-users-request" linkName="list users" /> request to determine all the <ProductConcept section="what-is-a-user" linkName="users" /> of a given <ProductConcept section="what-is-a-type" linkName="type" /> that have a specified <ProductConcept section="what-is-a-relationship" linkName="relationship" /> with a given <ProductConcept section="what-is-an-object" linkName="object" />.
 
 ## Before You Start
 
@@ -61,7 +61,7 @@ This section will illustrate how to perform a <ProductConcept section="what-is-a
 
 </TabItem>
 
-{/* <TabItem value={SupportedLanguage.PYTHON_SDK} label={languageLabelMap.get(SupportedLanguage.PYTHON_SDK)}>
+{ /* <TabItem value={SupportedLanguage.PYTHON_SDK} label={languageLabelMap.get(SupportedLanguage.PYTHON_SDK)}>
 
 1. <SdkSetupPrerequisite />
 2. You have [installed the SDK](./install-sdk.mdx).
@@ -155,7 +155,7 @@ To return all users of type `user` that have have the `reader` relationship with
   relation="reader"
   userFilterType="user"
   expectedResults={{
-    users: [{ object: { type: "user:anne" } }, { object: { type: "user:beth" } }],
+    users: [{ object: { type: "user", id: "anne" } }, { object: { type: "user", id: "beth" } }],
     excluded_users: []
   }}
   skipSetup={true}
@@ -174,6 +174,147 @@ The result `user:anne` and `user:beth` are the `user` objects that have the `rea
 :::caution Warning
 The performance characteristics of the ListUsers endpoint vary drastically depending on the model complexity, number of tuples, and the relations it needs to evaluate. Relations with 'and' or 'but not' are particularly expensive to evaluate.
 :::
+
+## Usersets
+
+In the above example, only specific subjects of the `user` type were returned. However, groups of users, known as [usersets](../modeling/building-blocks/usersets.mdx), can also be returned from the List Users API. This is done by specifying a `relation` field in the `user_filters` request object. Usersets will only expand to the underlying subjects if that `type` is specified as the user filter object.
+
+Below is an example where usersets can be returned:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type group
+  relations
+    define member: [ user ]
+
+type document
+  relations
+    define viewer: [ group#member ] 
+```
+
+With the tuples:
+
+| user | relation| object|
+|------|---------|-------|
+| group:engineering#member | viewer | document:1|
+| group:product#member | viewer | document:1|
+| user:will | member | group:engineering#member|
+
+Then calling the List Users API for `document:1` with relation `viewer` of type `group#member` will yield the below response. Note that the `user:will` is not returned, despite being a member of `group:engineering#member` because the `user_filters` does not target the `user` type.
+
+<ListUsersRequestViewer
+  authorizationModelId="01HXHK5D1Z6SCG1SV7M3BVZVCV"
+  objectType="document"
+  objectId="1"
+  relation="viewer"
+  userFilterType="group#member"
+  expectedResults={{
+    users: [{
+      userset: {
+        id:"engineering",
+        relation:"member",
+        type:"group"
+      }
+    },
+    {
+      userset: {
+        id:"product",
+        relation:"member",
+        type:"group"
+      }
+    }],
+    excluded_users: []
+  }}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.JAVA_SDK,
+    SupportedLanguage.CLI,
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+
+## Type-bound Public Access
+
+The list users API supports tuples expressing public access via the wildcard syntax (e.g. `user:*`). Wildcard tuples that satisfy the query criteria will be returned with the `wildcard` root object property that will specify the type. The API will not expand wildcard results further to any ID'd subjects. Further, specific users that have been granted accesss will be returned in addition to any public acccess for that user's type.
+
+Example response with type-bound public access:
+
+```json
+{
+  "users": [
+    {
+      "wildcard": {
+        "type":"user"
+      }
+    },
+    {
+      "object": {
+        "type":"user",
+        "id":"anne"
+      }
+    }
+  ],
+  "excluded_users":[]
+}
+
+```
+
+## Excluded Users
+
+In certain cases, it is important to communicate that certain users are excluded from returned usersets and do not have a relation to the target obect. Most notably, this occurs in models with type-bound public access via wildcard syntax (e.g. `user:*`) and negation via the `but not` syntax. 
+
+Below is an example where excluded users are returned:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type document
+  relations
+    define viewer: [user:*] but not blocked
+    define blocked: [user]
+```
+
+With the tuples:
+
+| user | relation| object|
+|------|---------|-------|
+| user:* | viewer| document:1|
+| user:anne | blocked| document:1|
+
+Calling the List Users API for `document:1` with relation `viewer` of type `user` will yield the response below. It indicates that any object of type `user` (including those not already in OpenFGA as parts of tuples) has access to the system, except for a `user` with id `anne`.
+
+<ListUsersRequestViewer
+  authorizationModelId="01HXHKQX73VA6MJ3SRSY0D05VW"
+  objectType="document"
+  objectId="1"
+  relation="viewer"
+  userFilterType="user"
+  expectedResults={{
+    users: [{ wildcard: { type: "user" } }],
+    excluded_users: [{ object: { type: "user", id: "anne" } }]
+  }}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.JAVA_SDK,
+    SupportedLanguage.CLI,
+    SupportedLanguage.CURL,
+  ]}
+/>
+
 
 ## Related Sections
 
