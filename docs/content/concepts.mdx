@@ -606,7 +606,7 @@ A **list users request** is a call to the <ProductName format={ProductNameFormat
 
 List users requests are completed using the relevant `ListUsers` method in SDKs, the `fga query list-users` command in the CLI, or by manually calling the [ListUsers endpoint](/api/service#Relationship%20Queries/ListUsers) using curl or in your code.
 
-The list users endpoint responds with a list of users and excluded users for a given type that have the specificed relationship with an object.
+The list users endpoint responds with a list of users for a given type that have the specificed relationship with an object.
 
 For example, the following returns all the users of type `user` that have the `viewer` relationship for `document:planning`:
 
@@ -617,8 +617,11 @@ For example, the following returns all the users of type `user` that have the `v
   relation="viewer"
   userFilterType="user"
   expectedResults={{
-    users: [{ object: { type: "user:anne" } }],
-    excluded_users: [{ object: { type: "user:beth" } }]
+    users: [
+      { object: { type: "user", id: "anne" }}, 
+      { object: { type: "user", id: "beth" }}
+    ],
+    excluded_users: []
   }}
 />
 
