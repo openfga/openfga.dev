@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkopenfga_dev=self.webpackChunkopenfga_dev||[]).push([[7972],{48737:e=>{e.exports=JSON.parse('{"label":"newsletter","permalink":"/pr-preview/pr-745/blog/tags/newsletter","allTagsPath":"/pr-preview/pr-745/blog/tags","count":5,"unlisted":false}')}}]);
