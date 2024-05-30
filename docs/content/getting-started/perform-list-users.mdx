@@ -23,7 +23,7 @@ import TabItem from '@theme/TabItem';
 # Perform a List Users call
 
 :::caution Warning
-ListUsers is currently in an experimental release. Read [the announcement](https://openfga.dev/blog/list-users-announcement) for more information.
+List Users is currently an experimental feature and not yet suitable for production. There are [known limitations](#known-limitations) to be aware of. Read [the announcement](https://openfga.dev/blog/list-users-announcement) for more information.
 :::
 
 <DocumentationNotice />
@@ -102,7 +102,7 @@ Assume that you want to list all users of type `user` that have a `reader` relat
 
 ### 01. Configure the <ProductName format={ProductNameFormat.ShortForm}/> API Client
 
-Before calling the ListUsers API, you will need to configure the API client.
+Before calling the List Users API, you will need to configure the API client.
 
 <Tabs groupId="languages">
 <TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
@@ -172,7 +172,7 @@ To return all users of type `user` that have have the `reader` relationship with
 The result `user:anne` and `user:beth` are the `user` objects that have the `reader` relationship with `document:planning`.
 
 :::caution Warning
-The performance characteristics of the ListUsers endpoint vary drastically depending on the model complexity, number of tuples, and the relations it needs to evaluate. Relations with 'and' or 'but not' are particularly expensive to evaluate.
+The performance characteristics of the List Users endpoint vary drastically depending on the model complexity, number of tuples, and the relations it needs to evaluate. Relations with 'and' or 'but not' are particularly expensive to evaluate.
 :::
 
 ## Usersets
@@ -243,7 +243,7 @@ Then calling the List Users API for `document:1` with relation `viewer` of type 
 
 ## Type-bound Public Access
 
-The list users API supports tuples expressing public access via the wildcard syntax (e.g. `user:*`). Wildcard tuples that satisfy the query criteria will be returned with the `wildcard` root object property that will specify the type. The API will not expand wildcard results further to any ID'd subjects. Further, specific users that have been granted accesss will be returned in addition to any public acccess for that user's type.
+The List Users API supports tuples expressing public access via the wildcard syntax (e.g. `user:*`). Wildcard tuples that satisfy the query criteria will be returned with the `wildcard` root object property that will specify the type. The API will not expand wildcard results further to any ID'd subjects. Further, specific users that have been granted accesss will be returned in addition to any public acccess for that user's type.
 
 Example response with type-bound public access:
 
@@ -294,27 +294,69 @@ With the tuples:
 
 Calling the List Users API for `document:1` with relation `viewer` of type `user` will yield the response below. It indicates that any object of type `user` (including those not already in OpenFGA as parts of tuples) has access to the system, except for a `user` with id `anne`.
 
-<ListUsersRequestViewer
-  authorizationModelId="01HXHKQX73VA6MJ3SRSY0D05VW"
-  objectType="document"
-  objectId="1"
-  relation="viewer"
-  userFilterType="user"
-  expectedResults={{
-    users: [{ wildcard: { type: "user" } }],
-    excluded_users: [{ object: { type: "user", id: "anne" } }]
-  }}
-  skipSetup={true}
-  allowedLanguages={[
-    SupportedLanguage.JS_SDK,
-    SupportedLanguage.GO_SDK,
-    SupportedLanguage.DOTNET_SDK,
-    SupportedLanguage.JAVA_SDK,
-    SupportedLanguage.CLI,
-    SupportedLanguage.CURL,
-  ]}
-/>
+```json
+{
+  "users": [
+    { "wildcard": { "type": "user" } }
+  ],
+  "excluded_users": [
+    { "object": { "type": "user", "id": "anne" } }
+  ]
+}
+```
 
+## Known Limitations
+
+The List Users API is currently available in an experimental capacity and is not yet suitable for production. There are known limitations to note below.
+
+### Exclusion of Nested Usersets
+
+Usersets that are nested within other usersets inherit access their parents' resources by virtue of their nesting. However, child usersets that are negated via the `but not` syntax to either the parent userset or the target document will _not_ be included in the `excluded_users` portion of the payload. 
+
+Example:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type group
+  relations
+    define member: [group#member, user] but not blocked
+    define blocked: [group#member, user]
+
+type document
+  relations
+    define viewer: [group#member]
+```
+
+With the tuples:
+
+| user | relation| object|
+|------|---------|-------|
+| group:A#member | viewer| document:1|
+| group:B#member | member| group:A|
+| group:B#member | blocked| group:A|
+
+<br/>
+
+Then calling the List Users API for `document:1` with relation `viewer` of type `group#member` will yield the response below. Note that `group:B#member` is omitted from `excluded_users`. This omission is problematic for authorization decisions because the response could be interpreted that `group:B#member` has access by virtue of `group:A#member`. 
+
+```json
+{
+  "users": [
+    {
+      "userset": {
+        "id":"A",
+        "relation":"member",
+        "type":"group"
+      }
+    }
+  ],
+  "excluded_users": [] // `excluded_users` should have `group:B#member`
+}
+```
 
 ## Related Sections
 
