@@ -28,7 +28,7 @@ We'll be releasing support for the Python SDK soon.
 
 ## What's next?
 
-We have a [limitationa](https://openfga.dev/docs/getting-started/perform-list-users#exclusion-of-nested-usersets) we are working on regarding the behavior of the `excluded_users` return value that we'll address before removing the experimental flag.
+We have a [limitation](https://openfga.dev/docs/getting-started/perform-list-users#exclusion-of-nested-usersets) we are working on regarding the behavior of the `excluded_users` return value that we'll address before removing the experimental flag.
 
 ## We want your feedback!
 
