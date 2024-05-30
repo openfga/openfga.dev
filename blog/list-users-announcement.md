@@ -22,13 +22,13 @@ ListUsers is available in OpenFGA starting [v1.5.4](https://github.com/openfga/o
 
 To be able to call this API, you must turn on this flag on the server: `--experimentals enable-list-users`. Be sure to also check out the various configuration flags that were added to control its behavior.
 
-The new functionality is available on the latest versions of the Java, .NET, Go and Javascript SDK, [CLI](https://github.com/openfga/cli?tab=readme-ov-file#list-users) and VS Code integration. 
+The new functionality is available on the latest versions of the [Java](https://github.com/openfga/java-sdk/), [.NET](https://github.com/openfga/dotnet-sdk/), [Go](https://github.com/openfga/go-sdk/) and [Javascript SDK](https://github.com/openfga/js-sdk/), [CLI](https://github.com/openfga/cli?tab=readme-ov-file#list-users) and [VS Code integration](https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode). 
 
 We'll be releasing support for the Python SDK soon.
 
 ## What's next?
 
-We have a few limitations we are working on regarding the behavior of the `excluded_users` return value that we'll address before removing the experimental flag. This will impact you if you are using [Public Access](https://openfga.dev/docs/modeling/public-access)in any relation related to the relation you are listing users for.
+We have a few limitations we are working on regarding the behavior of the `excluded_users` return value that we'll address before removing the experimental flag. This will impact you if you are using [Public Access](https://openfga.dev/docs/modeling/public-access) in any relation related to the relation you are listing users for.
 
 ## We want your feedback!
 
