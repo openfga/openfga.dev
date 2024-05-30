@@ -16,7 +16,7 @@ Welcome to Fine Grained News, May edition!
 
 - We shipped the [a ListUsers API](https://openfga.dev/blog/list-users-announcement). ListUsers allows you to retrieve all the users that have a specific relation with a resource, for example, all users that can view a document. 
 
-- In collaboration with [Yann D'Isanto](https://github.com/yann-disanto) we shipped a [plugin for JetBrain's IDEs](https://plugins.jetbrains.com/plugin/24394-openfga) to allow syntax coloring and validation of OpenFGA models. Together with the [Visual Studio Code integration](https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode) and the [Tree sitter grammar](https://github.com/matoous/tree-sitter-fga) from [Matouš Dzivjak](https://github.com/matoous/) OpenFGA has get great coverage for major IDEs and editors.
+- In collaboration with [Yann D'Isanto](https://github.com/yann-disanto) we shipped a [plugin for JetBrain's IDEs](https://plugins.jetbrains.com/plugin/24394-openfga) to allow syntax coloring and validation of OpenFGA models. Together with the [Visual Studio Code integration](https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode) and the [Tree sitter grammar](https://github.com/matoous/tree-sitter-fga) from [Matouš Dzivjak](https://github.com/matoous/), OpenFGA has get great coverage for major IDEs and editors.
 
 ## What's Next
 
