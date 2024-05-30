@@ -31,7 +31,7 @@ Please check the items above and let us know if you have any feedback or idea.
 
 OpenFGA will be present in [CloudNative SecurityCon North America](https://events.linuxfoundation.org/cloudnativesecuritycon-north-america/)! 
 
-[Maria Ines Parnisari](https://github.com/miparnisari) from the OpenFGA team and [Evan Anderson](https://github.com/evankanderson) form [Stacklok](https://stacklok.com/) will be presenting on [Implementing a Multi-Tenant, Relationship-Based Authorization Model with OpenFGA](
+[Maria Ines Parnisari](https://github.com/miparnisari) from the OpenFGA team and [Evan Anderson](https://github.com/evankanderson) from [Stacklok](https://stacklok.com/) will be presenting on [Implementing a Multi-Tenant, Relationship-Based Authorization Model with OpenFGA](
 https://cloudnativesecurityconna24.sched.com/event/1dCVn/implementing-a-multi-tenant-relationship-based-authorization-model-with-openfga-evan-anderson-stacklok-maria-ines-parnisari-okta). 
 
 We hope to see you there!
