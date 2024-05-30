@@ -4,10 +4,76 @@
         <title>OpenFGA Blog</title>
         <link>https://openfga.dev/blog</link>
         <description>OpenFGA Blog</description>
-        <lastBuildDate>Tue, 30 Apr 2024 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 30 May 2024 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
+        <item>
+            <title><![CDATA[Fine Grained News - May 2024]]></title>
+            <link>https://openfga.dev/blog/fine-grained-news-2024-05</link>
+            <guid>https://openfga.dev/blog/fine-grained-news-2024-05</guid>
+            <pubDate>Thu, 30 May 2024 00:00:00 GMT</pubDate>
+            <description><![CDATA[Fine Grained News]]></description>
+            <content:encoded><![CDATA[<p>Welcome to Fine Grained News, May edition!</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="new-releases">New Releases!<a href="https://openfga.dev/blog/fine-grained-news-2024-05#new-releases" class="hash-link" aria-label="Direct link to New Releases!" title="Direct link to New Releases!">​</a></h2>
+<ul>
+<li>
+<p>We shipped the <a href="https://openfga.dev/blog/list-users-announcement" target="_blank" rel="noopener noreferrer">a ListUsers API</a>. ListUsers allows you to retrieve all the users that have a specific relation with a resource (e.g. all users that can view a document).</p>
+</li>
+<li>
+<p>In collaboration with <a href="https://github.com/yann-disanto" target="_blank" rel="noopener noreferrer">Yann D'Isanto</a> we shipped a <a href="https://plugins.jetbrains.com/plugin/24394-openfga" target="_blank" rel="noopener noreferrer">plugin for JetBrain's IDEs</a> to allow syntax coloring and validation of OpenFGA models. Together with the <a href="https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode" target="_blank" rel="noopener noreferrer">Visual Studio Code integration</a> and the <a href="https://github.com/matoous/tree-sitter-fga" target="_blank" rel="noopener noreferrer">Tree sitter grammar</a> from <a href="https://github.com/matoous/" target="_blank" rel="noopener noreferrer">Matouš Dzivjak</a>, OpenFGA has get great coverage for major IDEs and editors.</p>
+</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="whats-next">What's Next<a href="https://openfga.dev/blog/fine-grained-news-2024-05#whats-next" class="hash-link" aria-label="Direct link to What's Next" title="Direct link to What's Next">​</a></h2>
+<ul>
+<li>We've identified a few areas where we can improve performance and we are actively working on them.</li>
+<li>We'll be <a href="https://github.com/openfga/roadmap/issues/41" target="_blank" rel="noopener noreferrer">instrumenting our SDKs</a> to provide metrics / tracing and logging through OpenTelemetry APIs.</li>
+<li>We'll be adding <a href="https://github.com/openfga/roadmap/issues/54" target="_blank" rel="noopener noreferrer">additional consistency options</a> for OpenFGA query APIs.</li>
+<li>We'll be working on adding <a href="https://github.com/openfga/roadmap/issues/30" target="_blank" rel="noopener noreferrer">authorization for OpenFGA APIs</a>.</li>
+</ul>
+<p>Please check the items above and let us know if you have any feedback or idea.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="openfga--cloudnative-securitycon">OpenFGA @ CloudNative SecurityCon<a href="https://openfga.dev/blog/fine-grained-news-2024-05#openfga--cloudnative-securitycon" class="hash-link" aria-label="Direct link to OpenFGA @ CloudNative SecurityCon" title="Direct link to OpenFGA @ CloudNative SecurityCon">​</a></h2>
+<p>OpenFGA will be present in <a href="https://events.linuxfoundation.org/cloudnativesecuritycon-north-america/" target="_blank" rel="noopener noreferrer">CloudNative SecurityCon North America</a>!</p>
+<p><a href="https://github.com/miparnisari" target="_blank" rel="noopener noreferrer">Maria Ines Parnisari</a> from the OpenFGA team and <a href="https://github.com/evankanderson" target="_blank" rel="noopener noreferrer">Evan Anderson</a> from <a href="https://stacklok.com/" target="_blank" rel="noopener noreferrer">Stacklok</a> will be presenting on <a href="https://cloudnativesecurityconna24.sched.com/event/1dCVn/implementing-a-multi-tenant-relationship-based-authorization-model-with-openfga-evan-anderson-stacklok-maria-ines-parnisari-okta" target="_blank" rel="noopener noreferrer">Implementing a Multi-Tenant, Relationship-Based Authorization Model with OpenFGA</a>.</p>
+<p>We hope to see you there!</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="latest-features">Latest Features<a href="https://openfga.dev/blog/fine-grained-news-2024-05#latest-features" class="hash-link" aria-label="Direct link to Latest Features" title="Direct link to Latest Features">​</a></h2>
+<p>In case you missed them, here are some of the latest major features we've added to OpenFGA:</p>
+<ul>
+<li><a href="https://openfga.dev/blog/conditional-tuples-announcement" target="_blank" rel="noopener noreferrer">Conditional Tuples</a> allows you to define tuples that are only valid under certain conditions.</li>
+<li><a href="https://openfga.dev/blog/modular-models-announcement" target="_blank" rel="noopener noreferrer">Modular Models</a> makes it easy for multiple teams to collaborate on a single OpenFGA model.</li>
+<li><a href="https://openfga.dev/blog/list-users-announcement" target="_blank" rel="noopener noreferrer">List Users API</a> allowing you to retrieve all the users that have a specific relation with a resource.</li>
+<li><a href="https://github.com/openfga/spring-boot-starter" target="_blank" rel="noopener noreferrer">Spring Boot Starter for OpenFGA</a> simplifies integrating OpenFGA with Spring Security applications.</li>
+<li><a href="https://plugins.jetbrains.com/plugin/24394-openfga" target="_blank" rel="noopener noreferrer">JetBrain's IDEs plugin</a> to allow syntax coloring and validation of OpenFGA models.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="transitioning-from-discord-to-cncfs-slack">Transitioning from Discord to CNCF's Slack<a href="https://openfga.dev/blog/fine-grained-news-2024-05#transitioning-from-discord-to-cncfs-slack" class="hash-link" aria-label="Direct link to Transitioning from Discord to CNCF's Slack" title="Direct link to Transitioning from Discord to CNCF's Slack">​</a></h2>
+<p>As we mentioned before, we transitioned out from Discord for OpenFGA and are now using the CNCF <a href="https://cloud-native.slack.com/archives/C06G1NNH47N" target="_blank" rel="noopener noreferrer">#openfga Slack channel</a>. If you are not part of the CNCF Slack workspace, you need to join the <a href="https://slack.cncf.io/" target="_blank" rel="noopener noreferrer">CNCF Slack</a> first.</p>
+<p>Checkout <a href="https://openfga.dev/community" target="_blank" rel="noopener noreferrer">https://openfga.dev/community</a> for all the places to find us.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="see-you-next-month">See you next month!<a href="https://openfga.dev/blog/fine-grained-news-2024-05#see-you-next-month" class="hash-link" aria-label="Direct link to See you next month!" title="Direct link to See you next month!">​</a></h2>
+<p>Fine Grained News are published every month. If you have any feedback, want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!</p>]]></content:encoded>
+            <category>newsletter</category>
+        </item>
+        <item>
+            <title><![CDATA[List Users API]]></title>
+            <link>https://openfga.dev/blog/list-users-announcement</link>
+            <guid>https://openfga.dev/blog/list-users-announcement</guid>
+            <pubDate>Thu, 30 May 2024 00:00:00 GMT</pubDate>
+            <description><![CDATA[List Users API]]></description>
+            <content:encoded><![CDATA[<p>Today we are launching a new API for OpenFGA: ListUsers.</p>
+<p>This API will answer the question "what users have relation X with object Y?". This will be useful, for example, in UIs that want to display the list of users that a resource has been shared with, e.g. the "share" dialog in Google Docs.</p>
+<p>You can read more about it in the <a href="https://openfga.dev/api/service#/Relationship%20Queries/ListUsers" target="_blank" rel="noopener noreferrer">API docs</a> and the <a href="https://openfga.dev/docs/getting-started/perform-list-users" target="_blank" rel="noopener noreferrer">product documentation</a>.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="how-to-use-it">How to use it?<a href="https://openfga.dev/blog/list-users-announcement#how-to-use-it" class="hash-link" aria-label="Direct link to How to use it?" title="Direct link to How to use it?">​</a></h2>
+<p>ListUsers is available in OpenFGA starting with <a href="https://github.com/openfga/openfga/releases/tag/v1.5.4" target="_blank" rel="noopener noreferrer">v1.5.4</a>.</p>
+<p>To be able to call this API, you must turn on this flag on the server: <code>--experimentals enable-list-users</code>. Be sure to also check out the various configuration flags that were added to control its behavior.</p>
+<p>The new functionality is available on the latest versions of the <a href="https://github.com/openfga/java-sdk/" target="_blank" rel="noopener noreferrer">Java</a>, <a href="https://github.com/openfga/dotnet-sdk/" target="_blank" rel="noopener noreferrer">.NET</a>, <a href="https://github.com/openfga/go-sdk/" target="_blank" rel="noopener noreferrer">Go</a> and <a href="https://github.com/openfga/js-sdk/" target="_blank" rel="noopener noreferrer">Javascript SDK</a>, <a href="https://github.com/openfga/cli?tab=readme-ov-file#list-users" target="_blank" rel="noopener noreferrer">CLI</a> and <a href="https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode" target="_blank" rel="noopener noreferrer">VS Code integration</a>.</p>
+<p>We'll be releasing support for the Python SDK soon.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="whats-next">What's next?<a href="https://openfga.dev/blog/list-users-announcement#whats-next" class="hash-link" aria-label="Direct link to What's next?" title="Direct link to What's next?">​</a></h2>
+<p>We have a <a href="https://openfga.dev/docs/getting-started/perform-list-users#exclusion-of-nested-usersets" target="_blank" rel="noopener noreferrer">limitation</a> we are working on regarding the behavior of the <code>excluded_users</code> return value that we'll address before removing the experimental flag.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="we-want-your-feedback">We want your feedback!<a href="https://openfga.dev/blog/list-users-announcement#we-want-your-feedback" class="hash-link" aria-label="Direct link to We want your feedback!" title="Direct link to We want your feedback!">​</a></h2>
+<p>We want to learn how you use this API and how we can improve it!</p>
+<p>Please reach out through our <a href="https://openfga.dev/community" target="_blank" rel="noopener noreferrer">community channels</a> with any questions or feedback.</p>]]></content:encoded>
+            <category>openfga</category>
+            <category>features</category>
+        </item>
         <item>
             <title><![CDATA[Fine Grained News - April 2024]]></title>
             <link>https://openfga.dev/blog/fine-grained-news-2024-04</link>
@@ -52,40 +118,6 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="see-you-next-month">See you next month!<a href="https://openfga.dev/blog/fine-grained-news-2024-04#see-you-next-month" class="hash-link" aria-label="Direct link to See you next month!" title="Direct link to See you next month!">​</a></h2>
 <p>Fine Grained News are published every month. If you have any feedback, want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!</p>]]></content:encoded>
             <category>newsletter</category>
-        </item>
-        <item>
-            <title><![CDATA[List Users API]]></title>
-            <link>https://openfga.dev/blog/list-users-announcement</link>
-            <guid>https://openfga.dev/blog/list-users-announcement</guid>
-            <pubDate>Tue, 30 Apr 2024 00:00:00 GMT</pubDate>
-            <description><![CDATA[List Users API]]></description>
-            <content:encoded><![CDATA[<p>Today we are launching a new API for OpenFGA: ListUsers.</p>
-<p>This API will answer the question "what users have relation X with object Y?". This will be useful, for example, in UIs that want to display the list of users that a resource has been shared with, e.g. the "share" dialog in Google Docs.</p>
-<p>You can read more about this API <a href="https://openfga.dev/api/service#/Relationship%20Queries/ListUsers" target="_blank" rel="noopener noreferrer">here</a>.</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="how-to-use-it">How to use it?<a href="https://openfga.dev/blog/list-users-announcement#how-to-use-it" class="hash-link" aria-label="Direct link to How to use it?" title="Direct link to How to use it?">​</a></h2>
-<p>ListUsers is available in the latest Release Candidate version of OpenFGA: <a href="https://github.com/openfga/openfga/releases/tag/v1.5.4-rc1" target="_blank" rel="noopener noreferrer">v1.5.4-rc1</a>.</p>
-<p>To be able to call this API, you must turn on this flag on the server: <code>--experimentals enable-list-users</code>. Be sure to also check out the various configuration flags that were added to control its behavior.</p>
-<p>You can also call this API via the SDKs:</p>
-<ul>
-<li><a href="https://github.com/openfga/java-sdk/releases/tag/v0.4.2" target="_blank" rel="noopener noreferrer">Java v0.4.2</a></li>
-<li><a href="https://github.com/openfga/dotnet-sdk/releases/tag/v0.3.2" target="_blank" rel="noopener noreferrer">.NET v0.3.2</a></li>
-<li><a href="https://github.com/openfga/go-sdk/releases/tag/v0.3.6" target="_blank" rel="noopener noreferrer">Go v0.3.6</a></li>
-<li><a href="https://github.com/openfga/js-sdk/releases/tag/v0.4.0" target="_blank" rel="noopener noreferrer">Javascript v0.4.0</a></li>
-</ul>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="whats-next">What's next?<a href="https://openfga.dev/blog/list-users-announcement#whats-next" class="hash-link" aria-label="Direct link to What's next?" title="Direct link to What's next?">​</a></h2>
-<p>Our next steps look as follows:</p>
-<ol>
-<li>Release candidate with experimental flag (now)</li>
-<li>Any bug fixes</li>
-<li>Stable release with experimental flag</li>
-<li>Any performance improvements</li>
-<li>Stable release without experimental flag</li>
-</ol>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="we-want-your-feedback">We want your feedback!<a href="https://openfga.dev/blog/list-users-announcement#we-want-your-feedback" class="hash-link" aria-label="Direct link to We want your feedback!" title="Direct link to We want your feedback!">​</a></h2>
-<p>We want to learn how you use this API and how we can improve it!</p>
-<p>Please reach out through our <a href="https://openfga.dev/community" target="_blank" rel="noopener noreferrer">community channels</a> with any questions or feedback.</p>]]></content:encoded>
-            <category>openfga</category>
-            <category>features</category>
         </item>
         <item>
             <title><![CDATA[Modular Models]]></title>
