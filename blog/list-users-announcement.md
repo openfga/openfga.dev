@@ -18,7 +18,7 @@ You can read more about it in the [API docs](https://openfga.dev/api/service#/Re
 
 ## How to use it?
 
-ListUsers is available in OpenFGA starting [v1.5.4](https://github.com/openfga/openfga/releases/tag/v1.5.4).
+ListUsers is available in OpenFGA starting with [v1.5.4](https://github.com/openfga/openfga/releases/tag/v1.5.4).
 
 To be able to call this API, you must turn on this flag on the server: `--experimentals enable-list-users`. Be sure to also check out the various configuration flags that were added to control its behavior.
 
