@@ -50,6 +50,8 @@ In case you missed them, here are some of the latest major features we've added 
 
 As we mentioned before, we transitioned out from Discord for OpenFGA and are now using the CNCF [#openfga Slack channel](https://cloud-native.slack.com/archives/C06G1NNH47N). If you are not part of the CNCF Slack workspace, you need to join the [CNCF Slack](https://slack.cncf.io) first.
 
+Checkout https://openfga.dev/community for all the places to find us.
+
 ## See you next month!
 
 Fine Grained News are published every month. If you have any feedback, want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!
