@@ -20,7 +20,7 @@ Welcome to Fine Grained News, May edition!
 
 ## What's Next
 
-- We'll identified a few areas where we can improve performance and we are actively working on them.
+- We've identified a few areas where we can improve performance and we are actively working on them.
 - We'll be [instrumenting our SDKs](https://github.com/openfga/roadmap/issues/41) to provide metrics / tracing and logging through OpenTelemetry APIs.
 - We'll be adding [additional consistency options](https://github.com/openfga/roadmap/issues/54) for OpenFGA query APIs.
 - We'll be working on adding [authorization for OpenFGA APIs](https://github.com/openfga/roadmap/issues/30).
