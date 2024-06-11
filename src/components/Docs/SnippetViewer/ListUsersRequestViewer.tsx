@@ -64,7 +64,6 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
             "type": "${userFilterType}"${
               userFilterRelation
                 ? `,
-,
             "relation": "${userFilterRelation}"`
                 : ''
             }
@@ -100,7 +99,7 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
     id: "${objectId}"
   },
   user_filters: [{
-    type: "${userFilterType}",${
+    type: "${userFilterType}"${
       userFilterRelation
         ? `,
     relation: "${userFilterRelation}"`
@@ -139,7 +138,7 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
     AuthorizationModelId: PtrString("${modelId}"),
 }
 
-userFilters := []openfga.UserTypeFilter{{ Type:"${userFilterType}"${userFilterRelation ? `,Relation:${userFilterRelation} ` : ' '}}}
+userFilters := []openfga.UserTypeFilter{{ Type:"${userFilterType}"${userFilterRelation ? `,Relation:"${userFilterRelation}" ` : ' '}}}
 
 body := ClientListUsersRequest{
     Object:       openfga.Object{
