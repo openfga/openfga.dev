@@ -229,11 +229,11 @@ var response = await fgaClient.ListUsers(body, options);
   }
 
   userFilters = [
-      UserTypeFilter(type="${userFilterType}"${userFilterRelation ? `, relation="${userFilterRelation}"` : ''})
+      UserTypeFilter(type="${userFilterType}"${userFilterRelation ? `,relation="${userFilterRelation}"` : ''})
   ]
 
   body = ClientListUsersRequest(
-      object="${objectId}:${objectId}",
+      object=FgaObject(type="${objectType}"${objectId ? `,id="${objectId}"` : ''}),
       relation="${relation}",
       user_filters=userFilters,${
         contextualTuples
