@@ -246,7 +246,7 @@ Then calling the List Users API for `document:1` with relation `viewer` of type 
 The List Users API supports tuples expressing public access via the wildcard syntax (e.g. `user:*`). Wildcard tuples that satisfy the query criteria will be returned with the `wildcard` root object property that will specify the type. A typed-bound public access result indicates that the object has a public relation but it doesn't necessarily indicate that all users of that type have that relation, it is possible that exclusions via the `but not` syntax exists. The API will not expand wildcard results further to any ID'd user object. Further, specific users that have been granted access will be returned in addition to any public access for that user's type.
 
 :::caution
-A ListUsers response with a type-bound public access result (e.g. `user:*`) doesn't necessarily indicate that all users of that type have access, it is possible that exclusions exist. It is recommended to [perform a Check](./perform-check.mdx) on specific users to ensure they have access to the target object.
+A List Users response with a type-bound public access result (e.g. `user:*`) doesn't necessarily indicate that all users of that type have access, it is possible that exclusions exist. It is recommended to [perform a Check](./perform-check.mdx) on specific users to ensure they have access to the target object.
 :::
 
 Example response with type-bound public access:
