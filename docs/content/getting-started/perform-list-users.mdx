@@ -155,7 +155,7 @@ To return all users of type `user` that have have the `reader` relationship with
   relation="reader"
   userFilterType="user"
   expectedResults={{
-    users: [{ object: { type: "user", id: "anne" } }, { object: { type: "user", id: "beth" } }]
+    users: [{ object: { type: 'user', id: 'anne' } }, { object: { type: 'user', id: 'beth' } }],
   }}
   skipSetup={true}
   allowedLanguages={[
@@ -192,16 +192,16 @@ type group
 
 type document
   relations
-    define viewer: [ group#member ] 
+    define viewer: [ group#member ]
 ```
 
 With the tuples:
 
-| user | relation| object|
-|------|---------|-------|
-| group:engineering#member | viewer | document:1|
-| group:product#member | viewer | document:1|
-| user:will | member | group:engineering#member|
+| user                     | relation | object                   |
+| ------------------------ | -------- | ------------------------ |
+| group:engineering#member | viewer   | document:1               |
+| group:product#member     | viewer   | document:1               |
+| user:will                | member   | group:engineering#member |
 
 Then calling the List Users API for `document:1` with relation `viewer` of type `group#member` will yield the below response. Note that the `user:will` is not returned, despite being a member of `group:engineering#member` because the `user_filters` does not target the `user` type.
 
@@ -213,20 +213,22 @@ Then calling the List Users API for `document:1` with relation `viewer` of type 
   userFilterType="group"
   userFilterRelation="member"
   expectedResults={{
-    users: [{
-      userset: {
-        id:"engineering",
-        relation:"member",
-        type:"group"
-      }
-    },
-    {
-      userset: {
-        id:"product",
-        relation:"member",
-        type:"group"
-      }
-    }]
+    users: [
+      {
+        userset: {
+          id: 'engineering',
+          relation: 'member',
+          type: 'group',
+        },
+      },
+      {
+        userset: {
+          id: 'product',
+          relation: 'member',
+          type: 'group',
+        },
+      },
+    ],
   }}
   skipSetup={true}
   allowedLanguages={[
@@ -239,13 +241,12 @@ Then calling the List Users API for `document:1` with relation `viewer` of type 
   ]}
 />
 
-
 ## Type-bound Public Access
 
-The List Users API supports tuples expressing public access via the wildcard syntax (e.g. `user:*`). Wildcard tuples that satisfy the query criteria will be returned with the `wildcard` root object property that will specify the type. A typed-bound public access result indicates that the object has a public relation but it doesn't necessarily indicate that all users of that type have that relation, it is possible that exclusions via the `but not` syntax exists. The API will not expand wildcard results further to any ID'd subjects. Further, specific users that have been granted accesss will be returned in addition to any public acccess for that user's type.
+The List Users API supports tuples expressing public access via the wildcard syntax (e.g. `user:*`). Wildcard tuples that satisfy the query criteria will be returned with the `wildcard` root object property that will specify the type. A typed-bound public access result indicates that the object has a public relation but it doesn't necessarily indicate that all users of that type have that relation, it is possible that exclusions via the `but not` syntax exists. The API will not expand wildcard results further to any ID'd user object. Further, specific users that have been granted access will be returned in addition to any public access for that user's type.
 
 :::caution
-**Note:** A ListUsers response with a type-bound public access result (e.g. `user:*`) doesn't necessarily indicate that all users of that type have acces, it is possible that exclusions exist. It is recommended to [perform a Check](./perform-check.mdx) on specific users to ensure they have access to the target object.
+A ListUsers response with a type-bound public access result (e.g. `user:*`) doesn't necessarily indicate that all users of that type have access, it is possible that exclusions exist. It is recommended to [perform a Check](./perform-check.mdx) on specific users to ensure they have access to the target object.
 :::
 
 Example response with type-bound public access:
@@ -255,18 +256,17 @@ Example response with type-bound public access:
   "users": [
     {
       "wildcard": {
-        "type":"user"
+        "type": "user"
       }
     },
     {
       "object": {
-        "type":"user",
-        "id":"anne"
+        "type": "user",
+        "id": "anne"
       }
     }
   ]
 }
-
 ```
 
 ## Related Sections
