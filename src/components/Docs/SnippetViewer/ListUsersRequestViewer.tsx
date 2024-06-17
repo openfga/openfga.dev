@@ -262,7 +262,7 @@ var response = await fgaClient.ListUsers(body, options);
 
   response = await fga_client.list_users(body, options)
 
-    // # response.users = [${expectedResults.users.map((u) => JSON.stringify(u)).join(',')}]`;
+  # response.users = [${expectedResults.users.map((u) => JSON.stringify(u)).join(',')}]`;
     case SupportedLanguage.RPC:
       return `listUsers(
   "${objectId}", // list the objects that the user \`${objectId}\`
