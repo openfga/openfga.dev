@@ -38,12 +38,13 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
     case SupportedLanguage.PLAYGROUND:
       return `# Note: List Users is not currently supported on the playground`;
     case SupportedLanguage.CLI:
-      return `fga query list-users --store-id=\${FGA_STORE_ID} --model-id=${modelId} --object ${objectType}:${objectId} --relation ${relation} --user-filter ${userFilterType}${userFilterRelation ? `#${userFilterRelation}` : ''} ${contextualTuples
-        ? `${contextualTuples
-          .map((tuple) => ` --contextual-tuple "${tuple.user} ${tuple.relation} ${tuple.object}"`)
-          .join(' ')}`
-        : ''
-        }${context ? ` --context='${JSON.stringify(context)}'` : ''}
+      return `fga query list-users --store-id=\${FGA_STORE_ID} --model-id=${modelId} --object ${objectType}:${objectId} --relation ${relation} --user-filter ${userFilterType}${userFilterRelation ? `#${userFilterRelation}` : ''} ${
+        contextualTuples
+          ? `${contextualTuples
+              .map((tuple) => ` --contextual-tuple "${tuple.user} ${tuple.relation} ${tuple.object}"`)
+              .join(' ')}`
+          : ''
+      }${context ? ` --context='${JSON.stringify(context)}'` : ''}
 
 # Response: ${response}`;
     case SupportedLanguage.CURL:
@@ -60,14 +61,16 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
         "relation": "${relation}",
         "user_filters": [
           { 
-            "type": "${userFilterType}"${userFilterRelation
-          ? `,
+            "type": "${userFilterType}"${
+              userFilterRelation
+                ? `,
             "relation": "${userFilterRelation}"`
-          : ''
-        }
+                : ''
+            }
           }
-        ]${contextualTuples
-          ? `,
+        ]${
+          contextualTuples
+            ? `,
         "contextual_tuples": {
           "tuple_keys": [${contextualTuples
             .map(
@@ -77,11 +80,12 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
             .join(',')}
           ]
         }`
-          : ''
-        }${context
-          ? `,
+            : ''
+        }${
+          context
+            ? `,
         "context":${JSON.stringify(context)}`
-          : ''
+            : ''
         }
     }'
 
@@ -95,31 +99,34 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
     id: "${objectId}"
   },
   user_filters: [{
-    type: "${userFilterType}"${userFilterRelation
-          ? `,
+    type: "${userFilterType}"${
+      userFilterRelation
+        ? `,
     relation: "${userFilterRelation}"`
-          : ''
-        }
+        : ''
+    }
   }],
-  relation: "${relation}",${contextualTuples?.length
-          ? `
+  relation: "${relation}",${
+    contextualTuples?.length
+      ? `
       contextualTuples: {
     tuple_keys: [${contextualTuples
-            .map(
-              (tupleKey) => `{
+      .map(
+        (tupleKey) => `{
       user: "${tupleKey.user}",
       relation: "${tupleKey.relation}",
       object: "${tupleKey.object}"
     }`,
-            )
-            .join(', ')}]
+      )
+      .join(', ')}]
   },`
-          : ''
-        }${context
-          ? `
+      : ''
+  }${
+    context
+      ? `
   context:${JSON.stringify(context)},`
-          : ''
-        }
+      : ''
+  }
 }, {
   authorization_model_id: "${modelId}",
 });
@@ -139,29 +146,32 @@ body := ClientListUsersRequest{
         Id:      "${objectId}",
     },
     Relation:     "${relation}",
-    UserFilters:   userFilters,${!contextualTuples
-          ? ''
-          : `
+    UserFilters:   userFilters,${
+      !contextualTuples
+        ? ''
+        : `
     ContextualTuples: []ClientContextualTupleKey{
-${!contextualTuples
-            ? ''
-            : contextualTuples
-              .map(
-                (tuple) =>
-                  `        {
+${
+  !contextualTuples
+    ? ''
+    : contextualTuples
+        .map(
+          (tuple) =>
+            `        {
              User:     "${tuple.user}",
              Relation: "${tuple.relation}",
              Object:   "${tuple.object}",
         },`,
-              )
-              .join('\n')
-          }
+        )
+        .join('\n')
+}
     },`
-        }${context
-          ? `
+    }${
+      context
+        ? `
     Context: &map[string]interface{}${JSON.stringify(context)},`
-          : ''
-        }
+        : ''
+    }
 }
 
 data, err := fgaClient.ListUsers(context.Background()).
@@ -184,28 +194,31 @@ var body = new ClientListUsersRequest {
     Relation = "${relation}",
     UserFilters = new List<UserTypeFilter> {
       new() {
-        Type = "${userFilterType}"${userFilterRelation
-          ? `
+        Type = "${userFilterType}"${
+          userFilterRelation
+            ? `
         Relation = "${userFilterRelation}"
         `
-          : ''
+            : ''
         }
       }
-    }${contextualTuples
-          ? `,
+    }${
+      contextualTuples
+        ? `,
     ,ContextualTuples = new List<ClientTupleKey>({
     ${contextualTuples
-            .map((tuple) => `new(user: "${tuple.user}", relation: "${tuple.relation}", _object: "${tuple.object}")`)
-            .join(',\n    ')}
+      .map((tuple) => `new(user: "${tuple.user}", relation: "${tuple.relation}", _object: "${tuple.object}")`)
+      .join(',\n    ')}
 })`
-          : ''
-        }
-    ${context
-          ? `Context = new { ${Object.entries(context)
+        : ''
+    }
+    ${
+      context
+        ? `Context = new { ${Object.entries(context)
             .map(([k, v]) => `${k}="${v}"`)
             .join(',')} }`
-          : ''
-        }
+        : ''
+    }
 };
 
 var response = await fgaClient.ListUsers(body, options);
@@ -258,15 +271,16 @@ var response = await fgaClient.ListUsers(body, options);
   user_filter=[ "${userFilterType}" ], // list users of type \`${userFilterType}\`
   "${relation}", // that have the \`${relation}\` relation
   "${objectType}:${objectId}", // for the object \`${objectType}:${objectId}\`
-  authorization_model_id = "${modelId}", // for this particular authorization model id ${contextualTuples
-          ? `
+  authorization_model_id = "${modelId}", // for this particular authorization model id ${
+    contextualTuples
+      ? `
   contextual_tuples = [ // Assuming the following is true
     ${contextualTuples
-            .map((tuple) => `{user = "${tuple.user}", relation = "${tuple.relation}", object = "${tuple.object}"}`)
-            .join(',\n    ')}
+      .map((tuple) => `{user = "${tuple.user}", relation = "${tuple.relation}", object = "${tuple.object}"}`)
+      .join(',\n    ')}
   ]`
-          : ''
-        }
+      : ''
+  }
 );
 
 Reply: ${response}`;
@@ -276,13 +290,13 @@ Reply: ${response}`;
         ? `
         .contextualTupleKeys(
                 List.of(${contextualTuples.map(
-          (tuple) => `
+                  (tuple) => `
                         new ClientTupleKey()
                                 .user("${tuple.user}")
                                 .relation("${tuple.relation}")
                                 ._object("${tuple.object}")
                 ))`,
-        )}`
+                )}`
         : '';
       const contextCall = context
         ? `
