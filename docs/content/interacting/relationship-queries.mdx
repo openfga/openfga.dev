@@ -11,6 +11,7 @@ import {
   DocumentationNotice,
   ExpandRequestViewer,
   ListObjectsRequestViewer,
+  ListUsersRequestViewer,
   ReadRequestViewer,
   ProductConcept,
   ProductName,
@@ -19,7 +20,7 @@ import {
   RelationshipTuplesViewer,
 } from '@components/Docs';
 
-# Relationship Queries: Check, Read, Expand, and ListObjects
+# Relationship Queries: Check, Read, Expand, ListObjects and ListUsers
 
 <DocumentationNotice />
 
@@ -309,12 +310,45 @@ ListObjects will return the results found within the time allotted (`listObjects
 
 If the number of objects of that type is high, you should set a high value for `listObjectsDeadline`. If the number of objects of that type the user could have access to is high, you should set a high value for `listObjectsMaxResults`.
 
+## ListUsers
+
+### What Is It For?
+
+The [ListUsers API](/api/service#/Relationship%20Queries/ListUsers) is an API endpoint that that returns all users of a given type that have a specified relationship with an object.
+
+### When To Use?
+
+Use the ListUsers API to get which users have a relation to a specific object. 
+
+<ListUsersRequestViewer
+  authorizationModelId="01HVMMBCMGZNT3SED4Z17ECXCA"
+  objectType="document"
+  objectId="planning"
+  relation="viewer"
+  userFilterType="user"
+  expectedResults={{
+    users: [
+      { object: { type: "user", id: "anne" }}, 
+      { object: { type: "user", id: "beth" }}
+    ]
+  }}
+/>
+
+### Caveats
+
+ListUsers will return the results found within the time allotted (`listUsersDeadline`, default: `3s`) up to the maximum number of results configured (`listUsersMaxResults`, default: `1000`). See [Configuring the Server](../getting-started/setup-openfga/docker-setup.mdx#configuring-the-server)) for more on how to change the default configuration.
+
+- If you set `listUsersDeadline` to `1s`, the server will spend at most 1 second finding results.
+- If you set `listUsersMaxResults` to `10`, the server will return, at most, 10 objects.
+
+If the number of users of that type is high, you should set a high value for `listUsersDeadline`. If the number of objects of that type the user could have access to is high, you should set a high value for `listUsersMaxResults`.
+
 ## Summary
 
-|             | Check                                                         | Read                                                   | Expand                                                  | ListObjects                                                                        |
-| ----------- | ------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Purpose     | Check if user has particular relationship with certain object | Return all stored relationship tuples that match query | Expand the specific relationship on a particular object | List all objects of a particular type that a user has a specific relationship with |
-| When to use | Validate if user X can perform Y on object Z                  | List stored relationships in system                    | Understand why user X can perform Y on object Z         | Filter the objects a user has access to                                            |
+|             | Check                                                         | Read                                                   | Expand                                                  | ListObjects                                                                        | ListUsers                                                                        |
+| ----------- | ------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Purpose     | Check if user has particular relationship with certain object | Return all stored relationship tuples that match query | Expand the specific relationship on a particular object | List all objects of a particular type that a user has a specific relationship with | List all users of a particular type that have a relation to a specific object |
+| When to use | Validate if user X can perform Y on object Z                  | List stored relationships in system                    | Understand why user X can perform Y on object Z         | Filter the objects a user has access to                                            | List the users that have access to an object                                            |
 
 ## Related Sections
 
@@ -340,6 +374,11 @@ If the number of objects of that type is high, you should set a high value for `
       title: 'ListObjects API Reference',
       description: 'Official reference guide for the ListObjects API',
       link: '/api/service#Relationship%20Queries/ListObjects',
+    },
+    {
+      title: 'ListUsers API Reference',
+      description: 'Official reference guide for the ListUsers API',
+      link: '/api/service#Relationship%20Queries/ListUsers',
     },
   ]}
 />
