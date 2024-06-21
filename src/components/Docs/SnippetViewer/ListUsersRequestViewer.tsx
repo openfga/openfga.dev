@@ -265,9 +265,9 @@ var response = await fgaClient.ListUsers(body, options);
   # response.users = [${expectedResults.users.map((u) => JSON.stringify(u)).join(',')}]`;
     case SupportedLanguage.RPC:
       return `listUsers(
-  "${objectId}", // list the objects that the user \`${objectId}\`
-  "${relation}", // has an \`${relation}\` relation
-  "${objectType}", // and that are of type \`${objectType}\`
+  user_filter=[ "${userFilterType}" ], // list users of type \`${userFilterType}\`
+  "${relation}", // that have the \`${relation}\` relation
+  "${objectType}:${objectId}", // for the object \`${objectType}:${objectId}\`
   authorization_model_id = "${modelId}", // for this particular authorization model id ${
     contextualTuples
       ? `
