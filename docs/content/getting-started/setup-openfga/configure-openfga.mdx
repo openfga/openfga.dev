@@ -319,6 +319,10 @@ OpenFGA generates structured logs by default, and it can be configured with the 
 - `--log-format`: sets the log format. Today we support `text` and `json` format.
 - `--log-level`: sets the minimum log level (defaults to `info`). It can be set to `none` to turn off logging.
 
+:::caution Warning
+It is highly recommended to enable logging in production environments. Disabling logging (`--log-level=none`) can mask important operations and hinder the ability to detect and diagnose issues, including potential security incidents. Ensure that logs are enabled and properly monitored to maintain visibility into the application's behavior and security.
+:::
+
 ## Related Sections
 
 <RelatedSection
