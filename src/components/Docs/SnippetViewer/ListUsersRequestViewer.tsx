@@ -223,50 +223,51 @@ var response = await fgaClient.ListUsers(body, options);
 
 // response.Users = [${expectedResults.users.map((u) => JSON.stringify(u)).join(',')}]`;
     case SupportedLanguage.PYTHON_SDK:
-      return '';
-    //       return `
-    // options = {
-    //     "authorization_model_id": "${modelId}"
-    // }
+      return `
+  options = {
+      "authorization_model_id": "${modelId}"
+  }
 
-    // userFilters=[UserTypeFilter(type="${userFilterType}"${userFilterRelation ? `, relation="${userFilterRelation}"` : ''})]
+  userFilters = [
+      UserTypeFilter(type="${userFilterType}"${userFilterRelation ? `,relation="${userFilterRelation}"` : ''})
+  ]
 
-    // body = ClientListUsersRequest(
-    //     object=FgaObject(type="${objectId}, id="${objectId}"),
-    //     relation="${relation}",
-    //     userFilters=userFilters,${
-    //       contextualTuples
-    //         ? `
-    //     contextual_tuples=[
-    //         ${contextualTuples
-    //           .map(
-    //             (tuple) => `ClientTupleKey(user="${tuple.user}", relation="${tuple.relation}", object="${tuple.object}")`,
-    //           )
-    //           .join(',\n                ')}
-    //     ],`
-    //         : ``
-    //     }${
-    //       context
-    //         ? `
-    //     context=dict(${Object.entries(context)
-    //       .map(
-    //         ([k, v]) => `
-    //         ${k}="${v}"`,
-    //       )
-    //       .join(',')}
-    //     )`
-    //         : ''
-    //     }
-    // )
+  body = ClientListUsersRequest(
+      object=FgaObject(type="${objectType}"${objectId ? `,id="${objectId}"` : ''}),
+      relation="${relation}",
+      user_filters=userFilters,${
+        contextualTuples
+          ? `
+      contextual_tuples=[
+          ${contextualTuples
+            .map(
+              (tuple) => `ClientTupleKey(user="${tuple.user}", relation="${tuple.relation}", object="${tuple.object}")`,
+            )
+            .join(',\n                ')}
+      ],`
+          : ``
+      }${
+        context
+          ? `
+      context=dict(${Object.entries(context)
+        .map(
+          ([k, v]) => `
+          ${k}="${v}"`,
+        )
+        .join(',')}
+      )`
+          : ''
+      }
+  )
 
-    // response = await fga_client.list_users(body, options)
+  response = await fga_client.list_users(body, options)
 
-    // # response.users = [${expectedResults.users.map((u) => JSON.stringify(u)).join(',')}]`;
+  # response.users = [${expectedResults.users.map((u) => JSON.stringify(u)).join(',')}]`;
     case SupportedLanguage.RPC:
       return `listUsers(
-  "${objectId}", // list the objects that the user \`${objectId}\`
-  "${relation}", // has an \`${relation}\` relation
-  "${objectType}", // and that are of type \`${objectType}\`
+  user_filter=[ "${userFilterType}" ], // list users of type \`${userFilterType}\`
+  "${relation}", // that have the \`${relation}\` relation
+  "${objectType}:${objectId}", // for the object \`${objectType}:${objectId}\`
   authorization_model_id = "${modelId}", // for this particular authorization model id ${
     contextualTuples
       ? `
@@ -329,7 +330,7 @@ export function ListUsersRequestViewer(opts: ListUsersRequestViewerOpts): JSX.El
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
-    // SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.PYTHON_SDK,
     SupportedLanguage.JAVA_SDK,
     SupportedLanguage.CLI,
     SupportedLanguage.CURL,
