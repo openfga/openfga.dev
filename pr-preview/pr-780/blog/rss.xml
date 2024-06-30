@@ -25,7 +25,7 @@
 <p>We are close to ship a first iteration to <a href="https://github.com/orgs/openfga/projects/1?pane=issue&amp;itemId=49635084" target="_blank" rel="noopener noreferrer">add additional consistency options</a> for OpenFGA.</p>
 </li>
 <li>
-<p>We are working with (Krishna Kumar)[<a href="https://github.com/krishnakv" target="_blank" rel="noopener noreferrer">https://github.com/krishnakv</a>]<!-- --> and <a href="https://github.com/eddie-knight" target="_blank" rel="noopener noreferrer">Eddie Knight</a> from the CNCF Tag-Security team on a joint security assessment for OpenFGA. We are pretty close to wrapping it up! You can follow the progress in <a href="https://github.com/cncf/tag-security/pull/1289" target="_blank" rel="noopener noreferrer">this PR</a>.</p>
+<p>We are working with <a href="https://github.com/krishnakv" target="_blank" rel="noopener noreferrer">Krishna Kumar</a> and <a href="https://github.com/eddie-knight" target="_blank" rel="noopener noreferrer">Eddie Knight</a> from the CNCF Tag-Security team on a joint security assessment for OpenFGA. We are pretty close to wrapping it up! You can follow the progress in <a href="https://github.com/cncf/tag-security/pull/1289" target="_blank" rel="noopener noreferrer">this PR</a>.</p>
 </li>
 <li>
 <p>We'll be working on adding <a href="https://github.com/openfga/roadmap/issues/30" target="_blank" rel="noopener noreferrer">authorization for OpenFGA APIs</a>.</p>
