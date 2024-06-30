@@ -20,7 +20,7 @@ This is where we share what has been going on in the OpenFGA community during th
 
 - We are close to ship a first iteration to [add additional consistency options](https://github.com/orgs/openfga/projects/1?pane=issue&itemId=49635084) for OpenFGA.
 
-- We are working with (Krishna Kumar)[https://github.com/krishnakv] and [Eddie Knight](https://github.com/eddie-knight) from the CNCF Tag-Security team on a joint security assessment for OpenFGA. We are pretty close to wrapping it up! You can follow the progress in [this PR](https://github.com/cncf/tag-security/pull/1289).
+- We are working with [Krishna Kumar](https://github.com/krishnakv) and [Eddie Knight](https://github.com/eddie-knight) from the CNCF Tag-Security team on a joint security assessment for OpenFGA. We are pretty close to wrapping it up! You can follow the progress in [this PR](https://github.com/cncf/tag-security/pull/1289).
 
 - We'll be working on adding [authorization for OpenFGA APIs](https://github.com/openfga/roadmap/issues/30).
 
