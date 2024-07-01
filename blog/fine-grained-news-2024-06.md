@@ -36,7 +36,7 @@ If you are using OpenFGA in production, please consider adding your company/proj
 
 ## Community
 
-- [Zuplo](https://zuplo.com) released an [OpenFGA Authorization Inbound Policy](https://zuplo.com/docs/policies/openfga-authz-inbound) that makes it super simple to add fine-grained authorization to your APIs. They are also using OpenFGA deployed globally in GCP for Zuplo itself. You can learn more about their OpenFGA integration journey in this webinar.
+- [Zuplo](https://zuplo.com) released an [OpenFGA Authorization Inbound Policy](https://zuplo.com/docs/policies/openfga-authz-inbound) that makes it super simple to add fine-grained authorization to your APIs. They are also using OpenFGA deployed globally in GCP for Zuplo itself. You can learn more about their OpenFGA integration journey [in this webinar](https://landing.zuplo.com/oktafgawebinarreg).
 
 - [Martin Besozzi](https://github.com/embesozzi) built an [APISIX plugin for OpenFGA](https://github.com/embesozzi/apisix-authz-openfga). He also published a blog post about [Mastering Access Control: Implementing Low-Code Authorization Based on ReBAC and Decoupling Pattern](https://embesozzi.medium.com/mastering-access-control-implementing-low-code-authorization-based-on-rebac-and-decoupling-pattern-f6f54f70115e) demonstrating how to use it.
 
