@@ -2,11 +2,90 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://openfga.dev/blog</id>
     <title>OpenFGA Blog</title>
-    <updated>2024-05-30T00:00:00.000Z</updated>
+    <updated>2024-06-30T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://openfga.dev/blog"/>
     <subtitle>OpenFGA Blog</subtitle>
     <icon>https://openfga.dev/img/openfga-icon.svg</icon>
+    <entry>
+        <title type="html"><![CDATA[Fine Grained News - June 2024]]></title>
+        <id>https://openfga.dev/blog/fine-grained-news-2024-06</id>
+        <link href="https://openfga.dev/blog/fine-grained-news-2024-06"/>
+        <updated>2024-06-30T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Fine Grained News]]></summary>
+        <content type="html"><![CDATA[<p>Welcome to Fine Grained News, June 2024 edition!</p>
+<p>This is where we share what has been going on in the OpenFGA community during the last 30 days :).</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="what-are-we-working-on">What are we working on?<a class="hash-link" aria-label="Direct link to What are we working on?" title="Direct link to What are we working on?" href="https://openfga.dev/blog/fine-grained-news-2024-06#what-are-we-working-on">​</a></h2>
+<ul>
+<li>
+<p>We started adding <a href="https://github.com/openfga/roadmap/issues/41" target="_blank" rel="noopener noreferrer">OpenTelemetry instrumentation</a> to our SDKs. We just shipped metrics support for Python and Javascript. We'll continue with tracing and logging, and we'll be adding support for Java, Go and .NET next.</p>
+</li>
+<li>
+<p>We are close to ship a first iteration to <a href="https://github.com/orgs/openfga/projects/1?pane=issue&amp;itemId=49635084" target="_blank" rel="noopener noreferrer">add additional consistency options</a> for OpenFGA.</p>
+</li>
+<li>
+<p>We are working with <a href="https://github.com/krishnakv" target="_blank" rel="noopener noreferrer">Krishna Kumar</a> and <a href="https://github.com/eddie-knight" target="_blank" rel="noopener noreferrer">Eddie Knight</a> from the CNCF Tag-Security team on a joint security assessment for OpenFGA. We are pretty close to wrapping it up! You can follow the progress in <a href="https://github.com/cncf/tag-security/pull/1289" target="_blank" rel="noopener noreferrer">this PR</a>.</p>
+</li>
+<li>
+<p>We'll be working on adding <a href="https://github.com/openfga/roadmap/issues/30" target="_blank" rel="noopener noreferrer">authorization for OpenFGA APIs</a>.</p>
+</li>
+<li>
+<p>We've identified a few areas where we can improve performance and we are actively working on them.</p>
+</li>
+</ul>
+<p>If you have any feedback, or want to try a feature early, or are interested to learn more, please reach out!</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="new-adopters">New Adopters<a class="hash-link" aria-label="Direct link to New Adopters" title="Direct link to New Adopters" href="https://openfga.dev/blog/fine-grained-news-2024-06#new-adopters">​</a></h2>
+<p>We are thrilled to welcome <a href="https://sourcegraph.com/" target="_blank" rel="noopener noreferrer">Sourcegraph</a> to the list of companies in our <a href="https://github.com/openfga/community/blob/main/ADOPTERS.md" target="_blank" rel="noopener noreferrer">Adopters list</a>! We are proud to be addressing their fine-grained authorization needs.</p>
+<p>If you are using OpenFGA in production, please consider adding your company/project to the <a href="https://github.com/openfga/community/blob/main/ADOPTERS.md" target="_blank" rel="noopener noreferrer">list</a>, it will be greatly appreciated!</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="community">Community<a class="hash-link" aria-label="Direct link to Community" title="Direct link to Community" href="https://openfga.dev/blog/fine-grained-news-2024-06#community">​</a></h2>
+<ul>
+<li>
+<p><a href="https://zuplo.com/" target="_blank" rel="noopener noreferrer">Zuplo</a> released an <a href="https://zuplo.com/docs/policies/openfga-authz-inbound" target="_blank" rel="noopener noreferrer">OpenFGA Authorization Inbound Policy</a> that makes it super simple to add fine-grained authorization to your APIs. They are also using OpenFGA deployed globally in GCP for Zuplo itself. You can learn more about their OpenFGA integration journey in this webinar.</p>
+</li>
+<li>
+<p><a href="https://github.com/embesozzi" target="_blank" rel="noopener noreferrer">Martin Besozzi</a> built an <a href="https://github.com/embesozzi/apisix-authz-openfga" target="_blank" rel="noopener noreferrer">APISIX plugin for OpenFGA</a>. He also published a blog post about <a href="https://embesozzi.medium.com/mastering-access-control-implementing-low-code-authorization-based-on-rebac-and-decoupling-pattern-f6f54f70115e" target="_blank" rel="noopener noreferrer">Mastering Access Control: Implementing Low-Code Authorization Based on ReBAC and Decoupling Pattern</a> demonstrating how to use it.</p>
+</li>
+<li>
+<p><a href="https://github.com/aaguiarz" target="_blank" rel="noopener noreferrer">Andres Aguiar</a> and <a href="https://github.com/dschenkelman" target="_blank" rel="noopener noreferrer">Damian Schenkelman</a> will do an OpenFGA Deep Dive in the <a href="https://www.linkedin.com/feed/update/urn:li:activity:7211830083366322176/" target="_blank" rel="noopener noreferrer">July 17 episode of Identirati Office Hours</a>.</p>
+</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="openfga--cloudnative-securitycon">OpenFGA @ CloudNative SecurityCon<a class="hash-link" aria-label="Direct link to OpenFGA @ CloudNative SecurityCon" title="Direct link to OpenFGA @ CloudNative SecurityCon" href="https://openfga.dev/blog/fine-grained-news-2024-06#openfga--cloudnative-securitycon">​</a></h2>
+<p>OpenFGA was present in <a href="https://events.linuxfoundation.org/cloudnativesecuritycon-north-america/" target="_blank" rel="noopener noreferrer">CloudNative SecurityCon North America</a>!</p>
+<p><a href="https://github.com/miparnisari" target="_blank" rel="noopener noreferrer">Maria Ines Parnisari</a> from the OpenFGA team and <a href="https://github.com/evankanderson" target="_blank" rel="noopener noreferrer">Evan Anderson</a> from <a href="https://stacklok.com/" target="_blank" rel="noopener noreferrer">Stacklok</a> presented on <a href="https://cloudnativesecurityconna24.sched.com/event/1dCVn/implementing-a-multi-tenant-relationship-based-authorization-model-with-openfga-evan-anderson-stacklok-maria-ines-parnisari-okta" target="_blank" rel="noopener noreferrer">Implementing a Multi-Tenant, Relationship-Based Authorization Model with OpenFGA</a>.</p>
+<p><img decoding="async" loading="lazy" alt="CloudNative SecurityCon Presentation" src="https://openfga.dev/assets/images/fgn-2024-06-securitycon-talk-57abfc6e4e3f7e573481a2fdfe30692c.jpg" width="800" height="481" class="img_ev3q"></p>
+<p>We also got a last-minute kiosk to showcase OpenFGA at the event:</p>
+<p><img decoding="async" loading="lazy" alt="OpenFGA Kiosk" src="https://openfga.dev/assets/images/fgn-2024-06-securitycon-booth-b547906de2fa364259b5ba8c112ba91c.png" width="800" height="567" class="img_ev3q"></p>
+<p>Thanks to everyone that stopped by!</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="latest-features">Latest Features<a class="hash-link" aria-label="Direct link to Latest Features" title="Direct link to Latest Features" href="https://openfga.dev/blog/fine-grained-news-2024-06#latest-features">​</a></h2>
+<p>In case you missed them, here are some of the latest major features we've added to OpenFGA:</p>
+<ul>
+<li>
+<p><a href="https://openfga.dev/blog/list-users-announcement" target="_blank" rel="noopener noreferrer">List Users API</a> allows you to retrieve all the users that have a specific relation with a resource.</p>
+</li>
+<li>
+<p><a href="https://openfga.dev/blog/modular-models-announcement" target="_blank" rel="noopener noreferrer">Modular Models</a> makes it easy for multiple teams to collaborate on a single OpenFGA model.</p>
+</li>
+<li>
+<p><a href="https://plugins.jetbrains.com/plugin/24394-openfga" target="_blank" rel="noopener noreferrer">JetBrain's IDEs plugin</a> to allow syntax coloring and validation of OpenFGA models.</p>
+</li>
+<li>
+<p><a href="https://openfga.dev/blog/conditional-tuples-announcement" target="_blank" rel="noopener noreferrer">Conditional Tuples</a> allows you to define tuples that are only valid under certain conditions</p>
+</li>
+<li>
+<p><a href="https://github.com/openfga/spring-boot-starter" target="_blank" rel="noopener noreferrer">Spring Boot Starter for OpenFGA</a> simplifies integrating OpenFGA with Spring Security applications.</p>
+</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="transitioning-from-discord-to-cncfs-slack">Transitioning from Discord to CNCF's Slack<a class="hash-link" aria-label="Direct link to Transitioning from Discord to CNCF's Slack" title="Direct link to Transitioning from Discord to CNCF's Slack" href="https://openfga.dev/blog/fine-grained-news-2024-06#transitioning-from-discord-to-cncfs-slack">​</a></h2>
+<p>As we mentioned before, we transitioned out from Discord for OpenFGA and are now using the CNCF <a href="https://cloud-native.slack.com/archives/C06G1NNH47N" target="_blank" rel="noopener noreferrer">#openfga Slack channel</a>. If you are not part of the CNCF Slack workspace, you need to join the <a href="https://slack.cncf.io/" target="_blank" rel="noopener noreferrer">CNCF Slack</a> first.</p>
+<p>Checkout <a href="https://openfga.dev/community" target="_blank" rel="noopener noreferrer">https://openfga.dev/community</a> for all the places to find us.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="see-you-next-month">See you next month!<a class="hash-link" aria-label="Direct link to See you next month!" title="Direct link to See you next month!" href="https://openfga.dev/blog/fine-grained-news-2024-06#see-you-next-month">​</a></h2>
+<p>Fine Grained News are published every month. If you have any feedback, want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!</p>]]></content>
+        <author>
+            <name>Andres Aguiar</name>
+            <uri>https://github.com/aaguiarz</uri>
+        </author>
+        <category label="newsletter" term="newsletter"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Fine Grained News - May 2024]]></title>
         <id>https://openfga.dev/blog/fine-grained-news-2024-05</id>
