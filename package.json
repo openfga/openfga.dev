@@ -48,15 +48,15 @@
     "@types/react": "18.3.3",
     "@types/react-router-dom": "5.3.3",
     "@types/sanitize-html": "2.11.0",
-    "@typescript-eslint/eslint-plugin": "7.13.1",
-    "@typescript-eslint/parser": "7.13.1",
+    "@typescript-eslint/eslint-plugin": "7.16.0",
+    "@typescript-eslint/parser": "7.16.0",
     "docusaurus-plugin-module-alias": "0.0.2",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
-    "eslint-plugin-react": "7.34.2",
+    "eslint-plugin-react": "7.34.4",
     "husky": "9.0.11",
-    "prettier": "3.3.2",
-    "typescript": "5.4.5"
+    "prettier": "3.3.3",
+    "typescript": "5.5.3"
   },
   "overrides": {
     "gauge": "^5.0.0",
