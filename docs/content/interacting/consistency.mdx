@@ -41,15 +41,16 @@ If you have a use case where higher consistency is needed, it's recommended that
 For example, if you share `document:readme` with a `user:anne` and you update a `modified_date` field in the `document` table when that happens, you can write code like the below when calling `check("user:anne", "can_view", "document:readme")` to avoid paying the price of additional latency when calling the API.
 
 ```javascript
-    if (date_modified + cache_time_to_live_period > Date.now()) { 
-        fgaClient.check(
-            { "user" : "user:anne", "relation" : "user:can_view", "object" : "document:readme" }
-         )
-    } else {
-        fgaClient.check(
-            { "user" : "user:anne", "relation" : "user:can_view", "object" : "document:readme" }, consistency = HIGHER_CONSISTENCY
-         )
-    }
+if (date_modified + cache_time_to_live_period > Date.now()) {
+    const { allowed } = await fgaClient.check(
+      { user: "user:anne", relation: "can_view", object: "document:roadmap"}
+    );
+} else {
+    const { allowed } = await fgaClient.check(
+        {  user: "user:anne", relation: "can_view", object: "document:roadmap"},
+        {  consistency: ConsistencyPreference.HigherConsistency }
+    );
+}
 ```
 
 ## Cache expiration
