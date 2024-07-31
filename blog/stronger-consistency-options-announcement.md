@@ -10,36 +10,28 @@ hide_table_of_contents: false
 ---
 # Stronger Consistency Query Options in OpenFGA
 
-OpenFGA can be run with a cache enabled or without it.
+OpenFGA query APIs now allows to specify the desired consistency of query results. By default, OpenFGA does not use a cache. However, when caching is enabled, it applies to all requests. This means that any changes in permissions won't be reflected in authorization checks during the cache TTL period.
 
-You can enable a cache and configure the size and the cache time-to-live. However, once you do that, the Check and ListObjects will always use the cache.
-
-We heard from the community that there was the need to decide when to use the cache on a per-request mode.
-
-Starting with [OpenFGA v1.5.7](https://github.com/openfga/openfga/releases/tag/v1.5.7), all query APIs can receive consistency parameter that can have the following values:
+The community expressed the need for flexibility in using the cache on a per-request basis. In response, starting with [OpenFGA v1.5.7](https://github.com/openfga/openfga/releases/tag/v1.5.7), all query APIs can accept a consistency parameter with the following values:
 
 | Name                        | Description                                                                                                   |  
 |-----------------------------|---------------------------------------------------------------------------------------------------------------|
-| MINIMIZE_LATENCY (default)  | <ProductName format={ProductNameFormat.ShortForm}/> will serve queries from the cache when possible           | 
-| HIGHER_CONSISTENCY          | <ProductName format={ProductNameFormat.ShortForm}/> will skip the cache and query the the database directly   |
+| MINIMIZE_LATENCY (default)  | OpenFGA will serve queries from the cache when possible           | 
+| HIGHER_CONSISTENCY          |  OpenFGA will bypass the cache and query the database directly   |
 
-When you specify `HIGHER_CONSISTENCY`, OpenFGA will read directly from the database when the cache is enabled. 
-
-If you have implemented a custom database adapter for a multi-region database, you can decide the behavior of the `HIGHER_CONSISTENCY` parameter. If you use an eventually consistent database (e.g. DynamoDB) in a multi-region setup, there will be a replication lag even if you skip the cache. If the database supports strong reads, you can pay the extra price of performing those. If not, you can do an eventually consistent database read and not provide full consistency semantics to the caller.
+When `HIGHER_CONSISTENCY` is specified, OpenFGA reads directly from the database, even when the cache is enabled.
 
 ## How to use it?
 
-The new parameter is available in OpenFGA starting with [v1.5.7](https://github.com/openfga/openfga/releases/tag/v1.5.7). 
+The new consistency parameter is available in OpenFGA starting [v1.5.7](https://github.com/openfga/openfga/releases/tag/v1.5.7). It is not yet available in the SDKs, but will be added in the coming weeks. For more information on enabling the cache and best practices for specifying consistency values, refer to the [documentation](https://openfga.dev/docs/interacting/consistency).
 
-It's still not available in the SDKs, we'll be adding it in the next few weeks.
+## Custom database adapter implementations
 
-Learn more about how to turn on the cache and best practices on how to specify consistency values in the [product documentation](https://openfga.dev/docs/interacting/consistency).
+For those with a custom database adapter for a multi-region database, the behavior of the HIGHER_CONSISTENCY parameter can be defined according to your needs. With an eventually consistent database (e.g., Dynamo DB) in a multi-region setup, there will be replication lag even if the cache is bypassed. If the database supports strong reads, you can choose to perform those at an extra cost. Otherwise, you can perform an eventually consistent read without providing full consistency semantics to the caller.
 
 ## Future work
 
-[Google Zanzibar](https://zanzibar.academy) has a feature called `Zookies`, which is a consistency token that is returned from Write operation. You can store that token in a resource table, and specify it in subsequent calls to query APIs. 
-
-We are planning to add a similar feature to OpenFGA in future releases.
+[Google Zanzibar](https://zanzibar.academy) features a consistency token called `Zookies`, returned from write operations. This token can be stored in a resource table and specified in subsequent query API calls. OpenFGA plans to introduce a similar feature in future releases.
 
 ## We want your feedback!
 
