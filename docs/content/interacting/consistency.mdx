@@ -34,7 +34,7 @@ If you write a tuple and you immediately make a check on a relation affected by 
 
 ## When to use higher consistency
 
-When specifying `HIGHER_CONSISTENCY` you are trading off consistency for latency. Always specifying `HIGHER_CONSISTENCY` will have a significant impact in performance.
+When specifying `HIGHER_CONSISTENCY` you are trading off consistency for latency and system performance. Always specifying `HIGHER_CONSISTENCY` will have a significant impact in performance.
 
 If you have a use case where higher consistency is needed, it's recommended that whenever possible, you decide in runtime the consistency level you need. If you are storing a timestamp indicating when a resource was last modified in your database, you can use that to decide the kind of request you do.
 
