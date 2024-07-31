@@ -16,7 +16,7 @@ The community expressed the need for flexibility in using the cache on a per-req
 
 | Name                        | Description                                                                                                   |  
 |-----------------------------|---------------------------------------------------------------------------------------------------------------|
-| MINIMIZE_LATENCY (default)  | OpenFGA will serve queries from the cache when possible           | 
+| MINIMIZE_LATENCY (default)  | OpenFGA will try to minimize latency (e.g. by making use of the cache)  | 
 | HIGHER_CONSISTENCY          |  OpenFGA will bypass the cache and query the database directly   |
 
 When `HIGHER_CONSISTENCY` is specified, OpenFGA reads directly from the database, even when the cache is enabled.
