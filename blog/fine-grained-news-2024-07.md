@@ -47,7 +47,7 @@ If you have any feedback, or want to try a feature early, or are interested to l
 ## Breaking Changes
 
 
-Several breaking changes related to the storage interface have been introduced. These changes should not impact your usage of OpenFGA unless you are not implementing an storage adapter.
+Several breaking changes related to the storage interface [have been introduced](https://github.com/openfga/openfga/releases/tag/v1.5.7). These changes should not impact your usage of OpenFGA unless you are not implementing an storage adapter.
 
 
 ## In Progress
