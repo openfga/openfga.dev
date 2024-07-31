@@ -340,6 +340,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Query Consistency',
+          id: 'content/interacting/consistency',
+        },
+        {
+          type: 'doc',
           label: "Relationship Queries",
           id: 'content/interacting/relationship-queries',
         },
