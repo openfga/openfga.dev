@@ -77,7 +77,7 @@ Several breaking changes related to the storage interface have been introduced. 
 - This month, Andres Aguiar and Damian Schenkelman appeared in the [Identerati Office Hours](https://www.youtube.com/watch?v=Ups1FFxK3VE&pp=ygUHT3BlbkZHQQ%3D%3D) livestream for an in-depth exploration of OpenFGA. This video covers advanced topics and provides valuable insights into the capabilities and implementation of OpenFGA. Whether you're a seasoned user or new to OpenFGA, this deep dive is packed with information that will enhance your understanding and usage of the platform.
 
 
-- Andres Aguuiar sat down with Open at Intel host Katherine Druckman during  KubeCon Europe to discuss OpenFGA. You can hear that podcast [here](
+- Andres Aguiar sat down with Open at Intel host Katherine Druckman during KubeCon Europe to discuss OpenFGA. You can hear that podcast [here](
 https://www.intel.com/content/www/us/en/developer/articles/community/fine-grained-authorization-with-openfga.html).
 
 
