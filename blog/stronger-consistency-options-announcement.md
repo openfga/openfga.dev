@@ -27,7 +27,7 @@ The new consistency parameter is available in OpenFGA starting [v1.5.7](https://
 
 The parameter is already exposed in the [Javascript SDK](https://github.com/openfga/js-sdk/) and the [Python SDK](https://github.com/openfga/python-sdk/). We'll implement it in the rest of the SDKs in the following weeks.
 
-It is not yet available in the SDKs, but will be added in the coming weeks. For more information on enabling the cache and best practices for specifying consistency values, refer to the [documentation](https://openfga.dev/docs/interacting/consistency).
+For more information on enabling the cache and best practices for specifying consistency values, refer to the [documentation](https://openfga.dev/docs/interacting/consistency).
 
 ## Custom database adapter implementations
 
