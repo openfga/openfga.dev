@@ -29,9 +29,9 @@ If you have implemented a custom database adapter for a multi-region database, y
 
 ## How to use it?
 
-The new parameter is available in OpenFGA starting with [v1.5.7](https://github.com/openfga/openfga/releases/tag/v1.5.7).
+The new parameter is available in OpenFGA starting with [v1.5.7](https://github.com/openfga/openfga/releases/tag/v1.5.7). 
 
-The new parameter is only implemented in the [Python SDK](https://github.com/openfga/python-sdk/), we'll be adding it the rest in the following 2-3 weeks.
+It's still not available in the SDKs, we'll be adding it in the next few weeks.
 
 Learn more about how to turn on the cache and best practices on how to specify consistency values in the [product documentation](https://openfga.dev/docs/interacting/consistency).
 
