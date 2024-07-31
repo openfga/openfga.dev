@@ -78,7 +78,9 @@ Several breaking changes related to the storage interface [have been introduced]
 
 
 - Andres Aguiar sat down with Open at Intel host Katherine Druckman during KubeCon Europe to discuss OpenFGA. You can hear that podcast [here](
+<!-- markdown-link-check-disable -->
 https://www.intel.com/content/www/us/en/developer/articles/community/fine-grained-authorization-with-openfga.html).
+<!-- markdown-link-check-enable -->
 
 
 ## New Adopters
