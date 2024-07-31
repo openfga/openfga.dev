@@ -35,7 +35,7 @@ For those with a custom database adapter for a multi-region database, the behavi
 
 ## Future work
 
-[Google Zanzibar](https://zanzibar.academy) features a consistency token called `Zookies`, returned from write operations. This token can be stored in a resource table and specified in subsequent query API calls. OpenFGA plans to introduce a similar feature in future releases.
+[Google Zanzibar](https://zanzibar.academy) features a consistency token called `Zookies`, returned from write operations. This token can be stored in a resource table and specified in subsequent query API calls. We are considering introducing a similar feature in future releases.
 
 ## We want your feedback!
 
