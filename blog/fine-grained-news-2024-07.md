@@ -23,10 +23,10 @@ We value your feedback and invite you to participate in our [2024 OpenFGA Commun
 **Latest Features**
 
 
-- We’ve introduced consistency options for query requests. This new feature provides more flexibility and control over how queries are executed, enhancing the accuracy and reliability of query results. [Learn more about this update](https://openfga.dev/blog/stronger-consistency-options-announcement).
+- We’ve introduced consistency options for query requests. This new, experimental, feature provides more flexibility and control over how queries are executed, enhancing the accuracy and reliability of query results. [Learn more about this update](https://openfga.dev/blog/stronger-consistency-options-announcement).
 
 
-- We’re now publishing images to `ghcr.io/openfga/openfga` as an alternative to DockerHub, thanks to the contribution from @JAORMX. This provides an additional option for accessing and deploying our containers. [Read more](https://github.com/openfga/openfga/commit/#1775).
+- We’re now publishing images to `ghcr.io/openfga/openfga` as an alternative to DockerHub, thanks to the contribution from [@JAORMX](https://github.com/JAORMX). This provides an additional option for accessing and deploying our containers. [Read more](https://github.com/openfga/openfga/pull/1775).
 
 
 **Performance Improvements**
@@ -41,22 +41,25 @@ If you have any feedback, or want to try a feature early, or are interested to l
 ## Breaking Changes
 
 
-Several breaking changes related to the storage interface [have been introduced](https://github.com/openfga/openfga/releases/tag/v1.5.7). These changes should not impact your usage of OpenFGA unless you are implementing an storage adapter.
+Several breaking changes related to the storage interface [have been introduced](https://github.com/openfga/openfga/releases/tag/v1.5.7). These changes should not impact your usage of OpenFGA unless you are implementing a custom storage adapter for OpenFGA.
 
 
 ## In Progress
 
 
-- [Additional Consistency Options for OpenFGA queries](https://github.com/openfga/roadmap/issues/54): We've just shipped the first iteration of this feature, and we’ll be working on adding a consistency token in the future.
+- [Additional Consistency Options for OpenFGA queries](https://github.com/openfga/roadmap/issues/54): We've just shipped the first iteration of this feature, we're working on adding support for it in more SDKs. We’ll also be working on adding a consistency token in the future.
 
 
-- [Telemetry for SDKs](https://github.com/openfga/roadmap/issues/41): We shipped OpenTelemetry Metrics support for Python and Javascript. We’ll be adding metrics support to the rest of the SDKs and then add support for tracing and logging.
+- [Telemetry for SDKs](https://github.com/openfga/roadmap/issues/41): We shipped OpenTelemetry Metrics support for Python and Javascript. We’ll be adding metrics support to the rest of the SDKs and then add support for tracing and logging. If you have feedback regarding our OpenTelemery support, please do reach out on any of our community channels.
 
 
 - We’ll keep working on [Performance Improvements](https://github.com/openfga/roadmap/issues/61) for Check, List Objects and List Users APIs.
 
 
-- We’ll be adding additional [authorization options for OpenFGA](https://github.com/openfga/roadmap/issues/30), to allow different API credentials perform different actions in FGA stores.
+- We’ll be adding additional [authorization options for OpenFGA](https://github.com/openfga/roadmap/issues/30)to restrict API credentials to performing specific actions in OpenFGA stores.
+
+
+-  We collaborated with members of the CNCF [TAG-Security team](https://github.com/cncf/tag-security) for a few weeks to get it wrapped up (thanks [Krishna Krishna](https://github.com/krishnakv) and [Eddie](https://github.com/eddie-knight) for your help).
 
 
 ## Community Highlights
@@ -65,10 +68,10 @@ Several breaking changes related to the storage interface [have been introduced]
 - Check out [July’s Community Meeting](https://www.youtube.com/watch?v=GvgeQcQlUuU&t=212s&pp=ygUHT3BlbkZHQQ%3D%3D)! It's a great opportunity to stay updated with the latest developments, ask questions, and engage with the OpenFGA community.
 
 
-- Maria Ines Parnisari from the OpenFGA team and Evan Anderson from Stacklok presented on Implementing a Multi-Tenant, Relationship-Based Authorization Model with OpenFGA at CloudNative SecurityCon North America. If you didn’t attend the conference in June, the presentation recording is now [live](https://www.youtube.com/watch?v=zIJOBLbaZOc).
+- [Maria Ines Parnisari](https://www.linkedin.com/in/miparnisari/) from the OpenFGA team and [Evan Anderson](https://www.linkedin.com/in/evankanderson/) from Stacklok presented on Implementing a Multi-Tenant, Relationship-Based Authorization Model with OpenFGA at CloudNative SecurityCon North America. If you didn’t attend the conference in June, the presentation recording is now [live](https://www.youtube.com/watch?v=zIJOBLbaZOc).
 
 
-- This month, Andres Aguiar and Damian Schenkelman appeared in the [Identerati Office Hours](https://www.youtube.com/watch?v=Ups1FFxK3VE&pp=ygUHT3BlbkZHQQ%3D%3D) livestream for an in-depth exploration of OpenFGA. This video covers advanced topics and provides valuable insights into the capabilities and implementation of OpenFGA. Whether you're a seasoned user or new to OpenFGA, this deep dive is packed with information that will enhance your understanding and usage of the platform.
+- This month, [Andres Aguiar](https://www.linkedin.com/in/aaguiar/) and [Damian Schenkelman](https://www.linkedin.com/in/damianschenkelman/) appeared in the [Identerati Office Hours](https://www.youtube.com/watch?v=Ups1FFxK3VE&pp=ygUHT3BlbkZHQQ%3D%3D) livestream for an in-depth exploration of OpenFGA. This video covers advanced topics and provides valuable insights into the capabilities and implementation of OpenFGA. Whether you're a seasoned user or new to OpenFGA, this deep dive is packed with information that will enhance your understanding and usage of the platform.
 
 
 - Andres Aguiar sat down with Open at Intel host Katherine Druckman during KubeCon Europe to discuss OpenFGA. You can hear that podcast <!-- markdown-link-check-disable -->
