@@ -18,6 +18,8 @@ We value your feedback and invite you to participate in our [2024 OpenFGA Commun
 
 
 ## Improvements
+
+
 ### Latest Features
 
 
@@ -25,6 +27,8 @@ We value your feedback and invite you to participate in our [2024 OpenFGA Commun
 
 
 - We’re now publishing images to `ghcr.io/openfga/openfga` as an alternative to DockerHub, thanks to the contribution from @JAORMX. This provides an additional option for accessing and deploying our containers. [Read more](https://github.com/openfga/openfga/commit/#1775).
+
+
 ### Performance Improvements
 
 
