@@ -39,7 +39,7 @@
 </ul>
 <p>If you have any feedback, or want to try a feature early, or are interested to learn more, please reach out!</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="breaking-changes">Breaking Changes<a class="hash-link" aria-label="Direct link to Breaking Changes" title="Direct link to Breaking Changes" href="https://openfga.dev/pr-preview/pr-801/blog/fine-grained-news-2024-07#breaking-changes">​</a></h2>
-<p>Several breaking changes related to the storage interface <a href="https://github.com/openfga/openfga/releases/tag/v1.5.7" target="_blank" rel="noopener noreferrer">have been introduced</a>. These changes should not impact your usage of OpenFGA unless you are not implementing an storage adapter.</p>
+<p>Several breaking changes related to the storage interface <a href="https://github.com/openfga/openfga/releases/tag/v1.5.7" target="_blank" rel="noopener noreferrer">have been introduced</a>. These changes should not impact your usage of OpenFGA unless you are implementing an storage adapter.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="in-progress">In Progress<a class="hash-link" aria-label="Direct link to In Progress" title="Direct link to In Progress" href="https://openfga.dev/pr-preview/pr-801/blog/fine-grained-news-2024-07#in-progress">​</a></h2>
 <ul>
 <li>
