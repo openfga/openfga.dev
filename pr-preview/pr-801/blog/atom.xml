@@ -27,7 +27,7 @@
 </ul>
 <p><strong>Performance Improvements</strong></p>
 <ul>
-<li>We've improved our Check latency up to 20X in some scenarios in 1.5.7 and 1.5.6.</li>
+<li>We've improved our Check latency up to 20X in some scenarios in OpenFGA [v1.5.7]((<a href="https://github.com/openfga/openfga/releases/tag/v1.5.7" target="_blank" rel="noopener noreferrer">https://github.com/openfga/openfga/releases/tag/v1.5.7</a>) and [v1.5.6]((<a href="https://github.com/openfga/openfga/releases/tag/v1.5.6" target="_blank" rel="noopener noreferrer">https://github.com/openfga/openfga/releases/tag/v1.5.6</a>).</li>
 </ul>
 <p>If you have any feedback, or want to try a feature early, or are interested to learn more, please reach out!</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="breaking-changes">Breaking Changes<a class="hash-link" aria-label="Direct link to Breaking Changes" title="Direct link to Breaking Changes" href="https://openfga.dev/pr-preview/pr-801/blog/fine-grained-news-2024-07#breaking-changes">​</a></h2>
