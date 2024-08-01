@@ -20,10 +20,10 @@
 <p><strong>Latest Features</strong></p>
 <ul>
 <li>
-<p>We’ve introduced consistency options for query requests. This new feature provides more flexibility and control over how queries are executed, enhancing the accuracy and reliability of query results. <a href="https://openfga.dev/blog/stronger-consistency-options-announcement" target="_blank" rel="noopener noreferrer">Learn more about this update</a>.</p>
+<p>We’ve introduced consistency options for query requests. This new, experimental, feature provides more flexibility and control over how queries are executed, enhancing the accuracy and reliability of query results. <a href="https://openfga.dev/blog/stronger-consistency-options-announcement" target="_blank" rel="noopener noreferrer">Learn more about this update</a>.</p>
 </li>
 <li>
-<p>We’re now publishing images to <code>ghcr.io/openfga/openfga</code> as an alternative to DockerHub, thanks to the contribution from @JAORMX. This provides an additional option for accessing and deploying our containers. <a href="https://github.com/openfga/openfga/commit/#1775" target="_blank" rel="noopener noreferrer">Read more</a>.</p>
+<p>We’re now publishing images to <code>ghcr.io/openfga/openfga</code> as an alternative to DockerHub, thanks to the contribution from <a href="https://github.com/JAORMX" target="_blank" rel="noopener noreferrer">@JAORMX</a>. This provides an additional option for accessing and deploying our containers. <a href="https://github.com/openfga/openfga/pull/1775" target="_blank" rel="noopener noreferrer">Read more</a>.</p>
 </li>
 </ul>
 <p><strong>Performance Improvements</strong></p>
@@ -32,20 +32,23 @@
 </ul>
 <p>If you have any feedback, or want to try a feature early, or are interested to learn more, please reach out!</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="breaking-changes">Breaking Changes<a class="hash-link" aria-label="Direct link to Breaking Changes" title="Direct link to Breaking Changes" href="https://openfga.dev/pr-preview/pr-801/blog/fine-grained-news-2024-07#breaking-changes">​</a></h2>
-<p>Several breaking changes related to the storage interface <a href="https://github.com/openfga/openfga/releases/tag/v1.5.7" target="_blank" rel="noopener noreferrer">have been introduced</a>. These changes should not impact your usage of OpenFGA unless you are implementing an storage adapter.</p>
+<p>Several breaking changes related to the storage interface <a href="https://github.com/openfga/openfga/releases/tag/v1.5.7" target="_blank" rel="noopener noreferrer">have been introduced</a>. These changes should not impact your usage of OpenFGA unless you are implementing a custom storage adapter for OpenFGA.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="in-progress">In Progress<a class="hash-link" aria-label="Direct link to In Progress" title="Direct link to In Progress" href="https://openfga.dev/pr-preview/pr-801/blog/fine-grained-news-2024-07#in-progress">​</a></h2>
 <ul>
 <li>
-<p><a href="https://github.com/openfga/roadmap/issues/54" target="_blank" rel="noopener noreferrer">Additional Consistency Options for OpenFGA queries</a>: We've just shipped the first iteration of this feature, and we’ll be working on adding a consistency token in the future.</p>
+<p><a href="https://github.com/openfga/roadmap/issues/54" target="_blank" rel="noopener noreferrer">Additional Consistency Options for OpenFGA queries</a>: We've just shipped the first iteration of this feature, we're working on adding support for it in more SDKs. We’ll also be working on adding a consistency token in the future.</p>
 </li>
 <li>
-<p><a href="https://github.com/openfga/roadmap/issues/41" target="_blank" rel="noopener noreferrer">Telemetry for SDKs</a>: We shipped OpenTelemetry Metrics support for Python and Javascript. We’ll be adding metrics support to the rest of the SDKs and then add support for tracing and logging.</p>
+<p><a href="https://github.com/openfga/roadmap/issues/41" target="_blank" rel="noopener noreferrer">Telemetry for SDKs</a>: We shipped OpenTelemetry Metrics support for Python and Javascript. We’ll be adding metrics support to the rest of the SDKs and then add support for tracing and logging. If you have feedback regarding our OpenTelemery support, please do reach out on any of our community channels.</p>
 </li>
 <li>
 <p>We’ll keep working on <a href="https://github.com/openfga/roadmap/issues/61" target="_blank" rel="noopener noreferrer">Performance Improvements</a> for Check, List Objects and List Users APIs.</p>
 </li>
 <li>
-<p>We’ll be adding additional <a href="https://github.com/openfga/roadmap/issues/30" target="_blank" rel="noopener noreferrer">authorization options for OpenFGA</a>, to allow different API credentials perform different actions in FGA stores.</p>
+<p>We’ll be adding additional <a href="https://github.com/openfga/roadmap/issues/30" target="_blank" rel="noopener noreferrer">authorization options for OpenFGA</a>to restrict API credentials to performing specific actions in OpenFGA stores.</p>
+</li>
+<li>
+<p>We collaborated with members of the CNCF <a href="https://github.com/cncf/tag-security" target="_blank" rel="noopener noreferrer">TAG-Security team</a> for a few weeks to get it wrapped up (thanks <a href="https://github.com/krishnakv" target="_blank" rel="noopener noreferrer">Krishna Krishna</a> and <a href="https://github.com/eddie-knight" target="_blank" rel="noopener noreferrer">Eddie</a> for your help).</p>
 </li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="community-highlights">Community Highlights<a class="hash-link" aria-label="Direct link to Community Highlights" title="Direct link to Community Highlights" href="https://openfga.dev/pr-preview/pr-801/blog/fine-grained-news-2024-07#community-highlights">​</a></h2>
@@ -54,10 +57,10 @@
 <p>Check out <a href="https://www.youtube.com/watch?v=GvgeQcQlUuU&amp;t=212s&amp;pp=ygUHT3BlbkZHQQ%3D%3D" target="_blank" rel="noopener noreferrer">July’s Community Meeting</a>! It's a great opportunity to stay updated with the latest developments, ask questions, and engage with the OpenFGA community.</p>
 </li>
 <li>
-<p>Maria Ines Parnisari from the OpenFGA team and Evan Anderson from Stacklok presented on Implementing a Multi-Tenant, Relationship-Based Authorization Model with OpenFGA at CloudNative SecurityCon North America. If you didn’t attend the conference in June, the presentation recording is now <a href="https://www.youtube.com/watch?v=zIJOBLbaZOc" target="_blank" rel="noopener noreferrer">live</a>.</p>
+<p><a href="https://www.linkedin.com/in/miparnisari/" target="_blank" rel="noopener noreferrer">Maria Ines Parnisari</a> from the OpenFGA team and <a href="https://www.linkedin.com/in/evankanderson/" target="_blank" rel="noopener noreferrer">Evan Anderson</a> from Stacklok presented on Implementing a Multi-Tenant, Relationship-Based Authorization Model with OpenFGA at CloudNative SecurityCon North America. If you didn’t attend the conference in June, the presentation recording is now <a href="https://www.youtube.com/watch?v=zIJOBLbaZOc" target="_blank" rel="noopener noreferrer">live</a>.</p>
 </li>
 <li>
-<p>This month, Andres Aguiar and Damian Schenkelman appeared in the <a href="https://www.youtube.com/watch?v=Ups1FFxK3VE&amp;pp=ygUHT3BlbkZHQQ%3D%3D" target="_blank" rel="noopener noreferrer">Identerati Office Hours</a> livestream for an in-depth exploration of OpenFGA. This video covers advanced topics and provides valuable insights into the capabilities and implementation of OpenFGA. Whether you're a seasoned user or new to OpenFGA, this deep dive is packed with information that will enhance your understanding and usage of the platform.</p>
+<p>This month, <a href="https://www.linkedin.com/in/aaguiar/" target="_blank" rel="noopener noreferrer">Andres Aguiar</a> and <a href="https://www.linkedin.com/in/damianschenkelman/" target="_blank" rel="noopener noreferrer">Damian Schenkelman</a> appeared in the <a href="https://www.youtube.com/watch?v=Ups1FFxK3VE&amp;pp=ygUHT3BlbkZHQQ%3D%3D" target="_blank" rel="noopener noreferrer">Identerati Office Hours</a> livestream for an in-depth exploration of OpenFGA. This video covers advanced topics and provides valuable insights into the capabilities and implementation of OpenFGA. Whether you're a seasoned user or new to OpenFGA, this deep dive is packed with information that will enhance your understanding and usage of the platform.</p>
 </li>
 <li>
 <p>Andres Aguiar sat down with Open at Intel host Katherine Druckman during KubeCon Europe to discuss OpenFGA. You can hear that podcast
