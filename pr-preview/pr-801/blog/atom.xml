@@ -67,10 +67,10 @@
 <p>This month, Andres Aguiar and Damian Schenkelman appeared in the <a href="https://www.youtube.com/watch?v=Ups1FFxK3VE&amp;pp=ygUHT3BlbkZHQQ%3D%3D" target="_blank" rel="noopener noreferrer">Identerati Office Hours</a> livestream for an in-depth exploration of OpenFGA. This video covers advanced topics and provides valuable insights into the capabilities and implementation of OpenFGA. Whether you're a seasoned user or new to OpenFGA, this deep dive is packed with information that will enhance your understanding and usage of the platform.</p>
 </li>
 <li>
-<p>Andres Aguiar sat down with Open at Intel host Katherine Druckman during KubeCon Europe to discuss OpenFGA. You can hear that podcast [here](</p>
+<p>Andres Aguiar sat down with Open at Intel host Katherine Druckman during KubeCon Europe to discuss OpenFGA. You can hear that podcast
+<a href="https://www.intel.com/content/www/us/en/developer/articles/community/fine-grained-authorization-with-openfga.html" target="_blank" rel="noopener noreferrer">here</a>.</p>
 </li>
 </ul>
-<p><a href="https://www.intel.com/content/www/us/en/developer/articles/community/fine-grained-authorization-with-openfga.html" target="_blank" rel="noopener noreferrer">https://www.intel.com/content/www/us/en/developer/articles/community/fine-grained-authorization-with-openfga.html</a>).</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="new-adopters">New Adopters<a class="hash-link" aria-label="Direct link to New Adopters" title="Direct link to New Adopters" href="https://openfga.dev/pr-preview/pr-801/blog/fine-grained-news-2024-07#new-adopters">​</a></h2>
 <p>We’re happy to share that <a href="https://www.bump-charge.com/" target="_blank" rel="noopener noreferrer">Bump</a> is now an OpenFGA adopter! If you are using OpenFGA in production, please consider adding your company or project to our <a href="https://github.com/openfga/community/blob/main/ADOPTERS.md" target="_blank" rel="noopener noreferrer">list</a>. Your contribution will be greatly appreciated!</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="announcements">Announcements<a class="hash-link" aria-label="Direct link to Announcements" title="Direct link to Announcements" href="https://openfga.dev/pr-preview/pr-801/blog/fine-grained-news-2024-07#announcements">​</a></h2>
