@@ -32,13 +32,7 @@ We value your feedback and invite you to participate in our [2024 OpenFGA Commun
 ### Performance Improvements
 
 
-- We have implemented significant performance enhancements in the Check function, ensuring that computed relations do not consume from the resolution depth quota, do not trigger additional goroutines, and do not get cached. These optimizations lead to more efficient access control checks and improved overall system performance. [Learn more](https://github.com/openfga/openfga/commit/#1786).
-
-
-- We have made significant performance improvements to userset subproblem resolutions in Check in certain scenarios. These enhancements optimize the efficiency of access control checks, leading to faster processing times and improved system performance. [Read more about this improvement](https://github.com/openfga/openfga/commit/#1734).
-
-
-- We have also improved the performance of tuple-to-userset subproblem resolutions in Check for certain scenarios. This update enhances the speed and efficiency of complex access control queries, further boosting overall system performance. [Learn more about this update](https://github.com/openfga/openfga/commit/#1735).
+- We've improved our Check latency up to 20X in some scenarios in 1.5.7 and 1.5.6.
 
 
 If you have any feedback, or want to try a feature early, or are interested to learn more, please reach out!
