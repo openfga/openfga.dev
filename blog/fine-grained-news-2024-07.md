@@ -32,7 +32,7 @@ We value your feedback and invite you to participate in our [2024 OpenFGA Commun
 **Performance Improvements**
 
 
-- We've improved our Check latency up to 20X in some scenarios in 1.5.7 and 1.5.6.
+- We've improved our Check latency up to 20X in some scenarios in OpenFGA [v1.5.7]((https://github.com/openfga/openfga/releases/tag/v1.5.7) and [v1.5.6]((https://github.com/openfga/openfga/releases/tag/v1.5.6).
 
 
 If you have any feedback, or want to try a feature early, or are interested to learn more, please reach out!
