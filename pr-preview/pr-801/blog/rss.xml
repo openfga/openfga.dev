@@ -17,7 +17,7 @@
             <content:encoded><![CDATA[<p>Welcome to the July 2024 edition of Fine Grained News! We are thrilled to bring you the latest updates, features, and community highlights from OpenFGA. This month has included releases, performance improvements, and insights shared through our community meetings and presentations.</p>
 <p>We value your feedback and invite you to participate in our <a href="https://www.surveymonkey.com/r/OPENFGA2024" target="_blank" rel="noopener noreferrer">2024 OpenFGA Community Survey</a>. Your insights help us understand your needs better and improve our offerings. Please take a few minutes to complete the survey and let your voice be heard.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="improvements">Improvements<a class="hash-link" aria-label="Direct link to Improvements" title="Direct link to Improvements" href="https://openfga.dev/pr-preview/pr-801/blog/fine-grained-news-2024-07#improvements">​</a></h2>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="latest-features">Latest Features<a class="hash-link" aria-label="Direct link to Latest Features" title="Direct link to Latest Features" href="https://openfga.dev/pr-preview/pr-801/blog/fine-grained-news-2024-07#latest-features">​</a></h3>
+<p><strong>Latest Features</strong></p>
 <ul>
 <li>
 <p>We’ve introduced consistency options for query requests. This new feature provides more flexibility and control over how queries are executed, enhancing the accuracy and reliability of query results. <a href="https://openfga.dev/blog/stronger-consistency-options-announcement" target="_blank" rel="noopener noreferrer">Learn more about this update</a>.</p>
@@ -26,7 +26,7 @@
 <p>We’re now publishing images to <code>ghcr.io/openfga/openfga</code> as an alternative to DockerHub, thanks to the contribution from @JAORMX. This provides an additional option for accessing and deploying our containers. <a href="https://github.com/openfga/openfga/commit/#1775" target="_blank" rel="noopener noreferrer">Read more</a>.</p>
 </li>
 </ul>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="performance-improvements">Performance Improvements<a class="hash-link" aria-label="Direct link to Performance Improvements" title="Direct link to Performance Improvements" href="https://openfga.dev/pr-preview/pr-801/blog/fine-grained-news-2024-07#performance-improvements">​</a></h3>
+<p><strong>Performance Improvements</strong></p>
 <ul>
 <li>We've improved our Check latency up to 20X in some scenarios in 1.5.7 and 1.5.6.</li>
 </ul>
