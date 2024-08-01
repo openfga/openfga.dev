@@ -20,7 +20,7 @@ We value your feedback and invite you to participate in our [2024 OpenFGA Commun
 ## Improvements
 
 
-### Latest Features
+**Latest Features**
 
 
 - We’ve introduced consistency options for query requests. This new feature provides more flexibility and control over how queries are executed, enhancing the accuracy and reliability of query results. [Learn more about this update](https://openfga.dev/blog/stronger-consistency-options-announcement).
@@ -29,7 +29,7 @@ We value your feedback and invite you to participate in our [2024 OpenFGA Commun
 - We’re now publishing images to `ghcr.io/openfga/openfga` as an alternative to DockerHub, thanks to the contribution from @JAORMX. This provides an additional option for accessing and deploying our containers. [Read more](https://github.com/openfga/openfga/commit/#1775).
 
 
-### Performance Improvements
+**Performance Improvements**
 
 
 - We've improved our Check latency up to 20X in some scenarios in 1.5.7 and 1.5.6.
