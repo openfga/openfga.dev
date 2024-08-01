@@ -18,8 +18,6 @@ We value your feedback and invite you to participate in our [2024 OpenFGA Commun
 
 
 ## Improvements
-
-
 ### Latest Features
 
 
@@ -27,8 +25,6 @@ We value your feedback and invite you to participate in our [2024 OpenFGA Commun
 
 
 - We’re now publishing images to `ghcr.io/openfga/openfga` as an alternative to DockerHub, thanks to the contribution from @JAORMX. This provides an additional option for accessing and deploying our containers. [Read more](https://github.com/openfga/openfga/commit/#1775).
-
-
 ### Performance Improvements
 
 
@@ -77,9 +73,8 @@ Several breaking changes related to the storage interface [have been introduced]
 - This month, Andres Aguiar and Damian Schenkelman appeared in the [Identerati Office Hours](https://www.youtube.com/watch?v=Ups1FFxK3VE&pp=ygUHT3BlbkZHQQ%3D%3D) livestream for an in-depth exploration of OpenFGA. This video covers advanced topics and provides valuable insights into the capabilities and implementation of OpenFGA. Whether you're a seasoned user or new to OpenFGA, this deep dive is packed with information that will enhance your understanding and usage of the platform.
 
 
-- Andres Aguiar sat down with Open at Intel host Katherine Druckman during KubeCon Europe to discuss OpenFGA. You can hear that podcast [here](
-<!-- markdown-link-check-disable -->
-https://www.intel.com/content/www/us/en/developer/articles/community/fine-grained-authorization-with-openfga.html).
+- Andres Aguiar sat down with Open at Intel host Katherine Druckman during KubeCon Europe to discuss OpenFGA. You can hear that podcast <!-- markdown-link-check-disable -->
+[here](https://www.intel.com/content/www/us/en/developer/articles/community/fine-grained-authorization-with-openfga.html).
 <!-- markdown-link-check-enable -->
 
 
