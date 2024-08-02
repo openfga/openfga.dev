@@ -50,7 +50,7 @@ Several breaking changes related to the storage interface [have been introduced]
 - [Additional Consistency Options for OpenFGA queries](https://github.com/openfga/roadmap/issues/54): We've just shipped the first iteration of this feature, we're working on adding support for it in more SDKs. We’ll also be working on adding a consistency token in the future.
 
 
-- [Telemetry for SDKs](https://github.com/openfga/roadmap/issues/41): We shipped OpenTelemetry Metrics support for Python and Javascript. We’ll be adding metrics support to the rest of the SDKs and then add support for tracing and logging. If you have feedback regarding our OpenTelemery support, please do reach out on any of our community channels.
+- [Telemetry for SDKs](https://github.com/openfga/roadmap/issues/41): We shipped OpenTelemetry Metrics support for Python and Javascript. We’ll be adding metrics support to the rest of the SDKs and then add support for tracing and logging. If you have feedback regarding our OpenTelemetry support, please do reach out on any of our community channels.
 
 
 - We’ll keep working on [Performance Improvements](https://github.com/openfga/roadmap/issues/61) for Check, List Objects and List Users APIs.
