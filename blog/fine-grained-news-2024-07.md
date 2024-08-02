@@ -56,7 +56,7 @@ Several breaking changes related to the storage interface [have been introduced]
 - We’ll keep working on [Performance Improvements](https://github.com/openfga/roadmap/issues/61) for Check, List Objects and List Users APIs.
 
 
-- We’ll be adding additional [authorization options for OpenFGA](https://github.com/openfga/roadmap/issues/30)to restrict API credentials to performing specific actions in OpenFGA stores.
+- We’ll be adding additional [authorization options for OpenFGA](https://github.com/openfga/roadmap/issues/30) to restrict API credentials to performing specific actions in OpenFGA stores.
 
 
 -  We collaborated with members of the CNCF [TAG-Security team](https://github.com/cncf/tag-security) for a few weeks to get it wrapped up (thanks [Krishna Krishna](https://github.com/krishnakv) and [Eddie](https://github.com/eddie-knight) for your help).
