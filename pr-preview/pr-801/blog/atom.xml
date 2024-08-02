@@ -27,7 +27,7 @@
 </ul>
 <p><strong>Performance Improvements</strong></p>
 <ul>
-<li>We've improved our Check latency up to 20X in some scenarios in OpenFGA [v1.5.7]((<a href="https://github.com/openfga/openfga/releases/tag/v1.5.7" target="_blank" rel="noopener noreferrer">https://github.com/openfga/openfga/releases/tag/v1.5.7</a>) and [v1.5.6]((<a href="https://github.com/openfga/openfga/releases/tag/v1.5.6" target="_blank" rel="noopener noreferrer">https://github.com/openfga/openfga/releases/tag/v1.5.6</a>).</li>
+<li>We've improved our Check latency up to 20X in some scenarios in OpenFGA <a href="https://github.com/openfga/openfga/releases/tag/v1.5.7" target="_blank" rel="noopener noreferrer">v1.5.7</a> and <a href="https://github.com/openfga/openfga/releases/tag/v1.5.6" target="_blank" rel="noopener noreferrer">v1.5.6</a>.</li>
 </ul>
 <p>If you have any feedback, or want to try a feature early, or are interested to learn more, please reach out!</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="breaking-changes">Breaking Changes<a class="hash-link" aria-label="Direct link to Breaking Changes" title="Direct link to Breaking Changes" href="https://openfga.dev/pr-preview/pr-801/blog/fine-grained-news-2024-07#breaking-changes">​</a></h2>
@@ -38,13 +38,13 @@
 <p><a href="https://github.com/openfga/roadmap/issues/54" target="_blank" rel="noopener noreferrer">Additional Consistency Options for OpenFGA queries</a>: We've just shipped the first iteration of this feature, we're working on adding support for it in more SDKs. We’ll also be working on adding a consistency token in the future.</p>
 </li>
 <li>
-<p><a href="https://github.com/openfga/roadmap/issues/41" target="_blank" rel="noopener noreferrer">Telemetry for SDKs</a>: We shipped OpenTelemetry Metrics support for Python and Javascript. We’ll be adding metrics support to the rest of the SDKs and then add support for tracing and logging. If you have feedback regarding our OpenTelemery support, please do reach out on any of our community channels.</p>
+<p><a href="https://github.com/openfga/roadmap/issues/41" target="_blank" rel="noopener noreferrer">Telemetry for SDKs</a>: We shipped OpenTelemetry Metrics support for Python and Javascript. We’ll be adding metrics support to the rest of the SDKs and then add support for tracing and logging. If you have feedback regarding our OpenTelemetry support, please do reach out on any of our community channels.</p>
 </li>
 <li>
 <p>We’ll keep working on <a href="https://github.com/openfga/roadmap/issues/61" target="_blank" rel="noopener noreferrer">Performance Improvements</a> for Check, List Objects and List Users APIs.</p>
 </li>
 <li>
-<p>We’ll be adding additional <a href="https://github.com/openfga/roadmap/issues/30" target="_blank" rel="noopener noreferrer">authorization options for OpenFGA</a>to restrict API credentials to performing specific actions in OpenFGA stores.</p>
+<p>We’ll be adding additional <a href="https://github.com/openfga/roadmap/issues/30" target="_blank" rel="noopener noreferrer">authorization options for OpenFGA</a> to restrict API credentials to performing specific actions in OpenFGA stores.</p>
 </li>
 <li>
 <p>We collaborated with members of the CNCF <a href="https://github.com/cncf/tag-security" target="_blank" rel="noopener noreferrer">TAG-Security team</a> for a few weeks to get it wrapped up (thanks <a href="https://github.com/krishnakv" target="_blank" rel="noopener noreferrer">Krishna Krishna</a> and <a href="https://github.com/eddie-knight" target="_blank" rel="noopener noreferrer">Eddie</a> for your help).</p>
