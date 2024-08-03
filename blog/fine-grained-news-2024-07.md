@@ -23,7 +23,7 @@ We value your feedback and invite you to participate in our [2024 OpenFGA Commun
 **Latest Features**
 
 
-- We’ve introduced consistency options for query requests. This new, experimental, feature provides more flexibility and control over how queries are executed, enhancing the accuracy and reliability of query results. [Learn more about this update](https://openfga.dev/blog/stronger-consistency-options-announcement).
+- We’ve introduced consistency options for query requests. This new, experimental, feature provides more flexibility and control over how queries are executed, enhancing the accuracy and reliability of query results. [Learn more about this update](https://openfga.dev/blog/query-consistency-options-announcement).
 
 
 - We’re now publishing images to `ghcr.io/openfga/openfga` as an alternative to DockerHub, thanks to the contribution from [@JAORMX](https://github.com/JAORMX). This provides an additional option for accessing and deploying our containers. [Read more](https://github.com/openfga/openfga/pull/1775).
