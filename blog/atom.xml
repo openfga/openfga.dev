@@ -19,7 +19,7 @@
 <p><strong>Latest Features</strong></p>
 <ul>
 <li>
-<p>We’ve introduced consistency options for query requests. This new, experimental, feature provides more flexibility and control over how queries are executed, enhancing the accuracy and reliability of query results. <a href="https://openfga.dev/blog/stronger-consistency-options-announcement" target="_blank" rel="noopener noreferrer">Learn more about this update</a>.</p>
+<p>We’ve introduced consistency options for query requests. This new, experimental, feature provides more flexibility and control over how queries are executed, enhancing the accuracy and reliability of query results. <a href="https://openfga.dev/blog/query-consistency-options-announcement" target="_blank" rel="noopener noreferrer">Learn more about this update</a>.</p>
 </li>
 <li>
 <p>We’re now publishing images to <code>ghcr.io/openfga/openfga</code> as an alternative to DockerHub, thanks to the contribution from <a href="https://github.com/JAORMX" target="_blank" rel="noopener noreferrer">@JAORMX</a>. This provides an additional option for accessing and deploying our containers. <a href="https://github.com/openfga/openfga/pull/1775" target="_blank" rel="noopener noreferrer">Read more</a>.</p>
@@ -81,24 +81,24 @@
         <category label="newsletter" term="newsletter"/>
     </entry>
     <entry>
-        <title type="html"><![CDATA[Stronger Consistency Query Options]]></title>
-        <id>https://openfga.dev/blog/stronger-consistency-options-announcement</id>
-        <link href="https://openfga.dev/blog/stronger-consistency-options-announcement"/>
+        <title type="html"><![CDATA[Query Consistency Options in OpenFGA]]></title>
+        <id>https://openfga.dev/blog/query-consistency-options-announcement</id>
+        <link href="https://openfga.dev/blog/query-consistency-options-announcement"/>
         <updated>2024-07-30T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Stronger Consistency Query Options]]></summary>
+        <summary type="html"><![CDATA[Query Consistency Options in OpenFGA]]></summary>
         <content type="html"><![CDATA[<p>OpenFGA query APIs now allows to specify the desired consistency of query results. By default, OpenFGA does not use a cache. However, when caching is enabled, it applies to all requests. This means that any changes in permissions won't be reflected in authorization checks during the cache TTL period.</p>
 <p>The community expressed the need for flexibility in using the cache on a per-request basis. In response, starting with <a href="https://github.com/openfga/openfga/releases/tag/v1.5.7" target="_blank" rel="noopener noreferrer">OpenFGA v1.5.7</a>, all query APIs can accept a consistency parameter with the following values:</p>
 <table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody><tr><td>MINIMIZE_LATENCY (default)</td><td>OpenFGA will try to minimize latency (e.g. by making use of the cache)</td></tr><tr><td>HIGHER_CONSISTENCY</td><td>OpenFGA will try to optimize for stronger consistency (e.g. by bypassing cache)</td></tr></tbody></table>
 <p>When <code>HIGHER_CONSISTENCY</code> is specified, OpenFGA reads directly from the database, even when the cache is enabled.</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="how-to-use-it">How to use it?<a class="hash-link" aria-label="Direct link to How to use it?" title="Direct link to How to use it?" href="https://openfga.dev/blog/stronger-consistency-options-announcement#how-to-use-it">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="how-to-use-it">How to use it?<a class="hash-link" aria-label="Direct link to How to use it?" title="Direct link to How to use it?" href="https://openfga.dev/blog/query-consistency-options-announcement#how-to-use-it">​</a></h2>
 <p>The new consistency parameter is available in OpenFGA starting <a href="https://github.com/openfga/openfga/releases/tag/v1.5.7" target="_blank" rel="noopener noreferrer">v1.5.7</a>.</p>
 <p>The parameter is already exposed in the <a href="https://github.com/openfga/js-sdk/" target="_blank" rel="noopener noreferrer">Javascript SDK</a> (v0.6.2+) and the <a href="https://github.com/openfga/python-sdk/" target="_blank" rel="noopener noreferrer">Python SDK</a> (v0.6.1+). We'll be adding support for it in the rest of the SDKs in the following weeks.</p>
 <p>For more information on enabling the cache and best practices for specifying consistency values, refer to the <a href="https://openfga.dev/docs/interacting/consistency" target="_blank" rel="noopener noreferrer">documentation</a>.</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="custom-database-adapter-implementations">Custom database adapter implementations<a class="hash-link" aria-label="Direct link to Custom database adapter implementations" title="Direct link to Custom database adapter implementations" href="https://openfga.dev/blog/stronger-consistency-options-announcement#custom-database-adapter-implementations">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="custom-database-adapter-implementations">Custom database adapter implementations<a class="hash-link" aria-label="Direct link to Custom database adapter implementations" title="Direct link to Custom database adapter implementations" href="https://openfga.dev/blog/query-consistency-options-announcement#custom-database-adapter-implementations">​</a></h2>
 <p>For those with a custom database adapter for a multi-region database, the behavior of the HIGHER_CONSISTENCY parameter can be defined according to your needs. With an eventually consistent database (e.g., Dynamo DB) in a multi-region setup, there will be replication lag even if the cache is bypassed. If the database supports strong reads, you can choose to perform those at an extra cost. Otherwise, you can perform an eventually consistent read without providing full consistency semantics to the caller. In some other databases where you have Read/Write replicas, you may choose to go to the Write replica when the <code>HIGHER_CONSISTENCY</code> preference is selected.</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="future-work">Future work<a class="hash-link" aria-label="Direct link to Future work" title="Direct link to Future work" href="https://openfga.dev/blog/stronger-consistency-options-announcement#future-work">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="future-work">Future work<a class="hash-link" aria-label="Direct link to Future work" title="Direct link to Future work" href="https://openfga.dev/blog/query-consistency-options-announcement#future-work">​</a></h2>
 <p><a href="https://zanzibar.academy/" target="_blank" rel="noopener noreferrer">Google Zanzibar</a> features a consistency token called <code>Zookies</code>, returned from write operations. This token can be stored in a resource table and specified in subsequent query API calls. We are considering introducing a similar feature in future releases.</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="we-want-your-feedback">We want your feedback!<a class="hash-link" aria-label="Direct link to We want your feedback!" title="Direct link to We want your feedback!" href="https://openfga.dev/blog/stronger-consistency-options-announcement#we-want-your-feedback">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="we-want-your-feedback">We want your feedback!<a class="hash-link" aria-label="Direct link to We want your feedback!" title="Direct link to We want your feedback!" href="https://openfga.dev/blog/query-consistency-options-announcement#we-want-your-feedback">​</a></h2>
 <p>We want to learn how you use this API and how we can improve it!</p>
 <p>Please reach out through our <a href="https://openfga.dev/community" target="_blank" rel="noopener noreferrer">community channels</a> with any questions or feedback.</p>]]></content>
         <author>
