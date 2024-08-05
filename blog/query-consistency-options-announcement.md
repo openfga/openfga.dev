@@ -1,14 +1,14 @@
 ---
-title: Stronger Consistency Query Options
-description: Stronger Consistency Query Options
-slug: stronger-consistency-options-announcement
+title: Query Consistency Options in OpenFGA
+description: Query Consistency Options in OpenFGA
+slug: query-consistency-options-announcement
 date: 2024-07-30
 authors: aaguiar
 tags: [openfga,features]
 image: https://openfga.dev/img/og-rich-embed.png
 hide_table_of_contents: false
 ---
-# Stronger Consistency Query Options in OpenFGA
+# Query Consistency Options in OpenFGA
 
 OpenFGA query APIs now allows to specify the desired consistency of query results. By default, OpenFGA does not use a cache. However, when caching is enabled, it applies to all requests. This means that any changes in permissions won't be reflected in authorization checks during the cache TTL period.
 
