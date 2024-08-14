@@ -10,7 +10,7 @@ interface WriteAuthzModelViewerOpts {
 }
 
 function writeAuthZModelViewerCli(authorizationModel: AuthorizationModel): string {
-  return `fga model write --store-id=\${FGA_STORE_ID} ${JSON.stringify(authorizationModel)}`;
+  return `fga model write --store-id=\${FGA_STORE_ID} --format=json '${JSON.stringify(authorizationModel)}'`;
 }
 
 function writeAuthZModelViewerCurl(authorizationModel: AuthorizationModel): string {
