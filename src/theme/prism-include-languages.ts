@@ -19,6 +19,7 @@ export default function prismIncludeLanguages(PrismObject: typeof PrismNamespace
   globalThis.Prism = PrismObject;
 
   additionalLanguages.forEach((lang) => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     require(`prismjs/components/prism-${lang}`);
   });
 

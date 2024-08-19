@@ -17,7 +17,7 @@ const ApiService = () => {
     <Layout title="Open FGA API Explorer">
       <BrowserOnly fallback={<div>Loading...</div>}>
         {() => {
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
           const { SwaggerUI } = require('../../components/SwaggerUI/swagger-ui');
           return <SwaggerUI apiDocsBasePath={apiDocsBasePath} />;
         }}

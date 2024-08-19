@@ -63,7 +63,7 @@ export default function NavbarNavLink({
         };
         setGithubStars(newCachedGithubStars);
         sessionStorage.setItem(GITHUB_STARS_SESSION_STORAGE_NAME, JSON.stringify(newCachedGithubStars));
-      } catch (err) {
+      } catch {
         // try to use old cache if available (even if it is out of date)
         setGithubStars(cachedGithubStars || null);
       }
