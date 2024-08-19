@@ -23,9 +23,9 @@
     "format:fix": "prettier --write src/**"
   },
   "dependencies": {
-    "@docusaurus/core": "3.5.1",
-    "@docusaurus/plugin-client-redirects": "3.5.1",
-    "@docusaurus/preset-classic": "3.5.1",
+    "@docusaurus/core": "3.5.2",
+    "@docusaurus/plugin-client-redirects": "3.5.2",
+    "@docusaurus/preset-classic": "3.5.2",
     "@easyops-cn/docusaurus-search-local": "0.44.5",
     "@lottiefiles/react-lottie-player": "3.5.4",
     "@openfga/frontend-utils": "^0.2.0-beta.9",
