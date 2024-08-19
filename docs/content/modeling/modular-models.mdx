@@ -24,10 +24,12 @@ import {
 
 <DocumentationNotice />
 
-Modular models allows splitting your authorization module across multiple files and modules, improving upon some of the challenges that may be faced when operating an authorization model within a company, such as:
+Authorization is application-specific. In an organization with multiple teams building different applications or modules, each team should be able to define and evolve their authorization policies independently.
 
-- A model can grow large and difficult to understand
-- As more teams begin to contribute to a model, the ownership boundaries may not be clear and code review processes might not scale
+Modular models allows splitting your authorization model across multiple files and modules, improving upon some of the challenges that may be faced when maintaining an authorization model within a company, such as:
+
+- A model can grow large and difficult to understand.
+- As more teams begin to contribute to a model, the ownership boundaries may not be clear and code review processes might not scale.
 
 With modular models, a single model can be split across multiple files in a project. It can be organized in a way that makes sense for the project or teams collaborating on it, and it enables ownership for reviews to be expressed using a feature such as [GitHub's](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners), [GitLab's](https://docs.gitlab.com/ee/user/project/codeowners/) or [Gitea's](https://docs.gitea.com/usage/code-owners) code owners.
 
@@ -44,9 +46,9 @@ The `fga.mod` is the project file for modular models. This file specifies the sc
 
 ### Modules
 
-Modules are declared using the `module` keyword in the DSL, and a module can be written across multiple files. A single file cannot have more than one module.
+<ProductName format={ProductNameFormat.ShortForm}/> modules define the types and relations for a specific application module or service. 
 
-Currently, modules are stored as metadata but are not used by <ProductName format={ProductNameFormat.ShortForm}/>. Module metadata will be used in upcoming features, such as applying authorization to writing and reading/querying tuples.
+Modules are declared using the `module` keyword in the DSL, and a module can be written across multiple files. A single file cannot have more than one module. 
 
 ### Type Extensions
 
