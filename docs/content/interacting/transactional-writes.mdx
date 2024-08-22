@@ -90,11 +90,11 @@ In addition:
 
 ### Direct access
 
-Creating an authorization model and a relationship tuple grants a user access to an object. To learn more, [read about Direct Access.](./direct-access.mdx)
+Creating an authorization model and a relationship tuple grants a user access to an object. To learn more, [read about Direct Access.](../modeling/direct-access.mdx)
 
 ### Modeling public access
 
-The following example uses public access. To learn more, [read about Public Access.](./direct-access.mdx)
+The following example uses public access. To learn more, [read about Public Access.](../modeling/direct-access.mdx)
 
 ### <ProductName format={ProductNameFormat.ShortForm}/> concepts
 
@@ -136,9 +136,7 @@ Deleting the previous tuple converts this `tweet` to private:
 
 By removing the tuple, we made the tweet visible to no-one, which may not be what we want.
 
-The Write API accepts up to 40 unique tuples in the request, so you can use one API call that converts the `tweet` from public to visible to only the `user`'s followers.
-
-Note: the API limit above is the limit of tuples per write transaction and applies to the sum of both writes and deletes in that request. For more information abour rate limits, see [the subscription plan page](../subscription-plans.mdx).
+The Write API allows you to send up to 100 unique tuples in the request. (This limit applies to the sum of both writes and deletes in that request). This means we can submit one API call that converts the `tweet` from public to visible to only the `user`'s followers.
 
 <WriteRequestViewer
   relationshipTuples={[
