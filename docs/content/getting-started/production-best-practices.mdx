@@ -16,10 +16,10 @@ import {
 
 The following list outlines best practices for running OpenFGA in a production environment:
 
-- [Configure Authentication](./setup-openfga/docker-setup.mdx#configuring-authentication)
+- [Configure Authentication](./setup-openfga/configure-openfga.mdx#configuring-authentication)
 - Enable HTTP TLS or gRPC TLS or both
 - Set the log format to "json" and log level to "info"
-- [Disable the Playground](./setup-openfga/docker-setup.mdx#playground)
+- [Disable the Playground](./setup-openfga/playground.mdx#disabling-the-playground)
 - [Set Cluster](#cluster-recommendations)
 - [Set Database Options](#database-recommendations)
 - [Set Maximum Results](#maximum-results)
@@ -36,7 +36,7 @@ We recommend:
 
 ## Database Recommendations
 
-To ensure good performance for OpenFGA, it is recommended that the [database](./setup-openfga/docker-setup.mdx#configuring-data-storage) be:
+To ensure good performance for OpenFGA, it is recommended that the [database](./setup-openfga/configure-openfga.mdx#configuring-data-storage) be:
 - Co-located in the same physical datacenter and network as your OpenFGA servers. This will minimize latency of database calls.
 - Used exclusively for OpenFGA and not shared with other applications. This allows scaling the database independently and avoiding contention with your database.
 - Bootstrapped and managed with the `openfga migrate` command. This will ensure the appropriate database indexes are created.
@@ -53,7 +53,7 @@ It's strongly recommended to fine-tune your server database connection settings 
 
 ## Concurrency Limits
 :::note
-Before modifying concurrency limits please make sure you've followed the guidance for [Database Recommendations](./#database-recommendations)
+Before modifying concurrency limits please make sure you've followed the guidance for [Database Recommendations](#database-recommendations)
 :::
 
 OpenFGA queries such as Check, ListObjects and ListUsers can be quite database and CPU intensive in some cases. If you notice that a single request is consuming a lot of CPU or creating a high degree of database contention, then you may consider setting some concurrency limits to protect other requests from being negatively impacted by overly aggressive queries. 

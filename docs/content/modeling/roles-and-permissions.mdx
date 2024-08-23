@@ -93,10 +93,11 @@ Creating an authorization model and a relationship tuple can grant a user access
 - A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
 - A <ProductConcept section="what-is-a-relation" linkName="Relation" />: a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
 - An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
-- A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a group consisting of a user, a relation, and an object stored in Auth <ProductName format={ProductNameFormat.ShortForm}/>
-- A <ProductConcept section="what-is-a-relationship" linkName="Relationship" />: <ProductName format={ProductNameFormat.ShortForm}/> will be called to check if there is a relationship between a user and an object, indicating that the access is allowed
 - A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a group stored in <ProductName format={ProductNameFormat.ShortForm}/> that consists of a user, a relation, and an object 
+- A <ProductConcept section="what-is-a-relationship" linkName="Relationship" />: <ProductName format={ProductNameFormat.ShortForm}/> will be called to check if there is a relationship between a user and an object, indicating that the access is allowed
 - [Union Operator](../configuration-language.mdx#the-union-operator): can be used to indicate that the user has multiple ways of being related to an object
+- [Direct Relationship Type Restrictions](../configuration-language.mdx#direct-relationship-type-restrictions): can be used to indicate direct relationships between users and objects
+- A <ProductConcept section="what-is-a-check-request" linkName="Check API Request" />: used to check for relationships between users and objects
 
 </details>
 
@@ -149,7 +150,7 @@ Roles are relations that are directly assigned to users. Below, the stated roles
 
 ### 02. Add permissions for bookings
 
-Permissions are relations that users get through other relations. To avoid adding a [direct relationship type restriction](../configuration-language.mdx#the-direct-relationship-type-restrictions) to the relation in the authorization model while representing permissions, they instead define the relation via other relations in the model, which indicates that it is a permission granted to and implied from a different relation.
+Permissions are relations that users get through other relations. To avoid adding a [direct relationship type restriction](../configuration-language.mdx#direct-relationship-type-restrictions) to the relation in the authorization model while representing permissions, they instead define the relation via other relations in the model, which indicates that it is a permission granted to and implied from a different relation.
 
 To add permissions related to bookings, add new relations to the `trip` object type denoting the various actions a user can take on `trips`, like view, edit, delete, or rename.
 
@@ -210,7 +211,7 @@ To allow `viewers` of a `trip` to have permissions to view bookings and `owners`
   }}
 />
 
-> Note: both `booking_viewer` and `booking_adder` don't have [direct relationship type restrictions](../configuration-language.mdx#the-direct-relationship-type-restrictions), which ensures that the relation can only be assigned through the role and not directly.
+> Note: both `booking_viewer` and `booking_adder` don't have [direct relationship type restrictions](../configuration-language.mdx#direct-relationship-type-restrictions), which ensures that the relation can only be assigned through the role and not directly.
 
 ### 03. Check user roles and their permissions
 

@@ -303,7 +303,7 @@ There's two variations of the List Objects API.
 
 ### Caveats
 
-ListObjects will return the results found within the time allotted (`listObjectsDeadline`, default: `3s`) up to the maximum number of results configured (`listObjectsMaxResults`, default: `1000`). See [Configuring the Server](../getting-started/setup-openfga/docker-setup.mdx#configuring-the-server)) for more on how to change the default configuration.
+ListObjects will return the results found within the time allotted (`listObjectsDeadline`, default: `3s`) up to the maximum number of results configured (`listObjectsMaxResults`, default: `1000`). See [Configuring the Server](../getting-started/setup-openfga/configure-openfga.mdx)) for more on how to change the default configuration.
 
 - If you set `listObjectsDeadline` to `1s`, the server will spend at most 1 second finding results.
 - If you set `listObjectsMaxResults` to `10`, the server will return, at most, 10 objects.
@@ -336,7 +336,7 @@ Use the ListUsers API to get which users have a relation to a specific object.
 
 ### Caveats
 
-ListUsers will return the results found within the time allotted (`listUsersDeadline`, default: `3s`) up to the maximum number of results configured (`listUsersMaxResults`, default: `1000`). See [Configuring the Server](../getting-started/setup-openfga/docker-setup.mdx#configuring-the-server)) for more on how to change the default configuration.
+ListUsers will return the results found within the time allotted (`listUsersDeadline`, default: `3s`) up to the maximum number of results configured (`listUsersMaxResults`, default: `1000`). See [Configuring the Server](../getting-started/setup-openfga/configure-openfga.mdx)) for more on how to change the default configuration.
 
 - If you set `listUsersDeadline` to `1s`, the server will spend at most 1 second finding results.
 - If you set `listUsersMaxResults` to `10`, the server will return, at most, 10 objects.

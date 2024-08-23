@@ -64,8 +64,9 @@ const config = {
     description: `OpenFGA is an open source Fine-Grained Authorization solution based on Google's Zanzibar.`,
     productName: `OpenFGA`,
     // link to product description section (relative to baseURL)
-    introLink: `docs/intro`,
+    introLink: `docs/authorization-concepts`,
     productDescriptionSection: `#what-is-openfga`,
+    productDescriptionLink: `docs/fga`,
     // link to the concept page (relative to baseURL)
     conceptLink: `docs/concepts`,
     longProductName: `OpenFGA`,
