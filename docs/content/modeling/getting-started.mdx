@@ -31,7 +31,7 @@ import FGAIcon from '@site/static/img/getting-started-fga-logo.svg';
 
 <DocumentationNotice />
 
-Creating a <IntroductionSection linkName="Relationship Based Access Control (ReBAC)" section="what-is-relationship-based-access-control-rebac"/> authorization model might feel odd at first. Most of us tend to think about authorization models in terms of roles and permissions. After all, most software works like that. Your existing systems are likely built on a model using roles and permissions.
+Creating a <IntroductionSection linkName="Relationship Based Access Control (ReBAC)" section="what-is-relationship-based-access-control"/> authorization model might feel odd at first. Most of us tend to think about authorization models in terms of roles and permissions. After all, most software works like that. Your existing systems are likely built on a model using roles and permissions.
 
 This guide outlines a process for defining your <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" /> with <ProductName format={ProductNameFormat.ProductLink}/>.
 
@@ -796,7 +796,7 @@ Why? This relation definition states that:
   - `{ user: "drive:{id}", relation: "parent", object: "document:{id}" }`
 
 
-We can use [direct type restriction](../configuration-language.mdx#the-direct-relationship-type-restrictions) to ensure a document's parent can only be an object of type either drive or folder.
+We can use [direct type restriction](../configuration-language.mdx#direct-relationship-type-restrictions) to ensure a document's parent can only be an object of type either drive or folder.
 
 :::note Side note
 You might have noticed that the "user" in the tuple is an object. This is a special syntax <ProductName format={ProductNameFormat.ShortForm}/> accepts in the "user" parameter to write [object to object relationships](./building-blocks/object-to-object-relationships.mdx). You can read more about writing data to manage object to object relationships in [Managing Relationships Between Objects](../interacting/managing-relationships-between-objects.mdx).
@@ -853,7 +853,7 @@ We can achieve that with the following definition using <UpdateProductNameInLink
 
 There are a few key things here:
 
-- **We don't use a [direct relationship type restriction](../configuration-language.mdx#the-direct-relationship-type-restrictions) as part of the definition.** can_share is a common example of representing a permission that is defined in terms of other relations but is not directly assignable by the system.
+- **We don't use a [direct relationship type restriction](../configuration-language.mdx#direct-relationship-type-restrictions) as part of the definition.** can_share is a common example of representing a permission that is defined in terms of other relations but is not directly assignable by the system.
 - The relation definition contains a [union operator](../configuration-language.mdx#the-union-operator) separating a list of relations that the user must have with the object in order to "be able to share the document". It is any of:
   - Being an owner of the document
   - Being an editor of the document
