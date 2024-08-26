@@ -24,7 +24,8 @@ import TabItem from '@theme/TabItem';
 
 <DocumentationNotice />
 
-This section will illustrate how to perform a <ProductConcept section="what-is-a-list-users-request" linkName="list users" /> request to determine all the <ProductConcept section="what-is-a-user" linkName="users" /> of a given <ProductConcept section="what-is-a-type" linkName="type" /> that have a specified <ProductConcept section="what-is-a-relationship" linkName="relationship" /> with a given <ProductConcept section="what-is-an-object" linkName="object" />.
+This section will illustrate how to perform a <ProductConcept section="what-is-a-list-users-request" linkName="list users" /> request. The List Users call allows you to retrieve a list of all <ProductConcept section="what-is-a-user" linkName="users" /> that have a specific <ProductConcept section="what-is-a-relationship" linkName="relationship" /> with a given <ProductConcept section="what-is-an-object" linkName="object" />.  This can be used in scenarios such as displaying users who have access to a resource or managing memberships within a group. 
+
 
 ## Before You Start
 
@@ -92,11 +93,25 @@ This section will illustrate how to perform a <ProductConcept section="what-is-a
 </TabItem>
 </Tabs>
 
-## Step By Step
+## Step by step
+
+Consider the following model which includes documents which users can have a `reader` relationship with:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type document
+  relations
+    define reader: [user]
+
+```
 
 Assume that you want to list all users of type `user` that have a `reader` relationship with `document:planning`:
 
-### 01. Configure the <ProductName format={ProductNameFormat.ShortForm}/> API Client
+### 01. Configure the <ProductName format={ProductNameFormat.ShortForm}/> API client
 
 Before calling the List Users API, you will need to configure the API client.
 
@@ -239,7 +254,7 @@ Then calling the List Users API for `document:1` with relation `viewer` of type 
   ]}
 />
 
-## Type-bound Public Access
+## Type-bound public access
 
 The List Users API supports tuples expressing public access via the wildcard syntax (e.g. `user:*`). Wildcard tuples that satisfy the query criteria will be returned with the `wildcard` root object property that will specify the type. A typed-bound public access result indicates that the object has a public relation but it doesn't necessarily indicate that all users of that type have that relation, it is possible that exclusions via the `but not` syntax exists. The API will not expand wildcard results further to any ID'd user object. Further, specific users that have been granted access will be returned in addition to any public access for that user's type.
 
