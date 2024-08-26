@@ -42,21 +42,21 @@
     "swagger-ui-react": "5.17.14"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "3.4.0",
+    "@docusaurus/module-type-aliases": "3.5.2",
     "@tsconfig/docusaurus": "2.0.3",
     "@types/prismjs": "1.26.4",
-    "@types/react": "18.3.3",
+    "@types/react": "18.3.4",
     "@types/react-router-dom": "5.3.3",
-    "@types/sanitize-html": "2.11.0",
-    "@typescript-eslint/eslint-plugin": "7.13.1",
-    "@typescript-eslint/parser": "7.13.1",
+    "@types/sanitize-html": "2.13.0",
+    "@typescript-eslint/eslint-plugin": "8.2.0",
+    "@typescript-eslint/parser": "8.2.0",
     "docusaurus-plugin-module-alias": "0.0.2",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
-    "eslint-plugin-react": "7.34.2",
-    "husky": "9.0.11",
-    "prettier": "3.3.2",
-    "typescript": "5.4.5"
+    "eslint-plugin-react": "7.35.0",
+    "husky": "9.1.5",
+    "prettier": "3.3.3",
+    "typescript": "5.5.4"
   },
   "overrides": {
     "gauge": "^5.0.0",
