@@ -12,30 +12,34 @@ hide_table_of_contents: false
 
 Welcome to the August 2024 edition of Fine Grained News\! We are excited to bring you the latest updates, features, and community highlights from OpenFGA. This month, we’ve been working hard to improve OpenFGA continually.
 
-## Just Shipped\!
+## Just Shipped!
 
-**Telemetry/Tracing/Logs for SDKs:** We’ve added OpenTelemetry support to [the Java SDK](https://github.com/openfga/java-sdk). With [the new v0.6.1 update](https://github.com/openfga/java-sdk/releases/tag/v0.6.1), you’ll have more visibility into how your FGA requests are performing, helping you identify improvement areas effectively and collect helpful statistical metrics over time.
+**OpenFGA v1.6.0:** The [latest OpenFGA release](https://github.com/openfga/openfga/releases/tag/v1.6.0) enables support for [query consistency options](https://openfga.dev/docs/interacting/consistency) and included additional performance enhancements.
+
+**Query Consistency Options in SDKs:** All OpenFGA SDKs now support specifying [a query consistency parameter](https://openfga.dev/docs/interacting/consistency) for OpenFGA query endpoints.
+
+**Metrics Telemetry for SDKs:** We already supported OpenTelemetry metrics in the [Python](https://github.com/openfga/python-sdk/) and [Javascript](https://github.com/openfga/js-sdk/). We’ve just added support in [the Java SDK](https://github.com/openfga/java-sdk/releases/tag/v0.6.1), and [the GO SDK](https://github.com/openfga/go-sdk/releases/v0.6.0). 
 
 ## Security Advisory
 
-We recently addressed a security issue, identified as GHSA-3f6g-m4hr-59h8, related to the handling of malformed tuples in OpenFGA. This issue has been fixed in the latest release, and we strongly recommend all users update to the latest version to ensure their systems remain secure. For more details, please refer to the [security advisory](https://github.com/openfga/openfga/security/advisories/GHSA-3f6g-m4hr-59h8) on our GitHub page.
+We recently addressed a security issue, identified as GHSA-3f6g-m4hr-59h8, that was present in OpenFGA v1.5.7 and v1.5.8. This issue has been fixed starting v1.5.9, and we strongly recommend all users update to the latest version to ensure their systems remain secure. For more details, please refer to the [security advisory](https://github.com/openfga/openfga/security/advisories/GHSA-3f6g-m4hr-59h8) on our GitHub page.
 
 ## In Progress
 
-* Telemetry  
-* SDKs for Query Consistency Options  
+* [Support for OpenTelemetry tracing and logging](https://github.com/openfga/roadmap/issues/41)
 * [Performance Improvements for OpenFGA queries](https://github.com/openfga/roadmap/issues/61)  
 * [Additional OpenFGA API Authorization Options](https://github.com/openfga/roadmap/issues/30)  
-* [Additional Consistency Options for OpenFGA queries](https://github.com/openfga/roadmap/issues/54)
+* [SQLite Storage Adapter](https://github.com/openfga/roadmap/issues/56), thanks [Grafana](https:// grafana.com/) for the contribution!
 
 Curious about what’s coming next for OpenFGA? Check out our [roadmap](https://github.com/orgs/openfga/projects/1/views/1) so you can see what’s in store. We also welcome your feature requests and ideas in [GitHub Discussions](https://github.com/orgs/openfga/discussions/categories/ideas).
 
 ## Community Highlights
 
 * **CNCF Security TAG:** This month, [Andrés Aguiar](https://www.linkedin.com/in/aaguiar/) presented OpenFGA to the [CNCF Security Technical Advisory Group (TAG)](https://tag-security.cncf.io/), where he discussed the project's current [status](https://github.com/cncf/tag-security/issues/1339) and showcased various use cases. You can see the presentation deck [here](https://docs.google.com/presentation/d/1-TFfvKPi3jJ-jO-bjsHb3Soj\_kKcQCf4Y\_UvST7z744/edit\#slide=id.p). It’s a great way to see how OpenFGA is being utilized and what’s on the horizon for the project.  
-* **Join Us at Open Source Summit Europe 2024:** [José Carlos Chávez](https://www.linkedin.com/in/jcchavezs/) will present at Open Source Summit Europe 2024 in Vienna, Austria\! He will discuss [Fine-Grained Policies: RBAC with OpenFGA](https://osseu2024.sched.com/event/1ej2u/fine-grained-policies-rbac-with-openfga-jose-carlos-chavez-okta)We look forward to seeing you there\!  
+* **Join Us at Open Source Summit Europe 2024:** [José Carlos Chávez](https://www.linkedin.com/in/jcchavezs/) will present at Open Source Summit Europe 2024 in Vienna, Austria! He will discuss [Fine-Grained Policies: RBAC with OpenFGA](https://osseu2024.sched.com/event/1ej2u/fine-grained-policies-rbac-with-openfga-jose-carlos-chavez-okta)We look forward to seeing you there\!  
 * **OpenFGA at Open Source Strategy Forum 2024:** Kiah Imani will present [Role-Based Access Is So Yesterday: Revolutionizing Authorization with OpenFGA](https://sossfusion2024.sched.com/event/1hcQa?iframe=no). In this session, attendees will learn how OpenFGA addresses the limitations of RBAC, enhancing security, performance, and access management across various systems.  
 * **API Security: APISIX \+ OpenFGA:** Check out this [blog post](https://dev.to/kaankahraman/supercharging-api-security-apisix-with-openfga-45da) by Kaan Kahraman on enhancing API security by integrating APISIX with OpenFGA.
+
 
 ## New Adopters
 
