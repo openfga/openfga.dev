@@ -17,7 +17,7 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="just-shipped">Just Shipped!<a href="https://openfga.dev/pr-preview/pr-822/blog/fine-grained-news-2024-08#just-shipped" class="hash-link" aria-label="Direct link to Just Shipped!" title="Direct link to Just Shipped!">​</a></h2>
 <ul>
 <li>
-<p><strong>OpenFGA v1.6.0:</strong> The <a href="https://github.com/openfga/openfga/releases/tag/v1.6.0" target="_blank" rel="noopener noreferrer">latest OpenFGA release</a> enables support for <a href="https://openfga.dev/docs/interacting/consistency" target="_blank" rel="noopener noreferrer">query consistency options</a> and included additional performance enhancements.</p>
+<p><strong>OpenFGA v1.6.0:</strong> The <a href="https://github.com/openfga/openfga/releases/tag/v1.6.0" target="_blank" rel="noopener noreferrer">latest OpenFGA release</a> enables support for <a href="https://openfga.dev/docs/interacting/consistency" target="_blank" rel="noopener noreferrer">query consistency options</a> and includes additional performance enhancements.</p>
 </li>
 <li>
 <p><strong>Query Consistency Options in SDKs:</strong> All OpenFGA SDKs now support specifying <a href="https://openfga.dev/docs/interacting/consistency" target="_blank" rel="noopener noreferrer">a query consistency parameter</a> for OpenFGA query endpoints. Make sure to update to the latest versions of the SDKs and OpenFGA to take advantage of this feature.</p>
