@@ -16,7 +16,7 @@ Welcome to the August 2024 edition of Fine Grained News! We are excited to bring
 
 * **OpenFGA v1.6.0:** The [latest OpenFGA release](https://github.com/openfga/openfga/releases/tag/v1.6.0) enables support for [query consistency options](https://openfga.dev/docs/interacting/consistency) and included additional performance enhancements.
 
-* **Query Consistency Options in SDKs:** All OpenFGA SDKs now support specifying [a query consistency parameter](https://openfga.dev/docs/interacting/consistency) for OpenFGA query endpoints.
+* **Query Consistency Options in SDKs:** All OpenFGA SDKs now support specifying [a query consistency parameter](https://openfga.dev/docs/interacting/consistency) for OpenFGA query endpoints. Make sure to update to the latest versions of the SDKs and OpenFGA to take advantage of this feature.
 
 * **Metrics Telemetry for SDKs:** We already supported OpenTelemetry metrics in the [Python](https://github.com/openfga/python-sdk/) and [Javascript](https://github.com/openfga/js-sdk/). We’ve just added support in [the Java SDK](https://github.com/openfga/java-sdk/releases/tag/v0.6.1), and [the GO SDK](https://github.com/openfga/go-sdk/releases/v0.6.0). 
 
