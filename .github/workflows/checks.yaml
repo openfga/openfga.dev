@@ -15,7 +15,7 @@ jobs:
         uses: nschloe/action-cached-lfs-checkout@d481127c3821f9c278a6019c39a108ac7004c133
 
       - name: Set up node
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b
         with:
           node-version: '18'
           registry-url: 'https://registry.npmjs.org'
@@ -50,19 +50,19 @@ jobs:
   markdown-link-check-md:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - uses: gaurav-nelson/github-action-markdown-link-check@5c5dfc0ac2e225883c0e5f03a85311ec2830d368
-      with:
-        file-extension	: '.md'
-        use-quiet-mode  : 'yes'
-        config-file: '.github/workflows/markdown.links.config.json'
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: gaurav-nelson/github-action-markdown-link-check@5c5dfc0ac2e225883c0e5f03a85311ec2830d368
+        with:
+          file-extension: '.md'
+          use-quiet-mode: 'yes'
+          config-file: '.github/workflows/markdown.links.config.json'
 
   markdown-link-check:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - uses: gaurav-nelson/github-action-markdown-link-check@5c5dfc0ac2e225883c0e5f03a85311ec2830d368
-      with:
-        file-extension	: '.mdx'
-        use-quiet-mode  : 'yes'
-        config-file: '.github/workflows/markdown.links.config.json'
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: gaurav-nelson/github-action-markdown-link-check@5c5dfc0ac2e225883c0e5f03a85311ec2830d368
+        with:
+          file-extension: '.mdx'
+          use-quiet-mode: 'yes'
+          config-file: '.github/workflows/markdown.links.config.json'

@@ -23,7 +23,7 @@ import {
 
 <DocumentationNotice />
 
-<ProductName format={ProductNameFormat.LongForm}/>'s Configuration Language builds a representation of a system's <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />, which informs <UpdateProductNameInLinks link="/api/service" name="{ProductName}'s API" /> on the <ProductConcept section="what-is-a-type" linkName="object types" /> in the system are and how they relate to each other. The Configuration Language describes the <ProductConcept section="what-is-a-relation" linkName="relations" /> possible for an object of a given type and lists the conditions under which one is related to that object.
+<ProductName format={ProductNameFormat.LongForm}/>'s Configuration Language builds a representation of a system's <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />, which informs <UpdateProductNameInLinks link="/api/service" name="{ProductName}'s API" /> on the <ProductConcept section="what-is-a-type" linkName="object types" /> in the system and how they relate to each other. The Configuration Language describes the <ProductConcept section="what-is-a-relation" linkName="relations" /> possible for an object of a given type and lists the conditions under which one is related to that object.
 
 The Configuration Language can be presented in **DSL** or **JSON** syntax. The JSON syntax is accepted by the API and closely tracks the language in the [Zanzibar paper](https://research.google/pubs/pub48190/). The DSL adds syntactic sugar on top of JSON for ease of use, but compiles down to JSON before being sent to <ProductName format={ProductNameFormat.ShortForm}/>'s API. JSON syntax is used to call API directly or through the [SDKs](./getting-started), while DSL is used to interact with <ProductName format={ProductNameFormat.ShortForm}/> in the [Playground](https://play.fga.dev/), and they can be switched between throughout this documentation. 
 
@@ -388,7 +388,7 @@ Above, `document` <ProductConcept section="what-is-a-type-definition" linkName="
 
 :::info
 
-`can_rename` does not reference the [direct relationship type restrictions](#the-direct-relationship-type-restrictions), which means a user cannot be directly assigned this relation and it must inherited when the `editor` relation is assigned. Conversely, the `viewer` relation allows both direct and indirect relationships using the [Union Operator](#the-union-operator).
+`can_rename` does not reference the [direct relationship type restrictions](#direct-relationship-type-restrictions), which means a user cannot be directly assigned this relation and it must be inherited when the `editor` relation is assigned. Conversely, the `viewer` relation allows both direct and indirect relationships using the [Union Operator](#the-union-operator).
 
 :::
 
@@ -827,7 +827,7 @@ The JSON syntax accepted by the <ProductName format={ProductNameFormat.ShortForm
 
 | Zanzibar           | <ProductName format={ProductNameFormat.ShortForm}/> JSON | <ProductName format={ProductNameFormat.ShortForm}/> DSL |
 | :----------------- | :------------------------------------------------------- | :------------------------------------------------------ |
-| `this`             | `this`                                                   | [`[<type1>,<type2>]`](#the-direct-relationship-type-restrictions)                                                  |
+| `this`             | `this`                                                   | [`[<type1>,<type2>]`](#direct-relationship-type-restrictions)                                                  |
 | `union`            | `union`                                                  | `or`                                                    |
 | `intersection`     | `intersection`                                           | `and`                                                   |
 | `exclusion`        | `difference`                                             | `but not`                                               |
@@ -1013,7 +1013,7 @@ The following snippet:
                   },
                 },
                 {
-                  // a user that is an viewer on any of the object's parents is also implicitly a viewer on the object
+                  // a user that is a viewer on any of the object's parents is also implicitly a viewer on the object
                   tupleToUserset: {
                     tupleset: {
                       relation: 'parent',
