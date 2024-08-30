@@ -14,8 +14,7 @@ interface ProductNameOpts {
 // ProductName replaces the ProductName with the config's custom field value
 export function ProductName(opts: ProductNameOpts): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
-  const productLink = (siteConfig.baseUrl +
-    ((siteConfig.customFields.introLink as string) + siteConfig.customFields.productDescriptionSection)) as string;
+  const productLink = (siteConfig.baseUrl + siteConfig.customFields.productDescriptionLink) as string as string;
   switch (opts.format) {
     case ProductNameFormat.ProductLink:
       return <a href={productLink}>{siteConfig.customFields.productName as string}</a>;
