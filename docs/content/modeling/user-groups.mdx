@@ -97,12 +97,12 @@ There are possible use cases where a group of users have a certain role on or pe
 
 To represent this in <ProductName format={ProductNameFormat.ShortForm}/>:
 
-1. Introduce the concept of a `team` to the authorization model.
-2. Add users as `members` to the `team`.
-3. Assign the `team` members a relation to an object.
-4. Check an individual member's access to the object.
+1. Introduce the concept of a `team` to the authorization model. [→](#step-1)
+2. Add users as `members` to the `team`. [→](#step-2)
+3. Assign the `team` members a relation to an object. [→](#step-3)
+4. Check an individual member's access to the object. [→](#step-4)
 
-### 01. Introduce the concept of a team to the authorization model
+### 01. Introduce the concept of a team to the authorization model {#step-1}
 
 First, define the _<ProductConcept section="what-is-an-object" linkName="object" />_ `team` in your authorization model. In this use case, a `team` can have `member`s, so you make the following changes to the authorization model:
 
@@ -143,7 +143,7 @@ First, define the _<ProductConcept section="what-is-an-object" linkName="object"
   }}
 />
 
-### 02. Add users as members to the team
+### 02. Add users as members to the team {#step-2}
 
 You can now assign _<ProductConcept section="what-is-a-user" linkName="users" />_ as `member`s of `team`s. Create a new _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple" />_ that states `user:alice` is a member of `team:writers`.
 
@@ -157,7 +157,7 @@ You can now assign _<ProductConcept section="what-is-a-user" linkName="users" />
   ]}
 />
 
-### 03. Assign the team members a relation to an object
+### 03. Assign the team members a relation to an object {#step-3}
 
 To represent groups, use the `type:object_id#relation` format, which represents the set of users related to the `type:object_id` as a certain relation. For example, `team:writers#members` represents the set of users related to the `team:writers` object as `member`s.
 
@@ -174,7 +174,7 @@ In order to assign `member`s of a `team` a relation to a `document`, create the 
   ]}
 />
 
-### 04. Check an individual member's access to an object
+### 04. Check an individual member's access to an object {#step-4}
 
 Now that you have:
 
