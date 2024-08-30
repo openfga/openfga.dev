@@ -36,7 +36,7 @@ Curious about what’s coming next for OpenFGA? Check out our [roadmap](https://
 ## Community Highlights
 
 * **CNCF Security TAG:** This month, [Andrés Aguiar](https://www.linkedin.com/in/aaguiar/) presented OpenFGA to the [CNCF Security Technical Advisory Group (TAG)](https://tag-security.cncf.io/), where he discussed the project's current [status](https://github.com/cncf/tag-security/issues/1339) and showcased various use cases. You can see the presentation deck [here](https://docs.google.com/presentation/d/1-TFfvKPi3jJ-jO-bjsHb3Soj_kKcQCf4Y_UvST7z744/edit#slide=id.p). It’s a great way to see how OpenFGA is being utilized and what’s on the horizon for the project.
-* **API Security: APISIX + OpenFGA:** Check out this [blog post](https://dev.to/kaankahraman/supercharging-api-security-apisix-with-openfga-45da) by Kaan Kahraman on enhancing API security by integrating APISIX with OpenFGA.
+* **API Security: APISIX + OpenFGA:** Check out this [blog post](https://dev.to/kaankahraman/supercharging-api-security-apisix-with-openfga-45da) by Kaan Kahraman on enhancing API security by integrating [APISIX](https://apisix.apache.org/) with OpenFGA.
 
 ### Upcoming Events
 
