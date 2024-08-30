@@ -14,7 +14,7 @@ Welcome to the August 2024 edition of Fine Grained News! We are excited to bring
 
 ## Just Shipped!
 
-* **OpenFGA v1.6.0:** The [latest OpenFGA release](https://github.com/openfga/openfga/releases/tag/v1.6.0) enables support for [query consistency options](https://openfga.dev/docs/interacting/consistency) and included additional performance enhancements.
+* **OpenFGA v1.6.0:** The [latest OpenFGA release](https://github.com/openfga/openfga/releases/tag/v1.6.0) enables support for [query consistency options](https://openfga.dev/docs/interacting/consistency) and includes additional performance enhancements.
 
 * **Query Consistency Options in SDKs:** All OpenFGA SDKs now support specifying [a query consistency parameter](https://openfga.dev/docs/interacting/consistency) for OpenFGA query endpoints. Make sure to update to the latest versions of the SDKs and OpenFGA to take advantage of this feature.
 
