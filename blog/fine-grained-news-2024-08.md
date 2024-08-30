@@ -29,7 +29,7 @@ We recently addressed a security issue, identified as GHSA-3f6g-m4hr-59h8, that 
 * [Support for OpenTelemetry tracing and logging](https://github.com/openfga/roadmap/issues/41)
 * [Performance Improvements for OpenFGA queries](https://github.com/openfga/roadmap/issues/61)  
 * [Additional OpenFGA API Authorization Options](https://github.com/openfga/roadmap/issues/30)  
-* [SQLite Storage Adapter](https://github.com/openfga/roadmap/issues/56), thanks [Grafana](https://grafana.com/) for the contribution!
+* [SQLite Storage Adapter](https://github.com/openfga/roadmap/issues/56), thanks to [Grafana](https://grafana.com/) for the contribution!
 
 Curious about what’s coming next for OpenFGA? Check out our [roadmap](https://github.com/orgs/openfga/projects/1/views/1) to see what’s in store. We also welcome your feature requests and ideas in [GitHub Discussions](https://github.com/orgs/openfga/discussions/categories/ideas).
 
