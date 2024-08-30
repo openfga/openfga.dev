@@ -388,7 +388,7 @@ Above, `document` <ProductConcept section="what-is-a-type-definition" linkName="
 
 :::info
 
-`can_rename` does not reference the [direct relationship type restrictions](#the-direct-relationship-type-restrictions), which means a user cannot be directly assigned this relation and it must be inherited when the `editor` relation is assigned. Conversely, the `viewer` relation allows both direct and indirect relationships using the [Union Operator](#the-union-operator).
+`can_rename` does not reference the [direct relationship type restrictions](#direct-relationship-type-restrictions), which means a user cannot be directly assigned this relation and it must be inherited when the `editor` relation is assigned. Conversely, the `viewer` relation allows both direct and indirect relationships using the [Union Operator](#the-union-operator).
 
 :::
 
@@ -827,7 +827,7 @@ The JSON syntax accepted by the <ProductName format={ProductNameFormat.ShortForm
 
 | Zanzibar           | <ProductName format={ProductNameFormat.ShortForm}/> JSON | <ProductName format={ProductNameFormat.ShortForm}/> DSL |
 | :----------------- | :------------------------------------------------------- | :------------------------------------------------------ |
-| `this`             | `this`                                                   | [`[<type1>,<type2>]`](#the-direct-relationship-type-restrictions)                                                  |
+| `this`             | `this`                                                   | [`[<type1>,<type2>]`](#direct-relationship-type-restrictions)                                                  |
 | `union`            | `union`                                                  | `or`                                                    |
 | `intersection`     | `intersection`                                           | `and`                                                   |
 | `exclusion`        | `difference`                                             | `but not`                                               |
