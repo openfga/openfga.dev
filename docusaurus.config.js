@@ -194,6 +194,10 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
           showLastUpdateAuthor: false,
           editUrl: 'https://github.com/openfga/openfga.dev/edit/main/',
         },
+        blog: {
+          blogSidebarTitle: 'All posts',
+          blogSidebarCount: 'ALL',
+        },
         theme: {
           customCss: [path.resolve('static/css/openfga.css'), path.resolve('src/css/custom.css')],
         },
