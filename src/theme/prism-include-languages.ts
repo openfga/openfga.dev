@@ -1,27 +1,8 @@
 import siteConfig from '@generated/docusaurus.config';
 import type * as PrismNamespace from 'prismjs';
-import { tools, theming } from '@openfga/frontend-utils';
-
-const { OpenFgaDslThemeTokenType } = theming;
+import { tools } from '@openfga/frontend-utils';
 
 const { PrismExtensions } = tools;
-
-const languageDefinition = {
-  ...PrismExtensions.languageDefinition,
-  [OpenFgaDslThemeTokenType.KEYWORD]: /\b(type|relations|define|and|or|but not|from|as|model|schema|condition)\b/,
-  condition: {
-    pattern: /(\bcondition\s+)\w+/i,
-    lookbehind: true,
-    greedy: true,
-  },
-  'condition-params': {
-    pattern: /\(.*\)\s*{/,
-    inside: {
-      'condition-param': /\b(\w+)\s*:/i,
-      'condition-param-type': /\b(string|int|map|uint|list|timestamp|bool|duration|double|ipaddress)\b/,
-    },
-  },
-};
 
 export default function prismIncludeLanguages(PrismObject: typeof PrismNamespace): void {
   const {
@@ -38,10 +19,11 @@ export default function prismIncludeLanguages(PrismObject: typeof PrismNamespace
   globalThis.Prism = PrismObject;
 
   additionalLanguages.forEach((lang) => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     require(`prismjs/components/prism-${lang}`);
   });
 
-  PrismObject.languages[PrismExtensions.LANGUAGE_NAME] = languageDefinition;
+  PrismObject.languages[PrismExtensions.LANGUAGE_NAME] = PrismExtensions.languageDefinition;
 
   delete (globalThis as unknown as Global & { Prism?: typeof PrismNamespace }).Prism;
 }

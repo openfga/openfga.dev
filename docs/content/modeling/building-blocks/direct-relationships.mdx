@@ -61,7 +61,7 @@ You need to know how to create an authorization model and create a relationship 
 - A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
 - An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
 - A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>
-- [Direct Relationship Type Restrictions](../../configuration-language.mdx#the-direct-relationship-type-restrictions): used in the context of the relation definition can be used to allow direct relationships to the objects of this type
+- [Direct Relationship Type Restrictions](../../configuration-language.mdx#direct-relationship-type-restrictions): used in the context of the relation definition can be used to allow direct relationships to the objects of this type
 
 </details>
 
@@ -79,7 +79,7 @@ When checking for a relationship, a direct relationship exists if a _<ProductCon
 
 ## Enable Or Disable Direct Relationships
 
-Direct relationships can be enabled for a specific relation on an _<ProductConcept section="what-is-a-type" linkName="object type" />_ by adding [direct relationship type restrictions](../../configuration-language.mdx#the-direct-relationship-type-restrictions) from that <ProductConcept section="what-is-a-relation-definition" linkName="relation's definition" />. Likewise, they can be disabled by removing the direct relationship type restrictions.
+Direct relationships can be enabled for a specific relation on an _<ProductConcept section="what-is-a-type" linkName="object type" />_ by adding [direct relationship type restrictions](../../configuration-language.mdx#direct-relationship-type-restrictions) from that <ProductConcept section="what-is-a-relation-definition" linkName="relation's definition" />. Likewise, they can be disabled by removing the direct relationship type restrictions.
 
 <AuthzModelSnippetViewer
   configuration={{

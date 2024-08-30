@@ -20,7 +20,7 @@ function expandRequestViewer(lang: SupportedLanguage, opts: ExpandRequestViewerO
 # Response: {"tree": ...}`;
     case SupportedLanguage.CURL:
       // eslint-disable-next-line max-len
-      return `curl -X POST $FGA_SERVER_URL/stores/$FGA_STORE_ID/expand \\
+      return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/expand \\
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
   -d '{"tuple_key":{"relation":"${opts.relation}","object":"${opts.object}"}, "authorization_model_id": "${modelId}"}'

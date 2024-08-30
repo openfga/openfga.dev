@@ -63,6 +63,7 @@ export default function NavbarNavLink({
         };
         setGithubStars(newCachedGithubStars);
         sessionStorage.setItem(GITHUB_STARS_SESSION_STORAGE_NAME, JSON.stringify(newCachedGithubStars));
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
         // try to use old cache if available (even if it is out of date)
         setGithubStars(cachedGithubStars || null);

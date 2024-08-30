@@ -31,7 +31,7 @@ import FGAIcon from '@site/static/img/getting-started-fga-logo.svg';
 
 <DocumentationNotice />
 
-Creating a <IntroductionSection linkName="Relationship Based Access Control (ReBAC)" section="what-is-relationship-based-access-control-rebac"/> authorization model might feel odd at first. Most of us tend to think about authorization models in terms of roles and permissions. After all, most software works like that. Your existing systems are likely built on a model using roles and permissions.
+Creating a <IntroductionSection linkName="Relationship Based Access Control (ReBAC)" section="what-is-relationship-based-access-control"/> authorization model might feel odd at first. Most of us tend to think about authorization models in terms of roles and permissions. After all, most software works like that. Your existing systems are likely built on a model using roles and permissions.
 
 This guide outlines a process for defining your <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" /> with <ProductName format={ProductNameFormat.ProductLink}/>.
 
@@ -370,7 +370,7 @@ In those cases [**User** should also be an object type](./building-blocks/object
 
 Each of the previously defined types has a set of relations. <ProductConcept section="what-is-a-relation" linkName="Relations" /> are an important component in your model. After all, <ProductName format={ProductNameFormat.ShortForm}/> is a <IntroductionSection linkName="Relationship Based Access Control (ReBAC)" section="what-is-relationship-based-access-control-rebac"/> system.
 
-To identify relations for a type we in the write-up we can perform an exercise similar to the one we did in [list the type of objects in your system](#02-list-the-object-types).
+To identify relations for a type in the write-up we can perform an exercise similar to the one we did in [list the type of objects in your system](#02-list-the-object-types).
 
 Relations for a type \{type\} will be all of these:
 
@@ -582,7 +582,7 @@ Why? This relation definition states:
   `{ user: {user-id}, relation: "member", object: "organization:{id}" }`
 
 :::info Important
-Relation definitions of the form “define \{relation\}: [user, organization#member]" are fairly common. They are used to express that relationships "to the object with that relation" (e.g. "users" of type user or "member of organization") can be assigned by your system and that only the users that have that relation are those with a [direct relationship](./building-blocks/direct-relationships.mdx).
+Relation definitions of the form "define \{relation\}: [user, organization#member]" are fairly common. They are used to express that relationships "to the object with that relation" (e.g. "users" of type user or "member of organization") can be assigned by your system and that only the users that have that relation are those with a [direct relationship](./building-blocks/direct-relationships.mdx).
 :::
 
 You can read more about group membership and types in [Modeling User Groups](./user-groups.mdx).
@@ -594,7 +594,7 @@ For the direct relationships, we need to figure out the object types that makes 
 
 However, it will not make sense for organization member's user to be of type document, folder or drive.
 
-We will specify this logic as part of directly <ProductConcept section="what-is-a-directly-related-user-type" linkName="directly related user type" />.
+We will specify this logic as part of <ProductConcept section="what-is-a-directly-related-user-type" linkName="directly related user type" />.
 
 :::note Side note
 This also automatically supports nested organizational membership if you want such a feature in your system. You could use relationship tuples like the following one to express that "members of organization A are members of organization B":
@@ -644,7 +644,7 @@ The complete <ProductConcept section="what-is-a-type-definition" linkName="type 
 
 After defining your "group" like types, continue with the most important type for the feature: the one that allows the main use case. In this case "document", since the main use case for users is to create, write, read and collaborate on documents.
 
-Defining relations for the main type lets you to focus on your core use case, and will likely make other type definitions easier.
+Defining relations for the main type lets you focus on your core use case, and will likely make other type definitions easier.
 
 ##### Relation: Owner
 
@@ -796,7 +796,7 @@ Why? This relation definition states that:
   - `{ user: "drive:{id}", relation: "parent", object: "document:{id}" }`
 
 
-We can use [direct type restriction](../configuration-language.mdx#the-direct-relationship-type-restrictions) to ensure a document's parent can only be an object of type either drive or folder.
+We can use [direct type restriction](../configuration-language.mdx#direct-relationship-type-restrictions) to ensure a document's parent can only be an object of type either drive or folder.
 
 :::note Side note
 You might have noticed that the "user" in the tuple is an object. This is a special syntax <ProductName format={ProductNameFormat.ShortForm}/> accepts in the "user" parameter to write [object to object relationships](./building-blocks/object-to-object-relationships.mdx). You can read more about writing data to manage object to object relationships in [Managing Relationships Between Objects](../interacting/managing-relationships-between-objects.mdx).
@@ -853,7 +853,7 @@ We can achieve that with the following definition using <UpdateProductNameInLink
 
 There are a few key things here:
 
-- **We don't use a [direct relationship type restriction](../configuration-language.mdx#the-direct-relationship-type-restrictions) as part of the definition.** can_share is a common example of representing a permission that is defined in terms of other relations but is not directly assignable by the system.
+- **We don't use a [direct relationship type restriction](../configuration-language.mdx#direct-relationship-type-restrictions) as part of the definition.** can_share is a common example of representing a permission that is defined in terms of other relations but is not directly assignable by the system.
 - The relation definition contains a [union operator](../configuration-language.mdx#the-union-operator) separating a list of relations that the user must have with the object in order to "be able to share the document". It is any of:
   - Being an owner of the document
   - Being an editor of the document

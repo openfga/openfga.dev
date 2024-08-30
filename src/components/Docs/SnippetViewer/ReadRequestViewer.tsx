@@ -48,7 +48,7 @@ function readRequestViewer(lang: SupportedLanguage, opts: ReadRequestViewerOpts)
         : '';
 
       // eslint-disable-next-line max-len
-      return `curl -X POST $FGA_SERVER_URL/stores/$FGA_STORE_ID/read \\
+      return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/read \\
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" ${requestTuplePayload}'
 

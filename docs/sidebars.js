@@ -100,6 +100,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Perform a List Users Request',
+          id: 'content/getting-started/perform-list-users',
+        },
+        {
+          type: 'doc',
           label: 'Use the FGA CLI',
           id: 'content/getting-started/cli',
         },
@@ -204,6 +209,11 @@ const sidebars = {
           type: 'doc',
           label: "Testing Models",
           id: 'content/modeling/testing-models',
+        },
+        {
+          type: 'doc',
+          label: "Modular Models",
+          id: 'content/modeling/modular-models',
         },
         {
           type: 'category',
@@ -327,6 +337,11 @@ const sidebars = {
           type: 'doc',
           label: 'Transactional Writes',
           id: 'content/interacting/transactional-writes',
+        },
+        {
+          type: 'doc',
+          label: 'Query Consistency',
+          id: 'content/interacting/consistency',
         },
         {
           type: 'doc',

@@ -17,13 +17,14 @@ import {
   RelatedSection,
   RelationshipTuplesViewer,
   UpdateProductNameInLinks,
+  ListUsersRequestViewer
 } from '@components/Docs';
 
 # Concepts
 
 <DocumentationNotice />
 
-The <ProductName format={ProductNameFormat.ProductLink}/> service answers <IntroductionSection linkName="authorization" section="authentication-vs-authorization"/> [checks](#what-is-a-check-request) by determining whether a **[relationship](#what-is-a-relation)** exists between an [object](#what-is-an-object) and a [user](#what-is-a-user). Checks reference your **[authorization model](#what-is-an-authorization-model)** against your **[relationship tuples](#what-is-a-relationship-tuple)** for authorization authority. Below are explanations of basic FGA concepts, like type and authorization model, and a [playground](https://play.fga.dev/) to test your knowledge.
+The <ProductName format={ProductNameFormat.ProductLink}/> service answers <IntroductionSection linkName="authorization" section="authentication-and-authorization"/> [checks](#what-is-a-check-request) by determining whether a **[relationship](#what-is-a-relation)** exists between an [object](#what-is-an-object) and a [user](#what-is-a-user). Checks reference your **[authorization model](#what-is-an-authorization-model)** against your **[relationship tuples](#what-is-a-relationship-tuple)** for authorization authority. Below are explanations of basic FGA concepts, like type and authorization model, and a [playground](https://play.fga.dev/) to test your knowledge.
 
 <Playground />
 
@@ -342,7 +343,7 @@ For the following model, only [relationship tuples](#what-is-a-relationship-tupl
 
 A relationship tuple with user `user:anne` or `user:3f7768e0-4fa7-4e93-8417-4da68ce1846c` may be written for objects with type `document` and relation `viewer`, so writing `{"user": "user:anne","relation":"viewer","object":"document:roadmap"}` succeeds.
 A relationship tuple with a disallowed user type for the `viewer` relation on objects of type `document` - for example `workspace:auth0` or `folder:planning#editor` - will be rejected, so writing `{"user": "folder:product","relation":"viewer","object":"document:roadmap"}` will fail.
-This affects only relations that are [directly related](#what-are-direct-and-implied-relationships) and have [direct relationship type restrictions](./configuration-language.mdx#the-direct-relationship-type-restrictions) in their relation definition.
+This affects only relations that are [directly related](#what-are-direct-and-implied-relationships) and have [direct relationship type restrictions](./configuration-language.mdx#direct-relationship-type-restrictions) in their relation definition.
 
 </details>
 
@@ -442,13 +443,13 @@ An [authorization model](#what-is-an-authorization-model), together with [relati
 
 ## What Are Direct And Implied Relationships?
 
-A **direct relationship** (R) between user X and object Y means the relationship tuple (user=X, relation=R, object=Y) exists, and the <ProductName format={ProductNameFormat.ShortForm}/> authorization model for that relation allows the direct relationship because of [direct relationship type restrictions](./configuration-language.mdx#the-direct-relationship-type-restrictions)).
+A **direct relationship** (R) between user X and object Y means the relationship tuple (user=X, relation=R, object=Y) exists, and the <ProductName format={ProductNameFormat.ShortForm}/> authorization model for that relation allows the direct relationship because of [direct relationship type restrictions](./configuration-language.mdx#direct-relationship-type-restrictions)).
 
 An **implied (or computed) relationship** (R) exists between user X and object Y if user X is related to an object Z that is in a direct or implied relationship with object Y, and the <ProductName format={ProductNameFormat.ShortForm}/> authorization model allows it.
 
 </summary>
 
-- `user:anne` has a direct relationship with `document:new-roadmap` as `viewer` if the [type definition](#what-is-a-type-definition) allows it with [direct relationship type restrictions](./configuration-language.mdx#the-direct-relationship-type-restrictions), and one of the following [relationship tuples](#what-is-a-relationship-tuple) exist:
+- `user:anne` has a direct relationship with `document:new-roadmap` as `viewer` if the [type definition](#what-is-a-type-definition) allows it with [direct relationship type restrictions](./configuration-language.mdx#direct-relationship-type-restrictions), and one of the following [relationship tuples](#what-is-a-relationship-tuple) exist:
 
   - <RelationshipTuplesViewer
       relationshipTuples={[
@@ -584,14 +585,46 @@ The list objects endpoint responds with a list of objects for a given type that 
 For example, the following returns all the objects with document type for which `anne` of type user has a `viewer` relation with:
 
 <ListObjectsRequestViewer
-  authorizationModelId="1uHxCSuTP0VKPYSnkq1pbb1jeZw"
+  authorizationModelId="01HVMMBCMGZNT3SED4Z17ECXCA"
   objectType="document"
   relation="viewer"
   user="user:anne"
   expectedResults={['document:otherdoc', 'document:planning']}
 />
 
-For more information, see the [Relationship Queries page](./interacting/relationship-queries.mdx) and the official [Check API Reference](/api/service#Relationship%20Queries/ListObjects).
+For more information, see the [Relationship Queries page](./interacting/relationship-queries.mdx) and the [List Objects API Reference](/api/service#Relationship%20Queries/ListObjects).
+
+</details>
+<details>
+<summary>
+
+## What Is A List Users Request?
+
+A **list users request** is a call to the <ProductName format={ProductNameFormat.LongForm}/> list users endpoint that returns all users of a given type that have a specified relationship with an object.
+
+</summary>
+
+List users requests are completed using the relevant `ListUsers` method in SDKs, the `fga query list-users` command in the CLI, or by manually calling the [ListUsers endpoint](/api/service#Relationship%20Queries/ListUsers) using curl or in your code.
+
+The list users endpoint responds with a list of users for a given type that have the specificed relationship with an object.
+
+For example, the following returns all the users of type `user` that have the `viewer` relationship for `document:planning`:
+
+<ListUsersRequestViewer
+  authorizationModelId="01HVMMBCMGZNT3SED4Z17ECXCA"
+  objectType="document"
+  objectId="planning"
+  relation="viewer"
+  userFilterType="user"
+  expectedResults={{
+    users: [
+      { object: { type: "user", id: "anne" }}, 
+      { object: { type: "user", id: "beth" }}
+    ]
+  }}
+/>
+
+For more information, see the the [ListUsers API Reference](/api/service#Relationship%20Queries/ListUsers).
 
 </details>
 <details>

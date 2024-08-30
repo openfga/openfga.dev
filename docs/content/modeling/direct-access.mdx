@@ -21,20 +21,20 @@ import {
 
 <DocumentationNotice />
 
-In this guide you will learn how to grant a <ProductConcept section="what-is-a-user" linkName="user" /> access to an <ProductConcept section="what-is-an-object" linkName="object" /> (such as a certain document) in <ProductName format={ProductNameFormat.ProductLink}/>.
+This article describes how to grant a <ProductConcept section="what-is-a-user" linkName="user" /> access to an <ProductConcept section="what-is-an-object" linkName="object" /> in <ProductName format={ProductNameFormat.ProductLink}/>.
 
 <CardBox title="When to use" appearance="filled">
 
-Granting access with _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple" />_ is a core part of <ProductName format={ProductNameFormat.ShortForm}/>. Without them, any _<ProductConcept section="what-is-a-check-request" linkName="checks" />_ will fail. You should use:
+Granting access with <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" /> is a core part of <ProductName format={ProductNameFormat.ShortForm}/>. Without relationship tuples, any <ProductConcept section="what-is-a-check-request" linkName="checks" />_ will fail. You should use:
 
-- _authorization model_ to represent what **relation**s are possible between the users and objects in the system
-- _relationship tuples_ to represent the facts about the relationships between users and objects in your system.
+- **authorization model** to represent what relations are possible between the users and objects in the system
+- **relationship tuples** to represent the facts about the relationships between users and objects in your system.
 
 </CardBox>
 
 ## Before you start
 
-In order to understand this guide correctly you must be familiar with some <ProductConcept/> and know how to develop the things that we will list below.
+Familiarize yourself with <ProductConcept/> to understand how to develop a relationship tuple and authorization model.
 
 <details>
 <summary>
@@ -80,7 +80,7 @@ In addition, you will need to know the following:
 
 - A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics
 - A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
-- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
 - An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
 - A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>
 
@@ -90,12 +90,12 @@ In addition, you will need to know the following:
 
 ## Step By Step
 
-For our applications to understand that **user x** has access to **document y**, we need to provide <ProductName format={ProductNameFormat.LongForm}/> that information through _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" />_.
-Each _relationship tuple_ has three basic parameters, a **<ProductConcept section="what-is-a-user" linkName="user" />**, a **<ProductConcept section="what-is-a-relation" linkName="relation" />** and an **<ProductConcept section="what-is-an-object" linkName="object" />**.
+For an application to understand that **user x** has access to **document y**, it must provide <ProductName format={ProductNameFormat.LongForm}/> that information with <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" />.
+Each relationship tuple has three basic parameters: a **<ProductConcept section="what-is-a-user" linkName="user" />**, a **<ProductConcept section="what-is-a-relation" linkName="relation" />** and an **<ProductConcept section="what-is-an-object" linkName="object" />**.
 
 ### 01. Create A Relationship Tuple
 
-Let us add a _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple" />_ to indicate that **bob** who is an `editor` of **document:meeting_notes.doc**. This is represented by adding the following:
+Below, you'll add a **<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple" />** to indicate that `bob` is an `editor` of `document:meeting_notes.doc` by adding the following:
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -109,16 +109,16 @@ Let us add a _<ProductConcept section="what-is-a-relationship-tuple" linkName="r
 
 ### 02. Check That The Relationship Exists
 
-Once that _relationship tuple_ is added to <ProductName format={ProductNameFormat.ShortForm} />, we can _<ProductConcept section="what-is-a-check-request" linkName="check" />_ if the relationship is valid by asking the following: **"is bob an editor of document:meeting_notes.doc?"**
+Once you add that relationship tuple to <ProductName format={ProductNameFormat.ShortForm} />, you can <ProductConcept section="what-is-a-check-request" linkName="check" /> if the relationship is valid by asking if bob is an editor of document:meeting_notes.doc:
 
 <CheckRequestViewer user={'user:bob'} relation={'editor'} object={'document:meeting_notes.doc'} allowed={true} />
 
-If we were to _check_ the following: **"is bob a viewer of document:meeting_notes.doc?"** it would return **false** since that _relationship tuple_ does not exist within <ProductName format={ProductNameFormat.ShortForm}/> yet.
+Checking whether `bob` is an `viewer` of `document:meeting_notes.doc` returns **false** because that relationship tuple does not exist in <ProductName format={ProductNameFormat.ShortForm}/> yet.
 
 <CheckRequestViewer user={'user:bob'} relation={'viewer'} object={'document:meeting_notes.doc'} allowed={false} />
 
 :::caution
-**Note:** When creating relationship tuples for <ProductName format={ProductNameFormat.LongForm}/> make sure to use unique ids for each object and user within your application domain. We're using first names and simple ids to just illustrate an easy-to-follow example.
+When creating relationship tuples for <ProductName format={ProductNameFormat.LongForm}/>, use unique ids for each object and user within your application domain. We're using first names and simple ids to as an easy-to-follow example.
 :::
 
 ## Related Sections
