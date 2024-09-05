@@ -21,32 +21,31 @@ import {
 
 <DocumentationNotice />
 
-In this guide you will learn how to grant a group of users access to a particular object.
+<ProductName format={ProductNameFormat.ShortForm}/> allows you to grant a group of users access to a particular object.
 
 <CardBox title="When to use" appearance="filled">
 
-Adding a relationship tuple specifying that a group has a relation to an object is helpful in cases where you want to encompass a set of users with the same relation to an object. For example:
+Relationship tuples are helpful when you want to specify that a group of users all have the same relation to an object. For example, <ProductName format={ProductNameFormat.ShortForm}/> allows you to:
 
 - Grant a group of `engineers` `viewer` access to `roadmap.doc`
 - Create a `block_list` of `members` who can't access a `document`
-- Sharing a `document` with a `team`
-- Granting `viewer` access to a `photo` to `followers` only
-- Making a `file` viewable for all `users` within an `organization`
-- Restricting access from or to `users` in a certain `locale`
+- Share a `document` with a `team`
+- Grant `viewer` access to a `photo` to `followers` only
+- Make a `file` viewable for all `users` within an `organization`
+- Manage access to a `database` for `users` in a certain `locale`
 
 </CardBox>
 
-## Before You Start
+## Before you start
 
-In order to understand this guide correctly you must be familiar with some <ProductConcept /> and know how to develop the things that we will list below.
+Familiarize yourself with basic <ProductConcept /> before you continue.
 
 <details>
 <summary>
 
-Assume that you have the following <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />.<br />
-You have two <ProductConcept section="what-is-a-type" linkName="types" />:
+In the example below, you have the following <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" /> with two <ProductConcept section="what-is-a-type" linkName="types" />:
 
-- `company` that can have a `employee` relation
+- `company` that can have an `employee` relation
 - `document` that can have a `reader` relation.
 
 </summary>
@@ -90,27 +89,27 @@ You have two <ProductConcept section="what-is-a-type" linkName="types" />:
 
 <hr />
 
-In addition, you will need to know the following:
+In addition, the following concepts are important to group access management:
 
-### Modeling User Groups
+### Modeling user groups
 
-You need to know how to add users to groups and grant groups access to an object. [Learn more →](../modeling/user-groups.mdx)
+<ProductName format={ProductNameFormat.ShortForm}/> allows you to add users to groups and grant groups access to an object. [For more information, see User Groups.](../modeling/user-groups.mdx)
 
 ### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
 
 - A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics
 - A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
-- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
 - An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
 - A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>
 
 </details>
 
-## Step By Step
+## Step by step
 
 ### 01. Adding Company To The Document
 
-If we want to have every `employee` of a type `company` have a `reader` relationship with a particular object of type `document` (in this case `document:planning`), we need to add a tuple like so:
+The following <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" /> assigns ever `employee` of a type `company`  a `reader` relationship with a particular object of type `document`, in this case `document:planning`):
 
 <RelationshipTuplesViewer
   relationshipTuples={[
@@ -123,9 +122,9 @@ If we want to have every `employee` of a type `company` have a `reader` relation
   ]}
 />
 
-### 02. Adding Employee To The Company
+### 02. Add an employee to the company
 
-If we also write a tuple that says that Anne is a `employee` of `company:xyz`, like so:
+Below is a <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple" /> specifying that `Anne` is an `employee` of `company:xyz`:
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -137,13 +136,13 @@ If we also write a tuple that says that Anne is a `employee` of `company:xyz`, l
   ]}
 />
 
-### 03. Checking An Individual Member's Access To An Object
+### 03. Checking an individual member's access to an object
 
-Then a call to the Check API to see whether Anne can read `document:planning` will return true:
+Call the Check API to verify that Anne can read `document:planning` returns true:
 
 <CheckRequestViewer user={'user:anne'} relation={'reader'} object={'document:planning'} allowed={true} />
 
-The same check for a different user Becky, however, will return false, because Becky does not have an `employee` relationship with `company:xyz`:
+The same check for Becky, a different user, returns false, because Becky does not have an `employee` relationship with `company:xyz`:
 
 <CheckRequestViewer user={'user:becky'} relation={'reader'} object={'document:planning'} allowed={false} />
 

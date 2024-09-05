@@ -60,7 +60,7 @@ You'll get the following results for the [ListObjects](https://openfga.dev/api/s
 
 Note that:
 
-- `user:bob` will always get `allowed:true` as we has assigned as as viewer unconditionally.
+- `user:bob` will always get `allowed:true` as we have assigned as viewer unconditionally.
 - `user:anne` will get `allowed:true` if the `current_time` is before the `grant_time` + `grant_duration` and `allowed:false` otherwise.
 - If you don't provide the `current_time` in the context, the Check and ListObjects operations will fail.
 
