@@ -13,7 +13,9 @@ import TabItem from '@theme/TabItem';
 
 # Configuring OpenFGA
 
-Before configuring OpenFGA, follow [Getting Started](https://github.com/openfga/openfga?tab=readme-ov-file#getting-started) to set up and install openfga. You can then run `./openfga run` as a pre-compiled binary or using your preferred method.
+Refer to the [OpenFGA Getting Started](https://github.com/openfga/openfga?tab=readme-ov-file#getting-started) for info on the various ways to install OpenFGA.
+
+The instructions below assume OpenFGA is installed and that you have the `openfga` binary in your PATH. If you have built `openfga` as a binary, but not in your path, you can refer to it directly (e.g. replace `openfga` in the instructions below with `./openfga` or `/path/to/openfga`).
 
 You can configure the OpenFGA server in three ways:
 
@@ -56,7 +58,7 @@ Each variable must be prefixed with `OPENFGA_` and followed by your option in up
 Command line parameters take precedence over environment variables and options in the configuration file. They are prefixed with `--` , e.g.
 
 ```shell
-./openfga run
+openfga run \
     --datastore-engine postgres \
     --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
 ```
@@ -74,11 +76,11 @@ The first time you run OpenFGA, or when you install a new version, you need to r
 ### Postgres
 
 ```shell
-./openfga migrate
+openfga migrate \
     --datastore-engine postgres \
     --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
 
-./openfga run
+openfga run \
     --datastore-engine postgres \
     --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
 ```
@@ -95,11 +97,11 @@ The MySQL datastore has stricter limits for the max length of some fields for tu
 The connection URI needs to specify the query `parseTime=true`.
 
 ```shell
-./openfga migrate \
+openfga migrate \
     --datastore-engine mysql \
     --datastore-uri 'root:secret@tcp(mysql:3306)/openfga?parseTime=true'
 
-./openfga run \
+openfga run \
     --datastore-engine mysql \
     --datastore-uri 'root:secret@tcp(mysql:3306)/openfga?parseTime=true'
 ```
@@ -212,13 +214,13 @@ Continuous profiling can be used in production deployments, but we recommend dis
 Profiling through [`pprof`](https://github.com/google/pprof/blob/main/doc/README.md) can be enabled on the OpenFGA server by providing the `--profiler-enabled` flag. For example:
 
 ```sh
-./openfga run --profiler-enabled
+openfga run --profiler-enabled
 ```
 
 If you need to serve the profiler on a different port than the default `3001`, you can do so by specifying the `--profiler-addr` flag. For example:
 
 ```sh
-./openfga run --profiler-enabled --profiler-addr :3002
+openfga run --profiler-enabled --profiler-addr :3002
 ```
 
 If you want to run it in docker:
@@ -260,11 +262,11 @@ grpcurl -plaintext $FGA_API_URL grpc.health.v1.Health/Check
 Various releases of OpenFGA may have experimental features that can be enabled by providing the `--experimentals` flag or the `experimentals` config.
 
 ```
-./openfga run --experimentals="feature1, feature2"
+openfga run --experimentals="feature1, feature2"
 ```
 or if you're using environment variables,
 ```
-./openfga -e OPENFGA_EXPERIMENTALS="feature1, feature2" run
+openfga -e OPENFGA_EXPERIMENTALS="feature1, feature2" run
 ```
 
 The following table enumerates the experimental flags, a description of what they do, and the versions of OpenFGA the flag is supported in:
@@ -302,7 +304,7 @@ Metrics are exposed by default, but you can disable this with `--metrics-enabled
 To set an alternative address, you can provide the `--metrics-addr` flag (`OPENFGA_METRICS_ADDR` environment variable). For example:
 
 ```shell
-./openfga run --metrics-addr=0.0.0.0:2114
+openfga run --metrics-addr=0.0.0.0:2114
 ```
 
 To see the request latency per endpoint of your OpenFGA deployment, you can provide the `--metrics-enable-rpc-histograms` flag (`OPENFGA_METRICS_ENABLE_RPC_HISTOGRAMS` environment variable).
