@@ -23,7 +23,7 @@ You can list all the authorization models for a store using the [ReadAuthorizati
 
 ### How to Target a Particular Model
 
-Some endpoints relating to tuples ([Check](/api/service#/Relationship%20Queries/Check), [ListObjects](/api/service#/Relationship%20Queries/ListObjects), [Expand](/api/service#/Relationship%20Queries/Expand), [Write](/api/service#/Relationship%20Tuples/Write)) accept an `authorization_model_id`, which we strongly recommend passing, especially in production.
+Some endpoints relating to tuples ([Check](/api/service#/Relationship%20Queries/Check), [ListObjects](/api/service#/Relationship%20Queries/ListObjects), [ListUsers](/api/service#/Relationship%20Queries/ListUsers), [Expand](/api/service#/Relationship%20Queries/Expand), [Write](/api/service#/Relationship%20Tuples/Write)) accept an `authorization_model_id`, which we strongly recommend passing, especially in production.
 
 In practice, you would pin the authorization model ID alongside the store ID in your configuration management system. Your services would read this value and use it in their requests to FGA. This helps you ensure that your services are using the same consistent ID across all your applications, and that rollouts can be seamless.
 

@@ -1,0 +1,86 @@
+---
+title:  Query Consistency Modes
+sidebar_position: 7
+slug: /interacting/consistency
+description: Query Consistency Modes
+---
+
+import {
+  DocumentationNotice,
+  IntroductionSection,
+  RelatedSection,
+  ProductName,
+  ProductNameFormat,
+} from '@components/Docs';
+
+# Query Consistency Modes
+
+<DocumentationNotice />
+
+## Background
+
+When querying <ProductName format={ProductNameFormat.ShortForm}/> using Read or any of the query APIs like [Check, Expand, ListObjects and ListUsers](./relationship-queries.mdx), you can specify a query consistency parameter that can have one of the following values:
+
+| Name                        | Description                                                                                                   |  
+|-----------------------------|---------------------------------------------------------------------------------------------------------------|
+| MINIMIZE_LATENCY (default)  | <ProductName format={ProductNameFormat.ShortForm}/> will serve queries from the cache when possible           | 
+| HIGHER_CONSISTENCY          | <ProductName format={ProductNameFormat.ShortForm}/> will skip the cache and query the the database directly   |
+
+If you write a tuple and you immediately make a check on a relation affected by that tuple using `MINIMIZE_LATENCY`, the tuple change might not be taken in consideration if <ProductName format={ProductNameFormat.ShortForm}/> serves the result from the cache.
+
+## When to use higher consistency
+
+When specifying `HIGHER_CONSISTENCY` you are trading off consistency for latency and system performance. Always specifying `HIGHER_CONSISTENCY` will have a significant impact in performance.
+
+If you have a use case where higher consistency is needed, it's recommended that whenever possible, you decide in runtime the consistency level you need. If you are storing a timestamp indicating when a resource was last modified in your database, you can use that to decide the kind of request you do.
+
+For example, if you share `document:readme` with a `user:anne` and you update a `modified_date` field in the `document` table when that happens, you can write code like the below when calling `check("user:anne", "can_view", "document:readme")` to avoid paying the price of additional latency when calling the API.
+
+```javascript
+if (date_modified + cache_time_to_live_period > Date.now()) {
+    const { allowed } = await fgaClient.check(
+      { user: "user:anne", relation: "can_view", object: "document:roadmap"}
+    );
+} else {
+    const { allowed } = await fgaClient.check(
+        {  user: "user:anne", relation: "can_view", object: "document:roadmap"},
+        {  consistency: ConsistencyPreference.HigherConsistency }
+    );
+}
+```
+
+## Cache expiration
+
+<ProductName format={ProductNameFormat.ShortForm}/> cache is disabled by default. When not enabled, all queries will have strong consistency regardless of the consistency mode specified.
+
+You can use the following parameters to configure <ProductName format={ProductNameFormat.ShortForm}/>'s cache:
+
+| Name                    | Description                                                                     |
+|-------------------------|---------------------------------------------------------------------------------|
+| check-query-cache       | Enables caching (default = false)                                               | 
+| check-query-cache-limit | Configures the number of items that will be kept in the cache (default = 10000) | 
+| check-query-cache-ttl   | Specifies the time that items will be kept in the cache (default = 10s)         |	
+
+Learn how to [configure <ProductName format={ProductNameFormat.ShortForm}/>](../getting-started/setup-openfga/configure-openfga.mdx).
+
+Currently, the cache is used by Check and partially in ListObjects. It will be implemented it for other query endpoints in the future.
+
+## Future work
+
+The <IntroductionSection linkName="Zanzibar paper" section="what-is-zanzibar"/> has a feature called `Zookies`, which is a consistency token that is returned from Write operation. You can store that token in you resource table, and specify it in subsequent calls to query APIs. 
+
+<ProductName format={ProductNameFormat.ShortForm}/> is considering a similar feature in future releases.
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more on how to check, read and expand."
+  relatedLinks={[
+    {
+      title: 'Relationship Queries',
+      description: 'Comparison Between Check, Read And Expand API Calls.',
+      link: './relationship-queries',
+      id: './relationship-queries',
+    }
+  ]}
+/>

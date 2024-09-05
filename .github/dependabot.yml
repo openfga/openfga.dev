@@ -13,6 +13,8 @@ updates:
     ignore:
       # Ignore updates to webpack as it has breaking changes
       - dependency-name: "@svgr/webpack"
+      # Ignore updates to webpack as it has breaking changes that break the build
+      - dependency-name: "eslint"
     groups:
      dependencies:
         dependency-type: "production"

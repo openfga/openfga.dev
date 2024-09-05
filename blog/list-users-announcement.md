@@ -26,10 +26,6 @@ The new functionality is available on the latest versions of the [Java](https://
 
 We'll be releasing support for the Python SDK soon.
 
-## What's next?
-
-We have a [limitation](https://openfga.dev/docs/getting-started/perform-list-users#exclusion-of-nested-usersets) we are working on regarding the behavior of the `excluded_users` return value that we'll address before removing the experimental flag.
-
 ## We want your feedback!
 
 We want to learn how you use this API and how we can improve it!
