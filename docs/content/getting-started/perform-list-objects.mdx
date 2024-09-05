@@ -20,13 +20,13 @@ import {
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Perform a List Objects call
+# Perform a list objects call
 
 <DocumentationNotice />
 
 This section describes how to perform a <ProductConcept section="what-is-a-list-objects-request" linkName="list objects" /> request. The List Objects API allows you to retrieve all <ProductConcept section="what-is-an-object" linkName="objects" /> of a specified <ProductConcept section="what-is-a-type" linkName="type" /> that a <ProductConcept section="what-is-a-user" linkName="user" /> has a given <ProductConcept section="what-is-a-relationship" linkName="relationship" /> with. This can be used in scenarios like displaying all documents a user can read or listing resources a user can manage.
 
-## Before You Start
+## Before you start
 
 <Tabs groupId="languages">
 
@@ -92,7 +92,7 @@ This section describes how to perform a <ProductConcept section="what-is-a-list-
 </TabItem>
 </Tabs>
 
-## Step By Step
+## Step by step
 
 Consider the following model which includes a `user` that can have a `reader` relationship with a `document`:
 
@@ -110,7 +110,7 @@ type document
 
 Assume that you want to list all objects of type document that  user `anne` has `reader` relationship with:
 
-### 01. Configure the <ProductName format={ProductNameFormat.ShortForm}/> API Client
+### 01. Configure the <ProductName format={ProductNameFormat.ShortForm}/> API client
 
 Before calling the check API, you will need to configure the API client.
 
@@ -154,7 +154,7 @@ To obtain the [access token](https://auth0.com/docs/get-started/authentication-a
 </TabItem>
 </Tabs>
 
-### 02. Calling List Objects API
+### 02. Calling list objects API
 
 To return all documents that user `user:anne` has relationship `reader` with:
 
