@@ -169,7 +169,6 @@ Once there are no more changes to retrieve, the API will return the same token a
 :::note
 
 - The default page size is 50. The maximum page size allowed is 100.
-- The API response will not return all the changes immediately. There will be a delay of one minute between the time that you add or delete a tuple and the time that you see it in the Read Changes API response.
 - The API response does not expand the tuples. If you wrote a tuple that includes a userset, like `{"user": "group:abc#member", "relation": "owner": "doc:budget"}`, the Read Changes API will return that exact tuple.
 
 :::
