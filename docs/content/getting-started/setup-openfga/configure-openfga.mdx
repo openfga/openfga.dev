@@ -68,8 +68,9 @@ openfga run \
 OpenFGA supports multiple storage engine options, including:
 
 - `memory` - A memory storage engine, which is the default. Data is lost between server restarts.
-- `postgres` - A Postgres storage engine. 
+- `postgres` - A Postgres storage engine.
 - `mysql` - A MySQL storage engine.
+- `sqlite` - A SQLite storage engine.
 
 The first time you run OpenFGA, or when you install a new version, you need to run the `openfga migrate` command. This will create the required database tables or perform the database migration required for a new version.
 
@@ -108,14 +109,28 @@ openfga run \
 
 To learn how to run in Docker, check our [Docker documentation](./docker-setup.mdx#using-mysql).
 
+### SQLite
+
+```shell
+openfga migrate
+    --datastore-engine sqlite \
+    --datastore-uri 'file:/path/to/openfga.db'
+
+openfga run
+    --datastore-engine sqlite \
+    --datastore-uri 'file:/path/to/openfga.db'
+```
+
+To learn how to run in Docker, check our [Docker documentation](./docker-setup.mdx#using-sqlite).
+
 ## Configuring Authentication
 
-You can configure authentication in three ways: 
+You can configure authentication in three ways:
 
   - no authentication (default)
   - pre-shared key authentication
   - OIDC
-  
+
 ### Pre-shared Key Authentication
 
 If using **Pre-shared key authentication**, you will configure OpenFGA with one or more secret keys and your application calling OpenFGA will have to set an `Authorization: Bearer <YOUR-KEY-HERE>` header.
@@ -127,7 +142,7 @@ If you are going to use this setup in production, you should enable HTTP TLS in 
 <Tabs groupId={"configuration"}>
 <TabItem value={"configuration file"} label={"Configuration File"}>
 
-Update the config.yaml file to 
+Update the config.yaml file to
 
 ```yaml
 authn:
@@ -167,7 +182,7 @@ If you are going to use this setup in production, you should enable HTTP TLS in 
 <Tabs groupId={"configuration"}>
 <TabItem value={"configuration file"} label={"Configuration File"}>
 
-Update the config.yaml file to 
+Update the config.yaml file to
 
 ```yaml
 authn:
