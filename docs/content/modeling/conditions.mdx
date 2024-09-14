@@ -32,7 +32,7 @@ There are various use cases where Conditions can be helpful. These include, but 
 
 For more information and background context on why we added this feature, please see our blog post on [Conditional Relationship Tuples for OpenFGA](https://openfga.dev/blog/conditional-tuples-announcement). 
 
-## Defining Conditions in Models
+## Defining conditions in models
 For this example we'll use the following authorization model to demonstrate a temporal based access policy. Namely, a user can view a document if and only if they have been granted the viewer relationship AND their non-expired grant policy is met.
 
 ```dsl.openfga
@@ -113,7 +113,7 @@ Write the model to the FGA store:
   ]}
 />
 
-## Writing Conditional Relationship Tuples
+## Writing conditional relationship tuples
 Using the model above, when we [Write](https://openfga.dev/api/service#/Relationship%20Tuples/Write) relationship tuples to the OpenFGA store, then any `document#viewer` relationship with `user` objects must be accompanied by the condition `non_expired_grant` because the type restriction requires it.
 
 For example, we can give `user:anne` viewer access to `document:1` for 10 minutes by writing the following relationship tuple:
@@ -145,7 +145,7 @@ For example, we can give `user:anne` viewer access to `document:1` for 10 minute
   ]}
 />
 
-## Queries with Condition Context
+## Queries with condition context
 Now that we have written a [Conditional Relationship Tuple](../concepts.mdx#what-is-a-conditional-relationship-tuple), we can query OpenFGA using the [Check API](https://openfga.dev/api/service#/Relationship%20Queries/Check) to see if `user:anne` has viewer access to `document:1` under certain conditions/context. That is, `user:anne` should only have access if the current timestamp is less than the grant timestamp (e.g. the time which the tuple was written) plus the duration of the grant (10 minutes). If the current timestamp is less than, then you'll get a permissive decision. For example,
 
 <CheckRequestViewer
@@ -236,7 +236,7 @@ If you provide a context value in the request context that is also written/persi
 For more examples take a look at our [Sample Stores](https://github.com/openfga/sample-stores) repository. There are various examples with ABAC models in that repository.
 
 
-## Supported Parameter Types
+## Supported parameter types
 The following table enumerates the list of supported parameter types. The more formal list is defined in https://github.com/openfga/openfga/tree/main/internal/condition/types.
 
 Note that some of the types support generics, these types are indicated with `<T>`.
@@ -261,7 +261,5 @@ Note that some of the types support generics, these types are indicated with `<T
 * The size of the condition `context` parameter that can be written alongside a relationship tuple is limited to 32KB in size.
 
 * The size of the condition `context` parameter for query requests (e.g. Check, ListObjects, etc.) is not explicitly limited, but the OpenFGA server has an overall request size limit of 512KB at this time.
-
-* We're still working on the changes to support Conditions in the official FGA CLI and various OpenFGA SDKs including: .NET and Python. At this moment you cannot Write conditional relationship tuples with these tools and/or query (e.g. Check, ListObjects, etc.) OpenFGA with condition context.
 
 * We enforce a maximum Google CEL expression evaluation cost of 100 (by default) to protect the server from malicious conditions. The evaluation cost of a CEL expression is a function of the size the input that is being compared and the composition of the expression. For more general information please see the official [Language Definition for Google CEL](https://github.com/google/cel-spec/blob/master/doc/langdef.md). If you hit these limits with practical use-cases, please reach out to the maintainer team and we can discuss.

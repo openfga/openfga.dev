@@ -13,6 +13,10 @@ import TabItem from '@theme/TabItem';
 
 # Configuring OpenFGA
 
+Refer to the [OpenFGA Getting Started](https://github.com/openfga/openfga?tab=readme-ov-file#getting-started) for info on the various ways to install OpenFGA.
+
+The instructions below assume OpenFGA is installed and that you have the `openfga` binary in your PATH. If you have built `openfga` as a binary, but not in your path, you can refer to it directly (e.g. replace `openfga` in the instructions below with `./openfga` or `/path/to/openfga`).
+
 You can configure the OpenFGA server in three ways:
 
 - Using a configuration file.
@@ -54,7 +58,7 @@ Each variable must be prefixed with `OPENFGA_` and followed by your option in up
 Command line parameters take precedence over environment variables and options in the configuration file. They are prefixed with `--` , e.g.
 
 ```shell
-openfga run
+openfga run \
     --datastore-engine postgres \
     --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
 ```
@@ -64,19 +68,20 @@ openfga run
 OpenFGA supports multiple storage engine options, including:
 
 - `memory` - A memory storage engine, which is the default. Data is lost between server restarts.
-- `postgres` - A Postgres storage engine. 
+- `postgres` - A Postgres storage engine.
 - `mysql` - A MySQL storage engine.
+- `sqlite` - A SQLite storage engine.
 
 The first time you run OpenFGA, or when you install a new version, you need to run the `openfga migrate` command. This will create the required database tables or perform the database migration required for a new version.
 
 ### Postgres
 
 ```shell
-openfga migrate
+openfga migrate \
     --datastore-engine postgres \
     --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
 
-openfga run
+openfga run \
     --datastore-engine postgres \
     --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
 ```
@@ -104,14 +109,28 @@ openfga run \
 
 To learn how to run in Docker, check our [Docker documentation](./docker-setup.mdx#using-mysql).
 
+### SQLite
+
+```shell
+openfga migrate
+    --datastore-engine sqlite \
+    --datastore-uri 'file:/path/to/openfga.db'
+
+openfga run
+    --datastore-engine sqlite \
+    --datastore-uri 'file:/path/to/openfga.db'
+```
+
+To learn how to run in Docker, check our [Docker documentation](./docker-setup.mdx#using-sqlite).
+
 ## Configuring Authentication
 
-You can configure authentication in three ways: 
+You can configure authentication in three ways:
 
   - no authentication (default)
   - pre-shared key authentication
   - OIDC
-  
+
 ### Pre-shared Key Authentication
 
 If using **Pre-shared key authentication**, you will configure OpenFGA with one or more secret keys and your application calling OpenFGA will have to set an `Authorization: Bearer <YOUR-KEY-HERE>` header.
@@ -123,7 +142,7 @@ If you are going to use this setup in production, you should enable HTTP TLS in 
 <Tabs groupId={"configuration"}>
 <TabItem value={"configuration file"} label={"Configuration File"}>
 
-Update the config.yaml file to 
+Update the config.yaml file to
 
 ```yaml
 authn:
@@ -163,7 +182,7 @@ If you are going to use this setup in production, you should enable HTTP TLS in 
 <Tabs groupId={"configuration"}>
 <TabItem value={"configuration file"} label={"Configuration File"}>
 
-Update the config.yaml file to 
+Update the config.yaml file to
 
 ```yaml
 authn:
@@ -216,7 +235,7 @@ openfga run --profiler-enabled
 If you need to serve the profiler on a different port than the default `3001`, you can do so by specifying the `--profiler-addr` flag. For example:
 
 ```sh
-openfga/openfga run --profiler-enabled --profiler-addr :3002
+openfga run --profiler-enabled --profiler-addr :3002
 ```
 
 If you want to run it in docker:
