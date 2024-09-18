@@ -36,7 +36,7 @@ These are cases where using group membership can be helpful as you do not need t
 
 </CardBox>
 
-## Before You Start
+## Before you start
 
 In order to understand this guide correctly you must be familiar with some <ProductConcept /> and know how to develop the things that we will list below.
 
@@ -124,15 +124,15 @@ The <ProductName format={ProductNameFormat.ShortForm}/> service will now correct
 
 <CheckRequestViewer user={'user:becky'} relation={'reader'} object={'document:planning'} allowed={false} />
 
-### Modeling User Groups
+### Modeling user groups
 
 You need to know how to add users to groups and grant groups access to an object. [Learn more →](../modeling/user-groups.mdx)
 
-### Managing Group Access
+### Managing group access
 
 You need to know how to manage group access to an object. [Learn more →](./managing-group-access.mdx)
 
-### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+### <ProductName format={ProductNameFormat.ShortForm}/> concepts
 
 - A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics
 - A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
@@ -142,9 +142,9 @@ You need to know how to manage group access to an object. [Learn more →](./man
 
 </details>
 
-## Step By Step
+## Step by step
 
-### 01. Revoking Group Membership
+### 01. Revoking group membership
 
 Imagine that every member of `org:contoso` has a `reader` relationship to 1000 documents. Now imagine that `anne` is no longer a member of `org:contoso`, so we want to revoke her access to all those documents, including `document:planning`. To accomplish this, we can simply **delete** the tuple in <ProductName format={ProductNameFormat.ShortForm}/> that specifies that Anne is a `member` of `org:contoso`.
 
