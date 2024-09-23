@@ -18,7 +18,7 @@ import TabItem from '@theme/TabItem';
 
 This article explains how to run your own OpenFGA server using Docker. To learn the different ways to configure OpenFGA check [Configuring OpenFGA](./configure-openfga.mdx).
 
-## Step By Step
+## Step by step
 
 If you want to run OpenFGA locally as a Docker container, follow these steps:
 
@@ -342,7 +342,7 @@ docker-compose up
 
 This will create a new `openfga` volume to store the SQLite database, run `openfga migrate` to configure the database and finally start the OpenFGA server.
 
-## Pre-shared Key Authentication
+## Pre-shared key authentication
 
 To configure with pre-shared authentication and enabling TLS in http server with Docker.
 
@@ -357,7 +357,7 @@ docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:80
     --http-tls-key="/Users/myuser/key/server.key"
 ```
 
-## OIDC Authentication
+## OIDC authentication
 
 To configure with OIDC authentication and enabling TLS in http server with Docker.
 
@@ -374,7 +374,7 @@ docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:80
     --http-tls-key="/Users/myuser/key/server.key"
 ```
 
-## Enabling Profiling
+## Enabling profiling
 
 If you are enabling profiling, make sure you enable the corresponding port in docker. The default port is `3001`, but if you need to serve the profiler on a different port, you can do so by specifying the `--profiler-addr` flag. For example:
 
@@ -382,7 +382,7 @@ If you are enabling profiling, make sure you enable the corresponding port in do
 docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3002:3002 openfga/openfga run --profiler-enabled --profiler-addr :3002
 ```
 
-## Related Sections
+## Related sections
 
 <RelatedSection
   description="Check the following sections for more on how to use OpenFGA."

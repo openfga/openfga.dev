@@ -32,39 +32,39 @@ This tutorial explains how to model entitlements for a platform like GitHub usin
 
 <Playground title="Entitlements" preset="entitlements" example="Entitlements" store="entitlements" />
 
-## Before You Start
+## Before you start
 
 In order to understand this guide correctly you must be familiar with some <ProductName format={ProductNameFormat.LongForm}/> concepts and know how to develop the things that we will list below.
 
 <details>
 <summary>
 
-### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+### <ProductName format={ProductNameFormat.ShortForm}/> concepts
 
 It would be helpful to have an understanding of some concepts of <ProductName format={ProductNameFormat.ShortForm}/> before you start.
 
 </summary>
 
-#### Modeling Object-to-Object Relationships
+#### Modeling object-to-object relationships
 
 You need to know how to create relationships between objects and how that might affect a user's relationships to those objects. [Learn more →](../building-blocks/object-to-object-relationships.mdx)
 
 Used here to indicate that members of an org are subscriber members of the plan the org is subscriber to, and subscriber members of a plan get access to all the plan's features.
 
-#### Direct Relationships
+#### Direct relationships
 
 You need to know how to disallow granting direct relation to an object and requiring the user to have a relation with another object that would imply a relation with the first one. [Learn more →](../building-blocks/direct-relationships.mdx)
 
 Used here to indicate that "access" to a feature cannot be directly granted to a user, but is implied through the users organization subscribing to a plan that offers that feature.
 
-#### Concepts & Configuration Language
+#### Concepts & configuration language
 
 - Some <ProductConcept />
 - [Configuration Language](../../configuration-language.mdx)
 
 </details>
 
-## What You Will Be Modeling
+## What you will be modeling
 
 In many product offerings, the features are behind multiple tiers. In this tutorial, you will build an authorization model for a subset of [GitHub's entitlements](https://github.com/pricing) (detailed below) using <ProductName format={ProductNameFormat.LongForm}/>. You will use some scenarios to validate the model.
 
@@ -94,7 +94,7 @@ A summary of GitHub's entitlement system:
   - _Everything from the team plan_
   - SAML Single Sign-On
 
-### Defined Scenarios
+### Defined scenarios
 
 Use the following scenarios to be able to validate whether the model of the requirements is correct.
 
@@ -123,7 +123,7 @@ By the end of this tutorial, you should be able to query <ProductName format={Pr
 - **Charles** has access to **Draft Pull Requests** (expecting `yes`)
 - **Charles** has access to **Single Sign-on** (expecting `yes`)
 
-## Modeling Entitlements For GitHub
+## Modeling entitlements for GitHub
 
 ### 01. Building The Initial Authorization Model And Relationship Tuples
 
@@ -187,7 +187,7 @@ Similar to the example above, start with a basic listing of the types and their 
   }}
 />
 
-### 02. Populating The Relationship Tuples
+### 02. Populating the relationship tuples
 
 Now you can add the relationship tuples to represent these relationships mentioned in the [requirements](#requirements) and [scenarios](#defined-scenarios) sections:
 
@@ -311,7 +311,7 @@ Querying for relationship tuples that you fed into <ProductName format={ProductN
 <CheckRequestViewer user={'organization:bayer'} relation={'subscriber'} object={'plan:team'} allowed={true} />
 <CheckRequestViewer user={'plan:free'} relation={'associated_plan'} object={'feature:issues'} allowed={true} />
 
-### 03. Updating The Authorization Model
+### 03. Updating the authorization model
 
 You are working towards <ProductName format={ProductNameFormat.ShortForm}/> returning the correct answer when you query whether `anne` has `access` to `feature:issues`. It won't work yet, but you will keep updating your configuration to reach that goal.
 
@@ -416,7 +416,7 @@ The resulting updated configuration would be:
   }}
 />
 
-#### Adding Modeling Pattern Of Parent-Child Objects
+#### Adding modeling pattern of parent-child objects
 
 Now we can ask the following query: `is anne related to feature:issues as access?` again.
 
@@ -711,7 +711,7 @@ Now ask the following query: `is anne related to feature:issues as access?`
 
 <CheckRequestViewer user={'user:anne'} relation={'access'} object={'feature:issues'} allowed={true} />
 
-#### Disallow Direct Relationship
+#### Disallow direct relationship
 
 So far, with just a <ProductName format={ProductNameFormat.ShortForm}/> authorization model, and the initial relationship tuples indicating the relations you know, you configured <ProductName format={ProductNameFormat.LongForm}/> to give you the correct response.
 

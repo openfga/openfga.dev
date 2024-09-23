@@ -51,7 +51,7 @@ A default store Id and authorization model Id can also be configured:
 
 All of the examples in this document assume the CLI is properly configured and that the Store ID is set either in an environment variable or the `~/.fga.yaml` file. 
 
-## Basic Operations
+## Basic operations
 
 The CLI commands below show you how to create a store and run your application’s most common operations, including how to write a model and write/delete/read tuples, and run queries.
 
@@ -173,7 +173,7 @@ $ fga query check user:anne viewer document:readme
 }
 ```
 
-## Work with Authorization Model versions
+## Work with authorization model versions
 
 <ProductName format={ProductNameFormat.ShortForm}/> models are [immutable](../getting-started/immutable-models.mdx); each time a model is written to a store, a new version of the model is created. 
 
@@ -335,7 +335,7 @@ $ fga tuple read --output-format=simple-json --max-pages 0    > tuples.json
 $ fga tuple delete --file  tuples.json
 ```
 
-## Import Stores
+## Import stores
 
 The CLI can import an [FGA Test file](../modeling/testing-models.mdx) in a store. It writes the model included and imports the tuples in the fga test file. 
 

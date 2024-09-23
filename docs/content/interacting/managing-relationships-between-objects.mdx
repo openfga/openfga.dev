@@ -72,11 +72,11 @@ Assume that you have the following <ProductConcept section="what-is-an-authoriza
 
 In addition, you will need to know the following:
 
-### Direct Access
+### Direct access
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](../modeling/direct-access.mdx)
 
-### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+### <ProductName format={ProductNameFormat.ShortForm}/> concepts
 
 - A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics
 - A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
@@ -86,7 +86,7 @@ You need to know how to create an authorization model and create a relationship 
 
 </details>
 
-## Step By Step
+## Step by step
 
 For the current model, a <ProductConcept section="what-is-a-user" linkName="user" /> can be related as an `admin` to an <ProductConcept section="what-is-an-object" linkName="object" /> of <ProductConcept section="what-is-a-type" linkName="type" /> `repo`. If we wanted to have Anne be related to two repos, `repo:1` and `repo:2`, we would have to add two <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" />, like so:
 
@@ -107,7 +107,7 @@ For the current model, a <ProductConcept section="what-is-a-user" linkName="user
 
 In general, every time we wanted to add a new `admin` relationship to a `repo` we'd have to add a new tuple. This doesn't scale as the list of `repo`s and users grows.
 
-### 01. Modify Authorization Model
+### 01. Modify authorization model
 
 Another way of modeling this is to have an authorization model as follows:
 
@@ -176,7 +176,7 @@ In this model, we have:
 - added a new relation `owner` for type `repo`.
 - re-defined the relation `admin` for `repo`. A user can be defined as an `admin` directly, as we have seen above, or through the `repo_admin from owner` clause. How this works, for example, is that if `user` is related as `repo_admin` to `org:xyz`, and `org:xyz` is related as `owner` to `repo:1`, then `user` is an `admin` of `repo:1`.
 
-### 02. Adding Relationship Tuples Where User Is Another Object
+### 02. Adding relationship tuples where user is another object
 
 With this model, we can add tuples representing that an `org` is the `owner` of a `repo`. By adding following relationship tuples, we are indicating that the xyz organization is the owner of repositories with IDs `1` and `2`:
 
@@ -195,7 +195,7 @@ With this model, we can add tuples representing that an `org` is the `owner` of 
   ]}
 />
 
-### 03. Adding Relationship Tuples To The Other Object
+### 03. Adding relationship tuples to the other object
 
 Now, imagine we have a new user Becky. If we wanted to have Becky be the `admin` of all `repo`s without having to add one tuple per `repo`, all we need to do is add one tuple that says that Becky is related as `repo_admin` to `org:xyz`.
 
@@ -209,7 +209,7 @@ Now, imagine we have a new user Becky. If we wanted to have Becky be the `admin`
   ]}
 />
 
-### 04. Validating User Access
+### 04. Validating user access
 
 We can now verify that Becky an `admin` of all the `repo`s owned by `org:xyz`:
 
@@ -217,7 +217,7 @@ We can now verify that Becky an `admin` of all the `repo`s owned by `org:xyz`:
 
 <CheckRequestViewer user={'user:becky'} relation={'admin'} object={'repo:2'} allowed={true} />
 
-### 05. Revoking Access
+### 05. Revoking access
 
 Suppose now that we want to prevent users from being an `admin` of `repo:1` via `org:xyz`. We can delete one tuple:
 

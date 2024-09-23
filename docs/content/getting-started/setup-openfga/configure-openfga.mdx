@@ -63,7 +63,7 @@ openfga run \
     --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
 ```
 
-## Configuring Data Storage
+## Configuring data storage
 
 OpenFGA supports multiple storage engine options, including:
 
@@ -123,7 +123,7 @@ openfga run
 
 To learn how to run in Docker, check our [Docker documentation](./docker-setup.mdx#using-sqlite).
 
-## Configuring Authentication
+## Configuring authentication
 
 You can configure authentication in three ways:
 
@@ -131,7 +131,7 @@ You can configure authentication in three ways:
   - pre-shared key authentication
   - OIDC
 
-### Pre-shared Key Authentication
+### Pre-shared key authentication
 
 If using **Pre-shared key authentication**, you will configure OpenFGA with one or more secret keys and your application calling OpenFGA will have to set an `Authorization: Bearer <YOUR-KEY-HERE>` header.
 
@@ -243,7 +243,7 @@ If you want to run it in docker:
 docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3002:3002 openfga/openfga run --profiler-enabled --profiler-addr :3002
 ```
 
-## Health Check
+## Health check
 
 OpenFGA is configured with an HTTP health check endpoint `/healthz` and a gRPC health check `grpc.health.v1.Health/Check`, which is wired to datastore testing. Possible response values are
 - UNKNOWN
@@ -273,7 +273,7 @@ grpcurl -plaintext $FGA_API_URL grpc.health.v1.Health/Check
 </TabItem>
 </Tabs>
 
-## Experimental Features
+## Experimental features
 Various releases of OpenFGA may have experimental features that can be enabled by providing the `--experimentals` flag or the `experimentals` config.
 
 ```

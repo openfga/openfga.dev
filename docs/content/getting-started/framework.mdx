@@ -25,7 +25,7 @@ import TabItem from '@theme/TabItem';
 
 This section will illustrate how to integrate <ProductName format={ProductNameFormat.LongForm}/> within a framework, such as [Fastify](https://www.fastify.io/) or [Fiber](https://docs.gofiber.io/).
 
-## Before You Start
+## Before you start
 
 <Tabs groupId="languages">
 <TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
@@ -48,7 +48,7 @@ This section will illustrate how to integrate <ProductName format={ProductNameFo
 </TabItem>
 </Tabs>
 
-## Step By Step
+## Step by step
 
 Assume that you want to have a web service for `document`s using one of the frameworks mentioned above. The service will authenticate users via [JWT tokens](https://auth0.com/docs/secure/tokens/json-web-tokens), which contain the user ID.
 
@@ -58,7 +58,7 @@ The reader should set up their own `login` method based on their OpenID connect 
 
 Assume that you want to provide a route `GET /read/{document}` to return documents depending on whether the authenticated user has access to it.
 
-### 01. Install And Setup Framework
+### 01. Install and setup framework
 
 The first step is to install the framework.
 
@@ -142,7 +142,7 @@ func read(c *fiber.Ctx) error {
 </TabItem>
 </Tabs>
 
-### 02. Authenticate And Get User ID
+### 02. Authenticate and get user ID
 
 Before we can call <ProductName format={ProductNameFormat.LongForm}/> to protect the `/read/{document}` route, we need to validate the user's JWT.
 
@@ -276,7 +276,7 @@ func read(c *fiber.Ctx) error {
 </TabItem>
 </Tabs>
 
-### 03. Integrate The <ProductName format={ProductNameFormat.ShortForm}/> Check API Into The Service
+### 03. Integrate the <ProductName format={ProductNameFormat.ShortForm}/> check API into the service
 
 <Tabs groupId="languages">
 <TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>

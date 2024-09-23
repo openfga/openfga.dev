@@ -27,11 +27,11 @@ The services responsible for performing these actions are:
 
 To return the set of results that match the user's search query, you will need to get the intersection of the results from the services above.
 
-## Possible Options
+## Possible options
 
 There are three possible ways to do this:
 
-### Option 1: Search, Then Check
+### Option 1: search, then check
 
 Pre-filter, then call <ProductName format={ProductNameFormat.ShortForm}/> Check endpoint.
 
@@ -40,7 +40,7 @@ Pre-filter, then call <ProductName format={ProductNameFormat.ShortForm}/> Check 
 1. Filter out objects the user does not have access to.
 1. Return the filtered result to the user.
 
-### Option 2: Build A Local Index From Changes Endpoint, Search, Then Check
+### Option 2: Build a local index from changes endpoint, search, then check
 
 Consume the `GET /changes` endpoint to create a local index you can use to do an intersection on the two sets of results.
 
@@ -49,7 +49,7 @@ Consume the `GET /changes` endpoint to create a local index you can use to do an
 1. Build the intersection between the objects in your database and the flattened/expanded state you created.
 1. You can then call `/check` on each resource in the resulting set before returning the response to filter out any resource with permissions revoked but whose authorization data has not made it into your index yet.
 
-### Option 3: Build A List Of IDs, Then Search
+### Option 3: Build a list of IDs, then search
 
 Call the `GET /list-objects` API to get a list of object IDs the user has access to, then run the filter restricting by the object IDs returned.
 
@@ -59,7 +59,7 @@ Call the `GET /list-objects` API to get a list of object IDs the user has access
 
 Be aware that the performance characteristics of the ListObjects endpoint vary drastically depending on the model complexity, number of tuples, and the relations it needs to evaluate. Relations with `and` or `but not` are more expensive to evaluate than relations with `or`.
 
-## Choosing The Best Option
+## Choosing the best option
 
 Which option to choose among the three listed above depends on the following criteria:
 
