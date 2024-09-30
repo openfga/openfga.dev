@@ -11,6 +11,8 @@ on:
 jobs:
   check_image_size:
     runs-on: ubuntu-latest
+    env:
+      MAX_IMAGE_SIZE_MB: 5
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -20,7 +22,7 @@ jobs:
           #!/bin/bash
           set -e
 
-          MAX_SIZE_BYTES=$((5 * 1024 * 1024))  # 5MB in bytes
+          MAX_SIZE_BYTES=$((${MAX_IMAGE_SIZE_MB} * 1024 * 1024))
           OVERSIZED_IMAGES=()
 
           for img in $(git diff --name-only --diff-filter=AM ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep -E '\.(jpg|jpeg|png|gif)$'); do
@@ -31,7 +33,7 @@ jobs:
           done
 
           if [ ${#OVERSIZED_IMAGES[@]} -gt 0 ]; then
-            echo "Error: The following images exceed the maximum allowed size of 5MB:"
+            echo "Error: The following images exceed the maximum allowed size of ${MAX_IMAGE_SIZE_MB}MB:"
             printf '%s\n' "${OVERSIZED_IMAGES[@]}"
             exit 1
           else
