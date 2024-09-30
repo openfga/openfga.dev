@@ -1,5 +1,5 @@
 ---
-title: Fine Grained News - August 2024
+title: Fine Grained News - September 2024
 description: Fine Grained News
 slug: fine-grained-news-2024-09
 date: 2024-09-30
