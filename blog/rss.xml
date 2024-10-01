@@ -4,10 +4,60 @@
         <title>OpenFGA Blog</title>
         <link>https://openfga.dev/blog</link>
         <description>OpenFGA Blog</description>
-        <lastBuildDate>Fri, 30 Aug 2024 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 30 Sep 2024 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
+        <item>
+            <title><![CDATA[Fine Grained News - September 2024]]></title>
+            <link>https://openfga.dev/blog/fine-grained-news-2024-09</link>
+            <guid>https://openfga.dev/blog/fine-grained-news-2024-09</guid>
+            <pubDate>Mon, 30 Sep 2024 00:00:00 GMT</pubDate>
+            <description><![CDATA[Fine Grained News]]></description>
+            <content:encoded><![CDATA[<p>Welcome to the September edition of Fine Grained News! As we transition into the fall season, we’re excited to bring you the latest updates on the progress of OpenFGA.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="just-shipped"><strong>Just Shipped</strong><a href="https://openfga.dev/blog/fine-grained-news-2024-09#just-shipped" class="hash-link" aria-label="Direct link to just-shipped" title="Direct link to just-shipped">​</a></h2>
+<ul>
+<li>
+<p>We shipped <a href="https://github.com/openfga/openfga/releases/tag/v1.6.1" target="_blank" rel="noopener noreferrer">OpenFGA v1.6.1</a> with performance fixes, bug fixes, and a new SQLite storage adapter contributed by <a href="https://grafana.com/" target="_blank" rel="noopener noreferrer">Grafana</a>. Thanks <a href="https://github.com/DanCech" target="_blank" rel="noopener noreferrer">@DanCech</a>!</p>
+</li>
+<li>
+<p>This month we released improved <a href="https://openfga.dev/docs/getting-started/configure-telemetry" target="_blank" rel="noopener noreferrer">OpenTelemetry metrics support</a> for <a href="https://github.com/openfga/dotnet-sdk/releases" target="_blank" rel="noopener noreferrer">.NET SDK</a>, <a href="https://github.com/openfga/go-sdk/releases/tag/v0.6.1" target="_blank" rel="noopener noreferrer">Go SDK</a>, <a href="https://github.com/openfga/java-sdk/releases/tag/v0.7.1" target="_blank" rel="noopener noreferrer">Java SDK</a>, and <a href="https://github.com/openfga/js-sdk/releases/tag/v0.7.0" target="_blank" rel="noopener noreferrer">JavaScript SDK</a>.</p>
+</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="in-progress"><strong>In Progress</strong><a href="https://openfga.dev/blog/fine-grained-news-2024-09#in-progress" class="hash-link" aria-label="Direct link to in-progress" title="Direct link to in-progress">​</a></h2>
+<ul>
+<li>
+<p><strong>Authorization for OpenFGA</strong>: OpenFGA currently supports global pre-shared keys and OIDC for API authentication, but <a href="https://github.com/openfga/roadmap/issues/30" target="_blank" rel="noopener noreferrer">we’re exploring more granular authorization options</a>, such as store-specific credentials and varying permissions for stores, modules, and types.</p>
+</li>
+<li>
+<p><strong>Batch Check</strong>: OpenFGA SDKs currently implement BatchCheck by issuing multiple parallel request to the OpenFGA server. We'll be implementing a <a href="https://github.com/openfga/roadmap/issues/35" target="_blank" rel="noopener noreferrer">BatchCheck server endpoint</a> to improve performance and reduce network overhead.</p>
+</li>
+</ul>
+<p>Check out our <a href="https://github.com/orgs/openfga/projects/1/views/1" target="_blank" rel="noopener noreferrer">roadmap</a> to see what’s in the works. Feature requests and ideas can be shared in <a href="https://github.com/orgs/openfga/discussions/categories/ideas" target="_blank" rel="noopener noreferrer">GitHub Discussions</a>.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="community-highlights"><strong>Community Highlights</strong><a href="https://openfga.dev/blog/fine-grained-news-2024-09#community-highlights" class="hash-link" aria-label="Direct link to community-highlights" title="Direct link to community-highlights">​</a></h2>
+<ul>
+<li><strong>OpenFGA at Open Source Summit Europe:</strong> <a href="https://www.linkedin.com/in/jcchavezs/" target="_blank" rel="noopener noreferrer">José Carlos Chávez</a> gave a talk on <a href="https://osseu2024.sched.com/event/1ej2u/fine-grained-policies-rbac-with-openfga-jose-carlos-chavez-okta" target="_blank" rel="noopener noreferrer">RBAC with OpenFGA</a> at OSS Europe 2024 in Vienna, Austria this month. You can see the presentation deck <a href="https://speakerdeck.com/jcchavezs/fine-grained-policies-rbac-with-openfga" target="_blank" rel="noopener noreferrer">here</a>.</li>
+<li><strong>OpenFGA at Open Source Strategy Forum 2024:</strong> <a href="https://www.linkedin.com/in/kiah-tolliver/" target="_blank" rel="noopener noreferrer">Kiah Imani</a> will present <a href="https://sossfusion2024.sched.com/event/1hcQa?iframe=no" target="_blank" rel="noopener noreferrer">Role-Based Access Is So Yesterday: Revolutionizing Authorization with OpenFGA</a> at OSSF on Wednesday, October 23, 2024. In this session, attendees will learn how OpenFGA addresses the limitations of RBAC, enhancing security, performance, and access management across various systems.</li>
+<li><strong>OpenFGA at KubeCon:</strong> <a href="https://www.linkedin.com/in/aaguiar/" target="_blank" rel="noopener noreferrer">Andres Aguiar</a> will participate in KubeCon/CloudNativeCon in November! OpenFGA will have a Kiosk in the Project Pavilion. He'll present a <a href="https://kccncna2024.sched.com/event/1iWA6/openfga-the-cloud-native-way-to-implement-fine-grained-authorization-project-lightning-talk" target="_blank" rel="noopener noreferrer">lightning talk on OpenFGA</a> and participate in <a href="https://kccncna2024.sched.com/event/1i7qp/the-policy-engines-showdown-gabriel-l-manor-permitio-andres-aguiar-okta-omri-gazitt-aserto-anders-eknert-styra-sarah-cecchetti-aws?iframe=no" target="_blank" rel="noopener noreferrer">The Policy Engines Showdown</a>.</li>
+<li>We added new authorization model examples for <a href="https://github.com/openfga/sample-stores/tree/main/stores/multitenant-rbac" target="_blank" rel="noopener noreferrer">multi-tenant RBAC</a> and how to define <a href="https://github.com/openfga/sample-stores/tree/main/stores/abac-with-rebac" target="_blank" rel="noopener noreferrer">ABAC policies using ReBAC</a>.</li>
+<li><strong>Guide to Building Auth Systems:</strong> Level Up Coding offers a <a href="https://levelup.gitconnected.com/complete-guide-to-building-authorization-systems-using-rbac-rebac-and-abac-0a2ce5311d25" target="_blank" rel="noopener noreferrer">comprehensive guide</a> to building authorization systems using RBAC, ReBAC, and ABAC models. The guide covers the differences between these approaches and when to use each.</li>
+<li><strong>High Marks for OpenFGA Policy Languages:</strong> Trial Of Bits published a report comparing the security of the <a href="https://github.com/trailofbits/publications/blob/master/reports/Policy_Language_Security_Comparison_and_TM.pdf" target="_blank" rel="noopener noreferrer">Cedar, OPA, and OpenFGA policy languages</a>. OpenFGA was very well evaluated!</li>
+<li><strong>September Community Meeting:</strong> Check out the <a href="https://www.youtube.com/watch?v=p_ERXS8Dsu4&amp;list=PLUR5l-oTFZqUneyHz-h4WzaJssgxBXdxB&amp;index=18" target="_blank" rel="noopener noreferrer">September Community Meeting</a>, which is posted on YouTube! In last month’s meeting, we reviewed recent updates, demos with <a href="https://github.com/openfga/openfga-envoy" target="_blank" rel="noopener noreferrer">Envoy</a>, an OpenFGA Kubernetes Operator, fine-grained access for OpenFGA, and reviewed the results of the 2024 Community Survey.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="new-adopters"><strong>New Adopters</strong><a href="https://openfga.dev/blog/fine-grained-news-2024-09#new-adopters" class="hash-link" aria-label="Direct link to new-adopters" title="Direct link to new-adopters">​</a></h2>
+<ul>
+<li>If you or your company have implemented OpenFGA, we would love to hear about it! Please add your name as yourself as an adopter by updating the <a href="https://github.com/openfga/community/blob/main/ADOPTERS.md#companiesprojects-using-openfga-in-production" target="_blank" rel="noopener noreferrer">Adopters.md</a> file and send us a PR.</li>
+<li>If you or your company provides implementation services for OpenFGA, we invite you to share your information with the community in our <a href="https://github.com/openfga/community/blob/main/ADOPTERS.md#companies-offering-openfga-implementation-services" target="_blank" rel="noopener noreferrer">Implementation Services</a> section of the Adopters.md file by sending us a PR! However, please note that the listed individuals and companies have not been evaluated or endorsed by the OpenFGA project, and inclusion on the list does not imply endorsement.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="announcements"><strong>Announcements</strong><a href="https://openfga.dev/blog/fine-grained-news-2024-09#announcements" class="hash-link" aria-label="Direct link to announcements" title="Direct link to announcements">​</a></h2>
+<ul>
+<li><strong>Hacktoberfest 2024:</strong> <a href="https://hacktoberfest.com/" target="_blank" rel="noopener noreferrer">Hacktoberfest</a> is a month long celebration of open source software which encourages new and experienced developers alike to contribute code to open source projects during the month of October. This makes October a great time to become an OpenFGA contributor! We have labeled a number of issues on GitHub with "Hacktoberfest" and "Good First Issue" labels making it easy to find a way to get involved and have your code included in OpenFGA.</li>
+<li><strong>Monthly Community Meeting:</strong> Join us for our monthly Community Meetings, held on the second Thursday of every month at 11 AM Eastern Time (US). Our next meeting is on Thursday, October 10, 2024. Our community meetings are a great way to stay updated with the latest developments, ask questions, and engage with the OpenFGA community. If you would like to demo your implementation of OpenFGA, please reach out to us on any of our <a href="https://openfga.dev/community" target="_blank" rel="noopener noreferrer">community channels</a> or at <a href="mailto:community@openfga.dev" target="_blank" rel="noopener noreferrer">community@openfga.dev</a>. You can find the link to the meeting invite <a href="https://openfga.dev/docs/community#monthly-community-meetings" target="_blank" rel="noopener noreferrer">here</a>. We look forward to seeing you there!</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="see-you-next-month"><strong>See You Next Month!</strong><a href="https://openfga.dev/blog/fine-grained-news-2024-09#see-you-next-month" class="hash-link" aria-label="Direct link to see-you-next-month" title="Direct link to see-you-next-month">​</a></h2>
+<p>Fine Grained News is published every month. If you have any feedback, want to share your OpenFGA story, or have a noteworthy update, please let us know on any of our <a href="https://openfga.dev/community" target="_blank" rel="noopener noreferrer">community channels</a> or at <a href="mailto:community@openfga.dev" target="_blank" rel="noopener noreferrer">community@openfga.dev</a>.</p>]]></content:encoded>
+            <category>newsletter</category>
+        </item>
         <item>
             <title><![CDATA[Fine Grained News - August 2024]]></title>
             <link>https://openfga.dev/blog/fine-grained-news-2024-08</link>
