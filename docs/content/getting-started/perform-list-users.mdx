@@ -213,7 +213,7 @@ With the tuples:
 | ------------------------ | -------- | ------------------------ |
 | group:engineering#member | viewer   | document:1               |
 | group:product#member     | viewer   | document:1               |
-| user:will                | member   | group:engineering#member |
+| user:will                | member   | group:engineering        |
 
 Then calling the List Users API for `document:1` with relation `viewer` of type `group#member` will yield the below response. Note that the `user:will` is not returned, despite being a member of `group:engineering#member` because the `user_filters` does not target the `user` type.
 
