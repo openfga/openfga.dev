@@ -58,6 +58,11 @@ const sidebars = {
             },
             {
               type: 'doc',
+              label: '🛡️Access Control',
+              id: 'content/getting-started/setup-openfga/access-control',
+            },
+            {
+              type: 'doc',
               label: 'Playground',
               id: 'content/getting-started/setup-openfga/playground',
             },
