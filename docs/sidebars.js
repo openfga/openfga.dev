@@ -22,6 +22,11 @@ const sidebars = {
       id: 'content/configuration-language',
     },
     {
+      type: 'doc',
+      label: 'Community',
+      id: 'content/community',
+    },
+    {
       type: 'category',
       collapsible: true,
       collapsed: false,
@@ -55,6 +60,11 @@ const sidebars = {
               type: 'doc',
               label: '☸️ Kubernetes',
               id: 'content/getting-started/setup-openfga/kubernetes-setup',
+            },
+            {
+              type: 'doc',
+              label: '🛡️Access Control',
+              id: 'content/getting-started/setup-openfga/access-control',
             },
             {
               type: 'doc',
