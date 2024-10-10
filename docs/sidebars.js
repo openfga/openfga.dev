@@ -22,6 +22,11 @@ const sidebars = {
       id: 'content/configuration-language',
     },
     {
+      type: 'doc',
+      label: 'Community',
+      id: 'content/community',
+    },
+    {
       type: 'category',
       collapsible: true,
       collapsed: false,
