@@ -23,7 +23,10 @@ const SocialMedia: React.FC = () => {
       {filteredItems.map(({ label, to, ['aria-label']: ariaLabel }) => (
         <Link
           to={useBaseUrl(to as string)}
-          className={clsx(styles[baseClassName + '-item'], styles[baseClassName + '-' + label.toLowerCase()])}
+          className={clsx(
+            styles[baseClassName + '-item'],
+            styles[baseClassName + '-' + label.toLowerCase().replace(' ', '-')],
+          )}
           aria-label={ariaLabel as string}
         >
           {label}
