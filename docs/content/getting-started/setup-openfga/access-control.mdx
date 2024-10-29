@@ -20,7 +20,7 @@ Currently, there is no provided way to initialize that access control store and 
 The built-in access control feature in OpenFGA is experimental and is not recommended for production use. We are looking for feedback on this, so if you do try it, please reach out on our [openfga Slack channel](../../community.mdx) in the CNCF community.
 :::
 
-Following are the steps on how to enable access control.
+Read the following steps to enable access control.
 
 ## Requirements
 
@@ -37,7 +37,7 @@ This is important. If you enable access control before setting up the store and 
 We will be using the following model to enable access control.
 
 :::note Customizing your access control model
-You may choose to modify this model to suit your needs, however please keep in mind we may not allow configuring the model in the future and you will need to do your own migrations in that case.
+You may choose to modify this model to suit your needs, however, keep in mind that configuring the model may not be supported in the future and you may be responsible for your own migrations at that point.
 
 The required types and relations that need to be defined are marked in the model below.
 :::
@@ -87,7 +87,7 @@ type module # required
    ```shell
    fga store create --name root-access-control --model ./model.fga
    ```
-   It will print out a store ID and model ID. You will need these IDs in the following steps.
+   This prints a store ID and model ID. You will need these IDs in the following steps.
 3. Grant your initial client ID access. You can do so by writing a tuple to the access control store you just created. The tuple should be of the type `application` and should have the `client_id` field set to the client ID of the client you want to grant access to. You can use the FGA CLI to do this:
    ```shell
     fga tuple write --store-id "${ACCESS_CONTROL_STORE_ID}" "application:${FGA_ADMIN_CLIENT_ID}" admin "system:fga"
