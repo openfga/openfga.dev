@@ -1,0 +1,171 @@
+---
+title: Setup Access Control
+description: How to enable and setup the built-in access control OpenFGA server (experimental)
+sidebar_position: 2
+slug: /getting-started/setup-openfga/access-control
+---
+
+import {
+  DocumentationNotice,
+  RelatedSection,
+} from "@components/Docs";
+
+# 🛡️Setup Access Control
+
+In OpenFGA [v1.7.0](https://github.com/openfga/openfga/releases/tag/v1.7.0), we introduced an experimental built-in access control feature that allows you to control access to your OpenFGA server. It relies on a control store with its own model and tuples to authorize requests to the OpenFGA server itself.
+
+Currently, there is no provided way to initialize that access control store and model, nor is there a way to bootstrap the client IDs that are supposed to be admins.
+
+:::caution Warning
+The built-in access control feature in OpenFGA is experimental and is not recommended for production use. We are looking for feedback on this, so if you do try it, please reach out on our [openfga Slack channel](../../community.mdx) in the CNCF community.
+:::
+
+Read the following steps to enable access control.
+
+## Requirements
+
+- OIDC Provider: You need to have an OIDC provider [set up and configured](./configure-openfga.mdx#oidc) in your OpenFGA server set up to use access control.
+- A Client ID ready to be used: You need to have the initial (admin) client ID that you want to manage access to your OpenFGA server.
+- The FGA CLI: While the CLI is not strictly required, you need to follow the steps below. You can install it by following the instructions [here](../cli.mdx). If you do not want to use the CLI, you can call the API with the equivalent SDK or REST calls.
+
+## 01. Ensure the server is running (with access control disabled)
+
+This is important. If you enable access control before setting up the store and model and grant your initial client ID access, you will lock yourself out of the server, and you will have to turn it back off.
+
+## 02. Create the access control store and model
+
+We will be using the following model to enable access control.
+
+:::note Customizing your access control model
+You may choose to modify this model to suit your needs, however, keep in mind that configuring the model may not be supported in the future and you may be responsible for your own migrations at that point.
+
+The required types and relations that need to be defined are marked in the model below.
+:::
+
+```dsl.openfga
+model
+  schema 1.1
+
+type system # required
+  relations
+    define admin: [application] # required
+    define can_call_create_stores: admin # required
+    define can_call_list_stores: [application, application:*] or admin # required
+
+type application # required
+
+type store # required
+  relations
+    define system: [system] # required
+    define admin: [application] or admin from system # required
+    define model_writer: [application] or admin
+    define reader: [application] or admin
+    define writer: [application] or admin
+    define can_call_delete_store: admin # required
+    define can_call_get_store: reader or writer or model_writer # required
+    define can_call_check: reader # required
+    define can_call_expand: reader # required
+    define can_call_list_objects: reader # required
+    define can_call_list_users: reader # required
+    define can_call_read: reader # required
+    define can_call_read_assertions: reader or model_writer # required
+    define can_call_read_authorization_models: reader or model_writer # required
+    define can_call_read_changes: reader # required
+    define can_call_write: writer # required
+    define can_call_write_assertions: model_writer # required
+    define can_call_write_authorization_models: model_writer # required
+
+type module # required
+  relations
+    define store: [store] # required
+    define writer: [application]
+    define can_call_write: writer or writer from store # required
+```
+
+1. Place the model above in a file called `model.fga`.
+2. Run the following command to create the store and model:
+   ```shell
+   fga store create --name root-access-control --model ./model.fga
+   ```
+   This prints a store ID and model ID. You will need these IDs in the following steps.
+3. Grant your initial client ID access. You can do so by writing a tuple to the access control store you just created. The tuple should be of the type `application` and should have the `client_id` field set to the client ID of the client you want to grant access to. You can use the FGA CLI to do this:
+   ```shell
+    fga tuple write --store-id "${ACCESS_CONTROL_STORE_ID}" "application:${FGA_ADMIN_CLIENT_ID}" admin "system:fga"
+   ```
+    Replace `${ACCESS_CONTROL_STORE_ID}` with the store ID you received in the previous step; replace `${FGA_ADMIN_CLIENT_ID}` with the client ID you want to grant access to.
+
+## 03. Enable access control
+
+### i. Enable access control in the server
+1. Enable the experimental support for access control by setting the environment variable `OPENFGA_EXPERIMENTALS` to `enable-access-control`.
+2. Enable the access control feature by setting the environment variable `OPENFGA_ACCESS_CONTROL` to `true`.
+3. Set the environment variable `OPENFGA_ACCESS_CONTROL_STORE_ID` to the store ID you received in the previous step.
+4. Set the environment variable `OPENFGA_ACCESS_CONTROL_MODEL_ID` to the model ID you received in the previous step.
+
+### ii. Customize what claim you want the API to use (optional)
+
+By default, the API will use the following claims (in order) in the OIDC token to identify the client. If you want to use a different claim, you can set the environment variable `OPENFGA_AUTHN_OIDC_CLIENT_ID_CLAIMS` to the claim(s) you want to use.
+
+If the claims are not set in the configuration, the following claims are used as default (in order):
+1. `azp`: following [the OpenID standard](https://openid.net/specs/openid-connect-core-1_0.html#IDToken)
+2. `client_id` following [RFC9068](https://www.rfc-editor.org/rfc/rfc9068.html#name-data-structure)
+
+That means that if the `azp` claim is present in the token, it will be used to identify the client. If not, the `client_id` claim will be used instead.
+
+For example, you can set the environment variable `OPENFGA_AUTHN_OIDC_CLIENT_ID_CLAIMS` to `user_id,employee_id,client_id` to allow the OpenFGA server to authorize based on:
+1. Use the `user_id` claim if present in the token.
+2. If not try to use the `employee_id` claim if present.
+3. If not try to use the `client_id` claim.
+
+## iii. Restart the server
+You now need to restart the OpenFGA server in order for the configuration changes above to take effect. Congrats, you now have access control enabled! 🎉🎉
+
+## 04. Grant access to a store
+
+You can now use the admin client ID to manage access to your OpenFGA server. We will call it `FGA_ADMIN_CLIENT_ID` in the following examples to differentiate it from the client ID (called `FGA_CLIENT_ID`) you are granting access to.
+
+We will also use `ACCESS_CONTROL_STORE_ID` as the store ID of the access control store, and `STORE_ID` as the store ID you are granting the client access to.
+
+1. Grant access to a store (based on the model above, your choices are `admin`, `model_writer`, `writer` and `reader`).
+   ```shell
+   fga tuple write --store-id "${ACCESS_CONTROL_STORE_ID}" "application:${FGA_CLIENT_ID}" model_writer "store:${STORE_ID}" --client-id "${FGA_ADMIN_CLIENT_ID}" --client-secret ... --api-token-issuer ... --api-audience ...
+   ```
+
+2. Grant access to writing tuples of a certain module in a store.
+
+   In order to grant access to only write to relations in certain modules, you must have a model with modules. Refer to the [modular models documentation](../../modeling/modular-models.mdx) for more on that feature.
+
+   If you want to grant access to a module in a store, you must namespace the module ID with the store ID, so the object of the tuple will be of the form `module:<store-id>|<module-name>`.
+   ```shell
+   fga tuple write --store-id "${ACCESS_CONTROL_STORE_ID}" "application:${FGA_CLIENT_ID}" writer "module:${STORE_ID}|<module-name>" --client-id "${FGA_ADMIN_CLIENT_ID}" --client-secret ... --api-token-issuer ... --api-audience ...
+   ```
+
+:::note Note
+If you are calling `Write` with a credential that only has access to certain modules and not the store, you will not be able to send tuples for more than 1 module in a certain request or you will get the following error: `the principal cannot write tuples of more than 1 module(s) in a single request`
+:::
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more on how to use OpenFGA."
+  relatedLinks={[
+    {
+      title: 'Setup OpenFGA',
+      description: 'Learn how to setup and configure an OpenFGA server',
+      link: './configure-openfga',
+      id: './configure-openfga',
+    },
+    {
+      title: 'Setup OIDC',
+      description: 'Learn how to setup and configure an OpenFGA server',
+      link: './configure-openfga#oidc',
+      id: './configure-openfga#oidc',
+    },
+    {
+      title: 'Production Best Practices',
+      description: 'Learn the best practices of running OpenFGA in a production environment',
+      link: '../running-in-production',
+      id: './running-in-production',
+    }
+  ]}
+/>
