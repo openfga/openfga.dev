@@ -25,35 +25,46 @@ function batchCheckRequestViewer(lang: SupportedLanguage, opts: BatchCheckReques
   const modelId = opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId;
 
   switch (lang) {
-    case SupportedLanguage.CURL:
+    case SupportedLanguage.CURL: {
       /* eslint-disable max-len */
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/batch-check \\
-      -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
-      -H "content-type: application/json" \\
-      -d '{"authorization_model_id": "${modelId}", "checks": [
-        ${checks.map((check) => `
-          {"tuple_key":{"user":"${check.user}","relation":"${check.relation}","object":"${check.object}"},"correlation_id": "da452239-a4e0-4791-b5d1-fb3d451ac078"}${
-          check.contextualTuples
-            ? `,"contextual_tuples":{"tuple_keys":[${check.contextualTuples
-                .map((tuple) => `{"user":"${tuple.user}","relation":"${tuple.relation}","object":"${tuple.object}"}`)
-                .join(',')}]}`
-            : ''
-        }${check.context ? `,"context":${JSON.stringify(check.context)}}` : '}'}
-      ]'
-        `
-      ).join(',')}
-        
+-H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
+-H "content-type: application/json" \\
+-d '{
+  "authorization_model_id": "${modelId}", 
+  "checks": [
+  ${checks
+    .map(
+      (check) => `  {
+      "tuple_key": {
+        "user":"${check.user}",
+        "relation":"${check.relation}",
+        "object":"${check.object}",
+      },
+      "correlation_id": "${check.correlation_id}"${
+        check.contextualTuples
+          ? `,"contextual_tuples":{"tuple_keys":[${check.contextualTuples
+              .map((tuple) => `{"user":"${tuple.user}","relation":"${tuple.relation}","object":"${tuple.object}"}`)
+              .join(',')}]}`
+          : ''
+      }${check.context ? `,"context":${JSON.stringify(check.context)}}` : ''}
+    },
+  `,
+    )
+    .join('')}
 
-      # Response: {
-        "results": {
-          ${checks.map((check) => `{
-            "${check.correlation_id}": { "allowed":${check.allowed} }
-          }`
-        )}
-          
-        }
-        
-      }`;
+# Response: 
+{
+  "results": {
+    ${checks
+      .map(
+        (check) => `{ "${check.correlation_id}": { "allowed":${check.allowed} }}, # ${check.relation}
+    `,
+      )
+      .join('')}
+  }
+}`;
+    }
 
     default:
       assertNever(lang);
@@ -62,9 +73,7 @@ function batchCheckRequestViewer(lang: SupportedLanguage, opts: BatchCheckReques
 }
 
 export function BatchCheckRequestViewer(opts: BatchCheckRequestViewerOpts): JSX.Element {
-  const defaultLangs = [
-    SupportedLanguage.CURL,
-  ];
+  const defaultLangs = [SupportedLanguage.CURL];
   const allowedLanguages = getFilteredAllowedLangs(opts.allowedLanguages, defaultLangs);
   return defaultOperationsViewer<BatchCheckRequestViewerOpts>(allowedLanguages, opts, batchCheckRequestViewer);
 }
