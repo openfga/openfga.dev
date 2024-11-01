@@ -142,11 +142,11 @@ To obtain the [access token](https://auth0.com/docs/get-started/authentication-a
 
 ### 02. Calling Check API
 
-To check whether user `user:anne` has relationship `reader` with object `document:Z`
+To check whether user `user:anne` has relationship `can_view` with object `document:Z`
 
 <CheckRequestViewer
   user={'user:anne'}
-  relation={'reader'}
+  relation={'can_view'}
   object={'document:Z'}
   allowed={true}
   skipSetup={true}
@@ -174,7 +174,26 @@ If you are using one of our SDKs, the `correlation_id` is inserted for you by de
 To check whether user `user:anne` has multiple relationships `can_edit, can_view` with object `document:Z`
 
 <BatchCheckRequestViewer
-  
+  checks={[
+    {
+      user: 'user:anne',
+      relation: 'can_edit',
+      object: 'document:Z',
+      correlation_id: '886224f6-04ae-4b13-bd8e-559c7d3754e1',
+      allowed: false
+    },
+    {
+      user: 'user:anne',
+      relation: 'can_view',
+      object: 'document:Z',
+      correlation_id: 'da452239-a4e0-4791-b5d1-fb3d451ac078',
+      allowed: true
+    }
+  ]}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.CURL,
+  ]}
 />
 
 The result will include an `allowed` field for each authorization check that will return `true` if the relationship exists and `false` if the relationship does not exist.
@@ -193,7 +212,7 @@ The result will include an `allowed` field for each authorization check that wil
 />
 
 <RelatedSection
-  description="Take a look at the following section for more on how to perform authorization checks in your system"
+  description="Take a look at the following section for more on how to perform batch authorization checks in your system"
   relatedLinks={[
     {
       title: '{ProductName} Batch Check API',
