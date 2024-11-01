@@ -175,11 +175,11 @@ This means you can use:
 - ULID `01JBMD9YG0XH3B4GVA8A9D2PSN`
 - or some other unique string
 
-But each `correlation_id` must be unique for the entire request.
+But each `correlation_id` within a request must be unique.
 
 Coming Soon: If you are using one of our SDKs, the `correlation_id` is inserted for you by default and automatically correlates the `allowed` response with the proper `tuple_key`.
 
-To check whether user `user:anne` has multiple relationships `can_edit, can_view` with object `document:Z`
+To check whether user `user:anne` has multiple relationships `can_edit` and `can_view` with object `document:Z`
 
 <BatchCheckRequestViewer
   checks={[
