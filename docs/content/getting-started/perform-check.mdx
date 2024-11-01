@@ -169,7 +169,7 @@ If you want to check multiple user-object-relationship combinations in a single 
 
 The Batch Check endpoint requires a `correlation_id` parameter for each check. The `correlation_id` is used to "correlate" the check respones with the checks sent in the request, since `tuple_keys` and `contextual_tuples` are not returned in the response to improve network latency. A `correlation_id` can be composed of any string of alphanumeric characters or dashes between 1-36 characters in length. This means you can use simple iterating integers `1,2,3,etc`, UUID `e5fe049b-f252-40b3-b795-fe485d588279`, ULID `01JBMD9YG0XH3B4GVA8A9D2PSN`, or something else, but they must be unique for the entire request.
 
-If you are using one of our SDKs, the `correlation_id` is inserted for you by default.
+If you are using one of our SDKs, the `correlation_id` is inserted for you by default and automatically correlates the `allowed` response with the proper `tuple_key`.
 
 To check whether user `user:anne` has multiple relationships `can_edit, can_view` with object `document:Z`
 
