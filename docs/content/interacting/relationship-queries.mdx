@@ -8,6 +8,7 @@ description: An overview of how to use the Check, Read, Expand, and ListObject A
 import {
   AuthzModelSnippetViewer,
   CheckRequestViewer,
+  BatchCheckRequestViewer,
   DocumentationNotice,
   ExpandRequestViewer,
   ListObjectsRequestViewer,
@@ -126,6 +127,60 @@ The <ProductName format={ProductNameFormat.ShortForm}/> API will return `true` b
 
 - every `writer` is also a `reader`
 - `bob` is a `writer` for `document:planning`
+
+### Caveats and when not to use it
+
+Check is designed to answer the question "Does user:X have relationship Y with object:Z?". It is _not_ designed to answer the following questions:
+
+- "Who has relationship Y with object:Z?"
+- "What are the objects that userX has relationship Y with?"
+- "Why does user:X have relationship Y with object:Z?"
+
+## Batch Check
+
+### What is it for?
+
+The [Batch Check API](/api/service#Relationship%20Queries/BatchCheck) is an API endpoint that allows you to check multiple user-object-relationship combinations in a single request. 
+
+### When to use?
+
+Batching authorization checks together in a single request significantly reduces overall network latency.
+
+Two scenarios are common to use Batch Check:
+1. When determining if the user has access to a list of objects (such as [Option 1 in Search with Permissions](/docs/interacting/search-with-permissions#option-1-search-then-check)), filter and sort on your database, then call `/batch-check` for the first 50 objects. Repeat to perform pagination.
+2. When determining fields on a web page the user has access to, call `/batch-check` for every relation necessary to show/hide each field.  
+
+For example, you can call Batch Check to determine whether `bob` has `can_view_name`, `can_view_dob`, and `can_view_ssn` relationship with `patient_record:1`.
+
+<BatchCheckRequestViewer
+  checks={[
+    {
+      user: 'user:bob',
+      relation: 'can_view_name',
+      object: 'patient_record:1',
+      correlation_id: '1',
+      allowed: true
+    },
+    {
+      user: 'user:bob',
+      relation: 'can_view_dob',
+      object: 'patient_record:1',
+      correlation_id: '2',
+      allowed: true
+    },
+    {
+      user: 'user:bob',
+      relation: 'can_view_ssn',
+      object: 'patient_record:1',
+      correlation_id: '3',
+      allowed: false
+    }
+  ]}
+  skipSetup={true}
+/>
+
+The <ProductName format={ProductNameFormat.ShortForm}/> API will return `true` depending on the level of access assigned to that user and the implied relationships inherited in the authorization model.
+
 
 ### Caveats and when not to use it
 

@@ -58,7 +58,7 @@ function batchCheckRequestViewer(lang: SupportedLanguage, opts: BatchCheckReques
   "results": {
     ${checks
       .map(
-        (check) => `{ "${check.correlation_id}": { "allowed":${check.allowed} }}, # ${check.relation}
+        (check) => `{ "${check.correlation_id}": { "allowed": ${check.allowed} }}, # ${check.relation}
     `,
       )
       .join('')}
