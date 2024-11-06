@@ -147,7 +147,7 @@ The [Batch Check API](/api/service#Relationship%20Queries/BatchCheck) is an API 
 Batching authorization checks together in a single request significantly reduces overall network latency.
 
 Two scenarios are common to use Batch Check:
-1. When determining if the user has access to a list of objects (such as [Option 1 in Search with Permissions](/docs/interacting/search-with-permissions#option-1-search-then-check)), filter and sort on your database, then call `/batch-check`. Repeat to perform pagination.
+1. When determining if the user has access to a list of objects (such as [Option 1 in Search with Permissions](/docs/interacting/search-with-permissions)), filter and sort on your database, then call `/batch-check`. Repeat to perform pagination.
 2. When determining fields on a web page the user has access to, call `/batch-check` for every relation necessary to show/hide each field.  
 
 For example, you can call Batch Check to determine whether `bob` has `can_view_name`, `can_view_dob`, and `can_view_ssn` relationships with `patient_record:1`.

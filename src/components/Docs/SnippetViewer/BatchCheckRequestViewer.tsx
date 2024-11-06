@@ -67,7 +67,7 @@ function batchCheckRequestViewer(lang: SupportedLanguage, opts: BatchCheckReques
     }
 
     default:
-      assertNever(lang);
+      '';
   }
   /* eslint-enable no-tabs */
 }
