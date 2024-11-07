@@ -19,15 +19,13 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="just-shipped">Just Shipped<a href="https://openfga.dev/pr-preview/pr-885/blog/fine-grained-news-2024-10#just-shipped" class="hash-link" aria-label="Direct link to Just Shipped" title="Direct link to Just Shipped">​</a></h2>
 <ul>
 <li>
-<p><strong>OpenFGA v1.7.0:</strong> In our latest release, we’ve introduced Access Control. This experimental feature allows you to control access to your OpenFGA server. We’ve updated our Docs to show you <a href="https://openfga.dev/docs/getting-started/setup-openfga/access-control" target="_blank" rel="noopener noreferrer">how to enable this feature</a>; please share your feedback in the <a href="https://github.com/orgs/openfga/discussions/382" target="_blank" rel="noopener noreferrer">GitHub Discussions</a>!</p>
-<ul>
+<p><strong>OpenFGA v1.7.0:</strong> In our latest release, we’ve introduced Access Control. This experimental feature allows you to control access to your OpenFGA server, and of course, we built it using OpenFGA! We’ve updated our Docs to show you <a href="https://openfga.dev/docs/getting-started/setup-openfga/access-control" target="_blank" rel="noopener noreferrer">how to enable this feature</a>; please share your feedback in the <a href="https://github.com/orgs/openfga/discussions/382" target="_blank" rel="noopener noreferrer">GitHub Discussions</a>!</p>
+</li>
 <li>
 <p>This month, we’ve also added documentation of our <a href="https://github.com/openfga/openfga/pull/1923" target="_blank" rel="noopener noreferrer">OpenFGA release process</a>.</p>
 </li>
 <li>
-<p>We’ve <a href="https://github.com/openfga/openfga/pull/2025" target="_blank" rel="noopener noreferrer">improved performance for checks involving nested tuple-to-userset relations</a>. Users can enable this with the experimental flag <code>enable-check-optimizations</code>.</p>
-</li>
-</ul>
+<p>We’ve <a href="https://github.com/openfga/openfga/pull/2025" target="_blank" rel="noopener noreferrer">improved performance for checks involving nested tuple-to-userset relations</a>. This is commonly used when implementing nested groups. Users can enable this with the experimental flag <code>enable-check-optimizations</code>.</p>
 </li>
 <li>
 <p>Following last month’s launch of OpenFGA SDK support for telemetry data using OpenTelemetry, we’ve also <a href="https://openfga.dev/docs/getting-started/configure-telemetry" target="_blank" rel="noopener noreferrer">updated our Docs</a> to guide users through configuration to collect tracing data and metrics.</p>
@@ -39,7 +37,7 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="community-highlights">Community Highlights<a href="https://openfga.dev/pr-preview/pr-885/blog/fine-grained-news-2024-10#community-highlights" class="hash-link" aria-label="Direct link to Community Highlights" title="Direct link to Community Highlights">​</a></h2>
 <ul>
 <li>
-<p><strong>OpenFGA at Open Source Strategy Forum 2024:</strong> <a href="https://www.linkedin.com/in/kiah-tolliver/" target="_blank" rel="noopener noreferrer">Kiah Imani</a> presented “Role-Based Access Is So Yesterday: Revolutionizing Authorization with OpenFGA” at the OSSF 2024 earlier this month.<br>
+<p><strong>OpenFGA at Open Source Strategy Forum 2024:</strong> <a href="https://www.linkedin.com/in/kiah-tolliver/" target="_blank" rel="noopener noreferrer">Kiah Imani</a> presented “Role-Based Access Is So Yesterday: Revolutionizing Authorization with OpenFGA” at the OSSF 2024 earlier this month. The presentation is now <a href="https://www.youtube.com/watch?v=uHKeE4DAHpE" target="_blank" rel="noopener noreferrer">available in Youtube</a>
 <img decoding="async" loading="lazy" alt="Kiah Imani" src="https://openfga.dev/pr-preview/pr-885/assets/images/fgn-2024-10-kiah-imani-eceac7fa9e3d3ea9257956280ed9007c.jpeg" width="108" height="108" class="img_ev3q"></p>
 </li>
 <li>
