@@ -25,6 +25,30 @@ function batchCheckRequestViewer(lang: SupportedLanguage, opts: BatchCheckReques
   const modelId = opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId;
 
   switch (lang) {
+    case SupportedLanguage.PLAYGROUND:
+      return '';
+
+    case SupportedLanguage.CLI:
+      return '';
+
+    case SupportedLanguage.JS_SDK:
+      return '';
+
+    case SupportedLanguage.GO_SDK:
+      return '';
+
+    case SupportedLanguage.DOTNET_SDK:
+      return '';
+
+    case SupportedLanguage.PYTHON_SDK:
+      return '';
+
+    case SupportedLanguage.JAVA_SDK:
+      return '';
+
+    case SupportedLanguage.RPC:
+      return '';
+
     case SupportedLanguage.CURL: {
       /* eslint-disable max-len */
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/batch-check \\
@@ -67,7 +91,7 @@ function batchCheckRequestViewer(lang: SupportedLanguage, opts: BatchCheckReques
     }
 
     default:
-      '';
+      assertNever(lang);
   }
   /* eslint-enable no-tabs */
 }
