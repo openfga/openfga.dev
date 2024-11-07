@@ -16,11 +16,11 @@ As always, if you’re finding the OpenFGA project to be a valuable resource, we
 
 ## Just Shipped
 
-* **OpenFGA v1.7.0:** In our latest release, we’ve introduced Access Control. This experimental feature allows you to control access to your OpenFGA server. We’ve updated our Docs to show you [how to enable this feature](https://openfga.dev/docs/getting-started/setup-openfga/access-control); please share your feedback in the [GitHub Discussions](https://github.com/orgs/openfga/discussions/382)! 
+* **OpenFGA v1.7.0:** In our latest release, we’ve introduced Access Control. This experimental feature allows you to control access to your OpenFGA server, and of course, we built it using OpenFGA! We’ve updated our Docs to show you [how to enable this feature](https://openfga.dev/docs/getting-started/setup-openfga/access-control); please share your feedback in the [GitHub Discussions](https://github.com/orgs/openfga/discussions/382)! 
 
-  * This month, we’ve also added documentation of our [OpenFGA release process](https://github.com/openfga/openfga/pull/1923). 
+* This month, we’ve also added documentation of our [OpenFGA release process](https://github.com/openfga/openfga/pull/1923). 
 
-  * We’ve [improved performance for checks involving nested tuple-to-userset relations](https://github.com/openfga/openfga/pull/2025). Users can enable this with the experimental flag `enable-check-optimizations`.
+* We’ve [improved performance for checks involving nested tuple-to-userset relations](https://github.com/openfga/openfga/pull/2025). This is commonly used when implementing nested groups. Users can enable this with the experimental flag `enable-check-optimizations`.
 
 * Following last month’s launch of OpenFGA SDK support for telemetry data using OpenTelemetry, we’ve also [updated our Docs](https://openfga.dev/docs/getting-started/configure-telemetry) to guide users through configuration to collect tracing data and metrics.
 
@@ -32,7 +32,7 @@ Check out our roadmap to see what’s in the works. Feature requests and ideas c
 
 ## Community Highlights
 
-* **OpenFGA at Open Source Strategy Forum 2024:** [Kiah Imani](https://www.linkedin.com/in/kiah-tolliver/) presented “Role-Based Access Is So Yesterday: Revolutionizing Authorization with OpenFGA” at the OSSF 2024 earlier this month.  
+* **OpenFGA at Open Source Strategy Forum 2024:** [Kiah Imani](https://www.linkedin.com/in/kiah-tolliver/) presented “Role-Based Access Is So Yesterday: Revolutionizing Authorization with OpenFGA” at the OSSF 2024 earlier this month. The presentation is now [available in Youtube](https://www.youtube.com/watch?v=uHKeE4DAHpE)
 ![Kiah Imani](../static/img/blog/fgn-2024-10-kiah-imani.jpeg)
 
 * **OpenFGA at KubeCon:** [Andres Aguiar](https://www.linkedin.com/in/aaguiar/) will participate in KubeCon/CloudNativeCon in November! OpenFGA will have a Kiosk in the Project Pavilion. He'll present a [lightning talk on OpenFGA](https://kccncna2024.sched.com/event/1iWA6/openfga-the-cloud-native-way-to-implement-fine-grained-authorization-project-lightning-talk) and participate in [The Policy Engines Showdown](https://kccncna2024.sched.com/event/1i7qp/the-policy-engines-showdown-gabriel-l-manor-permitio-andres-aguiar-okta-omri-gazitt-aserto-anders-eknert-styra-sarah-cecchetti-aws?iframe=no).  
