@@ -31,7 +31,7 @@ We recommend:
 
 1. Turn on caching in Check API via flags. This will reduce latency of requests, but it will increase the staleness of OpenFGA's responses.
    1. `--check-query-cache-enabled`. This caches Check sub-problems for a specified TTL (default of 10 seconds). For example, if you have a relation `define viewer: owner or editor`, and the query is `Check(user:anne, viewer, doc:1)`, we'll evaluate the `owner` relation and the `editor` relation and cache both results: `(user:anne, viewer, doc:1) -> allowed=true` and `(user:anne, owner, doc:1) -> allowed=true`. The cache is stored in-memory; the cached values are overwritten on every change in the result, and cleared after the configured TTL.
-   2. `--check-iterator-cache-enabled`. This caches rows from the database, for a specified TTL (default of 10 seconds).
+   2. `--check-iterator-cache-enabled`. This caches some tuples from the database, for a specified TTL (default of 10 seconds).
 2. Prefer having a small pool of servers with high capacity (memory and CPU cores) instead of a big pool of servers, to increase cache hit ratios and simplify pool management.
 3. Turn on metrics collection via the flags `--metrics-enabled` and `--datastore-metrics-enabled`. This will allow you to debug issues.
 4. Turn on tracing via the flag `--trace-enabled`, but set sampling ratio to a low value, for example `--trace-sample-ratio=0.3`. This will allow you to debug issues without overwhelming the tracing server. However, keep in mind that enabling tracing comes with a slight performance cost.
