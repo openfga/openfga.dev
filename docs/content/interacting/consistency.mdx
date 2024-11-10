@@ -51,19 +51,22 @@ if (date_modified + cache_time_to_live_period > Date.now()) {
 
 ## Cache expiration
 
-<ProductName format={ProductNameFormat.ShortForm}/> cache is disabled by default. When not enabled, all queries will have strong consistency regardless of the consistency mode specified.
+<ProductName format={ProductNameFormat.ShortForm}/> caching is disabled by default. When caching is disabled, all queries will have strong consistency regardless of the consistency mode specified. When caching is enabled, the cache will be used for queries with `MINIMIZE_LATENCY` consistency mode.
 
 You can use the following parameters to configure <ProductName format={ProductNameFormat.ShortForm}/>'s cache:
 
-| Name                    | Description                                                                     |
-|-------------------------|---------------------------------------------------------------------------------|
-| check-query-cache       | Enables caching (default = false)                                               | 
-| check-query-cache-limit | Configures the number of items that will be kept in the cache (default = 10000) | 
-| check-query-cache-ttl   | Specifies the time that items will be kept in the cache (default = 10s)         |	
+| Name                             | Description                                                                                                                                                                                                                                                                                                                                                                     |
+|----------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| check-cache-limit                | Configures the number of items that will be kept in the in-memory cache used to resolve Check queries (default = 1000)                                                                                                                                                                                                                                                          |
+| check-query-cache-enabled        | Enables in-memory caching of Check subproblems (default = false). For example, if you have a relation `define viewer: owner or editor`, and the query is `Check(user:anne, viewer, doc:1)`, we'll evaluate the `owner` relation and the `editor` relation and cache both results: `(user:anne, viewer, doc:1) -> allowed=true` and `(user:anne, owner, doc:1) -> allowed=true`. |
+| check-query-cache-ttl            | Specifies the time that items will be kept in the cache of Check subproblems (default = 10s)                                                                                                                                                                                                                                                                                    |
+| check-iterator-cache-enabled     | Enables in-memory caching of database iterators. Each iterator is the result of a database query, for example, usersets related to a specific object, or objects related to a specific user, up to a certain number of tuples per iterator (default = false)                                                                                                                    |
+| check-iterator-cache-max-results | Configures the number of tuples that will be stored for each database iterator (default = 10000)                                                                                                                                                                                                                                                                                |
+| check-iterator-cache-ttl         | Specifies the time that items will be kept in the cache of database iterators (default = 10s)                                                                                                                                                                                                                                                                                   |
 
 Learn how to [configure <ProductName format={ProductNameFormat.ShortForm}/>](../getting-started/setup-openfga/configure-openfga.mdx).
 
-Currently, the cache is used by Check and partially in ListObjects. It will be implemented it for other query endpoints in the future.
+Currently, the cache is used by Check and partially in ListObjects. It will be implemented for other query endpoints in the future.
 
 ## Future work
 

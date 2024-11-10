@@ -20,7 +20,7 @@ The following list outlines some guidelines and best practices for using <Produc
 
 - Do not store Personal Identifiable Information in tuples
 - Always specify authorization model ID in requests
-- Always specify the desired consistency in requests
+- Specify the desired consistency in requests
 
 ## Do Not Store Personal Identifiable Information in Tuples
 
@@ -38,7 +38,7 @@ Specifying authorization model ID in API calls have the following advantages:
 1. Better performance as <ProductName format={ProductNameFormat.ShortForm}/> will not need to perform a database query to get the latest authorization model ID.
 2. Allows consistent behavior in your production system until you are ready to switch to the new model.
 
-## Always specify the desired consistency in requests
+## Specify the desired consistency in requests
 
 It is strongly recommended that you specify the `Consistency` value in each individual request, depending on whether you prefer speed (MINIMIZE_LATENCY) or correctness (MAXIMIZE_CONSISTENCY). The default is MINIMIZE_LATENCY.
 
