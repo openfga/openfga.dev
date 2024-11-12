@@ -103,7 +103,7 @@ You can consider the following strategies to transform this scenario to a **type
 
 - Duplicate logic from the authorization model when querying your database. For example, in a multi-tenant scenario, you can filter all resources based on the tenant the user is logged-in to. Duplicating logic from the authorization model is not ideal, but it can be a reasonable trade-off.
 
-- Get a list of IDs for a resource higher in the hierarchy that has lower cardinality. For example, in a document-management application, you can get the list of folders the user can access, and then in the database query, filter the documents based on that list of folders . The chances the user will be able to see most of the documents in those folders should be be high.
+- Retrieve a higher-level resource ID list with lower cardinality for efficient filtering. For example, in a document management application, first obtain the list of accessible folders for the user. You can then filter documents by these folders in your database query. This approach increases the likelihood that the user can access the documents in those folders, optimizing the query’s effectiveness.
 
 **E.** The _number of objects of a certain type the user could have access to_ is _high_, and the _percentage of the total objects that the user can have access to_ is also _high_.
 
