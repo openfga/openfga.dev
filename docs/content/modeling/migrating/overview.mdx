@@ -47,7 +47,7 @@ When thinking about migrations, keep in mind that:
   1. Delete the type or relation to the authorization model, and write the model to the store. This will generate a new model ID.
   2. Update the application code to stops using the deleted types/relations.
   3. Configure the application to start using the new model ID.
-  4. Delete the tuples for the deleted type/relations. This is not required. Tuples that aren't valid will be ignored when evaluating authorization checks.
+  4. Delete the tuples for the deleted type/relations. While not required, doing so can improve performance. Invalid tuples will be ignored during query evaluation, but their presence may slow down the process if they need to be retrieved.
 
 ## To rename a type or relation
 
