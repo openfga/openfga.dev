@@ -31,12 +31,12 @@ To return the set of results that match the user's search query, you will need t
 
 There are three possible ways to do this:
 
-### Option 1: search, then check
+### Option 1: Search, then check
 
-Pre-filter, then call <ProductName format={ProductNameFormat.ShortForm}/> Check endpoint.
+Pre-filter, then call <ProductName format={ProductNameFormat.ShortForm}/> Batch Check endpoint.
 
 1. Filter and sort on your database.
-1. Call [`/check`](./relationship-queries.mdx#check) in parallel on each object returned from your database.
+1. Call [`/batch-check`](./relationship-queries.mdx#batch-check) to check access for multiple objects in a single request.
 1. Filter out objects the user does not have access to.
 1. Return the filtered result to the user.
 
