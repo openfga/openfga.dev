@@ -32,21 +32,21 @@ You can think of model migrations for <ProductName format={ProductNameFormat.Sho
 
 When thinking about migrations, keep in mind that:
 
-- [Models are immutable](../../getting-started/immutable-models.mdx)
+- [Models are immutable](../../getting-started/immutable-models.mdx).
 - The tuples that are not valid according to the specified model, are ignored when evaluating queries. 
 
 ## To add a type or relation
 
-  1. Add the type or relation to the authorization model, and write the model to the store.. This will generate a new Model ID.
+  1. Add the type or relation to the authorization model, and write the model to the store. This will generate a new model ID.
   2. If you have tuples to write for the new types/relations, write them.
   3. Update the application code to start using those new types/relations.
-  4. Configure the application to start using the new Model ID.
+  4. Configure the application to start using the new model ID.
 
 ## To delete a type or relation
 
-  1. Delete the type or relation to the authorization model, and write the model to the store. This will generate a new Model ID.
+  1. Delete the type or relation to the authorization model, and write the model to the store. This will generate a new model ID.
   2. Update the application code to stops using the deleted types/relations.
-  3. Configure the application to start using the new Model ID.
+  3. Configure the application to start using the new model ID.
   4. Delete the tuples for the deleted type/relations. This is not required. Tuples that aren't valid will be ignored when evaluating authorization checks.
 
 ## To rename a type or relation
