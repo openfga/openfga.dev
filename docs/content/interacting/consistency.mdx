@@ -24,9 +24,9 @@ When querying <ProductName format={ProductNameFormat.ShortForm}/> using Read or 
 | Name                        | Description                                                                                                   |  
 |-----------------------------|---------------------------------------------------------------------------------------------------------------|
 | MINIMIZE_LATENCY (default)  | <ProductName format={ProductNameFormat.ShortForm}/> will serve queries from the cache when possible           | 
-| HIGHER_CONSISTENCY          | <ProductName format={ProductNameFormat.ShortForm}/> will skip the cache and query the the database directly   |
+| HIGHER_CONSISTENCY          | <ProductName format={ProductNameFormat.ShortForm}/> will skip the cache and query the database directly   |
 
-If you write a tuple and you immediately make a check on a relation affected by that tuple using `MINIMIZE_LATENCY`, the tuple change might not be taken in consideration if <ProductName format={ProductNameFormat.ShortForm}/> serves the result from the cache.
+If you write a tuple and you immediately make a Check on a relation affected by that tuple using `MINIMIZE_LATENCY`, the tuple change might not be taken in consideration if <ProductName format={ProductNameFormat.ShortForm}/> serves the result from the cache.
 
 ## When to use higher consistency
 
