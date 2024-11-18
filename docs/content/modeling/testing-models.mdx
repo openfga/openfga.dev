@@ -147,10 +147,6 @@ The example above checks that `user:anne` has access to the `organization:acme` 
 
 ## Write List Users tests
 
-:::caution Warning
-ListUsers is currently in an experimental release. Read [the announcement](https://openfga.dev/blog/list-users-announcement) for more information.
-:::
-
 List users tests verify the results of the [list-users API](../getting-started/perform-list-users.mdx) to validate the users who or do not have access to an object
 
 Each list users verification has the following structure:
@@ -179,28 +175,17 @@ The following is an example of using the `list_users` option in <ProductName for
       - object: organization:acme
         user_filter:
           - type: user
+        context: 
+          current_time : "2024-02-02T00:10:00Z"
         assertions:
             member:
               users:
                 - user:anne
-            admin:
+            admin: 
               users: []
-              
-      - object: organization:acme
-        user_filter:
-          - type: employee
-        context: 
-          current_time : "2024-02-01T00:10:00Z"
-        assertions:
-            member:
-              users: []
-            admin:
-              users:
-                - employee:peter
 
 ```
-The example above checks that `user:anne` has access to the `organization:acme` as a member and is not an admin of any organization. It also checks that `employee:peter`, given the current time is February 1st 2024, 0:10 AM, is not related to any organization as a member, but is related to `organization:acme` as an admin.
-
+The example above checks that the `organization:acme`, given the current time is February 2nd 2024, it has 'user:anne' as a `member`, nobody as an `admin`. If we tried with current time being February 1st 2024, then `user:peter` would be listed as an `admin`
 
 ## Running tests
 
@@ -214,14 +199,19 @@ When all tests pass, a summary with the number of tests passed is displayed. Whe
 
 ```shell
 $ fga model test --tests docs.fga.yaml
-(PASSING) Test: Checks (4/4 passing) | ListObjects (4/4 passing)
+# Test Summary #
+Tests 2/2 passing
+Checks 4/4 passing
+ListObjects 4/4 passing
 
 $ fga model test --tests docs.fga.yaml
-(FAILING) Test: Checks (4/4 passing) | ListObjects (3/4 passing)
-✓ ListObjects(user=user:anne,relation=member,type=organization, context=<nil>)
-✓ ListObjects(user=user:anne,relation=admin,type=organization, context=<nil>)
-✓ ListObjects(user=user:peter,relation=member,type=organization, context=&map[current_time:2024-02-01T00:10:00Z])
-ⅹ ListObjects(user=user:peter,relation=admin,type=organization, context=&map[current_time:2024-02-01T00:10:00Z]): expected=[organization:acm], got=[organization:acme], error=<nil>
+(FAILING) : ListUsers(1/2 passing)
+ⅹ ListUsers(object={Type:organization Id:acme},relation=member,user_filter={Type:user Relation:<nil>}, context:&map[current_time:2024-02-02T00:10:00Z]): expected={Users:[user:ann]}, got={Users:[user:anne]}
+---
+# Test Summary #
+Tests 1/2 passing
+Checks 4/4 passing
+ListObjects 4/4 passing
 ```
 
 ## Running tests using GitHub Actions
