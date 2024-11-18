@@ -99,6 +99,12 @@ The recommended option for this case is to use **[Local Index from Changes Endpo
 
 Use case: Searching in Google Drive, where the list of documents and folders that a user has access to can be very high, but it still is a small percentage of the entire set of documents in Google Drive.
 
+You can consider the following strategies to transform this scenario to a **type B** one:
+
+- Duplicate logic from the authorization model when querying your database. For example, in a multi-tenant scenario, you can filter all resources based on the tenant the user is logged-in to. Duplicating logic from the authorization model is not ideal, but it can be a reasonable trade-off.
+
+- Retrieve a higher-level resource ID list with lower cardinality for efficient filtering. For example, in a document management application, first obtain the list of accessible folders for the user. You can then filter documents by these folders in your database query. This approach increases the likelihood that the user can access the documents in those folders, optimizing the query’s effectiveness.
+
 **E.** The _number of objects of a certain type the user could have access to_ is _high_, and the _percentage of the total objects that the user can have access to_ is also _high_.
 
 In this case a **[Local Index from Changes Endpoint, Search then Check](#option-2-build-a-local-index-from-changes-endpoint-search-then-check)** would be useful. If you do not want to maintain a local index, and if the user can access a high percentage of the total, meaning that the user is more likely than not to have access to the results returned by the search query, then **[Search then Check](#option-1-search-then-check)** would work just as well.
