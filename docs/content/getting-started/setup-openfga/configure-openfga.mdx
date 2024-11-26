@@ -330,7 +330,7 @@ To see the request latency per endpoint of your OpenFGA deployment, you can prov
 
 OpenFGA traces can be collected with the [OTLP data format](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md).
 
-Tracing is disabled by default, but you can enable this with the `--trace-enabled=true` (`OPENFGA_TRACE_ENABLED=true` environment variable). Traces will be exported by default to address `0.0.0.0:4317`. You can change this address with the `--trace-otlp-endpoint` flag (`OPENFGA_TRACE_OTLP_ENDPOINT` environment variable).
+Tracing is disabled by default, but you can enable this with the `--trace-enabled=true` (`OPENFGA_TRACE_ENABLED=true` environment variable). Traces will be exported by default to address `0.0.0.0:4317`. You can change this address with the `--trace-otlp-endpoint` flag (`OPENFGA_TRACE_OTLP_ENDPOINT` environment variable). Exporter can be disabled by providing `none` as endpoint value.
 
 To increase or decrease the trace sampling ratio, you can provide the `--trace-sample-ratio` flag (`OPENFGA_TRACE_SAMPLE_RATIO` env variable).
 
