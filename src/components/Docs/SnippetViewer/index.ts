@@ -1,4 +1,5 @@
 export * from './CheckRequestViewer';
+export * from './BatchCheckRequestViewer';
 export * from './DefaultTabbedViewer';
 export * from './ExpandRequestViewer';
 export * from './ListObjectsRequestViewer';
