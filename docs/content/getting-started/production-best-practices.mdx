@@ -29,7 +29,7 @@ The following list outlines best practices for running OpenFGA in a production e
 
 We recommend:
 
-1. Turn on caching via the flag `--check-query-cache-enabled`. This will reduce latency of requests, but it will increase the staleness of OpenFGA's responses. (The TTL is configurable).
+1. Turn on in-memory caching in Check API via flags. This will reduce latency of requests, but it will increase the staleness of OpenFGA's responses. Please see [Cache Expiration](../interacting/consistency.mdx#cache-expiration) for details on the flags.
 2. Prefer having a small pool of servers with high capacity (memory and CPU cores) instead of a big pool of servers, to increase cache hit ratios and simplify pool management.
 3. Turn on metrics collection via the flags `--metrics-enabled` and `--datastore-metrics-enabled`. This will allow you to debug issues.
 4. Turn on tracing via the flag `--trace-enabled`, but set sampling ratio to a low value, for example `--trace-sample-ratio=0.3`. This will allow you to debug issues without overwhelming the tracing server. However, keep in mind that enabling tracing comes with a slight performance cost.
