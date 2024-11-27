@@ -182,9 +182,7 @@ body = ClientListObjectsRequest(
         ? `
     contextual_tuples=[
         ${contextualTuples
-          .map(
-            (tuple) => `ClientTupleKey(user="${tuple.user}", relation="${tuple.relation}", object="${tuple.object}")`,
-          )
+          .map((tuple) => `ClientTuple(user="${tuple.user}", relation="${tuple.relation}", object="${tuple.object}")`)
           .join(',\n                ')}
     ],`
         : ``
