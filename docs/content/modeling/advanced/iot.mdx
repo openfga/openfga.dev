@@ -33,47 +33,47 @@ This tutorial explains how to model permissions for an IoT system using <Product
 
 <Playground title="IoT" preset="iot" example="IoT" store="iot" />
 
-## Before You Start
+## Before you start
 
 In order to understand this guide correctly you must be familiar with some <ProductName format={ProductNameFormat.LongForm}/> concepts and know how to develop the things that we will list below.
 
 <details>
 <summary>
 
-### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+### <ProductName format={ProductNameFormat.ShortForm}/> concepts
 
 It would be helpful to have an understanding of some concepts of <ProductName format={ProductNameFormat.ShortForm}/> before you start.
 
 </summary>
 
-#### Direct Access
+#### Direct access
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](../direct-access.mdx)
 
-#### Modeling Concentric Relationships
+#### Modeling concentric relationships
 
 You need to know how to update the authorization model to allow having nested relations such as all writers are readers. [Learn more →](../building-blocks/concentric-relationships.mdx)
 Used here to indicate that both IT Admins and Security Guards can view live video.
 
-#### Direct Relationships
+#### Direct relationships
 
 You need to know how to disallow granting direct relation to an object and requiring the user to have a relation with another object that would imply a relation with the first one. [Learn more →](../building-blocks/direct-relationships.mdx)
 Used here to indicate that "Rename Device" is a permission that cannot be assigned directly, but can only be granted through the "IT Admin" role.
 
-#### User Groups
+#### User groups
 
 You need to know how to add users to groups and create relationships between groups of users and an object. [Learn more →](../building-blocks/direct-relationships.mdx)
 
 Used here to indicate that security guards on a certain group are security guards on a device in that group.
 
-#### Concepts & Configuration Language
+#### Concepts & configuration language
 
 - Some <ProductConcept />
 - [Configuration Language](../../configuration-language.mdx)
 
 </details>
 
-## What You Will Be Modeling
+## What You Will be modeling
 
 In this tutorial, you will build an authorization model for a sample IoT Security Camera System (detailed below) using <ProductName format={ProductNameFormat.LongForm}/>. You will use some scenarios to validate the model.
 
@@ -113,13 +113,13 @@ In production, it is highly recommended to use unique, immutable identifiers. Na
 
 :::
 
-## Modeling Device Authorization
+## Modeling device authorization
 
 The <ProductName format={ProductNameFormat.LongForm}/> service is based on [Zanzibar](https://zanzibar.academy), a Relationship Based Access Control system. This means it relies on <ProductConcept section="what-is-an-object" linkName="object" /> and <ProductConcept section="what-is-a-user" linkName="user" /> <ProductConcept section="what-is-a-relation" linkName="relations" /> to perform authorization <ProductConcept section="what-is-a-check-request" linkName="checks" />.
 
 Starting with devices, you will learn how to express the requirements in terms of relations you can feed into <ProductName format={ProductNameFormat.LongForm}/>.
 
-### 01. Writing The Initial Model For A Device
+### 01. Writing the initial model for a device
 
 The requirements stated:
 
@@ -167,7 +167,7 @@ In <ProductName format={ProductNameFormat.ShortForm}/>, the <ProductConcept sect
   }}
 />
 
-### 02. Inserting Some Relationship Tuples
+### 02. Inserting some relationship tuples
 
 The requirements are:
 
@@ -251,7 +251,7 @@ Now, check the other relationships fore Anne and Beth.
 | `anne` | `device:1` | `device_renamer`        | `is anne related to device:1 as device_renamer?`        | No        |
 | `beth` | `device:1` | `device_renamer`        | `is beth related to device:1 as device_renamer?`        | Yes       |
 
-### 03. Updating Our Authorization Model To Facilitate Future Changes
+### 03. Updating our authorization model to facilitate future changes
 
 Notice how you had to add the Anne and Beth as <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relations" /> to all the actions they can take on Device 1 instead of just stating that they are related as Security Guard or IT Admin, and having the other permissions implied? In practice this might have some disadvantages: if your authorization model changes, (e.g so that Security Guards can no longer view previously recorded videos), you would need to change relationship tuples in the system instead of just changing the configuration.
 
@@ -402,7 +402,7 @@ Check the other relationships for anne, beth, charles and dianne.
 | `charles` | `device:1` | `device_renamer`        | `is charles related to device:1 as device_renamer?`        | No        |
 | `dianne`  | `device:1` | `device_renamer`        | `is dianne related to device:1 as device_renamer?`         | Yes       |
 
-### 04. Modeling Device Groups
+### 04. Modeling device groups
 
 Now that you are done with devices. Let us tackle device groups.
 
@@ -540,7 +540,7 @@ With this change, the full <ProductConcept section="what-is-an-authorization-mod
   }}
 />
 
-#### Updating Relationship Tuples On Roles
+#### Updating relationship tuples on roles
 
 Remember that **Charles** is a **Security Guard**, and **Dianne** an **IT Admin** on **Group 1**, enter the <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" /> below to reflect that.
 
@@ -613,11 +613,11 @@ Type any of the following queries in the **TUPLE QUERIES** section and press **E
 | `charles` | `device:2` | `device_renamer`        | `is charles related to device:2 as device_renamer?`        | No        |
 | `dianne`  | `device:2` | `device_renamer`        | `is dianne related to device:2 as device_renamer?`         | Yes       |
 
-### 05. Disallow Direct Relationships To Users
+### 05. Disallow direct relationships To users
 
 Notice that despite following **[Step 03](./iot.mdx#03-updating-our-authorization-model-to-facilitate-future-changes)**, anne and beth still have direct relations to all the actions they can take on device:1.
 
-#### Updating The Authorization Model
+#### Updating the authorization model
 
 `anne` is a `live_video_viewer` by both her position as `security_guard` as well as her _<ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" />_ assignment. This is undesirable. Imagine `anne` left her position of `security_guard` and she will still have `live_video_viewer` access to `device:1`.
 
@@ -768,7 +768,7 @@ Upcoming posts will dive deeper into <ProductName format={ProductNameFormat.Long
 
 <Playground title="IoT" preset="iot" example="IoT" store="iot" />
 
-### Exercises For You
+### Exercises for you
 
 - Try adding a second group tied to devices 4 and 5. Add only Charles and Dianne to this group, then try to run queries that would validate your model.
 - Management has decided that Security Guards can only access live videos, and instituted a new position called Security Officer who can view both live and recorded videos. Can you update the authorization model to reflect that?

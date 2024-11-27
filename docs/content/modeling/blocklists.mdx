@@ -35,7 +35,7 @@ This is useful when:
 
 </CardBox>
 
-## Before You Start
+## Before you start
 
 Before you start this guide, make sure you're familiar with some <ProductConcept /> and know how to develop the things listed below.
 
@@ -114,7 +114,7 @@ The current state of the system is represented by the following relationship tup
 
 In addition, you will need to know the following:
 
-### Modeling User Groups
+### Modeling user groups
 
 You need to know how to add users to groups and grant groups access to resources. [Learn more →](.//user-groups.mdx)
 
@@ -131,7 +131,7 @@ You need to know how to add users to groups and grant groups access to resources
 
 <Playground />
 
-## Step By Step
+## Step by step
 
 With the above authorization model and relationship tuples, <ProductName format={ProductNameFormat.LongForm} /> will correctly respond with `{"allowed":true}` when <ProductConcept section="what-is-a-check-request" linkName="check" /> is called to see if Carl and Becky can edit this `document`.
 
@@ -155,7 +155,7 @@ b. [Carl (now blocked) can no longer edit the document](#b-carl-now-blocked-can-
 
 c. [Becky still has edit access](#c-becky-still-has-edit-access)
 
-### 01. Modify Our Model So Users Can Be Blocked From Accessing A Document
+### 01. Modify our model so users can be blocked from accessing a document
 
 To allow users to be "blocked" from accessing a `document`, we first need to allow this relation. We'll update our store model to add a `blocked` <ProductConcept section="what-is-a-relation" linkName="relation" /> to the `document` type.
 
@@ -204,7 +204,7 @@ The authorization model becomes this:
 
 Now we can add relationship tuples indicating that a certain user is `blocked` from editing a `document`.
 
-### 02. Modify Our Model So Users Who Are Blocked Can No Longer Edit The Document
+### 02. Modify our model so users who are blocked can no longer edit the document
 
 Now that we can mark users as `blocked` from editing documents, we need to support denying the `editor` relationship when a user is `blocked`. We do that by modifying the relation definition of `editor`, and making use of the [**exclusion operator**](../configuration-language.mdx#the-exclusion-operator) to exclude the set of `blocked` users, as we can see here:
 
@@ -258,11 +258,11 @@ Now that we can mark users as `blocked` from editing documents, we need to suppo
   }}
 />
 
-### 03. Verify Our Solution Works
+### 03. Verify our solution works
 
 To check if our new model works, we'll add a relationship tuple with Carl as `blocked` from `document:planning` and then verify that Carl no longer has `editor` access to that document.
 
-#### a. Indicate That Carl Is Blocked From The Planning Document
+#### a. Indicate that Carl is blocked from the planning document
 
 With our modified authorization model, we can indicate that Carl is blocked by adding this _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple" />_.
 
@@ -277,7 +277,7 @@ With our modified authorization model, we can indicate that Carl is blocked by a
   ]}
 />
 
-#### b. Carl (now blocked) Can No Longer Edit The Document
+#### b. Carl (now blocked) can no longer edit the document
 
 We have modified the authorization model and added relationship tuples to indicate that Carl is `blocked`. Now let's make sure our solution works as expected.
 
@@ -287,7 +287,7 @@ To check if Carl still has access to the document, we can issue a check request 
 
 The response is `false`, so our solution is working as expected.
 
-#### c. Becky Still Has Edit Access
+#### c. Becky still has edit access
 
 To check if Becky still has access to the document, we'll issue another check request with Becky as the user.
 

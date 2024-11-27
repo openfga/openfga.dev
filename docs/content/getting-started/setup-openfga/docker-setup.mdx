@@ -18,7 +18,7 @@ import TabItem from '@theme/TabItem';
 
 This article explains how to run your own OpenFGA server using Docker. To learn the different ways to configure OpenFGA check [Configuring OpenFGA](./configure-openfga.mdx).
 
-## Step By Step
+## Step by step
 
 If you want to run OpenFGA locally as a Docker container, follow these steps:
 
@@ -239,7 +239,110 @@ docker-compose up
 
 This will start the MySQL database, run `openfga migrate` to configure the database and finally start the OpenFGA server.
 
-## Pre-shared Key Authentication
+## Using SQLite
+
+<Tabs groupId={"installation_sqlite"}>
+<TabItem value={"docker-sqlite"} label={"Docker"}>
+We first make a network:
+
+```shell
+docker network create openfga
+```
+
+Then, create a volume to hold the openfga database:
+
+```shell
+docker volume create openfga
+```
+
+Next you have to migrate all the tables to be able to run OpenFGA. You can use the `migrate` command to create the tables. Using the OpenFGA container, this will look like:
+
+```shell
+docker run --rm --network=openfga \
+    -v openfga:/home/nonroot \
+    -u nonroot \
+    openfga/openfga migrate \
+    --datastore-engine sqlite \
+    --datastore-uri 'file:/home/nonroot/openfga.db'
+```
+
+Finally, start OpenFGA:
+
+```shell
+docker run --name openfga --network=openfga \
+    -p 3000:3000 -p 8080:8080 -p 8081:8081 \
+    -v openfga:/home/nonroot \
+    -u nonroot \
+    openfga/openfga run \
+    --datastore-engine sqlite \
+    --datastore-uri 'file:/home/nonroot/openfga.db'
+```
+
+</TabItem>
+<TabItem value={"docker-compose-sqlite"} label={"Docker Compose"}>
+
+Copy the below code block into a local file named: `docker-compose.yaml`
+
+```yaml
+version: '3.8'
+
+networks:
+  openfga:
+
+volumes:
+  openfga:
+
+services:
+  migrate:
+    image: openfga/openfga:latest
+    container_name: migrate
+    command: migrate
+    user: nonroot
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=sqlite
+      - OPENFGA_DATASTORE_URI=file:/home/nonroot/openfga.db
+    networks:
+      - openfga
+    volumes:
+      - openfga:/home/nonroot
+
+  openfga:
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    image: openfga/openfga:latest
+    container_name: openfga
+    user: nonroot
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=sqlite
+      - OPENFGA_DATASTORE_URI=file:/home/nonroot/openfga.db
+      - OPENFGA_LOG_FORMAT=json
+    command: run
+    networks:
+      - openfga
+    volumes:
+      - openfga:/home/nonroot
+    ports:
+      # Needed for the http server
+      - "8080:8080"
+      # Needed for the grpc server (if used)
+      - "8081:8081"
+      # Needed for the playground (Do not enable in prod!)
+      - "3000:3000"
+```
+
+In a terminal, navigate to that directory and run:
+
+```shell
+docker-compose up
+```
+
+</TabItem>
+</Tabs>
+
+This will create a new `openfga` volume to store the SQLite database, run `openfga migrate` to configure the database and finally start the OpenFGA server.
+
+## Pre-shared key authentication
 
 To configure with pre-shared authentication and enabling TLS in http server with Docker.
 
@@ -254,7 +357,7 @@ docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:80
     --http-tls-key="/Users/myuser/key/server.key"
 ```
 
-## OIDC Authentication
+## OIDC authentication
 
 To configure with OIDC authentication and enabling TLS in http server with Docker.
 
@@ -271,7 +374,7 @@ docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:80
     --http-tls-key="/Users/myuser/key/server.key"
 ```
 
-## Enabling Profiling
+## Enabling profiling
 
 If you are enabling profiling, make sure you enable the corresponding port in docker. The default port is `3001`, but if you need to serve the profiler on a different port, you can do so by specifying the `--profiler-addr` flag. For example:
 
@@ -279,7 +382,7 @@ If you are enabling profiling, make sure you enable the corresponding port in do
 docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3002:3002 openfga/openfga run --profiler-enabled --profiler-addr :3002
 ```
 
-## Related Sections
+## Related sections
 
 <RelatedSection
   description="Check the following sections for more on how to use OpenFGA."

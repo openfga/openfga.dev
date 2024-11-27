@@ -35,11 +35,11 @@ Contextual Tuples should be used when modeling cases where a user's access to an
 
 </CardBox>
 
-## Before You Start
+## Before you start
 
 To follow this guide, you should be familiar with some <ProductConcept />.
 
-### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+### <ProductName format={ProductNameFormat.ShortForm}/> concepts
 
 - A <ProductConcept section="what-is-a-relation" linkName="Relation" />: Defined in the type definition of an authorization model, a relation is a string that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system.
 - A <ProductConcept section="what-is-a-check-request" linkName="Check Request" />: is a call to the <ProductName format={ProductNameFormat.ShortForm}/> check endpoint that returns whether the user has a certain relationship with an object.
@@ -221,7 +221,7 @@ By the end of this guide we would like to validate that:
   - at 12pm UTC, should be able to view transaction A
   - at 6pm UTC, should not be able to view transaction A
 
-## Step By Step
+## Step by step
 
 In order to solve for the requirements above, we will break the problem down to three steps:
 
@@ -233,7 +233,7 @@ In order to solve for the requirements above, we will break the problem down to 
 2. Extend the Authorization Model to [take time and ip address into consideration](#take-time-and-ip-address-into-consideration)
 3. [Use contextual tuples for context related checks](#use-contextual-tuples-for-context-related-checks).
 
-### Understand Relationships Without Contextual Data
+### Understand relationships without contextual data
 
 With the Authorization Model and relationship tuples shown above, <ProductName format={ProductNameFormat.ShortForm}/> has all the information needed to
 
@@ -266,9 +266,9 @@ Additionally, we will check that Mary, an account manager at a different branch 
 
 Note that so far, we have not prevented Anne from viewing the transaction outside office hours, let's see if we can do better.
 
-### Take Time And IP Address Into Consideration
+### Take time and IP address into consideration
 
-##### Extend The Authorization Model
+##### Extend the authorization model
 
 In order to add time and ip address to our authorization model, we will add appropriate types for them. We will have a "timeslot" and an "ip-address-range" as types, and each can have users related to it as a user.
 
@@ -466,7 +466,7 @@ On the "transaction" type:
 
 :::
 
-##### Add The Required Tuples To Mark That Anne Is In An Approved Context
+##### Add the required tuples to mark that Anne is in an approved context
 
 Now that we have updated our authorization model to take time and ip address into consideration, you will notice that Anne has lost access because nothing indicates that Anne is connecting from an approved ip address and time. You can verify that by issuing the following check:
 
@@ -527,7 +527,7 @@ If we have the above two tuples in the system, when checking whether Anne can vi
 
 <CheckRequestViewer user={'user:anne'} relation={'can_view'} object={'transaction:A'} allowed={true} />
 
-### Use Contextual Tuples For Context Related Checks
+### Use contextual tuples for context related checks
 
 Now that we know we can authorize based on present state, we have a different problem to solve. We are storing the tuples in the state in order for <ProductName format={ProductNameFormat.ShortForm}/> to evaluate them, which means that:
 
@@ -882,7 +882,7 @@ Contextual tuples:
 
 :::
 
-### Taking It A Step Further: Banks As A Service Authorization
+### Taking it a step further: Banks as a service authorization
 
 In order to keep this guide concise, we assumed you were modeling for a single bank. What if you were offering a multi-tenant service where each bank is a single tenant?
 

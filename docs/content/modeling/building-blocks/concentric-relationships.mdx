@@ -100,7 +100,7 @@ In addition, you will need to know the following:
 
 You need to know how to add users to groups and grant groups access to resources. [Learn more →](../user-groups.mdx)
 
-### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+### <ProductName format={ProductNameFormat.ShortForm}/> concepts
 
 - A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics
 - A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
@@ -112,11 +112,11 @@ You need to know how to add users to groups and grant groups access to resources
 
 <Playground />
 
-## Step By Step
+## Step by step
 
 With the current type definition, there isn't a way to indicate that all `editors` of a certain `document` are also automatically `viewers` of that document. So for a certain user, in order to indicate that they can both `edit` and `view` a certain `document`, two _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" />_ need to be created (one for `editor`, and another for `viewer`).
 
-### 01. Modify Our Model To Imply Editor As Viewer
+### 01. Modify our model to imply editor as viewer
 
 Instead of creating two _relationship tuples_, we can leverage concentric relationships by defining editors are viewers.
 
@@ -174,7 +174,7 @@ Our authorization model becomes the following:
 
 With this authorization model change, having an `editor` relationship with a certain document implies having a `viewer` relationship with that same document.
 
-### 02. Check That Editors Are Viewers
+### 02. Check that editors are viewers
 
 Since we had a _relationship tuple_ that indicates that **bob** is an `editor` of **document:meeting_notes.doc**, this means **bob** is now implicitly a `viewer` of **document:meeting_notes.doc**.
 If we now check: **is bob a viewer of document:meeting_notes.doc?** we would get the following:

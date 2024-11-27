@@ -8,6 +8,7 @@ description: An overview of how to use the Check, Read, Expand, and ListObject A
 import {
   AuthzModelSnippetViewer,
   CheckRequestViewer,
+  BatchCheckRequestViewer,
   DocumentationNotice,
   ExpandRequestViewer,
   ListObjectsRequestViewer,
@@ -26,7 +27,7 @@ import {
 
 In this guide you will learn the uses of and limitations for the Check, Read, Expand, and ListObjects API endpoints.
 
-## Before You Start
+## Before you start
 
 In order to understand this guide correctly you must be familiar with some <ProductConcept /> and know how to develop the things that we will list below.
 
@@ -94,11 +95,11 @@ and `writer`. All writers are readers. `bob` has a `writer` relationship with `d
 
 In addition, you will need to know the following:
 
-### Direct Access
+### Direct access
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](../modeling/direct-access.mdx)
 
-### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+### <ProductName format={ProductNameFormat.ShortForm}/> concepts
 
 - A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics
 - A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
@@ -110,11 +111,11 @@ You need to know how to create an authorization model and create a relationship 
 
 ## Check
 
-### What Is It For?
+### What is it for?
 
 The [Check API](/api/service#Relationship%20Queries/Check) is an API endpoint that returns whether the user has a certain relationship with an object. <ProductName format={ProductNameFormat.ShortForm}/> will resolve all prerequisite relationships to establish whether a relationship exists.
 
-### When To Use?
+### When to use?
 
 Check can be called if you need to establish whether a particular user has a specific relationship with a particular object.
 
@@ -127,7 +128,7 @@ The <ProductName format={ProductNameFormat.ShortForm}/> API will return `true` b
 - every `writer` is also a `reader`
 - `bob` is a `writer` for `document:planning`
 
-### Caveats And When Not To Use It
+### Caveats and when not to use it
 
 Check is designed to answer the question "Does user:X have relationship Y with object:Z?". It is _not_ designed to answer the following questions:
 
@@ -135,13 +136,63 @@ Check is designed to answer the question "Does user:X have relationship Y with o
 - "What are the objects that userX has relationship Y with?"
 - "Why does user:X have relationship Y with object:Z?"
 
+## Batch Check
+
+### What is it for?
+
+The [Batch Check API](/api/service#Relationship%20Queries/BatchCheck) is an API endpoint that allows you to check multiple user-object-relationship combinations in a single request. 
+
+### When to use?
+
+Batching authorization checks together in a single request significantly reduces overall network latency.
+
+Two scenarios are common to use Batch Check:
+1. When determining if the user has access to a list of objects (such as [Option 1 in Search with Permissions](./search-with-permissions.mdx#option-1-search-then-check)), filter and sort on your database, then call `/batch-check`. Repeat to perform pagination.
+2. When determining fields on a web page the user has access to, call `/batch-check` for every relation necessary to show/hide each field.  
+
+For example, you can call Batch Check to determine whether `bob` has `can_view_name`, `can_view_dob`, and `can_view_ssn` relationships with `patient_record:1`.
+
+<BatchCheckRequestViewer
+  checks={[
+    {
+      user: 'user:bob',
+      relation: 'can_view_name',
+      object: 'patient_record:1',
+      correlation_id: '1',
+      allowed: true
+    },
+    {
+      user: 'user:bob',
+      relation: 'can_view_dob',
+      object: 'patient_record:1',
+      correlation_id: '2',
+      allowed: true
+    },
+    {
+      user: 'user:bob',
+      relation: 'can_view_ssn',
+      object: 'patient_record:1',
+      correlation_id: '3',
+      allowed: false
+    }
+  ]}
+  skipSetup={true}
+/>
+
+The <ProductName format={ProductNameFormat.ShortForm}/> API will return `true` depending on the level of access assigned to that user and the implied relationships inherited in the authorization model.
+
+
+### Caveats and when not to use it
+
+If you are making less than 10 checks, it may be faster to call the [Check API](/api/service#Relationship%20Queries/Check) in parallel instead of Batch Check. 
+
 ## Read
 
 ### What Is It For?
 
 The [Read API](/api/service#Relationship%20Tuples/Read) is an API endpoint that returns the relationship tuples that are stored in the system that satisfy a query.
 
-### When To Use?
+### When to use?
 
 Read can be called if you need to get all the stored relationship tuples that relate:
 
@@ -149,7 +200,7 @@ Read can be called if you need to get all the stored relationship tuples that re
 2. [a particular user to any objects of a specific type with any relation](#2-a-particular-user-to-any-objects-of-a-specific-type-with-any-relation)
 3. [a particular object to any user with a particular relation](#3-a-particular-object-to-any-user-with-a-particular-relation)
 
-#### 1. A Particular User To Any Objects Of A Specific Type With A Particular Relation
+#### 1. A particular user to any objects of a specific type with a particular relation
 
 For example, to query all the stored relationship tuples `bob` has a `writer` relationship with, one can ask
 
@@ -166,7 +217,7 @@ For example, to query all the stored relationship tuples `bob` has a `writer` re
   ]}
 />
 
-#### 2. A Particular User To Any Objects Of A Specific Type With Any Relation
+#### 2. A particular user to any objects of a specific type with any relation
 
 For example, to query all the stored relationship tuples in which `bob` is related to objects of type `document` as any relation, one can issue the following call:
 
@@ -182,7 +233,7 @@ For example, to query all the stored relationship tuples in which `bob` is relat
   ]}
 />
 
-#### 3. A Particular Object To Any User With A Particular Relation
+#### 3. A particular object to any user with a particular relation
 
 For example, to query all the stored relationship tuples in which any user is related to `document:planning` as a `writer`, one can issue the following call:
 
@@ -198,7 +249,7 @@ For example, to query all the stored relationship tuples in which any user is re
   ]}
 />
 
-### Caveats And When Not To Use It
+### Caveats and when not to use it
 
 The Read API will only return all the stored relationships that match the query specification.
 It does not expand or traverse the graph by taking the authorization model into account.
@@ -215,12 +266,12 @@ Although bob is a writer to document:planning and every writer is also a reader,
 
 ## Expand
 
-### What Is It For?
+### What is it for?
 
 The [Expand API](/api/service#/Relationship%20Queries/Expand) returns all users (including users and usersets) that have a specific relationship with an object.
 The response is represented as a tree of users or usersets. To build the full graph of access, you would need to recursively call expand on the leaves returned from the previous expand call.
 
-### When To Use?
+### When to use?
 
 Expand is used for debugging and to understand why a user has a particular relationship with a specific object.
 
@@ -277,13 +328,13 @@ From there, we will learn that
 
 ## ListObjects
 
-### What Is It For?
+### What is it for?
 
 The [ListObjects API](/api/service#/Relationship%20Queries/ListObjects) is an API endpoint that returns the list of all the objects of a particular type that a specific user has a specific relationship with.
 
 It provides a solution to the [Search with Permissions (Option 3)](./search-with-permissions.mdx#option-3-build-a-list-of-ids-then-search) use case for access-aware filtering on small object collections.
 
-### When To Use?
+### When to use?
 
 Use the ListObjects API to get what objects a user can see based on the relationships they have. See [Search with Permissions](./search-with-permissions.mdx) for more guidance.
 
@@ -312,11 +363,11 @@ If the number of objects of that type is high, you should set a high value for `
 
 ## ListUsers
 
-### What Is It For?
+### What is it for?
 
 The [ListUsers API](/api/service#/Relationship%20Queries/ListUsers) is an API endpoint that that returns all users of a given type that have a specified relationship with an object.
 
-### When To Use?
+### When to use?
 
 Use the ListUsers API to get which users have a relation to a specific object. 
 

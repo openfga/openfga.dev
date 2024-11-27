@@ -27,20 +27,20 @@ The services responsible for performing these actions are:
 
 To return the set of results that match the user's search query, you will need to get the intersection of the results from the services above.
 
-## Possible Options
+## Possible options
 
 There are three possible ways to do this:
 
-### Option 1: Search, Then Check
+### Option 1: Search, then check
 
-Pre-filter, then call <ProductName format={ProductNameFormat.ShortForm}/> Check endpoint.
+Pre-filter, then call <ProductName format={ProductNameFormat.ShortForm}/> Batch Check endpoint.
 
 1. Filter and sort on your database.
-1. Call [`/check`](./relationship-queries.mdx#check) in parallel on each object returned from your database.
+1. Call [`/batch-check`](./relationship-queries.mdx#batch-check) to check access for multiple objects in a single request.
 1. Filter out objects the user does not have access to.
 1. Return the filtered result to the user.
 
-### Option 2: Build A Local Index From Changes Endpoint, Search, Then Check
+### Option 2: Build a local index from changes endpoint, search, then check
 
 Consume the `GET /changes` endpoint to create a local index you can use to do an intersection on the two sets of results.
 
@@ -49,7 +49,7 @@ Consume the `GET /changes` endpoint to create a local index you can use to do an
 1. Build the intersection between the objects in your database and the flattened/expanded state you created.
 1. You can then call `/check` on each resource in the resulting set before returning the response to filter out any resource with permissions revoked but whose authorization data has not made it into your index yet.
 
-### Option 3: Build A List Of IDs, Then Search
+### Option 3: Build a list of IDs, then search
 
 Call the `GET /list-objects` API to get a list of object IDs the user has access to, then run the filter restricting by the object IDs returned.
 
@@ -59,7 +59,7 @@ Call the `GET /list-objects` API to get a list of object IDs the user has access
 
 Be aware that the performance characteristics of the ListObjects endpoint vary drastically depending on the model complexity, number of tuples, and the relations it needs to evaluate. Relations with `and` or `but not` are more expensive to evaluate than relations with `or`.
 
-## Choosing The Best Option
+## Choosing the best option
 
 Which option to choose among the three listed above depends on the following criteria:
 
@@ -98,6 +98,12 @@ The recommended option for this case is to use **[Local Index from Changes Endpo
 - _Search then Check_ would also not be ideal, as you will be retrieving and checking against a lot of items and discarding most of them.
 
 Use case: Searching in Google Drive, where the list of documents and folders that a user has access to can be very high, but it still is a small percentage of the entire set of documents in Google Drive.
+
+You can consider the following strategies to transform this scenario to a **type B** one:
+
+- Duplicate logic from the authorization model when querying your database. For example, in a multi-tenant scenario, you can filter all resources based on the tenant the user is logged-in to. Duplicating logic from the authorization model is not ideal, but it can be a reasonable trade-off.
+
+- Retrieve a higher-level resource ID list with lower cardinality for efficient filtering. For example, in a document management application, first obtain the list of accessible folders for the user. You can then filter documents by these folders in your database query. This approach increases the likelihood that the user can access the documents in those folders, optimizing the query’s effectiveness.
 
 **E.** The _number of objects of a certain type the user could have access to_ is _high_, and the _percentage of the total objects that the user can have access to_ is also _high_.
 

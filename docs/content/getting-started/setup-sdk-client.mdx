@@ -142,7 +142,7 @@ export FGA_MODEL_ID=YOUR_MODEL_ID # optional, can be overridden per request, lat
 
 </Tabs>
 
-## Using Shared Key Authentication
+## Using shared key authentication
 
 If you want to use shared key authentication, you need to generate a random string that will work as secret and set that key when building your OpenFGA server. Then, when building the client, set it as environment variable `FGA_API_TOKEN`.
 
@@ -297,7 +297,7 @@ export FGA_API_TOKEN=YOUR_API_TOKEN
 </TabItem>
 </Tabs>
 
-## Using Client Credentials Flow
+## Using client credentials flow
 
 :::info Note
 The OpenFGA server does not support the client credentials flow, however if you or your OpenFGA provider have implemented a client credentials wrapper on top, follow the instructions here to have the OpenFGA client handle the token exchange for you.
