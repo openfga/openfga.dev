@@ -22,10 +22,10 @@ function readChangesRequestViewer(lang: SupportedLanguage, opts: ReadChangesRequ
         params = `?type=${opts.type}`;
       }
       if (opts.pageSize) {
-        params = `${params === '' ? '?' : (params + '&')}` + `page_size=${opts.pageSize}`;
+        params = `${params === '' ? '?' : params + '&'}` + `page_size=${opts.pageSize}`;
       }
       if (opts.continuationToken) {
-        params = `${params === '' ? '?' : (params + '&')}` + `continuation_token=${opts.continuationToken}`;
+        params = `${params === '' ? '?' : params + '&'}` + `continuation_token=${opts.continuationToken}`;
       }
       return `curl -X GET $FGA_API_URL/stores/$FGA_STORE_ID/changes${params} \\
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
