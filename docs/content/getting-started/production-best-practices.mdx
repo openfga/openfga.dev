@@ -67,6 +67,7 @@ The following table enumerates the server's concurrency specific settings:
 | --max-concurrent-reads-for-check        | OPENFGA_MAX_CONCURRENT_READS_FOR_CHECK        | maxConcurrentReadsForCheck       |
 | --resolve-node-limit                    | OPENFGA_RESOLVE_NODE_LIMIT                    | resolveNodeLimit                 |
 | --resolve-node-breadth-limit            | OPENFGA_RESOLVE_NODE_BREADTH_LIMIT            | resolveNodeBreadthLimit          |
+| --max-concurrent-checks-per-batch-check | OPENFGA_MAX_CONCURRENT_CHECKS_PER_BATCH_CHECK | maxConcurrentChecksPerBatchCheck |
 
 
 Determining the right values for these settings will be based on a variety of factors including, but not limited to, the database specific deployment topology, the FGA model(s) involved, and the relationship tuples in the system. However, here are some high-level guidelines:
