@@ -1,6 +1,7 @@
 ---
 title: Perform a Check
 sidebar_position: 4
+toc_max_heading_level: 4
 slug: /getting-started/perform-check
 description: Checking if a user is authorized to perform an action on a resource
 ---
@@ -206,6 +207,18 @@ To check whether user `user:anne` has multiple relationships `writer` and `reade
 />
 
 The result will include an `allowed` field for each authorization check that will return `true` if the relationship exists and `false` if the relationship does not exist.
+
+#### Configuring Batch Check
+BatchCheck has two available configuration options:
+
+1. Limit the number of checks allowed in a single BatchCheck request.
+    * Environment variable: `OPENFGA_MAX_CHECKS_PER_BATCH_CHECK`
+    * Command line flag: `--max-checks-per-batch-check`
+    * If more items are received in a single request than allowed by this limit, the API will return an error.
+
+2. Limit the number of Checks which can be resolved concurrently
+    * Environment variable: `OPENFGA_MAX_CONCURRENT_CHECKS_PER_BATCH_CHECK`
+    * Command line flag: `--max-concurrent-checks-per-batch-check`
 
 ## Related Sections
 
