@@ -23,7 +23,7 @@ Welcome to the November edition of Fine Grained News! As we enter the final stre
 
 ## Coming Up
 
-**SDK Updates:** We will be updating the SDKs next to take advantage of the new endpoint, starting first with Python and JavaScript. If you want to see an SDK prioritized, let us know!
+**SDK Updates:** We will be updating the SDKs next to take advantage of the new endpoint, starting  with Python and JavaScript. If you want to see an SDK prioritized, let us know!
 
 Check out our roadmap to see what we're working on. Feature requests and ideas can be shared in [GitHub Discussions](https://github.com/orgs/openfga/discussions).
 
@@ -56,7 +56,16 @@ Check out our roadmap to see what we're working on. Feature requests and ideas c
 <p align="center">
   <em>Tyler Nix</em>
 
-* **OpenFGA Offsite:**  <--Placeholder--> 	<!-- Add team photo(s)and community members photos-->
+* **OpenFGA Offsite:**  <--Placeholder Text--> 	<!-- Add team photo(s)and community members photos-->
+<div style="text-align: center;">
+  <img src="../static/img/blog/fgn-2024-11-chicago-offsite1.jpg" alt="OpenFGA team offsite in Chicago, Illinois" style="display: inline-block; margin: 0 10px;" />
+  <img src="../static/img/blog/fgn-2024-11-chicago-offsite2.jpg" alt="OpenFGA team offsite in Chicago, Illinois" style="display: inline-block; margin: 0 10px;" />
+  <img src="../static/img/blog/fgn-2024-11-chicago-offsite3.jpg" alt="OpenFGA team offsite in Chicago, Illinois" style="display: inline-block; margin: 0 10px;" />
+</div>
+<p style="text-align: center; font-style: italic;">
+  The team that brings you OpenFGA meeting in Chicago, Illinois!
+</p>
+
 
 * **New Modeling Demos Available!:** Learn how to model fine-grained authorization  in OpenFGA's domain-specific language step-by-step with our [new demo video series](https://www.youtube.com/playlist?list=PLUR5l-oTFZqWaDdhEOVt_IfPOIbKo1Ypt)! Starting with the basics and gradually adding complexity, this playlist is your guide to mastering OpenFGA modeling.
 
