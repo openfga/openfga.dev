@@ -55,8 +55,9 @@ Check out our roadmap to see what we're working on. Feature requests and ideas c
 </p>
 <p align="center">
   <em>Tyler Nix</em>
+</p>
 
-* **OpenFGA Offsite:**  <--Placeholder Text--> 	<!-- Add team photo(s)and community members photos-->
+* **OpenFGA Offsite:**  [Placeholder text. Add details here]<!--Placeholder. Add team photo(s)and community members photos-->
 <div style="text-align: center;">
   <img src="../static/img/blog/fgn-2024-11-chicago-offsite1.jpg" alt="OpenFGA team offsite in Chicago, Illinois" style="display: inline-block; margin: 0 10px;" />
   <img src="../static/img/blog/fgn-2024-11-chicago-offsite2.jpg" alt="OpenFGA team offsite in Chicago, Illinois" style="display: inline-block; margin: 0 10px;" />
@@ -65,7 +66,6 @@ Check out our roadmap to see what we're working on. Feature requests and ideas c
 <p style="text-align: center; font-style: italic;">
   The team that brings you OpenFGA meeting in Chicago, Illinois!
 </p>
-
 
 * **New Modeling Demos Available!:** Learn how to model fine-grained authorization  in OpenFGA's domain-specific language step-by-step with our [new demo video series](https://www.youtube.com/playlist?list=PLUR5l-oTFZqWaDdhEOVt_IfPOIbKo1Ypt)! Starting with the basics and gradually adding complexity, this playlist is your guide to mastering OpenFGA modeling.
 
