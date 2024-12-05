@@ -314,6 +314,11 @@ const sidebars = {
               label: 'Migrating Relations',
               id: 'content/modeling/migrating/migrating-relations',
             },
+            {
+              type: 'doc',
+              label: 'Migrating Models',
+              id: 'content/modeling/migrating/migrating-models',
+            },
           ],
         },
       ],
