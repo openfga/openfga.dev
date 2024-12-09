@@ -75,7 +75,7 @@ Check out our roadmap to see what we're working on. Feature requests and ideas c
 
 Our next meeting is on Thursday, December 12, 2024. If you can’t join the meetings live, our [latest month's video](https://youtu.be/4MGF4rTzhbA?si=iGcoZTw8T99E0LKs) will always be posted on our [YouTube channel](https://www.youtube.com/@OpenFGA)! 
 
-* **Blogs and Videos for Auth Fans:**  
+* **Blogs and Videos for AuthZ Fans:**  
   * **Granting TTL based permissions in OpenFGA:** Implement TTL-based permissions in OpenFGA for time-limited access control. [Read more on Medium...](https://medium.com/@shruti1810/granting-ttl-based-permissions-in-openfga-2ed2073931c3)
 
   * **Overcoming Security Challenges in Protecting Shared Generative AI Environments:** Explore solutions for ensuring secure, scalable, and efficient multi-tenancy in generative AI environments. [Read more on Medium...](https://towardsdatascience.com/overcoming-security-challenges-in-protecting-shared-generative-ai-environments-1ffb27da1bde)
