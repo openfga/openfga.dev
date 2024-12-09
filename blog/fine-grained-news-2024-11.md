@@ -14,109 +14,41 @@ Welcome to the November edition of Fine Grained News! As we enter the final stre
 
 🌟 **We just hit 3,000 stars on the OpenFGA repo!** 🌟 Because of this great community, we've just this incredible milestone! Thank you so much for all the support you've shown this project. Let's keep the momentum going! If you haven't yet, we'd greatly appreciate you [starring the repo](https://github.com/openfga/openfga) to help push us toward 4,000 stars and grow our amazing community! 
 
-<div style={{textAlign: 'center'}}>
-  <img 
-    src="../static/img/blog/fgn-2024-11-stars.png" 
-    alt="Celebrating OpenFGA reaching 3,000 GitHub stars" 
-    style={{display: 'block', margin: 'auto'}} 
-  />
-</div>
+![Celebrating OpenFGA reaching 3,000 GitHub stars](../static/img/blog/fgn-2024-11-stars.png)
 
-## **Just Shipped**
+## Just Shipped
 
-**Batch Check API:**  We've launched Batch Check API in OpenFGA v1.8.0! Batching authorization checks together in a single request will significantly reduce roundtrip network latency. In addition, v1.8.0 introduces support for Contextual Tuples in the `Expand` API, along with several performance improvements. [Read more in the Changelog...](https://github.com/openfga/openfga/compare/v1.7.0...v1.8.0)
+**Batch Check API:**  We've launched Batch Check API in OpenFGA v1.8.0. Batching authorization checks together in a single request will significantly reduce roundtrip network latency. In addition, v.1.8.0 also added support for Contextual Tuples in the `Expand` API, and included other performance improvements. [Read more in the Changelog...](https://github.com/openfga/openfga/compare/v1.7.0...v1.8.0)
 
 ## **Coming Up**
 
-**SDK Updates:** Next, we'll be updating our SDKs to take advantage of the new endpoint, starting with Python and JavaScript. If you'd like to see another SDK prioritized, let us know!
+**SDK Updates:** We will be updating the SDKs next to take advantage of the new BatchCheck, starting  with Python and JavaScript. If you want to see an SDK prioritized, let us know!
 
-Check out our [roadmap](https://github.com/orgs/openfga/projects/1) to see what we're working on. Share your ideas and feature requests in [GitHub Discussions](https://github.com/orgs/openfga/discussions).
+Check out our roadmap to see what we're working on. Feature requests and ideas can be shared in [GitHub Discussions](https://github.com/orgs/openfga/discussions).
 
 ## **Community Highlights**
 
 ### **OpenFGA at KubeCon**
 In November, [Andres Aguiar](https://www.linkedin.com/in/andresaguiar/) represented OpenFGA at KubeCon/CloudNativeCon. OpenFGA had a kiosk in the Project Pavilion, where Andres delivered a lightning talk and participated in *The Policy Engines Showdown* with other authorization solution providers. [Watch the panel discussion...](https://www.youtube.com/watch?v=AVA32aYObRE)
 
-<div style={{textAlign: 'center'}}>
-  <figure>
-    <img 
-      src="../static/img/blog/fgn-2024-11-kubecon1.jpg" 
-      alt="Andres Aguiar at OpenFGA's KubeCon booth" 
-      style={{display: 'block', margin: 'auto'}} 
-    />
-  </figure>
-  <figure>
-    <img 
-      src="../static/img/blog/fgn-2024-11-kubecon2.jpg" 
-      alt="Andres Aguiar participating in The Policy Engines Showdown" 
-      style={{display: 'block', margin: 'auto'}} 
-    />
-    <figcaption style={{textAlign: 'center'}}>
-      <em>Andres Aguiar representing OpenFGA at KubeCon</em>
-    </figcaption>
-  </figure>
-</div>
+![Andres Aguiar at OpenFGA's KubeCon booth](../static/img/blog/fgn-2024-11-kubecon1.jpg)
+![Andres Aguiar participating in The Policy Engines Showdown](../static/img/blog/fgn-2024-11-kubecon2.jpg)
+
+*Andres Aguiar representing OpenFGA at KubeCon*
 
 ### **OpenFGA in Italy**
 [Andrea Chiarelli](https://www.linkedin.com/in/andreachiarelli/) presented *Authorize in the Cloud with OpenFGA* at Cloud Day 2024 in Milan.
 
-<div style={{textAlign: 'center'}}>
-  <figure>
-    <img 
-      src="../static/img/blog/fgn-2024-11-andrea-chiarelli1.png" 
-      alt="Andrea Chiarelli presenting OpenFGA in Milan" 
-      style={{display: 'block', margin: 'auto'}} 
-    />
-  </figure>
-  <figure>
-    <img 
-      src="../static/img/blog/fgn-2024-11-andrea-chiarelli2.png" 
-      alt="Andrea Chiarelli during his talk at Cloud Day 2024" 
-      style={{display: 'block', margin: 'auto'}} 
-    />
-    <figcaption style={{textAlign: 'center'}}>
-      <em>Andrea Chiarelli presenting at Cloud Day 2024</em>
-    </figcaption>
-  </figure>
-</div>
+![Andrea Chiarelli presenting OpenFGA in Milan](../static/img/blog/fgn-2024-11-andrea-chiarelli1.png)
+![Andrea Chiarelli during his talk at Cloud Day 2024](../static/img/blog/fgn-2024-11-andrea-chiarelli2.png)
+
+*Andrea Chiarelli presenting at Cloud Day 2024*
 
 ### **OpenFGA Offsite**
 The OpenFGA team gathered for a productive offsite in Chicago, Illinois.
 
-<div style={{textAlign: 'center'}}>
-  <figure>
-    <img 
-      src="../static/img/blog/fgn-2024-11-chicago-offsite1.jpg" 
-      alt="OpenFGA team brainstorming during the offsite in Chicago" 
-      style={{display: 'block', margin: 'auto'}} 
-    />
-    <figcaption style={{textAlign: 'center'}}>
-      <em>Brainstorming session during the offsite</em>
-    </figcaption>
-  </figure>
-  
-  <figure>
-    <img 
-      src="../static/img/blog/fgn-2024-11-chicago-offsite2.jpg" 
-      alt="OpenFGA team enjoying team-building activities in Chicago" 
-      style={{display: 'block', margin: 'auto'}} 
-    />
-    <figcaption style={{textAlign: 'center'}}>
-      <em>Team building activities during the offsite</em>
-    </figcaption>
-  </figure>
-  
-  <figure>
-    <img 
-      src="../static/img/blog/fgn-2024-11-chicago-offsite3.jpg" 
-      alt="OpenFGA team group photo in Chicago" 
-      style={{display: 'block', margin: 'auto'}} 
-    />
-    <figcaption style={{textAlign: 'center'}}>
-      <em>Group photo of the OpenFGA team in Chicago</em>
-    </figcaption>
-  </figure>
-</div>
+![OpenFGA team group photo in Chicago](../static/img/blog/fgn-2024-11-chicago-offsite-team-photo.png)
+*Group photo of the OpenFGA team in Chicago*
 
 ---
 
@@ -153,31 +85,15 @@ A huge thank you to our community for your incredible participation during Hackt
 
 We welcome contributions of all skill levels. Start with our [Good First Issues](https://github.com/openfga/openfga/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) for beginner-friendly tasks, or explore the [Issue queue](https://github.com/openfga/openfga/issues) for more advanced challenges. Learn how to contribute with our [Contribution Guide](https://github.com/openfga/.github/blob/main/CONTRIBUTING.md).
 
-<div style={{textAlign: 'center'}}>
-  <figure>
-    <img 
-      src="../static/img/blog/fgn-2024-11-open-fga-ranks-5th.jpeg" 
-      alt="CNCF projects ranked by commits during Hacktoberfest" 
-      style={{display: 'block', margin: 'auto'}} 
-    />
-    <figcaption style={{textAlign: 'center'}}>
-      <em>CNCF Projects Ranked by Commits during Hacktoberfest</em>
-    </figcaption>
-  </figure>
-</div>
+![CNCF projects ranked by commits during Hacktoberfest](../static/img/blog/fgn-2024-11-open-fga-ranks-5th.jpeg)
+*CNCF Projects Ranked by Commits during Hacktoberfest*
 
 ---
 
 ### **Follow OpenFGA on LinkedIn**
 Connect with a growing community of fine-grained authorization enthusiasts and expand your professional network by following our new [LinkedIn](http://linkedin.com/company/openfga) page!
 
-<div style={{textAlign: 'center'}}>
-  <img 
-    src="../static/img/blog/fgn-2024-11-linkedin.png" 
-    alt="OpenFGA's LinkedIn page" 
-    style={{display: 'block', margin: 'auto'}} 
-  />
-</div>
+![OpenFGA's LinkedIn page](../static/img/blog/fgn-2024-11-linkedin.png)
 
 ## **See You Next Month:**
 
