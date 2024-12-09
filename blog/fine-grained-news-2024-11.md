@@ -71,7 +71,7 @@ Check out our roadmap to see what we're working on. Feature requests and ideas c
 
 * **Monthly Community Meeting:** Join us for our monthly [Community Meetings](https://github.com/openfga/community/blob/main/community-meetings.md#:~:text=OpenFGA%20Community%20Meetings), held on the second Thursday of every month at [11 AM Eastern Time (US)](https://www.worldtimebuddy.com/?qm=1&lid=12,100,5,6,8&h=5&sln=11-12&hf=1). 
 
-  November's Community Meeting featured demos by [Sebastian Doll](https://www.linkedin.com/in/katallaxie/) of ZEISS who shared their OpenAPI extension/OpenFGA integration and [Justin Cohen](https://www.linkedin.com/in/justincoh/) showing a demo of Batch Check  
+  November's Community Meeting featured demos by [Sebastian Doll](https://www.linkedin.com/in/katallaxie/) of ZEISS who shared their Terraform/OpenFGA integration and [Justin Cohen](https://www.linkedin.com/in/justincoh/) showing a demo of Batch Check  
 
 Our next meeting is on Thursday, December 12, 2024. If you can’t join the meetings live, our [latest month's video](https://youtu.be/4MGF4rTzhbA?si=iGcoZTw8T99E0LKs) will always be posted on our [YouTube channel](https://www.youtube.com/@OpenFGA)! 
 
