@@ -23,7 +23,7 @@ Welcome to the November edition of Fine Grained News! As we enter the final stre
 
 ## Coming Up
 
-**SDK Updates:** We will be updating the SDKs next to take advantage of the new endpoint, starting  with Python and JavaScript. If you want to see an SDK prioritized, let us know!
+**SDK Updates:** We will be updating the SDKs next to take advantage of the new BatchCheck, starting  with Python and JavaScript. If you want to see an SDK prioritized, let us know!
 
 Check out our roadmap to see what we're working on. Feature requests and ideas can be shared in [GitHub Discussions](https://github.com/orgs/openfga/discussions).
 
