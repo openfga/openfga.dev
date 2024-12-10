@@ -22,7 +22,7 @@ Welcome to the November edition of Fine Grained News! As we enter the final stre
 
 For more about the new OPENFGA_CHECK_ITERATOR_TTL and OPENFGA_CHECK_CACHE_LIMIT flags, run `./openfga run --help`  
 
-**Batch Check API:**  We've launched Batch Check API in OpenFGA v1.8.0. Batching authorization checks together in a single request will significantly reduce roundtrip network latency. In addition, v.1.8.0 also added support for Contextual Tuples in the `Expand` API, and included other performance improvements. [Read more in the Changelog...](https://github.com/openfga/openfga/compare/v1.7.0...v1.8.0)
+**Batch Check API:**  We've launched Batch Check API in OpenFGA v1.8.0. Batching authorization checks together in a single request will significantly reduce roundtrip network latency. In addition, v.1.8.0 also added support for Contextual Tuples in the `Expand` API, and included other performance improvements. [Read more in the Changelog...](https://github.com/openfga/openfga/releases/tag/v1.8.0)
 
 ## **Coming Up**
 
