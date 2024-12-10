@@ -46,31 +46,27 @@ In November, [Andres Aguiar](https://www.linkedin.com/in/andresaguiar/) represen
 *Andrea Chiarelli presenting at Cloud Day 2024*
 
 ### **OpenFGA Offsite**
-The OpenFGA team gathered for a productive offsite in Chicago, Illinois.
+The team that works hard to bring you OpenFGA met in Chicago this November for a fun and productive offsite, diving deep into our vision, customer needs, and the roadmap ahead.
 
 ![OpenFGA team group photo in Chicago](../static/img/blog/fgn-2024-11-chicago-offsite-team-photo.png)
 
 *The OpenFGA team in Chicago*
 
----
-
 ### **New Modeling Demos Available!**
 Learn how to model fine-grained authorization in OpenFGA's domain-specific language step-by-step with our [new demo video series](https://www.youtube.com/playlist?list=PLUR5l-oTFZqWaDdhEOVt_IfPOIbKo1Ypt)! Starting with the basics and gradually adding complexity, this playlist is your guide to mastering OpenFGA modeling.
-
----
 
 ### **Monthly Community Meeting**
 
 Join our vibin-depth monthly community discussions every second Thursday at [11 AM Eastern Time (US)](https://www.worldtimebuddy.com/?qm=1&lid=12,100,5,8&h=5&sln=11-12&hf=1). Check out our [meeting details](https://github.com/openfga/community/blob/main/community-meetings.md#:~:text=OpenFGA%20Community%20Meetings) for more information.
 
 November's highlights included:
-- [Sebastian Döll](https://www.linkedin.com/in/katallaxie/) from ZEISS showcasing their Terraform/OpenFGA integration
-- [Justin Cohen](https://www.linkedin.com/in/justincoh/) demonstrating the new Batch Check functionality
+- [Sebastian Döll](https://www.linkedin.com/in/katallaxie/) from ZEISS showcasing their Terraform/OpenFGA integration.
+- [Justin Cohen](https://www.linkedin.com/in/justincoh/) demonstrating the new Batch Check functionality.
 
 **Join us Thursday, December 12, 2024** for our next meeting. Can't make it? Catch up on our [latest recording](https://youtu.be/4MGF4rTzhbA?si=iGcoZTw8T99E0LKs) or browse previous sessions on our [YouTube channel](https://www.youtube.com/@OpenFGA).
 
 ### **Blogs and Videos for AuthZ Fans:**  
-  * **Granting TTL based permissions in OpenFGA:** Implement TTL-based permissions in OpenFGA for time-limited access control. [Read more on Medium...](https://medium.com/@shruti1810/granting-ttl-based-permissions-in-openfga-2ed2073931c3)
+ - **Granting TTL based permissions in OpenFGA:** Implement TTL-based permissions in OpenFGA for time-limited access control. [Read more on Medium...](https://medium.com/@shruti1810/granting-ttl-based-permissions-in-openfga-2ed2073931c3)
 
 - **Overcoming Security Challenges in Protecting Shared Generative AI Environments:** Explore solutions for ensuring secure, scalable, and efficient multi-tenancy in generative AI environments. [Read more on Medium...](https://towardsdatascience.com/overcoming-security-challenges-in-protecting-shared-generative-ai-environments-1ffb27da1bde)
 
@@ -84,7 +80,7 @@ November's highlights included:
 
 ## **Announcements**
 
-### OpenFGA Rankked #5 in CNCF Project Contributions!**
+### **OpenFGA Rankked #5 in CNCF Project Contributions!**
 Thanks to our amazing community, OpenFGA soared to become the 5th most active CNCF project during Hacktoberfest in October! Your contributions made this possible, and hope to continue the engagement!
 
 Ready to join our community of contributors? We have opportunities for every skill level:
@@ -92,15 +88,13 @@ Ready to join our community of contributors? We have opportunities for every ski
 - Take on more complex challenges in our [Issue queue](https://github.com/openfga/openfga/issues).
 - Follow our [Contribution Guide](https://github.com/openfga/.github/blob/main/CONTRIBUTING.md) to get started.
 
-
 ![CNCF projects ranked by commits during Hacktoberfest](../static/img/blog/fgn-2024-11-open-fga-ranks-5th.jpeg)
 
 *CNCF Projects Ranked by Commits during Hacktoberfest*
 
----
-
 ### **Follow OpenFGA on LinkedIn**
-Connect with a growing community of fine-grained authorization enthusiasts and expand your professional network by following our new [LinkedIn](http://linkedin.com/company/openfga) page!
+Connect with a growing community of fine-grained authorization enthusiasts and expand your professional network by following our new <!-- markdown-link-check-disable -->
+[OpenFGA LinkedIn](http://linkedin.com/company/openfga)<!-- markdown-link-check-enable --> page!
 
 ![OpenFGA's LinkedIn page](../static/img/blog/fgn-2024-11-linkedin.png)
 
