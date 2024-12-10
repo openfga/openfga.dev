@@ -77,7 +77,7 @@ Can't make it? Catch up on our [latest recording](https://youtu.be/4MGF4rTzhbA?s
 
 ## **Announcements**
 
-**OpenFGA Rankked #5 in CNCF Project Contributions!**
+**OpenFGA Ranked #5 in CNCF Project Contributions!**
 Thanks to our amazing community, OpenFGA soared to become the 5th most active CNCF project during Hacktoberfest in October! Your contributions made this possible, and hope to continue the engagement!
 
 Ready to join our community of contributors? We have opportunities for every skill level:
