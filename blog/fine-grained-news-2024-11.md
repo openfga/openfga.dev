@@ -18,6 +18,10 @@ Welcome to the November edition of Fine Grained News! As we enter the final stre
 
 ## Just Shipped
 
+**v1.8.1:** This release focuses on performance improvements and enhanced monitoring capabilities, including two new flags for better control over check operations, improved performance for TTU relationships with set operations, and expanded metrics tracking with duration measurements. The release also adds deduplication logic to BatchCheck API and introduces new logging fields for authz calls. [Read more in the Changelog...](https://github.com/openfga/openfga/compare/v1.8.0...v1.8.1)
+
+For more about the new OPENFGA_CHECK_ITERATOR_TTL and OPENFGA_CHECK_CACHE_LIMIT flags, run `./openfga run --help`  
+
 **Batch Check API:**  We've launched Batch Check API in OpenFGA v1.8.0. Batching authorization checks together in a single request will significantly reduce roundtrip network latency. In addition, v.1.8.0 also added support for Contextual Tuples in the `Expand` API, and included other performance improvements. [Read more in the Changelog...](https://github.com/openfga/openfga/compare/v1.7.0...v1.8.0)
 
 ## **Coming Up**
