@@ -23,6 +23,7 @@ Welcome to the November edition of Fine Grained News! As we enter the final stre
 ## **Coming Up**
 
 **SDK Updates:** We will be updating the SDKs next to take advantage of the new BatchCheck, starting  with Python and JavaScript. If you want to see an SDK prioritized, let us know!
+**SDK Updates:** We will be updating the SDKs next to take advantage of the new BatchCheck, starting  with Python and JavaScript. If you want to see an SDK prioritized, let us know!
 
 Check out our roadmap to see what we're working on. Feature requests and ideas can be shared in [GitHub Discussions](https://github.com/orgs/openfga/discussions).
 
@@ -48,7 +49,8 @@ In November, [Andres Aguiar](https://www.linkedin.com/in/andresaguiar/) represen
 The OpenFGA team gathered for a productive offsite in Chicago, Illinois.
 
 ![OpenFGA team group photo in Chicago](../static/img/blog/fgn-2024-11-chicago-offsite-team-photo.png)
-*Group photo of the OpenFGA team in Chicago*
+
+*The OpenFGA team in Chicago*
 
 ---
 
@@ -58,15 +60,17 @@ Learn how to model fine-grained authorization in OpenFGA's domain-specific langu
 ---
 
 ### **Monthly Community Meeting**
-Join us for our monthly [Community Meetings](https://github.com/openfga/community/blob/main/community-meetings.md#:~:text=OpenFGA%20Community%20Meetings), held on the second Thursday of every month at [11 AM Eastern Time (US)](https://www.worldtimebuddy.com/?qm=1&lid=12,100,5,6,8&h=5&sln=11-12&hf=1).
 
-November's Community Meeting featured demos by [Sebastian Döll](https://www.linkedin.com/in/katallaxie/) of ZEISS, who shared their OpenAPI extension/OpenFGA integration, and [Justin Cohen](https://www.linkedin.com/in/justincoh/) demonstrating Batch Check functionality.
+Join our vibin-depth monthly community discussions every second Thursday at [11 AM Eastern Time (US)](https://www.worldtimebuddy.com/?qm=1&lid=12,100,5,8&h=5&sln=11-12&hf=1). Check out our [meeting details](https://github.com/openfga/community/blob/main/community-meetings.md#:~:text=OpenFGA%20Community%20Meetings) for more information.
 
-Our next meeting is on **Thursday, December 12, 2024**. If you can't join the meetings live, our [latest month's video](https://youtu.be/4MGF4rTzhbA?si=iGcoZTw8T99E0LKs) will always be posted on our [YouTube channel](https://www.youtube.com/@OpenFGA).
+November's highlights included:
+- [Sebastian Döll](https://www.linkedin.com/in/katallaxie/) from ZEISS showcasing their Terraform/OpenFGA integration
+- [Justin Cohen](https://www.linkedin.com/in/justincoh/) demonstrating the new Batch Check functionality
 
-## **Blogs and Videos for Auth Fans**
+**Join us Thursday, December 12, 2024** for our next meeting. Can't make it? Catch up on our [latest recording](https://youtu.be/4MGF4rTzhbA?si=iGcoZTw8T99E0LKs) or browse previous sessions on our [YouTube channel](https://www.youtube.com/@OpenFGA).
 
-- **Granting TTL-Based Permissions in OpenFGA:** Implement TTL-based permissions in OpenFGA for time-limited access control. [Read more on Medium...](https://medium.com/@shruti1810/granting-ttl-based-permissions-in-openfga-2ed2073931c3)
+### **Blogs and Videos for AuthZ Fans:**  
+  * **Granting TTL based permissions in OpenFGA:** Implement TTL-based permissions in OpenFGA for time-limited access control. [Read more on Medium...](https://medium.com/@shruti1810/granting-ttl-based-permissions-in-openfga-2ed2073931c3)
 
 - **Overcoming Security Challenges in Protecting Shared Generative AI Environments:** Explore solutions for ensuring secure, scalable, and efficient multi-tenancy in generative AI environments. [Read more on Medium...](https://towardsdatascience.com/overcoming-security-challenges-in-protecting-shared-generative-ai-environments-1ffb27da1bde)
 
@@ -80,12 +84,17 @@ Our next meeting is on **Thursday, December 12, 2024**. If you can't join the me
 
 ## **Announcements**
 
-### **OpenFGA Hits 5th Most Active by Contributions!**
-A huge thank you to our community for your incredible participation during Hacktoberfest! OpenFGA was the 5th most active CNCF project last month. Let's keep up the momentum into December and beyond!
+### OpenFGA Rankked #5 in CNCF Project Contributions!**
+Thanks to our amazing community, OpenFGA soared to become the 5th most active CNCF project during Hacktoberfest in October! Your contributions made this possible, and hope to continue the engagement!
 
-We welcome contributions of all skill levels. Start with our [Good First Issues](https://github.com/openfga/openfga/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) for beginner-friendly tasks, or explore the [Issue queue](https://github.com/openfga/openfga/issues) for more advanced challenges. Learn how to contribute with our [Contribution Guide](https://github.com/openfga/.github/blob/main/CONTRIBUTING.md).
+Ready to join our community of contributors? We have opportunities for every skill level:
+- Start with our [Good First Issues](https://github.com/openfga/openfga/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) for beginner-friendly tasks.
+- Take on more complex challenges in our [Issue queue](https://github.com/openfga/openfga/issues).
+- Follow our [Contribution Guide](https://github.com/openfga/.github/blob/main/CONTRIBUTING.md) to get started.
+
 
 ![CNCF projects ranked by commits during Hacktoberfest](../static/img/blog/fgn-2024-11-open-fga-ranks-5th.jpeg)
+
 *CNCF Projects Ranked by Commits during Hacktoberfest*
 
 ---
