@@ -18,11 +18,11 @@ Welcome to the November edition of Fine Grained News! As we enter the final stre
 
 ## Just Shipped
 
-**v1.8.1:** This release focuses on performance improvements and enhanced monitoring capabilities, including two new flags for better control over check operations, improved performance for TTU relationships with set operations, and expanded metrics tracking with duration measurements. The release also adds deduplication logic to BatchCheck API and introduces new logging fields for authz calls. [Read more in the Changelog...](https://github.com/openfga/openfga/releases/tag/v1.8.1)
+**v1.8.1:** This release focuses on performance and monitoring enhancements. It introduces two new flags for better control over check operations, optimizes performance for TTU relationships with set operations, and expands metrics tracking with duration measurements. Additionally, deduplication logic has been added to the `BatchCheck` API, along with new logging fields for authz calls. Read more in the [Read more in the Changelog...](https://github.com/openfga/openfga/releases/tag/v1.8.1)
 
 For more about the new OPENFGA_CHECK_ITERATOR_TTL and OPENFGA_CHECK_CACHE_LIMIT flags, run `./openfga run --help`  
 
-**Batch Check API:**  We've launched Batch Check API in OpenFGA v1.8.0. Batching authorization checks together in a single request will significantly reduce roundtrip network latency. In addition, v.1.8.0 also added support for Contextual Tuples in the `Expand` API, and included other performance improvements. [Read more in the Changelog...](https://github.com/openfga/openfga/releases/tag/v1.8.0)
+**Batch Check API:** Introduced in v1.8.0, the `BatchCheck` API significantly reduces network latency by batching authorization checks in a single request. With v1.8.1, deduplication logic increasing its efficiency further. v1.8.0 also added support for Contextual Tuples in the `Expand` API and additional performance improvements. [Read more in the Changelog](https://github.com/openfga/openfga/releases/tag/v1.8.0) or the [`BatchCheck` API docs](https://openfga.dev/docs/interacting/relationship-queries#batch-check).
 
 ## **Coming Up**
 
