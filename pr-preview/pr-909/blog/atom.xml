@@ -34,26 +34,24 @@
 <img decoding="async" loading="lazy" alt="Andrea Chiarelli during his talk at Cloud Day 2024" src="https://openfga.dev/pr-preview/pr-909/assets/images/fgn-2024-11-andrea-chiarelli2-678faee102f1bf7a25d178f91f8bbc92.png" width="432" height="224" class="img_ev3q"></p>
 <p><em>Andrea Chiarelli presenting at Cloud Day 2024</em></p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="openfga-offsite"><strong>OpenFGA Offsite</strong><a href="https://openfga.dev/pr-preview/pr-909/blog/fine-grained-news-2024-11#openfga-offsite" class="hash-link" aria-label="Direct link to openfga-offsite" title="Direct link to openfga-offsite">​</a></h3>
-<p>The OpenFGA team gathered for a productive offsite in Chicago, Illinois.</p>
+<p>The team that works hard to bring you OpenFGA met in Chicago this November for a fun and productive offsite, diving deep into our vision, customer needs, and the roadmap ahead.</p>
 <p><img decoding="async" loading="lazy" alt="OpenFGA team group photo in Chicago" src="https://openfga.dev/pr-preview/pr-909/assets/images/fgn-2024-11-chicago-offsite-team-photo-eb4af67e361d204336a083503595de2f.png" width="1771" height="1328" class="img_ev3q"></p>
 <p><em>The OpenFGA team in Chicago</em></p>
-<hr>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="new-modeling-demos-available"><strong>New Modeling Demos Available!</strong><a href="https://openfga.dev/pr-preview/pr-909/blog/fine-grained-news-2024-11#new-modeling-demos-available" class="hash-link" aria-label="Direct link to new-modeling-demos-available" title="Direct link to new-modeling-demos-available">​</a></h3>
 <p>Learn how to model fine-grained authorization in OpenFGA's domain-specific language step-by-step with our <a href="https://www.youtube.com/playlist?list=PLUR5l-oTFZqWaDdhEOVt_IfPOIbKo1Ypt" target="_blank" rel="noopener noreferrer">new demo video series</a>! Starting with the basics and gradually adding complexity, this playlist is your guide to mastering OpenFGA modeling.</p>
-<hr>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="monthly-community-meeting"><strong>Monthly Community Meeting</strong><a href="https://openfga.dev/pr-preview/pr-909/blog/fine-grained-news-2024-11#monthly-community-meeting" class="hash-link" aria-label="Direct link to monthly-community-meeting" title="Direct link to monthly-community-meeting">​</a></h3>
 <p>Join our vibin-depth monthly community discussions every second Thursday at <a href="https://www.worldtimebuddy.com/?qm=1&amp;lid=12,100,5,8&amp;h=5&amp;sln=11-12&amp;hf=1" target="_blank" rel="noopener noreferrer">11 AM Eastern Time (US)</a>. Check out our <a href="https://github.com/openfga/community/blob/main/community-meetings.md#:~:text=OpenFGA%20Community%20Meetings" target="_blank" rel="noopener noreferrer">meeting details</a> for more information.</p>
 <p>November's highlights included:</p>
 <ul>
-<li><a href="https://www.linkedin.com/in/katallaxie/" target="_blank" rel="noopener noreferrer">Sebastian Döll</a> from ZEISS showcasing their Terraform/OpenFGA integration</li>
-<li><a href="https://www.linkedin.com/in/justincoh/" target="_blank" rel="noopener noreferrer">Justin Cohen</a> demonstrating the new Batch Check functionality</li>
+<li><a href="https://www.linkedin.com/in/katallaxie/" target="_blank" rel="noopener noreferrer">Sebastian Döll</a> from ZEISS showcasing their Terraform/OpenFGA integration.</li>
+<li><a href="https://www.linkedin.com/in/justincoh/" target="_blank" rel="noopener noreferrer">Justin Cohen</a> demonstrating the new Batch Check functionality.</li>
 </ul>
 <p><strong>Join us Thursday, December 12, 2024</strong> for our next meeting. Can't make it? Catch up on our <a href="https://youtu.be/4MGF4rTzhbA?si=iGcoZTw8T99E0LKs" target="_blank" rel="noopener noreferrer">latest recording</a> or browse previous sessions on our <a href="https://www.youtube.com/@OpenFGA" target="_blank" rel="noopener noreferrer">YouTube channel</a>.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="blogs-and-videos-for-authz-fans"><strong>Blogs and Videos for AuthZ Fans:</strong><a href="https://openfga.dev/pr-preview/pr-909/blog/fine-grained-news-2024-11#blogs-and-videos-for-authz-fans" class="hash-link" aria-label="Direct link to blogs-and-videos-for-authz-fans" title="Direct link to blogs-and-videos-for-authz-fans">​</a></h3>
 <ul>
-<li><strong>Granting TTL based permissions in OpenFGA:</strong> Implement TTL-based permissions in OpenFGA for time-limited access control. <a href="https://medium.com/@shruti1810/granting-ttl-based-permissions-in-openfga-2ed2073931c3" target="_blank" rel="noopener noreferrer">Read more on Medium...</a></li>
-</ul>
-<ul>
+<li>
+<p><strong>Granting TTL based permissions in OpenFGA:</strong> Implement TTL-based permissions in OpenFGA for time-limited access control. <a href="https://medium.com/@shruti1810/granting-ttl-based-permissions-in-openfga-2ed2073931c3" target="_blank" rel="noopener noreferrer">Read more on Medium...</a></p>
+</li>
 <li>
 <p><strong>Overcoming Security Challenges in Protecting Shared Generative AI Environments:</strong> Explore solutions for ensuring secure, scalable, and efficient multi-tenancy in generative AI environments. <a href="https://towardsdatascience.com/overcoming-security-challenges-in-protecting-shared-generative-ai-environments-1ffb27da1bde" target="_blank" rel="noopener noreferrer">Read more on Medium...</a></p>
 </li>
@@ -71,7 +69,7 @@
 </li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="announcements"><strong>Announcements</strong><a href="https://openfga.dev/pr-preview/pr-909/blog/fine-grained-news-2024-11#announcements" class="hash-link" aria-label="Direct link to announcements" title="Direct link to announcements">​</a></h2>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="openfga-rankked-5-in-cncf-project-contributions">OpenFGA Rankked #5 in CNCF Project Contributions!**<a href="https://openfga.dev/pr-preview/pr-909/blog/fine-grained-news-2024-11#openfga-rankked-5-in-cncf-project-contributions" class="hash-link" aria-label="Direct link to OpenFGA Rankked #5 in CNCF Project Contributions!**" title="Direct link to OpenFGA Rankked #5 in CNCF Project Contributions!**">​</a></h3>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="openfga-rankked-5-in-cncf-project-contributions"><strong>OpenFGA Rankked #5 in CNCF Project Contributions!</strong><a href="https://openfga.dev/pr-preview/pr-909/blog/fine-grained-news-2024-11#openfga-rankked-5-in-cncf-project-contributions" class="hash-link" aria-label="Direct link to openfga-rankked-5-in-cncf-project-contributions" title="Direct link to openfga-rankked-5-in-cncf-project-contributions">​</a></h3>
 <p>Thanks to our amazing community, OpenFGA soared to become the 5th most active CNCF project during Hacktoberfest in October! Your contributions made this possible, and hope to continue the engagement!</p>
 <p>Ready to join our community of contributors? We have opportunities for every skill level:</p>
 <ul>
@@ -81,9 +79,9 @@
 </ul>
 <p><img decoding="async" loading="lazy" alt="CNCF projects ranked by commits during Hacktoberfest" src="https://openfga.dev/pr-preview/pr-909/assets/images/fgn-2024-11-open-fga-ranks-5th-3bc380d0478b8988d07beaeca665cca2.jpeg" width="360" height="250" class="img_ev3q"></p>
 <p><em>CNCF Projects Ranked by Commits during Hacktoberfest</em></p>
-<hr>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="follow-openfga-on-linkedin"><strong>Follow OpenFGA on LinkedIn</strong><a href="https://openfga.dev/pr-preview/pr-909/blog/fine-grained-news-2024-11#follow-openfga-on-linkedin" class="hash-link" aria-label="Direct link to follow-openfga-on-linkedin" title="Direct link to follow-openfga-on-linkedin">​</a></h3>
-<p>Connect with a growing community of fine-grained authorization enthusiasts and expand your professional network by following our new <a href="http://linkedin.com/company/openfga" target="_blank" rel="noopener noreferrer">LinkedIn</a> page!</p>
+<p>Connect with a growing community of fine-grained authorization enthusiasts and expand your professional network by following our new
+<a href="http://linkedin.com/company/openfga" target="_blank" rel="noopener noreferrer">OpenFGA LinkedIn</a> page!</p>
 <p><img decoding="async" loading="lazy" alt="OpenFGA&amp;#39;s LinkedIn page" src="https://openfga.dev/pr-preview/pr-909/assets/images/fgn-2024-11-linkedin-9463378da14cb33d27b81eb8fb461a86.png" width="432" height="354" class="img_ev3q"></p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="see-you-next-month"><strong>See You Next Month:</strong><a href="https://openfga.dev/pr-preview/pr-909/blog/fine-grained-news-2024-11#see-you-next-month" class="hash-link" aria-label="Direct link to see-you-next-month" title="Direct link to see-you-next-month">​</a></h2>
 <p>Fine Grained News is published every month. If you have any feedback, want to share your OpenFGA story, or have a noteworthy update, please let us know on any of our <a href="https://openfga.dev/community" target="_blank" rel="noopener noreferrer">community channels</a> or at <a href="mailto:community@openfga.dev" target="_blank" rel="noopener noreferrer">community@openfga.dev</a>.</p>]]></content>
