@@ -1,5 +1,5 @@
 # OpenFGA Documentation
-<!-- markdown-link-check-disable -->
+
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fopenfga%2Fopenfga.dev.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fopenfga%2Fopenfga.dev?ref=badge_shield)
 <!-- markdown-link-check-enable-->
 

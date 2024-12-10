@@ -81,7 +81,7 @@ Can't make it? Catch up on our [latest recording](https://youtu.be/4MGF4rTzhbA?s
 Thanks to our amazing community, OpenFGA soared to become the 5th most active CNCF project during Hacktoberfest in October! Your contributions made this possible, and hope to continue the engagement!
 
 Ready to join our community of contributors? We have opportunities for every skill level:
-- Start with our [Good First Issues](https://github.com/openfga/openfga/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) for beginner-friendly tasks.
+- Start with our [Good First Issues](https://github.com/search?q=org%3Aopenfga+is%3Aopen+label%3A%22good+first+issue%22+&type=issues&s=created&o=desc) for beginner-friendly tasks.
 - Take on more complex challenges in our [Issue queue](https://github.com/openfga/openfga/issues).
 - Follow our [Contribution Guide](https://github.com/openfga/.github/blob/main/CONTRIBUTING.md) to get started.
 
