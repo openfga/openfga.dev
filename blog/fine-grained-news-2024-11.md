@@ -18,7 +18,7 @@ Welcome to the November edition of Fine Grained News! As we enter the final stre
 
 ## Just Shipped
 
-**v1.8.1:** This release focuses on performance improvements and enhanced monitoring capabilities, including two new flags for better control over check operations, improved performance for TTU relationships with set operations, and expanded metrics tracking with duration measurements. The release also adds deduplication logic to BatchCheck API and introduces new logging fields for authz calls. [Read more in the Changelog...](https://github.com/openfga/openfga/compare/v1.8.0...v1.8.1)
+**v1.8.1:** This release focuses on performance improvements and enhanced monitoring capabilities, including two new flags for better control over check operations, improved performance for TTU relationships with set operations, and expanded metrics tracking with duration measurements. The release also adds deduplication logic to BatchCheck API and introduces new logging fields for authz calls. [Read more in the Changelog...](https://github.com/openfga/openfga/releases/tag/v1.8.1)
 
 For more about the new OPENFGA_CHECK_ITERATOR_TTL and OPENFGA_CHECK_CACHE_LIMIT flags, run `./openfga run --help`  
 
