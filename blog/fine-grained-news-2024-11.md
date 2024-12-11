@@ -22,7 +22,7 @@ Welcome to the November edition of Fine Grained News! As we enter the final stre
 
 For more about the new OPENFGA_CHECK_ITERATOR_TTL and OPENFGA_CHECK_CACHE_LIMIT flags, run `./openfga run --help`  
 
-**Batch Check API:** Introduced in v1.8.0, the `BatchCheck` API significantly reduces network latency by batching authorization checks in a single request. With v1.8.1, deduplication logic increasing its efficiency further. v1.8.0 also added support for Contextual Tuples in the `Expand` API and additional performance improvements. [Read more in the Changelog](https://github.com/openfga/openfga/releases/tag/v1.8.0) or the [`BatchCheck` API docs](https://openfga.dev/docs/interacting/relationship-queries#batch-check).
+**Batch Check API:** Introduced in v1.8.0, the `BatchCheck` API significantly reduces network latency by batching authorization checks in a single request. With v1.8.1, deduplication logic increasing its efficiency further. v1.8.0 also added support for Contextual Tuples in the `Expand` API, time-based filtering in the `ReadChanges` API, and additional performance improvements. [Read more in the Changelog](https://github.com/openfga/openfga/releases/tag/v1.8.0) or the [`BatchCheck` API docs](https://openfga.dev/docs/interacting/relationship-queries#batch-check).
 
 ## **Coming Up**
 
