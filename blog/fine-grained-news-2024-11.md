@@ -46,7 +46,7 @@ Check out our roadmap to see what we're working on. Feature requests and ideas c
 
 *Andrea Chiarelli presenting at Cloud Day 2024*
 
-**OpenFGA Offsite:** The team that works hard to bring you OpenFGA met in Chicago this November for a fun and productive offsite, diving deep into our vision, customer needs, and the roadmap ahead.
+**OpenFGA Offsite:** The team that works hard to bring you OpenFGA met in Chicago this November for a fun and productive offsite, diving deep into our vision, developer needs, and the roadmap ahead.
 
 ![OpenFGA team group photo in Chicago](../static/img/blog/fgn-2024-11-chicago-offsite-team-photo.png)
 
