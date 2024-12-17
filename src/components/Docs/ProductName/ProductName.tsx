@@ -12,18 +12,16 @@ interface ProductNameOpts {
 }
 
 // ProductName replaces the ProductName with the config's custom field value
-export function ProductName(opts: ProductNameOpts): JSX.Element {
+export function ProductName(opts: ProductNameOpts): React.ReactElement | string {
   const { siteConfig } = useDocusaurusContext();
-  const productLink = (siteConfig.baseUrl + siteConfig.customFields.productDescriptionLink) as string as string;
+  const productLink = siteConfig.baseUrl + siteConfig.customFields.productDescriptionLink;
   switch (opts.format) {
     case ProductNameFormat.ProductLink:
       return <a href={productLink}>{siteConfig.customFields.productName as string}</a>;
     case ProductNameFormat.LongForm:
-      return <>{siteConfig.customFields.longProductName}</>;
-    case ProductNameFormat.ShortForm:
-      return <>{siteConfig.customFields.productName}</>;
+      return siteConfig.customFields.longProductName as string;
     default:
-      return <>{siteConfig.customFields.productName}</>;
+      return siteConfig.customFields.productName as string;
   }
 }
 
