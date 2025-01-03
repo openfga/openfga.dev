@@ -32,7 +32,7 @@ Granting access with a _<ProductConcept section="what-is-a-relationship-tuple" l
 
 </CardBox>
 
-## Before You Start
+## Before you start
 
 In order to understand this guide correctly you must be familiar with some <ProductConcept /> and know how to develop the things that we will list below.
 
@@ -72,11 +72,11 @@ You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `t
 
 In addition, you will need to know the following:
 
-### Direct Access
+### Direct access
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](../modeling/direct-access.mdx)
 
-### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+### <ProductName format={ProductNameFormat.ShortForm}/> concepts
 
 - A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics
 - A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
@@ -86,9 +86,9 @@ You need to know how to create an authorization model and create a relationship 
 
 </details>
 
-## Step By Step
+## Step by step
 
-### 01. Adding Direct Relationship
+### 01. Adding direct relationship
 
 For our application, we will give user Anne the `reader` relationship to a particular `tweet`. To do so we add a tuple as follows:
 
@@ -107,7 +107,7 @@ With the above, we have added a [**direct** relationship](../modeling/building-b
 
 <CheckRequestViewer user={'user:anne'} relation={'reader'} object={'tweet:1'} allowed={true} />
 
-### 02. Removing Direct Relationship
+### 02. Removing direct relationship
 
 Now let's change this so that Anne no longer has a `reader` relationship to `tweet:1` by deleting the tuple:
 

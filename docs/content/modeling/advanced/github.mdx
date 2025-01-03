@@ -38,37 +38,37 @@ This tutorial explains how to model GitHub's Organization permission model using
 
 <Playground title="GitHub" preset="github" example="GitHub" store="github" />
 
-## Before You Start
+## Before you start
 
 In order to understand this guide correctly you must be familiar with some <ProductName format={ProductNameFormat.LongForm}/> concepts and know how to develop the things that we will list below.
 
 <details>
 <summary>
 
-### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+### <ProductName format={ProductNameFormat.ShortForm}/> concepts
 
 It would be helpful to have an understanding of some concepts of <ProductName format={ProductNameFormat.ShortForm}/> before you start.
 
 </summary>
 
-#### Modeling Concentric Relationships
+#### Modeling concentric relationships
 
 You need to know how to update the authorization model to allow having nested relations such as all writers are readers. [Learn more →](../building-blocks/concentric-relationships.mdx)
 
-#### Modeling Object-to-Object Relationships
+#### Modeling object-to-object relationships
 
 You need to know how to create relationships between objects and how that might affect a user's relationships to those objects. [Learn more →](../building-blocks/object-to-object-relationships.mdx)
 
 Used here to indicate that users who have repo admin access on an organization, have admin access to all repositories owned by that organization.
 
-#### Concepts & Configuration Language
+#### Concepts & configuration language
 
 - Some <ProductConcept />
 - [Configuration Language](../../configuration-language.mdx)
 
 </details>
 
-## What You Will Be Modeling
+## What you will be modeling
 
 GitHub is a system to develop and collaborate on code.
 
@@ -90,7 +90,7 @@ Requirements:
 - Organizations can own repositories
 - Users can have repository admin access on organizations, and thus have admin access to all repositories owned by that organization
 
-### Defined Scenarios
+### Defined scenarios
 
 There will be the following users:
 
@@ -110,7 +110,7 @@ There will be a:
 
 - contoso/tooling repository, owned by the contoso org and of which Beth is a writer and Anne is a reader and members of the contoso/engineering team are admins
 
-## Modeling GitHub's Permissions
+## Modeling GitHub's permissions
 
 ### 01. Permissions For Individuals In An Org
 
@@ -369,7 +369,7 @@ With this simple update our model now supports nested definitions and now:
 <CheckRequestViewer user={'user:beth'} relation={'writer'} object={'repo:contoso/tooling'} allowed={true} />
 <CheckRequestViewer user={'user:beth'} relation={'reader'} object={'repo:contoso/tooling'} allowed={true} />
 
-### 02. Permissions For Teams In An Org
+### 02. Permissions for teams in an org
 
 GitHub also supports [creating teams in an organization](https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/creating-a-team), [adding members to a team](https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/adding-organization-members-to-a-team) and [granting teams permissions, rather than individuals](https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/managing-team-access-to-an-organization-repository).
 
@@ -511,7 +511,7 @@ The last relationship tuple introduces a new **<ProductName format={ProductNameF
 
 <CheckRequestViewer user={'user:charles'} relation={'admin'} object={'repo:contoso/tooling'} allowed={true} />
 
-### 03. Permissions For Child Teams In An Org
+### 03. Permissions for child teams in an org
 
 GitHub also supports team nesting, [known as "child teams"](https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/requesting-to-add-a-child-team). **Child teams inherit the access permissions of the parent team.**
 Let's say we have a **protocols** team that is part of the **engineering**. The simplest way to achieve the aforementioned requirement is just adding this <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple" />:
@@ -549,7 +549,7 @@ At the end of this section ended with the following permissions represented:
 
 ![Image showing permissions](./assets/github-03.svg)
 
-### 04. Base Permissions For Org Members
+### 04. Base permissions for org members
 
 In GitHub, ["you can set base permissions that apply to all members of an organization when accessing any of the organization's repositories"](https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/setting-base-permissions-for-an-organization). For our purposes this means that if:
 

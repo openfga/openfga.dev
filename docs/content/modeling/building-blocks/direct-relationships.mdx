@@ -35,7 +35,7 @@ This is useful when:
 
 </CardBox>
 
-## Before You Start
+## Before you start
 
 To better understand this guide, you should be familiar with some <ProductConcept /> and know how to develop the things listed below.
 
@@ -50,7 +50,7 @@ You will need to know the following:
 
 </summary>
 
-### Direct Access
+### Direct access
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](../direct-access.mdx)
 
@@ -61,13 +61,13 @@ You need to know how to create an authorization model and create a relationship 
 - A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
 - An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
 - A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>
-- [Direct Relationship Type Restrictions](../../configuration-language.mdx#the-direct-relationship-type-restrictions): used in the context of the relation definition can be used to allow direct relationships to the objects of this type
+- [Direct Relationship Type Restrictions](../../configuration-language.mdx#direct-relationship-type-restrictions): used in the context of the relation definition can be used to allow direct relationships to the objects of this type
 
 </details>
 
 <Playground />
 
-## What Are Direct Relationships?
+## What are direct relationships?
 
 Direct relationships are relationships where a user has a relationship to an <ProductConcept section="what-is-an-object" linkName="object" /> that is not dependent on any other relationship they have with that object.
 
@@ -77,9 +77,9 @@ When checking for a relationship, a direct relationship exists if a _<ProductCon
 - type bound public access (`<type>:*`)
 - a set of users that contains the user ID present in the query
 
-## Enable Or Disable Direct Relationships
+## Enable or disable direct relationships
 
-Direct relationships can be enabled for a specific relation on an _<ProductConcept section="what-is-a-type" linkName="object type" />_ by adding [direct relationship type restrictions](../../configuration-language.mdx#the-direct-relationship-type-restrictions) from that <ProductConcept section="what-is-a-relation-definition" linkName="relation's definition" />. Likewise, they can be disabled by removing the direct relationship type restrictions.
+Direct relationships can be enabled for a specific relation on an _<ProductConcept section="what-is-a-type" linkName="object type" />_ by adding [direct relationship type restrictions](../../configuration-language.mdx#direct-relationship-type-restrictions) from that <ProductConcept section="what-is-a-relation-definition" linkName="relation's definition" />. Likewise, they can be disabled by removing the direct relationship type restrictions.
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -151,11 +151,11 @@ In the `team` type definition, there is a single `member` relation that only all
 
 :::
 
-## How It Affects Your System
+## How it affects your system
 
 To illustrate the effect enabling or disabling direct relationships on a specific relation has, we'll investigate several situations.
 
-### 1. With Direct Relationships Enabled
+### 1. With direct relationships enabled
 
 Let us start with the authorization model we had above:
 
@@ -398,7 +398,7 @@ In this case, there is **NO** direct viewer relationship between Emily and the p
 </TabItem>
 </Tabs>
 
-### 2. With Direct Relationships Disabled
+### 2. With direct relationships disabled
 
 In this section, we will investigate the effect of disabling _direct relationships_ on the document's `viewer` relation.
 

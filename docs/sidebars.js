@@ -22,6 +22,11 @@ const sidebars = {
       id: 'content/configuration-language',
     },
     {
+      type: 'doc',
+      label: 'Community',
+      id: 'content/community',
+    },
+    {
       type: 'category',
       collapsible: true,
       collapsed: false,
@@ -38,7 +43,7 @@ const sidebars = {
           label: 'Setup OpenFGA',
           link: {
             type: 'doc',
-            id: 'content/getting-started/setup-openfga/overview'
+            id: 'content/getting-started/setup-openfga/overview',
           },
           items: [
             {
@@ -58,10 +63,15 @@ const sidebars = {
             },
             {
               type: 'doc',
+              label: '🛡️Access Control',
+              id: 'content/getting-started/setup-openfga/access-control',
+            },
+            {
+              type: 'doc',
               label: 'Playground',
               id: 'content/getting-started/setup-openfga/playground',
-            }
-          ]
+            },
+          ],
         },
         {
           type: 'doc',
@@ -127,7 +137,12 @@ const sidebars = {
           type: 'doc',
           label: 'Implementation Best Practices',
           id: 'content/getting-started/tuples-api-best-practices',
-        }
+        },
+        {
+          type: 'doc',
+          label: 'Configure SDK Client Telemetry',
+          id: 'content/getting-started/configure-telemetry',
+        },
       ],
     },
     {
@@ -207,12 +222,12 @@ const sidebars = {
         },
         {
           type: 'doc',
-          label: "Testing Models",
+          label: 'Testing Models',
           id: 'content/modeling/testing-models',
         },
         {
           type: 'doc',
-          label: "Modular Models",
+          label: 'Modular Models',
           id: 'content/modeling/modular-models',
         },
         {
@@ -292,12 +307,17 @@ const sidebars = {
           link: {
             type: 'doc',
             id: 'content/modeling/migrating/overview',
-          }, 
+          },
           items: [
             {
               type: 'doc',
               label: 'Migrating Relations',
               id: 'content/modeling/migrating/migrating-relations',
+            },
+            {
+              type: 'doc',
+              label: 'Migrating Models',
+              id: 'content/modeling/migrating/migrating-models',
             },
           ],
         },
@@ -345,7 +365,7 @@ const sidebars = {
         },
         {
           type: 'doc',
-          label: "Relationship Queries",
+          label: 'Relationship Queries',
           id: 'content/interacting/relationship-queries',
         },
         {

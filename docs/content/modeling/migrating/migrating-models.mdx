@@ -1,0 +1,44 @@
+---
+title: 'Model Migrations'
+slug: /modeling/migrating/migrating-models
+sidebar_position: 1
+---
+
+import { DocumentationNotice, ProductName, ProductNameFormat, IntroCard, CardGrid, CardBox} from '@components/Docs';
+
+<DocumentationNotice />
+
+You can think of model migrations for <ProductName format={ProductNameFormat.ShortForm}/> in the same way as you think about relational database migrations. You can perform migrations with or without downtime for both, and for some changes, doing them without downtime is harder.
+
+| <ProductName format={ProductNameFormat.ShortForm}/> | Relational Databases  |
+|-----------------------------------------------------|-----------------------|
+| Add a type                                          | Add a table           |
+| Remove a type                                       | Remove a table        |
+| Rename a type                                       | Rename a table        |
+| Add a relation                                      | Add a nullable column |
+| Rename a relation                                   | Rename a column       |
+| Delete a relation                                   | Delete a column       |
+
+When thinking about migrations, keep in mind that:
+
+- [Models are immutable](../../getting-started/immutable-models.mdx).
+- The tuples that are not valid according to the specified model, are ignored when evaluating queries.
+
+## To add a type or relation
+
+  1. Add the type or relation to the authorization model, and write the model to the store. This will generate a new model ID.
+  2. If you have tuples to write for the new types/relations, write them.
+  3. Update the application code to start using those new types/relations.
+  4. Configure the application to start using the new model ID.
+
+## To delete a type or relation
+
+  1. Delete the type or relation to the authorization model, and write the model to the store. This will generate a new model ID.
+  2. Update the application code to stops using the deleted types/relations.
+  3. Configure the application to start using the new model ID.
+  4. Delete the tuples for the deleted type/relations. While not required, doing so can improve performance. Invalid tuples will be ignored during query evaluation, but their presence may slow down the process if they need to be retrieved.
+
+## To rename a type or relation
+
+  - [This document](./migrating-relations.mdx) describes an end-to-end example for that use case.
+

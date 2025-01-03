@@ -64,8 +64,9 @@ const config = {
     description: `OpenFGA is an open source Fine-Grained Authorization solution based on Google's Zanzibar.`,
     productName: `OpenFGA`,
     // link to product description section (relative to baseURL)
-    introLink: `docs/intro`,
+    introLink: `docs/authorization-concepts`,
     productDescriptionSection: `#what-is-openfga`,
+    productDescriptionLink: `docs/fga`,
     // link to the concept page (relative to baseURL)
     conceptLink: `docs/concepts`,
     longProductName: `OpenFGA`,
@@ -192,6 +193,10 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
           exclude: ['**/README.md'],
           showLastUpdateAuthor: false,
           editUrl: 'https://github.com/openfga/openfga.dev/edit/main/',
+        },
+        blog: {
+          blogSidebarTitle: 'All posts',
+          blogSidebarCount: 'ALL',
         },
         theme: {
           customCss: [path.resolve('static/css/openfga.css'), path.resolve('src/css/custom.css')],

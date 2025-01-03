@@ -40,7 +40,7 @@ For example:
 
 </CardBox>
 
-## Before You Start
+## Before you start
 
 To better follow this guide, make sure you're familiar with some <ProductConcept /> and know how to develop the things listed below.
 
@@ -92,11 +92,11 @@ You will start with the _<ProductConcept section="what-is-an-authorization-model
 
 In addition, you will need to know the following:
 
-### Modeling User Groups
+### Modeling user groups
 
 You need to know how to add users to groups and grant groups access to resources. [Learn more →](../user-groups.mdx)
 
-### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+### <ProductName format={ProductNameFormat.ShortForm}/> concepts
 
 - A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics
 - A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
@@ -108,9 +108,9 @@ You need to know how to add users to groups and grant groups access to resources
 
 <Playground />
 
-## Step By Step
+## Step by step
 
-### 01. Create Parent Relations In Document
+### 01. Create parent relations in document
 
 To represent that a `folder` can be a `parent` of a `document`, we first need to modify our `document` <ProductConcept section="what-is-a-type-definition" linkName="type definition" /> to allow a `parent` <ProductConcept section="what-is-a-relation" linkName="relation" />.
 
@@ -171,7 +171,7 @@ Once the type definition is updated, we can now create the <ProductConcept secti
   ]}
 />
 
-### 03. Check That Parent Folders Have Permissions
+### 03. Check that parent folders have permissions
 
 Once that relationship tuple is added to <ProductName format={ProductNameFormat.ShortForm}/>, we can <ProductConcept section="what-is-a-check-request" linkName="check" /> if the relationship is valid by asking the following: **"is folder:budgets a parent of document:may_budget.doc?"**
 
@@ -183,11 +183,11 @@ It is important to note that the current authorization model does not imply inhe
 When creating relationship tuples for <ProductName format={ProductNameFormat.ShortForm}/> make sure to use unique ids for each object and user within your application domain. We are using first names and simple ids to just illustrate an easy-to-follow example.
 :::
 
-## Advanced Object to Object Relationships
+## Advanced object to object relationships
 
 Object to object can be used for more advanced use case, such as [entitlements](../advanced/entitlements.mdx). An example use case is to allow subscribers to be entitled to different plans.
 
-### 01. Create Authorization Model With Object To Object Relationships
+### 01. Create authorization model with object to object relationships
 
 To do this, the authorization model will have two <ProductConcept section="what-is-a-type" linkName="types" /> - feature and plan.
 
@@ -250,7 +250,7 @@ To do this, the authorization model will have two <ProductConcept section="what-
 
 Type `feature` has two relations, associated_plan and access. Relation `associated_plan` allows associating plans with features while `access` defines who can access the feature. In our case, the access can be achieved either from
 
-- <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" /> via  [direct relationship type restrictions](../../configuration-language.mdx#the-direct-relationship-type-restrictions).
+- <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" /> via  [direct relationship type restrictions](../../configuration-language.mdx#direct-relationship-type-restrictions).
   or `this`
 - object to object relationship where a user can access because it is a subscriber_member of a particular plan AND that plan is associated with the feature.
 
@@ -264,7 +264,7 @@ Here, we define `plan` as the user of object `feature` with relationship `associ
 
 This will give us a flow of user->organization->plan->feature and allows us to answer the question of whether user can access a feature rather than whether user is subscriber of a plan.
 
-### 02. Adding Relationship Tuples
+### 02. Adding relationship tuples
 
 To realize the relationship, we will need to add the following relationship tuples.
 
@@ -285,7 +285,7 @@ To realize the relationship, we will need to add the following relationship tupl
   ]}
 />
 
-### 03. Check To See If Access Is Allowed Without Direct Relationship
+### 03. Check to see if access is allowed without direct relationship
 
 To validate that the authorization model and relationship tuples are correct, we can ask the question:
 
@@ -293,7 +293,7 @@ To validate that the authorization model and relationship tuples are correct, we
 
 We see that `anne` is allowed to `access` `feature:data_preview` without requiring direct relationship.
 
-### 04. Disassociating Plan From Feature
+### 04. Disassociating plan from feature
 
 At any point in time, `plan:advanced` may be disassociated from `feature:data_preview`.
 

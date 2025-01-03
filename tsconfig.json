@@ -8,6 +8,7 @@
       "@static/*": ["static/*"]
     },
     "module": "Node16",
-    "moduleResolution": "Node16"
+    "moduleResolution": "Node16",
+    "jsx": "react"
   }
 }

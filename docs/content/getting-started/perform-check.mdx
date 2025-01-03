@@ -1,6 +1,7 @@
 ---
 title: Perform a Check
 sidebar_position: 4
+toc_max_heading_level: 4
 slug: /getting-started/perform-check
 description: Checking if a user is authorized to perform an action on a resource
 ---
@@ -9,6 +10,7 @@ import {
   SupportedLanguage,
   languageLabelMap,
   CheckRequestViewer,
+  BatchCheckRequestViewer,
   DocumentationNotice,
   ProductConcept,
   ProductName,
@@ -26,7 +28,7 @@ import TabItem from '@theme/TabItem';
 
 This section will illustrate how to perform a <ProductConcept section="what-is-a-check-request" linkName="check" /> request to determine whether a <ProductConcept section="what-is-a-user" linkName="user" /> has a certain <ProductConcept section="what-is-a-relationship" linkName="relationship" /> with an <ProductConcept section="what-is-an-object" linkName="object" />.
 
-## Before You Start
+## Before you start
 
 <Tabs groupId="languages">
 
@@ -92,11 +94,11 @@ This section will illustrate how to perform a <ProductConcept section="what-is-a
 </TabItem>
 </Tabs>
 
-## Step By Step
+## Step by step
 
 Assume that you want to check whether user `anne` has relationship `reader` with object `document:Z`
 
-### 01. Configure the <ProductName format={ProductNameFormat.ShortForm}/> API Client
+### 01. Configure the <ProductName format={ProductNameFormat.ShortForm}/> API client
 
 Before calling the check API, you will need to configure the API client.
 
@@ -142,11 +144,11 @@ To obtain the [access token](https://auth0.com/docs/get-started/authentication-a
 
 ### 02. Calling Check API
 
-To check whether user `user:anne` has relationship `reader` with object `document:Z`
+To check whether user `user:anne` has relationship `can_view` with object `document:Z`
 
 <CheckRequestViewer
   user={'user:anne'}
-  relation={'reader'}
+  relation={'can_view'}
   object={'document:Z'}
   allowed={true}
   skipSetup={true}
@@ -163,6 +165,61 @@ To check whether user `user:anne` has relationship `reader` with object `documen
 
 The result's `allowed` field will return `true` if the relationship exists and `false` if the relationship does not exist.
 
+### 03. Calling Batch Check API
+
+If you want to check multiple user-object-relationship combinations in a single request, you can use the [Batch Check](/api/service#Relationship%20Queries/BatchCheck) API endpoint. Batching authorization checks together in a single request significantly reduces overall network latency.    
+
+The Batch Check endpoint requires a `correlation_id` parameter for each check. The `correlation_id` is used to "correlate" the check responses with the checks sent in the request, since `tuple_keys` and `contextual_tuples` are not returned in the response on purpose to reduce data transfer to improve network latency. A `correlation_id` can be composed of any string of alphanumeric characters or dashes between 1-36 characters in length. 
+This means you can use:
+- simple iterating integers `1,2,3,etc`
+- UUID `e5fe049b-f252-40b3-b795-fe485d588279`
+- ULID `01JBMD9YG0XH3B4GVA8A9D2PSN`
+- or some other unique string
+
+But each `correlation_id` within a request must be unique.
+
+*Note*: If you are using one of our SDKs, the `correlation_id` is inserted for you by default and automatically correlates the `allowed` response with the proper `tuple_key`.
+
+To check whether user `user:anne` has multiple relationships `writer` and `reader` with object `document:Z`
+
+<BatchCheckRequestViewer
+  checks={[
+    {
+      user: 'user:anne',
+      relation: 'writer',
+      object: 'document:Z',
+      correlation_id: '886224f6-04ae-4b13-bd8e-559c7d3754e1',
+      allowed: false
+    },
+    {
+      user: 'user:anne',
+      relation: 'reader',
+      object: 'document:Z',
+      correlation_id: 'da452239-a4e0-4791-b5d1-fb3d451ac078',
+      allowed: true
+    }
+  ]}
+
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+The result will include an `allowed` field for each authorization check that will return `true` if the relationship exists and `false` if the relationship does not exist.
+
+#### Configuring Batch Check
+BatchCheck has two available configuration options:
+
+1. Limit the number of checks allowed in a single BatchCheck request.
+    * Environment variable: `OPENFGA_MAX_CHECKS_PER_BATCH_CHECK`
+    * Command line flag: `--max-checks-per-batch-check`
+    * If more items are received in a single request than allowed by this limit, the API will return an error.
+
+2. Limit the number of Checks which can be resolved concurrently
+    * Environment variable: `OPENFGA_MAX_CONCURRENT_CHECKS_PER_BATCH_CHECK`
+    * Command line flag: `--max-concurrent-checks-per-batch-check`
+
 ## Related Sections
 
 <RelatedSection
@@ -172,6 +229,11 @@ The result's `allowed` field will return `true` if the relationship exists and `
       title: '{ProductName} Check API',
       description: 'Read the Check API documentation and see how it works.',
       link: '/api/service#Relationship%20Queries/Check',
+    },
+    {
+      title: '{ProductName} Batch Check API',
+      description: 'Read the Batch Check API documentation and see how it works.',
+      link: '/api/service#Relationship%20Queries/BatchCheck',
     },
   ]}
 />

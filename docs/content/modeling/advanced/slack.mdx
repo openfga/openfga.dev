@@ -38,28 +38,28 @@ This tutorial explains how to model permissions for a communication platform lik
 
 <Playground title="Slack" preset="slack" example="Slack" store="slack" />
 
-## Before You Start
+## Before you start
 
 In order to understand this guide correctly you must be familiar with some <ProductName format={ProductNameFormat.LongForm}/> concepts and know how to develop the things that we will list below.
 
 <details>
 <summary>
 
-### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+### <ProductName format={ProductNameFormat.ShortForm}/> concepts
 
 It would be helpful to have an understanding of some concepts of <ProductName format={ProductNameFormat.ShortForm}/> before you start.
 
 </summary>
 
-#### Direct Access
+#### Direct access
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](../direct-access.mdx)
 
-#### Modeling Concentric Relationships
+#### Modeling concentric relationships
 
 You need to know how to update the authorization model to allow having nested relations such as all writers are readers. [Learn more →](../building-blocks/concentric-relationships.mdx)
 
-#### Concepts & Configuration Language
+#### Concepts & configuration language
 
 - Some <ProductConcept />
 - [Configuration Language](../../configuration-language.mdx)
@@ -105,7 +105,7 @@ Channel Settings:
   - **Open**: Anyone can post
   - **Limited**: Only allowed members can post
 
-### Defined Scenarios
+### Defined scenarios
 
 Use the following scenarios to be able to validate whether the model of the requirements is correct.
 
@@ -135,7 +135,7 @@ In production, it is highly recommended to use unique, immutable identifiers. Na
 
 :::
 
-## Modeling Workspaces & Channels
+## Modeling workspaces & channels
 
 The goal by the end of this post is to ask <ProductName format={ProductNameFormat.LongForm}/>: Does person X have permission to perform action Y on channel Z? In response, you want to either get a confirmation that person X can indeed do that, or a rejection that they cannot. E.g. does David have access to view #general?
 
@@ -201,11 +201,11 @@ Here is how you would express than in <ProductName format={ProductNameFormat.Sho
 - Member (`member`)
 - Guest (`guest`)
 
-[Direct relationship type restrictions](../../configuration-language.mdx#the-direct-relationship-type-restrictions) indicate that a user can have a <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" /> with an object of the type the relation specifies.
+[Direct relationship type restrictions](../../configuration-language.mdx#direct-relationship-type-restrictions) indicate that a user can have a <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationship" /> with an object of the type the relation specifies.
 
 :::
 
-### 01. Individual Permissions
+### 01. Individual permissions
 
 To keep things simple and focus on <ProductName /> rather than Slack complexity, we will model only four roles (legacy_admin, channels_admin, member, guest).
 
@@ -486,7 +486,7 @@ We can check for other users and relationships.
 | `amy`   | `workspace:sandcastle` | `member`       | `is amy related to workspace:sandcastle as member?`         | Yes       |
 | `david` | `workspace:sandcastle` | `member`       | `is david related to workspace:sandcastle as member?`       | No        |
 
-### 03. Updating The Authorization Model To Include Channels
+### 03. Updating the authorization model to include channels
 
 So far, you have modeled the users' <ProductConcept section="what-is-a-relation" linkName="relations" /> to the workspace itself. In this task you will expand the model to include the relations concerning the channels.
 
@@ -564,7 +564,7 @@ The configuration snippet above describes a channel that can have the following 
 
 :::
 
-#### Implied Relation
+#### Implied relation
 
 There is an <ProductConcept section="what-are-direct-and-implied-relationships" linkName="implied relation" /> that anyone who can write to a channel can also read from it, so the authorization model can be modified to be:
 
@@ -745,7 +745,7 @@ As a result, the authorization model is:
   }}
 />
 
-#### Updating Relationship Tuples
+#### Updating relationship tuples
 
 What remains is to add the <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" /> to indicate the relation between the users, workspace and the channels.
 
@@ -771,7 +771,7 @@ The Sandcastle workspace is a parent workspace of the #general, #marketing-inter
   ]}
 />
 
-##### `#general` Channel
+##### `#general` channel
 
 The `#general` channel is a public channel visible to all the members of the workspace. In <ProductName format={ProductNameFormat.ShortForm}/>, you represent this relation in the form of the following relationship tuple:
 
@@ -810,7 +810,7 @@ And to indicate that Amy and Emily can write to it:
   ]}
 />
 
-##### `#marketing-internal` Channel
+##### `#marketing-internal` channel
 
 The `#marketing-internal` is visible to only Bob and Emily. They can view and write in it.
 
@@ -829,7 +829,7 @@ The `#marketing-internal` is visible to only Bob and Emily. They can view and wr
   ]}
 />
 
-##### `#proj-marketing-campaign` Channel
+##### `#proj-marketing-campaign` channel
 
 The `#proj-marketing-campaign` is public to all members of the Sandcastle workspace. They can view and write in it.
 
@@ -888,12 +888,12 @@ Repeat this for the following relations
 
 ## Summary
 
-- Have a basic understanding of <IntroductionSection linkName="authorization" section="authentication-vs-authorization"/> and <ProductConcept/>.
+- Have a basic understanding of <IntroductionSection linkName="authorization" section="authentication-and-authorization"/> and <ProductConcept/>.
 - Understand how to model authorization for a communication platform like Slack using <ProductName format={ProductNameFormat.ProductLink}/>.
 
 In this tutorial, you:
 
-- were introduced to <IntroductionSection linkName="fine grain authentication" section="what-is-fine-grained-authorization-fga"/> and <ProductName format={ProductNameFormat.ProductLink}/>.
+- were introduced to <IntroductionSection linkName="fine grain authentication" section="what-is-fine-grained-authorization"/> and <ProductName format={ProductNameFormat.ProductLink}/>.
 - learned how to build and test an <ProductName format={ProductNameFormat.LongForm}/> authorization model for a communication platforms like Slack.
 
 Upcoming tutorials will dive deeper into <ProductName format={ProductNameFormat.LongForm}/>, introducing concepts that will improve on the model you built today, and tackling different permission systems, with other relations and requirements that need to be met.
@@ -914,7 +914,7 @@ If you are interested in learning more about Authorization and Role Management a
   />
 </figure>
 
-### Exercises For You
+### Exercises for you
 
 - Try adding more relationship tuples to represent other users and channels being added. Then run queries to make sure that the authorization model remains valid.
 - Update the configuration to model more Slack permissions (workspace owners, Slack orgs), then add the relationship tuples necessary and run some queries to validate your configuration.

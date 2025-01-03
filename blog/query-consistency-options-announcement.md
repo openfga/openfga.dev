@@ -10,14 +10,14 @@ hide_table_of_contents: false
 ---
 # Query Consistency Options in OpenFGA
 
-OpenFGA query APIs now allows to specify the desired consistency of query results. By default, OpenFGA does not use a cache. However, when caching is enabled, it applies to all requests. This means that any changes in permissions won't be reflected in authorization checks during the cache TTL period.
+OpenFGA query APIs now allow specifying the desired consistency of query results. By default, OpenFGA does not use a cache. However, when caching is enabled, it applies to all requests. This means that any changes in permissions won't be reflected in authorization checks during the cache TTL period.
 
 The community expressed the need for flexibility in using the cache on a per-request basis. In response, starting with [OpenFGA v1.5.7](https://github.com/openfga/openfga/releases/tag/v1.5.7), all query APIs can accept a consistency parameter with the following values:
 
 | Name                        | Description                                                                                                   |  
 |-----------------------------|---------------------------------------------------------------------------------------------------------------|
 | MINIMIZE_LATENCY (default)  | OpenFGA will try to minimize latency (e.g. by making use of the cache)  | 
-| HIGHER_CONSISTENCY          |  OpenFGA will try to optimize for stronger consistency (e.g. by bypassing cache)   |
+| HIGHER_CONSISTENCY          | OpenFGA will try to optimize for stronger consistency (e.g. by bypassing cache)   |
 
 When `HIGHER_CONSISTENCY` is specified, OpenFGA reads directly from the database, even when the cache is enabled.
 
@@ -25,7 +25,7 @@ When `HIGHER_CONSISTENCY` is specified, OpenFGA reads directly from the database
 
 The new consistency parameter is available in OpenFGA starting [v1.5.7](https://github.com/openfga/openfga/releases/tag/v1.5.7). 
 
-The parameter is already exposed in the [Javascript SDK](https://github.com/openfga/js-sdk/) (v0.6.2+) and the [Python SDK](https://github.com/openfga/python-sdk/) (v0.6.1+). We'll be adding support for it in the rest of the SDKs in the following weeks.
+The parameter is supported by all OpenFGA SDKs.
 
 For more information on enabling the cache and best practices for specifying consistency values, refer to the [documentation](https://openfga.dev/docs/interacting/consistency).
 

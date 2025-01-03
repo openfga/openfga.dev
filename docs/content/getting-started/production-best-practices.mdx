@@ -16,27 +16,27 @@ import {
 
 The following list outlines best practices for running OpenFGA in a production environment:
 
-- [Configure Authentication](./setup-openfga/docker-setup.mdx#configuring-authentication)
+- [Configure Authentication](./setup-openfga/configure-openfga.mdx#configuring-authentication)
 - Enable HTTP TLS or gRPC TLS or both
 - Set the log format to "json" and log level to "info"
-- [Disable the Playground](./setup-openfga/docker-setup.mdx#playground)
+- [Disable the Playground](./setup-openfga/playground.mdx#disabling-the-playground)
 - [Set Cluster](#cluster-recommendations)
 - [Set Database Options](#database-recommendations)
 - [Set Maximum Results](#maximum-results)
 - [Set Concurrency Limits](#concurrency-limits)
 
-## Cluster Recommendations
+## Cluster recommendations
 
 We recommend:
 
-1. Turn on caching via the flag `--check-query-cache-enabled`. This will reduce latency of requests, but it will increase the staleness of OpenFGA's responses. (The TTL is configurable).
+1. Turn on in-memory caching in Check API via flags. This will reduce latency of requests, but it will increase the staleness of OpenFGA's responses. Please see [Cache Expiration](../interacting/consistency.mdx#cache-expiration) for details on the flags.
 2. Prefer having a small pool of servers with high capacity (memory and CPU cores) instead of a big pool of servers, to increase cache hit ratios and simplify pool management.
 3. Turn on metrics collection via the flags `--metrics-enabled` and `--datastore-metrics-enabled`. This will allow you to debug issues.
 4. Turn on tracing via the flag `--trace-enabled`, but set sampling ratio to a low value, for example `--trace-sample-ratio=0.3`. This will allow you to debug issues without overwhelming the tracing server. However, keep in mind that enabling tracing comes with a slight performance cost.
 
-## Database Recommendations
+## Database recommendations
 
-To ensure good performance for OpenFGA, it is recommended that the [database](./setup-openfga/docker-setup.mdx#configuring-data-storage) be:
+To ensure good performance for OpenFGA, it is recommended that the [database](./setup-openfga/configure-openfga.mdx#configuring-data-storage) be:
 - Co-located in the same physical datacenter and network as your OpenFGA servers. This will minimize latency of database calls.
 - Used exclusively for OpenFGA and not shared with other applications. This allows scaling the database independently and avoiding contention with your database.
 - Bootstrapped and managed with the `openfga migrate` command. This will ensure the appropriate database indexes are created.
@@ -51,9 +51,9 @@ It's strongly recommended to fine-tune your server database connection settings 
 
 - If idle connections are getting reaped frequently, then consider increasing the `OPENFGA_DATASTORE_CONN_MAX_IDLE_TIME` to a large value. When in doubt, prioritize keeping connections around for longer rather than shorter, because doing so will drastically improve performance.
 
-## Concurrency Limits
+## Concurrency limits
 :::note
-Before modifying concurrency limits please make sure you've followed the guidance for [Database Recommendations](./#database-recommendations)
+Before modifying concurrency limits please make sure you've followed the guidance for [Database Recommendations](#database-recommendations)
 :::
 
 OpenFGA queries such as Check, ListObjects and ListUsers can be quite database and CPU intensive in some cases. If you notice that a single request is consuming a lot of CPU or creating a high degree of database contention, then you may consider setting some concurrency limits to protect other requests from being negatively impacted by overly aggressive queries. 
@@ -67,6 +67,7 @@ The following table enumerates the server's concurrency specific settings:
 | --max-concurrent-reads-for-check        | OPENFGA_MAX_CONCURRENT_READS_FOR_CHECK        | maxConcurrentReadsForCheck       |
 | --resolve-node-limit                    | OPENFGA_RESOLVE_NODE_LIMIT                    | resolveNodeLimit                 |
 | --resolve-node-breadth-limit            | OPENFGA_RESOLVE_NODE_BREADTH_LIMIT            | resolveNodeBreadthLimit          |
+| --max-concurrent-checks-per-batch-check | OPENFGA_MAX_CONCURRENT_CHECKS_PER_BATCH_CHECK | maxConcurrentChecksPerBatchCheck |
 
 
 Determining the right values for these settings will be based on a variety of factors including, but not limited to, the database specific deployment topology, the FGA model(s) involved, and the relationship tuples in the system. However, here are some high-level guidelines:
@@ -81,7 +82,7 @@ If you still see high request latencies despite the guidance above, then you may
 
 * `OPENFGA_RESOLVE_NODE_BREADTH_LIMIT` limits the resolution breadth. It sets an upper bound on the number of in-flight resolutions that can be taking place on one or more [usersets](../concepts.mdx#what-is-a-user). A high value will allow a single query to involve more concurrent evaluations to take place and therefore more database queries and server processes, while a low value will reduce the overall number of concurrent resolutions that will be allowed and thus reduce the number of database queries and server processes.
 
-## Maximum Results
+## Maximum results
 
 Both the ListObjects and ListUsers endpoints will continue retrieving results until one of the following conditions is met:
 

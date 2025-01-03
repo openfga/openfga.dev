@@ -21,24 +21,22 @@ import {
 
 <DocumentationNotice />
 
-In this guide you will learn how to update multiple <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" /> in a single transaction.
+Using<ProductName format={ProductNameFormat.ShortForm}/>, you can update multiple <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" /> in a single transaction.
 
 <CardBox title="When to use" appearance="filled">
 
-Updating multiple relationship tuples is useful to keep system state consistent.
+Updating multiple relationship tuples can keep your system state consistent.
 
 </CardBox>
 
-## Before You Start
+## Before you start
 
-In order to understand this guide correctly you must be familiar with some <ProductConcept /> and know how to develop the things that we will list below.
+Familiarize yourself with basic <ProductConcept /> before completing this guide.
 
 <details>
 <summary>
 
-Assume that you have the following <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />.<br />
-You have a <ProductConcept section="what-is-a-type" linkName="type" /> called `tweet` that can have a `reader`.
-You have another type called `user` that can have a `follower` and `followed_by` relationship.
+In the following <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />, there is <ProductConcept section="what-is-a-type" linkName="type" /> called `tweet` that can have a `reader`. There is another type called `user` that can have a `follower` and `followed_by` relationship.
 
 </summary>
 
@@ -88,31 +86,31 @@ You have another type called `user` that can have a `follower` and `followed_by`
 
 <hr />
 
-In addition, you will need to know the following:
+In addition:
 
-### Direct Access
+### Direct access
 
-You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](../modeling/direct-access.mdx)
+Creating an authorization model and a relationship tuple grants a user access to an object. To learn more, [read about Direct Access.](../modeling/direct-access.mdx)
 
-### Modeling Public Access
+### Modeling public access
 
-You need to know how to grant public access to an object. [Learn more →](../modeling/public-access.mdx)
+The following example uses public access. To learn more, [read about Public Access.](../modeling/direct-access.mdx)
 
-### <ProductName format={ProductNameFormat.ShortForm}/> Concepts
+### <ProductName format={ProductNameFormat.ShortForm}/> concepts
 
 - A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics
 - A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
 - A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
-- An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
-- A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm}/>
+- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a group stored in <ProductName format={ProductNameFormat.ShortForm}/> that consists of a user, a relation, and an object 
 
 </details>
 
-## Step By Step
+## Step by step
 
-### 01. Adding And Removing Relationship Tuples In The Same Transaction
+### 01. Add and remove relationship tuples in the same transaction
 
-When you need to add or delete tuples in your store, you can do so by calling the Write API. For example, if you want to make `tweet:1` public by making everyone a `viewer`, you write one tuple:
+A call to the Write API can add or delete tuples in your store. For example, the following tuple makes `tweet:1` public by making everyone a `viewer`:
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -124,7 +122,7 @@ When you need to add or delete tuples in your store, you can do so by calling th
   ]}
 />
 
-And if you want to convert this `tweet` to private, you would need to delete that tuple:
+Deleting the previous tuple converts this `tweet` to private:
 
 <WriteRequestViewer
   deleteRelationshipTuples={[
@@ -138,7 +136,7 @@ And if you want to convert this `tweet` to private, you would need to delete tha
 
 By removing the tuple, we made the tweet visible to no-one, which may not be what we want.
 
-The Write API allows you to send up to 10 unique tuples in the request. (This limit applies to the sum of both writes and deletes in that request). This means we can submit one API call that converts the `tweet` from public to visible to only the `user`'s followers.
+The Write API allows you to send up to 100 unique tuples in the request. (This limit applies to the sum of both writes and deletes in that request). This means we can submit one API call that converts the `tweet` from public to visible to only the `user`'s followers.
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -168,9 +166,9 @@ The Write API allows you to send up to 10 unique tuples in the request. (This li
   ]}
 />
 
-### 02. Adding Multiple Related Relationship Tuples In The Same Transaction
+### 02. Add multiple related relationship tuples in the same transaction
 
-Having the ability to send multiple tuples per request is also useful when you want to maintain consistency. For example, if `anne` starts following `becky`, we want to be able to save the following two tuples, or neither of them:
+Sending multiple tuples per request can also help maintain consistency. For example, if `anne` follows `becky`, you can save the following two tuples or neither of them:
 
 <RelationshipTuplesViewer
   relationshipTuples={[
@@ -190,10 +188,10 @@ Having the ability to send multiple tuples per request is also useful when you w
 />
 
 :::info
-We have a type called user in this case because users can be related to each other, so the users now are a type in the system
+In this case, the type `user` exists because users can be related to each other, so users now are a type in the system.
 :::
 
-The <ProductName format={ProductNameFormat.LongForm}/> service will attempt to perform all the changes sent in a single Write API call in one transaction. If it can't (for example, if any of the requested changes fails), it will reject all of the changes.
+The <ProductName format={ProductNameFormat.LongForm}/> service attempts to perform all the changes sent in a single Write API call in one transaction. If it cannot complete all the changes, it rejects all of them.
 
 ## Related Sections
 
