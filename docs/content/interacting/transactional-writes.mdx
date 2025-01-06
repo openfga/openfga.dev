@@ -102,7 +102,7 @@ The following example uses public access. To learn more, [read about Public Acce
 - A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
 - A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
 - A <ProductConcept section="what-is-a-relation" linkName="Relation" />: a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
-- A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a group stored in <ProductName format={ProductNameFormat.ShortForm}/> that consists of a user, a relation, and an object 
+- A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a group stored in <ProductName format={ProductNameFormat.ShortForm}/> that consists of a user, a relation, and an object
 
 </details>
 
@@ -135,6 +135,37 @@ Deleting the previous tuple converts this `tweet` to private:
 />
 
 By removing the tuple, we made the tweet visible to no-one, which may not be what we want.
+
+<details>
+<summary>Limitations on duplicate tuples in a single request</summary>
+
+<br/>
+When using the Write API, you cannot include the same tuple (same user, relation, and object) in both the writes and deletes arrays within a single request. The API will return an error with code `cannot_allow_duplicate_tuples_in_one_request` if duplicate tuples are detected.
+
+For example, this request would fail:
+
+```bash
+curl -X POST 'http://localhost:8080/stores/{store_id}/write' \
+  -H 'content-type: application/json' \
+  --data '{
+    "writes": {
+      "tuple_keys": [{
+        "user": "user:anne",
+        "relation": "member",
+        "object": "group:2"
+      }]
+    },
+    "deletes": {
+      "tuple_keys": [{
+        "user": "user:anne",
+        "relation": "member",
+        "object": "group:2"
+      }]
+    }
+  }'
+```
+
+</details>
 
 The Write API allows you to send up to 100 unique tuples in the request. (This limit applies to the sum of both writes and deletes in that request). This means we can submit one API call that converts the `tweet` from public to visible to only the `user`'s followers.
 
