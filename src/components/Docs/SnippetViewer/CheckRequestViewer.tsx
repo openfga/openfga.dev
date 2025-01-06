@@ -231,7 +231,7 @@ var body = new ClientCheckRequest()
 
 var response = fgaClient.check(body, options).get();
 
-// response.getAllowed() = true `;
+// response.getAllowed() = ${allowed} `;
     }
     default:
       assertNever(lang);
