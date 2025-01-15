@@ -29,7 +29,7 @@
     "@easyops-cn/docusaurus-search-local": "0.45.0",
     "@lottiefiles/react-lottie-player": "3.5.4",
     "@openfga/frontend-utils": "^0.2.0-beta.11",
-    "@openfga/sdk": "^0.7.0",
+    "@openfga/sdk": "^0.8.0",
     "@openfga/syntax-transformer": "^0.2.0-beta.22",
     "assert-never": "1.3.0",
     "clsx": "2.1.1",
