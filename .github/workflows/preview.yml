@@ -32,6 +32,6 @@ jobs:
           BASE_URL: /pr-preview/pr-${{ github.event.number }}
 
       - name: Deploy preview
-        uses: rossjrw/pr-preview-action@430e3dfc1de8a8ae77e77d862d25676ef9db55d1
+        uses: rossjrw/pr-preview-action@df22037db54ab6ee34d3c1e2b8810ac040a530c6
         with:
           source-dir: ./build/
