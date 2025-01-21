@@ -53,6 +53,11 @@ const sidebars = {
             },
             {
               type: 'doc',
+              label: 'Configuration Options',
+              id: 'content/getting-started/setup-openfga/configuration',
+            },
+            {
+              type: 'doc',
               label: '🐳 Docker',
               id: 'content/getting-started/setup-openfga/docker-setup',
             },
