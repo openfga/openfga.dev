@@ -1,0 +1,218 @@
+---
+title: OpenFGA Configuration Options
+description: Configuring Options for the OpenFGA Server
+sidebar_position: 1
+slug: /getting-started/setup-openfga/configuration
+---
+import {
+  RelatedSection,
+} from "@components/Docs";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# OpenFGA Configuration Options
+
+## Passing in the options
+
+You can configure the OpenFGA server in three ways:
+
+- Using a configuration file.
+- Using environment variables.
+- Using command line parameters.
+
+If the same option is configured in multiple ways the command line parameters will take precedence over environment variables, which will take precedence over the configuration file.
+
+The configuration options and their default values are listed in the table below based on the [config-schema.json](https://github.com/openfga/openfga/blob/main/.config-schema.json).
+
+<Tabs groupId={"configuration"}>
+<TabItem value={"configuration file"} label={"Configuration File"}>
+
+You can configure the OpenFGA server with a `config.yaml` file, which can be specified in either:
+- `/etc/openfga`
+- `$HOME/.openfga`
+- `.` (i.e., the current working directory).
+
+The OpenFGA server will search for the configuration file in the above order.
+
+Here is a sample configuration to run OpenFGA with a Postgres database and using a preshared key for authentication:
+
+```yaml
+datastore:
+  engine: postgres
+  uri: postgres://user:password@localhost:5432/mydatabase
+authn:
+  method: preshared
+  preshared:
+    keys: ["key1", "key2"]
+playground:
+  enabled: false
+```
+
+</TabItem>
+
+<TabItem value={"environment variables"} label={"Environment Variables"}>
+
+The OpenFGA server supports **environment variables** for configuration, and they will take priority over your configuration file.
+Each variable must be prefixed with `OPENFGA_` and followed by your option in uppercase (`datastore.engine` becomes `OPENFGA_DATASTORE_ENGINE`), e.g.
+
+```shell
+# Running as a binary
+export OPENFGA_DATASTORE_ENGINE=postgres
+export OPENFGA_DATASTORE_URI='postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
+export OPENFGA_AUTHN_METHOD=preshared
+export OPENFGA_AUTHN_PRESHARED_KEYS='key1,key2'
+export OPENFGA_PLAYGROUND_ENABLED=false
+openfga run
+
+# Running in docker
+docker run docker.io/openfga/openfga:latest \ 
+  -e OPENFGA_DATASTORE_ENGINE=postgres \ 
+  -e OPENFGA_DATASTORE_URI='postgres://postgres:password@postgres:5432/postgres?sslmode=disable' \ 
+  -e OPENFGA_AUTHN_METHOD=preshared \ 
+  -e OPENFGA_AUTHN_PRESHARED_KEYS='key1,key2' \ 
+  -e OPENFGA_PLAYGROUND_ENABLED=false \ 
+  run
+```
+
+</TabItem>
+
+<TabItem value={"command line parameters"} label={"Command Line Parameters (Flags)"}>
+
+Command line parameters take precedence over environment variables and options in the configuration file. They are prefixed with `--` (`OPENFGA_DATASTORE_ENGINE` becomes `--datastore-engine`), e.g.
+
+```shell
+# Running as a binary
+openfga run \ 
+  --datastore-engine postgres \ 
+  --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable' \ 
+  --authn-method=preshared \ 
+  --authn-preshared-keys='key1,key2' \ 
+  --playground-enabled=false
+
+# Running in docker
+docker run docker.io/openfga/openfga:latest run \ 
+  --datastore-engine postgres \ 
+  --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable' \ 
+  --authn-method=preshared \ 
+  --authn-preshared-keys='key1,key2' \ 
+  --playground-enabled=false
+```
+
+</TabItem>
+</Tabs>
+
+## List of options
+
+The following table lists the configuration options for the OpenFGA server, based on the [config-schema.json](https://github.com/openfga/openfga/blob/main/.config-schema.json).
+
+| Config File | Env Var | Flag Name | Type | Description | Default Value |
+|-------------|---------|-----------|------|-------------|---------------|
+| `maxTuplesPerWrite` | <div id="OPENFGA_MAX_TUPLES_PER_WRITE"><code>OPENFGA_MAX_TUPLES_PER_WRITE</code></div> | `max-tuples-per-write` | integer | The maximum allowed number of tuples per Write transaction. | `100` |
+| `maxTypesPerAuthorizationModel` | <div id="OPENFGA_MAX_TYPES_PER_AUTHORIZATION_MODEL"><code>OPENFGA_MAX_TYPES_PER_AUTHORIZATION_MODEL</code></div> | `max-types-per-authorization-model` | integer | The maximum allowed number of type definitions per authorization model. | `100` |
+| `maxAuthorizationModelSizeInBytes` | <div id="OPENFGA_MAX_AUTHORIZATION_MODEL_SIZE_IN_BYTES"><code>OPENFGA_MAX_AUTHORIZATION_MODEL_SIZE_IN_BYTES</code></div> | `max-authorization-model-size-in-bytes` | integer | The maximum size in bytes allowed for persisting an Authorization Model (default is 256KB). | `262144` |
+| `maxConcurrentReadsForCheck` | <div id="OPENFGA_MAX_CONCURRENT_READS_FOR_CHECK"><code>OPENFGA_MAX_CONCURRENT_READS_FOR_CHECK</code></div> | `max-concurrent-reads-for-check` | integer | The maximum allowed number of concurrent reads in a single Check query (default is MaxUint32). | `4294967295` |
+| `maxConcurrentReadsForListObjects` | <div id="OPENFGA_MAX_CONCURRENT_READS_FOR_LIST_OBJECTS"><code>OPENFGA_MAX_CONCURRENT_READS_FOR_LIST_OBJECTS</code></div> | `max-concurrent-reads-for-list-objects` | integer | The maximum allowed number of concurrent reads in a single ListObjects query (default is MaxUint32). | `4294967295` |
+| `maxConcurrentReadsForListUsers` | <div id="OPENFGA_MAX_CONCURRENT_READS_FOR_LIST_USERS"><code>OPENFGA_MAX_CONCURRENT_READS_FOR_LIST_USERS</code></div> | `max-concurrent-reads-for-list-users` | integer | The maximum allowed number of concurrent reads in a single ListUsers query (default is MaxUint32). | `4294967295` |
+| `maxConcurrentChecksPerBatchCheck` | <div id="OPENFGA_MAX_CONCURRENT_CHECKS_PER_BATCH_CHECK"><code>OPENFGA_MAX_CONCURRENT_CHECKS_PER_BATCH_CHECK</code></div> | `max-concurrent-checks-per-batch-check` | integer | The maximum number of checks that can be processed concurrently in a batch check request. | `50` |
+| `maxChecksPerBatchCheck` | <div id="OPENFGA_MAX_CHECKS_PER_BATCH_CHECK"><code>OPENFGA_MAX_CHECKS_PER_BATCH_CHECK</code></div> | `max-checks-per-batch-check` | integer | The maximum number of tuples allowed in a BatchCheck request. | `50` |
+| `maxConditionEvaluationCost` | <div id="OPENFGA_MAX_CONDITION_EVALUATION_COST"><code>OPENFGA_MAX_CONDITION_EVALUATION_COST</code></div> | `max-condition-evaluation-cost` | integer | The maximum cost for CEL condition evaluation before a request returns an error (default is 100). | `100` |
+| `changelogHorizonOffset` | <div id="OPENFGA_CHANGELOG_HORIZON_OFFSET"><code>OPENFGA_CHANGELOG_HORIZON_OFFSET</code></div> | `changelog-horizon-offset` | integer | The offset (in minutes) from the current time. Changes that occur after this offset will not be included in the response of ReadChanges. |  |
+| `resolveNodeLimit` | <div id="OPENFGA_RESOLVE_NODE_LIMIT"><code>OPENFGA_RESOLVE_NODE_LIMIT</code></div> | `resolve-node-limit` | integer | Maximum resolution depth to attempt before throwing an error (defines how deeply nested an authorization model can be before a query errors out). | `25` |
+| `resolveNodeBreadthLimit` | <div id="OPENFGA_RESOLVE_NODE_BREADTH_LIMIT"><code>OPENFGA_RESOLVE_NODE_BREADTH_LIMIT</code></div> | `resolve-node-breadth-limit` | integer | Defines how many nodes on a given level can be evaluated concurrently in a Check resolution tree. | `100` |
+| `listObjectsDeadline` | <div id="OPENFGA_LIST_OBJECTS_DEADLINE"><code>OPENFGA_LIST_OBJECTS_DEADLINE</code></div> | `list-objects-deadline` | string (duration) | The timeout deadline for serving ListObjects requests | `3s` |
+| `listObjectsMaxResults` | <div id="OPENFGA_LIST_OBJECTS_MAX_RESULTS"><code>OPENFGA_LIST_OBJECTS_MAX_RESULTS</code></div> | `list-objects-max-results` | integer | The maximum results to return in the non-streaming ListObjects API response. If 0, all results can be returned | `1000` |
+| `listUsersDeadline` | <div id="OPENFGA_LIST_USERS_DEADLINE"><code>OPENFGA_LIST_USERS_DEADLINE</code></div> | `list-users-deadline` | string (duration) | The timeout deadline for serving ListUsers requests. If 0s, there is no deadline | `3s` |
+| `listUsersMaxResults` | <div id="OPENFGA_LIST_USERS_MAX_RESULTS"><code>OPENFGA_LIST_USERS_MAX_RESULTS</code></div> | `list-users-max-results` | integer | The maximum results to return in ListUsers API response. If 0, all results can be returned | `1000` |
+| `requestDurationDatastoreQueryCountBuckets` | <div id="OPENFGA_REQUEST_DURATION_DATASTORE_QUERY_COUNT_BUCKETS"><code>OPENFGA_REQUEST_DURATION_DATASTORE_QUERY_COUNT_BUCKETS</code></div> | `request-duration-datastore-query-count-buckets` | []integer | Datastore query count buckets used to label the histogram metric for measuring request duration. | `50,200` |
+| `requestDurationDispatchCountBuckets` | <div id="OPENFGA_REQUEST_DURATION_DISPATCH_COUNT_BUCKETS"><code>OPENFGA_REQUEST_DURATION_DISPATCH_COUNT_BUCKETS</code></div> | `request-duration-dispatch-count-buckets` | []integer | Dispatch count buckets used to label the histogram metric for measuring request duration. | `50,200` |
+| `contextPropagationToDatastore` | <div id="OPENFGA_CONTEXT_PROPAGATION_TO_DATASTORE"><code>OPENFGA_CONTEXT_PROPAGATION_TO_DATASTORE</code></div> | `context-propagation-to-datastore` | boolean | Propagate a requests context to the datastore implementation. Settings this parameter can result in connection pool draining on request aborts and timeouts. | `false` |
+| `experimentals` | <div id="OPENFGA_EXPERIMENTALS"><code>OPENFGA_EXPERIMENTALS</code></div> | `experimentals` | []string (enum=[`enable-check-optimizations`, `enable-access-control`]) | a list of experimental features to enable | `` |
+| `accessControl.enabled` | <div id="OPENFGA_ACCESS_CONTROL_ENABLED"><code>OPENFGA_ACCESS_CONTROL_ENABLED</code></div> | `access-control-enabled` | boolean | Enable/disable the access control store. | `false` |
+| `accessControl.storeId` | <div id="OPENFGA_ACCESS_CONTROL_STORE_ID"><code>OPENFGA_ACCESS_CONTROL_STORE_ID</code></div> | `access-control-store-id` | string | The storeId to be used for the access control store. |  |
+| `accessControl.modelId` | <div id="OPENFGA_ACCESS_CONTROL_MODEL_ID"><code>OPENFGA_ACCESS_CONTROL_MODEL_ID</code></div> | `access-control-model-id` | string | The modelId to be used for the access control store. |  |
+| `playground.enabled` | <div id="OPENFGA_PLAYGROUND_ENABLED"><code>OPENFGA_PLAYGROUND_ENABLED</code></div> | `playground-enabled` | boolean | Enable/disable the OpenFGA Playground. | `true` |
+| `playground.port` | <div id="OPENFGA_PLAYGROUND_PORT"><code>OPENFGA_PLAYGROUND_PORT</code></div> | `playground-port` | integer | The port to serve the local OpenFGA Playground on. | `3000` |
+| `profiler.enabled` | <div id="OPENFGA_PROFILER_ENABLED"><code>OPENFGA_PROFILER_ENABLED</code></div> | `profiler-enabled` | boolean | Enabled/disable pprof profiling. | `false` |
+| `profiler.addr` | <div id="OPENFGA_PROFILER_ADDR"><code>OPENFGA_PROFILER_ADDR</code></div> | `profiler-addr` | string | The host:port address to serve the pprof profiler server on. | `:3001` |
+| `datastore.engine` | <div id="OPENFGA_DATASTORE_ENGINE"><code>OPENFGA_DATASTORE_ENGINE</code></div> | `datastore-engine` | string (enum=[`memory`, `postgres`, `mysql`, `sqlite`]) | The datastore engine that will be used for persistence. | `memory` |
+| `datastore.uri` | <div id="OPENFGA_DATASTORE_URI"><code>OPENFGA_DATASTORE_URI</code></div> | `datastore-uri` | string | The connection uri to use to connect to the datastore (for any engine other than 'memory'). |  |
+| `datastore.username` | <div id="OPENFGA_DATASTORE_USERNAME"><code>OPENFGA_DATASTORE_USERNAME</code></div> | `datastore-username` | string | The connection username to connect to the datastore (overwrites any username provided in the connection uri). |  |
+| `datastore.password` | <div id="OPENFGA_DATASTORE_PASSWORD"><code>OPENFGA_DATASTORE_PASSWORD</code></div> | `datastore-password` | string | The connection password to connect to the datastore (overwrites any password provided in the connection uri). |  |
+| `datastore.maxCacheSize` | <div id="OPENFGA_DATASTORE_MAX_CACHE_SIZE"><code>OPENFGA_DATASTORE_MAX_CACHE_SIZE</code></div> | `datastore-max-cache-size` | integer | The maximum number of authorization models that will be cached in memory | `100000` |
+| `datastore.maxOpenConns` | <div id="OPENFGA_DATASTORE_MAX_OPEN_CONNS"><code>OPENFGA_DATASTORE_MAX_OPEN_CONNS</code></div> | `datastore-max-open-conns` | integer | The maximum number of open connections to the datastore. | `30` |
+| `datastore.maxIdleConns` | <div id="OPENFGA_DATASTORE_MAX_IDLE_CONNS"><code>OPENFGA_DATASTORE_MAX_IDLE_CONNS</code></div> | `datastore-max-idle-conns` | integer | the maximum number of connections to the datastore in the idle connection pool. | `10` |
+| `datastore.connMaxIdleTime` | <div id="OPENFGA_DATASTORE_CONN_MAX_IDLE_TIME"><code>OPENFGA_DATASTORE_CONN_MAX_IDLE_TIME</code></div> | `datastore-conn-max-idle-time` | string (duration) | the maximum amount of time a connection to the datastore may be idle | `0s` |
+| `datastore.connMaxLifetime` | <div id="OPENFGA_DATASTORE_CONN_MAX_LIFETIME"><code>OPENFGA_DATASTORE_CONN_MAX_LIFETIME</code></div> | `datastore-conn-max-lifetime` | string (duration) | the maximum amount of time a connection to the datastore may be reused | `0s` |
+| `datastore.metrics.enabled` | <div id="OPENFGA_DATASTORE_METRICS_ENABLED"><code>OPENFGA_DATASTORE_METRICS_ENABLED</code></div> | `datastore-metrics-enabled` | boolean | enable/disable sql metrics for the datastore | `false` |
+| `authn.method` | <div id="OPENFGA_AUTHN_METHOD"><code>OPENFGA_AUTHN_METHOD</code></div> | `authn-method` | string (enum=[`none`, `preshared`, `oidc`]) | The authentication method to use. | `none` |
+| `authn.preshared.keys` | <div id="OPENFGA_AUTHN_PRESHARED_KEYS"><code>OPENFGA_AUTHN_PRESHARED_KEYS</code></div> | `authn-preshared-keys` | []string | List of preshared keys used for authentication |  |
+| `authn.oidc.issuer` | <div id="OPENFGA_AUTHN_OIDC_ISSUER"><code>OPENFGA_AUTHN_OIDC_ISSUER</code></div> | `authn-oidc-issuer` | string | The OIDC issuer (authorization server) signing the tokens. |  |
+| `authn.oidc.audience` | <div id="OPENFGA_AUTHN_OIDC_AUDIENCE"><code>OPENFGA_AUTHN_OIDC_AUDIENCE</code></div> | `authn-oidc-audience` | string | The OIDC audience of the tokens being signed by the authorization server. |  |
+| `authn.oidc.issuerAliases` | <div id="OPENFGA_AUTHN_OIDC_ISSUER_ALIASES"><code>OPENFGA_AUTHN_OIDC_ISSUER_ALIASES</code></div> | `authn-oidc-issuer-aliases` | []string | the OIDC issuer DNS aliases that will be accepted as valid when verifying the `iss` field of the JWTs. |  |
+| `authn.oidc.subjects` | <div id="OPENFGA_AUTHN_OIDC_SUBJECTS"><code>OPENFGA_AUTHN_OIDC_SUBJECTS</code></div> | `authn-oidc-subjects` | []string | the OIDC subject names that will be accepted as valid when verifying the `sub` field of the JWTs. If empty, every `sub` will be allowed |  |
+| `authn.oidc.clientIdClaims` | <div id="OPENFGA_AUTHN_OIDC_CLIENT_ID_CLAIMS"><code>OPENFGA_AUTHN_OIDC_CLIENT_ID_CLAIMS</code></div> | `authn-oidc-client-id-claims` | []string | the OIDC client id claims that will be used to parse the clientID - configure in order of priority (first is highest). Defaults to [`azp`, `client_id`] |  |
+| `grpc.addr` | <div id="OPENFGA_GRPC_ADDR"><code>OPENFGA_GRPC_ADDR</code></div> | `grpc-addr` | string | The host:port address to serve the grpc server on. | `0.0.0.0:8081` |
+| `grpc.tls.enabled` | <div id="OPENFGA_GRPC_TLS_ENABLED"><code>OPENFGA_GRPC_TLS_ENABLED</code></div> | `grpc-tls-enabled` | boolean | Enables or disables transport layer security (TLS). | `false` |
+| `grpc.tls.cert` | <div id="OPENFGA_GRPC_TLS_CERT"><code>OPENFGA_GRPC_TLS_CERT</code></div> | `grpc-tls-cert` | string | The (absolute) file path of the certificate to use for the TLS connection. |  |
+| `grpc.tls.key` | <div id="OPENFGA_GRPC_TLS_KEY"><code>OPENFGA_GRPC_TLS_KEY</code></div> | `grpc-tls-key` | string | The (absolute) file path of the TLS key that should be used for the TLS connection. |  |
+| `http.enabled` | <div id="OPENFGA_HTTP_ENABLED"><code>OPENFGA_HTTP_ENABLED</code></div> | `http-enabled` | boolean | Enables or disables the OpenFGA HTTP server. If this is set to true then 'grpc.enabled' must be set to true. | `true` |
+| `http.addr` | <div id="OPENFGA_HTTP_ADDR"><code>OPENFGA_HTTP_ADDR</code></div> | `http-addr` | string | The host:port address to serve the HTTP server on. | `0.0.0.0:8080` |
+| `http.tls.enabled` | <div id="OPENFGA_HTTP_TLS_ENABLED"><code>OPENFGA_HTTP_TLS_ENABLED</code></div> | `http-tls-enabled` | boolean | Enables or disables transport layer security (TLS). | `false` |
+| `http.tls.cert` | <div id="OPENFGA_HTTP_TLS_CERT"><code>OPENFGA_HTTP_TLS_CERT</code></div> | `http-tls-cert` | string | The (absolute) file path of the certificate to use for the TLS connection. |  |
+| `http.tls.key` | <div id="OPENFGA_HTTP_TLS_KEY"><code>OPENFGA_HTTP_TLS_KEY</code></div> | `http-tls-key` |  | The (absolute) file path of the TLS key that should be used for the TLS connection. |  |
+| `http.upstreamTimeout` | <div id="OPENFGA_HTTP_UPSTREAM_TIMEOUT"><code>OPENFGA_HTTP_UPSTREAM_TIMEOUT</code></div> | `http-upstream-timeout` | string | The timeout duration for proxying HTTP requests upstream to the grpc endpoint. | `3s` |
+| `http.corsAllowedOrigins` | <div id="OPENFGA_HTTP_CORS_ALLOWED_ORIGINS"><code>OPENFGA_HTTP_CORS_ALLOWED_ORIGINS</code></div> | `http-cors-allowed-origins` | []string | List of allowed origins for CORS requests | `*` |
+| `http.corsAllowedHeaders` | <div id="OPENFGA_HTTP_CORS_ALLOWED_HEADERS"><code>OPENFGA_HTTP_CORS_ALLOWED_HEADERS</code></div> | `http-cors-allowed-headers` | []string | List of allowed headers for CORS requests | `*` |
+| `log.format` | <div id="OPENFGA_LOG_FORMAT"><code>OPENFGA_LOG_FORMAT</code></div> | `log-format` | string (enum=[`text`, `json`]) | The log format to output logs in. For production we recommend 'json' format. | `text` |
+| `log.level` | <div id="OPENFGA_LOG_LEVEL"><code>OPENFGA_LOG_LEVEL</code></div> | `log-level` | string (enum=[`none`, `debug`, `info`, `warn`, `error`, `panic`, `fatal`]) | The log level to set. For production we recommend 'info' format. | `info` |
+| `log.timestampFormat` | <div id="OPENFGA_LOG_TIMESTAMP_FORMAT"><code>OPENFGA_LOG_TIMESTAMP_FORMAT</code></div> | `log-timestamp-format` | string (enum=[`Unix`, `ISO8601`]) | The timestamp format to use for the log output. | `Unix` |
+| `trace.enabled` | <div id="OPENFGA_TRACE_ENABLED"><code>OPENFGA_TRACE_ENABLED</code></div> | `trace-enabled` | boolean | Enable tracing. | `false` |
+| `trace.otlp.endpoint` | <div id="OPENFGA_TRACE_OTLP_ENDPOINT"><code>OPENFGA_TRACE_OTLP_ENDPOINT</code></div> | `trace-otlp-endpoint` | string | The grpc endpoint of the trace collector | `0.0.0.0:4317` |
+| `trace.otlp.tls.enabled` | <div id="OPENFGA_TRACE_OTLP_TLS_ENABLED"><code>OPENFGA_TRACE_OTLP_TLS_ENABLED</code></div> | `trace-otlp-tls-enabled` | boolean | Whether to use TLS connection for the trace collector | `false` |
+| `trace.sampleRatio` | <div id="OPENFGA_TRACE_SAMPLE_RATIO"><code>OPENFGA_TRACE_SAMPLE_RATIO</code></div> | `trace-sample-ratio` | number | The fraction of traces to sample. 1 means all, 0 means none. | `0.2` |
+| `trace.serviceName` | <div id="OPENFGA_TRACE_SERVICE_NAME"><code>OPENFGA_TRACE_SERVICE_NAME</code></div> | `trace-service-name` | string | The service name included in sampled traces. | `openfga` |
+| `metrics.enabled` | <div id="OPENFGA_METRICS_ENABLED"><code>OPENFGA_METRICS_ENABLED</code></div> | `metrics-enabled` | boolean | enable/disable prometheus metrics on the '/metrics' endpoint | `true` |
+| `metrics.addr` | <div id="OPENFGA_METRICS_ADDR"><code>OPENFGA_METRICS_ADDR</code></div> | `metrics-addr` | string | the host:port address to serve the prometheus metrics server on | `0.0.0.0:2112` |
+| `metrics.enableRPCHistograms` | <div id="OPENFGA_METRICS_ENABLE_RPC_HISTOGRAMS"><code>OPENFGA_METRICS_ENABLE_RPC_HISTOGRAMS</code></div> | `metrics-enable-rpc-histograms` | boolean | enables prometheus histogram metrics for RPC latency distributions | `false` |
+| `checkCache.limit` | <div id="OPENFGA_CHECK_CACHE_LIMIT"><code>OPENFGA_CHECK_CACHE_LIMIT</code></div> | `check-cache-limit` | integer | the size limit (in items) of the cache for Check (queries and iterators) | `10000` |
+| `checkIteratorCache.enabled` | <div id="OPENFGA_CHECK_ITERATOR_CACHE_ENABLED"><code>OPENFGA_CHECK_ITERATOR_CACHE_ENABLED</code></div> | `check-iterator-cache-enabled` | boolean | enable caching of datastore iterators. The key is a string representing a database query, and the value is a list of tuples. Each iterator is the result of a database query, for example usersets related to a specific object, or objects related to a specific user, up to a certain number of tuples per iterator. If the request's consistency is HIGHER_CONSISTENCY, this cache is not used. | `false` |
+| `checkIteratorCache.maxResults` | <div id="OPENFGA_CHECK_ITERATOR_CACHE_MAX_RESULTS"><code>OPENFGA_CHECK_ITERATOR_CACHE_MAX_RESULTS</code></div> | `check-iterator-cache-max-results` | integer | if caching of datastore iterators of Check requests is enabled, this is the limit of tuples to cache per key | `10000` |
+| `checkIteratorCache.ttl` | <div id="OPENFGA_CHECK_ITERATOR_CACHE_TTL"><code>OPENFGA_CHECK_ITERATOR_CACHE_TTL</code></div> | `check-iterator-cache-ttl` | string (duration) | if caching of datastore iterators of Check requests is enabled, this is the TTL of each value | `10s` |
+| `checkQueryCache.enabled` | <div id="OPENFGA_CHECK_QUERY_CACHE_ENABLED"><code>OPENFGA_CHECK_QUERY_CACHE_ENABLED</code></div> | `check-query-cache-enabled` | boolean | enable caching of Check requests. The key is a string representing a query, and the value is a boolean. For example, if you have a relation `define viewer: owner or editor`, and the query is Check(user:anne, viewer, doc:1), we'll evaluate the `owner` relation and the `editor` relation and cache both results: (user:anne, viewer, doc:1) -> allowed=true and (user:anne, owner, doc:1) -> allowed=true. The cache is stored in-memory; the cached values are overwritten on every change in the result, and cleared after the configured TTL. This flag improves latency, but turns Check and ListObjects into eventually consistent APIs. If the request's consistency is HIGHER_CONSISTENCY, this cache is not used. | `false` |
+| `checkQueryCache.limit` | <div id="OPENFGA_CHECK_QUERY_CACHE_LIMIT"><code>OPENFGA_CHECK_QUERY_CACHE_LIMIT</code></div> | `check-query-cache-limit` | integer | DEPRECATED use OPENFGA_CHECK_CACHE_LIMIT. If caching of Check and ListObjects calls is enabled, this is the size limit (in items) of the cache | `10000` |
+| `checkQueryCache.ttl` | <div id="OPENFGA_CHECK_QUERY_CACHE_TTL"><code>OPENFGA_CHECK_QUERY_CACHE_TTL</code></div> | `check-query-cache-ttl` | string (duration) | if caching of Check and ListObjects is enabled, this is the TTL of each value | `10s` |
+| `cacheController.enabled` | <div id="OPENFGA_CACHE_CONTROLLER_ENABLED"><code>OPENFGA_CACHE_CONTROLLER_ENABLED</code></div> | `cache-controller-enabled` | boolean | enabling dynamic invalidation of check query cache and check iterator cache based on whether there are recent tuple writes. If enabled, cache will be invalidated when either 1) there are tuples written to the store OR 2) the check query cache or check iterator cache TTL has expired. | `false` |
+| `cacheController.ttl` | <div id="OPENFGA_CACHE_CONTROLLER_TTL"><code>OPENFGA_CACHE_CONTROLLER_TTL</code></div> | `cache-controller-ttl` | string (duration) | if cache controller is enabled, control how frequent read changes are invoked internally to query for recent tuple writes to the store. | `10s` |
+| `checkDispatchThrottling.enabled` | <div id="OPENFGA_CHECK_DISPATCH_THROTTLING_ENABLED"><code>OPENFGA_CHECK_DISPATCH_THROTTLING_ENABLED</code></div> | `check-dispatch-throttling-enabled` | boolean | enable throttling when check request's number of dispatches is high | `false` |
+| `checkDispatchThrottling.frequency` | <div id="OPENFGA_CHECK_DISPATCH_THROTTLING_FREQUENCY"><code>OPENFGA_CHECK_DISPATCH_THROTTLING_FREQUENCY</code></div> | `check-dispatch-throttling-frequency` | string (duration) | the frequency period that the deprioritized throttling queue is evaluated for a check request. A higher value will result in more aggressive throttling | `10µs` |
+| `checkDispatchThrottling.threshold` | <div id="OPENFGA_CHECK_DISPATCH_THROTTLING_THRESHOLD"><code>OPENFGA_CHECK_DISPATCH_THROTTLING_THRESHOLD</code></div> | `check-dispatch-throttling-threshold` | integer | define the number of recursive operations to occur before getting throttled for a check request | `100` |
+| `checkDispatchThrottling.maxThreshold` | <div id="OPENFGA_CHECK_DISPATCH_THROTTLING_MAX_THRESHOLD"><code>OPENFGA_CHECK_DISPATCH_THROTTLING_MAX_THRESHOLD</code></div> | `check-dispatch-throttling-max-threshold` | integer | define the maximum dispatch threshold beyond above which requests will be throttled. 0 will use the 'dispatchThrottling.threshold' value as maximum | `0` |
+| `listObjectsDispatchThrottling.enabled` | <div id="OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_ENABLED"><code>OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_ENABLED</code></div> | `list-objects-dispatch-throttling-enabled` | boolean | enable throttling when list objects request's number of dispatches is high | `false` |
+| `listObjectsDispatchThrottling.frequency` | <div id="OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_FREQUENCY"><code>OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_FREQUENCY</code></div> | `list-objects-dispatch-throttling-frequency` | string (duration) | the frequency period that the deprioritized throttling queue is evaluated for a list objects request. A higher value will result in more aggressive throttling | `10µs` |
+| `listObjectsDispatchThrottling.threshold` | <div id="OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_THRESHOLD"><code>OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_THRESHOLD</code></div> | `list-objects-dispatch-throttling-threshold` | integer | define the number of recursive operations to occur before getting throttled for a list objects request | `100` |
+| `listObjectsDispatchThrottling.maxThreshold` | <div id="OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_MAX_THRESHOLD"><code>OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_MAX_THRESHOLD</code></div> | `list-objects-dispatch-throttling-max-threshold` | integer | define the maximum dispatch threshold beyond above which requests will be throttled for a list objects request. 0 will use the 'dispatchThrottling.threshold' value as maximum | `0` |
+| `listUsersDispatchThrottling.enabled` | <div id="OPENFGA_LIST_USERS_DISPATCH_THROTTLING_ENABLED"><code>OPENFGA_LIST_USERS_DISPATCH_THROTTLING_ENABLED</code></div> | `list-users-dispatch-throttling-enabled` | boolean | enable throttling when list users request's number of dispatches is high | `false` |
+| `listUsersDispatchThrottling.frequency` | <div id="OPENFGA_LIST_USERS_DISPATCH_THROTTLING_FREQUENCY"><code>OPENFGA_LIST_USERS_DISPATCH_THROTTLING_FREQUENCY</code></div> | `list-users-dispatch-throttling-frequency` | string (duration) | the frequency period that the deprioritized throttling queue is evaluated for a list users request. A higher value will result in more aggressive throttling | `10µs` |
+| `listUsersDispatchThrottling.threshold` | <div id="OPENFGA_LIST_USERS_DISPATCH_THROTTLING_THRESHOLD"><code>OPENFGA_LIST_USERS_DISPATCH_THROTTLING_THRESHOLD</code></div> | `list-users-dispatch-throttling-threshold` | integer | define the number of recursive operations to occur before getting throttled for a list users request | `100` |
+| `listUsersDispatchThrottling.maxThreshold` | <div id="OPENFGA_LIST_USERS_DISPATCH_THROTTLING_MAX_THRESHOLD"><code>OPENFGA_LIST_USERS_DISPATCH_THROTTLING_MAX_THRESHOLD</code></div> | `list-users-dispatch-throttling-max-threshold` | integer | define the maximum dispatch threshold beyond above which requests will be throttled for a list users request. 0 will use the 'dispatchThrottling.threshold' value as maximum | `0` |
+| `requestTimeout` | <div id="OPENFGA_REQUEST_TIMEOUT"><code>OPENFGA_REQUEST_TIMEOUT</code></div> | `request-timeout` | string (duration) | The timeout duration for a request. | `3s` |
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more on how to configure OpenFGA."
+  relatedLinks={[
+    {
+      title: 'Configuring OpenFGA',
+      description: 'Learn more about the different ways to configure OpenFGA',
+      link: './configure-openfga',
+      id: './configure-openfga',
+    },
+    {
+      title: 'Production Best Practices',
+      description: 'Learn the best practices of running OpenFGA in a production environment',
+      link: '../running-in-production',
+      id: './running-in-production',
+    }
+  ]}
+/>
