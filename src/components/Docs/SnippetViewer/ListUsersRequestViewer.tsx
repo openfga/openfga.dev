@@ -55,7 +55,7 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
   -d '{
         "authorization_model_id": "${modelId}",
         "object": {
-          "type: "${objectType}",
+          "type": "${objectType}",
           "id": "${objectId}",
         },
         "relation": "${relation}",
