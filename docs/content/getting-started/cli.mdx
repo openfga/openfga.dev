@@ -5,20 +5,15 @@ sidebar_position: 10
 slug: /getting-started/cli
 ---
 
-import {
-  DocumentationNotice,
-  RelatedSection,
-  ProductName,
-  ProductNameFormat
-} from "@components/Docs";
+import { DocumentationNotice, RelatedSection, ProductName, ProductNameFormat } from '@components/Docs';
 
 # Use the FGA CLI
 
-The  <ProductName format={ProductNameFormat.ShortForm}/> Command Line Interface (CLI) enables you to interact with an FGA store, where you can manage tasks, create stores, and update FGA models, among other actions. For more information on FGA stores, see [What Is A Store](../concepts.mdx#what-is-a-store).
+The <ProductName format={ProductNameFormat.ShortForm}/> Command Line Interface (CLI) enables you to interact with an FGA store, where you can manage tasks, create stores, and update FGA models, among other actions. For more information on FGA stores, see [What Is A Store](../concepts.mdx#what-is-a-store).
 
 For instructions on installing it, visit the [OpenFGA CLI Github repository](https://github.com/openfga/cli).
 
-## Configuration 
+## Configuration
 
 The CLI is configured to use a specific FGA server in one of three ways:
 
@@ -28,14 +23,14 @@ The CLI is configured to use a specific FGA server in one of three ways:
 
 The API Url setting needs to point to the OpenFGA server:
 
-|Name            | Flag               |Environment           |~/.fga.yaml|Default Value          |
-|----------------|--------------------|----------------------|-----------|-----------------------|
-|API Url         | --api-url          | FGA_API_URL          | api-url   | `http://localhost:8080` |
+| Name    | Flag      | Environment | ~/.fga.yaml | Default Value           |
+| ------- | --------- | ----------- | ----------- | ----------------------- |
+| API Url | --api-url | FGA_API_URL | api-url     | `http://localhost:8080` |
 
 If you use [pre-shared key authentication](./setup-openfga/configure-openfga.mdx#pre-shared-key-authentication), configure the following parameters based on the OIDC server that’s used to issue tokens:
 
-| Name           | Flag               |Environment           | ~/.fga.yaml      |
-| ---------------|--------------------|----------------------|------------------|
+| Name           | Flag               | Environment          | ~/.fga.yaml      |
+| -------------- | ------------------ | -------------------- | ---------------- |
 | Client ID      | --client-id        | FGA_CLIENT_ID        | client-id        |
 | Client Secret  | --client-secret    | FGA_CLIENT_SECRET    | client-secret    |
 | Scopes         | --api-scopes       | FGA_API_SCOPES       | api-scopes       |
@@ -44,12 +39,12 @@ If you use [pre-shared key authentication](./setup-openfga/configure-openfga.mdx
 
 A default store Id and authorization model Id can also be configured:
 
-| Name                  | Flag               | Environment   | ~/.fga.yaml     |
-| ----------------------|--------------------|-------------- | ----------------|
-| Store ID              |--store-id          |FGA_STORE_ID   |store-id         |
-| Authorization Model ID|--model-id          |FGA_MODEL_ID   |model-id         |
+| Name                   | Flag       | Environment  | ~/.fga.yaml |
+| ---------------------- | ---------- | ------------ | ----------- |
+| Store ID               | --store-id | FGA_STORE_ID | store-id    |
+| Authorization Model ID | --model-id | FGA_MODEL_ID | model-id    |
 
-All of the examples in this document assume the CLI is properly configured and that the Store ID is set either in an environment variable or the `~/.fga.yaml` file. 
+All of the examples in this document assume the CLI is properly configured and that the Store ID is set either in an environment variable or the `~/.fga.yaml` file.
 
 ## Basic operations
 
@@ -94,7 +89,7 @@ type document
 
 condition non_expired_grant(current_time: timestamp, grant_duration: duration, grant_time: timestamp) {
   current_time < grant_time + grant_duration
-  
+
 }
 
 # Write a tuple
@@ -137,16 +132,16 @@ $ fga tuple write organization:acme organization document:readme
   ]
 }
 
-# Check if anne can view the document. 
+# Check if anne can view the document.
 # Anne can view it as she's a member of organization:acme, which is the organization that owns the document
-$ fga query check user:anne viewer document:readme  
+$ fga query check user:anne viewer document:readme
 {
   "allowed":true,
   "resolution":""
 }
 
 # List all the documents user:anne can view
-$ fga query list-objects user:anne viewer document  
+$ fga query list-objects user:anne viewer document
 {
   "objects": [
     "document:readme"
@@ -175,7 +170,8 @@ $ fga query check user:anne viewer document:readme
 
 ## Work with authorization model versions
 
-<ProductName format={ProductNameFormat.ShortForm}/> models are [immutable](../getting-started/immutable-models.mdx); each time a model is written to a store, a new version of the model is created. 
+<ProductName format={ProductNameFormat.ShortForm} /> models are [immutable](../getting-started/immutable-models.mdx);
+each time a model is written to a store, a new version of the model is created.
 
 All <ProductName format={ProductNameFormat.ShortForm}/> API endpoints receive an optional authorization model ID that points to a specific version of the model and defaults to the latest model version. Always use a specific model ID and update it each time a new model version is used in production.
 
@@ -202,7 +198,7 @@ $ fga model list
 }
 
 # List the last model, displaying just the model ID
-$ fga model get --field id                   
+$ fga model get --field id
 # Model ID: 01HPJ8JZV091THNTDFE2SFYNNJ
 
 # List the last model, displaying just the model ID, in JSON format, to make it simpler to parse
@@ -215,16 +211,25 @@ $ fga model get --field id --format json
 When using the CLI, the model ID can be specified as a `--model-id` parameter or as part of the configuration.
 
 ## Import tuples
+
 To import tuples, use the`fga tuple write` command. It has the following parameters:
 
-| Parameter                                            | Description | 
-| -----------------------------------------------------|----------------------------------------
-| --file                                               | Specifies the file name  json, yaml and csv files are supported |
-| --max-tuples-per-write (optional, default=1, max=40) | Maximum number of tuples to send in a single write |
-| --max-parallel-requests (optional, default=4)        | Maximum number of requests to send in parallel. Make it larger if you want to import a large number of tuples faster|
+| Parameter                                            | Description                                                                                                          |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| --file                                               | Specifies the file name json, yaml and csv files are supported                                                       |
+| --max-tuples-per-write (optional, default=1, max=40) | Maximum number of tuples to send in a single write                                                                   |
+| --max-parallel-requests (optional, default=4)        | Maximum number of requests to send in parallel. Make it larger if you want to import a large number of tuples faster |
+| --hide-imported-tuples (optional, default=false)     | Hide successful imports from output, useful when importing large datasets                                            |
 
-The CLI returns a list of tuples that were successfully written and a list of tuples that were not, with details of the write failure. If you specify `-max-tuples-per-write` greater than one, an error in one of the tuples implies none of the tuples get written.
+The CLI returns a detailed JSON response that includes:
 
+- `successful`: List of successfully written tuples (hidden when using `--hide-imported-tuples`)
+- `failed`: List of tuples that failed to write, including the error reason
+- `total_count`: Total number of tuples processed in this operation
+- `successful_count`: Number of tuples successfully written
+- `failed_count`: Number of tuples that failed to write
+
+When using `--hide-imported-tuples`, the successful tuples are not included in the output, making it more practical when importing large datasets. Failed tuples are always shown to help identify and fix any issues. If you specify `--max-tuples-per-write` greater than one, an error in one of the tuples implies none of the tuples get written.
 
 ```bash
 $ fga tuple write --file tuples.yaml
@@ -237,40 +242,51 @@ $ fga tuple write --file tuples.yaml
       "user":"user:anne"
     }
   ],
-  "failed":null
+  "failed":null,
+  "total_count": 1,
+  "successful_count": 1,
+  "failed_count": 0
 }
 
 $ fga tuple write --file tuples.yaml
 {
-   "successful":null,
+  "successful":null,
   "failed": [
-    {
-      "tuple_key": {
-        "object":"organization:acme",
-        "relation":"member",
-        "user":"user:anne"
-      },
-    "reason":"Write validation error for POST Write with body {\"code\":\"write_failed_due_to_invalid_input\",\"message\":\"cannot write a tuple which already exists: user: 'user:anne', relation: 'member', object: 'organization:acme': invalid write input\"}\n with error code write_failed_due_to_invalid_input error message: cannot write a tuple which already exists: user: 'user:anne', relation: 'member', object: 'organization:acme': invalid write input"
+      {
+        "tuple_key": {
+          "object":"organization:acme",
+          "relation":"member",
+          "user":"user:anne"
+        },
+      "reason":"Write validation error for POST Write with body {\"code\":\"write_failed_due_to_invalid_input\",\"message\":\"cannot write a tuple which already exists: user: 'user:anne', relation: 'member', object: 'organization:acme': invalid write input\"}\n with error code write_failed_due_to_invalid_input error message: cannot write a tuple which already exists: user: 'user:anne', relation: 'member', object: 'organization:acme': invalid write input"
     }
+  ],
+  "total_count": 1,
+  "successful_count": 0,
+  "failed_count": 1
 }
 ```
+
 Below are examples of the different file formats the CLI accepts when writing tuples:
 
 ### yaml
+
 ```yaml
 - user: user:peter
   relation: admin
   object: organization:acme
-  condition: 
+  condition:
     name: non_expired_grant
-    context: 
-      grant_time : "2024-02-01T00:00:00Z"
-      grant_duration : 1h
+    context:
+      grant_time: '2024-02-01T00:00:00Z'
+      grant_duration: 1h
 - user: user:anne
   relation: member
   object: organization:acme
 ```
+
 ### JSON
+
 ```
 [
     {
@@ -337,7 +353,7 @@ $ fga tuple delete --file  tuples.json
 
 ## Import stores
 
-The CLI can import an [FGA Test file](../modeling/testing-models.mdx) in a store. It writes the model included and imports the tuples in the fga test file. 
+The CLI can import an [FGA Test file](../modeling/testing-models.mdx) in a store. It writes the model included and imports the tuples in the fga test file.
 
 Given the following `.fga.yaml` file:
 
@@ -367,7 +383,6 @@ $ fga store import --file <filename>.fga.yaml
 
 Use the `fga model get` command is used to verify that the model was correctly written, and the `fga tuple read` command is used to verify that the tuples were properly imported.
 
-
 ## Related Sections
 
 <RelatedSection
@@ -377,7 +392,7 @@ Use the `fga model get` command is used to verify that the model was correctly w
       title: 'Testing Models',
       description: 'Learn how to test FGA models using the FGA CLI.',
       link: '../modeling/testing',
-      id:  '../modeling/testing-models.mdx',
-    }
+      id: '../modeling/testing-models.mdx',
+    },
   ]}
 />
