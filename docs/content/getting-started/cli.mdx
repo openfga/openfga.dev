@@ -229,7 +229,7 @@ The CLI returns a detailed JSON response that includes:
 - `successful_count`: Number of tuples successfully written
 - `failed_count`: Number of tuples that failed to write
 
-When using `--hide-imported-tuples`, the successful tuples are not included in the output, making it more practical when importing large datasets. Failed tuples are always shown to help identify and fix any issues. If you specify `-max-tuples-per-write` greater than one, an error in one of the tuples implies none of the tuples get written.
+When using `--hide-imported-tuples`, the successful tuples are not included in the output, making it more practical when importing large datasets. Failed tuples are always shown to help identify and fix any issues. If you specify `--max-tuples-per-write` greater than one, an error in one of the tuples implies none of the tuples get written.
 
 ```bash
 $ fga tuple write --file tuples.yaml
