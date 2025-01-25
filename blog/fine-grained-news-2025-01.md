@@ -11,11 +11,9 @@ hide_table_of_contents: false
 
 # Fine Grained News - January 2025s
 
-Welcome to the first Fine Grained News edition of 2025! 
+Welcome to the first Fine Grained News edition of 2025! January is always a good month to look back at what the OpenFGA community accomplished over the past year.
 
-## 2024 Recap!
-
-January is always a good month to look back at what the OpenFGA community accomplished over the past year.
+## Major faatures
 
 Below is a list of the major features that were shipped in 2024:
 
@@ -29,13 +27,13 @@ Below is a list of the major features that were shipped in 2024:
 - [Storage adapter for SQLite ](https://openfga.dev/docs/getting-started/setup-openfga/configure-openfga#sqlite), contributed by [DanCech](https://github.com/DanCech) from Grafana Labs.
 - [Experimental Access Control for the OpenFGA server](https://openfga.dev/docs/getting-started/setup-openfga/access-control).
 
-We also heavily invested in OpenFGA performance, reducing latency by 90% in several cases. We'll continue improving performance in the following months.
+We heavily invested in OpenFGA performance, reducing latency by 90% in several cases. We'll continue improving performance in the following months.
 
 ## But that's not all!
 
-We are very grateful with the OpenFGA community who helped shipping **126** releases and improvements across the board:
-<!-- markdown-link-check-disable -->
+We are very grateful with the OpenFGA community, who helped shipping **126** releases and improvements across the board:
 
+<!-- markdown-link-check-disable -->
 - [OpenFGA Server](https://github.com/openfga/openfga): [23 releases](https://github.com/openfga/openfga). Thanks [kalleep](https://github.com/kalleep), [DanCech](https://github.com/DanCech),[golanglemonade](https://github.com/golanglemonade,) [tranngoclam](https://github.com/tranngoclam), [lalalalatt](https://github.com/lalalalatt), [Code2Life](https://github.com/Code2Life), [JAORMX](https://github.com/JAORMX), [Zach-Johnson](https://github.com/Zach-Johnson), [cmmoran](https://github.com/cmmoran), [00chorch](https://github.com/00chorch), [chenrui333](https://github.com/chenrui333), [le-yams](https://github.com/le-yams), [lekaf974](https://github.com/lekaf974), [raj-saxena](https://github.com/raj-saxena)!
 - [Python SDK](https://github.com/openfga/go-sdkk): [16 Releases](https://github.com/openfga/go-sdk/releases). Thanks [Oscmage](https://github.com/Oscmage) [ovindu-a](https://github.com/ovindu-a), [GMorris-professional](https://github.com/GMorris-professional), [Divan009](https://github.com/Divan009).
 - [Go SDK](https://github.com/openfga/go-sdk): [10 releases](https://github.com/openfga/go-sdk/releases). Thanks [le-yams](https://github.com/le-yams), [le-yams](https://github.com/HeroicHorizon), [gurleensethi](https://github.com/gurleensethi), [gurleensethi](https://github.com/gurleensethi), [wonyx](https://github.com/wonyx), [Code2Life](https://github.com/Code2Life), [Kryvchun](https://github.com/Kryvchun).
@@ -56,7 +54,7 @@ We are very grateful with the OpenFGA community who helped shipping **126** rele
 - [External contributors](https://github.com/openfga/openfga/graphs/contributors) to the OpenFGA repository doubled.
 - There are [more than 140 repositories](https://github.com/search?q=openfga&type=repositories) in Github that have ‘openfga’ in its name or description and are not maintained by the OpenFGA team.
 - We onboarded [Grafana Labs](https://grafana.com) as a new maintainer for the OpenFGA project.
-- We just launched a [LinkedIn Page](https://www.linkedin.com/company/openfga), and we need more followers!
+- We just launched a [LinkedIn Page](https://www.linkedin.com/company/openfga). We need more followers!
 - There are [15 Production OpenFGA Models](https://github.com/openfga/sample-stores?tab=readme-ov-file#openfga-models-in-open-source-projects) in different projects in Github.
 - We applied to CNCF Incubation in April 2024, [we are third in the line](https://github.com/orgs/cncf/projects/27/views/9) waiting for being evaluated.
 
