@@ -49,7 +49,6 @@ We are very grateful with the OpenFGA community who helped shipping **126** rele
 - [openfga.dev](https://github.com/openfga/openfga.dev): Our website received contributions from [Siddhant-K-code](https://github.com/Siddhant-K-code), [tazarov](https://github.com/tazarov), [sarthak-kumar-shailendra](https://github.com/sarthak-kumar-shailendra),  [nimakarimi97](https://github.com/nimakarimi97), [soura-b](https://github.com/soura-ba), [asenawritescode](https://github.com/asenawritescode), [kwiky](https://github.com/kwiky), [lupeterm](https://github.com/lupeterm), [RobertKielty](https://github.com/RobertKielty), [t3hmrman](https://github.com/t3hmrman), [mwangersjo](https://github.com/mwangersjo), [josxha](https://github.com/josxha), [tbcvl](https://github.com/tbcvl), [sujitha-av](https://github.com/sujitha-av), [jamct](https://github.com/jamct), [lhchingit](https://github.com/lhchingit), [DanCech](https://github.com/DanCech). Thanks to everyone!
 - [Visual Studio Code Extension](https://github.com/openfga/vscode-ext): [11 releases](https://github.com/openfga/vscode-ext/releases). Thanks [solon](https://github.com/solon)
 - [IntelliJ Plugin](https://github.com/openfga/intellij-plugin): [5 releases](https://github.com/openfga/intellij-plugin/releases). Thanks [le-yams](https://github.com/le-yams) and [edlundin](https://github.com/edlundin)!
-<!-- markdown-link-check-enable -->
 
 ## More community accomplishments
 
@@ -60,6 +59,8 @@ We are very grateful with the OpenFGA community who helped shipping **126** rele
 - We just launched a [LinkedIn Page](https://www.linkedin.com/company/openfga), and we need more followers!
 - There are [15 Production OpenFGA Models](https://github.com/openfga/sample-stores?tab=readme-ov-file#openfga-models-in-open-source-projects) in different projects in Github.
 - We applied to CNCF Incubation in April 2024, [we are third in the line](https://github.com/orgs/cncf/projects/27/views/9) waiting for being evaluated.
+
+<!-- markdown-link-check-enable -->
 
 ## Future community presentations
 
