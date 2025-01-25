@@ -14,9 +14,8 @@
             <guid>https://openfga.dev/pr-preview/pr-942/blog/fine-grained-news-2025-01</guid>
             <pubDate>Wed, 29 Jan 2025 00:00:00 GMT</pubDate>
             <description><![CDATA[Fine Grained News]]></description>
-            <content:encoded><![CDATA[<p>Welcome to the first Fine Grained News edition of 2025!</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="2024-recap">2024 Recap!<a href="https://openfga.dev/pr-preview/pr-942/blog/fine-grained-news-2025-01#2024-recap" class="hash-link" aria-label="Direct link to 2024 Recap!" title="Direct link to 2024 Recap!">​</a></h2>
-<p>January is always a good month to look back at what the OpenFGA community accomplished over the past year.</p>
+            <content:encoded><![CDATA[<p>Welcome to the first Fine Grained News edition of 2025! January is always a good month to look back at what the OpenFGA community accomplished over the past year.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="major-faatures">Major faatures<a href="https://openfga.dev/pr-preview/pr-942/blog/fine-grained-news-2025-01#major-faatures" class="hash-link" aria-label="Direct link to Major faatures" title="Direct link to Major faatures">​</a></h2>
 <p>Below is a list of the major features that were shipped in 2024:</p>
 <ul>
 <li><a href="https://openfga.dev/docs/modeling/modular-models" target="_blank" rel="noopener noreferrer">Modular Models</a></li>
@@ -29,9 +28,9 @@
 <li><a href="https://openfga.dev/docs/getting-started/setup-openfga/configure-openfga#sqlite" target="_blank" rel="noopener noreferrer">Storage adapter for SQLite </a>, contributed by <a href="https://github.com/DanCech" target="_blank" rel="noopener noreferrer">DanCech</a> from Grafana Labs.</li>
 <li><a href="https://openfga.dev/docs/getting-started/setup-openfga/access-control" target="_blank" rel="noopener noreferrer">Experimental Access Control for the OpenFGA server</a>.</li>
 </ul>
-<p>We also heavily invested in OpenFGA performance, reducing latency by 90% in several cases. We'll continue improving performance in the following months.</p>
+<p>We heavily invested in OpenFGA performance, reducing latency by 90% in several cases. We'll continue improving performance in the following months.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="but-thats-not-all">But that's not all!<a href="https://openfga.dev/pr-preview/pr-942/blog/fine-grained-news-2025-01#but-thats-not-all" class="hash-link" aria-label="Direct link to But that's not all!" title="Direct link to But that's not all!">​</a></h2>
-<p>We are very grateful with the OpenFGA community who helped shipping <strong>126</strong> releases and improvements across the board:</p>
+<p>We are very grateful with the OpenFGA community, who helped shipping <strong>126</strong> releases and improvements across the board:</p>
 <ul>
 <li><a href="https://github.com/openfga/openfga" target="_blank" rel="noopener noreferrer">OpenFGA Server</a>: <a href="https://github.com/openfga/openfga" target="_blank" rel="noopener noreferrer">23 releases</a>. Thanks <a href="https://github.com/kalleep" target="_blank" rel="noopener noreferrer">kalleep</a>, <a href="https://github.com/DanCech" target="_blank" rel="noopener noreferrer">DanCech</a>,<a href="https://github.com/golanglemonade," target="_blank" rel="noopener noreferrer">golanglemonade</a> <a href="https://github.com/tranngoclam" target="_blank" rel="noopener noreferrer">tranngoclam</a>, <a href="https://github.com/lalalalatt" target="_blank" rel="noopener noreferrer">lalalalatt</a>, <a href="https://github.com/Code2Life" target="_blank" rel="noopener noreferrer">Code2Life</a>, <a href="https://github.com/JAORMX" target="_blank" rel="noopener noreferrer">JAORMX</a>, <a href="https://github.com/Zach-Johnson" target="_blank" rel="noopener noreferrer">Zach-Johnson</a>, <a href="https://github.com/cmmoran" target="_blank" rel="noopener noreferrer">cmmoran</a>, <a href="https://github.com/00chorch" target="_blank" rel="noopener noreferrer">00chorch</a>, <a href="https://github.com/chenrui333" target="_blank" rel="noopener noreferrer">chenrui333</a>, <a href="https://github.com/le-yams" target="_blank" rel="noopener noreferrer">le-yams</a>, <a href="https://github.com/lekaf974" target="_blank" rel="noopener noreferrer">lekaf974</a>, <a href="https://github.com/raj-saxena" target="_blank" rel="noopener noreferrer">raj-saxena</a>!</li>
 <li><a href="https://github.com/openfga/go-sdkk" target="_blank" rel="noopener noreferrer">Python SDK</a>: <a href="https://github.com/openfga/go-sdk/releases" target="_blank" rel="noopener noreferrer">16 Releases</a>. Thanks <a href="https://github.com/Oscmage" target="_blank" rel="noopener noreferrer">Oscmage</a> <a href="https://github.com/ovindu-a" target="_blank" rel="noopener noreferrer">ovindu-a</a>, <a href="https://github.com/GMorris-professional" target="_blank" rel="noopener noreferrer">GMorris-professional</a>, <a href="https://github.com/Divan009" target="_blank" rel="noopener noreferrer">Divan009</a>.</li>
@@ -53,7 +52,7 @@
 <li><a href="https://github.com/openfga/openfga/graphs/contributors" target="_blank" rel="noopener noreferrer">External contributors</a> to the OpenFGA repository doubled.</li>
 <li>There are <a href="https://github.com/search?q=openfga&amp;type=repositories" target="_blank" rel="noopener noreferrer">more than 140 repositories</a> in Github that have ‘openfga’ in its name or description and are not maintained by the OpenFGA team.</li>
 <li>We onboarded <a href="https://grafana.com/" target="_blank" rel="noopener noreferrer">Grafana Labs</a> as a new maintainer for the OpenFGA project.</li>
-<li>We just launched a <a href="https://www.linkedin.com/company/openfga" target="_blank" rel="noopener noreferrer">LinkedIn Page</a>, and we need more followers!</li>
+<li>We just launched a <a href="https://www.linkedin.com/company/openfga" target="_blank" rel="noopener noreferrer">LinkedIn Page</a>. We need more followers!</li>
 <li>There are <a href="https://github.com/openfga/sample-stores?tab=readme-ov-file#openfga-models-in-open-source-projects" target="_blank" rel="noopener noreferrer">15 Production OpenFGA Models</a> in different projects in Github.</li>
 <li>We applied to CNCF Incubation in April 2024, <a href="https://github.com/orgs/cncf/projects/27/views/9" target="_blank" rel="noopener noreferrer">we are third in the line</a> waiting for being evaluated.</li>
 </ul>
