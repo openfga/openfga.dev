@@ -51,11 +51,11 @@ We are very grateful with the OpenFGA community who helped shipping **126** rele
 
 ## More community accomplishments
 
-- [OpenFGA](https://github.com/openfga/openfga) repository’s stars increased 70% increase, crossing the 3k mark. 
+- [OpenFGA](https://github.com/openfga/openfga) repository’s stars increased 70%, crossing the 3k mark. 
 - [External contributors](https://github.com/openfga/openfga/graphs/contributors) to the OpenFGA repository doubled.
 - There are [more than 140 repositories](https://github.com/search?q=openfga&type=repositories) in Github that have ‘openfga’ in its name or description and are not maintained by the OpenFGA team.
 - We onboarded [Grafana Labs](https://grafana.com) as a new maintainer for the OpenFGA project.
-- We just launched an [LinkedIn Page](https://www.linkedin.com/company/openfga), and we need more followers!
+- We just launched a [LinkedIn Page](https://www.linkedin.com/company/openfga), and we need more followers!
 - There are [15 Production OpenFGA Models](https://github.com/openfga/sample-stores?tab=readme-ov-file#openfga-models-in-open-source-projects) in different projects in Github.
 - We applied to CNCF Incubation in April 2024, [we are third in the line](https://github.com/orgs/cncf/projects/27/views/9) waiting for being evaluated.
 
@@ -65,7 +65,7 @@ We are very grateful with the OpenFGA community who helped shipping **126** rele
 
 [Poovamraj Thanganadar Thiagarajan](https://www.linkedin.com/in/poovamraj/) from Okta will be presenting at KubeCon Europe, together with [Jo Guerreiro](https://www.linkedin.com/in/jmlguerreiro/) from Grafana Labs about [From Chaos To Control: Migrating Access Control To OpenFGA in a Multi-Tenant World](https://kccnceu2025.sched.com/event/1txIJ/from-chaos-to-control-migrating-access-control-to-openfga-in-a-multi-tenant-world-jo-guerreiro-grafana-labs-poovamraj-thanganadar-thiagarajan-okta).
 
-[Andres Aguiar](https://www.linkedin.com/in/aaguiar/) from Okta was invited to present on the Maintainer’s Summit at KubeCon Europ about our experiences collaborating with the CNCF TAG-Security team: [A Project Maintainers Guide To TAG Security](https://maintainersummiteu2025.sched.com/event/1tj8v/a-project-maintainers-guide-to-tag-security-marina-moore-edera-andres-aguiar-okta).
+[Andres Aguiar](https://www.linkedin.com/in/aaguiar/) from Okta was invited to present on the Maintainer’s Summit at KubeCon Europe aaout our experiences collaborating with the CNCF TAG-Security team: [A Project Maintainers Guide To TAG Security](https://maintainersummiteu2025.sched.com/event/1tj8v/a-project-maintainers-guide-to-tag-security-marina-moore-edera-andres-aguiar-okta).
 
 [Mark Laing](https://www.linkedin.com/in/mark-laing/) from Canonical will present at FOSDEM about [Fine-grained access control in LXD with OpenFGA](https://fosdem.org/2025/schedule/event/fosdem-2025-6194-fine-grained-access-control-in-lxd-with-openfga/)
 
