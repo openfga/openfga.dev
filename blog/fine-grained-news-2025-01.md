@@ -9,7 +9,7 @@ image: https://openfga.dev/img/og-rich-embed.png
 hide_table_of_contents: false
 ---
 
-# Fine Grained News - January 2025s
+# Fine Grained News - January 2025
 
 Welcome to the first Fine Grained News edition of 2025! January is always a good month to look back at what the OpenFGA community accomplished over the past year.
 
