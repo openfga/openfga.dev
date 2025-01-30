@@ -281,11 +281,18 @@ These would be defined in the [authorization model](#what-is-an-authorization-mo
             this: {},
           },
         },
+        {
+        type: 'team',
+        relations: {
+          member: {
+            this: {},
+          },
+        },
         metadata: {
           relations: {
             viewer: { directly_related_user_types: [{ type: 'user' }] },
             commenter: { directly_related_user_types: [{ type: 'user' }] },
-            editor: { directly_related_user_types: [{ type: 'user' }] },
+            editor: { directly_related_user_types: [{ type: 'team', relation: 'member' }, { type: 'user' }] },
             owner: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
@@ -299,7 +306,7 @@ These would be defined in the [authorization model](#what-is-an-authorization-mo
 
 :::info
 
-There are four relations in the document type configuration: `viewer`, `commenter`, `editor` and `owner`.
+There are four relations in the document type configuration: `viewer`, `commenter`, `editor` and `owner`. The `editor` relation exists when the report is directly assigned to the user or for any member of an assigned team.
 
 :::
 
