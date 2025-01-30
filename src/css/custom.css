@@ -36,3 +36,7 @@ html[data-theme='dark'] {
   --ifm-navbar-background-color: var(--ifm-background-color);
   --ifm-footer-background-color: var(--ifm-background-color);
 }
+
+table td {
+  overflow-wrap: break-word;
+}
