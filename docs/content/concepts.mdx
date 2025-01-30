@@ -281,13 +281,6 @@ These would be defined in the [authorization model](#what-is-an-authorization-mo
             this: {},
           },
         },
-        {
-        type: 'team',
-        relations: {
-          member: {
-            this: {},
-          },
-        },
         metadata: {
           relations: {
             viewer: { directly_related_user_types: [{ type: 'user' }] },
@@ -299,6 +292,19 @@ These would be defined in the [authorization model](#what-is-an-authorization-mo
       },
       {
         type: 'user',
+      },
+      {
+        type: 'team',
+        relations: {
+          member: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
       },
     ],
   }} skipVersion={true}
