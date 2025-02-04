@@ -32,7 +32,7 @@ function batchCheckRequestViewer(lang: SupportedLanguage, opts: BatchCheckReques
       throw new Error('Batch check is not supported in the CLI');
 
     case SupportedLanguage.JS_SDK:
-      return `// Requires >=v0.8.0 for the server side BatchCheck, otherwise will be calling the check endpoint in parallel.
+      return `// Requires >=v0.8.0 for the server side BatchCheck, earlier versions support a client-side BatchCheck with a slightly different interface
 const body = {
   checks: [
     ${checks
@@ -229,7 +229,7 @@ response.Responses = [${checks
 `;
 
     case SupportedLanguage.PYTHON_SDK:
-      return `# Requires >=v0.9.0 for the server side BatchCheck, otherwise will be calling the check endpoint in parallel.
+      return `# Requires >=v0.9.0 for the server side BatchCheck, earlier versions support a client-side BatchCheck with a slightly different interface
 
 checks = [${checks.map(
         (check) => `

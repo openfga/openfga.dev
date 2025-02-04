@@ -170,7 +170,7 @@ The result's `allowed` field will return `true` if the relationship exists and `
 If you want to check multiple user-object-relationship combinations in a single request, you can use the [Batch Check](/api/service#Relationship%20Queries/BatchCheck) API endpoint. Batching authorization checks together in a single request significantly reduces overall network latency.    
 
 :::note
-The BatchCheck endpoint is currently only supported by the JS SDK (>=[v0.8.0](https://github.com/openfga/js-sdk/releases/tag/v0.8.0) and the Python SDK (>=[v0.8.0](https://github.com/openfga/python-sdk/releases/tag/v0.9.0)). Support in the other SDKs is being worked on.
+The BatchCheck endpoint is currently only supported by the JS SDK (>=[v0.8.0](https://github.com/openfga/js-sdk/releases/tag/v0.8.0) and the Python SDK (>=[v0.9.0](https://github.com/openfga/python-sdk/releases/tag/v0.9.0)). Support in the other SDKs is being worked on.
 
 In the SDKs that don't support the server-side `BatchCheck`, the `BatchCheck` method performs client-side batch checks by making multiple check requests with limited parallelization, in SDK versions that do support the server-side `BatchCheck`, the existing method has been renamed to `ClientBatchCheck`.
 
@@ -184,14 +184,12 @@ This means you can use:
 - ULID `01JBMD9YG0XH3B4GVA8A9D2PSN`
 - or some other unique string
 
-But each `correlation_id` within a request must be unique.
-
-The BatchCheck endpoint currently accepts a maximum of 50 checks per request (configurable on the server).
+Each `correlation_id` within a request must be unique.
 
 :::note
 If you are using one of our SDKs:
 * the `correlation_id` is inserted for you by default and automatically correlates the `allowed` response with the proper `tuple_key`
-* if you want to pass in more checks than the server supports in a single call, you may instruct the SDK to batch the `BatchCheck` requests for you
+* if you pass in more checks than the server supports in a single call (default `50`, configurable on the server), the SDK will automatically split and batch the `BatchCheck` requests for you, how it does this can be configured using the `maxBatchSize` and `maxParallelRequests` options in the SDK.
 :::
 
 To check whether user `user:anne` has multiple relationships `writer` and `reader` with object `document:Z`
