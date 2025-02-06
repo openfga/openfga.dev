@@ -275,60 +275,107 @@ response = await fga_client.batch_check(ClientBatchCheckRequest(checks=checks), 
         .join(', ')}]`;
 
     case SupportedLanguage.JAVA_SDK:
-      return `// The Java SDK does not yet support server-side batch checks. This currently just calls the check endpoint in parallel.
-
-var request = List.of(
-    ${checks
-      .map(
-        (check) => `new ClientCheckRequest()
-        .user("${check.user}")
-        .relation("${check.relation}")
-        ._object("${check.object}")${
-          check.contextualTuples
-            ? `\n        .contextualTuples(List.of(
-            ${check.contextualTuples
-              .map(
-                (tuple) => `new ClientTupleKey()
-                .user("${tuple.user}")
-                .relation("${tuple.relation}")
-                ._object("${tuple.object}")`,
-              )
-              .join(',\n            ')})
-        )`
-            : ''
-        }${check.context ? `.context(${check.context})` : ''}`,
-      )
-      .join(',\n    ')}
+      return ` // Requires >=v0.8.0 for the server side BatchCheck, earlier versions support a client-side BatchCheck with a slightly different interface
+var reequst = new ClientBatchCheckRequest().checks(
+    List.of(
+        new ClientBatchCheckItem()
+            .user("user:81684243-9356-4421-8fbf-a4f8d36aa31b")
+            .relation("viewer")
+            ._object("document:0192ab2a-d83f-756d-9397-c5ed9f3cb69a")
+            .correlationId("cor-1") // optional, one will be generated for you if not provided
+            .contextualTuples(List.of(
+                new ClientTupleKey()
+                    .user("user:81684243-9356-4421-8fbf-a4f8d36aa31b")
+                    .relation("editor")
+                    ._object("document:0192ab2a-d83f-756d-9397-c5ed9f3cb69a")
+            )),
+        new ClientCheckRequest()
+            .user("user:81684243-9356-4421-8fbf-a4f8d36aa31b")
+            .relation("admin")
+            ._object("document:0192ab2a-d83f-756d-9397-c5ed9f3cb69a"),
+            .correlationId("cor-2") // optional, one will be generated for you if not provided
+            .contextualTuples(List.of(
+                new ClientTupleKey()
+                    .user("user:81684243-9356-4421-8fbf-a4f8d36aa31b")
+                    .relation("editor")
+                    ._object("document:0192ab2a-d83f-756d-9397-c5ed9f3cb69a")
+            )),
+        new ClientCheckRequest()
+            .user("user:81684243-9356-4421-8fbf-a4f8d36aa31b")
+            .relation("creator")
+            ._object("document:0192ab2a-d83f-756d-9397-c5ed9f3cb69a")
+            .correlationId("cor-3), // optional, one will be generated for you if not provided
+        new ClientCheckRequest()
+            .user("user:81684243-9356-4421-8fbf-a4f8d36aa31b")
+            .relation("deleter")
+            ._object("document:0192ab2a-d83f-756d-9397-c5ed9f3cb69a")
+            .correlationId("cor-4") // optional, one will be generated for you if not provided
+        )
 );
-var options = new ClientBatchCheckOptions()${modelId ? `\n      .authorizationModelId("${modelId}")` : ''};
+
+var options = new ClientBatchCheckOptions()
+    .additionalHeaders(Map.of("Some-Http-Header", "Some value"))
+    // You can rely on the model id set in the configuration or override it for this specific request
+    .authorizationModelId("01GXSA8YR785C4FYS3C0RTG7B1")
+    .maxParallelRequests(5); // Max number of requests to issue in parallel, defaults to 10 
+    .maxBatchSize(20); // Max number of batches to split the list of checks into, defaults to 50
+
 var response = fgaClient.batchCheck(request, options).get();
 
 /*
-response.getResponses() = [${checks
-        .map(
-          (check) => `{
-  allowed: ${check.allowed},
-  request: {
-    user: '${check.user}',
-    relation: '${check.relation}',
-    _object: '${check.object}'${
-      check.contextualTuples
-        ? `,\n    contextualTuples: [${check.contextualTuples
-            .map(
-              (tuple) => `{
-      user: '${tuple.user}',
-      relation: '${tuple.relation}',
-      _object: '${tuple.object}'
-    }`,
-            )
-            .join(',\n    ')}]
-  `
-        : '\n  '
-    }}
-}`,
-        )
-        .join(', ')}]
-*/
+response.getResult() = [{
+    allowed: false,
+    correlationId: "cor-1",
+    request: {
+      user: "user:81684243-9356-4421-8fbf-a4f8d36aa31b",
+      relation: "viewer",
+      _object: "document:0192ab2a-d83f-756d-9397-c5ed9f3cb69a",
+      correlationId: "cor-1",
+      contextualTuples: [{
+        user: "user:81684243-9356-4421-8fbf-a4f8d36aa31b",
+        relation: "editor",
+        _object: "document:0192ab2a-d83f-756d-9397-c5ed9f3cb69a"
+      }]
+    },
+  },
+  {
+    allowed: false,
+    correlationId: "cor-2",
+    request: {
+      user: "user:81684243-9356-4421-8fbf-a4f8d36aa31b",
+      relation: "admin",
+      _object: "document:0192ab2a-d83f-756d-9397-c5ed9f3cb69a",
+      correlationId: "cor-2",
+      contextualTuples: [{
+        user: "user:81684243-9356-4421-8fbf-a4f8d36aa31b",
+        relation: "editor",
+        _object: "document:0192ab2a-d83f-756d-9397-c5ed9f3cb69a"
+      }]
+    }
+  },
+  {
+    allowed: false,
+    correlationId: "cor-3",
+    request: {
+      user: "user:81684243-9356-4421-8fbf-a4f8d36aa31b",
+      relation: "creator",
+      _object: "document:0192ab2a-d83f-756d-9397-c5ed9f3cb69a",
+      correlationId: "cor-3",
+    },
+    error: <FgaError ...>
+  },
+  {
+    allowed: true,
+    correlationId: "cor-4",
+    request: {
+      user: "user:81684243-9356-4421-8fbf-a4f8d36aa31b",
+      relation: "deleter",
+      _object: "document:0192ab2a-d83f-756d-9397-c5ed9f3cb69a",
+      correlationId: "cor-4",
+    }
+  },
+]
+*/      
 `;
 
     case SupportedLanguage.RPC:
