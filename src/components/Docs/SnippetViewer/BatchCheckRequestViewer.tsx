@@ -298,8 +298,8 @@ var request = new ClientBatchCheckRequest().checks(
           )`
               : ''
           }${check.context ? `.context(${check.context})` : ''}`,
-        ).join(',\n      ')
-      }  
+        )
+        .join(',\n      ')}  
 );
 
 var options = new ClientBatchCheckOptions()
@@ -339,8 +339,7 @@ var response = fgaClient.batchCheck(request, options).get();
       .join(', ')}
   ],
 }
-*/`
-;
+*/`;
 
     case SupportedLanguage.RPC:
       return `BatchCheck([${checks
