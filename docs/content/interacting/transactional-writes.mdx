@@ -167,7 +167,7 @@ curl -X POST 'http://localhost:8080/stores/{store_id}/write' \
 
 </details>
 
-The Write API allows you to send up to 100 unique tuples in the request. (This limit applies to the sum of both writes and deletes in that request). This means we can submit one API call that converts the `tweet` from public to visible to only the `user`'s followers.
+The Write API allows you to send up to 100 unique tuples by default and can be configured in the request as you can refer from this <link>(https://github.com/openfga/openfga/blob/main/.config-schema.json#L3-L7) to the config schema. (This limit applies to the sum of both writes and deletes in that request). This means we can submit one API call that converts the `tweet` from public to visible to only the `user`'s followers.
 
 <WriteRequestViewer
   relationshipTuples={[
