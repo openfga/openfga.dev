@@ -25,7 +25,7 @@ import {
 
 <ProductName format={ProductNameFormat.LongForm}/>'s Configuration Language builds a representation of a system's <ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />, which informs <UpdateProductNameInLinks link="/api/service" name="{ProductName}'s API" /> on the <ProductConcept section="what-is-a-type" linkName="object types" /> in the system and how they relate to each other. The Configuration Language describes the <ProductConcept section="what-is-a-relation" linkName="relations" /> possible for an object of a given type and lists the conditions under which one is related to that object.
 
-The Configuration Language can be presented in **DSL** or **JSON** syntax. The JSON syntax is accepted by the API and closely tracks the language in the [Zanzibar paper](https://research.google/pubs/pub48190/). The DSL adds syntactic sugar on top of JSON for ease of use, but compiles down to JSON before being sent to <ProductName format={ProductNameFormat.ShortForm}/>'s API. JSON syntax is used to call API directly or through the [SDKs](./getting-started), while DSL is used to interact with <ProductName format={ProductNameFormat.ShortForm}/> in the [Playground](https://play.fga.dev/), and they can be switched between throughout this documentation. 
+The Configuration Language can be presented in **DSL** or **JSON** syntax. The JSON syntax is accepted by the API and closely tracks the language in the [Zanzibar paper](https://research.google/pubs/pub48190/). The DSL adds syntactic sugar on top of JSON for ease of use, but compiles down to JSON before being sent to <ProductName format={ProductNameFormat.ShortForm}/>'s API. JSON syntax is used to call API directly or through the [SDKs](./getting-started), while DSL is used to interact with <ProductName format={ProductNameFormat.ShortForm}/> in the [Playground](https://play.fga.dev/), the [CLI](https://github.com/openfga/cli), and the IDE extensions for [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode) and [IntelliJ](https://plugins.jetbrains.com/plugin/24394-openfga). They can be switched between throughout this documentation. 
 
 Please familiarize yourself with basic <ProductConcept /> and [How to get started on modeling](./modeling/getting-started.mdx) before starting this guide.
 
@@ -322,7 +322,7 @@ In the type definition snippet above, `anne` is a `member` of `team:product` if 
         relation: 'member',
         object: 'team:product',
         _description: 'Everyone (`*`) is directly related to the product team as a member',
-      },
+      }
     ]}
   />
 
@@ -741,7 +741,7 @@ For more examples, see [Modeling with Multiple Restrictions](./modeling/multiple
 
 ### The Exclusion Operator
 
-The **exclusion operator** (`but not` in the DSL, `difference` in the JSON syntax) indicates that a <ProductConcept section="what-is-a-relationship" linkName="relationship" /> exists if the <ProductConcept section="what-is-a-user" linkName="user" /> is in the base userset, but not in the excluded userset. It's helpful when modeling exclusion or block lists.
+The **exclusion operator** (`but not` in the DSL, `difference` in the JSON syntax) indicates that a <ProductConcept section="what-is-a-relationship" linkName="relationship" /> exists if the <ProductConcept section="what-is-a-user" linkName="user" /> is in the base userset but not in the excluded userset. This operator is particularly useful when modeling exclusion or block lists.
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -774,7 +774,7 @@ The **exclusion operator** (`but not` in the DSL, `difference` in the JSON synta
   }} skipVersion={true}
 />
 
-In the type definition snippet above, `user:anne` is a `viewer` of `document:new-roadmap` if:
+In the type definition snippet above, `user:anne` is a `viewer` of `document:new-roadmap` if and only if:
 
 - `anne` has a direct relationship as `viewer` to `document:new-roadmap`
 
@@ -789,7 +789,7 @@ In the type definition snippet above, `user:anne` is a `viewer` of `document:new
   />
   AND
 
-- `anne` is not blocked from document:new-roadmap; the following relation tuple **does not exist**:
+- `anne` is not blocked from `document:new-roadmap` (i.e., the following relationship tuple must not exist):
   <RelationshipTuplesViewer
     relationshipTuples={[
       {
@@ -820,6 +820,119 @@ but not in:
 - `anne` is blocked on the document:new-roadmap `{"user": "user:anne", "relation": "blocked", "object": "document:new-roadmap"}`
 
 :::
+### Grouping and nesting operators
+
+You can define complex conditions by using parentheses to group and nest operators. Note that direct relationships can be included in an expression with parentheses.
+
+<AuthzModelSnippetViewer
+  configuration={
+   {
+  "schema_version": "1.1",
+  "type_definitions": [
+    {
+      "type": "user",
+      "relations": {},
+      "metadata": null
+    },
+    {
+      "type": "organization",
+      "relations": {
+        "member": {
+          "this": {}
+        }
+      },
+      "metadata": {
+        "relations": {
+          "member": {
+            "directly_related_user_types": [
+              {
+                "type": "user"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "folder",
+      "relations": {
+        "organization": {
+          "this": {}
+        },
+        "parent": {
+          "this": {}
+        },
+        "viewer": {
+          "intersection": {
+            "child": [
+              {
+                "union": {
+                  "child": [
+                    {
+                      "this": {}
+                    },
+                    {
+                      "tupleToUserset": {
+                        "computedUserset": {
+                          "relation": "viewer"
+                        },
+                        "tupleset": {
+                          "relation": "parent"
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "tupleToUserset": {
+                  "computedUserset": {
+                    "relation": "member"
+                  },
+                  "tupleset": {
+                    "relation": "organization"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "metadata": {
+        "relations": {
+          "organization": {
+            "directly_related_user_types": [
+              {
+                "type": "organization"
+              }
+            ]
+          },
+          "parent": {
+            "directly_related_user_types": [
+              {
+                "type": "folder"
+              }
+            ]
+          },
+          "viewer": {
+            "directly_related_user_types": [
+              {
+                "type": "user"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
+  } skipVersion={true}
+/>
+
+
+### Conditional relationships
+
+<ProductName format={ProductNameFormat.ShortForm}/> supports conditional relationships, which are only considered if a specific condition is met. You can learn more about Conditional Relationships in the [Modeling: Conditional Relationships](./modeling/conditions.mdx) guide.
 
 ## Equivalent Zanzibar Concepts
 
