@@ -28,7 +28,7 @@ There are three main use cases for contextual tuples:
 ## Important Considerations
 
 1. Contextual tuples are ephemeral and exist only for the duration of the request.
-2. When a contextual tuple specifies a conditional relationship that already exists in the database, the contextual tuple takes precedence and the tuple in the database is ignored.
+2. When a contextual tuple is sent, and a tuple with the same user, relation and object is in the database - the one in context takes precedence and the one in the DB is ignored.
 3. Contextual tuples are validated using the same authorization model rules as stored tuples.
 4. There is currently a limit of 100 contextual tuples per request.
 5. While token claims can be used for contextual tuples, access will continue until token expiration even if the underlying claims (like group membership) change.
