@@ -365,6 +365,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Contextual Tuples',
+          id: 'content/interacting/contextual-tuples',
+        },
+        {
+          type: 'doc',
           label: 'Query Consistency',
           id: 'content/interacting/consistency',
         },
