@@ -99,10 +99,11 @@ async function processProperties(properties, jsonData, parentKey = '') {
 
 /**
  * Generates the MDX content for the .config-schema.json file
+ * @param releaseData {release: string, url: string, releaseUrl: string}
  * @param jsonData
  * @returns {Promise<string>}
  */
-async function getMdxContent(jsonData) {
+async function getMdxContent(releaseData, jsonData) {
     const mdxContentHeader = `---
 title: OpenFGA Configuration Options
 description: Configuring Options for the OpenFGA Server
@@ -126,8 +127,6 @@ You can configure the OpenFGA server in three ways:
 - Using command line parameters.
 
 If the same option is configured in multiple ways the command line parameters will take precedence over environment variables, which will take precedence over the configuration file.
-
-The configuration options and their default values are listed in the table below based on the [config-schema.json](https://github.com/openfga/openfga/blob/main/.config-schema.json).
 
 <Tabs groupId={"configuration"}>
 <TabItem value={"configuration file"} label={"Configuration File"}>
@@ -209,7 +208,7 @@ docker run docker.io/openfga/openfga:latest run \\\
 `;
         let mdxContent = mdxContentHeader + `## List of options
 
-The following table lists the configuration options for the OpenFGA server, based on the [config-schema.json](https://github.com/openfga/openfga/blob/main/.config-schema.json).
+The following table lists the configuration options for the OpenFGA server [${releaseData.release}](${releaseData.releaseUrl}), based on the [config-schema.json](${releaseData.url}).
 
 | Config File | Env Var | Flag Name | Type | Description | Default Value |
 |-------------|---------|-----------|------|-------------|---------------|\n`;
@@ -281,7 +280,7 @@ function performHttpRequest(url) {
 
 /**
  * Fetches the latest release of OpenFGA and returns the URL of the .config-schema.json file
- * @returns {Promise<{ url: string, release: string }>}
+ * @returns {Promise<{ url: string, release: string, releaseUrl: string }>}
  */
 async function getFileData() {
     const repo = 'openfga/openfga';
@@ -290,23 +289,24 @@ async function getFileData() {
     const latestRelease = response.tag_name;
     return {
       url: `https://raw.githubusercontent.com/${repo}/refs/tags/${latestRelease}/.config-schema.json`,
-      release: latestRelease
+      release: latestRelease,
+      releaseUrl: `https://github.com/${repo}/releases/tag/${latestRelease}`
     };
 }
 
 const OUTPUT_FILE = 'docs/content/getting-started/setup-openfga/configuration.mdx';
 /**
  * Downloads the .config-schema for the latest release of OpenFGA and generates the MDX content for it
- * @returns {Promise<{release: string, url: string}>}
+ * @returns {Promise<{release: string, url: string, releaseUrl: string}>}
  */
 async function generateMdxForLatestRelease() {
-    const { url, release } = await getFileData();
-    const jsonData = await performHttpRequest(url);
-    const mdxContent = await getMdxContent(jsonData);
+    const releaseData = await getFileData();
+    const jsonData = await performHttpRequest(releaseData.url);
+    const mdxContent = await getMdxContent(releaseData, jsonData);
 
     await fs.writeFile(OUTPUT_FILE, mdxContent, 'utf8');
 
-    return { release, url };
+    return releaseData;
 }
 
 
