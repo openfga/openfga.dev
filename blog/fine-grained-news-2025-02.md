@@ -49,7 +49,9 @@ Thanks to Canonical, Grafana, Docker, Read.AI, Agicap, Sourcegraph, Zuplo, and S
 
 OpenFGA will be present in two high-profile events in London:
 
-- [Sam Bellen](https://www.linkedin.com/in/sambellen/) will participate in the [Gartner IAM EMEA event](https://www.gartner.com/en/conferences/emea/identity-access-management-uk) demoing [OpenFGA interoperability with the AuthZen standard](https://www.gartner.com/en/conferences/emea/identity-access-management-uk).
+<!-- markdown-link-check-disable -->
+- [Sam Bellen](https://www.linkedin.com/in/sambellen/) will participate in the [Gartner IAM EMEA event](https://www.gartner.com/en/conferences/emea/identity-access-management-uk) demoing [OpenFGA interoperability with the AuthZen standard](https://openid.net/authzen-at-gartner-iam/).
+<!-- markdown-link-check-enable -->
 
 - [Poovamraj Thanganadar Thiagarajan](https://www.linkedin.com/in/poovamraj/) from Okta will be presenting at KubeCon Europe, together with [Jo Guerreiro](https://www.linkedin.com/in/jmlguerreiro/) from Grafana Labs about [From Chaos To Control: Migrating Access Control To OpenFGA in a Multi-Tenant World](https://kccnceu2025.sched.com/event/1txIJ/from-chaos-to-control-migrating-access-control-to-openfga-in-a-multi-tenant-world-jo-guerreiro-grafana-labs-poovamraj-thanganadar-thiagarajan-okta).
 
