@@ -41,7 +41,7 @@ const body = {
       user: '${check.user}',
       relation: '${check.relation}',
       object: '${check.object}',
-      correlation_id: '${check.correlation_id}'${
+      correlationId: '${check.correlation_id}'${
         check.contextualTuples
           ? `,
       contextual_tuples: [
