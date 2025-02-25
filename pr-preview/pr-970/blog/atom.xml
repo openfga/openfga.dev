@@ -64,9 +64,9 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="openfga-in-london">OpenFGA in London<a href="https://openfga.dev/pr-preview/pr-970/blog/fine-grained-news-2025-02#openfga-in-london" class="hash-link" aria-label="Direct link to OpenFGA in London" title="Direct link to OpenFGA in London">​</a></h2>
 <p>OpenFGA will be present in two high-profile events in London:</p>
 <ul>
-<li>
-<p><a href="https://www.linkedin.com/in/sambellen/" target="_blank" rel="noopener noreferrer">Sam Bellen</a> will participate in the <a href="https://www.gartner.com/en/conferences/emea/identity-access-management-uk" target="_blank" rel="noopener noreferrer">Gartner IAM EMEA event</a> demoing <a href="https://www.gartner.com/en/conferences/emea/identity-access-management-uk" target="_blank" rel="noopener noreferrer">OpenFGA interoperability with the AuthZen standard</a>.</p>
-</li>
+<li><a href="https://www.linkedin.com/in/sambellen/" target="_blank" rel="noopener noreferrer">Sam Bellen</a> will participate in the <a href="https://www.gartner.com/en/conferences/emea/identity-access-management-uk" target="_blank" rel="noopener noreferrer">Gartner IAM EMEA event</a> demoing <a href="https://openid.net/authzen-at-gartner-iam/" target="_blank" rel="noopener noreferrer">OpenFGA interoperability with the AuthZen standard</a>.</li>
+</ul>
+<ul>
 <li>
 <p><a href="https://www.linkedin.com/in/poovamraj/" target="_blank" rel="noopener noreferrer">Poovamraj Thanganadar Thiagarajan</a> from Okta will be presenting at KubeCon Europe, together with <a href="https://www.linkedin.com/in/jmlguerreiro/" target="_blank" rel="noopener noreferrer">Jo Guerreiro</a> from Grafana Labs about <a href="https://kccnceu2025.sched.com/event/1txIJ/from-chaos-to-control-migrating-access-control-to-openfga-in-a-multi-tenant-world-jo-guerreiro-grafana-labs-poovamraj-thanganadar-thiagarajan-okta" target="_blank" rel="noopener noreferrer">From Chaos To Control: Migrating Access Control To OpenFGA in a Multi-Tenant World</a>.</p>
 </li>
