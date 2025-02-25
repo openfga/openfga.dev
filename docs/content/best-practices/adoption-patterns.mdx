@@ -1,23 +1,30 @@
 ---
-title: OpenFGA Adoption Patterns
+title: Adoption Patterns
 sidebar_position: 3
-slug: /getting-started/adoption-patterns
-description: Describe different ways OpenFGA can be adopted in an organization
+slug: /best-practices/adoption-patterns
+description: Describe different ways FGA can be adopted in an organization
 ---
-# OpenFGA Adoption Patterns
 
-This document discusses several patterns that we've seen <ProductName format={ProductNameFormat.ShortForm}/> users adopting when implementing it.
+import {
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
 
-In general, these patterns are relevant when you already have an existing application that you need to migrate, or when you operate in an organization with multiple development teams that need to adopt <ProductName format={ProductNameFormat.ShortForm}/>
+} from '@components/Docs';
 
+#  <ProductName format={ProductNameFormat.ShortForm}/>  Adoption Patterns
+
+This document discusses several implementation patterns that we've seen companies using when adopting <ProductName format={ProductNameFormat.ShortForm}/>.
+
+In general, these patterns are relevant when you already have an existing application that you need to migrate, or when you operate in an organization with multiple development teams that need to adopt <ProductName format={ProductNameFormat.ShortForm}/>. 
 
 ## Starting with coarse-grained access control
 
-If you are reading this document, is probably because realized that your current authorization system is not capable of supporting your current or future needs and you are evaluating <ProductName format={ProductNameFormat.ShortForm}/>.
+If you are reading this document, it's probably because you've realized that your current authorization system is not capable of supporting your current or future needs and you are evaluating <ProductName format={ProductNameFormat.ShortForm}/>.
 
-Some companies decide to start using <ProductName format={ProductNameFormat.ShortForm}/>  by replicating what they currently have. Instead of re-architecting their apps introducing granular permissions, they model their coarse-grained permissions first. 
+Some companies decide to start using <ProductName format={ProductNameFormat.ShortForm}/> by replicating what they currently have. Instead of re-architecting their apps introducing granular permissions, they model their coarse-grained permissions first. 
 
-If your application is currently using Role-Based Access control, you can try defining those roles first. Most <ProductName format={ProductNameFormat.ShortForm}/> implementations are for B2B scenarios where you need to implement multi-tenancy together with RBAC. A simple model representing that use case would be:
+If your application is currently using Role-Based Access Control, you can try defining those roles first. Most <ProductName format={ProductNameFormat.ShortForm}/> implementations are for B2B scenarios where you need to implement multi-tenancy together with RBAC. A simple model representing that use case would be:
 
 ```
 model 
@@ -38,7 +45,7 @@ model
 
 ```
 
-You can define any numbers of roles for the organization type, and then define the permissions based on those roles. You can then check if users have a specific permission at the organization leve, by calling the Check API on the organization object: 
+You can define any number of roles for the organization type and then define the permissions based on those roles. You can then check if users have a specific permission at the organization level by calling the Check API on the organization object: 
 
 ```
 Check(user: "user:anne", relation: "can_add_member", object: "organization:acme") 
@@ -131,7 +138,6 @@ Authentication services usually provide a way to enrich access tokens during the
 For example, if you want to include in the access token the organizations that a user can log-in to, based on the following model:
 
 ```
-
   type user
   type organization
     relations
@@ -140,73 +146,43 @@ For example, if you want to include in the access token the organizations that a
 
 You can call ListObjects(type:"organization", relation:"member", user: "user:xxx") and include those.
 
-## Promote Organization-Wide Adoption
+## Promoting Organization-Wide Adoption
 
-To introduce <ProductName format={ProductNameFormat.ShortForm}/> in a large company, it's recommended that you identify a problem where the flexibility of <ProductName format={ProductNameFormat.ShortForm}/> enables quickly delivering business value to customers. It can be a new project, a new module, a new feature. Using <ProductName format={ProductNameFormat.ShortForm}/> for such a project can be an easier decision. Once an implementation is successful, you can try influencing the  influence the rest of the organization to adopt it.
+To introduce <ProductName format={ProductNameFormat.ShortForm}/> in a large company, it's recommended that you identify a problem where the flexibility of <ProductName format={ProductNameFormat.ShortForm}/> enables quickly delivering business value to customers. It can be a new project, a new module, a new feature. Using <ProductName format={ProductNameFormat.ShortForm}/> for such a project can be an easier decision. Once an implementation is successful, you can try influencing the rest of the organization to adopt it.
 
-A different approach is to try to convince your company to use <ProductName format={ProductNameFormat.ShortForm}/> as the new platform for Authorization for every project. 
+However, influencing the decision makers of a large organization can be hard. Each team has their own internal roadmaps and not all of the teams will see value on implementing <ProductName format={ProductNameFormat.ShortForm}/>. Migration to OpenFGA can be seen as a tech-debt project instead of a business-value-driven one. 
 
+<ProductName format={ProductNameFormat.ShortForm}/> has a few features that implify adoption by multiple teams:
 
-\
-Influencing the decision makers of a large organization to implement <ProductName format={ProductNameFormat.ShortForm}/>  is hard. 
+- You can use [Modular Models](../modeling/modular-models.mdx) to enable each team to independently evolve their authorization policies without relying on a central team.
+- You can enable the experimental [Access Control](../getting-started/setup-openfga/access-control.mdx) feature to issue different credentials for each application, with permissions that ensure that each credential can only write data to the types defined in the Modules they own.
 
-Once a team has successfully deployed OpenFGA, it's simpler to make a case to extend it to other teams. 
+## Domain-Specific Authorization Server
 
-Howeve each team has their own internal roadmaps and not all of the teams will see value on implementing OpenFGA, and a migration to OpenFGA can be seen as a tech-debt project instead of a business-value-driven one. 
+Some companies decide to wrap <ProductName format={ProductNameFormat.ShortForm}/> with their own authorization service. They decide to do this for multiple reasons:
 
---- Okta FGA
+- Sometimes they already have a centralized service, and it's easy to replace it with another without changing the calling applications.
+- It can simplify internal adoption by providing domain-specific APIs. Instead of calling `write` or `check`, applications can call a `/share-document` endpoint or a `/can-view-document` one. Each team does not need to learn the <ProductName format={ProductNameFormat.ShortForm}/> API.
+- If they are using Contextual Tuples, they can keep the logic to retrieve additional data to send to <ProductName format={ProductNameFormat.ShortForm}/> in a single service.
+- They only need to provide <ProductName format={ProductNameFormat.ShortForm}/> configuration data like Store ID and Model ID in a single service.
 
-Okta FGA has a few features that simplify deploying FGA to multiple teams: multiple credentials, modules, per-module authorization (EXPAND)
+On the other hand, adding another service increases latency and adds additional complexity.
 
---- OpenFGA FGA
+## Related Sections
 
-OpenFGA has a few features that simplify deploying FGA to multiple teams: multiple credentials, access-control, etc.
+<RelatedSection
+  description="Check out these related resources for more information about adopting OpenFGA"
+  relatedLinks={[
+    {
+      title: 'Production Best Practices',
+      description: 'Learn about best practices for running OpenFGA in production environments.',
+      link: '/docs/getting-started/production-best-practices',
+    },
+    {
+      title: 'Modular Authorization Models',
+      description: 'Learn how to break down your authorization model into modules.',
+      link: '/docs/modeling/modular-models',
+    }
+  ]}
+/>
 
-Domain specific-rproxy
-
-## Domain-Specific Proxy
-
-Some adopters decide to wrap OpenFGA with their own authorization API. 
-
-This can simplify FGA adoption by multiple teams, so they don't need to learn much about OpenFGA.
-
-- Provide internal teams a domain-specific-API. Instead of writing a tuple saying 'user:x, viewer, document:y', they have a '/share-document' API. 
-
-- Provide a single API for actions that require writing more than one tuple. Creating a new document in a folder requires 2 tuples. (TBD example)
-- They can centralize calling external services to get additional dat aif they are providing contextual tuples
-- Have a single service where they need to provide OpenFGA configuration data (store/model/credentials). This can be addressed with a secret management platform
-- Can implement caching on their side
-
-- for openFga: secure who an call FGA
-
-Cons:
-- Adds additional latency
-- Additional complexity
-
-
-## Authorization with Json Web Tokens vs OpenFGA
-
-A lot has been written about the inconveniences of using JWTs for Authorization. They were originally designed for delegated access to 3rd party apps, but it was extended/abused for first-party permissions.
-
-Besides the philosophical arguments, ther are 
-
-JWTs:
-- Pros
-    - Do not require additional service roundtrips
-    - Easier to implement
-    - Standard, standard libraries
-
-- Cons:
-    - Token bloat, practical size limit
-    - Corse grained
-    - Not real-time
-    - Role explosion
-
-OpenFGA
-- Pros
-    - Fine grained
-    - Real time
-
-- Cons
-    - Latency
-    - Data Syncronization
