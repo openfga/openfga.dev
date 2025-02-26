@@ -25,7 +25,7 @@ Welcome to the second Fine Grained News edition of 2025!
   
 - Two minor versions of the [Java SDK](https://github.com/openfga/java-sdk), with support for Batch Check. Thanks [Piotr Olaszewski](https://github.com/piotrooo) for your contribution!
 
-- A minor release of the [Go SDK](https://github.com/openfga/go-sdk), with support for the `start-time` parameter in the Changes API and support for specifying contextual tuples and context parameters in assertions.
+- A minor release of the [Go SDK](https://github.com/openfga/go-sdk), with support for the `StartTime` parameter in the [ReadChanges method](https://github.com/openfga/go-sdk?tab=readme-ov-file#read-relationship-tuple-changes-watch) and support for specifying contextual tuples and context parameters in assertions.
   
 - A minor release of the [FGA CLI](https://github.com/openfga/cli), with support for the `start-time` parameter for the `changes` command and importing assertions during `fga store import`. Thanks [Sujitha A V](https://github.com/sujitha-av) for your contribution!
 
