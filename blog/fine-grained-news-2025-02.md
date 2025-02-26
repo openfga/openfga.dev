@@ -15,7 +15,7 @@ Welcome to the second Fine Grained News edition of 2025!
 ## Just Shipped!
 
 - We shipped 3 minor versions of OpenFGA which include:
-  - A fix for [CVE-2025-25196](https://github.com/openfga/openfga/security/advisories/GHSA-g4v5-6f5p-m38j) and [CVE-2024-56323](https://github.com/openfga/openfga/security/advisories/GHSA-32q6-rr98-cjqv)
+  - Fixes for [CVE-2025-25196](https://github.com/openfga/openfga/security/advisories/GHSA-g4v5-6f5p-m38j) and [CVE-2024-56323](https://github.com/openfga/openfga/security/advisories/GHSA-32q6-rr98-cjqv)
   - Several performance improvements that are enabled with the `enable-check-optimizations` experimental flag.
   - Dynamic TLS certificate reloading for HTTP and gRPC servers. Thanks [Rokibul Hasan](https://github.com/RokibulHasan7) for your contribution!
   - A `name` filter to ListStores. The name parameter instructs the API to only include results that match that name. Thanks [Karl Persson](https://github.com/kalleep) for your contribution!
