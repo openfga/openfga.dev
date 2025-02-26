@@ -39,6 +39,19 @@ We are seeing a lot of interest in using OpenFGA for RAG scenarios and we wanted
 - [Building a Permissions System For Your RAG Application](https://www.useparagon.com/learn/ai-knowledge-chatbot-with-permissions-chapter-2/)
 - [mdb-openfga: OpenFGA + MongoDB](https://github.com/ranfysvalle02/mdb-openfga)
 
+## Learning OpenFGA 
+
+We've been busy creating blog posts and videos that help you adopt OpenFGA, check them out!
+
+- [OpenFGA: Modeling Guide](https://www.youtube.com/watch?v=5Lwy9aHXXHE&list=PLUR5l-oTFZqWaDdhEOVt_IfPOIbKo1Ypt)
+- [OpenFGA: The Basics](https://www.youtube.com/watch?v=v1Io8TtB4bg&list=PLUR5l-oTFZqXGikFJolWJfP7zDK4GRYJ6)
+- [OpenFGA for Python Flask Applications](https://auth0.com/blog/fine-grained-access-control-with-python-flask/)
+- [How to Implement Relationship-Based Access Control (ReBAC) in a Ruby On Rails API?](https://auth0.com/blog/what-is-rebac-and-how-to-implement-rails-api/)
+- [Securing data in your Next.js app with Okta and OpenFGA](https://vercel.com/blog/securing-data-in-your-next-js-app-with-okta-and-openfga)
+- [OpenFGA for an Express + Typescript Node.js API](https://auth0.com/blog/express-typescript-fga/)
+- [OpenFGA for Spring Boot Applications](https://auth0.com/blog/add-fga-to-spring-boot-api-with-openfga/)
+
+
 ## OpenFGA to CNCF Incubation
 
 The [CNCF Technical Oversight Committee](https://www.cncf.io/people/technical-oversight-committee/) triaged OpenFGA's application to be accepted as an "Incubation" project, decided we had provided the appropriate information and references, and [moved the project to the next step](https://github.com/orgs/cncf/projects/27/views/9). We now need to wait for a TOC member to pick the project and do their due diligence.
