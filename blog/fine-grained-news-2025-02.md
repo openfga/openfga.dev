@@ -23,7 +23,7 @@ Welcome to the second Fine Grained News edition of 2025!
 
   - Support for Go 1.24. We follow Go's version support policy and will only support the latest two major versions of Go. Now that Go 1.24 is out, we have dropped support for Go < 1.23.
   
-- Two minor versions of the [Java SDK](https://github.com/openfga/java-sdk), with support for Batch Check. Thanks [Piotr Olaszewski](https://github.com/piotrooo) for your contribution!
+- Two minor versions of the [Java SDK](https://github.com/openfga/java-sdk), with support for server-side [BatchCheck](https://github.com/openfga/js-sdk?tab=readme-ov-file#batch-check). Thanks [Piotr Olaszewski](https://github.com/piotrooo) for your contribution!
 
 - A minor release of the [Go SDK](https://github.com/openfga/go-sdk), with support for the `StartTime` parameter in the [ReadChanges method](https://github.com/openfga/go-sdk?tab=readme-ov-file#read-relationship-tuple-changes-watch) and support for specifying contextual tuples and context parameters in assertions.
   
