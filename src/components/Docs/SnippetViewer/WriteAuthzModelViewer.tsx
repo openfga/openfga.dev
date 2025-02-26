@@ -22,7 +22,7 @@ function writeAuthZModelViewerCurl(authorizationModel: AuthorizationModel): stri
 
 function writeAuthZModelViewerJS(authorizationModel: AuthorizationModel): string {
   return `
-const { authorization_model_id: id } = await fgaClient.writeAuthorizationModel(${JSON.stringify(
+const { authorizationModelId: id } = await fgaClient.writeAuthorizationModel(${JSON.stringify(
     authorizationModel,
     null,
     2,

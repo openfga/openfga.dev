@@ -103,7 +103,7 @@ ${
 await fgaClient.write({
   ${opts.relationshipTuples ? writes : ''}${separator}${opts.deleteRelationshipTuples ? deletes : ''},
 }, {
-  authorization_model_id: "${modelId}" 
+  authorizationModelId: "${modelId}" 
 });`;
     }
 
