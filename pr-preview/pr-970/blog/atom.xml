@@ -20,7 +20,7 @@
 <p>We shipped 3 minor versions of OpenFGA which include:</p>
 <ul>
 <li>
-<p>A fix for <a href="https://github.com/openfga/openfga/security/advisories/GHSA-g4v5-6f5p-m38j" target="_blank" rel="noopener noreferrer">CVE-2025-25196</a> and <a href="https://github.com/openfga/openfga/security/advisories/GHSA-32q6-rr98-cjqv" target="_blank" rel="noopener noreferrer">CVE-2024-56323</a></p>
+<p>Fixes for <a href="https://github.com/openfga/openfga/security/advisories/GHSA-g4v5-6f5p-m38j" target="_blank" rel="noopener noreferrer">CVE-2025-25196</a> and <a href="https://github.com/openfga/openfga/security/advisories/GHSA-32q6-rr98-cjqv" target="_blank" rel="noopener noreferrer">CVE-2024-56323</a></p>
 </li>
 <li>
 <p>Several performance improvements that are enabled with the <code>enable-check-optimizations</code> experimental flag.</p>
@@ -40,10 +40,10 @@
 </ul>
 </li>
 <li>
-<p>Two minor versions of the <a href="https://github.com/openfga/java-sdk" target="_blank" rel="noopener noreferrer">Java SDK</a>, with support for Batch Check. Thanks <a href="https://github.com/piotrooo" target="_blank" rel="noopener noreferrer">Piotr Olaszewski</a> for your contribution!</p>
+<p>Two minor versions of the <a href="https://github.com/openfga/java-sdk" target="_blank" rel="noopener noreferrer">Java SDK</a>, with support for server-side <a href="https://github.com/openfga/js-sdk?tab=readme-ov-file#batch-check" target="_blank" rel="noopener noreferrer">BatchCheck</a>. Thanks <a href="https://github.com/piotrooo" target="_blank" rel="noopener noreferrer">Piotr Olaszewski</a> for your contribution!</p>
 </li>
 <li>
-<p>A minor release of the <a href="https://github.com/openfga/go-sdk" target="_blank" rel="noopener noreferrer">Go SDK</a>, with support for the <code>start-time</code> parameter in the Changes API and support for specifying contextual tuples and context parameters in assertions.</p>
+<p>A minor release of the <a href="https://github.com/openfga/go-sdk" target="_blank" rel="noopener noreferrer">Go SDK</a>, with support for the <code>StartTime</code> parameter in the <a href="https://github.com/openfga/go-sdk?tab=readme-ov-file#read-relationship-tuple-changes-watch" target="_blank" rel="noopener noreferrer">ReadChanges method</a> and support for specifying contextual tuples and context parameters in assertions.</p>
 </li>
 <li>
 <p>A minor release of the <a href="https://github.com/openfga/cli" target="_blank" rel="noopener noreferrer">FGA CLI</a>, with support for the <code>start-time</code> parameter for the <code>changes</code> command and importing assertions during <code>fga store import</code>. Thanks <a href="https://github.com/sujitha-av" target="_blank" rel="noopener noreferrer">Sujitha A V</a> for your contribution!</p>
