@@ -94,7 +94,7 @@ In this case, the Check() call will be at the resource level, for example:
 Check(user: "user:anne", relation: "can_view_resource", object: "resource:root") 
 ```
 
-The main advantage of this approach is that your APIs will be checking permissions at the proper level. If you later ant to evolve your authorization model to be more fine grained, you won't need to change your app. For example, you can add fine grained access permissions at the resource level, and your authorization check won't change:
+The main advantage of this approach is that your APIs will be checking permissions at the proper level. If you later want to evolve your authorization model to be more fine grained, you won't need to change your app. For example, you can add fine grained access permissions at the resource level, and your authorization check won't change:
 
 ```
    type resource
