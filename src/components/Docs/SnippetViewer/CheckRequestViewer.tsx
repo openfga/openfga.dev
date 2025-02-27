@@ -73,7 +73,7 @@ const { allowed } = await fgaClient.check({
     contextualTuples: [\n      ${contextualTuples.map((tuple) => `${JSON.stringify(tuple)}`).join(',')}
     ],`
     }${!context ? `\n  }` : `\n    context: ${JSON.stringify(context)}\n  }`}, {
-  authorization_model_id: '${modelId}',
+  authorizationModelId: '${modelId}',
 });
 
 // allowed = ${allowed}`;
