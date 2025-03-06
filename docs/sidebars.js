@@ -390,6 +390,24 @@ const sidebars = {
         },
       ],
     },
+
+    {
+      type: 'category',
+      label: 'Best Practices',
+      collapsible: true,
+      collapsed: true,
+      link: {
+        type: 'doc',
+        id: 'content/best-practices/adoption-patterns',
+      },
+      items: [
+        {
+          type: 'doc',
+          label: 'Adoption Patterns',
+          id: 'content/best-practices/adoption-patterns',
+        }
+      ],
+    },
   ],
 };
 
