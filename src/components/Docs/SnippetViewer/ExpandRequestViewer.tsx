@@ -32,7 +32,7 @@ const { tree } = await fgaClient.expand({
   relation: '${opts.relation}', // expand all who has '${opts.relation}' relation
   object: '${opts.object}', // with the object '${opts.object}'
 }, {
-  authorization_model_id: '${modelId}'
+  authorizationModelId: '${modelId}'
 });
 
 // tree = ...`;
