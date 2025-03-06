@@ -12,19 +12,13 @@ import {
 
 } from '@components/Docs';
 
-#  <ProductName format={ProductNameFormat.ShortForm}/>  Adoption Patterns
+# <ProductName format={ProductNameFormat.ShortForm}/> Adoption Patterns
 
-This document discusses several implementation patterns that we've seen companies using when adopting <ProductName format={ProductNameFormat.ShortForm}/>.
-
-In general, these patterns are relevant when you already have an existing application that you need to migrate, or when you operate in an organization with multiple development teams that need to adopt <ProductName format={ProductNameFormat.ShortForm}/>. 
+This document outlines key implementation patterns for adopting  <ProductName format={ProductNameFormat.ShortForm}/> in your organization.
 
 ## Starting with coarse-grained access control
 
-If you are reading this document, it's probably because you've realized that your current authorization system is not capable of supporting your current or future needs and you are evaluating <ProductName format={ProductNameFormat.ShortForm}/>.
-
-Some companies decide to start using <ProductName format={ProductNameFormat.ShortForm}/> by replicating what they currently have. Instead of re-architecting their apps introducing granular permissions, they model their coarse-grained permissions first. 
-
-If your application is currently using Role-Based Access Control, you can try defining those roles first. Most <ProductName format={ProductNameFormat.ShortForm}/> implementations are for B2B scenarios where you need to implement multi-tenancy together with RBAC. A simple model representing that use case would be:
+When evaluating this solution, many companies start by replicating their existing permissions structure before moving to more granular controls. For example, if you're using Role-Based Access Control (RBAC) in a B2B scenario, you might start with a simple model:
 
 ```dsl.openfga
 model 
@@ -110,7 +104,7 @@ The main advantage of this approach is that your APIs will be checking permissio
 
 ## Provide request-level data
 
-One of the advantages of the Zanzibar approach is that all the data you need to make authorization decisions is stored in a centralized database. That greatly simplifies how application implement access control. Applications do not need to retrieve al the required data before invoking an authorization service.
+One of the advantages of the Zanzibar/<ProductName format={ProductNameFormat.ShortForm}/> approach is that all the data you need to make authorization decisions is stored in a centralized database. That greatly simplifies how application implement access control. Applications do not need to retrieve al the required data before invoking an authorization service.
 
 However, writing the data to the centralized store adds implementation complexity. You need to implement a data pipeline that makes sure the data is always up to date.
 
@@ -126,7 +120,7 @@ We've seen companies successfully following a hybrid approach, starting by synch
 
 ## Use <ProductName format={ProductNameFormat.ShortForm}/> to enrich JWTs
 
-Once you have an <ProductName format={ProductNameFormat.ShortForm}/> model and data, you can start making authorization checks from your application. The preferred way is to perform a [Check()](../getting-started/perform-check.mdx) call.
+Once you have your authorization model and data set up, you can start making authorization checks from your application. The preferred way is to perform a [Check()](../getting-started/perform-check.mdx) call.
 
 However, you might have a large set of APIs that are already making authorization checks using JWTs. Changing those applications can be a significant investment. Even if JWTs have several drawbacks compared to making FGA API calls, it can be reasonable to first start by using <ProductName format={ProductNameFormat.ShortForm}/> to generate the claims that are stored in JWTs, while the applications keep using those claims to make authorization decisions.
 
@@ -148,14 +142,14 @@ You can call `ListObjects(type:"organization", relation:"member", user: "user:xx
 
 ## Promoting Organization-Wide Adoption
 
-To introduce <ProductName format={ProductNameFormat.ShortForm}/> in a large company, it's recommended that you identify a problem where the flexibility of <ProductName format={ProductNameFormat.ShortForm}/> enables quickly delivering business value to customers. It can be a new project, a new module, a new feature. Using <ProductName format={ProductNameFormat.ShortForm}/> for such a project can be an easier decision. Once an implementation is successful, you can try influencing the rest of the organization to adopt it.
+To introduce <ProductName format={ProductNameFormat.ShortForm}/> in a large company, it's recommended that you identify a problem where the additional enables quickly delivering business value to customers. It can be a new project, a new module, a new feature. Using <ProductName format={ProductNameFormat.ShortForm}/> for such a project can be an easier decision. Once an implementation is successful, you can try influencing the rest of the organization to adopt it.
 
-However, influencing the decision makers of a large organization can be hard. Each team has their own internal roadmaps and not all of the teams will see value on implementing <ProductName format={ProductNameFormat.ShortForm}/>. Migration to OpenFGA can be seen as a tech-debt project instead of a business-value-driven one. 
+However, influencing the decision makers of a large organization can be hard. Each team has their own internal roadmaps and not all of the teams will see value in implementing a new authorization system. Migration can be seen as a tech-debt project instead of a business-value-driven one. 
 
-<ProductName format={ProductNameFormat.ShortForm}/> has a few features that simplify adoption by multiple teams:
+The can take advantage of the following capabilities to simplify adoption by multiple teams:
 
-- You can use [Modular Models](../modeling/modular-models.mdx) to enable each team to independently evolve their authorization policies without relying on a central team.
-- You can enable the experimental [Access Control](../getting-started/setup-openfga/access-control.mdx) feature to issue different credentials for each application, with permissions that ensure that each credential can only write data to the types defined in the Modules they own.
+- [Modular Models](../modeling/modular-models.mdx) enable each team to independently evolve their authorization policies without relying on a central team.
+- [Access Control](../getting-started/setup-openfga/access-control.mdx) allows you to issue different credentials for each application, with permissions that ensure that each credential can only write data to the types defined in the Modules they own.
 
 ## Domain-Specific Authorization Server
 
@@ -184,7 +178,7 @@ To implement shadow mode:
 1. Configure your application to make authorization checks against both systems
 2. Log any discrepancies between the two systems
 3. Analyze the logs to identify and fix any issues
-4. Once confident in the results, switch to using <ProductName format={ProductNameFormat.ShortForm}/> as the source of truth
+4. Once confident in the results, switch to using <ProductName format={ProductNameFormat.ShortForm}/> as the source of truth. The same approach of shallow checks when [migrating between models](./immutable-models.mdx#potential-use-cases).
 
 This pattern is particularly useful for critical systems where authorization errors could have significant impact.
 
