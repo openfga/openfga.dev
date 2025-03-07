@@ -20,7 +20,8 @@
     "lint": "eslint . --ext .ts  --ext .tsx",
     "lint:fix": "npm run lint -- --fix",
     "format:check": "prettier --check src/**",
-    "format:fix": "prettier --write src/**"  
+    "format:fix": "prettier --write src/**",
+    "update:config-page": "node scripts/update-config-page.mjs"
   },
   "dependencies": {
     "@docusaurus/core": "3.6.3",
