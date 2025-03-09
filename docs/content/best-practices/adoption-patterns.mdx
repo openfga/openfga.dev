@@ -27,16 +27,15 @@ model
   type user
   type organization
     relations
-      define admin : [user]
-      define member : [user]
+      define admin: [user]
+      define member: [user]
       # .. add additional organization roles
 
       # map permissions to organization roles 
-      define can_add_member : admin
-      define can_delete_member : admin
-      define can_view_member : admin or member
-      define can_add_resource : admin or member
-
+      define can_add_member: admin
+      define can_delete_member: admin
+      define can_view_member: admin or member
+      define can_add_resource: admin or member
 ```
 
 You can define any number of roles for the organization type and then define the permissions based on those roles. You can then check if users have a specific permission at the organization level by calling the Check API on the organization object: 
@@ -55,22 +54,21 @@ model
   type user
   type organization
     relations
-      define admin : [user]
-      define member : [user]
+      define admin: [user]
+      define member: [user]
 
-      define can_add_member : admin
-      define can_delete_member : admin
-      define can_view_member : admin or member
-      define can_add_resource : admin or member
-
+      define can_add_member: admin
+      define can_delete_member: admin
+      define can_view_member: admin or member
+      define can_add_resource: admin or member
 
    type resource
      relations
-       define organization : [organization]
+       define organization: [organization]
 
       # map resource permissions to organization roles
-       define can_delete_resource : admin from organization or member from organization
-       define can_view_resource : admin from organization or member from organization      
+       define can_delete_resource: admin from organization or member from organization
+       define can_view_resource: admin from organization or member from organization      
 
 ```
 
@@ -93,18 +91,18 @@ The main advantage of this approach is that your APIs will be checking permissio
 ```
    type resource
      relations
-       define organization : [organization]
+       define organization: [organization]
        define owner: [user]
-       define viewer : [user]
+       define viewer: [user]
 
       # map resource permissions to organization roles
-       define can_delete_resource : admin from organization or member from organization or owner
-       define can_view_resource : admin from organization or member from organization or owner or viewer
+       define can_delete_resource: admin from organization or member from organization or owner
+       define can_view_resource: admin from organization or member from organization or owner or viewer
 ```
 
 ## Provide request-level data
 
-One of the advantages of the Zanzibar/<ProductName format={ProductNameFormat.ShortForm}/> approach is that all the data you need to make authorization decisions is stored in a centralized database. That greatly simplifies how application implement access control. Applications do not need to retrieve al the required data before invoking an authorization service.
+One of the advantages of the Zanzibar/<ProductName format={ProductNameFormat.ShortForm}/> approach is that all the data you need to make authorization decisions is stored in a centralized database. That greatly simplifies how application implement access control. Applications do not need to retrieve all the required data before invoking an authorization service.
 
 However, writing the data to the centralized store adds implementation complexity. You need to implement a data pipeline that makes sure the data is always up to date.
 
@@ -135,7 +133,7 @@ For example, if you want to include in the access token the organizations that a
   type user
   type organization
     relations
-      define member : [user]
+      define member: [user]
 ```
 
 You can call `ListObjects(type:"organization", relation:"member", user: "user:xxx")` and include those.
