@@ -167,7 +167,7 @@ curl -X POST 'http://localhost:8080/stores/{store_id}/write' \
 
 </details>
 
-By default, the Write API allows you to send up to 100 unique tuples in the request (This limit applies to the sum of both writes and deletes in that request). This means we can submit one API call that converts the `tweet` from public to visible to only the `user`'s followers. This limit can be configured on the server by specifying the [`--max-tuples-per-write`](./configuration.mdx#OPENFGA_MAX_TUPLES_PER_WRITE) config value).
+By default, the Write API allows you to send up to 100 unique tuples in the request (This limit applies to the sum of both writes and deletes in that request). This means we can submit one API call that converts the `tweet` from public to visible to only the `user`'s followers. This limit can be configured on the server by specifying the [`--max-tuples-per-write`](../getting-started/configuration.mdx#OPENFGA_MAX_TUPLES_PER_WRITE) config value).
 
 <WriteRequestViewer
   relationshipTuples={[
