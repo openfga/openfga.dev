@@ -128,7 +128,7 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
       : ''
   }
 }, {
-  authorization_model_id: "${modelId}",
+  authorizationModelId: "${modelId}",
 });
 // response.users = [${expectedResults.users.map((u) => JSON.stringify(u)).join(',')}]`;
     case SupportedLanguage.GO_SDK:

@@ -73,7 +73,7 @@ const { allowed } = await fgaClient.check({
     contextualTuples: [\n      ${contextualTuples.map((tuple) => `${JSON.stringify(tuple)}`).join(',')}
     ],`
     }${!context ? `\n  }` : `\n    context: ${JSON.stringify(context)}\n  }`}, {
-  authorization_model_id: '${modelId}',
+  authorizationModelId: '${modelId}',
 });
 
 // allowed = ${allowed}`;
@@ -152,7 +152,7 @@ var response = await fgaClient.Check(body, options);
 // response.Allowed = ${allowed}`;
     case SupportedLanguage.PYTHON_SDK:
       return `options = {
-    "authorization_model_id": "${modelId}"
+    authorization_model_id="${modelId}"
 }
 body = ClientCheckRequest(
     user="${user}",
@@ -249,6 +249,7 @@ export function CheckRequestViewer(opts: CheckRequestViewerOpts): JSX.Element {
     SupportedLanguage.CLI,
     SupportedLanguage.CURL,
     SupportedLanguage.RPC,
+    SupportedLanguage.PLAYGROUND,
   ];
   const allowedLanguages = getFilteredAllowedLangs(opts.allowedLanguages, defaultLangs);
   return defaultOperationsViewer<CheckRequestViewerOpts>(allowedLanguages, opts, checkRequestViewer);

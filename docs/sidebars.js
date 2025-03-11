@@ -53,6 +53,11 @@ const sidebars = {
             },
             {
               type: 'doc',
+              label: 'Configuration Options',
+              id: 'content/getting-started/setup-openfga/configuration',
+            },
+            {
+              type: 'doc',
               label: '🐳 Docker',
               id: 'content/getting-started/setup-openfga/docker-setup',
             },
@@ -360,6 +365,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Contextual Tuples',
+          id: 'content/interacting/contextual-tuples',
+        },
+        {
+          type: 'doc',
           label: 'Query Consistency',
           id: 'content/interacting/consistency',
         },
@@ -378,6 +388,24 @@ const sidebars = {
           label: 'Search with Permissions',
           id: 'content/interacting/search-with-permissions',
         },
+      ],
+    },
+
+    {
+      type: 'category',
+      label: 'Best Practices',
+      collapsible: true,
+      collapsed: true,
+      link: {
+        type: 'doc',
+        id: 'content/best-practices/adoption-patterns',
+      },
+      items: [
+        {
+          type: 'doc',
+          label: 'Adoption Patterns',
+          id: 'content/best-practices/adoption-patterns',
+        }
       ],
     },
   ],
