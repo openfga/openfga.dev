@@ -93,7 +93,7 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
       : ''
   }
 }, {
-  authorization_model_id: "${modelId}",
+  authorizationModelId: "${modelId}",
 });
 // response.objects = [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
     case SupportedLanguage.GO_SDK:

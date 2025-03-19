@@ -184,7 +184,9 @@ The <ProductName format={ProductNameFormat.ShortForm}/> API will return `true` d
 
 ### Caveats and when not to use it
 
-If you are making less than 10 checks, it may be faster to call the [Check API](/api/service#Relationship%20Queries/Check) in parallel instead of Batch Check. 
+If you are making less than 10 checks, it may be faster to call the [Check API](/api/service#Relationship%20Queries/Check) in parallel instead of Batch Check.
+
+The new BatchCheck endpoint is currently supported by the JS SDK (>=[v0.8.0](https://github.com/openfga/js-sdk/releases/tag/v0.8.0) and the Python SDK (>=[v0.9.0](https://github.com/openfga/python-sdk/releases/tag/v0.9.0)). Support in the other SDKs is being worked on.
 
 ## Read
 
