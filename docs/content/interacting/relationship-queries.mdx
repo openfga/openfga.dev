@@ -198,13 +198,34 @@ The [Read API](/api/service#Relationship%20Tuples/Read) is an API endpoint that 
 
 Read can be called if you need to get all the stored relationship tuples that relate:
 
-1. [a particular user to any objects of a specific type with a particular relation](#1-a-particular-user-to-any-objects-of-a-specific-type-with-a-particular-relation)
-2. [a particular user to any objects of a specific type with any relation](#2-a-particular-user-to-any-objects-of-a-specific-type-with-any-relation)
-3. [a particular object to any user with a particular relation](#3-a-particular-object-to-any-user-with-a-particular-relation)
+1. [a particular user, relation, and object]()
+2. [a particular user, relation, and object type]()
+3. [a particular user and object with any relation]()
+4. [a particular user and object type with any relation]()
+5. [a particular relation and object for any user]()
+6. [a particular object with any user and relation]()
+7. [any user, relation, or object]()
 
-#### 1. A particular user to any objects of a specific type with a particular relation
+#### 1. Read a tuple related to a particular user, relation, and object
 
-For example, to query all the stored relationship tuples `bob` has a `writer` relationship with, one can ask
+For example, to query if `bob` has a `writer` relationship on `document:planning` (essentially finding out if a tuple exists), one can ask
+
+<ReadRequestViewer
+  user={'user:bob'}
+  relation={'writer'}
+  object={'document:planning'}
+  tuples={[
+    {
+      user: 'user:bob',
+      relation: 'writer',
+      object: 'document:planning',
+    },
+  ]}
+/>
+
+#### 2. Read all tuples related to a particular user, relation, and object type
+
+For example, to query all the stored relationship tuples `bob` has a `writer` relationship with on type `document:`, one can ask
 
 <ReadRequestViewer
   user={'user:bob'}
@@ -219,9 +240,25 @@ For example, to query all the stored relationship tuples `bob` has a `writer` re
   ]}
 />
 
-#### 2. A particular user to any objects of a specific type with any relation
+#### 3. Read all tuples related to a particular user and object with any relation
 
-For example, to query all the stored relationship tuples in which `bob` is related to objects of type `document` as any relation, one can issue the following call:
+For example, to query all the stored relationship tuples `bob` has on type `document:planning`, one can ask
+
+<ReadRequestViewer
+  user={'user:bob'}
+  object={'document:planning'}
+  tuples={[
+    {
+      user: 'user:bob',
+      relation: 'writer',
+      object: 'document:planning',
+    },
+  ]}
+/>
+
+#### 4. Read all tuples related to a particular user and object type with any relation
+
+For example, to query all the stored relationship tuples `bob` has on object type `document:`, one can ask
 
 <ReadRequestViewer
   user={'user:bob'}
@@ -235,13 +272,42 @@ For example, to query all the stored relationship tuples in which `bob` is relat
   ]}
 />
 
-#### 3. A particular object to any user with a particular relation
+#### 5. Read all tuples related to a particular object for any user
 
-For example, to query all the stored relationship tuples in which any user is related to `document:planning` as a `writer`, one can issue the following call:
+For example, to query all the stored relationship tuples which have the `writer` relation on object `document:planning`, one can ask
 
 <ReadRequestViewer
   relation={'writer'}
   object={'document:planning'}
+  tuples={[
+    {
+      user: 'user:bob',
+      relation: 'writer',
+      object: 'document:planning',
+    },
+  ]}
+/>
+
+#### 6. Read all tuples related to a particular object with any user or relation
+
+For example, to query all the stored relationship tuples for object `document:planning`, one can ask
+
+<ReadRequestViewer
+  object={'document:planning'}
+  tuples={[
+    {
+      user: 'user:bob',
+      relation: 'writer',
+      object: 'document:planning',
+    },
+  ]}
+/>
+
+#### 7. Read all tuples for any user, relation, or object
+
+For example, to query all stored relationship tuples, one can ask
+
+<ReadRequestViewer
   tuples={[
     {
       user: 'user:bob',
