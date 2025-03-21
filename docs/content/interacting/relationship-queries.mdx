@@ -198,13 +198,13 @@ The [Read API](/api/service#Relationship%20Tuples/Read) is an API endpoint that 
 
 Read can be called if you need to get all the stored relationship tuples that relate:
 
-1. [a particular user, relation, and object]()
-2. [a particular user, relation, and object type]()
-3. [a particular user and object with any relation]()
-4. [a particular user and object type with any relation]()
-5. [a particular relation and object for any user]()
-6. [a particular object with any user and relation]()
-7. [any user, relation, or object]()
+1. [*user + relation + object*]()
+2. [*user + relation + object type*]()
+3. [*user + object* with any relation]()
+4. [*user + object type* with any relation]()
+5. [*relation + object* for any user]()
+6. [*object* with any user and relation]()
+7. [*all* with any user, relation, or object]()
 
 #### 1. Read a tuple related to a particular user, relation, and object
 
@@ -272,7 +272,7 @@ For example, to query all the stored relationship tuples `bob` has on object typ
   ]}
 />
 
-#### 5. Read all tuples related to a particular object for any user
+#### 5. Read all tuples related to a particular relation and object for any user
 
 For example, to query all the stored relationship tuples which have the `writer` relation on object `document:planning`, one can ask
 
