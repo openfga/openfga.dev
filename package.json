@@ -7,7 +7,9 @@
     "dev": "docusaurus start --port=${PORT:-3000}",
     "docusaurus": "docusaurus",
     "start": "npm run serve --port=${PORT:-3000}",
-    "build": "docusaurus build",
+    "build": "npm run build:config-page; npm run build:docusaurus",
+    "build:docusaurus": "docusaurus build",
+    "build:config-page": "node scripts/update-config-page.mjs",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
@@ -20,8 +22,7 @@
     "lint": "eslint . --ext .ts  --ext .tsx",
     "lint:fix": "npm run lint -- --fix",
     "format:check": "prettier --check src/**",
-    "format:fix": "prettier --write src/**",
-    "update:config-page": "node scripts/update-config-page.mjs"
+    "format:fix": "prettier --write src/**"
   },
   "dependencies": {
     "@docusaurus/core": "3.6.3",
