@@ -37,7 +37,7 @@ It offers an HTTP API, a gRPC API, and has SDKs for programming languages includ
   - [Perform a List Objects Request](./content/getting-started/perform-list-objects.mdx)
   - [Use the FGA CLI](./content/getting-started/cli.mdx)
   - [Integrate Within a Framework](./content/getting-started/framework.mdx)
-  - [Production Best Practices](./content/getting-started/production-best-practices.mdx)
+
   - [Managing Tuples and Invoking API Best Practices](./content/getting-started/tuples-api-best-practices.mdx)
 - [Modeling Overview](./content/modeling/overview.mdx)
   - [Getting Started with Modeling](./content/modeling/getting-started.mdx)
@@ -76,3 +76,6 @@ It offers an HTTP API, a gRPC API, and has SDKs for programming languages includ
   - [Relationship Queries](./content/interacting/relationship-queries.mdx)
   - [Get Tuple Changes](./content/interacting/read-tuple-changes.mdx)
   - [Search with Permissions](./content/interacting/search-with-permissions.mdx)
+- [Best Practices](./content/best-practices)
+  - [Adoption Patterns](./content/best-practices/adoption-patterns.mdx)
+  - [Running OpenFGA in Production](./content/best-practices/running-in-production.mdx) 
