@@ -1,0 +1,31 @@
+---
+title: Source of Truth
+sidebar_position: 3
+slug: /best-practices/source-of-truth
+description: Deciding where to store the "source of truth" for authorization data
+---
+
+import {
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+
+} from '@components/Docs';
+
+# Storing the "source of truth" for authorization data
+
+<ProductName format={ProductNameFormat.ShortForm}/> is inspired by [Google’s Zanzibar](https://research.google/pubs/zanzibar-googles-consistent-global-authorization-system/). In Google’s architecture, Zanzibar is an extremely efficient system for authorization checks—but it's never the source of truth for application data. The [Read endpoint](https://openfga.dev/docs/interacting/relationship-queries#read) is mostly used when you need to inspect the stored data, like troubleshooting consistency issues.
+
+For developers building with <ProductName format={ProductNameFormat.ShortForm}/> , following Google's approach isn't always practical. In most cases, applications will use <ProductName format={ProductNameFormat.ShortForm}/> as the source of truth for some data, but not for everything.
+
+**When <ProductName format={ProductNameFormat.ShortForm}/>  is not the right source of truth:**
+
+- User data: Your user directory (profiles, groups, attributes like manager or department) typically lives in your identity provider. In SaaS apps, this is often your customer's IdP.
+- Entity hierarchies: Structures like project/tickets or folder/documents already live in your app's database. Repeatedly querying OpenFGA just to navigate that hierarchy would be inefficient.
+- Search and filtering: When performing searches, you need to combine data that's on your database and data that's in OpenFGA. Your application's database is the right place to do filtering/sorting/joins. That data should be present on your database.
+
+**When OpenFGA is a good source of truth:**
+
+- Fine-grained permissions: If your app allows users to assign permissions directly to resources (e.g., sharing a document), and you don't already store that data, OpenFGA works well as the source of truth.
+
+- Role membership: If you are not using another system to manage roles, storing role membership in OpenFGA is reasonable. Just remember that OpenFGA does not store role metadata (like names or descriptions), so you'll still need a 'Roles' table in your app.

@@ -405,6 +405,11 @@ const sidebars = {
           type: 'doc',
           label: 'Adoption Patterns',
           id: 'content/best-practices/adoption-patterns',
+        },
+        {
+          type: 'doc',
+          label: 'Source of Truth',
+          id: 'content/best-practices/source-of-truth',
         }
       ],
     },
