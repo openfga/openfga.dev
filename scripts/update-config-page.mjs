@@ -231,7 +231,7 @@ The following table lists the configuration options for the OpenFGA server [${re
     {
       title: 'Running OpenFGA in Production',
       description: 'Learn the best practices of running OpenFGA in a production environment',
-      link: './../../best-practices/running-in-production',
+      link: '../../best-practices/running-in-production',
       id: './best-practices/running-in-production'
     }
   ]}
