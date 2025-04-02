@@ -16,10 +16,10 @@ import {
 
 The following list outlines best practices for running OpenFGA in a production environment:
 
-- [Configure Authentication](./setup-openfga/configure-openfga.mdx#configuring-authentication)
+- [Configure Authentication](../getting-started/setup-openfga/configure-openfga.mdx#configuring-authentication)
 - Enable HTTP TLS or gRPC TLS or both
 - Set the log format to "json" and log level to "info"
-- [Disable the Playground](./setup-openfga/playground.mdx#disabling-the-playground)
+- [Disable the Playground](../getting-started/setup-openfga/playground.mdx#disabling-the-playground)
 - [Set Cluster](#cluster-recommendations)
 - [Set Database Options](#database-recommendations)
 - [Set Maximum Results](#maximum-results)
@@ -36,7 +36,7 @@ We recommend:
 
 ## Database recommendations
 
-To ensure good performance for OpenFGA, it is recommended that the [database](./setup-openfga/configure-openfga.mdx#configuring-data-storage) be:
+To ensure good performance for OpenFGA, it is recommended that the [database](../getting-started/setup-openfga/configure-openfga.mdx#configuring-data-storage) be:
 - Co-located in the same physical datacenter and network as your OpenFGA servers. This will minimize latency of database calls.
 - Used exclusively for OpenFGA and not shared with other applications. This allows scaling the database independently and avoiding contention with your database.
 - Bootstrapped and managed with the `openfga migrate` command. This will ensure the appropriate database indexes are created.
