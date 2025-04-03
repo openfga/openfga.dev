@@ -65,7 +65,9 @@ Can't make it? Catch up on our [latest recording](https://youtu.be/4MGF4rTzhbA?s
 **Blogs and Videos for AuthZ Fans:**
  - Granting TTL based permissions in OpenFGA: Implement TTL-based permissions in OpenFGA for time-limited access control. [Read more on Medium...](https://medium.com/@shruti1810/granting-ttl-based-permissions-in-openfga-2ed2073931c3)
 
+<!-- markdown-link-check-disable -->
 - Overcoming Security Challenges in Protecting Shared Generative AI Environments: Explore solutions for ensuring secure, scalable, and efficient multi-tenancy in generative AI environments. [Read more on Medium...](https://towardsdatascience.com/overcoming-security-challenges-in-protecting-shared-generative-ai-environments-1ffb27da1bde)
+<!-- markdown-link-check-enable -->
 
 - Fine-Grained Authorization for Backstage using OpenFGA: Learn how OpenFGA enables dynamic fine-grained authorization in Backstage through ReBAC models and seamless policy updates. [See the webinar on YouTube...](https://www.youtube.com/watch?v=wWFbLPvwOyQ)
 
