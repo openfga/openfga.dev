@@ -185,15 +185,13 @@
 <p>Can't make it? Catch up on our <a href="https://youtu.be/4MGF4rTzhbA?si=iGcoZTw8T99E0LKs" target="_blank" rel="noopener noreferrer">latest recording</a> or browse previous sessions on our <a href="https://www.youtube.com/@OpenFGA" target="_blank" rel="noopener noreferrer">YouTube channel</a>.</p>
 <p><strong>Blogs and Videos for AuthZ Fans:</strong></p>
 <ul>
-<li>
-<p>Granting TTL based permissions in OpenFGA: Implement TTL-based permissions in OpenFGA for time-limited access control. <a href="https://medium.com/@shruti1810/granting-ttl-based-permissions-in-openfga-2ed2073931c3" target="_blank" rel="noopener noreferrer">Read more on Medium...</a></p>
-</li>
-<li>
-<p>Overcoming Security Challenges in Protecting Shared Generative AI Environments: Explore solutions for ensuring secure, scalable, and efficient multi-tenancy in generative AI environments. <a href="https://towardsdatascience.com/overcoming-security-challenges-in-protecting-shared-generative-ai-environments-1ffb27da1bde" target="_blank" rel="noopener noreferrer">Read more on Medium...</a></p>
-</li>
-<li>
-<p>Fine-Grained Authorization for Backstage using OpenFGA: Learn how OpenFGA enables dynamic fine-grained authorization in Backstage through ReBAC models and seamless policy updates. <a href="https://www.youtube.com/watch?v=wWFbLPvwOyQ" target="_blank" rel="noopener noreferrer">See the webinar on YouTube...</a></p>
-</li>
+<li>Granting TTL based permissions in OpenFGA: Implement TTL-based permissions in OpenFGA for time-limited access control. <a href="https://medium.com/@shruti1810/granting-ttl-based-permissions-in-openfga-2ed2073931c3" target="_blank" rel="noopener noreferrer">Read more on Medium...</a></li>
+</ul>
+<ul>
+<li>Overcoming Security Challenges in Protecting Shared Generative AI Environments: Explore solutions for ensuring secure, scalable, and efficient multi-tenancy in generative AI environments. <a href="https://towardsdatascience.com/overcoming-security-challenges-in-protecting-shared-generative-ai-environments-1ffb27da1bde" target="_blank" rel="noopener noreferrer">Read more on Medium...</a></li>
+</ul>
+<ul>
+<li>Fine-Grained Authorization for Backstage using OpenFGA: Learn how OpenFGA enables dynamic fine-grained authorization in Backstage through ReBAC models and seamless policy updates. <a href="https://www.youtube.com/watch?v=wWFbLPvwOyQ" target="_blank" rel="noopener noreferrer">See the webinar on YouTube...</a></li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="new-adopters"><strong>New Adopters</strong><a href="https://openfga.dev/pr-preview/pr-1002/blog/fine-grained-news-2024-11#new-adopters" class="hash-link" aria-label="Direct link to new-adopters" title="Direct link to new-adopters">​</a></h2>
 <ul>
