@@ -7,7 +7,9 @@
     "dev": "docusaurus start --port=${PORT:-3000}",
     "docusaurus": "docusaurus",
     "start": "npm run serve --port=${PORT:-3000}",
-    "build": "docusaurus build",
+    "build": "npm run build:config-page; npm run build:docusaurus",
+    "build:docusaurus": "docusaurus build",
+    "build:config-page": "node scripts/update-config-page.mjs",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
@@ -20,8 +22,7 @@
     "lint": "eslint . --ext .ts  --ext .tsx",
     "lint:fix": "npm run lint -- --fix",
     "format:check": "prettier --check src/**",
-    "format:fix": "prettier --write src/**",
-    "update:config-page": "node scripts/update-config-page.mjs"
+    "format:fix": "prettier --write src/**"
   },
   "dependencies": {
     "@docusaurus/core": "3.6.3",
@@ -49,16 +50,16 @@
     "@types/react": "18.3.5",
     "@types/react-router-dom": "5.3.3",
     "@types/sanitize-html": "2.13.0",
-    "@typescript-eslint/eslint-plugin": "8.27.0",
-    "@typescript-eslint/parser": "8.27.0",
+    "@typescript-eslint/eslint-plugin": "8.29.0",
+    "@typescript-eslint/parser": "8.29.0",
     "docusaurus-plugin-module-alias": "0.0.2",
     "eslint": "8.57.0",
     "eslint-config-prettier": "10.1.1",
-    "eslint-plugin-react": "7.37.4",
+    "eslint-plugin-react": "7.37.5",
     "husky": "9.1.7",
     "markdown-link-check": "^3.13.7",
     "prettier": "3.5.3",
-    "typescript": "5.8.2"
+    "typescript": "5.8.3"
   },
   "overrides": {
     "gauge": "^5.0.0",

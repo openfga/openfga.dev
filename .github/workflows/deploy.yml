@@ -1,11 +1,15 @@
 name: Deploy to GitHub Pages
 
 on:
+  # Nightly @ 5AM UTC
+  schedule:
+    - cron: '0 5 * * *'
+  # When triggered manually
+  workflow_dispatch:
+  # When a commit is pushed to the main branch
   push:
     branches:
       - main
-    # Review gh actions docs if you want to further define triggers, paths, etc
-    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
 
 jobs:
   deploy:
