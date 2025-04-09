@@ -135,11 +135,6 @@ const sidebars = {
         },
         {
           type: 'doc',
-          label: 'Production Best Practices',
-          id: 'content/getting-started/production-best-practices',
-        },
-        {
-          type: 'doc',
           label: 'Implementation Best Practices',
           id: 'content/getting-started/tuples-api-best-practices',
         },
@@ -398,7 +393,7 @@ const sidebars = {
       collapsed: true,
       link: {
         type: 'doc',
-        id: 'content/best-practices/adoption-patterns',
+        id: 'content/best-practices/overview',
       },
       items: [
         {
@@ -410,6 +405,11 @@ const sidebars = {
           type: 'doc',
           label: 'Source of Truth',
           id: 'content/best-practices/source-of-truth',
+        },
+        {
+          type: 'doc',
+          label: 'Running OpenFGA in Production',
+          id: 'content/best-practices/running-in-production',
         }
       ],
     },
