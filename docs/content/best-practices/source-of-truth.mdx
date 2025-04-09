@@ -12,7 +12,7 @@ import {
 
 } from '@components/Docs';
 
-# Storing the "source of truth" for authorization data
+# When to use <ProductName format={ProductNameFormat.ShortForm}/> as the 'source of truth' for authorization data
 
 <ProductName format={ProductNameFormat.ShortForm}/> is inspired by [Google’s Zanzibar](https://research.google/pubs/zanzibar-googles-consistent-global-authorization-system/). In Google’s architecture, Zanzibar is an extremely efficient system for authorization checks, but it's never the source of truth for application data. The [Read endpoint](https://openfga.dev/docs/interacting/relationship-queries#read) is mostly used when you need to inspect the stored data, e.g. for troubleshooting consistency issues.
 
