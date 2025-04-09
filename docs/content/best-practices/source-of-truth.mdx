@@ -21,7 +21,7 @@ For developers using <ProductName format={ProductNameFormat.ShortForm}/>, follow
 **When <ProductName format={ProductNameFormat.ShortForm}/>  is not the right source of truth:**
 
 - User data: The source of truth for user profile data is typically an identity provider like Azure, Okta or Auth0. 
-- Entity hierarchies: Structures like project/tickets or folder/documents already live in application's databases. Repeatedly querying <ProductName format={ProductNameFormat.ShortForm}/> just to navigate that hierarchy would be inefficient.
+- Entity hierarchies: Structures like project/tickets or folder/documents already live in application's databases. Repeatedly querying <ProductName format={ProductNameFormat.ShortForm}/> just to navigate that hierarchy would be inefficient. Having this in the application's database would allow for better optimizations when searching within a folder (see: [search with permissions](../interacting/search-with-permissions.mdx)), as it would let the applications narrow down the scope of what it needs to check, and then call check in parallel instead of filtering through other methods.
 - Data relevant for search and filtering: When performing searches, you need to combine data that's on your database and data that's in <ProductName format={ProductNameFormat.ShortForm}/>. Your application's database is the right place to do filtering/sorting/joins. The data required for performing those operations should live in application's databases.
 
 **When OpenFGA is a good source of truth:**
