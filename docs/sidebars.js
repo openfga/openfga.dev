@@ -403,6 +403,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Modeling Best Practices',
+          id: 'content/best-practices/modeling',
+        },
+        {
+          type: 'doc',
           label: 'Running OpenFGA in Production',
           id: 'content/best-practices/running-in-production',
         }
