@@ -50,6 +50,9 @@
 	  },
 	  {
 		"pattern": "https://openfga.dev/docs/modeling/modular-models"
+	  },
+	  {
+		"pattern": "https://auth0.com"
 	  }
 	],
 	"httpHeaders": [

@@ -403,6 +403,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Modeling Best Practices',
+          id: 'content/best-practices/modeling',
+        },
+        {
+          type: 'doc',
           label: 'Source of Truth',
           id: 'content/best-practices/source-of-truth',
         },
