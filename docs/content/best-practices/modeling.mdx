@@ -139,6 +139,7 @@ model
 
  type organization
     relations
+      define system: [system]
       define admin: [user] or admin from system
       define member: [user] 
 ```
@@ -157,14 +158,12 @@ model
 
  type organization
     relations
+      define system: [system]
       define parent: [organization]
       define admin: [user] or admin from system
       define member: [user] 
 ```
 In this case, it's clear that you have two hierarchies, one is recursive and the other is not.
-
-
-
 
 ## Related Sections
 
