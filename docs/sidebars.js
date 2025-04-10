@@ -53,6 +53,11 @@ const sidebars = {
             },
             {
               type: 'doc',
+              label: 'Configuration Options',
+              id: 'content/getting-started/setup-openfga/configuration',
+            },
+            {
+              type: 'doc',
               label: '🐳 Docker',
               id: 'content/getting-started/setup-openfga/docker-setup',
             },
@@ -127,11 +132,6 @@ const sidebars = {
           type: 'doc',
           label: 'Immutable Authorization Models',
           id: 'content/getting-started/immutable-models',
-        },
-        {
-          type: 'doc',
-          label: 'Production Best Practices',
-          id: 'content/getting-started/production-best-practices',
         },
         {
           type: 'doc',
@@ -383,6 +383,39 @@ const sidebars = {
           label: 'Search with Permissions',
           id: 'content/interacting/search-with-permissions',
         },
+      ],
+    },
+
+    {
+      type: 'category',
+      label: 'Best Practices',
+      collapsible: true,
+      collapsed: true,
+      link: {
+        type: 'doc',
+        id: 'content/best-practices/overview',
+      },
+      items: [
+        {
+          type: 'doc',
+          label: 'Adoption Patterns',
+          id: 'content/best-practices/adoption-patterns',
+        },
+        {
+          type: 'doc',
+          label: 'Modeling Best Practices',
+          id: 'content/best-practices/modeling',
+        },
+        {
+          type: 'doc',
+          label: 'Source of Truth',
+          id: 'content/best-practices/source-of-truth',
+        },
+        {
+          type: 'doc',
+          label: 'Running OpenFGA in Production',
+          id: 'content/best-practices/running-in-production',
+        }
       ],
     },
   ],

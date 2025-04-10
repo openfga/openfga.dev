@@ -17,51 +17,11 @@ Refer to the [OpenFGA Getting Started](https://github.com/openfga/openfga?tab=re
 
 The instructions below assume OpenFGA is installed and that you have the `openfga` binary in your PATH. If you have built `openfga` as a binary, but not in your path, you can refer to it directly (e.g. replace `openfga` in the instructions below with `./openfga` or `/path/to/openfga`).
 
-You can configure the OpenFGA server in three ways:
+For a list of all the configuration options that the latest release of OpenFGA supports, see [Configuration Options](./configuration.mdx), or you can run `openfga --help` to see the ones specific to your version.
 
-- Using a configuration file.
-- Using environment variables.
-- Using command line parameters.
-
-If the same option is configured in multiple ways the command line parameters will take precedence over environment variables, which will take precedence over the configuration file.
-
-The configuration options and their default values are shown via `openfga run --help`, and defined in [config-schema.json](https://github.com/openfga/openfga/blob/main/.config-schema.json).
-
-## Using a configuration file
-
-You can configure the OpenFGA server with a `config.yaml` file, which can be specified in either:
-- `/etc/openfga`
-- `$HOME/.openfga`
-- `.` (i.e., the current working directory).
-
-The OpenFGA server will search for the configuration file in the above order.
-
-Here is a sample configuration to run OpenFGA with a Postgres database and using a preshared key for authentication:
-
-```yaml
-datastore:
-  engine: postgres
-  uri: postgres://user:password@localhost:5432/mydatabase
-authn:
-  method: preshared
-  preshared:
-    keys: ["key1", "key2"]
-```
-
-## Using environment variables
-
-The OpenFGA server supports **environment variables** for configuration, and they will take priority over your configuration file.
-Each variable must be prefixed with `OPENFGA_` and followed by your option in uppercase (e.g. `--grpc-tls-key` becomes `OPENFGA_GRPC_TLS_KEY`).
-
-## Using command line variables
-
-Command line parameters take precedence over environment variables and options in the configuration file. They are prefixed with `--` , e.g.
-
-```shell
-openfga run \
-    --datastore-engine postgres \
-    --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
-```
+:::note
+The instructions below are for configuring the standalone OpenFGA server. If you are using OpenFGA as a library, you can refer to the [GoDoc](https://pkg.go.dev/github.com/openfga/openfga) for more information.
+:::
 
 ## Configuring data storage
 
@@ -274,7 +234,7 @@ grpcurl -plaintext $FGA_API_URL grpc.health.v1.Health/Check
 </Tabs>
 
 ## Experimental features
-Various releases of OpenFGA may have experimental features that can be enabled by providing the `--experimentals` flag or the `experimentals` config.
+Various releases of OpenFGA may have experimental features that can be enabled by providing the [`--experimentals`](./configuration.mdx#OPENFGA_EXPERIMENTALS) flag or the `experimentals` config.
 
 ```
 openfga run --experimentals="feature1, feature2"
@@ -330,7 +290,7 @@ To see the request latency per endpoint of your OpenFGA deployment, you can prov
 
 OpenFGA traces can be collected with the [OTLP data format](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md).
 
-Tracing is disabled by default, but you can enable this with the `--trace-enabled=true` (`OPENFGA_TRACE_ENABLED=true` environment variable). Traces will be exported by default to address `0.0.0.0:4317`. You can change this address with the `--trace-otlp-endpoint` flag (`OPENFGA_TRACE_OTLP_ENDPOINT` environment variable).
+Tracing is disabled by default, but you can enable this with the `--trace-enabled=true` (`OPENFGA_TRACE_ENABLED=true` environment variable). Traces will be exported by default to address `0.0.0.0:4317`. You can change this address with the `--trace-otlp-endpoint` flag (`OPENFGA_TRACE_OTLP_ENDPOINT` environment variable). In order to just correlate `trace_id` in logs if you are propagating tracing contexts into OpenFGA, exporter can be disabled by providing `none` as endpoint value. 
 
 To increase or decrease the trace sampling ratio, you can provide the `--trace-sample-ratio` flag (`OPENFGA_TRACE_SAMPLE_RATIO` env variable).
 
@@ -357,10 +317,16 @@ It is highly recommended to enable logging in production environments. Disabling
   description="Check the following sections for more on how to use OpenFGA."
   relatedLinks={[
     {
-      title: 'Production Best Practices',
+      title: 'Configuration Options',
+      description: 'Find out all the different flags and options that OpenFGA accepts',
+      link: './configuration',
+      id: './configuration',
+    },
+    {
+      title: 'Running OpenFGA in Production',
       description: 'Learn the best practices of running OpenFGA in a production environment',
-      link: '../running-in-production',
-      id: './running-in-production',
+      link: '../../best-practices/running-in-production',
+      id: './best-practices/running-in-production',
     }
   ]}
 />
