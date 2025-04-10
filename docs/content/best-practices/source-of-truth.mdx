@@ -1,0 +1,31 @@
+---
+title: Source of Truth
+sidebar_position: 3
+slug: /best-practices/source-of-truth
+description: Deciding where to store the "source of truth" for authorization data
+---
+
+import {
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+
+} from '@components/Docs';
+
+# When to use <ProductName format={ProductNameFormat.ShortForm}/> as the 'source of truth' for authorization data
+
+<ProductName format={ProductNameFormat.ShortForm}/> is inspired by [Google’s Zanzibar](https://research.google/pubs/zanzibar-googles-consistent-global-authorization-system/). In Google’s architecture, Zanzibar is an extremely efficient system for authorization checks, but it's never the source of truth for application data. The [Read endpoint](https://openfga.dev/docs/interacting/relationship-queries#read) is mostly used when you need to inspect the stored data, e.g. for troubleshooting consistency issues.
+
+For developers using <ProductName format={ProductNameFormat.ShortForm}/>, following Google's approach isn't always practical. In most cases, applications will use <ProductName format={ProductNameFormat.ShortForm}/> as the source of truth for some data.
+
+**When <ProductName format={ProductNameFormat.ShortForm}/>  is not the right source of truth:**
+
+- User data: The source of truth for user profile data is typically an identity provider like Azure, Okta or Auth0. 
+- Entity hierarchies: Structures like project/tickets or folder/documents already live in application's databases. Repeatedly querying <ProductName format={ProductNameFormat.ShortForm}/> just to navigate that hierarchy would be inefficient. Having this in the application's database would allow for better optimizations when searching within a folder (see: [search with permissions](../interacting/search-with-permissions.mdx)), as it would let the applications narrow down the scope of what it needs to check, and then call check in parallel instead of filtering through other methods.
+- Data relevant for search and filtering: When performing searches, you need to combine data that's on your database and data that's in <ProductName format={ProductNameFormat.ShortForm}/>. Your application's database is the right place to do filtering/sorting/joins. The data required for performing those operations should live in application's databases.
+
+**When OpenFGA is a good source of truth:**
+
+- Fine-grained permissions: If an application allows users to assign permissions directly to resources (e.g., sharing a document), and you don't need to store that data in the application's database, you can store it only in <ProductName format={ProductNameFormat.ShortForm}/>.
+
+- Role membership: If you are not using another system to manage roles, storing role membership in <ProductName format={ProductNameFormat.ShortForm}/> is reasonable. Remember that <ProductName format={ProductNameFormat.ShortForm}/> does not store role metadata (like names or descriptions), so you'll still need a 'Roles' table in your application's database.
