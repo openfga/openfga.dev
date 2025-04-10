@@ -39,7 +39,7 @@ The model below can be used to implement authorization for any organization hier
       
   type resource
     relations
-      # Resources belong to an application
+      # Resources belong to an entity
       define entity : [entity]
 
       # Resources can have a parent
@@ -57,7 +57,7 @@ For example, when defining roles, in general you have certain roles that come bu
 
   type user
 
-  type entity
+  type organization
     relations
       define admin: [user]
       define billing_manager: [user]
@@ -76,7 +76,7 @@ Defining the model in a way that closely resembles your application domain has s
 
   - **Improved Collaboration**: The resource types that are owned by each application team can be maintained in independent [modules](./../modeling/modular-models.mdx). You can then control which application can write to specific resource types. For example, when using the API credential issued to a Document Management application, you can only write/delete tuples for documents and folders, but not for other types. This is not possible if you use a generic `resource` type, for example. 
 
-## Custom Roles
+### Custom Roles
 
 However, in some applications, you will want end-users to define their own roles. In that case, you do need a role type:
 
@@ -89,7 +89,7 @@ However, in some applications, you will want end-users to define their own roles
    relations
      define assignee: [user]
 
-  type entity
+  type organization
     relations
       define admin: [user]
       define billing_manager: [user]
@@ -102,7 +102,7 @@ In this example we are combining static roles with dynamic roles. This is the re
 
 You can see a full example of implementing custom roles [here](https://github.com/openfga/sample-stores/tree/main/stores/custom-roles).
 
-## Organizational Hierarchies
+### Organizational Hierarchies
 
 If you are building a B2B SaaS application, you might encounter the following requirements:
 
@@ -116,9 +116,10 @@ A possible way of modeling this would be with a recursive entity type:
     schema 1.1 
 
  type user
- type entity
+
+ type organization
     relations
-      define parent: [entity]
+      define parent: [organization]
       define admin: [user] or admin from parent
       define member: [user] or member from parent
 ```
@@ -136,7 +137,7 @@ model
     relations
        define admin: [user] 
 
- type entity
+ type organization
     relations
       define admin: [user] or admin from system
       define member: [user] 
@@ -154,12 +155,16 @@ model
     relations
        define admin: [user] 
 
- type entity
+ type organization
     relations
+      define parent: [organization]
       define admin: [user] or admin from system
       define member: [user] 
 ```
 In this case, it's clear that you have two hierarchies, one is recursive and the other is not.
+
+
+
 
 ## Related Sections
 
