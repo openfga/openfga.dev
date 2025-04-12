@@ -52,7 +52,7 @@ To learn how to run in Docker, check our [Docker documentation](./docker-setup.m
 The MySQL datastore has stricter limits for the max length of some fields for tuples compared to other datastore engines, in particular:
 
 - object type is at most 128 characters (down from 256)
-- object id is at most 128 characters (down from 256)
+- object id is at most 255 characters (down from 256)
 - user is at most 256 characters (down from 512)
 
 The connection URI needs to specify the query `parseTime=true`.
