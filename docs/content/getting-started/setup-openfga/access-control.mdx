@@ -106,9 +106,11 @@ type module # required
 
 By default, the API will use the following claims (in order) in the OIDC token to identify the client. If you want to use a different claim, you can set the environment variable `OPENFGA_AUTHN_OIDC_CLIENT_ID_CLAIMS` to the claim(s) you want to use.
 
+<!-- markdown-link-check-disable -->
 If the claims are not set in the configuration, the following claims are used as default (in order):
 1. `azp`: following [the OpenID standard](https://openid.net/specs/openid-connect-core-1_0.html#IDToken)
 2. `client_id` following [RFC9068](https://www.rfc-editor.org/rfc/rfc9068.html#name-data-structure)
+<!-- markdown-link-check-enable -->
 
 That means that if the `azp` claim is present in the token, it will be used to identify the client. If not, the `client_id` claim will be used instead.
 
@@ -162,10 +164,10 @@ If you are calling `Write` with a credential that only has access to certain mod
       id: './configure-openfga#oidc',
     },
     {
-      title: 'Production Best Practices',
+      title: 'Running OpenFGA in Production',
       description: 'Learn the best practices of running OpenFGA in a production environment',
-      link: '../running-in-production',
-      id: './running-in-production',
+      link: '../../best-practices/running-in-production',
+      id: './best-practices/running-in-production',
     }
   ]}
 />
