@@ -152,7 +152,7 @@ var response = await fgaClient.Check(body, options);
 // response.Allowed = ${allowed}`;
     case SupportedLanguage.PYTHON_SDK:
       return `options = {
-    authorization_model_id="${modelId}"
+    "authorization_model_id": "${modelId}"
 }
 body = ClientCheckRequest(
     user="${user}",
