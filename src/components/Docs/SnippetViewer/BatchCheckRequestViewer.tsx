@@ -245,7 +245,7 @@ checks = [${checks.map(
     }`,
       )}
 ]
-options = {${modelId ? `\n  authorization_model_id="${modelId}"` : ''}}
+options = {${modelId ? `\n  "authorization_model_id": "${modelId}"` : ''}}
 response = await fga_client.batch_check(ClientBatchCheckRequest(checks=checks), options)
 
 # response.results = [${checks
