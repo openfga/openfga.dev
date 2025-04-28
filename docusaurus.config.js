@@ -38,7 +38,7 @@ const config = {
         icon: 'ZanzibarIcon',
       },
       {
-        text: 'Okta FGA Playground →',
+        text: 'Auth0 FGA Playground →',
         href: 'https://play.fga.dev/',
         icon: 'ModelIcon',
       },
@@ -70,7 +70,7 @@ const config = {
     // link to the concept page (relative to baseURL)
     conceptLink: `docs/concepts`,
     longProductName: `OpenFGA`,
-    landingPageTitle: 'Fine Grained Authorization',
+    landingPageTitle: 'Fine-Grained Authorization',
 
     // define playgroundName and playgroundURL if you want to show your examples through playground
     //playgroundName: '',
