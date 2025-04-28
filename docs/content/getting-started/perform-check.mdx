@@ -144,11 +144,11 @@ To obtain the [access token](https://auth0.com/docs/get-started/authentication-a
 
 ### 02. Calling Check API
 
-To check whether user `user:anne` has relationship `can_view` with object `document:Z`
+To check whether user `user:anne` has relationship `reader` with object `document:Z`
 
 <CheckRequestViewer
   user={'user:anne'}
-  relation={'can_view'}
+  relation={'reader'}
   object={'document:Z'}
   allowed={true}
   skipSetup={true}
@@ -163,7 +163,12 @@ To check whether user `user:anne` has relationship `can_view` with object `docum
   ]}
 />
 
-The result's `allowed` field will return `true` if the relationship exists and `false` if the relationship does not exist.
+The result's `allowed` field will be:
+- `true` if the relationship exists.
+- `false` if the relation is defined in your model but no matching tuple exists.
+
+If the relation is *not defined* in your model, the API will return a `400 Bad Request` instead of `false`.
+
 
 ### 03. Calling Batch Check API
 
