@@ -774,7 +774,7 @@ Connect with a growing community of fine-grained authorization enthusiasts and e
 <p>An AppDeveloperCon session about <a href="https://www.youtube.com/watch?v=5NkJHeToEwo" target="_blank" rel="noopener noreferrer">Implementing Modern Cloud Native Authorization Using OpenFGA</a> where <a href="https://github.com/paulinejamin" target="_blank" rel="noopener noreferrer">Pauline Jamin</a> and <a href="https://github.com/aaguiarz" target="_blank" rel="noopener noreferrer">Andres Aguiar</a> go over how OpenFGA is helping Agicap to implement fine-grained authorization.</p>
 </li>
 <li>
-<p>A 7-min Lightning Talk about <a href="https://www.youtube.com/watch?v=K7Me3OjFxJ0" target="_blank" rel="noopener noreferrer">OpenFGA: The Cloud Native way to implement Fine Grained Authorization</a>.</p>
+<p>A 7-min Lightning Talk about <a href="https://www.youtube.com/watch?v=K7Me3OjFxJ0" target="_blank" rel="noopener noreferrer">OpenFGA: The Cloud Native way to implement Fine-Grained Authorization</a>.</p>
 </li>
 <li>
 <p><a href="https://www.linkedin.com/in/jonathan-whitaker-5a8b2484/" target="_blank" rel="noopener noreferrer">Jonathan Whitaker</a>'s talk about <a href="https://www.youtube.com/watch?v=UaK1EnRgrng" target="_blank" rel="noopener noreferrer">Federated IAM for Kubernetes with OpenFGA</a>, demoing how to use OpenFGA and KeyCloak to implement fine-grained authorization in a Kubernetes cluster, in ways it's not possible today, like giving access to a user for 90 seconds.</p>
@@ -854,7 +854,7 @@ Connect with a growing community of fine-grained authorization enthusiasts and e
 <p>OpenFGA will be present in <a href="https://app.myonvent.com/event/operator-day/" target="_blank" rel="noopener noreferrer">Canonical's Operator's day</a>, co-located at KubeCon EU. Andres Aguiar and Massimilano Gori from Canonical, will talk about how Canonical adopted OpenFGA for implementing authorization in <a href="https://juju.is/" target="_blank" rel="noopener noreferrer">Juju</a>.</p>
 </li>
 <li>
-<p>Andres Aguiar will also be delivering a Lightning Talk titled <strong>OpenFGA - The Cloud Native way to implement Fine Grained Authorization</strong> (link not available yet :) ).</p>
+<p>Andres Aguiar will also be delivering a Lightning Talk titled <strong>OpenFGA - The Cloud Native way to implement Fine-Grained Authorization</strong> (link not available yet :) ).</p>
 </li>
 </ul>
 <p>We'll also have a kiosk in the CNCF Project Pavilion, so if you plan to attend let us know and we can schedule some time together!</p>
