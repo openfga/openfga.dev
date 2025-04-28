@@ -231,8 +231,9 @@ response.Responses = [${checks
     case SupportedLanguage.PYTHON_SDK:
       return `# Requires >=v0.9.0 for the server side BatchCheck, earlier versions support a client-side BatchCheck with a slightly different interface
 
-checks = [${checks.map(
-        (check) => `
+checks = [${checks
+        .map(
+          (check) => `
   ClientBatchCheckItem(
     user="${check.user}",
     relation="${check.relation}",
@@ -242,8 +243,10 @@ checks = [${checks.map(
         ? `,
     contextual_tuples=[${check.contextualTuples.map((tuple) => `ClientTuple(user="${tuple.user}", relation="${tuple.relation}", object="${tuple.object}")`).join(',')}]`
         : ''
-    }`,
-      )}
+    }
+  )`,
+        )
+        .join(',')}
 ]
 options = {${modelId ? `\n  "authorization_model_id": "${modelId}"` : ''}}
 response = await fga_client.batch_check(ClientBatchCheckRequest(checks=checks), options)
