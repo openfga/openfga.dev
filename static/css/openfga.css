@@ -294,10 +294,17 @@ a:visited {
   background-color: transparent;
 }
 
-a.menu__link--active,
-a.menu__link:active,
-a.menu__link:hover {
-  color: var(--ofga-neutral-white);
+.menu__list a.menu__link--active, 
+.menu__list a.menu__link:active, 
+.menu__list a.menu__link:hover {
+  color: var(--ofga-color-primary);
+  background: var(--ifm-menu-color-background-hover);
+}
+
+.menu__list-item-collapsible .menu__link,
+.menu__list-item-collapsible:hover {
+  color: inherit !important;
+  background: none;
 }
 
 .menu__caret {
@@ -374,7 +381,7 @@ a.table-of-contents__link:visited {
 a.table-of-contents__link:active,
 a.table-of-contents__link:hover,
 a.table-of-contents__link.table-of-contents__link--active {
-  color: var(--ofga-neutral-white);
+  color: var(--ofga-color-primary);
 }
 
 .theme-doc-toc-desktop {
