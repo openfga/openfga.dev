@@ -197,7 +197,7 @@ response = await fga_client.check(body, options)
       .join(',\n    ')}
   ],`
       : ''
-  } authorization_id = "${modelId}"
+  } authorization_model_id = "${modelId}"
 );
 
 Reply: ${allowed}`;
