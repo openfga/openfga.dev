@@ -26,7 +26,7 @@ The `.fga.yaml` contains tests for <ProductName format={ProductNameFormat.ShortF
 | Object  | Description |
 | -------- | -------- | 
 | `name` (optional)   | A descriptive name for the test file   | 
-| `model` or `model_file`   | An <ProductName format={ProductNameFormat.ShortForm}/> model or a reference to an external model file in `fga` or `json` format  | 
+| `model` or `model_file`   | An <ProductName format={ProductNameFormat.ShortForm}/> model or a reference to an external model file in `fga`, `json` or `mod` format  | 
 |`tuples or tuple_file` (optional) | A set of tuples or a reference to an external tuple file in `json`, `yaml` or `csv` format. These are considered for all tests. |
 |`tests` | A set of tests that verify the return values of <ProductName format={ProductNameFormat.ShortForm}/> API calls |
 
@@ -51,7 +51,7 @@ model: |
      current_time < grant_time + grant_duration
   }
 
-# tuple_file: ./tuples.yaml # you can specify an external file, or include it inline
+# tuple_file: ./tuples.yaml # you can specify an external file, include it inline, or both
 tuples: 
 
    # Anne is a member of the Acme organization
@@ -79,7 +79,7 @@ Tests have the following structure:
 | Object  | Description |
 | -------- | -------- | 
 |`name` (optional) | A descriptive name for the test, like “Organization Membership”  | 
-|`tuples` | A set of tuples that are only considered for the test | 
+|`tuple_file` or `tuples` | A set of tuples that are only considered for the test | 
 |`check` | A set of tests for Check calls, each with a user/object and a set of assertions |
 |`list_objects` | A set of tests for ListObjects calls, each one with a user/type and a set of assertions for any number of relations|
 |`list_users` | A set of tests for ListUsers calls, each one with an object and user filter and a set of assertions for the users for any number of relations |
@@ -186,6 +186,12 @@ The following is an example of using the `list_users` option in <ProductName for
 
 ```
 The example above checks that the `organization:acme`, given the current time is February 2nd 2024, it has 'user:anne' as a `member`, nobody as an `admin`. If we tried with current time being February 1st 2024, then `user:peter` would be listed as an `admin`
+
+## Testing with Modular Models
+
+If you are using [Modular Models](./modular-models.mdx), you need to use the `fga.mod` as the `model_file`. 
+
+You can define the tests for each model in separate `.fga.yaml` files. All files should point to the `fga.mod` model. You can create a shared file with tuples and reference it with the `tuple_file` option. You can include module-specific tuples in each `fga.yaml` file.
 
 ## Running tests
 
