@@ -8,14 +8,11 @@ import Admonition from '@theme/Admonition';
 
 import { SyntaxFormat, WriteAuthzModelViewer } from '@components/Docs';
 import { AuthzModelCodeBlock } from './AuthzModelCodeBlock';
-import { constants } from '@openfga/frontend-utils';
 
 type AuthzModelSnippetViewerProps = {
   // Authorization Model in api syntax
   configuration: WriteAuthorizationModelRequest & Required<Pick<WriteAuthorizationModelRequest, 'schema_version'>>;
-  // optional description
-  description?: string;
-  onlyShow?: SyntaxFormat;
+  showTabs?: SyntaxFormat;
   showWrite?: boolean;
   // do not display the model schema in DSL and JSON
   skipVersion?: boolean;
@@ -24,22 +21,13 @@ type AuthzModelSnippetViewerProps = {
 };
 
 const BaseAuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
-  onlyShow,
+  showTabs,
   configuration,
   skipVersion,
-  showSchemaOneDotZero,
 }) => {
-  if (onlyShow) {
-    return (
-      <AuthzModelCodeBlock
-        configuration={{ ...configuration, id: '' }}
-        syntaxFormat={onlyShow}
-        skipVersion={skipVersion}
-      />
-    );
-  }
+  const syntaxFormat = showTabs || SyntaxFormat.Friendly2;
 
-  if (!showSchemaOneDotZero) {
+  if (showTabs) {
     return (
       <>
         <Tabs groupId="dsl">
@@ -63,49 +51,23 @@ const BaseAuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
   }
 
   return (
-    <>
-      <Tabs groupId="dsl">
-        <TabItem value="dsl" label="DSL">
-          <AuthzModelCodeBlock
-            configuration={{ ...configuration, id: '' }}
-            syntaxFormat={SyntaxFormat.Friendly2}
-            skipVersion={skipVersion}
-          />
-        </TabItem>
-        <TabItem value="dsl-onedotzero" label="DSL (Version 1.0)">
-          <AuthzModelCodeBlock
-            configuration={{ ...configuration, schema_version: constants.enums.SchemaVersion.OneDotZero, id: '' }}
-            syntaxFormat={SyntaxFormat.Friendly2}
-            skipVersion={skipVersion}
-          />
-        </TabItem>
-        <TabItem value="json" label="JSON">
-          <AuthzModelCodeBlock
-            configuration={{ ...configuration, id: '' }}
-            syntaxFormat={SyntaxFormat.Api}
-            skipVersion={skipVersion}
-          />
-        </TabItem>
-      </Tabs>
-    </>
+    <AuthzModelCodeBlock
+      configuration={{ ...configuration, id: '' }}
+      syntaxFormat={syntaxFormat}
+      skipVersion={skipVersion}
+    />
   );
 };
 
 const AuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
   configuration,
-  onlyShow,
+  showTabs,
   showWrite,
   skipVersion,
-  showSchemaOneDotZero,
 }) => {
   return (
     <>
-      <BaseAuthzModelSnippetViewer
-        configuration={configuration}
-        skipVersion={skipVersion}
-        onlyShow={onlyShow}
-        showSchemaOneDotZero={showSchemaOneDotZero}
-      />
+      <BaseAuthzModelSnippetViewer configuration={configuration} skipVersion={skipVersion} showTabs={showTabs} />
       {showWrite ? (
         <details>
           <summary>Write the Authorization Model</summary>

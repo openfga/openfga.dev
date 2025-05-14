@@ -331,7 +331,6 @@ We will also need to add "User" to the list as it establishes the type of user w
 Now that we have a list of object types we can start defining them using the <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" />:
 
 <AuthzModelSnippetViewer
-  onlyShow={SyntaxFormat.Friendly2}
   configuration={{
     schema_version: '1.1',
     type_definitions: [
@@ -554,7 +553,6 @@ Relation names in <ProductName format={ProductNameFormat.ShortForm}/> are arbitr
 Remember _"How a user is added as a member to an organization is beyond the scope of this feature."_ For the purposes of this model the relation definition should be:
 
 <AuthzModelSnippetViewer
-  onlyShow={SyntaxFormat.Friendly2}
   configuration={{
     schema_version: '1.1',
     type_definitions: [
@@ -611,7 +609,6 @@ If you want to learn more, you can read further about this in [Modeling User Gro
 The complete <ProductConcept section="what-is-a-type-definition" linkName="type definition" /> for the **organization** type is:
 
 <AuthzModelSnippetViewer
-  onlyShow={SyntaxFormat.Friendly2}
   configuration={{
     schema_version: '1.1',
     type_definitions: [
@@ -659,7 +656,6 @@ When a document is created, a relationship tuple will be stored in <ProductName 
 The relation definition then should be:
 
 <AuthzModelSnippetViewer
-  onlyShow={SyntaxFormat.Friendly2}
   configuration={{
     schema_version: '1.1',
     type_definitions: [
@@ -694,7 +690,6 @@ When a user shares a document with another user or set of users as editor, a rel
 The relation definition then should be:
 
 <AuthzModelSnippetViewer
-  onlyShow={SyntaxFormat.Friendly2}
   configuration={{
     schema_version: '1.1',
     type_definitions: [
@@ -739,7 +734,6 @@ You can learn more about this in [Modeling User Groups](./user-groups.mdx).
 The viewer relation is similar to the document's [editor relation](#relation-editor). It will be defined like this:
 
 <AuthzModelSnippetViewer
-  onlyShow={SyntaxFormat.Friendly2}
   configuration={{
     schema_version: '1.1',
     type_definitions: [
@@ -772,7 +766,6 @@ This relation is different from the others we have seen so far, as it is a relat
 When a document is created a relationship tuple will be stored in <ProductName format={ProductNameFormat.ShortForm}/> to represent this relationship between parent and document. The relation definition then should be:
 
 <AuthzModelSnippetViewer
-  onlyShow={SyntaxFormat.Friendly2}
   configuration={
       {
         type: 'document',
@@ -811,7 +804,6 @@ _A user can share a document with another user or an organization as either edit
 We can achieve that with the following definition using <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" />:
 
 <AuthzModelSnippetViewer
-  onlyShow={SyntaxFormat.Friendly2}
   skipVersion={true}
   configuration={
     {
@@ -870,7 +862,6 @@ _A user can view a document if they are an owner, viewer or editor of a document
 Similar to the [can_share relation](#relation-can_share), we can achieve that with the following definition using <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" />:
 
 <AuthzModelSnippetViewer
-  onlyShow={SyntaxFormat.Friendly2}
   skipVersion={true}
   configuration={{
     type: 'document',
@@ -937,7 +928,6 @@ _A user can write a document if they are an owner or editor of a document or if 
 Similar to the [can_share relation](#relation-can_share), we can achieve that with the following definition using <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" />:
 
 <AuthzModelSnippetViewer
-  onlyShow={SyntaxFormat.Friendly2}
   skipVersion={true}
   configuration={{
     type: 'document',
@@ -986,7 +976,6 @@ _A user can change the owner of a document if they are an owner of the document.
 Similar to the [can_share relation](#relation-can_share), we can achieve that with the following definition using <UpdateProductNameInLinks link="../configuration-language" name="{ProductName} Configuration Language" />:
 
 <AuthzModelSnippetViewer
-  onlyShow={SyntaxFormat.Friendly2}
   skipVersion={true}
   configuration={{
     type: 'document',
@@ -1007,7 +996,6 @@ Similar to the [can_share relation](#relation-can_share), we can achieve that wi
 The complete <ProductConcept section="what-is-a-type-definition" linkName="type definition" /> for the document type is:
 
 <AuthzModelSnippetViewer
-  onlyShow={SyntaxFormat.Friendly2}
   configuration={{
     schema_version: '1.1',
     type_definitions: [
@@ -1169,7 +1157,6 @@ The complete <ProductConcept section="what-is-a-type-definition" linkName="type 
 Combining the type definitions for document and organization, we have
 
 <AuthzModelSnippetViewer
-  onlyShow={SyntaxFormat.Friendly2}
   configuration={{
     schema_version: '1.1',
     type_definitions: [
