@@ -71,7 +71,6 @@ const AuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
       {showWrite ? (
         <details>
           <summary>Write the Authorization Model</summary>
-
           <Admonition type="note">
             <div>The OpenFGA API only accepts an authorization model in the API&#39;s JSON syntax.</div>
             <div>
@@ -79,7 +78,6 @@ const AuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
               <Link href={'https://github.com/openfga/cli/'}>FGA CLI</Link>.
             </div>
           </Admonition>
-
           <WriteAuthzModelViewer authorizationModel={{ ...configuration, id: '' }} skipSetup={true} />
         </details>
       ) : undefined}
