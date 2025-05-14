@@ -14,12 +14,14 @@ type AuthzModelSnippetViewerProps = {
   configuration: WriteAuthorizationModelRequest & Required<Pick<WriteAuthorizationModelRequest, 'schema_version'>>;
   showTabs?: boolean;
   showWrite?: boolean;
+  syntaxesToShow?: SyntaxFormat;
   // do not display the model schema in DSL and JSON
   skipVersion?: boolean;
 };
 
 const BaseAuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
   showTabs,
+  syntaxesToShow,
   configuration,
   skipVersion,
 }) => {
@@ -49,7 +51,7 @@ const BaseAuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
   return (
     <AuthzModelCodeBlock
       configuration={{ ...configuration, id: '' }}
-      syntaxFormat={SyntaxFormat.Friendly2}
+      syntaxFormat={syntaxesToShow || SyntaxFormat.Friendly2}
       skipVersion={skipVersion}
     />
   );
@@ -57,13 +59,19 @@ const BaseAuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
 
 const AuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
   configuration,
-  showTabs,
+  showTabs = false,
   showWrite,
   skipVersion,
+  syntaxesToShow,
 }) => {
   return (
     <>
-      <BaseAuthzModelSnippetViewer configuration={configuration} skipVersion={skipVersion} showTabs={showTabs} />
+      <BaseAuthzModelSnippetViewer
+        syntaxesToShow={syntaxesToShow}
+        configuration={configuration}
+        skipVersion={skipVersion}
+        showTabs={showTabs}
+      />
       {showWrite ? (
         <details>
           <summary>Write the Authorization Model</summary>
