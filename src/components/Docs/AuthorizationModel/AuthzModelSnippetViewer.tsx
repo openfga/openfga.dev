@@ -25,8 +25,6 @@ const BaseAuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
   configuration,
   skipVersion,
 }) => {
-  const syntaxFormat = showTabs || SyntaxFormat.Friendly2;
-
   if (showTabs) {
     return (
       <>
@@ -53,7 +51,7 @@ const BaseAuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
   return (
     <AuthzModelCodeBlock
       configuration={{ ...configuration, id: '' }}
-      syntaxFormat={syntaxFormat}
+      syntaxFormat={SyntaxFormat.Friendly2}
       skipVersion={skipVersion}
     />
   );
