@@ -12,12 +12,10 @@ import { AuthzModelCodeBlock } from './AuthzModelCodeBlock';
 type AuthzModelSnippetViewerProps = {
   // Authorization Model in api syntax
   configuration: WriteAuthorizationModelRequest & Required<Pick<WriteAuthorizationModelRequest, 'schema_version'>>;
-  showTabs?: SyntaxFormat;
+  showTabs?: boolean;
   showWrite?: boolean;
   // do not display the model schema in DSL and JSON
   skipVersion?: boolean;
-  // Display a roughly equivalent v1.0 schema
-  showSchemaOneDotZero?: boolean;
 };
 
 const BaseAuthzModelSnippetViewer: React.FC<AuthzModelSnippetViewerProps> = ({
