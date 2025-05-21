@@ -97,10 +97,13 @@ There are possible use cases where a group of users have a certain role on or pe
 
 To represent this in <ProductName format={ProductNameFormat.ShortForm}/>:
 
+<!-- We disable the check for these links because markdown-link-check doesn't support reading the docusaurus syntax to define the link -->
+<!-- markdown-link-check-disable --> 
 1. Introduce the concept of a `team` to the authorization model. [→](#step-1)
 2. Add users as `members` to the `team`. [→](#step-2)
 3. Assign the `team` members a relation to an object. [→](#step-3)
 4. Check an individual member's access to the object. [→](#step-4)
+<!-- markdown-link-check-enable -->
 
 ### 01. Introduce the concept of a team to the authorization model {#step-1}
 
