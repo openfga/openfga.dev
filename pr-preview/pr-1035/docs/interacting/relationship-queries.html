@@ -15,7 +15,7 @@
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><link rel="stylesheet" href="/pr-preview/pr-1035/assets/css/styles.73a759b7.css">
-<script src="/pr-preview/pr-1035/assets/js/runtime~main.e5a2f108.js" defer="defer"></script>
+<script src="/pr-preview/pr-1035/assets/js/runtime~main.ea8cc1d0.js" defer="defer"></script>
 <script src="/pr-preview/pr-1035/assets/js/main.6ae6ecce.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -73,7 +73,7 @@ and <code>writer</code>. All writers are readers. <code>bob</code> has a <code>w
 <li>Python SDK (<a href="https://github.com/openfga/python-sdk/releases/tag/v0.9.0" target="_blank" rel="noopener noreferrer">&gt;=v0.9.0</a>)</li>
 <li>Java SDK (<a href="https://github.com/openfga/java-sdk/releases/tag/v0.8.1" target="_blank" rel="noopener noreferrer">&gt;=0.8.1</a>)</li>
 <li>Support for .NET is in progress and coming soon.</li>
-</ul><p>In SDKs that support the <code>BatchCheck</code> endpoint (server-side batch checks), the previous <code>BatchCheck</code> method has been renamed to <code>ClientBatchCheck</code>. <code>ClientBatchCheck</code> performs client-side batch checks by making multiple check requests with limited parallelization.</p><p>The .NET SDK does not yet support the <code>BatchCheck</code> endpoint (coming soon). Until then, the <code>BatchCheck</code> method maintains its current behavior, performing client-side batch checks equivalent to <code>ClientBatchCheck</code> in other SDKs.</p></div></div>
+</ul><p>In SDKs that support the <code>BatchCheck</code> endpoint (server-side batch checks), the previous <code>BatchCheck</code> method has been renamed to <code>ClientBatchCheck</code>. <code>ClientBatchCheck</code> performs client-side batch checks by making multiple check requests with limited parallelization.</p><p>The .NET SDK does not yet support the <code>BatchCheck</code> endpoint (coming soon). Until then, the <code>BatchCheck</code> method maintains its current behavior, performing client-side batch checks equivalent to <code>ClientBatchCheck</code> in other SDKs.</p><p>Refer to the README for each SDK for more information. Refer to the release notes of the relevant SDK version for more information on how to migrate from client-side to the server-side <code>BatchCheck</code>.</p></div></div>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="read">Read<a href="#read" class="hash-link" aria-label="Direct link to Read" title="Direct link to Read">​</a></h2>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="what-is-it-for-2">What Is It For?<a href="#what-is-it-for-2" class="hash-link" aria-label="Direct link to What Is It For?" title="Direct link to What Is It For?">​</a></h3>
 <p>The <a href="/pr-preview/pr-1035/api/service#Relationship%20Tuples/Read">Read API</a> is an API endpoint that returns the relationship tuples that are stored in the system that satisfy a query.</p>
