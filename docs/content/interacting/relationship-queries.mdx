@@ -196,6 +196,8 @@ The BatchCheck endpoint is currently supported by the following SDKs:
 In SDKs that support the `BatchCheck` endpoint (server-side batch checks), the previous `BatchCheck` method has been renamed to `ClientBatchCheck`. `ClientBatchCheck` performs client-side batch checks by making multiple check requests with limited parallelization.
 
 The .NET SDK does not yet support the `BatchCheck` endpoint (coming soon). Until then, the `BatchCheck` method maintains its current behavior, performing client-side batch checks equivalent to `ClientBatchCheck` in other SDKs.
+
+Refer to the README for each SDK for more information. Refer to the release notes of the relevant SDK version for more information on how to migrate from client-side to the server-side `BatchCheck`.
 :::
 
 ## Read
