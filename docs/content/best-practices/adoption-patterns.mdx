@@ -12,7 +12,13 @@ import {
 
 # <ProductName format={ProductNameFormat.ShortForm}/> Adoption Patterns
 
-This document outlines key implementation patterns for adopting  <ProductName format={ProductNameFormat.ShortForm}/> in your organization.
+In general, when adopting <ProductName format={ProductNameFormat.ShortForm}/>, you need to deal with three main challenges:
+
+  - Define an authorization model that reflects your business requirements.
+  - Implement a data pipeline that keeps the data in <ProductName format={ProductNameFormat.ShortForm}/> up to date.
+  - Integrate <ProductName format={ProductNameFormat.ShortForm}/> into your applications using the APIs or SDKs.
+
+This document outlines a few implementation patterns for addressing these issues when implementing <ProductName format={ProductNameFormat.ShortForm}/> in your organization.
 
 ## Starting with coarse-grained access control
 
@@ -155,7 +161,7 @@ Some companies decide to wrap <ProductName format={ProductNameFormat.ShortForm}/
 - If they are using Contextual Tuples, they can keep the logic to retrieve additional data to send to <ProductName format={ProductNameFormat.ShortForm}/> in a single service.
 - They only need to provide <ProductName format={ProductNameFormat.ShortForm}/> configuration data like Store ID and Model ID in a single service.
 
-On the other hand, adding another service increases latency, adds additional complexity and would make the teams less likely to find help from existing public OpenFGA documentation and resources.
+On the other hand, adding another service increases latency, adds additional complexity and would make the teams less likely to find help from existing public documentation and resources.
 
 ## Shadowing the <ProductName format={ProductNameFormat.ShortForm}/> API
 
@@ -180,13 +186,8 @@ This pattern is particularly useful for critical systems where authorization err
 ## Related Sections
 
 <RelatedSection
-  description="Check out these related resources for more information about adopting OpenFGA"
+  description="Check out these related resources for more information about adopting FGA"
   relatedLinks={[
-    {
-      title: 'Running OpenFGA in Production',
-      description: 'Learn about best practices for running OpenFGA in production environments.',
-      link: './running-in-production',
-    },
     {
       title: 'Modular Authorization Models',
       description: 'Learn how to break down your authorization model into modules.',
