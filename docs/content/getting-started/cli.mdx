@@ -19,7 +19,15 @@ The CLI is configured to use a specific FGA server in one of three ways:
 
 - Using CLI flags.
 - Using environment variables.
-- Storing configuration values in a .fga.yaml located in the user’s root directory.
+- Storing configuration values in a .fga.yaml located in one of the following directories, in order of precedence (top has highest priority):
+  - The current working directory
+  - The user-specific config directory: 
+    - On unix systems: $XDG_CONFIG_HOME value if provided, otherwise $HOME/.config
+    - On windows: %AppData%
+  - The fga subdirectory under the user-specific config directory
+  - The current user's home directory:
+    - On unix systems: $HOME
+    - On windows: %USERPROFILE%
 
 The API Url setting needs to point to the OpenFGA server:
 
