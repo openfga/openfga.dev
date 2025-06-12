@@ -51,8 +51,18 @@ model: |
      current_time < grant_time + grant_duration
   }
 
-# tuple_file: ./tuples.yaml # you can specify an external file, include it inline, or both
-tuples: 
+# You can provide relationship tuples in one of the following ways:
+# - As a single external file using 'tuple_file'
+# - As multiple external files using 'tuple_files'
+# - Inline directly using 'tuples'
+#
+# Examples:
+# tuple_file: ./tuples.yaml           # Single external file
+# tuple_files:                        # Multiple external files
+#   - ./tuples_2.yaml
+#   - ./tuples_3.yaml
+tuples:                                # Inline tuple definitions go here
+
 
    # Anne is a member of the Acme organization
   - user: user:anne
