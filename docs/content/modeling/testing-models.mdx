@@ -201,7 +201,7 @@ The example above checks that the `organization:acme`, given the current time is
 
 If you are using [Modular Models](./modular-models.mdx), you need to use the `fga.mod` as the `model_file`. 
 
-You can define the tests for each model in separate `.fga.yaml` files. All files should point to the `fga.mod` model. You can create a shared file with tuples and reference it with the `tuple_file` option. You can also create multiple shared files with tuples and reference them using `tuple_files` option. You can include module-specific tuples in each `fga.yaml` file.
+You can define tests for each model in separate `.fga.yaml` files, all of which should reference the common `fga.mod` model. Shared relationship tuples can be placed in a separate file and included using the `tuple_file` option. If needed, you can split tuples across multiple shared files and include them with the `tuple_files` option. Additionally, each `.fga.yaml` file can include module-specific tuples inline.
 
 ## Running tests
 
