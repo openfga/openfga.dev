@@ -227,6 +227,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Store File Format',
+          id: 'content/modeling/store-file-format',
+        },
+        {
+          type: 'doc',
           label: 'Modular Models',
           id: 'content/modeling/modular-models',
         },
