@@ -200,7 +200,7 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
           blogSidebarCount: 'ALL',
         },
         theme: {
-          customCss: [path.resolve('static/css/openfga.css'), path.resolve('src/css/custom.css'), path.resolve('src/css/tabs-fix.css')],
+          customCss: [path.resolve('static/css/openfga.css'), path.resolve('src/css/custom.css')],
         },
       }),
     ],
