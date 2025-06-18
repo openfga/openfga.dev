@@ -46,7 +46,106 @@ openfga run \
     --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
 ```
 
+#### PostgreSQL Read Replicas Configuration
+
+OpenFGA supports configuring separate read and write datastores for PostgreSQL to improve performance and scalability. This feature allows you to distribute read operations across read replicas while directing write operations to the primary database.
+
+##### Setting Up Read Replicas
+
+To use read replicas, you need to configure both a primary datastore (for writes) and a secondary datastore (for reads):
+
+```shell
+openfga run \
+    --datastore-engine postgres \
+    --datastore-uri 'postgres://postgres:password@primary:5432/postgres?sslmode=disable' \
+    --secondary-datastore-uri 'postgres://postgres:password@replica:5432/postgres?sslmode=disable'
+```
+
+**Important considerations:**
+
+- The `--datastore-uri` parameter specifies the primary database (used for writes and high-consistency reads)
+- The `--secondary-datastore-uri` parameter specifies the read replica (used for regular read operations)
+- Both databases must have the same schema and should be kept in sync through PostgreSQL replication
+
+##### Synchronous vs Asynchronous Replication
+
+The choice between synchronous and asynchronous replication affects data consistency and performance:
+
+**Synchronous Replication:**
+- **Pros:** Guarantees data consistency across primary and replica
+- **Cons:** Higher latency for write operations
+- **Use case:** When data consistency is critical and you can tolerate slower writes
+- **PostgreSQL config:** `synchronous_commit = on` and `synchronous_standby_names = 'replica_name'`
+
+**Asynchronous Replication:**
+- **Pros:** Better write performance, lower latency
+- **Cons:** Potential for read-after-write inconsistencies (replica lag)
+- **Use case:** When write performance is prioritized and slight delays in read consistency are acceptable
+- **PostgreSQL config:** `synchronous_commit = off` (default)
+
+##### Consistency Preferences
+
+OpenFGA provides consistency controls to handle read-after-write scenarios:
+
+**Higher Consistency Mode:**
+When using `HIGHER_CONSISTENCY` preference in read operations, OpenFGA will automatically route the query to the primary database instead of the read replica, ensuring you get the most up-to-date data.
+
+```javascript
+// Example: Reading with higher consistency
+  const { allowed } = await fgaClient.check(
+      {  user: "user:anne", relation: "can_view", object: "document:roadmap"},
+      {  consistency: ConsistencyPreference.HigherConsistency }
+  );
+```
+
+**Default Consistency Mode:**
+Regular read operations without the `HIGHER_CONSISTENCY` flag will be routed to the read replica for better performance.
+
+##### Best Practices
+
+1. **Monitor Replica Lag:** Set up monitoring for replication lag between primary and replica
+2. **Use Higher Consistency Sparingly:** Only use `HIGHER_CONSISTENCY` when you need immediate read-after-write consistency
+3. **Connection Pooling:** Configure appropriate connection pools for both primary and replica connections
+
+##### Example PostgreSQL Replication Setup
+
+Here's a basic example of setting up PostgreSQL streaming replication:
+
+**Primary server configuration (postgresql.conf):**
+```
+wal_level = replica
+max_wal_senders = 3
+wal_keep_size = 64MB
+synchronous_commit = on  # for synchronous replication
+synchronous_standby_names = 'replica1'  # for synchronous replication
+```
+
+**Primary server authentication (pg_hba.conf):**
+```
+host replication replicator replica_ip/32 md5
+```
+
+**Replica server configuration (postgresql.conf):**
+```
+hot_standby = on
+```
+
+**Replica server recovery configuration:**
+```
+standby_mode = 'on'
+primary_conninfo = 'host=primary_ip port=5432 user=replicator'
+```
+
+:::note
+This is a simplified example. For production setups, refer to the [PostgreSQL documentation on replication](https://www.postgresql.org/docs/current/runtime-config-replication.html) for comprehensive configuration guidelines.
+:::
+
+:::caution Warning
+When using asynchronous replication, be aware that read replicas might have slightly outdated data due to replication lag. Use the `HIGHER_CONSISTENCY` preference for operations that require the most recent data.
+:::
+
 To learn how to run in Docker, check our [Docker documentation](./docker-setup.mdx#using-postgres).
+
 ### MySQL
 
 The MySQL datastore has stricter limits for the max length of some fields for tuples compared to other datastore engines, in particular:
@@ -269,7 +368,7 @@ Experimental feature flags are also not considered part of API compatibility and
 OpenFGA telemetry data is collected by default starting on version `v0.3.5`. The telemetry information that is captured includes Metrics, Traces, and Logs.
 
 :::note
-Please refer to the [docker-compose.yaml](https://github.com/openfga/openfga/blob/main/docker-compose.yaml) file as an example of how to collect Metrics and Tracing in OpenFGA in a Docker environment using the [OpenTelemetry Collector](https://opentelemetry.io/docs/concepts/data-collection/). This should serve as a good example that you can adjust for your specific deployment scenario.
+Please refer to the [docker-compose.yaml](https://github.com/openfga/openfga/blob/main/docker-compose.yaml) file as an example of how to collect Metrics and Tracing in OpenFGA in a Docker environment using the [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/). This should serve as a good example that you can adjust for your specific deployment scenario.
 :::
 
 ## Metrics
