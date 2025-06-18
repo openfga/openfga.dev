@@ -215,9 +215,15 @@ type role
 Create a role template with permissions marked using `user:*`, as a flag to enable the permission for the role:
 
 ```yaml
+# Project Viewer role only has the can view project assigned
 - user: user:*
   relation: can_view_project
-  object: role:project-admin  
+  object: role:project-viewer
+
+# Project Admin role has both the can view project and can edit project assigned
+- user: user:*
+  relation: can_view_project
+  object: role:project-admin
 
 - user: user:*
   relation: can_edit_project
