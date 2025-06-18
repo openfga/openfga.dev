@@ -24,7 +24,7 @@ Before diving into implementation details, here's a quick guide to help you choo
 |----------|----------|------------|-------------|
 | **Relations as Roles** | Static, predefined roles | Low | Low |
 | **Simple Dynamic Roles** | User-defined roles at org level | Medium | Medium |
-| **Role Bindings** | Instance-specific role assignments | High | High |
+| **Role Assignments** | Instance-specific role assignments | High | High |
 
 ## Approach 1: Roles as Relations
 
@@ -189,9 +189,9 @@ You do not need to add these tuples when adding the new permission. End-users wi
 
 ---
 
-## Approach 3: Role Bindings
+## Approach 3: Role Assignments
 
-The previous approach works well when custom roles are global for the organization. However, if you need roles that can be attached to different object instances with different members for each instance, you need role bindings.
+The previous approach works well when custom roles are global for the organization. However, if you need roles that can be attached to different object instances with different members for each instance, you need role assignments.
 
 ### Example: Project-Specific Admin Roles
 
@@ -223,12 +223,12 @@ Create a role template with permissions marked using `user:*`, as a flag to enab
   object: role:project-admin
 ```
 
-### Step 2: Create Role Bindings
+### Step 2: Create Role Assignments
 
-Add a `role_binding` type to bind users to the role:
+Add a `role_assignment` type to assign users to the role:
 
 ```dsl.openfga
-type role_binding
+type role_assignment
   relations
     define assignee: [user]
     define role: [role]
@@ -239,7 +239,7 @@ type role_binding
 
 ### Step 3: Connect to Your Objects
 
-Define an `organization` type with an admin role, and a `project` type that links to an `organization` and a `role_binding`. 
+Define an `organization` type with an admin role, and a `project` type that links to an `organization` and a `role_assignment`. 
 
 ```dsl.openfga
 type organization 
@@ -249,32 +249,32 @@ type organization
 type project
   relations
     define organization: [organization]
-    define role_binding: [role_binding]
+    define role_assignment: [role_assignment]
     
     # combine role-based and static permissions
-    define can_edit_project: can_edit_project from role_binding or admin from organization
-    define can_view_project: can_view_project from role_binding or admin from organization
+    define can_edit_project: can_edit_project from role_assignment or admin from organization
+    define can_view_project: can_view_project from role_assignment or admin from organization
 ```
 
-### Setting Up Role Bindings
+### Setting Up Role Assignments
 
-1. **Create the role binding instance**:
+1. **Create the role assignment instance**:
 
 ```yaml
 - user: user:anne
   relation: assignee
-  object: role_binding:project-admin-openfga
+  object: role_assignment:project-admin-openfga
 
 - user: role:project-admin  
   relation: role
-  object: role_binding:project-admin-openfga
+  object: role_assignment:project-admin-openfga
 ```
 
-2. **Link the role binding to the project**:
+2. **Link the role assignment to the project**:
 
 ```yaml
-- user: role_binding:project-admin-openfga
-  relation: role_binding
+- user: role_assignment:project-admin-openfga
+  relation: role_assignment
   object: project:openfga
 ```
 3. **Link the project to an organization**:
@@ -308,13 +308,13 @@ type project
 
 2. **Do roles need different members per object instance?**
    - No → Use **Simple Dynamic Roles**
-   - Yes → Use **Role Bindings**
+   - Yes → Use **Role Assignments**
 
 ### Performance Considerations
 
 - **Relations as Roles**: Fastest evaluation
 - **Simple Dynamic Roles**: Moderate performance impact
-- **Role Bindings**: Highest complexity, plan for performance testing
+- **Role Assignments**: Highest complexity, plan for performance testing
 
 ## Best Practices
 
@@ -339,9 +339,9 @@ type project
       link: 'https://github.com/openfga/sample-stores/blob/main/stores/multitenant-rbac',
     },
     {
-      title: 'Role Bindings Example',
-      description: 'Explore a full role bindings implementation.',
-      link: 'https://github.com/openfga/sample-stores/tree/main/stores/role-bindings',
+      title: 'Role Assignments Example',
+      description: 'Explore a full role assignments implementation.',
+      link: 'https://github.com/openfga/sample-stores/tree/main/stores/role-assignments',
     }
   ]}
 />
