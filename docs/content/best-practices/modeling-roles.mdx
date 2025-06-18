@@ -20,11 +20,11 @@ In this guide, we'll explore common approaches to modeling roles with <ProductNa
 
 Before diving into implementation details, here's a quick guide to help you choose the right approach:
 
-| Approach | Best For | Complexity | Flexibility |
-|----------|----------|------------|-------------|
-| **Relations as Roles** | Static, predefined roles | Low | Low |
-| **Simple Dynamic Roles** | User-defined roles at org level | Medium | Medium |
-| **Role Assignments** | Instance-specific role assignments | High | High |
+| Approach                 | Best For                           | Complexity | Flexibility | Example                                                        
+|--------------------------|------------------------------------|------------|-------------|-----------------------------------------------------------------------------------------------------------------|
+| **Relations as Roles**   | Static, predefined roles           | Low        | Low         | In all instances, company admins can view project information.                                                  |
+| **Simple Dynamic Roles** | User-defined roles at org level    | Medium     | Medium      | Company Acme creates an 'Auditors' role that is configured to view project information for all projects.        |
+| **Role Assignments**     | Instance-specific role assignments | High       | High        | In Company Acme, Anne can be custom Auditor role for Project 1 and 5, but Beth can be an Auditor on Project 3.  |
 
 ## Approach 1: Roles as Relations
 
@@ -246,7 +246,7 @@ type role_assignment
 
 ### Step 3: Connect to Your Objects
 
-Define an `organization` type with an admin role, and a `project` type that links to an `organization` and a `role_assignment`. 
+Define an `organization` type with an `admin` role. Then, define a `project` type that links to an `organization` and a `role_assignment`. Note that we are combining a static `admin` role with custom role assignments. We recommend to always use static roles when they are known in advance.
 
 ```dsl.openfga
 type organization 
@@ -328,7 +328,8 @@ type project
 1. **Start simple**: Begin with relations as roles and evolve as needed
 2. **Hybrid approach**: Combine static relations for well-known roles with dynamic roles for custom ones
 3. **Documentation**: Clearly document your role model for your team
-4. **Testing**: Test authorization performance with realistic data volumes
+4. **Functional Testing**: [Write tests](../modeling/testing-models.mdx) to verify your model behaves as expected
+4. **Performance Testing**: Test performance with realistic data volumes.
 
 ## Related Sections
 
