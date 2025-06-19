@@ -258,7 +258,7 @@ type project
     define organization: [organization]
     define role_assignment: [role_assignment]
     
-    # combine role-based and static permissions
+    # combine role assignments and static permissions
     define can_edit_project: can_edit_project from role_assignment or admin from organization
     define can_view_project: can_view_project from role_assignment or admin from organization
 ```
