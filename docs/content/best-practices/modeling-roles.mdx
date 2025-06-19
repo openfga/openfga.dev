@@ -212,15 +212,10 @@ type role
     define can_edit_project: [user:*]
 ```
 
-In order to create a particular "Project Viewer" role, write tuples tying `user:*` the particular permissions this role has, in this case, `can_view_project`. A "Project Admin" role can have `can_view_project` and `can_edit_project`
+A "Project Admin" role can have `can_view_project` and `can_edit_project`
 
 ```yaml
-# Project Viewer role only has the can view project assigned
-- user: user:*
-  relation: can_view_project
-  object: role:project-viewer
-
-# Project Admin role has both the can view project and can edit project assigned
+# Project Admin role has both the can_view_project and can_edit_project assigned
 - user: user:*
   relation: can_view_project
   object: role:project-admin
