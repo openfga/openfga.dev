@@ -1,7 +1,7 @@
 ---
 title: Modeling roles
 slug: /best-practices/modeling-roles
-description: Various ways of modeling roles in FGA - both coarse and fine-grained.
+description: Various ways of modeling static and dynamic roles in FGA - both coarse and fine-grained.
 sidebar_position: 1
 ---
 import {
@@ -24,15 +24,15 @@ Before diving into implementation details, here's a quick guide to help you choo
 |-------------------------------|------------------------------------|------------|-------------|-----------------------------------------------------------------------------------------------------------------|
 | **Relations as Roles**        | Static, predefined roles           | Low        | Low         | In all instances, company admins can view project information.                                                  |
 | **Simple User-Defined Roles** | User-defined roles at org level    | Medium     | Medium      | Company Acme creates an "Auditor" role that is configured to view project information for all projects.        |
-| **Role Assignments**          | Instance-specific role assignments | High       | High        | In Company Acme, Anne can be custom Auditor role for Project 1 and 5, but Beth can be an Auditor on Project 3.  |
+| **Role Assignments**          | Instance-specific role assignments | High       | High        | In Company Acme, Anne can be a custom Auditor role for Project 1 and 5, but Beth can be an Auditor on Project 3.  |
 
 ## Approach 1: Relations as Roles
 
-The simplest way to implement roles is to use directly assignable relations. They work well for roles that always exist and can be defined at development-time. Adding relations is very easy, and you do not need to add roles very frequently. If roles are static, this is always the preferred approach.
+The simplest way to implement roles is to use directly assignable relations. They work well for roles that always exist and can be defined at development-time. Adding relations is straightforward, and you do not need to add roles very frequently. If roles are static, this is always the preferred approach.
 
 ### Example: Organization Admin Role
 
-In the model below we define an `admin` role at the organization level. Admins can edit billing details and create projects.
+In the model below, we define an `admin` role at the organization level. Admins can edit billing details and create projects.
 
 ```dsl.openfga
 model
@@ -315,7 +315,7 @@ type project
 ### Performance Considerations
 
 - **Relations as Roles**: Fastest evaluation
-- ***Simple User-Defined Roless**: Moderate performance impact
+- ***Simple User-Defined Roles**: Moderate performance impact
 - **Role Assignments**: Higher performance impact
 
 ## Best Practices
