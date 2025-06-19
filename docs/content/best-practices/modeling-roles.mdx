@@ -21,10 +21,10 @@ In this guide, we'll explore common approaches to modeling roles with <ProductNa
 Before diving into implementation details, here's a quick guide to help you choose the right approach:
 
 | Approach                      | Best For                           | Complexity | Flexibility | Example                                                        
-|-------------------------------|------------------------------------|------------|-------------|-----------------------------------------------------------------------------------------------------------------|
-| **Relations as Roles**        | Static, predefined roles           | Low        | Low         | In all instances, company admins can view project information.                                                  |
-| **Simple User-Defined Roles** | User-defined roles at org level    | Medium     | Medium      | Company Acme creates an "Auditor" role that is configured to view project information for all projects.        |
-| **Role Assignments**          | Instance-specific role assignments | High       | High        | In Company Acme, Anne can be a custom Auditor role for Project 1 and 5, but Beth can be an Auditor on Project 3.  |
+|-------------------------------|------------------------------------|------------|-------------|--------------------------------------------------------------------------------------------------------------------|
+| **Relations as Roles**        | Static, predefined roles           | Low        | Low         | In all instances, company admins can view project information.                                                     |
+| **Simple User-Defined Roles** | User-defined roles at org level    | Medium     | Medium      | Company Acme creates an "Auditor" role that is configured to view project information for all projects.            |
+| **Role Assignments**          | Instance-specific role assignments | High       | High        | In Company Acme, Anne can be a custom Auditor role for Projects 1 and 5, but Beth can be an Auditor on Project 3.  |
 
 ## Approach 1: Relations as Roles
 
@@ -88,7 +88,7 @@ type organization
 - Fast evaluation performance
 - Clear authorization policies
 - No additional tuples needed when adding permissions
-- Role permissions are very easy to change, regardless of scale
+- Role permissions are straightforward to change, regardless of scale
 
 **❌ Disadvantages:**
 - Roles must be predefined in the model
@@ -125,7 +125,7 @@ type organization
 
 ### Setting Up Custom Roles
 
-1. **Define role permissions** by creating tuples that grant the role specific permissions:
+1. **Define role permissions** by creating tuples that grant the role-specific permissions:
 
 ```yaml
 - user: role:acme-project-admin#assignee
@@ -212,7 +212,7 @@ type role
     define can_edit_project: [user:*]
 ```
 
-A "Project Admin" role can have `can_view_project` and `can_edit_project`
+A "Project Admin" role can have `can_view_project` and `can_edit_project`:
 
 ```yaml
 # Project Admin role has both the can_view_project and can_edit_project assigned
@@ -316,7 +316,7 @@ type project
 
 - **Relations as Roles**: Fastest evaluation
 - ***Simple User-Defined Roles**: Moderate performance impact
-- **Role Assignments**: Higher performance impact
+- **Role Assignments**: Highest performance impact
 
 ## Best Practices
 
