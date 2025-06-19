@@ -23,7 +23,7 @@ Before diving into implementation details, here's a quick guide to help you choo
 | Approach                 | Best For                           | Complexity | Flexibility | Example                                                        
 |--------------------------|------------------------------------|------------|-------------|-----------------------------------------------------------------------------------------------------------------|
 | **Relations as Roles**   | Static, predefined roles           | Low        | Low         | In all instances, company admins can view project information.                                                  |
-| **Simple Dynamic Roles** | User-defined roles at org level    | Medium     | Medium      | Company Acme creates an 'Auditors' role that is configured to view project information for all projects.        |
+| **Simple Dynamic Roles** | User-defined roles at org level    | Medium     | Medium      | Company Acme creates an "Auditor" role that is configured to view project information for all projects.        |
 | **Role Assignments**     | Instance-specific role assignments | High       | High        | In Company Acme, Anne can be custom Auditor role for Project 1 and 5, but Beth can be an Auditor on Project 3.  |
 
 ## Approach 1: Roles as Relations
