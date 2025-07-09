@@ -1,0 +1,350 @@
+---
+title: Modeling roles
+slug: /best-practices/modeling-roles
+description: Various ways of modeling static and dynamic roles in FGA - both coarse and fine-grained.
+sidebar_position: 1
+---
+import {
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+} from '@components/Docs';
+
+# Modeling Roles
+
+Roles are a common way to group users and assign permissions to those groups. They can be used to simplify permission management, especially in larger systems where many users have similar access needs.
+
+In this guide, we'll explore common approaches to modeling roles with <ProductName format={ProductNameFormat.ShortForm}/>.
+
+## When to Use Each Approach
+
+Before diving into implementation details, here's a quick guide to help you choose the right approach:
+
+| Approach                      | Best For                           | Complexity | Flexibility | Example                                                        
+|-------------------------------|------------------------------------|------------|-------------|--------------------------------------------------------------------------------------------------------------------|
+| **Relations as Roles**        | Static, predefined roles           | Low        | Low         | In all instances, company admins can view project information.                                                     |
+| **Simple User-Defined Roles** | User-defined roles at org level    | Medium     | Medium      | Company Acme creates an "Auditor" role that is configured to view project information for all projects.            |
+| **Role Assignments**          | Instance-specific role assignments | High       | High        | In Company Acme, Anne can be a custom Auditor role for Projects 1 and 5, but Beth can be an Auditor on Project 3.  |
+
+## Approach 1: Relations as Roles
+
+The simplest way to implement roles is to use directly assignable relations. They work well for roles that always exist and can be defined at development-time. Adding relations is straightforward, and you do not need to add roles very frequently. If roles are static, this is always the preferred approach.
+
+### Example: Organization Admin Role
+
+In the model below, we define an `admin` role at the organization level. Admins can edit billing details and create projects.
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type organization
+  relations
+    define admin: [user]
+    define can_create_project: admin
+    define can_edit_billing_details: admin
+```
+
+### Adding Users to Roles
+
+To add users to the admin role, create a tuple like:
+
+```yaml
+- user: user:anne
+  relation: admin
+  object: organization:acme
+```
+
+### Extending with Additional Roles
+
+If later you need to add a `project_admin` role with permissions to view/edit projects, the model evolves to:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type organization
+  relations
+    define admin: [user]
+    define project_admin: [user]  # new role
+
+    # existing permissions
+    define can_edit_billing_details: admin 
+    define can_create_project: admin or project_admin
+
+    # new permissions for project admins
+    define can_edit_project: admin or project_admin
+    define can_view_project: admin or project_admin
+```
+
+### Pros and Cons
+
+**✅ Advantages:**
+- Simple to implement and understand
+- Fast evaluation performance
+- Clear authorization policies
+- No additional tuples needed when adding permissions
+- Role permissions are straightforward to change, regardless of scale
+
+**❌ Disadvantages:**
+- Roles must be predefined in the model
+- Not suitable for user-defined roles
+
+---
+
+## Approach 2: Simple User-Defined Roles
+
+Many applications require the flexibility for end-users to define their own custom roles, in addition to any pre-defined roles. This approach enables organizations to tailor permissions to their specific needs.
+
+### Example: Custom Project Admin Role
+
+With the following model, your application can support both static roles and user-defined roles:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type role
+  relations
+    define assignee: [user]
+
+type organization
+  relations
+    define admin: [user]  # static role
+
+    # permissions can be assigned to custom roles or static roles
+    define can_create_project: [role#assignee] or admin 
+    define can_edit_project: [role#assignee] or admin 
+```
+
+### Setting Up Custom Roles
+
+1. **Define role permissions** by creating tuples that grant the role-specific permissions:
+
+```yaml
+- user: role:acme-project-admin#assignee
+  relation: can_create_project
+  object: organization:acme
+
+- user: role:acme-project-admin#assignee
+  relation: can_edit_project
+  object: organization:acme
+```
+
+2. **Assign users to the role**:
+
+```yaml
+- user: user:anne
+  relation: assignee
+  object: role:acme-project-admin
+```
+
+### Adding New Permissions
+
+When you add new permissions to your model, existing roles don't automatically receive them:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type role
+  relations
+    define assignee: [user]
+
+type organization
+  relations
+    define admin: [user]
+    define can_create_project: [role#assignee] or admin 
+    define can_edit_project: [role#assignee] or admin 
+    define can_delete_project: [role#assignee] or admin  # new permission
+```
+
+To grant the new permission to existing roles, create additional tuples:
+
+```yaml
+- user: role:acme-project-admin#assignee
+  relation: can_delete_project
+  object: organization:acme
+```
+
+You do not need to add these tuples when adding the new permission. End-users will add the new permission to their custom roles when they find it appropriate.
+
+### Pros and Cons
+
+**✅ Advantages:**
+- Supports user-defined roles
+- Flexible permission assignment
+- No model changes needed for new role instances
+
+**❌ Disadvantages:**
+- More complex than static relations
+- Requires additional tuples for role-permission mapping
+
+---
+
+## Approach 3: Role Assignments
+
+The previous approach works well when custom roles are global for the organization. However, if you need roles that can be attached to different object instances with different members for each instance, you need role assignments.
+
+### Example: Project-Specific Admin Roles
+
+Let's say you want a "Project Admin" role where each project can have different admins, but the role permissions remain consistent.
+
+### Step 1: Define the Role and its Permissions
+
+Define a `role` type where you list all the permissions that any role can have:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type role
+  relations
+    define can_view_project: [user:*]
+    define can_edit_project: [user:*]
+```
+
+A "Project Admin" role can have `can_view_project` and `can_edit_project`:
+
+```yaml
+# Project Admin role has both the can_view_project and can_edit_project assigned
+- user: user:*
+  relation: can_view_project
+  object: role:project-admin
+
+- user: user:*
+  relation: can_edit_project
+  object: role:project-admin
+```
+
+### Step 2: Assign Users to a Role on an Entity
+
+Add a `role_assignment` type to assign users to the role:
+
+```dsl.openfga
+type role_assignment
+  relations
+    define assignee: [user]
+    define role: [role]
+
+    define can_view_project: assignee and can_view_project from role
+    define can_edit_project: assignee and can_edit_project from role
+```
+
+### Step 3: Connect to Your Objects
+
+Define an `organization` type with an `admin` role. Then, define a `project` type that links to an `organization` and a `role_assignment`. Note that we are combining a static `admin` role with custom role assignments. We recommend to always use static roles when they are known in advance.
+
+```dsl.openfga
+type organization 
+  relations
+    define admin: [user]
+
+type project
+  relations
+    define organization: [organization]
+    define role_assignment: [role_assignment]
+    
+    # combine role assignments and static roles
+    define can_edit_project: can_edit_project from role_assignment or admin from organization
+    define can_view_project: can_view_project from role_assignment or admin from organization
+```
+
+### Setting Up Role Assignments
+
+1. **Create the role assignment instance**:
+
+```yaml
+- user: user:anne
+  relation: assignee
+  object: role_assignment:project-admin-openfga
+
+- user: role:project-admin  
+  relation: role
+  object: role_assignment:project-admin-openfga
+```
+
+2. **Link the role assignment to the project**:
+
+```yaml
+- user: role_assignment:project-admin-openfga
+  relation: role_assignment
+  object: project:openfga
+```
+3. **Link the project to an organization**:
+
+```yaml
+- user: organization:acme
+  relation: organization
+  object: project:openfga
+```
+### Pros and Cons
+
+**✅ Advantages:**
+- Maximum flexibility for instance-specific roles
+- Reusable role definitions across different objects
+- Fine-grained control over role membership
+
+**❌ Disadvantages:**
+- Most complex approach to implement
+- Requires careful planning of the role hierarchy
+- More tuples needed for setup and maintenance
+
+---
+
+## Choosing the Right Approach
+
+### Decision Tree
+
+1. **Do you need user-defined roles?**
+   - No → Use **Relations as Roles**
+   - Yes → Continue to step 2
+
+2. **Do roles need different members per object instance?**
+   - No → Use **Simple User-Defined Roles**
+   - Yes → Use **Role Assignments**
+
+### Performance Considerations
+
+- **Relations as Roles**: Fastest evaluation
+- ***Simple User-Defined Roles**: Moderate performance impact
+- **Role Assignments**: Highest performance impact
+
+## Best Practices
+
+1. **Start simple**: Begin with relations as roles and evolve as needed
+2. **Hybrid approach**: Combine static relations for well-known roles with dynamic roles for custom ones
+3. **Documentation**: Clearly document your role model for your team
+4. **Functional Testing**: [Write tests](../modeling/testing-models.mdx) to verify your model behaves as expected
+5. **Performance Testing**: Test performance with realistic data volumes
+
+## Related Sections
+
+<RelatedSection
+  description="Check out these related resources for more information about adopting OpenFGA."
+  relatedLinks={[
+    {
+      title: 'Custom Roles Step by Step',
+      description: 'Follow a detailed walkthrough of implementing custom roles.',
+      link: '../modeling/custom-roles',
+    },
+    {
+      title: 'Multi-tenant RBAC Example',
+      description: 'See a complete multi-tenant role-based access control implementation.',
+      link: 'https://github.com/openfga/sample-stores/blob/main/stores/multitenant-rbac',
+    },
+    {
+      title: 'Role Assignments Example',
+      description: 'Explore a full role assignments implementation.',
+      link: 'https://github.com/openfga/sample-stores/tree/main/stores/role-assignments',
+    }
+  ]}
+/>

@@ -413,6 +413,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Modeling Roles',
+          id: 'content/best-practices/modeling-roles',
+        },        
+        {
+          type: 'doc',
           label: 'Source of Truth',
           id: 'content/best-practices/source-of-truth',
         },
