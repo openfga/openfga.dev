@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkopenfga_dev=self.webpackChunkopenfga_dev||[]).push([[1111],{12279:e=>{e.exports=JSON.parse('{"metadata":{"permalink":"/pr-preview/pr-1060/blog/page/2","page":2,"postsPerPage":10,"totalPages":2,"totalCount":19,"previousPage":"/pr-preview/pr-1060/blog","blogDescription":"Blog","blogTitle":"Blog"}}')}}]);
