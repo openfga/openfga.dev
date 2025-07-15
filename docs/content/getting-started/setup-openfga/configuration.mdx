@@ -63,12 +63,12 @@ export OPENFGA_PLAYGROUND_ENABLED=false
 openfga run
 
 # Running in docker
-docker run docker.io/openfga/openfga:latest \
-  -e OPENFGA_DATASTORE_ENGINE=postgres \
-  -e OPENFGA_DATASTORE_URI='postgres://postgres:password@postgres:5432/postgres?sslmode=disable' \
-  -e OPENFGA_AUTHN_METHOD=preshared \
-  -e OPENFGA_AUTHN_PRESHARED_KEYS='key1,key2' \
-  -e OPENFGA_PLAYGROUND_ENABLED=false \
+docker run docker.io/openfga/openfga:latest \ 
+  -e OPENFGA_DATASTORE_ENGINE=postgres \ 
+  -e OPENFGA_DATASTORE_URI='postgres://postgres:password@postgres:5432/postgres?sslmode=disable' \ 
+  -e OPENFGA_AUTHN_METHOD=preshared \ 
+  -e OPENFGA_AUTHN_PRESHARED_KEYS='key1,key2' \ 
+  -e OPENFGA_PLAYGROUND_ENABLED=false \ 
   run
 ```
 
@@ -80,19 +80,19 @@ Command line parameters take precedence over environment variables and options i
 
 ```shell
 # Running as a binary
-openfga run \
-  --datastore-engine postgres \
-  --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable' \
-  --authn-method=preshared \
-  --authn-preshared-keys='key1,key2' \
+openfga run \ 
+  --datastore-engine postgres \ 
+  --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable' \ 
+  --authn-method=preshared \ 
+  --authn-preshared-keys='key1,key2' \ 
   --playground-enabled=false
 
 # Running in docker
-docker run docker.io/openfga/openfga:latest run \
-  --datastore-engine postgres \
-  --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable' \
-  --authn-method=preshared \
-  --authn-preshared-keys='key1,key2' \
+docker run docker.io/openfga/openfga:latest run \ 
+  --datastore-engine postgres \ 
+  --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable' \ 
+  --authn-method=preshared \ 
+  --authn-preshared-keys='key1,key2' \ 
   --playground-enabled=false
 ```
 
