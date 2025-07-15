@@ -1,0 +1,42 @@
+name: Update OpenFGA Documentation
+
+on:
+  # Nightly @ 5AM UTC
+  schedule:
+    - cron: '0 5 * * *'
+  # When triggered manually
+  workflow_dispatch:
+
+jobs:
+  update-docs:
+    name: Update OpenFGA Documentation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Commit docs changes to the repository
+    steps:
+      - name: Cached LFS checkout
+        uses: nschloe/action-cached-lfs-checkout@f46300cd8952454b9f0a21a3d133d4bd5684cfc2
+
+      - name: Set up node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build website
+        run: npm run build
+        env:
+          HUBSPOT_TRACKING_ID: ${{ secrets.HUBSPOT_TRACKING_ID }}
+
+      - name: Commit updated config documentation
+        uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0 #v6.0.1
+        with:
+          commit_message: 'docs: auto-update OpenFGA configuration documentation'
+          file_pattern: '*.mdx'
+          commit_user_name: 'github-actions[bot]'
+          commit_user_email: '41898282+github-actions[bot]@users.noreply.github.com'
+          commit_author: 'github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>'
