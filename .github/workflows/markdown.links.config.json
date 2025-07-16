@@ -53,6 +53,9 @@
 	  },
 	  {
 		"pattern": "https://auth0.com"
+	  },
+	  {
+		"pattern": "https://github.com/bytefish/gitclub-dotnet"
 	  }
 	],
 	"httpHeaders": [
