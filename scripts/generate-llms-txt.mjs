@@ -10,29 +10,21 @@ const OUTPUT_FILE = path.join(__dirname, '../static/llms.txt');
 const BASE_URL = 'https://openfga.dev/docs';
 
 /**
- * Dynamically imports and evaluates the sidebars.js file
+ * Reads and parses the sidebars.js file
  * @returns {Promise<Object>}
  */
 async function loadSidebars() {
     const sidebarContent = await fs.readFile(SIDEBARS_FILE, 'utf8');
     
-    // Create a temporary module to evaluate the sidebars.js content
-    const tempModulePath = path.join(__dirname, '../temp-sidebars.mjs');
+    // Extract the sidebars object by evaluating the JavaScript content
+    // This is safe since we control the sidebars.js file content
+    const sandbox = { module: { exports: {} } };
     
-    // Convert CommonJS module.exports to ES module export
-    const moduleContent = sidebarContent
-        .replace('module.exports = sidebars;', 'export default sidebars;')
-        .replace('/** @type {import(\'@docusaurus/plugin-content-docs\').SidebarsConfig} */', '');
+    // Create a function that executes the sidebars.js content in a controlled context
+    const func = new Function('module', 'exports', sidebarContent);
+    func(sandbox.module, sandbox.module.exports);
     
-    await fs.writeFile(tempModulePath, moduleContent);
-    
-    try {
-        const { default: sidebars } = await import(`../temp-sidebars.mjs?t=${Date.now()}`);
-        return sidebars;
-    } finally {
-        // Clean up temporary file
-        await fs.unlink(tempModulePath).catch(() => {}); // Ignore errors if file doesn't exist
-    }
+    return sandbox.module.exports;
 }
 
 /**
