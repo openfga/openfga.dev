@@ -14,31 +14,31 @@ repository:
   accepts-automated-change-request: true
   no-third-party-packages: false
   core-team:
-  - name: Andres Aguiar
-    affiliation: Okta
-    email: andres.aguiar@okta.com
-    social: https://github.com/aaguiarz
-    primary: true
-  - name: Daniel Yeam
-    affiliation: Okta
-    email: daniel.yeam@okta.com
-    social: https://github.com/dyeam0
-  - name: Patrick Dillon
-    affiliation: Okta
-    email: patrick.dillon@okta.com
-    social: https://github.com/pdillon
-  - name: Rishav Mishra
-    affiliation: Okta
-    email: rishav.mishra@okta.com
-    social: https://github.com/rishavmishra-okta
-  - name: Talent Zeng
-    affiliation: Okta
-    email: talent.zeng@okta.com
-    social: https://github.com/ttrzeng
-  - name: Tyler Nix
-    affiliation: Okta
-    email: tyler.nix@okta.com
-    social: https://github.com/tylernix
+    - name: Andres Aguiar
+      affiliation: Okta
+      email: andres.aguiar@okta.com
+      social: https://github.com/aaguiarz
+      primary: true
+    - name: Daniel Yeam
+      affiliation: Okta
+      email: daniel.yeam@okta.com
+      social: https://github.com/dyeam0
+    - name: Patrick Dillon
+      affiliation: Okta
+      email: patrick.dillon@okta.com
+      social: https://github.com/pdillon
+    - name: Rishav Mishra
+      affiliation: Okta
+      email: rishav.mishra@okta.com
+      social: https://github.com/rishavmishra-okta
+    - name: Talent Zeng
+      affiliation: Okta
+      email: talent.zeng@okta.com
+      social: https://github.com/ttrzeng
+    - name: Tyler Nix
+      affiliation: Okta
+      email: tyler.nix@okta.com
+      social: https://github.com/tylernix
 
   license:
     url: https://raw.githubusercontent.com/openfga/openfga.dev/main/LICENSE
