@@ -1,4 +1,6 @@
 name: 'Run Checks: Lint, Audit and Build'
+permissions:
+  contents: read
 
 on:
   pull_request:
