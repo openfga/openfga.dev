@@ -1,5 +1,7 @@
 # .github/workflows/preview.yml
 name: Deploy PR previews
+permissions:
+  contents: write
 concurrency:
   group: preview-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
