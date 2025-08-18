@@ -1,0 +1,48 @@
+name: "Setup and Build"
+description: "Setup Node.js, install dependencies, and optionally build"
+inputs:
+  node-version:
+    description: "Node.js version"
+    required: false
+    default: "22"
+  build:
+    description: "Run build step"
+    required: false
+    default: "true"
+  setup:
+    description: "Setup Node.js and install dependencies"
+    required: false
+    default: "true"
+  # Build environment variables
+  build-analytics-id:
+    description: "Analytics tracking ID"
+    required: false
+    default: ""
+  build-base-url:
+    description: "Base URL for build"
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js
+      if: inputs.setup == 'true'
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      with:
+        node-version: ${{ inputs.node-version }}
+        registry-url: "https://registry.npmjs.org"
+        cache: "npm"
+
+    - name: Install dependencies
+      if: inputs.setup == 'true'
+      shell: bash
+      run: npm ci
+
+    - name: Build website
+      if: inputs.build == 'true'
+      shell: bash
+      env:
+        HUBSPOT_TRACKING_ID: ${{ inputs.build-analytics-id }}
+        BASE_URL: ${{ inputs.build-base-url }}
+      run: npm run build

@@ -1,0 +1,306 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
+      - ready_for_review
+
+permissions:
+  contents: read
+
+# Prevent concurrent builds for the same PR
+concurrency:
+  group: pr-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Run code quality checks
+  code-checks:
+    name: Code Quality (${{ matrix.check }})
+    runs-on: ubuntu-latest
+    if: github.event.action != 'closed' && github.actor != 'dependabot[bot]' && github.event.pull_request.draft == false
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - check: format
+            command: npm run format:check
+          - check: lint
+            command: npm run lint
+          - check: types
+            command: npm run typecheck
+          - check: audit
+            command: npm audit
+            continue-on-error: true
+          - check: circular-deps
+            command: npx madge --circular . --extensions ts,js,jsx,tsx
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          lfs: false
+          fetch-depth: 2
+
+      - name: Setup dependencies
+        uses: ./.github/actions/setup-and-build
+        with:
+          build: 'false'
+
+      - name: Run ${{ matrix.check }}
+        run: ${{ matrix.command }}
+        continue-on-error: ${{ matrix.continue-on-error || false }}
+
+  # Check markdown links
+  markdown-link-check:
+    name: Check Documentation Links (${{ matrix.extension }})
+    runs-on: ubuntu-latest
+    if: github.event.action != 'closed' && github.actor != 'dependabot[bot]' && github.event.pull_request.draft == false
+    strategy:
+      fail-fast: false
+      matrix:
+        extension: ['.md', '.mdx']
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 1
+          lfs: false
+
+      - name: Check Markdown links (${{ matrix.extension }})
+        uses: tcort/github-action-markdown-link-check@a800ad5f1c35bf61987946fd31c15726a1c9f2ba # v1.1.0
+        continue-on-error: true
+        with:
+          file-extension: ${{ matrix.extension }}
+          use-quiet-mode: 'yes'
+          config-file: '.github/workflows/markdown.links.config.json'
+
+  # Build and test deployment
+  build-test:
+    name: Build and Test
+    if: |
+      github.event.action != 'closed' &&
+      github.event.pull_request.draft == false &&
+      (needs.code-checks.result == 'success' || needs.code-checks.result == 'skipped' || github.actor == 'dependabot[bot]') &&
+      (needs.markdown-link-check.result == 'success' || needs.markdown-link-check.result == 'skipped' || github.actor == 'dependabot[bot]')
+    needs: [code-checks, markdown-link-check] # Only build after all checks pass
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          lfs: true
+          fetch-depth: 2
+
+      - name: Setup and build
+        uses: ./.github/actions/setup-and-build
+        with:
+          build-base-url: ${{ github.actor != 'dependabot[bot]' && format('/pr-preview/pr-{0}', github.event.pull_request.number) || '' }}
+
+      - name: Upload build artifacts
+        if: github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: build-artifacts
+          path: ./build/
+          retention-days: 1
+          compression-level: 9
+
+  # Deploy preview only for non-Dependabot PRs from the main repo (not forks)
+  deploy-preview:
+    name: Deploy Preview
+    needs: build-test
+    runs-on: ubuntu-latest
+    if: |
+      github.event.action != 'closed' &&
+      github.actor != 'dependabot[bot]' &&
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: write # Required to push to gh-pages
+      pull-requests: write # Required for PR comments
+    steps:
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          ref: gh-pages
+          fetch-depth: 1
+          lfs: false
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        with:
+          name: build-artifacts
+          path: ./build/
+
+      - name: Deploy preview to gh-pages
+        run: |
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Setup preview directory
+          preview_dir="pr-preview/pr-${{ github.event.pull_request.number }}"
+
+          # Check if this is a new preview or an update
+          if [ -d "${preview_dir}" ]; then
+            echo "📝 Updating preview for PR #${{ github.event.pull_request.number }}"
+            is_update=true
+          else
+            echo "🆕 Creating preview for PR #${{ github.event.pull_request.number }}"
+            mkdir -p "${preview_dir}"
+            is_update=false
+          fi
+
+          # Sync build files to preview directory (only changed files)
+          # Using rsync for efficient incremental updates
+          rsync -av --delete \
+            --exclude='.git' \
+            --exclude='.github' \
+            ./build/ "${preview_dir}/"
+
+          # Add and commit changes
+          git add "${preview_dir}"
+          if git diff --staged --quiet; then
+            echo "✨ No changes detected in build output"
+          else
+            # Commit with appropriate message
+            if [ "$is_update" = true ]; then
+              git commit -m "Update preview for PR #${{ github.event.pull_request.number }} 🔄"
+            else
+              git commit -m "Deploy preview for PR #${{ github.event.pull_request.number }} 🚀"
+            fi
+
+            # Push with retry logic to handle concurrent updates
+            max_attempts=5
+            attempt=1
+            while [ $attempt -le $max_attempts ]; do
+              echo "Push attempt $attempt of $max_attempts"
+              if git push origin gh-pages; then
+                echo "Successfully pushed to gh-pages"
+                break
+              else
+                if [ $attempt -eq $max_attempts ]; then
+                  echo "Failed to push after $max_attempts attempts"
+                  exit 1
+                fi
+                echo "Push failed, pulling latest changes and retrying..."
+                git pull --rebase origin gh-pages
+                attempt=$((attempt + 1))
+                sleep 2
+              fi
+            done
+          fi
+
+          # Set outputs for summary
+          echo "preview_url=https://openfga.github.io/openfga.dev/${preview_dir}/" >> $GITHUB_ENV
+
+      - name: Comment preview link on PR
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const preview_url = process.env.preview_url;
+            const pr_number = context.payload.pull_request.number;
+            const comment_body = `### 📋 Preview Deployment\n\n✅ Preview is ready at: ${preview_url}\n\nThis preview will be automatically removed when the PR is closed.`;
+
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr_number
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('Preview Deployment')
+            );
+
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment_body
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr_number,
+                body: comment_body
+              });
+            }
+
+      - name: Add preview link to summary
+        run: |
+          echo "### 📋 Preview Deployment" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "✅ Preview deployed to: ${preview_url}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "[Open preview](${preview_url})" >> "$GITHUB_STEP_SUMMARY"
+
+  # Clean up preview on PR close (only for PRs from the main repo)
+  cleanup-preview:
+    name: Cleanup Preview
+    runs-on: ubuntu-latest
+    if: |
+      github.event.action == 'closed' &&
+      github.actor != 'dependabot[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          ref: gh-pages
+          fetch-depth: 1
+          lfs: false
+
+      - name: Remove preview directory
+        run: |
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Remove preview directory
+          preview_dir="pr-preview/pr-${{ github.event.pull_request.number }}"
+          if [ -d "${preview_dir}" ]; then
+            git rm -rf "${preview_dir}"
+            git commit -m "Remove preview for PR #${{ github.event.pull_request.number }} 🧹"
+
+            # Push with retry logic to handle concurrent updates
+            max_attempts=5
+            attempt=1
+            while [ $attempt -le $max_attempts ]; do
+              echo "Push attempt $attempt of $max_attempts"
+              if git push origin gh-pages; then
+                echo "✅ Preview removed for PR #${{ github.event.pull_request.number }}" >> "$GITHUB_STEP_SUMMARY"
+                break
+              else
+                if [ $attempt -eq $max_attempts ]; then
+                  echo "❌ Failed to remove preview after $max_attempts attempts" >> "$GITHUB_STEP_SUMMARY"
+                  exit 1
+                fi
+                echo "Push failed, pulling latest changes and retrying..."
+                git pull --rebase origin gh-pages
+                attempt=$((attempt + 1))
+                sleep 2
+              fi
+            done
+          else
+            echo "⚠️ No preview found for PR #${{ github.event.pull_request.number }}" >> "$GITHUB_STEP_SUMMARY"
+          fi
