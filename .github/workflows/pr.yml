@@ -11,6 +11,9 @@ on:
       - closed
       - ready_for_review
 
+env:
+  DEFAULT_PREVIEW_BASE_URL: 'https://openfga.github.io/openfga.dev'
+
 permissions:
   contents: read
 
@@ -39,7 +42,7 @@ jobs:
             command: npm audit
             continue-on-error: true
           - check: circular-deps
-            command: npx madge --circular . --extensions ts,js,jsx,tsx
+            command: npx madge@8.0.0 --circular . --extensions ts,js,jsx,tsx
     permissions:
       contents: read
     steps:
@@ -83,6 +86,7 @@ jobs:
           file-extension: ${{ matrix.extension }}
           use-quiet-mode: 'yes'
           config-file: '.github/workflows/markdown.links.config.json'
+          folder-path: '.'
 
   # Build and test deployment
   build-test:
@@ -103,10 +107,28 @@ jobs:
           lfs: true
           fetch-depth: 2
 
+      - name: Set base URL for build
+        id: set-base-url
+        run: |
+          # Set base URL for PR preview builds (excluding Dependabot)
+          if [ "${{ github.actor }}" != "dependabot[bot]" ]; then
+            # Validate PR number is numeric
+            pr_number="${{ github.event.pull_request.number }}"
+            if ! [[ "$pr_number" =~ ^[0-9]+$ ]]; then
+              echo "Error: Invalid PR number: $pr_number"
+              exit 1
+            fi
+            echo "build_base_url=/pr-preview/pr-${pr_number}/" >> $GITHUB_OUTPUT
+            echo "Building with PR preview URL: /pr-preview/pr-${pr_number}/"
+          else
+            echo "build_base_url=" >> $GITHUB_OUTPUT
+            echo "Dependabot PR - building without preview URL"
+          fi
+
       - name: Setup and build
         uses: ./.github/actions/setup-and-build
         with:
-          build-base-url: ${{ github.actor != 'dependabot[bot]' && format('/pr-preview/pr-{0}', github.event.pull_request.number) || '' }}
+          build-base-url: ${{ steps.set-base-url.outputs.build_base_url }}
 
       - name: Upload build artifacts
         if: github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.full_name == github.repository
@@ -153,18 +175,31 @@ jobs:
           # Setup preview directory
           preview_dir="pr-preview/pr-${{ github.event.pull_request.number }}"
 
+          # Validate PR number and directory path
+          if ! [[ "${{ github.event.pull_request.number }}" =~ ^[0-9]+$ ]]; then
+            echo "Error: Invalid PR number: ${{ github.event.pull_request.number }}"
+            exit 1
+          fi
+
+          # Ensure preview directory is within pr-preview folder
+          if [[ "${preview_dir}" != pr-preview/pr-* ]]; then
+            echo "Error: Invalid preview directory path: ${preview_dir}"
+            exit 1
+          fi
+
           # Check if this is a new preview or an update
           if [ -d "${preview_dir}" ]; then
-            echo "📝 Updating preview for PR #${{ github.event.pull_request.number }}"
+            echo "Updating existing preview for PR #${{ github.event.pull_request.number }}"
             is_update=true
           else
-            echo "🆕 Creating preview for PR #${{ github.event.pull_request.number }}"
+            echo "Creating new preview for PR #${{ github.event.pull_request.number }}"
             mkdir -p "${preview_dir}"
             is_update=false
           fi
 
           # Sync build files to preview directory (only changed files)
           # Using rsync for efficient incremental updates
+          # The --delete flag removes files that don't exist in source
           rsync -av --delete \
             --exclude='.git' \
             --exclude='.github' \
@@ -173,13 +208,13 @@ jobs:
           # Add and commit changes
           git add "${preview_dir}"
           if git diff --staged --quiet; then
-            echo "✨ No changes detected in build output"
+            echo "No changes detected in build output"
           else
             # Commit with appropriate message
             if [ "$is_update" = true ]; then
-              git commit -m "Update preview for PR #${{ github.event.pull_request.number }} 🔄"
+              git commit -m "Update preview for PR #${{ github.event.pull_request.number }}"
             else
-              git commit -m "Deploy preview for PR #${{ github.event.pull_request.number }} 🚀"
+              git commit -m "Deploy preview for PR #${{ github.event.pull_request.number }}"
             fi
 
             # Push with retry logic to handle concurrent updates
@@ -204,7 +239,8 @@ jobs:
           fi
 
           # Set outputs for summary
-          echo "preview_url=https://openfga.github.io/openfga.dev/${preview_dir}/" >> $GITHUB_ENV
+          # Use default preview base URL (can be overridden via env variable if needed)
+          echo "preview_url=${{ env.DEFAULT_PREVIEW_BASE_URL }}/${preview_dir}/" >> $GITHUB_ENV
 
       - name: Comment preview link on PR
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
@@ -212,7 +248,7 @@ jobs:
           script: |
             const preview_url = process.env.preview_url;
             const pr_number = context.payload.pull_request.number;
-            const comment_body = `### 📋 Preview Deployment\n\n✅ Preview is ready at: ${preview_url}\n\nThis preview will be automatically removed when the PR is closed.`;
+            const comment_body = `### Preview Deployment\n\nPreview is ready at: ${preview_url}\n\nThis preview will be automatically removed when the PR is closed.`;
 
             // Find existing comment
             const { data: comments } = await github.rest.issues.listComments({
@@ -222,8 +258,8 @@ jobs:
             });
 
             const botComment = comments.find(comment =>
-              comment.user.type === 'Bot' &&
-              comment.body.includes('Preview Deployment')
+              comment.user?.login === 'github-actions[bot]' &&
+              comment.body?.includes('Preview Deployment')
             );
 
             if (botComment) {
@@ -246,9 +282,9 @@ jobs:
 
       - name: Add preview link to summary
         run: |
-          echo "### 📋 Preview Deployment" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Preview Deployment" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "✅ Preview deployed to: ${preview_url}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Preview deployed to: ${preview_url}" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "[Open preview](${preview_url})" >> "$GITHUB_STEP_SUMMARY"
 
@@ -278,9 +314,22 @@ jobs:
 
           # Remove preview directory
           preview_dir="pr-preview/pr-${{ github.event.pull_request.number }}"
+
+          # Validate PR number and directory path before removal
+          if ! [[ "${{ github.event.pull_request.number }}" =~ ^[0-9]+$ ]]; then
+            echo "Error: Invalid PR number: ${{ github.event.pull_request.number }}"
+            exit 1
+          fi
+
+          # Ensure we're only removing from pr-preview folder
+          if [[ "${preview_dir}" != pr-preview/pr-* ]]; then
+            echo "Error: Invalid preview directory path: ${preview_dir}"
+            exit 1
+          fi
+
           if [ -d "${preview_dir}" ]; then
             git rm -rf "${preview_dir}"
-            git commit -m "Remove preview for PR #${{ github.event.pull_request.number }} 🧹"
+            git commit -m "Remove preview for PR #${{ github.event.pull_request.number }}"
 
             # Push with retry logic to handle concurrent updates
             max_attempts=5
@@ -288,11 +337,11 @@ jobs:
             while [ $attempt -le $max_attempts ]; do
               echo "Push attempt $attempt of $max_attempts"
               if git push origin gh-pages; then
-                echo "✅ Preview removed for PR #${{ github.event.pull_request.number }}" >> "$GITHUB_STEP_SUMMARY"
+                echo "Preview removed for PR #${{ github.event.pull_request.number }}" >> "$GITHUB_STEP_SUMMARY"
                 break
               else
                 if [ $attempt -eq $max_attempts ]; then
-                  echo "❌ Failed to remove preview after $max_attempts attempts" >> "$GITHUB_STEP_SUMMARY"
+                  echo "Error: Failed to remove preview after $max_attempts attempts" >> "$GITHUB_STEP_SUMMARY"
                   exit 1
                 fi
                 echo "Push failed, pulling latest changes and retrying..."
@@ -302,5 +351,5 @@ jobs:
               fi
             done
           else
-            echo "⚠️ No preview found for PR #${{ github.event.pull_request.number }}" >> "$GITHUB_STEP_SUMMARY"
+            echo "No preview directory found for PR #${{ github.event.pull_request.number }}" >> "$GITHUB_STEP_SUMMARY"
           fi

@@ -13,13 +13,16 @@ inputs:
     description: "Setup Node.js and install dependencies"
     required: false
     default: "true"
-  # Build environment variables
   build-analytics-id:
     description: "Analytics tracking ID"
     required: false
     default: ""
   build-base-url:
     description: "Base URL for build"
+    required: false
+    default: ""
+  npm-ci-flags:
+    description: "Additional flags for npm ci (e.g. --ignore-scripts --no-audit --no-fund)"
     required: false
     default: ""
 
@@ -37,7 +40,7 @@ runs:
     - name: Install dependencies
       if: inputs.setup == 'true'
       shell: bash
-      run: npm ci
+      run: npm ci ${{ inputs.npm-ci-flags }}
 
     - name: Build website
       if: inputs.build == 'true'
