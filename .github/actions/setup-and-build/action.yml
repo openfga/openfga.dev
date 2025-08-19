@@ -22,28 +22,27 @@ inputs:
     required: false
     default: ""
   npm-ci-flags:
-    description: "Additional flags for npm ci (e.g. --ignore-scripts --no-audit --no-fund)"
+    description: "Flags for npm ci (default: --no-audit --no-fund --prefer-offline). Add --ignore-scripts if needed to skip postinstall scripts"
     required: false
-    default: ""
+    default: "--no-audit --no-fund --prefer-offline"
 
 runs:
   using: "composite"
   steps:
     - name: Setup Node.js
-      if: inputs.setup == 'true'
+      if: ${{ inputs.setup == 'true' }}
       uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
       with:
         node-version: ${{ inputs.node-version }}
-        registry-url: "https://registry.npmjs.org"
         cache: "npm"
 
     - name: Install dependencies
-      if: inputs.setup == 'true'
+      if: ${{ inputs.setup == 'true' }}
       shell: bash
       run: npm ci ${{ inputs.npm-ci-flags }}
 
     - name: Build website
-      if: inputs.build == 'true'
+      if: ${{ inputs.build == 'true' }}
       shell: bash
       env:
         HUBSPOT_TRACKING_ID: ${{ inputs.build-analytics-id }}
