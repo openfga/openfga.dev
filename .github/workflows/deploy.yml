@@ -23,7 +23,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          lfs: true  # LFS required for building with images/assets
+          lfs: true # LFS required for building with images/assets
           fetch-depth: 1
 
       - name: Setup and build
@@ -37,10 +37,10 @@ jobs:
       - name: Preserve PR previews from gh-pages
         timeout-minutes: 5
         run: |
-          # Clone the gh-pages branch with authentication to avoid rate limits and support private repos
+          # Clone the gh-pages branch with authentication to avoid rate limits
           if git clone --branch gh-pages --single-branch --depth 1 \
             https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages-temp 2>/dev/null; then
-            
+
             # Copy pr-preview directory if it exists
             if [ -d "gh-pages-temp/pr-preview" ]; then
               echo "Preserving PR previews..."
@@ -51,7 +51,7 @@ jobs:
             else
               echo "No PR previews to preserve"
             fi
-            
+
             # Clean up temp directory
             rm -rf gh-pages-temp
           else
