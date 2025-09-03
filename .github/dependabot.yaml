@@ -11,17 +11,37 @@ updates:
       - dependency-name: "@svgr/webpack"
       # Ignore updates to webpack as it has breaking changes that break the build
       - dependency-name: "eslint"
+      # We're not compatible with React 19 yet; avoid suggesting those major bumps
+      - dependency-name: "react"
+        versions: [">=19.0.0"]
+      - dependency-name: "react-dom"
+        versions: [">=19.0.0"]
+      - dependency-name: "@types/react"
+        versions: [">=19.0.0"]
+      - dependency-name: "@types/react-router-dom"
+        versions: [">=6.0.0"]
     groups:
       dependencies:
         dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
         patterns:
           - "*"
       dev-dependencies:
         dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
         patterns:
           - "*"
         exclude-patterns:
           - "eslint"
+      breaking-changes:
+        update-types:
+          - "major"
+        patterns:
+          - "*"
 
   - package-ecosystem: "docker"
     directory: "/"
