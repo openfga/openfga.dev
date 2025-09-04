@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <script src="https://js.hs-scripts.com/24392211.js" charset="UTF-8" id="hs-script-loader" async defer="defer"></script><link rel="stylesheet" href="/assets/css/styles.25da71b3.css">
-<script src="/assets/js/runtime~main.efbf5d3f.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.1bc604cb.js" defer="defer"></script>
 <script src="/assets/js/main.eab2cae4.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -29,9 +29,37 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="configuration">Configuration<a href="#configuration" class="hash-link" aria-label="Direct link to Configuration" title="Direct link to Configuration">​</a></h2>
 <p>The CLI is configured to use a specific FGA server in one of three ways:</p>
 <ul>
-<li>Using CLI flags.</li>
-<li>Using environment variables.</li>
-<li>Storing configuration values in a .fga.yaml located in the user’s root directory.</li>
+<li>
+<p>Using CLI flags.</p>
+</li>
+<li>
+<p>Using environment variables.</p>
+</li>
+<li>
+<p>Using a <code>.fga.yaml</code> configuration file, searched in the following order (highest to lowest priority):</p>
+<ol>
+<li>
+<p><strong>Current working directory</strong></p>
+</li>
+<li>
+<p><strong>User-specific config directory</strong></p>
+<ul>
+<li>Unix: <code>$XDG_CONFIG_HOME</code> (if set), otherwise <code>$HOME/.config</code></li>
+<li>Windows: <code>%AppData%</code></li>
+</ul>
+</li>
+<li>
+<p><strong><code>fga</code> subdirectory under the user config directory</strong></p>
+</li>
+<li>
+<p><strong>User&#x27;s home directory</strong></p>
+<ul>
+<li>Unix: <code>$HOME</code></li>
+<li>Windows: <code>%USERPROFILE%</code></li>
+</ul>
+</li>
+</ol>
+</li>
 </ul>
 <p>The API Url setting needs to point to the OpenFGA server:</p>
 <table><thead><tr><th>Name</th><th>Flag</th><th>Environment</th><th>~/.fga.yaml</th><th>Default Value</th></tr></thead><tbody><tr><td>API Url</td><td>--api-url</td><td>FGA_API_URL</td><td>api-url</td><td><code>http://localhost:8080</code></td></tr></tbody></table>
