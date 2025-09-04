@@ -34,6 +34,7 @@ Please familiarize yourself with basic <ProductConcept /> and [How to get starte
 Below is a sample authorization model. The next sections discuss the basics of the <ProductName format={ProductNameFormat.ShortForm}/> configuration language.
 
 <AuthzModelSnippetViewer
+  syntaxesToShow={[SyntaxFormat.Dsl, SyntaxFormat.Json]}
   configuration={{
     schema_version: '1.1',
     type_definitions: [
@@ -978,7 +979,6 @@ relation {
 In the <ProductName format={ProductNameFormat.ShortForm}/> DSL, it becomes:
 
 <AuthzModelSnippetViewer
-  onlyShow={SyntaxFormat.Friendly2}
   configuration={{
     schema_version: '1.1',
     type_definitions: [
@@ -1042,7 +1042,7 @@ In the <ProductName format={ProductNameFormat.ShortForm}/> DSL, it becomes:
 In the <ProductName format={ProductNameFormat.ShortForm}/> JSON, it becomes:
 
 <AuthzModelSnippetViewer
-  onlyShow={SyntaxFormat.Api}
+  syntaxesToShow={[SyntaxFormat.Json]}
   configuration={{
     schema_version: '1.1',
     type_definitions: [

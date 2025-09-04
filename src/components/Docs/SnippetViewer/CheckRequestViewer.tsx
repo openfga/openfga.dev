@@ -73,7 +73,7 @@ const { allowed } = await fgaClient.check({
     contextualTuples: [\n      ${contextualTuples.map((tuple) => `${JSON.stringify(tuple)}`).join(',')}
     ],`
     }${!context ? `\n  }` : `\n    context: ${JSON.stringify(context)}\n  }`}, {
-  authorization_model_id: '${modelId}',
+  authorizationModelId: '${modelId}',
 });
 
 // allowed = ${allowed}`;
@@ -152,7 +152,7 @@ var response = await fgaClient.Check(body, options);
 // response.Allowed = ${allowed}`;
     case SupportedLanguage.PYTHON_SDK:
       return `options = {
-    authorization_model_id="${modelId}"
+    "authorization_model_id": "${modelId}"
 }
 body = ClientCheckRequest(
     user="${user}",
@@ -197,7 +197,7 @@ response = await fga_client.check(body, options)
       .join(',\n    ')}
   ],`
       : ''
-  } authorization_id = "${modelId}"
+  } authorization_model_id = "${modelId}"
 );
 
 Reply: ${allowed}`;

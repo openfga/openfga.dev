@@ -130,7 +130,7 @@ response = await fga_client.read(body, options)
       const objectOrType = opts.object ? (opts.object.slice(-1) === ':' ? 'type' : 'object') : '';
       const requestTuples = opts.object
         ? (opts.user
-            ? `  "${opts.user}", // where user \`${opts.user}\` has $(opts.relation ? '': 'any ' )relation\n`
+            ? `  "${opts.user}", // where user \`${opts.user}\` has ${opts.relation ? '' : 'any '}relation\n`
             : `  // for users who have relation\n`) +
           (opts.relation ? `  "${opts.relation}", // \`${opts.relation}\`\n` : '') +
           `  "${opts.object}", // with the ${objectOrType} \`${opts.object}\``

@@ -1,26 +1,35 @@
 name: Deploy to GitHub Pages
 
 on:
+  # Nightly @ 5AM UTC
+  schedule:
+    - cron: '0 5 * * *'
+  # When triggered manually
+  workflow_dispatch:
+  # When a commit is pushed to the main branch
   push:
     branches:
       - main
-    # Review gh actions docs if you want to further define triggers, paths, etc
-    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
 
 jobs:
   deploy:
     name: Deploy to GitHub Pages
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Cached LFS checkout
         uses: nschloe/action-cached-lfs-checkout@f46300cd8952454b9f0a21a3d133d4bd5684cfc2
-      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
+
+      - name: Set up node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
-          node-version: 18.x
-          cache: npm
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm clean-install
+        run: npm ci
 
       - name: Build website
         run: npm run build

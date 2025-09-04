@@ -38,7 +38,7 @@ const config = {
         icon: 'ZanzibarIcon',
       },
       {
-        text: 'Okta FGA Playground →',
+        text: 'Auth0 FGA Playground →',
         href: 'https://play.fga.dev/',
         icon: 'ModelIcon',
       },
@@ -70,7 +70,7 @@ const config = {
     // link to the concept page (relative to baseURL)
     conceptLink: `docs/concepts`,
     longProductName: `OpenFGA`,
-    landingPageTitle: 'Fine Grained Authorization',
+    landingPageTitle: 'Fine-Grained Authorization',
 
     // define playgroundName and playgroundURL if you want to show your examples through playground
     //playgroundName: '',
@@ -113,6 +113,7 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
     contentSecurityPolicy: `default-src 'none';
       base-uri 'self';
       block-all-mixed-content;
+      worker-src 'self';
       child-src www.youtube-nocookie.com;
       prefetch-src 'self';
       connect-src 'self' https://raw.githubusercontent.com https://s3.amazonaws.com https://cdn.cookielaw.org https://privacyportal.onetrust.com https://heapanalytics.com https://js.hs-scripts.com https://api.github.com https://js.hscollectedforms.net https://js.hs-analytics.net https://js.hs-banner.com https://forms.hscollectedforms.net ;

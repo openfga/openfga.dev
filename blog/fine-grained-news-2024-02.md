@@ -22,7 +22,7 @@ We'll be pretty busy during [KubeCon Europe 2024](https://events.linuxfoundation
 
 - OpenFGA will be present in [Canonical's Operator's day](https://app.myonvent.com/event/operator-day/), co-located at KubeCon EU. Andres Aguiar and Massimilano Gori from Canonical, will talk about how Canonical adopted OpenFGA for implementing authorization in [Juju](https://juju.is/).
 
--  Andres Aguiar will also be delivering a Lightning Talk titled **OpenFGA - The Cloud Native way to implement Fine Grained Authorization** (link not available yet :) ).
+-  Andres Aguiar will also be delivering a Lightning Talk titled **OpenFGA - The Cloud Native way to implement Fine-Grained Authorization** (link not available yet :) ).
 
 We'll also have a kiosk in the CNCF Project Pavilion, so if you plan to attend let us know and we can schedule some time together!
 

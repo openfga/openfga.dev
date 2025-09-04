@@ -6,13 +6,13 @@ hide_title: true
 
 ## About OpenFGA
 
-[OpenFGA](https://github.com/openfga/openfga) is an open source Fine-Grained Authorization solution based on Google's Zanzibar. It was created by the Okta FGA team and welcomes community contribution. OpenFGA is designed to make it easy for application builders to quickly add fine-grained authorization to their applications. OpenFGA is designed and optimized for reliability and low latency at a high scale.
+[OpenFGA](https://github.com/openfga/openfga) is an open source Fine-Grained Authorization solution based on Google's Zanzibar. It was created by the Auth0 FGA team and welcomes community contribution. OpenFGA is designed to make it easy for application builders to quickly add fine-grained authorization to their applications. OpenFGA is designed and optimized for reliability and low latency at a high scale.
 
 It offers an HTTP API, a gRPC API, and has SDKs for programming languages including [JavaScript](https://github.com/openfga/js-sdk), [GoLang](https://github.com/openfga/go-sdk), [.NET](https://github.com/openfga/dotnet-sdk) and [Python](https://github.com/openfga/python-sdk) and [Java](https://github.com/openfga/java-sdk). 
 
 ## Resources
 
-- [Okta FGA Playground](https://play.fga.dev)
+- [Auth0 FGA Playground](https://play.fga.dev)
 - [Zanzibar Academy](https://zanzibar.academy)
 - [OpenFGA on Twitter](https://twitter.com/OpenFGA)
 - [OpenFGA Community](https://openfga.dev/community) in Slack and GitHub
@@ -37,7 +37,7 @@ It offers an HTTP API, a gRPC API, and has SDKs for programming languages includ
   - [Perform a List Objects Request](./content/getting-started/perform-list-objects.mdx)
   - [Use the FGA CLI](./content/getting-started/cli.mdx)
   - [Integrate Within a Framework](./content/getting-started/framework.mdx)
-  - [Production Best Practices](./content/getting-started/production-best-practices.mdx)
+
   - [Managing Tuples and Invoking API Best Practices](./content/getting-started/tuples-api-best-practices.mdx)
 - [Modeling Overview](./content/modeling/overview.mdx)
   - [Getting Started with Modeling](./content/modeling/getting-started.mdx)
@@ -76,3 +76,6 @@ It offers an HTTP API, a gRPC API, and has SDKs for programming languages includ
   - [Relationship Queries](./content/interacting/relationship-queries.mdx)
   - [Get Tuple Changes](./content/interacting/read-tuple-changes.mdx)
   - [Search with Permissions](./content/interacting/search-with-permissions.mdx)
+- [Best Practices](./content/best-practices)
+  - [Adoption Patterns](./content/best-practices/adoption-patterns.mdx)
+  - [Running OpenFGA in Production](./content/best-practices/running-in-production.mdx) 

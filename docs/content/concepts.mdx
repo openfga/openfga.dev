@@ -285,7 +285,7 @@ These would be defined in the [authorization model](#what-is-an-authorization-mo
           relations: {
             viewer: { directly_related_user_types: [{ type: 'user' }] },
             commenter: { directly_related_user_types: [{ type: 'user' }] },
-            editor: { directly_related_user_types: [{ type: 'user' }] },
+            editor: { directly_related_user_types: [{ type: 'team', relation: 'member' }, { type: 'user' }] },
             owner: { directly_related_user_types: [{ type: 'user' }] },
           },
         },
@@ -293,13 +293,26 @@ These would be defined in the [authorization model](#what-is-an-authorization-mo
       {
         type: 'user',
       },
+      {
+        type: 'team',
+        relations: {
+          member: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
     ],
   }} skipVersion={true}
 />
 
 :::info
 
-There are four relations in the document type configuration: `viewer`, `commenter`, `editor` and `owner`.
+There are four relations in the document type configuration: `viewer`, `commenter`, `editor` and `owner`. The `editor` relation exists when the report is directly assigned to the user or for any member of an assigned team.
 
 :::
 
@@ -485,7 +498,7 @@ An **implied (or computed) relationship** (R) exists between user X and object Y
           _description: 'AND Anne of type user is a member of the userset team:product#member',
           user: 'user:anne',
           relation: 'member',
-          object: 'team:product#member',
+          object: 'team:product',
         },
       ]}
     />
