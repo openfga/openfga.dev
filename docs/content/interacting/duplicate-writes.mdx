@@ -1,7 +1,7 @@
 ---
 sidebar_position: 3
 slug: /interacting/duplicate-writes
-description: Making write operations resilient with duplicate writes and missing deletes handling
+description: Handle duplicate writes and missing deletes in write operations
 ---
 
 import {
@@ -15,64 +15,44 @@ import {
   RelationshipTuplesViewer,
   WriteRequestViewer,
   SupportedLanguage,
-} from '@components/Docs';
+} from "@components/Docs";
+
 
 # Duplicate Writes
 
 <DocumentationNotice />
 
-Making Write Operations Resilient in <ProductName format={ProductNameFormat.ShortForm}/> by handling duplicate writes and missing deletes gracefully.
+Handle duplicate writes and missing deletes gracefully using the Write API's optional `on_duplicate` and `on_missing` parameters.
 
 <CardBox title="When to use" appearance="filled">
 
-Use duplicate writes handling in high-volume or distributed systems where you need to ensure data synchronization without causing transaction failures on duplicate operations or missing deletes.
+Common scenarios include high-volume data imports into <ProductName format={ProductNameFormat.ShortForm}/> or migrations between distributed systems where you need to ensure data synchronization without causing transaction failures on duplicate writes or missing deletes.
 
 </CardBox>
 
-## The Core Problem and the Solution
+## Understanding the Problem
 
-The Write API is the primary method for adding and removing <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" /> in your <ProductName format={ProductNameFormat.ShortForm}/> store. In high-volume or distributed systems, ensuring that data is synchronized correctly without causing errors on duplicate operations is critical.
+The Write API is the primary method for adding and removing <ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" /> in your <ProductName format={ProductNameFormat.ShortForm}/> store.
 
-Previously, a bulk Write request was strictly "all-or-nothing":
+By default, the Write API operates with strict validation ("all-or-nothing"):
 
-- If you tried to write a tuple that already existed, the entire request would fail.
-- If you tried to delete a tuple that didn't exist, the entire request would fail.
+- Writing a tuple that already exists causes the entire request to fail (even if only 1 tuple out of 40 possible tuples is a duplicate)
+- Deleting a tuple that doesn't exist causes the entire request to fail
 
-This required developers to build complex state-checking logic into their applications.
+This strict behavior requires applications to check the current state of the tuple in <ProductName format={ProductNameFormat.ShortForm}/> before making changes, implement complex retry logic, or simply ignore the errors altogether.
 
-To solve this, the Write API now supports optional parameters to handle duplicate writes and missing deletes gracefully. This means you can safely retry a Write request without causing transaction failures for these specific cases, greatly simplifying data synchronization logic.
+## How to Handle Duplicate Operations
 
-The new `on_duplicate` and `on_missing` parameters change this behavior, allowing you to instruct the API to simply ignore these cases and process the rest of the request successfully.
+To improve import and migration scenarios, the Write API provides optional parameters to control how duplicate writes and missing deletes are handled.
 
-## A Practical Example
+The `on_duplicate` and `on_missing` parameters change this behavior, allowing you to instruct the API to ignore these cases and process the rest of the request successfully.
+ 
+### Response: Default Behavior
 
-Here's a look at how this feature changes the API's behavior when you attempt to write a tuple that already exists.
+Without the `on_duplicate` parameter, attempting to write an existing tuple returns a `400 Bad Request`.
 
-### Before: The Default Behavior
-
-Without `on_duplicate: "ignore"`, the API returns a 400 Bad Request because the tuple already exists.
-
-```bash
-curl -X POST 'http://localhost:8080/stores/{store_id}/write' \
-  -H 'content-type: application/json' \
-  --data '{
-    "writes": {
-      "tuple_keys": [
-        {
-          "user": "user:anne",
-          "relation": "owner",
-          "object": "document:test"
-        }
-      ]
-    },
-    "authorization_model_id": "..."
-  }'
-```
-
-**Response:**
 ```http
 HTTP/1.1 400 Bad Request
-Content-Type: application/json
 
 {
   "code": "write_failed_due_to_invalid_input",
@@ -80,165 +60,172 @@ Content-Type: application/json
 }
 ```
 
-### After: Using on_duplicate: "ignore"
+### Response: Ignoring Duplicates
 
-By setting the parameter, the duplicate is ignored and the API returns a 200 OK.
+Setting `on_duplicate: "ignore"` allows the duplicate to be ignored and the API returns a `200 OK`.
 
-```bash
-curl -X POST 'http://localhost:8080/stores/{store_id}/write' \
-  -H 'content-type: application/json' \
-  --data '{
-    "writes": {
-      "tuple_keys": [
-        {
-          "user": "user:anne",
-          "relation": "owner",
-          "object": "document:test"
-        }
-      ],
-      "on_duplicate": "ignore"
-    },
-    "authorization_model_id": "..."
-  }'
-```
-
-**Response:**
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/json
 
 {}
 ```
 
-## API Reference
+## Optional API Parameters
 
-The new parameters are added within the `writes` and `deletes` objects in the body of a Write request.
+The parameters are added within the `writes` and `deletes` objects in the body of a Write request.
 
-### New Parameter for writes: on_duplicate
+### Writes
 
-Enables resilient behavior when writing duplicate tuples.
+The `on_duplicate` parameter controls the behavior when writing tuples.
 
-- **"error" (Default)**: The request will fail if any tuple in the writes array already exists. This maintains backward compatibility.
-- **"ignore"**: The API will silently ignore any attempt to write a tuple that already exists and will proceed to write the new ones. The request will succeed.
+- **"error" (Default)**: The request fails if any tuple in the writes array already exists. This maintains backward compatibility.
+- **"ignore"**: The API ignores any attempt to write a tuple that already exists and proceeds to write the new ones in the same transaction. The request succeeds.
 
 <WriteRequestViewer
+  skipSetup={true}
   relationshipTuples={[
     {
       user: 'user:anne',
       relation: 'reader',
-      object: 'document:2021-budget',
+      object: 'document:2025-budget',
     },
-  ]}
-  skipSetup={true}
-  expectedResponse={{
-    data: {},
-  }}
-  allowedLanguages={[
-    SupportedLanguage.JS_SDK,
-    SupportedLanguage.GO_SDK,
-    SupportedLanguage.DOTNET_SDK,
-    SupportedLanguage.PYTHON_SDK,
-    SupportedLanguage.JAVA_SDK,
-    SupportedLanguage.CURL,
-    SupportedLanguage.RPC,
   ]}
   writeOptions={{
     on_duplicate: 'ignore',
   }}
-/>
-
-### New Parameter for deletes: on_missing
-
-Enables resilient behavior when deleting missing tuples.
-
-- **"error" (Default)**: The request will fail if any tuple in the deletes array does not exist.
-- **"ignore"**: The API will silently ignore any attempt to delete a tuple that does not exist and will proceed to delete the ones that do. The request will succeed.
-
-<WriteRequestViewer
-  deleteRelationshipTuples={[
-    {
-      user: 'user:anne',
-      relation: 'writer',
-      object: 'document:2021-budget',
-    },
-  ]}
-  skipSetup={true}
   expectedResponse={{
     data: {},
   }}
   allowedLanguages={[
-    SupportedLanguage.JS_SDK,
-    SupportedLanguage.GO_SDK,
-    SupportedLanguage.DOTNET_SDK,
-    SupportedLanguage.PYTHON_SDK,
-    SupportedLanguage.JAVA_SDK,
     SupportedLanguage.CURL,
-    SupportedLanguage.RPC,
+  ]}
+
+/>
+
+:::caution
+At the moment, this feature is only available on the API. Supported SDKs will follow shortly after.
+:::
+
+### Deletes
+
+The `on_missing` parameter controls behavior when deleting tuples.
+
+- **"error" (Default)**: The request fails if any tuple in the deletes array does not exist.
+- **"ignore"**: The API ignores any attempt to delete a tuple that does not exist and proceeds to delete the ones that do exist. The request succeeds.
+
+<WriteRequestViewer
+  skipSetup={true}
+  deleteRelationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'writer',
+      object: 'document:2025-budget',
+    },
   ]}
   deleteOptions={{
     on_missing: 'ignore',
   }}
+  expectedResponse={{
+    data: {},
+  }}
+  allowedLanguages={[
+    SupportedLanguage.CURL,
+  ]}
+
 />
 
-## Flexibility and Granular Control
+## Using Both Parameters Together
+
+The decision to have separate `on_duplicate` and `on_missing` parameters is intentional. This design gives you granular, independent control over the behavior of writes and deletes within a single atomic transaction. You can mix and match strict and permissive behaviors to suit your exact needs.
+
+For example, you might perform a strict delete (`on_missing: "error"`) to confirm that a specific permission has been successfully removed before making a permissive write (`on_duplicate: "ignore"`) that guarantees the new permission exists.
 
 :::tip
-These flags can be used independently. You can perform a permissive write (`on_duplicate: "ignore"`) and a strict delete (`on_missing: "error"`) within the same atomic transaction, giving you granular control.
+This flexibility is particularly useful when you are trying to synchronize state between your application's database and <ProductName format={ProductNameFormat.ShortForm}/>. You might need a strict operation to fail so you can roll back corresponding changes in your own database, ensuring overall system consistency.
 :::
 
-**Example Request with Mixed Behavior:**
+<WriteRequestViewer
+  skipSetup={true}
+  relationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'reader',
+      object: 'document:2025-budget',
+    },
+  ]}
+  writeOptions={{
+    on_duplicate: 'ignore',
+  }}
+  deleteRelationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'writer',
+      object: 'document:2025-budget',
+    },
+  ]}
+  deleteOptions={{
+    on_missing: 'error',
+  }}
+  expectedResponse={{
+    data: {},
+  }}
+  allowedLanguages={[
+    SupportedLanguage.CURL,
+  ]}
 
-```bash
-curl -X POST 'http://localhost:8080/stores/{store_id}/write' \
-  -H 'content-type: application/json' \
-  --data '{
-    "writes": {
-      "tuple_keys": [
-        {
-          "user": "user:anne",
-          "relation": "reader",
-          "object": "document:2021-budget"
-        }
-      ],
-      "on_duplicate": "ignore"
-    },
-    "deletes": {
-      "tuple_keys": [
-        {
-          "user": "user:anne",
-          "relation": "writer",
-          "object": "document:2021-budget"
-        }
-      ],
-      "on_missing": "error"
-    },
-    "authorization_model_id": "01G50QVV17PECNVAHX1GG4Y5NC"
-  }'
-```
+/>
 
 In this example:
-- If the read permission already exists, it will be ignored and the request continues
-- If the write permission doesn't exist for deletion, the entire request will fail
+- If the permission to delete doesn't exist, the entire request will fail as intended.
+- If the tuple exists and is successfully deleted, the write permission will succeed whether the tuple already exists or is written in that moment.
 
-## Use Cases
+## Important Concepts
 
-### Data Synchronization
+### The Write Request Remains Atomic
 
-When synchronizing data between systems, you can use `on_duplicate: "ignore"` to safely replay events without worrying about duplicate writes.
+All tuples in a request will still be processed as a single atomic unit. The `ignore` option only changes the success criteria for individual operations in the request.
 
-### Idempotent Operations
+### "Best effort" ignore
 
-Make your write operations idempotent by using `on_duplicate: "ignore"` and `on_missing: "ignore"` to ensure the same operation can be safely executed multiple times.
+For writes: An `on_duplicate: 'ignore'` operation uses a "best effort" approach. We will attempt *once* to ignore duplicates and write non-duplicates, but if there is ever a conflict writing to the database (i.e. write a tuple we don’t think exists but it suddenly exists, probably due to a parallel request), we will abort the race condition immediately, and just return a `409 Conflict` error. These errors are rare, but can happen.
+For deletes: An `on_missing: 'ignore'` operation is immune to race conditions due to database-level locks. It is not possible for another request to interfere since a delete operation will always succeed if the tuple exists or not.
 
-### Resilient Batch Operations
+### "Ignore" is Not an "Upsert"
 
-In batch operations where some tuples might already exist or might have been deleted, these parameters allow you to process the entire batch without failing on individual conflicts.
+It is critical to understand that `on_duplicate: "ignore"` will not update an existing tuple, only ignore an identical tuple. This is why we do not call the operation an "idempotent" operation. 
+
+The behavior of `on_duplicate: "ignore"` is more nuanced for tuples with conditions.
+- **Identical Tuples**: If a tuple in the request is 100% identical to an existing tuple (same user, relation, object, condition name, and condition context), it will be safely ignored.
+- **Conflicting Tuples**: If a tuple key (user, relation, object) matches an existing tuple, but the condition is different, this is a conflict. The write attempt will be rejected, and the entire transaction will fail with a `409 Conflict` error. **The correct pattern to safely update a tuple's condition requires explicitly deleting the old tuple and writing the new one within the same atomic Write request.**
+
+
+
+```http
+HTTP/1.1 409 Conflict
+{
+  "code": "Aborted",
+  "message": "transactional write failed due to conflict: attempted to write a tuple which already exists with a different condition: user: 'user:anne', relation: 'writer', object: 'document:2025-budget'"
+}
+```
+
+:::tip
+The condition is not returned in the response, but you can call `/read` for this tuple to view its condition.
+:::
+
+:::warning
+The deletes operation in the Write API does not accept a condition. Attempting to include one will result in an invalid request.
+:::
 
 ## Related Sections
 
 <RelatedSection
   description="Learn more about transactional writes and managing relationship tuples."
   relatedLinks={[
+    {
+      title: '{ProductName} API',
+      description: 'Details on the write API in the {ProductName} reference guide.',
+      link: '/api/service#Relationship%20Tuples/Write',
+    },
     {
       title: 'Transactional Writes',
       description: 'Learn about updating multiple relationship tuples in a single transaction.',
@@ -250,11 +237,6 @@ In batch operations where some tuples might already exist or might have been del
       description: 'Learn about how to update relationship tuples in SDK.',
       link: '../getting-started/update-tuples',
       id: '../getting-started/update-tuples',
-    },
-    {
-      title: '{ProductName} API',
-      description: 'Details on the write API in the {ProductName} reference guide.',
-      link: '/api/service#Relationship%20Tuples/Write',
-    },
+    }
   ]}
 />
