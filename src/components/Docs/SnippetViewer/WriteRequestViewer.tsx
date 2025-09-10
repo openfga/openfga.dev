@@ -66,11 +66,24 @@ ${
     }
     case SupportedLanguage.CURL: {
       // Build the JSON object for pretty printing
-      const requestBody: any = {};
+      interface RequestBody {
+        writes?: {
+          tuple_keys: Array<Omit<RelationshipTuple, '_description'>>;
+          on_duplicate?: string;
+        };
+        deletes?: {
+          tuple_keys: Array<Omit<RelationshipTuple, '_description'>>;
+          on_missing?: string;
+        };
+        authorization_model_id?: string;
+      }
+
+      const requestBody: RequestBody = {};
 
       if (opts.relationshipTuples?.length) {
         requestBody.writes = {
           tuple_keys: opts.relationshipTuples.map((tuple) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { _description, ...cleanTuple } = tuple;
             return cleanTuple;
           }),
@@ -83,6 +96,7 @@ ${
       if (opts.deleteRelationshipTuples?.length) {
         requestBody.deletes = {
           tuple_keys: opts.deleteRelationshipTuples.map((tuple) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { _description, ...cleanTuple } = tuple;
             return cleanTuple;
           }),
