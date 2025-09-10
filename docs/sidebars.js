@@ -365,6 +365,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Duplicate Writes',
+          id: 'content/interacting/duplicate-writes',
+        },
+        {
+          type: 'doc',
           label: 'Contextual Tuples',
           id: 'content/interacting/contextual-tuples',
         },

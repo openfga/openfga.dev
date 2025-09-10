@@ -167,6 +167,10 @@ curl -X POST 'http://localhost:8080/stores/{store_id}/write' \
 
 </details>
 
+:::tip
+For handling cases where you need to write tuples that might already exist or delete tuples that might not exist, check out [Duplicate Writes](./duplicate-writes.mdx) which provides resilient write operations.
+:::
+
 The Write API allows you to send up to 100 unique tuples in the request. (This limit applies to the sum of both writes and deletes in that request). This means we can submit one API call that converts the `tweet` from public to visible to only the `user`'s followers.
 
 <WriteRequestViewer
@@ -229,6 +233,12 @@ The <ProductName format={ProductNameFormat.LongForm}/> service attempts to perfo
 <RelatedSection
   description="Check the following sections for more on how to update tuples."
   relatedLinks={[
+    {
+      title: 'Duplicate Writes',
+      description: 'Learn about making write operations resilient with duplicate writes handling.',
+      link: './duplicate-writes',
+      id: './duplicate-writes',
+    },
     {
       title: 'Update relationship tuples in SDK',
       description: 'Learn about how to update relationship tuples in SDK.',
