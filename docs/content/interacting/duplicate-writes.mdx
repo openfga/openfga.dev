@@ -56,7 +56,7 @@ HTTP/1.1 400 Bad Request
 
 {
   "code": "write_failed_due_to_invalid_input",
-  "message": "cannot write a tuple which already exists: user: 'user:anne', relation: 'owner', object: 'document:test'..."
+  "message": "cannot write a tuple which already exists: user: 'user:anne', relation: 'writer', object: 'document:2025-budget': tuple to be written already existed or the tuple to be deleted did not exist"
 }
 ```
 
@@ -86,7 +86,7 @@ The `on_duplicate` parameter controls the behavior when writing tuples.
   relationshipTuples={[
     {
       user: 'user:anne',
-      relation: 'reader',
+      relation: 'writer',
       object: 'document:2025-budget',
     },
   ]}
@@ -188,6 +188,7 @@ All tuples in a request will still be processed as a single atomic unit. The `ig
 ### "Best effort" ignore
 
 For writes: An `on_duplicate: 'ignore'` operation uses a "best effort" approach. We will attempt *once* to ignore duplicates and write non-duplicates, but if there is ever a conflict writing to the database (i.e. write a tuple we don’t think exists but it suddenly exists, probably due to a parallel request), we will abort the race condition immediately, and just return a `409 Conflict` error. These errors are rare, but can happen.
+
 For deletes: An `on_missing: 'ignore'` operation is immune to race conditions due to database-level locks. It is not possible for another request to interfere since a delete operation will always succeed if the tuple exists or not.
 
 ### "Ignore" is Not an "Upsert"
@@ -219,10 +220,10 @@ The deletes operation in the Write API does not accept a condition. Attempting t
 ## Related Sections
 
 <RelatedSection
-  description="Learn more about transactional writes and managing relationship tuples."
+  description="Learn more about different types of writes and managing relationship tuples."
   relatedLinks={[
     {
-      title: '{ProductName} API',
+      title: 'Write API',
       description: 'Details on the write API in the {ProductName} reference guide.',
       link: '/api/service#Relationship%20Tuples/Write',
     },
