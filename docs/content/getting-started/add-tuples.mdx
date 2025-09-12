@@ -87,13 +87,13 @@ This is a basic introduction to adding and deleting _<ProductConcept section="wh
 
 ## Step by step
 
-Assume that you want to add user `user:anne` to have relationship `reader` with object `document:123`
+Assume that you want to add user `user:anne` to have relationship `reader` with object `document:Z`
 
 ```json
 {
   user: 'user:anne',
   relation: 'reader',
-  object: 'document:123',
+  object: 'document:Z'
 }
 ```
 
@@ -150,7 +150,7 @@ To add the relationship tuples, we can invoke the write API.
     {
       user: 'user:anne',
       relation: 'reader',
-      object: 'document:123',
+      object: 'document:Z'
     },
   ]}
   skipSetup={true}
@@ -169,13 +169,13 @@ To add the relationship tuples, we can invoke the write API.
 
 To delete relationship tuples, we can invoke the write API.
 
-Assume that you want to delete user `user:anne`'s `reader` relationship with object `document:123`
+Assume that you want to delete user `user:anne`'s `reader` relationship with object `document:Z`
 
 ```json
 {
   user: 'user:anne',
   relation: 'reader',
-  object: 'document:123',
+  object: 'document:Z'
 }
 ```
 
@@ -184,7 +184,7 @@ Assume that you want to delete user `user:anne`'s `reader` relationship with obj
     {
       user: 'user:anne',
       relation: 'reader',
-      object: 'document:123',
+      object: 'document:Z'
     },
   ]}
   skipSetup={true}
@@ -203,21 +203,21 @@ Assume that you want to delete user `user:anne`'s `reader` relationship with obj
 
 You can combine both writes and deletes in a single transactional API request. This is useful when you need to update multiple relationships atomically. All operations in the request will either succeed together or fail together
 
-For example, you might want to remove `user:anne` as a `editor` of `document:123` while simultaneously updating `user:anne` as an `reader` of `document:123`:
+For example, you might want to remove `user:anne` as a `writer` of `document:Z` while simultaneously updating `user:anne` as an `reader` of `document:Z`:
 
 <WriteRequestViewer
   relationshipTuples={[
     {
       user: 'user:anne',
       relation: 'reader',
-      object: 'document:123',
+      object: 'document:Z'
     },
   ]}
   deleteRelationshipTuples={[
     {
       user: 'user:anne',
-      relation: 'editor',
-      object: 'document:123',
+      relation: 'writer',
+      object: 'document:Z'
     },
   ]}
   skipSetup={true}
@@ -240,14 +240,14 @@ Sometimes you might need to write a tuple that already exists, which would norma
 
 This is particularly useful for high-volume data imports, migrations, or ensuring certain permissions exist without complex error handling logic.
 
-For example, if you want to ensure `user:anne` has `reader` access to `document:123` without worrying about whether the relationship already exists in <productName format={ProductNameFormat.ShortForm}/>:
+For example, if you want to ensure `user:anne` has `reader` access to `document:Z` without worrying about whether the relationship already exists in <ProductName format={ProductNameFormat.ShortForm}/>:
 
 <WriteRequestViewer
   relationshipTuples={[
     {
       user: 'user:anne',
       relation: 'reader',
-      object: 'document:123',
+      object: 'document:Z'
     },
   ]}
   writeOptions={{
@@ -271,7 +271,7 @@ Similarly, you can use `on_missing: "ignore"` when deleting tuples that might no
     {
       user: 'user:anne',
       relation: 'writer',
-      object: 'document:123',
+      object: 'document:Z'
     },
   ]}
   deleteOptions={{

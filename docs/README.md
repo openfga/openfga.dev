@@ -32,7 +32,7 @@ It offers an HTTP API, a gRPC API, and has SDKs for programming languages includ
   - [Create a Store](./content/getting-started/create-store.mdx)
   - [Setup SDK Client for Store](./content/getting-started/setup-sdk-client.mdx)
   - [Configure Authorization Model](./content/getting-started/configure-model.mdx)
-  - [Update Relationship Tuples](./content/getting-started/update-tuples.mdx)
+  - [Add Relationship Tuples](./content/getting-started/add-tuples.mdx)
   - [Perform a Check](./content/getting-started/perform-check.mdx)
   - [Perform a List Objects Request](./content/getting-started/perform-list-objects.mdx)
   - [Use the FGA CLI](./content/getting-started/cli.mdx)
