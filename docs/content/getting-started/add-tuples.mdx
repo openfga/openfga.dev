@@ -1,8 +1,8 @@
 ---
-title: Update Relationship Tuples
+title: Add Relationship Tuples
 sidebar_position: 3
-slug: /getting-started/update-tuples
-description: Updating system state by writing and deleting relationship tuples
+slug: /getting-started/add-tuples
+description: Basic introduction to adding and deleting relationship tuples
 ---
 
 import {
@@ -20,11 +20,11 @@ import {
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Update Relationship Tuples
+# Add Relationship Tuples
 
 <DocumentationNotice />
 
-This section will illustrate how to update _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" />_.
+This is a basic introduction to adding and deleting _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuples" />_.
 
 ## Before you start
 
@@ -87,13 +87,13 @@ This section will illustrate how to update _<ProductConcept section="what-is-a-r
 
 ## Step by step
 
-Assume that you want to add user `user:anne` to have relationship `reader` with object `document:Z`
+Assume that you want to add user `user:anne` to have relationship `reader` with object `document:123`
 
 ```json
 {
   user: 'user:anne',
   relation: 'reader',
-  object: 'document:Z',
+  object: 'document:123',
 }
 ```
 
@@ -150,7 +150,7 @@ To add the relationship tuples, we can invoke the write API.
     {
       user: 'user:anne',
       relation: 'reader',
-      object: 'document:Z',
+      object: 'document:123',
     },
   ]}
   skipSetup={true}
@@ -169,13 +169,13 @@ To add the relationship tuples, we can invoke the write API.
 
 To delete relationship tuples, we can invoke the write API.
 
-Assume that you want to delete user `user:anne`'s `reader` relationship with object `document:Z`
+Assume that you want to delete user `user:anne`'s `reader` relationship with object `document:123`
 
 ```json
 {
   user: 'user:anne',
   relation: 'reader',
-  object: 'document:Z',
+  object: 'document:123',
 }
 ```
 
@@ -184,7 +184,7 @@ Assume that you want to delete user `user:anne`'s `reader` relationship with obj
     {
       user: 'user:anne',
       relation: 'reader',
-      object: 'document:Z',
+      object: 'document:123',
     },
   ]}
   skipSetup={true}
@@ -199,11 +199,107 @@ Assume that you want to delete user `user:anne`'s `reader` relationship with obj
   ]}
 />
 
+### 04. Writing and deleting relationship tuples in the same request
+
+You can combine both writes and deletes in a single transactional API request. This is useful when you need to update multiple relationships atomically. All operations in the request will either succeed together or fail together
+
+For example, you might want to remove `user:anne` as a `editor` of `document:123` while simultaneously updating `user:anne` as an `reader` of `document:123`:
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'reader',
+      object: 'document:123',
+    },
+  ]}
+  deleteRelationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'editor',
+      object: 'document:123',
+    },
+  ]}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
+    SupportedLanguage.CLI,
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+This approach ensures that both operations succeed or fail together, maintaining transactional data consistency.
+
+### 05. Ignoring duplicate tuples
+
+Sometimes you might need to write a tuple that already exists, which would normally cause the whole request to fail. You can use the `on_duplicate: "ignore"` parameter to handle this gracefully. 
+
+This is particularly useful for high-volume data imports, migrations, or ensuring certain permissions exist without complex error handling logic.
+
+For example, if you want to ensure `user:anne` has `reader` access to `document:123` without worrying about whether the relationship already exists in <productName format={ProductNameFormat.ShortForm}/>:
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'reader',
+      object: 'document:123',
+    },
+  ]}
+  writeOptions={{
+    on_duplicate: 'ignore',
+  }}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+:::caution
+At the moment, this feature is only available on the API. Supported SDKs will follow shortly after.
+:::
+
+Similarly, you can use `on_missing: "ignore"` when deleting tuples that might not exist.
+
+<WriteRequestViewer
+  skipSetup={true}
+  deleteRelationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'writer',
+      object: 'document:123',
+    },
+  ]}
+  deleteOptions={{
+    on_missing: 'ignore',
+  }}
+  expectedResponse={{
+    data: {},
+  }}
+  allowedLanguages={[
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+The behavior of `on_duplicate: "ignore"` is more nuanced for tuples with conditions.
+- **Identical Tuples**: If a tuple in the request is 100% identical to an existing tuple (same user, relation, object, condition name, and condition context), it will be safely ignored.
+- **Conflicting Tuples**: If a tuple key (user, relation, object) matches an existing tuple, but the condition is different, this is a conflict. The write attempt will be rejected, and the entire transaction will fail with a `409 Conflict` error.
+
+
 ## Related Sections
 
 <RelatedSection
   description="Check the following sections for more on how to write your authorization data"
   relatedLinks={[
+     {
+      title: 'Write API',
+      description: 'Learn more about the Write API options.',
+      link: '/api/service#Relationship%20Tuples/Write',
+    },
     {
       title: 'Managing User Access',
       description: 'Learn about how to give a user access to a particular object.',
@@ -215,12 +311,6 @@ Assume that you want to delete user `user:anne`'s `reader` relationship with obj
       description: 'Learn about how to give a group of users access to a particular object.',
       link: '../interacting/managing-group-access',
       id: '../interacting/managing-group-access.mdx',
-    },
-    {
-      title: 'Transactional Writes',
-      description: 'Learn about how to update multiple relations within the same API call.',
-      link: '../interacting/transactional-writes',
-      id: '../interacting/transactional-writes.mdx',
     },
   ]}
 />

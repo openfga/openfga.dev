@@ -100,8 +100,8 @@ const sidebars = {
         },
         {
           type: 'doc',
-          label: 'Update Relationship Tuples',
-          id: 'content/getting-started/update-tuples',
+          label: 'Add Relationship Tuples',
+          id: 'content/getting-started/add-tuples',
         },
         {
           type: 'doc',
@@ -357,16 +357,6 @@ const sidebars = {
           type: 'doc',
           label: 'Manage Relationships Between Objects',
           id: 'content/interacting/managing-relationships-between-objects',
-        },
-        {
-          type: 'doc',
-          label: 'Transactional Writes',
-          id: 'content/interacting/transactional-writes',
-        },
-        {
-          type: 'doc',
-          label: 'Duplicate Writes',
-          id: 'content/interacting/duplicate-writes',
         },
         {
           type: 'doc',
