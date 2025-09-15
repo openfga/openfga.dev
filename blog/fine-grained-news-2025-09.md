@@ -65,7 +65,10 @@ The SDKs and the CLI do not support the new options yet.
           member: true
 
 ```
+<!-- markdown-link-check-disable -->
+
   - We've been playing with an OpenFGA MCP to help with modeling. You can add the MCP by pointing your MCP client (e.g., VS Code) to https://mcp.openfga.dev/mcp. You can find the code [here](https://github.com/aaguiarz/openfga-modeling-mcp), or see it in action [here](https://www.youtube.com/watch?v=JNBtf-1NrPM). It's pretty awesome! :)
+<!-- markdown-link-check-enable -->
 
 ## New OpenFGA Adopters
 
