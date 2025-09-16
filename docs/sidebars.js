@@ -100,8 +100,8 @@ const sidebars = {
         },
         {
           type: 'doc',
-          label: 'Add Relationship Tuples',
-          id: 'content/getting-started/add-tuples',
+          label: 'Update Relationship Tuples',
+          id: 'content/getting-started/update-tuples',
         },
         {
           type: 'doc',
