@@ -201,7 +201,9 @@ Assume that you want to delete user `user:anne`'s `reader` relationship with obj
 
 ### 04. Writing and deleting relationship tuples in the same request
 
-You can combine both writes and deletes in a single transactional API request. This is useful when you need to update multiple relationships atomically. All operations in the request will either succeed together or fail together
+You can combine both writes and deletes in a single transactional API request. This is useful when you need to update multiple relationships atomically. All operations in the request will either succeed together or fail together.
+
+The Write API allows you to send up to 100 unique tuples in the request. (This limit applies to the sum of both writes and deletes in that request).
 
 For example, you might want to remove `user:anne` as a `writer` of `document:Z` while simultaneously updating `user:anne` as an `reader` of `document:Z`:
 
@@ -233,6 +235,11 @@ For example, you might want to remove `user:anne` as a `writer` of `document:Z` 
 />
 
 This approach ensures that both operations succeed or fail together, maintaining transactional data consistency.
+
+
+:::note
+When using the Write API, you cannot include the same tuple (same user, relation, and object) in the writes or deletes arrays within a single request. The API will return an error with code `cannot_allow_duplicate_tuples_in_one_request` if detected.
+:::
 
 ### 05. Ignoring duplicate tuples
 
@@ -286,7 +293,7 @@ Similarly, you can use `on_missing: "ignore"` when deleting tuples that might no
 />
 
 The behavior of `on_duplicate: "ignore"` is more nuanced for tuples with conditions.
-- **Identical Tuples**: If a tuple in the request is 100% identical to an existing tuple (same user, relation, object, condition name, and condition context), it will be safely ignored.
+- **Identical Tuples**: If a tuple in the request is identical to an existing tuple (same user, relation, object, condition name, and condition context), it will be safely ignored.
 - **Conflicting Tuples**: If a tuple key (user, relation, object) matches an existing tuple, but the condition is different, this is a conflict. The write attempt will be rejected, and the entire transaction will fail with a `409 Conflict` error.
 
 
