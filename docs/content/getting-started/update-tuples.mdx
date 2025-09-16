@@ -16,6 +16,7 @@ import {
   ProductNameFormat,
   WriteRequestViewer,
   SdkSetupPrerequisite,
+  ConfigValue,
 } from '@components/Docs';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -203,7 +204,7 @@ Assume that you want to delete user `user:anne`'s `reader` relationship with obj
 
 You can combine both writes and deletes in a single transactional API request. This is useful when you need to update multiple relationships atomically. All operations in the request will either succeed together or fail together.
 
-The Write API allows you to send up to 100 unique tuples in the request. (This limit applies to the sum of both writes and deletes in that request).
+The Write API allows you to send up to <ConfigValue name="MAX_TUPLES_PER_WRITE" /> unique tuples in the request. (This limit applies to the sum of both writes and deletes in that request).
 
 For example, you might want to remove `user:anne` as a `writer` of `document:Z` while simultaneously updating `user:anne` as an `reader` of `document:Z`:
 
