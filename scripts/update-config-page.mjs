@@ -1,5 +1,6 @@
 import https from 'node:https';
 import fs from 'node:fs/promises';
+import { execSync } from 'node:child_process';
 
 /**
  * Resolves a reference to an internal schema - external references are not supported
@@ -427,6 +428,13 @@ async function generateMdxForLatestRelease() {
         // Ensure the constants directory exists
         await fs.mkdir('src/constants', { recursive: true });
         await fs.writeFile(CONSTANTS_OUTPUT_FILE, constantsContent, 'utf8');
+        
+        // Format the generated constants file with Prettier
+        try {
+            execSync(`npx prettier --write ${CONSTANTS_OUTPUT_FILE}`, { stdio: 'inherit' });
+        } catch (error) {
+            console.warn(`Warning: Could not format ${CONSTANTS_OUTPUT_FILE} with Prettier:`, error.message);
+        }
     }
 
     return releaseData;

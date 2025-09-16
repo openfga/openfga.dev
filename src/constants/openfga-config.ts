@@ -4,7 +4,7 @@
 
 /**
  * OpenFGA Configuration Default Values
- * 
+ *
  * These constants are extracted from the OpenFGA v1.10.0 configuration schema.
  * They represent the default values for various configuration options.
  */
@@ -252,14 +252,14 @@ export const HTTP_ADDR = '0.0.0.0:8080';
  * Config key: http.corsAllowedHeaders
  * Type: array
  */
-export const HTTP_CORS_ALLOWED_HEADERS = ["*"];
+export const HTTP_CORS_ALLOWED_HEADERS = ['*'];
 
 /**
  * List of allowed origins for CORS requests
  * Config key: http.corsAllowedOrigins
  * Type: array
  */
-export const HTTP_CORS_ALLOWED_ORIGINS = ["*"];
+export const HTTP_CORS_ALLOWED_ORIGINS = ['*'];
 
 /**
  * Enables or disables the OpenFGA HTTP server. If this is set to true then 'grpc.enabled' must be set to true.
@@ -546,14 +546,14 @@ export const PROFILER_ENABLED = false;
  * Config key: requestDurationDatastoreQueryCountBuckets
  * Type: array
  */
-export const REQUEST_DURATION_DATASTORE_QUERY_COUNT_BUCKETS = [50,200];
+export const REQUEST_DURATION_DATASTORE_QUERY_COUNT_BUCKETS = [50, 200];
 
 /**
  * Dispatch count buckets used to label the histogram metric for measuring request duration.
  * Config key: requestDurationDispatchCountBuckets
  * Type: array
  */
-export const REQUEST_DURATION_DISPATCH_COUNT_BUCKETS = [50,200];
+export const REQUEST_DURATION_DISPATCH_COUNT_BUCKETS = [50, 200];
 
 /**
  * The timeout duration for a request.
