@@ -1,12 +1,15 @@
 import React from 'react';
-import * as OpenFGAConfig from '../../../constants/openfga-config';
+import * as ProductConfig from '../../../constants/product-config';
+
+// Type for config constants
+type ConfigConstants = keyof typeof ProductConfig.PRODUCT_CONFIG_DEFAULTS;
 
 interface ConfigValueProps {
   /**
    * The name of the configuration constant to display
-   * Should match the exported constant name from openfga-config.ts
+   * Should match the exported constant name from product-config.ts
    */
-  name: keyof typeof OpenFGAConfig.OPENFGA_CONFIG_DEFAULTS;
+  name: ConfigConstants;
 
   /**
    * Optional format for the value display
@@ -15,11 +18,11 @@ interface ConfigValueProps {
 }
 
 /**
- * Component to display OpenFGA configuration default values
+ * Component to display product configuration default values
  *
- * This component automatically fetches the current default value from the
- * auto-generated configuration constants, ensuring the documentation
- * stays synchronized with the actual OpenFGA configuration schema.
+ * This component fetches configuration values from the product-config.ts file,
+ * which can be auto-generated (for OpenFGA) or manually maintained (for other products).
+ * This ensures the documentation stays synchronized with the actual configuration schema.
  *
  * @example
  * ```mdx
@@ -27,11 +30,11 @@ interface ConfigValueProps {
  * ```
  */
 export const ConfigValue: React.FC<ConfigValueProps> = ({ name, format = 'code' }) => {
-  const value = OpenFGAConfig.OPENFGA_CONFIG_DEFAULTS[name];
+  const value = ProductConfig.PRODUCT_CONFIG_DEFAULTS[name];
 
   if (value === undefined) {
-    console.warn(`ConfigValue: Unknown configuration constant "${name}"`);
-    return <span style={{ color: 'red' }}>[Unknown config: {name}]</span>;
+    console.warn(`ConfigValue: Unknown configuration constant "${String(name)}"`);
+    return <span style={{ color: 'red' }}>[Unknown config: {String(name)}]</span>;
   }
 
   const displayValue = String(value);
