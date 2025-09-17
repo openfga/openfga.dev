@@ -242,7 +242,7 @@ This approach ensures that both operations succeed or fail together, maintaining
 When using the Write API, you cannot include the same tuple (same user, relation, and object) in the writes or deletes arrays within a single request. The API will return an error with code `cannot_allow_duplicate_tuples_in_one_request` if detected.
 :::
 
-### 05. Ignoring duplicate/missing tuples
+### 05. Ignoring duplicate or missing tuples
 
 Sometimes you might need to write a tuple that already exists, which would normally cause the whole request to fail. You can use the `on_duplicate: "ignore"` parameter to handle this gracefully. 
 
