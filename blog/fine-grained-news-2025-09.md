@@ -96,7 +96,7 @@ OpenFGA is also included in the [LFX Insights website](https://insights.linuxfou
 
 ## OpenFGA to CNCF Incubation!
 
-We are going through the due diligence project to be approved for the CNCF Incubation stage with the [CNCF Technical Oversight Committee](https://www.cncf.io/people/technical-oversight-committee/). They are currently interviewing OpenFGA adopters. Thanks to Canonical, Grafana, Docker, Read.AI, Agicap, Sourcegraph, Zuplo, and Custodian for agreeing to be interviewed by the CNCF!
+We are going through the due diligence process to be approved for the CNCF Incubation stage with the [CNCF Technical Oversight Committee](https://www.cncf.io/people/technical-oversight-committee/). They are currently interviewing OpenFGA adopters. Thanks to Canonical, Grafana, Docker, Read.AI, Agicap, Sourcegraph, Zuplo, and Custodian for agreeing to be interviewed by the CNCF!
 
 ## Upcoming Events: KubeCon North America & All Things Open
 
