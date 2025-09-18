@@ -12,7 +12,7 @@ hide_table_of_contents: false
 
 After a long hiatus, we are back with Fine Grained News! The best way to keep up to date with the OpenFGA community! 
 
-First of all, we want to thank the OpenFGA community for helping OpenFGA get beyond 4k stars! 
+First of all, we want to thank the OpenFGA community for helping the [OpenFGA Repository](https://github.com/openfga/) get beyond 4k stars!
 
 ## What have we been up to
 
@@ -65,6 +65,9 @@ The SDKs and the CLI will add support for these options over the coming month.
           member: true
 
 ```
+
+  - OpenFGA includes now a [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) (HTTP file)[https://github.com/openfga/openfga/tree/main/docs/http] to make it simple to use the OpenFGA API.
+
 <!-- markdown-link-check-disable -->
 
   - We've been playing with an OpenFGA MCP to help with modeling. You can add the MCP by pointing your MCP client (e.g., VS Code) to https://mcp.openfga.dev/mcp. You can find the code [here](https://github.com/aaguiarz/openfga-modeling-mcp), or see it in action [here](https://www.youtube.com/watch?v=JNBtf-1NrPM). It's pretty awesome! :)
@@ -72,7 +75,7 @@ The SDKs and the CLI will add support for these options over the coming month.
 
 ## New OpenFGA Adopters
 
-The list of companies and projects that have [adopted OpenFGA](https://github.com/openfga/community/blob/main/ADOPTERS.md) keeps increasing - with the following added since the last Fine-Grained News was published:
+The list of companies/projects keeps increasing! These adopters were added since the last edition of Fine Grained News:
 
 - [Headspace](https://www.headspace.com/join-us): Headspace uses OpenFGA to manage entitlements for its users based on their subscriptions. OpenFGA is also used to determine availability of features and content based on regionality and language. 
 - [EarthScope Consortium](https://www.earthscope.org/): EarthScope Consortium supports transformative global geophysical research and education. They leverage OpenFGA to authorize researcher access to hundreds of thousands of data streams from geophysical sensors located all over the world. 
