@@ -21,7 +21,7 @@ First of all, we want to thank the OpenFGA community for helping OpenFGA get bey
 The OpenFGA team has been mostly focused on performance improvements, and we are close to finishing a big round of improvements. 
 
 - The `/check` endpoint is now **up to 10x faster** in some scenarios
-- The `/list-objects` endpoint is **up to 5x faster** in some scenarios. `/list-objects` enhancements are still behind an experimental flag
+- The `/list-objects` endpoint is **up to 5x faster** in some scenarios (the enhancements are still behind an experimental flag).
 - The caching implementation has a more sophisticated eviction mechanism that allows OpenFGA to cache entries for a longer time
 
 ### Improved Write API
