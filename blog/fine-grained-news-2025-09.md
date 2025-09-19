@@ -72,7 +72,7 @@ The SDKs and the CLI do not support the new options yet.
 
 ## New OpenFGA Adopters
 
-The list of companies/projects keeps increasing! These were added since the last edition of Fine Grained News:
+The list of companies and projects that have [adopted OpenFGA](https://github.com/openfga/community/blob/main/ADOPTERS.md) keeps increasing - with the following added since the last Fine-Grained News was published:
 
 - [Headspace](https://www.headspace.com/join-us): Headspace uses OpenFGA to manage entitlements for its users based on their subscriptions. OpenFGA is also used to determine availability of features and content based on regionality and language. 
 - [EarthScope Consortium](https://www.earthscope.org/): EarthScope Consortium supports transformative global geophysical research and education. They leverage OpenFGA to authorize researcher access to hundreds of thousands of data streams from geophysical sensors located all over the world. 
