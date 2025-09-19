@@ -87,9 +87,10 @@ The list of companies/projects keeps increasing! These adopters were added since
 
 You can also learn how OpenFGA powers [NeoNephos](https://neonephos.org/), a new Linux Foundation project that's dedicated to advancing open source projects that align with the strategic objectives of the EU's IPCEI-CIS, in [this Open Source Summit](https://www.youtube.com/watch?v=vpDGQgCaLt8) presentation by [Bastian Echterhölter](https://www.linkedin.com/in/bastianechterhoelter/) & [Aaron Schweig](https://www.linkedin.com/in/aaron-schweig-471707199/) from SAP.
 
+The [Linux Foundation](https://www.linuxfoundation.org/) is using OpenFGA for their new platform. You can see their OpenFGA authorization model [here](https://github.com/linuxfoundation/lfx-v2-helm/blob/f40018f3031ad106f52cfb29b3f9103821ad63b5/charts/lfx-platform/templates/openfga/model.yaml#L25).
+
 [Nagarro](https://www.nagarro.com/) published [a case study](https://www.linkedin.com/posts/nagarro_schneider-success-story-activity-7366395183585763329-up7m/) detailing how they helped [Schneider Electric](https://www.se.com/) with an OpenFGA implementation.
 
-The [Linux Foundation](https://www.linuxfoundation.org/) is using OpenFGA for their new platform. You can see their OpenFGA authorization model [here](https://github.com/linuxfoundation/lfx-v2-helm/blob/f40018f3031ad106f52cfb29b3f9103821ad63b5/charts/lfx-platform/templates/openfga/model.yaml#L25).
 
 ## OpenFGA Security Posture
 
