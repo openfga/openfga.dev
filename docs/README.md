@@ -72,7 +72,6 @@ It offers an HTTP API, a gRPC API, and has SDKs for programming languages includ
   - [Manage Group Access](./content/interacting/managing-user-access.mdx)
   - [Manage Group Membership](./content/interacting/managing-group-membership.mdx)
   - [Manage Relationships Between Objects](./content/interacting/managing-relationships-between-objects.mdx)
-  - [Transactional Writes](./content/interacting/transactional-writes.mdx)
   - [Relationship Queries](./content/interacting/relationship-queries.mdx)
   - [Get Tuple Changes](./content/interacting/read-tuple-changes.mdx)
   - [Search with Permissions](./content/interacting/search-with-permissions.mdx)
