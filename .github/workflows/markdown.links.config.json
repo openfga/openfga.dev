@@ -66,5 +66,5 @@
 		  }
 		}
 	  ],
-	"aliveStatusCodes": [200, 206, 403]
+	"aliveStatusCodes": [0, 200, 206, 403]
   }
