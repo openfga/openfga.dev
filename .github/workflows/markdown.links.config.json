@@ -65,6 +65,10 @@
 			"Accept-Encoding": "zstd, br, gzip, deflate"
 		  }
 		}
-	  ],
-	"aliveStatusCodes": [0, 200, 206, 403]
+    ],
+    "retryOn429": true,
+    "retryCount": 5,
+    "fallbackRetryDelay": "10s",
+    "timeout": "30s",
+    "aliveStatusCodes": [200, 206, 403]
   }
