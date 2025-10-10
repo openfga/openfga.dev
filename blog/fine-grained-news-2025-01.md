@@ -62,7 +62,7 @@ We are very grateful with the OpenFGA community, who helped shipping **126** rel
 
 ## Future community presentations
 
-[Sam Bellen](https://www.linkedin.com/in/sambellen/) will present [Can’t Touch This!](https://jfokus.se/talks/1839), a talk about access control, including OpenFGA at JFokus Stockholm.
+[Sam Bellen](https://www.linkedin.com/in/sambellen/) will present [Can’t Touch This!](https://web.archive.org/web/20250814171248/https://jfokus.se/talks/1839), a talk about access control, including OpenFGA at JFokus Stockholm.
 
 [Poovamraj Thanganadar Thiagarajan](https://www.linkedin.com/in/poovamraj/) from Okta will be presenting at KubeCon Europe, together with [Jo Guerreiro](https://www.linkedin.com/in/jmlguerreiro/) from Grafana Labs about [From Chaos To Control: Migrating Access Control To OpenFGA in a Multi-Tenant World](https://kccnceu2025.sched.com/event/1txIJ/from-chaos-to-control-migrating-access-control-to-openfga-in-a-multi-tenant-world-jo-guerreiro-grafana-labs-poovamraj-thanganadar-thiagarajan-okta).
 

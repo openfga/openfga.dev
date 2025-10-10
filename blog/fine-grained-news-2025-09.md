@@ -66,7 +66,7 @@ The SDKs and the CLI will add support for these options over the coming month.
 
 ```
 
-  - OpenFGA includes now a [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) (HTTP file)[https://github.com/openfga/openfga/tree/main/docs/http] to make it simple to use the OpenFGA API.
+  - OpenFGA includes now a [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) [HTTP file](https://github.com/openfga/openfga/tree/main/docs/http) to make it simple to use the OpenFGA API.
 
 <!-- markdown-link-check-disable -->
 
