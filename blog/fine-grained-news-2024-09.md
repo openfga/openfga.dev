@@ -1,6 +1,6 @@
 ---
-title: Fine Grained News - September 2024
-description: Fine Grained News
+title: Fine-Grained News - September 2024
+description: Fine-Grained News
 slug: fine-grained-news-2024-09
 date: 2024-09-30
 authors: hello-caleb
@@ -8,8 +8,8 @@ tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
 hide_table_of_contents: false
 ---
-# Fine Grained News
-Welcome to the September edition of Fine Grained News! As we transition into the fall season, we’re excited to bring you the latest updates on the progress of OpenFGA.
+# Fine-Grained News
+Welcome to the September edition of Fine-Grained News! As we transition into the fall season, we’re excited to bring you the latest updates on the progress of OpenFGA.
 
 ## **Just Shipped**
 
@@ -48,4 +48,4 @@ Check out our [roadmap](https://github.com/orgs/openfga/projects/1/views/1) to s
 
 ## **See You Next Month!**
 
-Fine Grained News is published every month. If you have any feedback, want to share your OpenFGA story, or have a noteworthy update, please let us know on any of our [community channels](https://openfga.dev/community) or at community@openfga.dev.
+Fine-Grained News is published every month. If you have any feedback, want to share your OpenFGA story, or have a noteworthy update, please let us know on any of our [community channels](https://openfga.dev/community) or at community@openfga.dev.

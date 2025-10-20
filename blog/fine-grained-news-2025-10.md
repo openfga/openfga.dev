@@ -1,6 +1,6 @@
 ---
-title: Fine Grained News - October 2025
-description: Fine Grained News
+title: Fine-Grained News - October 2025
+description: Fine-Grained News
 slug: fine-grained-news-2025-10
 date: 2025-10-15
 authors: aaguiar
@@ -68,5 +68,5 @@ The OpenFGA community submitted six proposals to present at KubeCon Europe! A gr
 
 ## **See you soon!**
 
-Fine Grained News is published monthly. If you have any feedback, want to share your OpenFGA story, or have a noteworthy update, please let us know on any of our [community channels](https://openfga.dev/community) or at [community@openfga.dev](mailto:community@openfga.dev).
+Fine-Grained News is published monthly. If you have any feedback, want to share your OpenFGA story, or have a noteworthy update, please let us know on any of our [community channels](https://openfga.dev/community) or at [community@openfga.dev](mailto:community@openfga.dev).
 
