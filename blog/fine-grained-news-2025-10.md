@@ -8,14 +8,13 @@ tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
 hide_table_of_contents: false
 ---
-# Fine Grained News - October 2025
+# Fine-Grained News - October 2025
 
-Welcome to OpenFGA's Fine Grained News, October edition!
+Welcome to OpenFGA's Fine-Grained News, October edition!
 
 ## 🎉 OpenFGA to CNCF Incubation!
 
-The CNCF completed the Due Diligence process to approve moving OpenFGA to the CNCF Incubation stage, and it's now [open for comments](https://github.com/cncf/toc/pull/1923
-). Support emojis are appreciated! :)
+The CNCF completed the Due Diligence process to approve moving OpenFGA to the CNCF Incubation stage, and it's now [open for comments](https://github.com/cncf/toc/pull/1923). Support emojis are appreciated! 🚀 ❤️!
 
 Thanks to Grafana, Docker, Read.AI, Agicap, and Zuplo for taking the time to talk about their experience to the CNCF! 
 
@@ -33,13 +32,13 @@ In case you missed it, it also adds additional parameters to the [`/write`](http
 
 ### SDK & Tooling Updates
 
-- [Go SDK 0.7.3](https://github.com/openfga/go-sdk/releases/tag/v0.7.3) adds support for specifying [custom headers per request](https://github.com/openfga/go-sdk#custom-headers), and to specify [conflict resolution options for Write operations](https://github.com/openfga/go-sdk/blob/v0.7.3/README.md#conflict-options-for-write-operations).
+- [Go SDK 0.7.3](https://github.com/openfga/go-sdk/releases/tag/v0.7.3) adds support for specifying [custom headers per request](https://github.com/openfga/go-sdk#custom-headers), and to specify [conflict resolution options for Write operations](https://github.com/openfga/go-sdk/blob/v0.7.3/README.md#conflict-options-for-write-operations). [v0.7.2](https://github.com/openfga/go-sdk/releases/tag/v0.7.2) had also brought fixes to retry handling and improvements including allowing filtering stores by name and contextual tuples in Expand requests.
 
 - [.NET SDK 0.7.0](https://github.com/openfga/dotnet-sdk/releases/tag/v0.7.0) adds support for .NET Standard 2.0, .NET 8 and .NET 9. It builds on the [0.6.0 version](https://github.com/openfga/dotnet-sdk/releases/tag/v0.6.0) released a few days earlier, which has support for specifying contextual tuples and context in Assertions, contextual tuples in Expand, and other improvements.
 
-- [Java SDK 0.9.1](https://github.com/openfga/java-sdk/releases/tag/v0.9.1) fixes issues when overriding request headers and correctly sends headers in the listRelations method.
+- [Java SDK 0.9.1](https://github.com/openfga/java-sdk/releases/tag/v0.9.1) fixes issues when overriding request headers.
 
-- [Python SDK 0.9.7](https://github.com/openfga/python-sdk/releases/tag/v0.9.7) adds support for specifying [custom headers per request](https://github.com/openfga/python-sdk?tab=readme-ov-file#custom-headers).
+- [Python SDK 0.9.7](https://github.com/openfga/python-sdk/releases/tag/v0.9.7) adds support for specifying [custom headers per request](https://github.com/openfga/python-sdk?tab=readme-ov-file#custom-headers), [v0.9.6](https://github.com/openfga/python-sdk/releases/tag/v0.9.6) had also brought in some enhancements.
 
 - [CLI 0.7.5](https://github.com/openfga/cli/releases/tag/v0.7.5) simplifies retrieving all tuples and ignores duplicate writes when importing tuples from a file.
 
@@ -53,7 +52,7 @@ Congrats to [Luke Woloszyn](https://www.linkedin.com/in/lukewoloszyn/), [Andrew 
 
 ### Recent Talks & Content
 
-- [Carla Urrea](https://www.linkedin.com/in/carlastabile/) published [a Linkedin Course about OpenFGA en Español](https://www.linkedin.com/learning/openfga-implementacion-de-fine-grained-authorization/que-es-openfga-y-por-que-usarlo) and a blog post about [Understanding ReBAC and ABAC Through OpenFGA and Cedar](https://auth0.com/blog/rebac-abac-openfga-cedar/). A repository with the examples used in the blog post is [here](https://github.com/openfga/openfga-cedar-comparison).
+- [Carla Urrea](https://www.linkedin.com/in/carlastabile/) published [a LinkedIn Course about OpenFGA en Español](https://www.linkedin.com/learning/openfga-implementacion-de-fine-grained-authorization/que-es-openfga-y-por-que-usarlo) and a blog post about [Understanding ReBAC and ABAC Through OpenFGA and Cedar](https://auth0.com/blog/rebac-abac-openfga-cedar/). A repository with the examples used in the blog post is [here](https://github.com/openfga/openfga-cedar-comparison).
  
 - [Deepu K Sasidharan](https://www.linkedin.com/in/deepu05/) presented about [Delay the AI Overlords: How OAuth and OpenFGA Can Keep Your AI Agents from Going Rogue](https://www.youtube.com/watch?v=-V251N-pYYI) at DevOxx.
 
