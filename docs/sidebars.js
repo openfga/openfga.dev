@@ -360,11 +360,6 @@ const sidebars = {
         },
         {
           type: 'doc',
-          label: 'Transactional Writes',
-          id: 'content/interacting/transactional-writes',
-        },
-        {
-          type: 'doc',
           label: 'Contextual Tuples',
           id: 'content/interacting/contextual-tuples',
         },

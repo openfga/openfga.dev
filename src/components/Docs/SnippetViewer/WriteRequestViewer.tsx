@@ -25,6 +25,12 @@ interface WriteRequestViewerOpts {
   isDelete?: boolean;
   skipSetup?: boolean;
   allowedLanguages?: SupportedLanguage[];
+  writeOptions?: {
+    on_duplicate?: 'error' | 'ignore';
+  };
+  deleteOptions?: {
+    on_missing?: 'error' | 'ignore';
+  };
 }
 
 function writeRequestViewer(lang: SupportedLanguage, opts: WriteRequestViewerOpts) {
@@ -59,21 +65,56 @@ ${
 }`;
     }
     case SupportedLanguage.CURL: {
-      const writeTuples = opts.relationshipTuples
-        ? opts.relationshipTuples.map((tuple) => `${JSON.stringify(tuple)}`).join(',')
-        : '';
-      const deleteTuples = opts.deleteRelationshipTuples
-        ? opts.deleteRelationshipTuples.map((tuple) => `${JSON.stringify(tuple)}`).join(',')
-        : '';
-      const writes = `"writes": { "tuple_keys" : [${writeTuples}] }`;
-      const deletes = `"deletes": { "tuple_keys" : [${deleteTuples}] }`;
-      const separator = `${opts.deleteRelationshipTuples && opts.relationshipTuples ? ',' : ''}`;
+      // Build the JSON object for pretty printing
+      interface RequestBody {
+        writes?: {
+          tuple_keys: Array<Omit<RelationshipTuple, '_description'>>;
+          on_duplicate?: string;
+        };
+        deletes?: {
+          tuple_keys: Array<Omit<RelationshipTuple, '_description'>>;
+          on_missing?: string;
+        };
+        authorization_model_id?: string;
+      }
+
+      const requestBody: RequestBody = {};
+
+      if (opts.relationshipTuples?.length) {
+        requestBody.writes = {
+          tuple_keys: opts.relationshipTuples.map((tuple) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { _description, ...cleanTuple } = tuple;
+            return cleanTuple;
+          }),
+        };
+        if (opts.writeOptions?.on_duplicate) {
+          requestBody.writes.on_duplicate = opts.writeOptions.on_duplicate;
+        }
+      }
+
+      if (opts.deleteRelationshipTuples?.length) {
+        requestBody.deletes = {
+          tuple_keys: opts.deleteRelationshipTuples.map((tuple) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { _description, ...cleanTuple } = tuple;
+            return cleanTuple;
+          }),
+        };
+        if (opts.deleteOptions?.on_missing) {
+          requestBody.deletes.on_missing = opts.deleteOptions.on_missing;
+        }
+      }
+
+      // Add authorization_model_id at the end
+      requestBody.authorization_model_id = modelId;
+
+      const prettyJson = JSON.stringify(requestBody, null, 2);
+
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/write \\
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
-  -d '{${opts.relationshipTuples ? writes : ''}${separator}${
-    opts.deleteRelationshipTuples ? deletes : ''
-  }, "authorization_model_id": "${modelId}"}'`;
+  -d '${prettyJson}'`;
     }
 
     case SupportedLanguage.JS_SDK: {
