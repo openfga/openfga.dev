@@ -1,7 +1,7 @@
 ---
 title: Reporting Performance Issues
 description: Information to gather when reporting OpenFGA performance issues
-slug: /best-practices/reporting-performance-issues
+slug: /getting-started/setup-openfga/reporting-performance-issues
 sidebar_position: 6
 ---
 
@@ -21,7 +21,7 @@ If you're experiencing performance issues with OpenFGA, gathering the right info
 The absolute best way to help us diagnose your performance issue is to provide everything needed to **fully reproduce the problem**:
 
 1. **Authorization model** (`.fga` file)
-2. **Relationship tuples** (export via CLI)
+2. **Relationship tuples** (export via the [OpenFGA CLI](https://github.com/openfga/cli))
 3. **Script or steps** that reproduce the performance problem
 
 With these three items, we can recreate your exact scenario in our own environment, which dramatically speeds up diagnosis and resolution.
@@ -69,7 +69,7 @@ Which version of OpenFGA are you running? This is critical as performance charac
 
 ### Configuration Settings
 
-Please share your configuration settings (you can omit any secrets). You can find more information on configuration in the [Configure OpenFGA documentation](../getting-started/setup-openfga/configure-openfga.mdx).
+Please share your configuration settings (you can omit any secrets). You can find more information on configuration in the [Configure OpenFGA documentation](./configure-openfga.mdx).
 
 Key settings we're interested in include:
 - Cache configuration
@@ -137,26 +137,19 @@ The best way to help us is to provide a **full reproduction** (model + tuples + 
 ## Related Sections
 
 <RelatedSection
-  description="Check the following sections for more on performance optimization and production setup."
+  description="Check the following sections for more on how to configure OpenFGA."
   relatedLinks={[
     {
+      title: 'Configuring OpenFGA',
+      description: 'Learn more about the different ways to configure OpenFGA',
+      link: './configure-openfga',
+      id: './configure-openfga',
+    },
+    {
       title: 'Running OpenFGA in Production',
-      description: 'Best practices for running OpenFGA in a production environment',
-      link: '../best-practices/running-in-production',
-      id: '../best-practices/running-in-production',
-    },
-    {
-      title: 'Consistency and Performance Tuning',
-      description: 'Learn about consistency options and performance tuning',
-      link: '../interacting/consistency',
-      id: '../interacting/consistency',
-    },
-    {
-      title: 'Configure OpenFGA',
-      description: 'Configuration options for OpenFGA server',
-      link: '../getting-started/setup-openfga/configure-openfga',
-      id: '../getting-started/setup-openfga/configure-openfga',
+      description: 'Learn the best practices of running OpenFGA in a production environment',
+      link: '../../best-practices/running-in-production',
+      id: './best-practices/running-in-production'
     }
   ]}
 />
-
