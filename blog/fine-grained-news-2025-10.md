@@ -40,7 +40,7 @@ In case you missed it, we also included in [v1.10.0](https://github.com/openfga/
 
 - [Java SDK 0.9.1](https://github.com/openfga/java-sdk/releases/tag/v0.9.1) fixes issues when overriding request headers.
 
-- [Python SDK 0.9.7](https://github.com/openfga/python-sdk/releases/tag/v0.9.7) adds support for specifying [custom headers per request](https://github.com/openfga/python-sdk?tab=readme-ov-file#custom-headers), [v0.9.6](https://github.com/openfga/python-sdk/releases/tag/v0.9.6) had also brought in some enhancements.
+- [Python SDK 0.9.7](https://github.com/openfga/python-sdk/releases/tag/v0.9.7) adds support for specifying [custom headers per request](https://github.com/openfga/python-sdk?tab=readme-ov-file#custom-headers), and [v0.9.6](https://github.com/openfga/python-sdk/releases/tag/v0.9.6) also includes some enhancements.
 
 - [CLI 0.7.5](https://github.com/openfga/cli/releases/tag/v0.7.5) simplifies retrieving all tuples and ignores duplicate writes when importing tuples from a file.
 
