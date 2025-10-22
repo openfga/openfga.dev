@@ -13,7 +13,7 @@ hide_table_of_contents: false
 
 Welcome to the first Fine-Grained News edition of 2025! January is always a good month to look back at what the OpenFGA community accomplished over the past year.
 
-## Major faatures
+## Major features
 
 Below is a list of the major features that were shipped in 2024:
 
