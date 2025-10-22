@@ -34,7 +34,7 @@ In case you missed it, we also included in [v1.10.0](https://github.com/openfga/
 
 ### SDK & Tooling Updates
 
-- [Go SDK 0.7.3](https://github.com/openfga/go-sdk/releases/tag/v0.7.3) adds support for specifying [custom headers per request](https://github.com/openfga/go-sdk#custom-headers), and to specify [conflict resolution options for Write operations](https://github.com/openfga/go-sdk/blob/v0.7.3/README.md#conflict-options-for-write-operations). [v0.7.2](https://github.com/openfga/go-sdk/releases/tag/v0.7.2) had also brought fixes to retry handling and improvements including allowing filtering stores by name and contextual tuples in Expand requests.
+- [Go SDK 0.7.3](https://github.com/openfga/go-sdk/releases/tag/v0.7.3) adds support for specifying [custom headers per request](https://github.com/openfga/go-sdk#custom-headers), and to specify [conflict resolution options for Write operations](https://github.com/openfga/go-sdk/blob/v0.7.3/README.md#conflict-options-for-write-operations). Also, [v0.7.2](https://github.com/openfga/go-sdk/releases/tag/v0.7.2) brings fixes to retry handling and improvements, including allowing filtering stores by name and contextual tuples in Expand requests.
 
 - [.NET SDK 0.8.0](https://github.com/openfga/dotnet-sdk/releases/tag/v0.8.0) adds support for specifying [custom headers per request](https://github.com/openfga/dotnet-sdk?tab=readme-ov-file#per-request-headers), and to specify [conflict resolution options for Write operations](https://github.com/openfga/dotnet-sdk?tab=readme-ov-file#conflict-options-for-write-operations).  It builds on [.NET SDK 0.7.0](https://github.com/openfga/dotnet-sdk/releases/tag/v0.7.0) that added support for .NET Standard 2.0, .NET 8 and .NET 9.
 
