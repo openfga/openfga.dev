@@ -165,9 +165,9 @@ data, err := fgaClient.Check(context.Background()).
     case SupportedLanguage.DOTNET_SDK:
       return `
 var options = new ClientCheckOptions {
-    AuthorizationModelId = "${modelId}",${
+    AuthorizationModelId = "${modelId}"${
       headers && Object.keys(headers).length > 0
-        ? `\n    Headers = new Dictionary<string, string> {\n${Object.entries(headers)
+        ? `,\n    Headers = new Dictionary<string, string> {\n${Object.entries(headers)
             .map(([key, value]) => `        { "${key}", "${value}" }`)
             .join(',\n')}\n    }`
         : ''
@@ -178,16 +178,16 @@ var body = new ClientCheckRequest {
     Relation = "${relation}",
     Object = "${object}",${
       contextualTuples
-        ? `,
-    ContextualTuples = new List<ClientTupleKey>({
+        ? `
+    ContextualTuples = new List<ClientTupleKey> {
     ${contextualTuples
       .map((tuple) => `new(user: "${tuple.user}", relation: "${tuple.relation}", _object: "${tuple.object}")`)
       .join(',\n    ')}
-})`
+    }`
         : ''
     }${
       context
-        ? `Context = new { ${Object.entries(context)
+        ? `\n    Context = new { ${Object.entries(context)
             .map(([k, v]) => `${k}="${v}"`)
             .join(',')} }`
         : ''
