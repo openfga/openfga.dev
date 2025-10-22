@@ -18,17 +18,19 @@ The CNCF completed the Due Diligence process to approve moving OpenFGA to the CN
 
 Thanks to Grafana, Docker, Read.AI, Agicap, and Zuplo for taking the time to talk about their experience to the CNCF! 
 
-Moving to Incubation is great news for the OpenFGA community and we are super excited about it!
+Moving to Incubation is great news for the OpenFGA community, and we are super excited about it!
 
 ## 🚀 What We've Shipped
 
 ### OpenFGA v1.10.0 Performance Improvements
 
-Starting with [OpenFGA v1.10.0](https://github.com/openfga/openfga/releases/tag/v1.10.0), we've included a query planner that selects resolution strategies based on runtime statistics, behind the `enable-check-optimization` flag. The planner can pick different strategies per-relation, and we've seen significant improvements in performance for some models/relations.
+Starting with [OpenFGA v1.10.0](https://github.com/openfga/openfga/releases/tag/v1.10.0), we've included a query planner that selects resolution strategies based on runtime statistics, behind the `enable-check-optimization` flag. The planner can pick different strategies per-relation, and we've seen significant improvements in performance for some models/relations. In-depth engineering blog post coming soon!
 
 ### Write Endpoint Enhancements  
 
-In case you missed it, it also adds additional parameters to the [`/write`](https://openfga.dev/api/service#/Relationship%20Tuples/Write) endpoint that allow specifying the behavior when duplicated tuples are written or non-existing tuples are deleted. We'll be completing SDK support for this feature in the next few weeks. 
+In case you missed it, to the Write API endpoint that allow specifying the expected behavior when duplicated tuples are written or non-existing tuples are deleted. We'll be completing SDK support (Go, Java, Python, .NET, JS, Ruby) for this feature in the next few weeks.
+
+In case you missed it, we also included in [v1.10.0](https://github.com/openfga/openfga/releases/tag/v1.10.0) two new (optional) parameters to the [`/write`](https://openfga.dev/api/service#/Relationship%20Tuples/Write) endpoint that allow specifying the expected behavior when duplicated tuples are written or non-existing tuples are deleted. The Go and .NET SDK already support them, and we'll be completing support for Java, Python, and Javascript in the next few weeks.
 
 ### SDK & Tooling Updates
 
@@ -58,9 +60,9 @@ Congrats to [Luke Woloszyn](https://www.linkedin.com/in/lukewoloszyn/), [Andrew 
 
 ### Upcoming Events
 
-- [Jose Padilla](https://www.linkedin.com/in/joseapadilla/) from Okta will be presenting at KubeCon North America, together with [Alice Gibbons](https://www.linkedin.com/in/alicejgibbons/) from Diagrid about [Design Patterns for Consistent Centralized Authorization](https://kccncna2025.sched.com/event/27Fek)
+- [Jose Padilla](https://www.linkedin.com/in/joseapadilla/) from Okta will be presenting at KubeCon North America, together with [Alice Gibbons](https://www.linkedin.com/in/alicejgibbons/) from Diagrid about [Design Patterns for Consistent Centralized Authorization](https://kccncna2025.sched.com/event/27Fek). Great chance to see [OpenFGA and Dapr](https://www.cncf.io/projects/dapr/) working together!
 
-- [Siddhant Khare](https://kccncna2025.sched.com/speaker/siddhant_khare.28kd1xzv), an OpenFGA maintainer from Gitpod, will host the OpenFGA Project Lightning talk [OpenFGA: Google Zanzibar Style Authorization Made Developer-Friendly](https://kccncna2025.sched.com/event/27d4i).
+- [Tyler Nix](https://www.linkedin.com/in/tylernix/) from Okta will host the OpenFGA Project Lightning talk [OpenFGA: Google Zanzibar Style Authorization Made Developer-Friendly](https://kccncna2025.sched.com/event/27d4i).
 
 OpenFGA will also have a kiosk at the KubeCon Project Pavilion. [Tyler Nix](https://www.linkedin.com/in/tyler-nix/) and [José Padilla](https://www.linkedin.com/in/joseapadilla/) will be there!
 
