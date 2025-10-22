@@ -164,11 +164,14 @@ data, err := fgaClient.Check(context.Background()).
 // data = { allowed: ${allowed} }`;
     case SupportedLanguage.DOTNET_SDK:
       return `
-var options = new ClientCheckOptions {${modelId ? `\n    AuthorizationModelId = "${modelId}",` : ''}${
-        headers && Object.keys(headers).length > 0
-          ? `\n    // .NET SDK does not yet support setting per-request headers.`
-          : ''
-      }
+var options = new ClientCheckOptions {
+    AuthorizationModelId = "${modelId}",${
+      headers && Object.keys(headers).length > 0
+        ? `\n    Headers = new Dictionary<string, string> {\n${Object.entries(headers)
+            .map(([key, value]) => `        { "${key}", "${value}" }`)
+            .join(',\n')}\n    }`
+        : ''
+    }
 };
 var body = new ClientCheckRequest {
     User = "${user}",
