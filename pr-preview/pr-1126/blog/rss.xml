@@ -4,7 +4,7 @@
         <title>OpenFGA Blog</title>
         <link>https://openfga.dev/pr-preview/pr-1126/blog</link>
         <description>OpenFGA Blog</description>
-        <lastBuildDate>Wed, 15 Oct 2025 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 23 Oct 2025 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
@@ -12,13 +12,13 @@
             <title><![CDATA[Fine-Grained News - October 2025]]></title>
             <link>https://openfga.dev/pr-preview/pr-1126/blog/fine-grained-news-2025-10</link>
             <guid>https://openfga.dev/pr-preview/pr-1126/blog/fine-grained-news-2025-10</guid>
-            <pubDate>Wed, 15 Oct 2025 00:00:00 GMT</pubDate>
+            <pubDate>Thu, 23 Oct 2025 00:00:00 GMT</pubDate>
             <description><![CDATA[Fine-Grained News]]></description>
             <content:encoded><![CDATA[<p>Welcome to OpenFGA's Fine-Grained News, October edition!</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="-openfga-to-cncf-incubation">🎉 OpenFGA to CNCF Incubation!<a href="https://openfga.dev/pr-preview/pr-1126/blog/fine-grained-news-2025-10#-openfga-to-cncf-incubation" class="hash-link" aria-label="Direct link to 🎉 OpenFGA to CNCF Incubation!" title="Direct link to 🎉 OpenFGA to CNCF Incubation!" translate="no">​</a></h2>
 <p>The CNCF completed the Due Diligence process to approve moving OpenFGA to the CNCF Incubation stage, and it's now <a href="https://github.com/cncf/toc/pull/1923" target="_blank" rel="noopener noreferrer">open for comments</a>. Support emojis are appreciated! 🚀 ❤️!</p>
-<p>Thanks to Grafana, Docker, Read.AI, Agicap, and Zuplo for taking the time to talk about their experience to the CNCF!</p>
-<p>Moving to Incubation is great news for the OpenFGA community, and we are super excited about it!</p>
+<p>Thanks to Grafana, Docker, Read.AI, Agicap, and Zuplo for taking the time to talk to the CNCF about their experience!</p>
+<p>Moving to the Incubation maturity level is great news for the OpenFGA community and we are super excited about it!</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="-what-weve-shipped">🚀 What We've Shipped<a href="https://openfga.dev/pr-preview/pr-1126/blog/fine-grained-news-2025-10#-what-weve-shipped" class="hash-link" aria-label="Direct link to 🚀 What We've Shipped" title="Direct link to 🚀 What We've Shipped" translate="no">​</a></h2>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="openfga-v1100-performance-improvements">OpenFGA v1.10.0 Performance Improvements<a href="https://openfga.dev/pr-preview/pr-1126/blog/fine-grained-news-2025-10#openfga-v1100-performance-improvements" class="hash-link" aria-label="Direct link to OpenFGA v1.10.0 Performance Improvements" title="Direct link to OpenFGA v1.10.0 Performance Improvements" translate="no">​</a></h3>
 <p>Starting with <a href="https://github.com/openfga/openfga/releases/tag/v1.10.0" target="_blank" rel="noopener noreferrer">OpenFGA v1.10.0</a>, we've included a query planner that selects resolution strategies based on runtime statistics, behind the <code>enable-check-optimization</code> flag. The planner can pick different strategies per-relation, and we've seen significant improvements in performance for some models/relations. In-depth engineering blog post coming soon!</p>
@@ -28,16 +28,16 @@
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="sdk--tooling-updates">SDK &amp; Tooling Updates<a href="https://openfga.dev/pr-preview/pr-1126/blog/fine-grained-news-2025-10#sdk--tooling-updates" class="hash-link" aria-label="Direct link to SDK &amp; Tooling Updates" title="Direct link to SDK &amp; Tooling Updates" translate="no">​</a></h3>
 <ul>
 <li>
-<p><a href="https://github.com/openfga/go-sdk/releases/tag/v0.7.3" target="_blank" rel="noopener noreferrer">Go SDK 0.7.3</a> adds support for specifying <a href="https://github.com/openfga/go-sdk#custom-headers" target="_blank" rel="noopener noreferrer">custom headers per request</a>, and to specify <a href="https://github.com/openfga/go-sdk/blob/v0.7.3/README.md#conflict-options-for-write-operations" target="_blank" rel="noopener noreferrer">conflict resolution options for Write operations</a>. <a href="https://github.com/openfga/go-sdk/releases/tag/v0.7.2" target="_blank" rel="noopener noreferrer">v0.7.2</a> had also brought fixes to retry handling and improvements including allowing filtering stores by name and contextual tuples in Expand requests.</p>
+<p><a href="https://github.com/openfga/go-sdk/releases/tag/v0.7.3" target="_blank" rel="noopener noreferrer">Go SDK 0.7.3</a> adds support for specifying <a href="https://github.com/openfga/go-sdk#custom-headers" target="_blank" rel="noopener noreferrer">custom headers per request</a>, and to specify <a href="https://github.com/openfga/go-sdk/blob/v0.7.3/README.md#conflict-options-for-write-operations" target="_blank" rel="noopener noreferrer">conflict resolution options for Write operations</a>. Also, <a href="https://github.com/openfga/go-sdk/releases/tag/v0.7.2" target="_blank" rel="noopener noreferrer">v0.7.2</a> brings fixes to retry handling and improvements, including allowing filtering stores by name and contextual tuples in Expand requests.</p>
 </li>
 <li>
-<p><a href="https://github.com/openfga/dotnet-sdk/releases/tag/v0.8.0" target="_blank" rel="noopener noreferrer">.NET SDK 0.8.0</a> adds support specifying <a href="https://github.com/openfga/dotnet-sdk?tab=readme-ov-file#per-request-headers" target="_blank" rel="noopener noreferrer">customer headers per request</a>, and to specify <a href="https://github.com/openfga/dotnet-sdk?tab=readme-ov-file#conflict-options-for-write-operations" target="_blank" rel="noopener noreferrer">conflict resolution options for Write operations</a>.  It builds on the <a href="https://github.com/openfga/dotnet-sdk/releases/tag/v0.7.0" target="_blank" rel="noopener noreferrer">.NET SDK 0.7.0</a> adds support for .NET Standard 2.0, .NET 8 and .NET 9.</p>
+<p><a href="https://github.com/openfga/dotnet-sdk/releases/tag/v0.8.0" target="_blank" rel="noopener noreferrer">.NET SDK 0.8.0</a> adds support for specifying <a href="https://github.com/openfga/dotnet-sdk?tab=readme-ov-file#per-request-headers" target="_blank" rel="noopener noreferrer">custom headers per request</a>, and to specify <a href="https://github.com/openfga/dotnet-sdk?tab=readme-ov-file#conflict-options-for-write-operations" target="_blank" rel="noopener noreferrer">conflict resolution options for Write operations</a>.  It builds on <a href="https://github.com/openfga/dotnet-sdk/releases/tag/v0.7.0" target="_blank" rel="noopener noreferrer">.NET SDK 0.7.0</a> that added support for .NET Standard 2.0, .NET 8 and .NET 9.</p>
 </li>
 <li>
 <p><a href="https://github.com/openfga/java-sdk/releases/tag/v0.9.1" target="_blank" rel="noopener noreferrer">Java SDK 0.9.1</a> fixes issues when overriding request headers.</p>
 </li>
 <li>
-<p><a href="https://github.com/openfga/python-sdk/releases/tag/v0.9.7" target="_blank" rel="noopener noreferrer">Python SDK 0.9.7</a> adds support for specifying <a href="https://github.com/openfga/python-sdk?tab=readme-ov-file#custom-headers" target="_blank" rel="noopener noreferrer">custom headers per request</a>, <a href="https://github.com/openfga/python-sdk/releases/tag/v0.9.6" target="_blank" rel="noopener noreferrer">v0.9.6</a> had also brought in some enhancements.</p>
+<p><a href="https://github.com/openfga/python-sdk/releases/tag/v0.9.7" target="_blank" rel="noopener noreferrer">Python SDK 0.9.7</a> adds support for specifying <a href="https://github.com/openfga/python-sdk?tab=readme-ov-file#custom-headers" target="_blank" rel="noopener noreferrer">custom headers per request</a>, and <a href="https://github.com/openfga/python-sdk/releases/tag/v0.9.6" target="_blank" rel="noopener noreferrer">v0.9.6</a> also includes some enhancements.</p>
 </li>
 <li>
 <p><a href="https://github.com/openfga/cli/releases/tag/v0.7.5" target="_blank" rel="noopener noreferrer">CLI 0.7.5</a> simplifies retrieving all tuples and ignores duplicate writes when importing tuples from a file.</p>
@@ -244,7 +244,7 @@
             <pubDate>Wed, 29 Jan 2025 00:00:00 GMT</pubDate>
             <description><![CDATA[Fine-Grained News]]></description>
             <content:encoded><![CDATA[<p>Welcome to the first Fine-Grained News edition of 2025! January is always a good month to look back at what the OpenFGA community accomplished over the past year.</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="major-faatures">Major faatures<a href="https://openfga.dev/pr-preview/pr-1126/blog/fine-grained-news-2025-01#major-faatures" class="hash-link" aria-label="Direct link to Major faatures" title="Direct link to Major faatures" translate="no">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="major-features">Major features<a href="https://openfga.dev/pr-preview/pr-1126/blog/fine-grained-news-2025-01#major-features" class="hash-link" aria-label="Direct link to Major features" title="Direct link to Major features" translate="no">​</a></h2>
 <p>Below is a list of the major features that were shipped in 2024:</p>
 <ul>
 <li><a href="https://openfga.dev/docs/modeling/modular-models" target="_blank" rel="noopener noreferrer">Modular Models</a></li>
