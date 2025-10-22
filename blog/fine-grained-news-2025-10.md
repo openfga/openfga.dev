@@ -2,7 +2,7 @@
 title: Fine-Grained News - October 2025
 description: Fine-Grained News
 slug: fine-grained-news-2025-10
-date: 2025-10-15
+date: 2025-10-23
 authors: aaguiar
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -18,7 +18,7 @@ The CNCF completed the Due Diligence process to approve moving OpenFGA to the CN
 
 Thanks to Grafana, Docker, Read.AI, Agicap, and Zuplo for taking the time to talk to the CNCF about their experience! 
 
-Moving to Incubation is great news for the OpenFGA community, and we are super excited about it!
+Moving to the Incubation maturity level is great news for the OpenFGA community and we are super excited about it!
 
 ## 🚀 What We've Shipped
 
