@@ -34,7 +34,7 @@ In case you missed it, it also adds additional parameters to the [`/write`](http
 
 - [Go SDK 0.7.3](https://github.com/openfga/go-sdk/releases/tag/v0.7.3) adds support for specifying [custom headers per request](https://github.com/openfga/go-sdk#custom-headers), and to specify [conflict resolution options for Write operations](https://github.com/openfga/go-sdk/blob/v0.7.3/README.md#conflict-options-for-write-operations). [v0.7.2](https://github.com/openfga/go-sdk/releases/tag/v0.7.2) had also brought fixes to retry handling and improvements including allowing filtering stores by name and contextual tuples in Expand requests.
 
-- [.NET SDK 0.7.0](https://github.com/openfga/dotnet-sdk/releases/tag/v0.7.0) adds support for .NET Standard 2.0, .NET 8 and .NET 9. It builds on the [0.6.0 version](https://github.com/openfga/dotnet-sdk/releases/tag/v0.6.0) released a few days earlier, which has support for specifying contextual tuples and context in Assertions, contextual tuples in Expand, and other improvements.
+- [.NET SDK 0.8.0](https://github.com/openfga/dotnet-sdk/releases/tag/v0.8.0) adds support specifying [customer headers per request](https://github.com/openfga/dotnet-sdk?tab=readme-ov-file#per-request-headers), and to specify [conflict resolution options for Write operations](https://github.com/openfga/dotnet-sdk?tab=readme-ov-file#conflict-options-for-write-operations).  It builds on the [.NET SDK 0.7.0](https://github.com/openfga/dotnet-sdk/releases/tag/v0.7.0) adds support for .NET Standard 2.0, .NET 8 and .NET 9.
 
 - [Java SDK 0.9.1](https://github.com/openfga/java-sdk/releases/tag/v0.9.1) fixes issues when overriding request headers.
 
