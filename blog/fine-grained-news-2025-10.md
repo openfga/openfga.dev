@@ -16,7 +16,7 @@ Welcome to OpenFGA's Fine-Grained News, October edition!
 
 The CNCF completed the Due Diligence process to approve moving OpenFGA to the CNCF Incubation stage, and it's now [open for comments](https://github.com/cncf/toc/pull/1923). Support emojis are appreciated! 🚀 ❤️!
 
-Thanks to Grafana, Docker, Read.AI, Agicap, and Zuplo for taking the time to talk about their experience to the CNCF! 
+Thanks to Grafana, Docker, Read.AI, Agicap, and Zuplo for taking the time to talk to the CNCF about their experience! 
 
 Moving to Incubation is great news for the OpenFGA community, and we are super excited about it!
 
