@@ -1,7 +1,7 @@
-import { getFilteredAllowedLangs, SupportedLanguage, DefaultAuthorizationModelId } from './SupportedLanguage';
-import { defaultOperationsViewer } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
 import { RelationshipCondition } from '@components/Docs/RelationshipTuples';
+import { getFilteredAllowedLangs, SupportedLanguage, DefaultAuthorizationModelId } from './SupportedLanguage';
+import { defaultOperationsViewer } from './DefaultTabbedViewer';
 
 interface RelationshipTuple {
   user: string;
@@ -25,11 +25,9 @@ interface WriteRequestViewerOpts {
   isDelete?: boolean;
   skipSetup?: boolean;
   allowedLanguages?: SupportedLanguage[];
-  writeOptions?: {
-    on_duplicate?: 'error' | 'ignore';
-  };
-  deleteOptions?: {
-    on_missing?: 'error' | 'ignore';
+  conflictOptions?: {
+    onDuplicateWrites?: 'error' | 'ignore';
+    onMissingDeletes?: 'error' | 'ignore';
   };
 }
 
@@ -88,8 +86,8 @@ ${
             return cleanTuple;
           }),
         };
-        if (opts.writeOptions?.on_duplicate) {
-          requestBody.writes.on_duplicate = opts.writeOptions.on_duplicate;
+        if (opts.conflictOptions?.onDuplicateWrites) {
+          requestBody.writes.on_duplicate = opts.conflictOptions.onDuplicateWrites;
         }
       }
 
@@ -101,8 +99,8 @@ ${
             return cleanTuple;
           }),
         };
-        if (opts.deleteOptions?.on_missing) {
-          requestBody.deletes.on_missing = opts.deleteOptions.on_missing;
+        if (opts.conflictOptions?.onMissingDeletes) {
+          requestBody.deletes.on_missing = opts.conflictOptions.onMissingDeletes;
         }
       }
 
@@ -209,9 +207,19 @@ await fgaClient.write({
       }`;
 
       return `
-options := ClientWriteOptions{
-    AuthorizationModelId: PtrString("${modelId}"),
-}
+options := ClientWriteOptions{${modelId ? `\n    AuthorizationModelId: openfga.PtrString("${modelId}"),` : ''}${
+        opts.conflictOptions
+          ? `\n    Conflict: ClientWriteConflictOptions{${
+              opts.conflictOptions.onDuplicateWrites
+                ? `\n        OnDuplicateWrites: CLIENT_WRITE_REQUEST_ON_DUPLICATE_WRITES_${opts.conflictOptions.onDuplicateWrites.toUpperCase()},`
+                : ''
+            }${
+              opts.conflictOptions.onMissingDeletes
+                ? `\n        OnMissingDeletes: CLIENT_WRITE_REQUEST_ON_MISSING_DELETES_${opts.conflictOptions.onMissingDeletes.toUpperCase()},`
+                : ''
+            }\n},`
+          : ''
+      }\n}
 
 body := ClientWriteRequest{${opts.relationshipTuples ? writes : ''}${opts.deleteRelationshipTuples ? deletes : ''} 
 }
@@ -274,8 +282,23 @@ ${deleteTuples}
   }`;
       const separator = `${opts.deleteRelationshipTuples && opts.relationshipTuples ? ',\n  ' : ''}`;
       return `
-var options = new ClientWriteOptions {
-    AuthorizationModelId = "${modelId}",
+var options = new ClientWriteOptions {${modelId ? `\n    AuthorizationModelId = ${modelId},` : ''}${
+        opts.conflictOptions
+          ? `
+    Conflict = new ConflictOptions {${
+      opts.conflictOptions.onDuplicateWrites
+        ? `
+        OnDuplicateWrites = OnDuplicateWrites.${opts.conflictOptions.onDuplicateWrites.charAt(0).toUpperCase() + opts.conflictOptions.onDuplicateWrites.slice(1)},`
+        : ''
+    }${
+      opts.conflictOptions.onMissingDeletes
+        ? `
+        OnMissingDeletes = OnMissingDeletes.${opts.conflictOptions.onMissingDeletes.charAt(0).toUpperCase() + opts.conflictOptions.onMissingDeletes.slice(1)}`
+        : ''
+    }
+    }`
+          : ''
+      }
 };
 var body = new ClientWriteRequest() {
     ${opts.relationshipTuples ? writes : ''}${separator}${opts.deleteRelationshipTuples ? deletes : ''},
@@ -327,9 +350,23 @@ ${_description ? `                    # ${_description}\n                    ` :
       const deletes = `    deletes=[${deleteTuples}
         ],`;
 
-      return `options = {
-    "authorization_model_id": "${modelId}"
-}
+      return `options = {${modelId ? `\n    "authorization_model_id": "${modelId}"` : ''}${
+        opts.conflictOptions
+          ? `,
+    "conflict": ConflictOptions(${
+      opts.conflictOptions.onDuplicateWrites
+        ? `
+        on_duplicate_writes=ClientWriteRequestOnDuplicateWrites.${opts.conflictOptions.onDuplicateWrites.toUpperCase()},`
+        : ''
+    }${
+      opts.conflictOptions.onMissingDeletes
+        ? `
+        on_missing_deletes=ClientWriteRequestOnMissingDeletes.${opts.conflictOptions.onMissingDeletes.toUpperCase()}`
+        : ''
+    }
+    )`
+          : ''
+      }\n}
 body = ClientWriteRequest(
     ${opts.relationshipTuples ? writes : ''}${opts.deleteRelationshipTuples ? deletes : ''}
 )
@@ -423,8 +460,22 @@ ${opts.deleteRelationshipTuples ? deletes : ''}`;
         .deletes(List.of(${deleteTuples}
         ))`;
 
-      return `var options = new ClientWriteOptions()
-        .authorizationModelId("${modelId}");
+      return `var options = new ClientWriteOptions()${
+        modelId
+          ? `
+        .authorizationModelId("${modelId}")`
+          : ''
+      }${
+        opts.conflictOptions?.onDuplicateWrites
+          ? `
+        .onDuplicate(WriteRequestWrites.OnDuplicateEnum.${opts.conflictOptions.onDuplicateWrites.toUpperCase()})`
+          : ''
+      }${
+        opts.conflictOptions?.onMissingDeletes
+          ? `
+        .onMissing(WriteRequestDeletes.OnMissingEnum.${opts.conflictOptions.onMissingDeletes.toUpperCase()})`
+          : ''
+      };
 
 var body = new ClientWriteRequest()${opts.relationshipTuples ? writes : ' '}${
         opts.deleteRelationshipTuples ? deletes : ''
