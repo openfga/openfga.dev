@@ -46,7 +46,7 @@ curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/write \
         "object": "document:123"
       }
     ],
-    "on_duplicate": "ignore" // NEW
+    "on_duplicate": "ignore"
   },
   "deletes": {
     "tuple_keys": [
@@ -56,7 +56,7 @@ curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/write \
         "object": "document:123"
       }
     ],
-    "on_missing": "ignore" // NEW
+    "on_missing": "ignore" 
   }
 }'
 ```
