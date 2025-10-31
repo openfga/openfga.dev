@@ -1,0 +1,141 @@
+# OpenFGA Documentation
+
+## Project Overview
+
+OpenFGA (Fine-Grained Authorization) is an open source authorization system based on Google's Zanzibar. It's a Cloud Native Computing Foundation (CNCF) project that provides scalable, fine-grained authorization for applications using Relationship-Based Access Control (ReBAC).
+
+## Key Information
+
+- **Website**: https://openfga.dev
+- **Main Repository**: https://github.com/openfga/openfga
+- **Documentation Repository**: https://github.com/openfga/openfga.dev
+- **License**: Apache-2.0
+- **Technology Stack**: Go, Docusaurus, React, TypeScript, JavaScript
+- **Purpose**: Documentation website for OpenFGA authorization system
+
+## Core Concepts
+
+OpenFGA implements authorization through:
+
+1. **Authorization Models** - Define relationships between users and resources
+2. **Relationship Tuples** - Store actual relationships (user:relation:object)
+3. **Configuration Language** - DSL for defining authorization models
+4. **Stores** - Isolated authorization environments
+5. **Conditional Tuples** - Attribute-based access control capabilities
+
+## Complete Documentation Structure
+
+- [What is OpenFGA](https://openfga.dev/docs/fga)
+- [Authorization Concepts](https://openfga.dev/docs/authorization-concepts)
+- [OpenFGA Concepts](https://openfga.dev/docs/concepts)
+- [Configuration Language](https://openfga.dev/docs/configuration-language)
+- [Community](https://openfga.dev/docs/community)
+#### Getting Started
+- [Overview](https://openfga.dev/docs/getting-started/overview) - Getting Started overview
+  #### Setup OpenFGA
+  - [Overview](https://openfga.dev/docs/getting-started/setup-openfga/overview) - Setup OpenFGA overview
+    - [Configure OpenFGA](https://openfga.dev/docs/getting-started/setup-openfga/configure-openfga)
+    - [Configuration Options](https://openfga.dev/docs/getting-started/setup-openfga/configuration)
+    - [🐳 Docker](https://openfga.dev/docs/getting-started/setup-openfga/docker-setup)
+    - [☸️ Kubernetes](https://openfga.dev/docs/getting-started/setup-openfga/kubernetes-setup)
+    - [🛡️Access Control](https://openfga.dev/docs/getting-started/setup-openfga/access-control)
+    - [Playground](https://openfga.dev/docs/getting-started/setup-openfga/playground)
+
+  - [Install SDK Client](https://openfga.dev/docs/getting-started/install-sdk)
+  - [Create a Store](https://openfga.dev/docs/getting-started/create-store)
+  - [Setup SDK Client for Store](https://openfga.dev/docs/getting-started/setup-sdk-client)
+  - [Configure Authorization Model](https://openfga.dev/docs/getting-started/configure-model)
+  - [Update Relationship Tuples](https://openfga.dev/docs/getting-started/update-tuples)
+  - [Perform a Check](https://openfga.dev/docs/getting-started/perform-check)
+  - [Perform a List Objects Request](https://openfga.dev/docs/getting-started/perform-list-objects)
+  - [Perform a List Users Request](https://openfga.dev/docs/getting-started/perform-list-users)
+  - [Use the FGA CLI](https://openfga.dev/docs/getting-started/cli)
+  - [Integrate Within a Framework](https://openfga.dev/docs/getting-started/framework)
+  - [Immutable Authorization Models](https://openfga.dev/docs/getting-started/immutable-models)
+  - [Implementation Best Practices](https://openfga.dev/docs/getting-started/tuples-api-best-practices)
+  - [Configure SDK Client Telemetry](https://openfga.dev/docs/getting-started/configure-telemetry)
+
+#### Modeling Guides
+- [Overview](https://openfga.dev/docs/modeling/overview) - Modeling Guides overview
+  - [Get Started with Modeling](https://openfga.dev/docs/modeling/getting-started)
+  - [Direct Access](https://openfga.dev/docs/modeling/direct-access)
+  - [User Groups](https://openfga.dev/docs/modeling/user-groups)
+  - [Roles and Permissions](https://openfga.dev/docs/modeling/roles-and-permissions)
+  - [Parent-Child Objects](https://openfga.dev/docs/modeling/parent-child)
+  - [Blocklists](https://openfga.dev/docs/modeling/blocklists)
+  - [Public Access](https://openfga.dev/docs/modeling/public-access)
+  - [Multiple Restrictions](https://openfga.dev/docs/modeling/multiple-restrictions)
+  - [Custom Roles](https://openfga.dev/docs/modeling/custom-roles)
+  - [Conditions](https://openfga.dev/docs/modeling/conditions)
+  - [Token claims as Contextual Tuples](https://openfga.dev/docs/modeling/token-claims-contextual-tuples)
+  - [Contextual and Time-Based Authorization](https://openfga.dev/docs/modeling/contextual-time-based-authorization)
+  - [Authorization Through Organization Context](https://openfga.dev/docs/modeling/organization-context-authorization)
+  - [Testing Models](https://openfga.dev/docs/modeling/testing-models)
+  - [Store File Format](https://openfga.dev/docs/modeling/store-file-format)
+  - [Modular Models](https://openfga.dev/docs/modeling/modular-models)
+  #### Building Blocks
+  - [Overview](https://openfga.dev/docs/modeling/building-blocks/overview) - Building Blocks overview
+    - [Direct Relationships](https://openfga.dev/docs/modeling/building-blocks/direct-relationships)
+    - [Concentric Relationships](https://openfga.dev/docs/modeling/building-blocks/concentric-relationships)
+    - [Object to Object Relationships](https://openfga.dev/docs/modeling/building-blocks/object-to-object-relationships)
+    - [Usersets](https://openfga.dev/docs/modeling/building-blocks/usersets)
+
+  #### Advanced Use-Cases
+  - [Overview](https://openfga.dev/docs/modeling/advanced/overview) - Advanced Use-Cases overview
+    - [Google Drive](https://openfga.dev/docs/modeling/advanced/gdrive)
+    - [GitHub](https://openfga.dev/docs/modeling/advanced/github)
+    - [Slack](https://openfga.dev/docs/modeling/advanced/slack)
+    - [IoT](https://openfga.dev/docs/modeling/advanced/iot)
+    - [Entitlements](https://openfga.dev/docs/modeling/advanced/entitlements)
+
+  #### Migrations
+  - [Overview](https://openfga.dev/docs/modeling/migrating/overview) - Migrations overview
+    - [Migrating Relations](https://openfga.dev/docs/modeling/migrating/migrating-relations)
+    - [Migrating Models](https://openfga.dev/docs/modeling/migrating/migrating-models)
+
+
+#### Interacting with the API
+- [Overview](https://openfga.dev/docs/interacting/overview) - Interacting with the API overview
+  - [Manage User Access](https://openfga.dev/docs/interacting/managing-user-access)
+  - [Manage Group Access](https://openfga.dev/docs/interacting/managing-group-access)
+  - [Manage Group Membership](https://openfga.dev/docs/interacting/managing-group-membership)
+  - [Manage Relationships Between Objects](https://openfga.dev/docs/interacting/managing-relationships-between-objects)
+  - [Contextual Tuples](https://openfga.dev/docs/interacting/contextual-tuples)
+  - [Query Consistency](https://openfga.dev/docs/interacting/consistency)
+  - [Relationship Queries](https://openfga.dev/docs/interacting/relationship-queries)
+  - [Get Tuple Changes](https://openfga.dev/docs/interacting/read-tuple-changes)
+  - [Search with Permissions](https://openfga.dev/docs/interacting/search-with-permissions)
+
+#### Best Practices
+- [Overview](https://openfga.dev/docs/best-practices/overview) - Best Practices overview
+  - [Adoption Patterns](https://openfga.dev/docs/best-practices/adoption-patterns)
+  - [Modeling Best Practices](https://openfga.dev/docs/best-practices/modeling)
+  - [Modeling Roles](https://openfga.dev/docs/best-practices/modeling-roles)
+  - [Source of Truth](https://openfga.dev/docs/best-practices/source-of-truth)
+  - [Running OpenFGA in Production](https://openfga.dev/docs/best-practices/running-in-production)
+
+
+## Supported Features
+
+- Multiple database backends (PostgreSQL, MySQL, SQLite)
+- HTTP and gRPC APIs
+- SDKs for multiple languages (JavaScript, Go, .NET, Java, Python)
+- Command Line Interface (CLI)
+- Visual Studio Code extension
+- Kubernetes deployment via Helm charts
+- OpenTelemetry integration
+- GitHub Actions for testing and deployment
+
+## Key Use Cases
+
+OpenFGA is suitable for implementing:
+- Role-Based Access Control (RBAC)
+- Attribute-Based Access Control (ABAC)
+- Resource-level permissions
+- Multi-tenant authorization
+- Complex organizational hierarchies
+- Fine-grained API access control
+
+## Community
+
+OpenFGA welcomes community contributions and is part of the CNCF ecosystem. The project provides comprehensive documentation for developers looking to implement fine-grained authorization in their applications.
