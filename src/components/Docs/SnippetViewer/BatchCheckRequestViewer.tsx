@@ -108,62 +108,71 @@ const { result } = await fgaClient.batchCheck(body, options);
 */`;
 
     case SupportedLanguage.GO_SDK:
-      return `// The Go SDK does not yet support server-side batch checks. This currently just calls the check endpoint in parallel.
+      return `// Requires >=v0.7.0 for the server side BatchCheck, earlier versions support a client-side BatchCheck with a slightly different interface
+body := ClientBatchCheckRequest{
+  Checks: []ClientBatchCheckItem{${checks
+    .map(
+      (check) => `
+    {
+      User:          "${check.user}",
+      Relation:      "${check.relation}",
+      Object:        "${check.object}",
+      CorrelationId: "${check.correlation_id}",${
+        check.contextualTuples
+          ? `
+      ContextualTuples: []ClientContextualTupleKey{
+        ${check.contextualTuples
+          .map(
+            (tuple) => `{
+          User:     "${tuple.user}",
+          Relation: "${tuple.relation}",
+          Object:   "${tuple.object}",
+        },`,
+          )
+          .join('\n        ')}
+      },`
+          : ''
+      }${
+        check.context
+          ? `
+      Context: &map[string]interface{}${JSON.stringify(check.context)},`
+          : ''
+      }
+    },`,
+    )
+    .join('')}
+  },
+}
 
-body := ClientBatchCheckBody{${checks
+options := BatchCheckOptions{
+  MaxBatchSize:         PtrInt32(50), // optional, default is 50, can be used to limit the number of checks in a single server request
+  MaxParallelRequests:  PtrInt32(10), // optional, default is 10, can be used to limit the parallelization of the BatchCheck chunks${
+    modelId
+      ? `,
+  AuthorizationModelId: PtrString("${modelId}")`
+      : ''
+  }
+}
+
+data, err := fgaClient.BatchCheck(context.Background()).Body(body).Options(options).Execute()
+
+/*
+// Results are a map keyed by correlationId
+// Example:
+data.GetResult() = map[string]BatchCheckSingleResult{${checks
         .map(
           (check) => `
-  {
-    User: "${check.user}",
-    Relation: "${check.relation}",
-    Object: "${check.object}",${
-      check.contextualTuples
-        ? `
-    ContextualTuples: []ClientTupleKey{
-      ${check.contextualTuples
-        .map(
-          (tuple) => `
-        {
-          User: "${tuple.user}",
-          Relation: "${tuple.relation}",
-          Object: "${tuple.object}",
-        },`,
-        )
-        .join('')}
-    },`
-        : ''
+  "${check.correlation_id}": {
+    Allowed: ${check.allowed},${
+      check.allowed
+        ? ''
+        : `
+    Error:   <FgaError ...>,`
     }
   },`,
         )
         .join('')}
 }
-options := ClientBatchCheckOptions{${modelId ? `\n  AuthorizationModelId: PtrString("${modelId}"),\n` : ''}}
-data, err := fgaClient.BatchCheck(context.Background()).Body(requestBody).Options(options).Execute()
-/*
-data = [${checks
-        .map(
-          (check) => `{
-  Allowed: ${check.allowed},
-  Request: {
-    User: '${check.user}',
-    Relation: '${check.relation}',
-    Object: '${check.object}'${
-      check.contextualTuples
-        ? `,\n    ContextualTuples: [${check.contextualTuples
-            .map(
-              (tuple) => `{
-      User: '${tuple.user}',
-      Relation: '${tuple.relation}',
-      Object: '${tuple.object}'
-    }`,
-            )
-            .join(',\n    ')}]
-  `
-        : '\n  '
-    }}
-}`,
-        )
-        .join(', ')}]
 */
 `;
 
