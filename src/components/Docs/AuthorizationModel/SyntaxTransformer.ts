@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
 import { AuthorizationModel, TypeDefinition } from '@openfga/sdk';
 import { transformer } from '@openfga/syntax-transformer';

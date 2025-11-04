@@ -8,7 +8,7 @@ import './swagger-ui-feature-override.css';
 const DisableAuthorizePlugin = function () {
   return {
     wrapComponents: {
-      // eslint-disable-next-line react/display-name
+       
       authorizeBtn: () => () => null,
     },
   };

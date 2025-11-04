@@ -31,7 +31,7 @@ const { authorization_model_id: id } = await fgaClient.writeAuthorizationModel($
 }
 
 function writeAuthZModelViewerGo(authorizationModel: AuthorizationModel): string {
-  /* eslint-disable no-tabs */
+   
   return `
   var writeAuthorizationModelRequestString = ${JSON.stringify(JSON.stringify(authorizationModel))}
   var body WriteAuthorizationModelRequest

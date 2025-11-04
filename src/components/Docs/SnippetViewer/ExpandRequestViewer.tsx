@@ -14,12 +14,12 @@ function expandRequestViewer(lang: SupportedLanguage, opts: ExpandRequestViewerO
   const modelId = opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId;
   switch (lang) {
     case SupportedLanguage.CLI:
-      // eslint-disable-next-line max-len
+       
       return `fga query expand --store-id=\${FGA_STORE_ID} --model-id=${modelId} ${opts.relation} ${opts.object}
 
 # Response: {"tree": ...}`;
     case SupportedLanguage.CURL:
-      // eslint-disable-next-line max-len
+       
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/expand \\
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
@@ -38,7 +38,7 @@ const { tree } = await fgaClient.expand({
 // tree = ...`;
 
     case SupportedLanguage.GO_SDK:
-      /* eslint-disable no-tabs */
+       
       return `
 options := ClientExpandOptions{
     AuthorizationModelId: PtrString("${modelId}"),
@@ -54,7 +54,7 @@ data, err := fgaClient.Expand(context.Background()).
 
 // data = { tree: ...}`;
 
-    /* eslint-enable no-tabs */
+     
     case SupportedLanguage.DOTNET_SDK:
       return `
 var options = new ClientCheckOptions {
