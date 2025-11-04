@@ -61,11 +61,12 @@ function writeRequestViewer(lang: SupportedLanguage, opts: WriteRequestViewerOpt
 ${
   opts.deleteRelationshipTuples?.length
     ? opts.deleteRelationshipTuples
-        .map((tuple) => `fga tuple delete --store-id=\${FGA_STORE_ID} ${tuple.user} ${tuple.relation} ${tuple.object}  ${
-                    opts.conflictOptions?.onMissingDeletes
-                      ? `--on-missing ${opts.conflictOptions.onMissingDeletes}`
-                      : ''
-                  }`)
+        .map(
+          (tuple) =>
+            `fga tuple delete --store-id=\${FGA_STORE_ID} ${tuple.user} ${tuple.relation} ${tuple.object}  ${
+              opts.conflictOptions?.onMissingDeletes ? `--on-missing ${opts.conflictOptions.onMissingDeletes}` : ''
+            }`,
+        )
         .join('\n')
     : ''
 }`;
@@ -155,7 +156,6 @@ await fgaClient.write({
     }
 
     case SupportedLanguage.GO_SDK: {
-       
       const writeTuples = opts.relationshipTuples
         ? opts.relationshipTuples
             .map(
@@ -422,7 +422,6 @@ response = await fga_client.write(body, options)
 
       return `${opts.relationshipTuples ? writes : ''}${separator}
 ${opts.deleteRelationshipTuples ? deletes : ''}`;
-       
     }
 
     case SupportedLanguage.JAVA_SDK: {

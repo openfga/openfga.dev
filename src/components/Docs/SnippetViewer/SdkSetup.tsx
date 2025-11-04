@@ -30,7 +30,6 @@ export function importSdkStatement(lang: SupportedLanguage, languageMappings: La
   return getMapping(lang, languageMappings).importStatement;
 }
 
- 
 export function sdkSetupHeader(lang: SupportedLanguage, languageMappings: LanguageMappings) {
   switch (lang) {
     case SupportedLanguage.CURL:
@@ -50,7 +49,6 @@ const fgaClient = new ${languageMappings['js'].apiName}({
 });`;
 
     case SupportedLanguage.GO_SDK:
-       
       return `import (
     "os"
 
@@ -70,7 +68,6 @@ func main() {
     }
 }`;
 
-     
     case SupportedLanguage.DOTNET_SDK:
       return `// import the SDK
 ${importSdkStatement(lang, languageMappings)}
@@ -89,7 +86,7 @@ class Example {
         var fgaClient = new ${languageMappings['js'].apiName}(configuration);
     }
 }`;
-     
+
     case SupportedLanguage.PYTHON_SDK:
       return `
 ${importSdkStatement(lang, languageMappings)}
@@ -131,7 +128,6 @@ public class Example {
   }
 }
 
- 
 export function SdkSetupHeader({ lang }: { lang: SupportedLanguage }): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
   const configuredLanguage = siteConfig.customFields.languageMapping as LanguageMappings;

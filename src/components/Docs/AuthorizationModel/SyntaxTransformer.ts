@@ -1,5 +1,3 @@
- 
-
 import { AuthorizationModel, TypeDefinition } from '@openfga/sdk';
 import { transformer } from '@openfga/syntax-transformer';
 import { constants } from '@openfga/frontend-utils';

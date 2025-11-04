@@ -35,7 +35,6 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
 
 # Response: {"objects": [${expectedResults.map((r) => `"${r}"`).join(', ')}]}`;
     case SupportedLanguage.CURL:
-       
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/list-objects \\
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
@@ -66,7 +65,7 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
 
 
 # Response: {"objects": [${expectedResults.map((r) => `"${r}"`).join(', ')}]}`;
-     
+
     case SupportedLanguage.JS_SDK:
       return `const response = await fgaClient.listObjects({
   user: "${user}",
@@ -97,7 +96,6 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
 });
 // response.objects = [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
     case SupportedLanguage.GO_SDK:
-       
       return `options := ClientListObjectsOptions{
     AuthorizationModelId: PtrString("${modelId}"),
 }

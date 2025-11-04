@@ -8,7 +8,6 @@ import './swagger-ui-feature-override.css';
 const DisableAuthorizePlugin = function () {
   return {
     wrapComponents: {
-       
       authorizeBtn: () => () => null,
     },
   };

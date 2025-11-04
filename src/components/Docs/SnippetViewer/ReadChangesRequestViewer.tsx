@@ -37,14 +37,13 @@ function readChangesRequestViewer(lang: SupportedLanguage, opts: ReadChangesRequ
       const tokenString = `${
         'var continuationToken = "' + (opts.continuationToken ? opts.continuationToken : '') + '";\n'
       }`;
-       
+
       const pageSizeString = `${'var pageSize = ' + (opts.pageSize ? opts.pageSize : '') + ';\n'}`;
       return `${typeString}${tokenString}${pageSizeString}
 await fgaClient.readChanges({ type }, { pageSize, continuationToken });`;
     }
 
     case SupportedLanguage.GO_SDK: {
-       
       return `options := ClientReadChangesOptions{${
         opts.pageSize ? `\n\tPageSize: PtrInt32(${opts.pageSize}),\n` : ''
       }${opts.continuationToken ? `\n\tContinuationToken: PtrString("${opts.continuationToken}"),\n` : ''}}
