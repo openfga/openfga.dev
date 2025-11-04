@@ -48,6 +48,10 @@ function writeRequestViewer(lang: SupportedLanguage, opts: WriteRequestViewerOpt
                           tuple.condition.context,
                         )}'`
                       : ''
+                  } ${
+                    opts.conflictOptions?.onDuplicateWrites
+                      ? `--on-duplicate ${opts.conflictOptions.onDuplicateWrites}`
+                      : ''
                   }`,
               )
               .join('\n')
@@ -57,7 +61,11 @@ function writeRequestViewer(lang: SupportedLanguage, opts: WriteRequestViewerOpt
 ${
   opts.deleteRelationshipTuples?.length
     ? opts.deleteRelationshipTuples
-        .map((tuple) => `fga tuple delete --store-id=\${FGA_STORE_ID} ${tuple.user} ${tuple.relation} ${tuple.object}`)
+        .map((tuple) => `fga tuple delete --store-id=\${FGA_STORE_ID} ${tuple.user} ${tuple.relation} ${tuple.object}  ${
+                    opts.conflictOptions?.onMissingDeletes
+                      ? `--on-missing ${opts.conflictOptions.onMissingDeletes}`
+                      : ''
+                  }`)
         .join('\n')
     : ''
 }`;
