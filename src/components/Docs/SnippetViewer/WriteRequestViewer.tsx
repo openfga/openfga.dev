@@ -290,7 +290,7 @@ ${deleteTuples}
   }`;
       const separator = `${opts.deleteRelationshipTuples && opts.relationshipTuples ? ',\n  ' : ''}`;
       return `
-var options = new ClientWriteOptions {${modelId ? `\n    AuthorizationModelId = ${modelId},` : ''}${
+var options = new ClientWriteOptions {${modelId ? `\n    AuthorizationModelId = "${modelId}",` : ''}${
         opts.conflictOptions
           ? `
     Conflict = new ConflictOptions {${
