@@ -371,7 +371,6 @@ Reply:${checks
 `;
 
     case SupportedLanguage.CURL: {
-       
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/batch-check \\
 -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
 -H "content-type: application/json" \\
@@ -414,7 +413,6 @@ Reply:${checks
     default:
       assertNever(lang);
   }
-   
 }
 
 export function BatchCheckRequestViewer(opts: BatchCheckRequestViewerOpts): JSX.Element {
