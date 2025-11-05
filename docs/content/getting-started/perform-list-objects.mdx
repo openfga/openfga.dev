@@ -189,8 +189,8 @@ The Streamed ListObjects API is similar to the ListObjects API, with two key dif
 1. **Streaming Response**: Instead of collecting all objects before returning a response, it streams them to the client as they are collected.
 2. **No Result Limit**: The number of results returned is only limited by the execution timeout specified in the flag `OPENFGA_LIST_OBJECTS_DEADLINE`, not by a fixed limit.
 
-:::info Node.js & Python Only
-The streaming functionality is currently available in the **Node.js SDK** and **Python SDK**. Other SDKs return results using the standard ListObjects endpoint.
+:::info
+The streaming functionality is currently available in the **Node.js SDK**, **Python SDK**, and **.NET SDK**. Other SDKs return results using the standard ListObjects endpoint.
 :::
 
 ### Using Streamed List Objects
@@ -204,6 +204,22 @@ for await (const response of fgaClient.streamedListObjects(
   { user: "user:anne", relation: "reader", type: "document" }
 )) {
   objects.push(response.object);
+}
+// objects = ["document:otherdoc", "document:planning"]
+```
+
+</TabItem>
+<TabItem value={SupportedLanguage.DOTNET_SDK} label={languageLabelMap.get(SupportedLanguage.DOTNET_SDK)}>
+
+```dotnet
+var objects = new List<string>();
+await foreach (var response in fgaClient.StreamedListObjects(
+    new ClientListObjectsRequest {
+        User = "user:anne",
+        Relation = "reader",
+        Type = "document"
+    })) {
+    objects.Add(response.Object);
 }
 // objects = ["document:otherdoc", "document:planning"]
 ```
