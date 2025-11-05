@@ -149,7 +149,7 @@ options := BatchCheckOptions{
   MaxParallelRequests:  openfga.PtrInt32(10), // optional, default is 10, can be used to limit the parallelization of the BatchCheck chunks${
     modelId
       ? `,
-  AuthorizationModelId: openfga.PtrString("${modelId}")`,
+  AuthorizationModelId: openfga.PtrString("${modelId}"),`
       : ''
   }
 }
@@ -371,7 +371,7 @@ Reply:${checks
 `;
 
     case SupportedLanguage.CURL: {
-      /* eslint-disable max-len */
+       
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/batch-check \\
 -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
 -H "content-type: application/json" \\
@@ -414,7 +414,7 @@ Reply:${checks
     default:
       assertNever(lang);
   }
-  /* eslint-enable no-tabs */
+   
 }
 
 export function BatchCheckRequestViewer(opts: BatchCheckRequestViewerOpts): JSX.Element {
