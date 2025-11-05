@@ -64,7 +64,6 @@ ${
 
 # Response: {"allowed":${allowed}}`;
     case SupportedLanguage.CURL:
-      /* eslint-disable max-len */
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/check \\
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\${
@@ -83,7 +82,7 @@ ${
   }${context ? `,"context":${JSON.stringify(context)}}` : '}'}'
 
 # Response: {"allowed":${allowed}}`;
-    /* eslint-enable max-len */
+
     case SupportedLanguage.JS_SDK:
       return `
 // Run a check
@@ -109,7 +108,6 @@ const { allowed } = await fgaClient.check({
 
 // allowed = ${allowed}`;
     case SupportedLanguage.GO_SDK:
-      /* eslint-disable no-tabs */
       return `
 options := ClientCheckOptions{${
         modelId
@@ -314,7 +312,6 @@ var response = fgaClient.check(body, options).get();
     default:
       assertNever(lang);
   }
-  /* eslint-enable no-tabs */
 }
 
 export function CheckRequestViewer(opts: CheckRequestViewerOpts): JSX.Element {
