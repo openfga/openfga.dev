@@ -147,12 +147,24 @@ ${
       const writes = `writes: [${writeTuples.length > 0 ? `${writeTuples}\n  ]` : ']'}`;
       const deletes = `deletes: [${deleteTuples.length > 0 ? `${deleteTuples}\n  ]` : ']'}`;
       const separator = `${opts.deleteRelationshipTuples && opts.relationshipTuples ? ',\n  ' : ''}`;
+
       return `
+const options = {${modelId ? `
+  authorizationModelId: "${modelId}",` : ''}${
+        opts.conflictOptions ? `
+  conflict: {${
+    opts.conflictOptions.onDuplicateWrites ? `
+    onDuplicateWrites: OnDuplicateWrites.${opts.conflictOptions.onDuplicateWrites.charAt(0).toUpperCase() + opts.conflictOptions.onDuplicateWrites.slice(1)},` : ''
+  }${
+    opts.conflictOptions.onMissingDeletes ? `
+    onMissingDeletes: OnMissingDeletes.${opts.conflictOptions.onMissingDeletes.charAt(0).toUpperCase() + opts.conflictOptions.onMissingDeletes.slice(1)}` : ''
+  }
+  }` : ''}
+};
+
 await fgaClient.write({
   ${opts.relationshipTuples ? writes : ''}${separator}${opts.deleteRelationshipTuples ? deletes : ''},
-}, {
-  authorizationModelId: "${modelId}" 
-});`;
+}, options);`;
     }
 
     case SupportedLanguage.GO_SDK: {
