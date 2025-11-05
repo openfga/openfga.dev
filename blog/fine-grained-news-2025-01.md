@@ -68,7 +68,7 @@ We are very grateful with the OpenFGA community, who helped shipping **126** rel
 
 [Andres Aguiar](https://www.linkedin.com/in/aaguiar/) from Okta was invited to present on the Maintainer’s Summit at KubeCon Europe aaout our experiences collaborating with the CNCF TAG-Security team: [A Project Maintainers Guide To TAG Security](https://maintainersummiteu2025.sched.com/event/1tj8v/a-project-maintainers-guide-to-tag-security-marina-moore-edera-andres-aguiar-okta).
 
-[Mark Laing](https://www.linkedin.com/in/mark-laing/) from Canonical will present at FOSDEM about [Fine-grained access control in LXD with OpenFGA](https://fosdem.org/2025/schedule/event/fosdem-2025-6194-fine-grained-access-control-in-lxd-with-openfga/).
+[Mark Laing](https://www.linkedin.com/in/mark-laing/) from Canonical will present at FOSDEM about [Fine-grained access control in LXD with OpenFGA](https://archive.fosdem.org/2025/schedule/event/fosdem-2025-6194-fine-grained-access-control-in-lxd-with-openfga/).
 
 ## **See You Next Month:**
 
