@@ -101,4 +101,4 @@ repository:
           adhoc: false
           ci: true
           release: true
-        comment: OSSF Scorecard is enabled for this repository
+        comment: OSSF Scorecard is enabled for this repository.
