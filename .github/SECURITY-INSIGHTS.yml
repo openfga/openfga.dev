@@ -91,7 +91,7 @@ repository:
           adhoc: false
           ci: true
           release: true
-        comment: Socket is enabled for this repo to scan for supply chain security vulnerabilities.
+        comment: Socket is enabled for this repository to scan for supply chain security vulnerabilities.
       - name: OSSF Scorecard
         type: SCA
         version: latest
