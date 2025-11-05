@@ -149,17 +149,28 @@ ${
       const separator = `${opts.deleteRelationshipTuples && opts.relationshipTuples ? ',\n  ' : ''}`;
 
       return `
-const options = {${modelId ? `
-  authorizationModelId: "${modelId}",` : ''}${
-        opts.conflictOptions ? `
+const options = {${
+        modelId
+          ? `
+  authorizationModelId: "${modelId}",`
+          : ''
+      }${
+        opts.conflictOptions
+          ? `
   conflict: {${
-    opts.conflictOptions.onDuplicateWrites ? `
-    onDuplicateWrites: OnDuplicateWrites.${opts.conflictOptions.onDuplicateWrites.charAt(0).toUpperCase() + opts.conflictOptions.onDuplicateWrites.slice(1)},` : ''
+    opts.conflictOptions.onDuplicateWrites
+      ? `
+    onDuplicateWrites: OnDuplicateWrites.${opts.conflictOptions.onDuplicateWrites.charAt(0).toUpperCase() + opts.conflictOptions.onDuplicateWrites.slice(1)},`
+      : ''
   }${
-    opts.conflictOptions.onMissingDeletes ? `
-    onMissingDeletes: OnMissingDeletes.${opts.conflictOptions.onMissingDeletes.charAt(0).toUpperCase() + opts.conflictOptions.onMissingDeletes.slice(1)}` : ''
+    opts.conflictOptions.onMissingDeletes
+      ? `
+    onMissingDeletes: OnMissingDeletes.${opts.conflictOptions.onMissingDeletes.charAt(0).toUpperCase() + opts.conflictOptions.onMissingDeletes.slice(1)}`
+      : ''
   }
-  }` : ''}
+  }`
+          : ''
+      }
 };
 
 await fgaClient.write({
