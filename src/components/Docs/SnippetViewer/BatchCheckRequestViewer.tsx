@@ -145,11 +145,11 @@ body := ClientBatchCheckRequest{
 }
 
 options := BatchCheckOptions{
-  MaxBatchSize:         PtrInt32(50), // optional, default is 50, can be used to limit the number of checks in a single server request
-  MaxParallelRequests:  PtrInt32(10), // optional, default is 10, can be used to limit the parallelization of the BatchCheck chunks${
+  MaxBatchSize:         openfga.PtrInt32(50), // optional, default is 50, can be used to limit the number of checks in a single server request
+  MaxParallelRequests:  openfga.PtrInt32(10), // optional, default is 10, can be used to limit the parallelization of the BatchCheck chunks${
     modelId
       ? `,
-  AuthorizationModelId: PtrString("${modelId}")`
+  AuthorizationModelId: openfga.PtrString("${modelId}")`,
       : ''
   }
 }
