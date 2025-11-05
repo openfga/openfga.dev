@@ -1,6 +1,6 @@
 ---
-title: Fine Grained News - January 2025
-description: Fine Grained News
+title: Fine-Grained News - January 2025
+description: Fine-Grained News
 slug: fine-grained-news-2025-01
 date: 2025-01-29
 authors: aaguiar
@@ -9,11 +9,11 @@ image: https://openfga.dev/img/og-rich-embed.png
 hide_table_of_contents: false
 ---
 
-# Fine Grained News - January 2025
+# Fine-Grained News - January 2025
 
-Welcome to the first Fine Grained News edition of 2025! January is always a good month to look back at what the OpenFGA community accomplished over the past year.
+Welcome to the first Fine-Grained News edition of 2025! January is always a good month to look back at what the OpenFGA community accomplished over the past year.
 
-## Major faatures
+## Major features
 
 Below is a list of the major features that were shipped in 2024:
 
@@ -62,7 +62,7 @@ We are very grateful with the OpenFGA community, who helped shipping **126** rel
 
 ## Future community presentations
 
-[Sam Bellen](https://www.linkedin.com/in/sambellen/) will present [Can’t Touch This!](https://jfokus.se/talks/1839), a talk about access control, including OpenFGA at JFokus Stockholm.
+[Sam Bellen](https://www.linkedin.com/in/sambellen/) will present [Can’t Touch This!](https://web.archive.org/web/20250814171248/https://jfokus.se/talks/1839), a talk about access control, including OpenFGA at JFokus Stockholm.
 
 [Poovamraj Thanganadar Thiagarajan](https://www.linkedin.com/in/poovamraj/) from Okta will be presenting at KubeCon Europe, together with [Jo Guerreiro](https://www.linkedin.com/in/jmlguerreiro/) from Grafana Labs about [From Chaos To Control: Migrating Access Control To OpenFGA in a Multi-Tenant World](https://kccnceu2025.sched.com/event/1txIJ/from-chaos-to-control-migrating-access-control-to-openfga-in-a-multi-tenant-world-jo-guerreiro-grafana-labs-poovamraj-thanganadar-thiagarajan-okta).
 
@@ -72,5 +72,5 @@ We are very grateful with the OpenFGA community, who helped shipping **126** rel
 
 ## **See You Next Month:**
 
-Fine Grained News is published every month. If you have any feedback, want to share your OpenFGA story, or have a noteworthy update, please let us know on any of our [community channels](https://openfga.dev/community) or at [community@openfga.dev](mailto:community@openfga.dev).
+Fine-Grained News is published every month. If you have any feedback, want to share your OpenFGA story, or have a noteworthy update, please let us know on any of our [community channels](https://openfga.dev/community) or at [community@openfga.dev](mailto:community@openfga.dev).
 
