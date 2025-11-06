@@ -172,13 +172,12 @@ If you want to check multiple user-object-relationship combinations in a single 
 :::note
 The BatchCheck endpoint is currently supported by:
 - JS SDK (>=[v0.8.0](https://github.com/openfga/js-sdk/releases/tag/v0.8.0))
+- .NET SDK (>=[v0.9.0](https://github.com/openfga/dotnet-sdk/releases/tag/v0.9.0))
 - Python SDK (>=[v0.9.0](https://github.com/openfga/python-sdk/releases/tag/v0.9.0))
 - Go SDK (>=[v0.7.0](https://github.com/openfga/go-sdk/releases/tag/v0.7.0))
 - Java SDK (>=[v0.8.0](https://github.com/openfga/java-sdk/releases/tag/v0.8.0))
 
-Support in the other SDKs is being worked on.
-
-In the SDKs that don't support the server-side `BatchCheck`, the `BatchCheck` method performs client-side batch checks by making multiple check requests with limited parallelization. In SDK versions that do support the server-side `BatchCheck`, the existing method has been renamed to `ClientBatchCheck`.
+In SDK versions that support the server-side `BatchCheck`, the existing method has been renamed to `ClientBatchCheck`.
 
 Refer to the README for each SDK for more information. Refer to the release notes of the relevant SDK version for more information on how to migrate from client-side to the server-side `BatchCheck`.
 :::
