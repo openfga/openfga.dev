@@ -199,12 +199,7 @@ data.GetResult() = map[string]BatchCheckSingleResult{${checks
           )
               .join(',')}
       }`
-            : ''
-          }${check.context
-            ? `,
-      Context = ${JSON.stringify(check.context)}`
           : ''
-      }
     }`,
       )
         .join(',\n    ')}
