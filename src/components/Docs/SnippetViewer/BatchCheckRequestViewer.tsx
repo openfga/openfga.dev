@@ -197,12 +197,12 @@ data.GetResult() = map[string]BatchCheckSingleResult{${checks
           Object = "${tuple.object}"
         }`,
           )
-              .join(',')}
+          .join(',')}
       }`
           : ''
-    }`,
+      }`,
       )
-        .join(',\n    ')}
+      .join(',\n    ')}
   }
 };
 
@@ -229,17 +229,17 @@ response.Result = [${checks
     Relation = "${check.relation}",
     Object = "${check.object}"${
       check.contextualTuples
-            ? `,
+        ? `,
     ContextualTuples = [${check.contextualTuples
-            .map(
-              (tuple) => `{
+      .map(
+        (tuple) => `{
       User = "${tuple.user}",
       Relation = "${tuple.relation}",
       Object = "${tuple.object}"
     }`,
-            )
-              .join(',')}]`
-            : ''
+      )
+      .join(',')}]`
+        : ''
     }
   }
 }`,
