@@ -23,8 +23,37 @@ function streamedListObjectsRequestViewer(
     case SupportedLanguage.CLI:
       return `# Note: Streamed List Objects is not currently supported in the CLI`;
     case SupportedLanguage.CURL:
-      return `# Note: Streamed List Objects requires handling NDJSON streams
-# For curl examples, see the API documentation`;
+      return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/streamed-list-objects \\
+  -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
+  -H "content-type: application/json" \\
+  -d '{
+        "authorization_model_id": "${modelId}",
+        "type": "${objectType}",
+        "relation": "${relation}",
+        "user":"${user}"${
+          contextualTuples
+            ? `,
+        "contextual_tuples": {
+          "tuple_keys": [${contextualTuples
+            .map(
+              (tuple) => `
+            {"object": "${tuple.object}", "relation": "${tuple.relation}", "user": "${tuple.user}"}`,
+            )
+            .join(',')}
+          ]
+        }`
+            : ''
+        }${
+          context
+            ? `,
+        "context":${JSON.stringify(context)}`
+            : ''
+        }
+    }'
+
+
+# Response:
+${expectedResults.map((r) => `{"result":{"object":"${r}"}}`).join('\n')}`
     case SupportedLanguage.JS_SDK:
       return `const objects = [];
 for await (const response of fgaClient.streamedListObjects(
