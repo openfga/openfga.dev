@@ -23,11 +23,9 @@ Learn more about [CNCF project stages](https://www.cncf.io/projects/).
 
 ## How We Got Here
 
-**Community and learning.** Two years of public community meetings, talks, and guides. Join us in [CNCF Slack](https://openfga.dev/docs/community) and find recordings on our [YouTube channel](https://www.youtube.com/@OpenFGA).
-
-**Adopter validation** through public adopter interviews.
-
-**Grafana Labs** joined the maintainer team.
+- Community and learning. Two years of public community meetings, talks, and guides. Join us in [CNCF Slack](https://openfga.dev/docs/community) and find recordings on our [YouTube channel](https://www.youtube.com/@OpenFGA).
+- Adopter validation through public adopter interviews.
+- Grafana Labs joined the maintainer team.
 
 ## The Journey So Far
 
@@ -73,4 +71,3 @@ Reaching Incubation is the beginning of a new chapter. We will deepen collaborat
 - Join the conversation in CNCF Slack via our [community page](https://openfga.dev/community)
 - Try OpenFGA locally and explore the [docs](https://openfga.dev)
 - Track the [roadmap](https://github.com/orgs/openfga/projects/1)
-
