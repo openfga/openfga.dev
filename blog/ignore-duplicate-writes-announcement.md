@@ -63,7 +63,7 @@ curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/write \
 
 ## Get Started
 
-Try it out and let us know what you think!
+This is supported in the latest versions of the OpenFGA API, SDKs and CLI. Try it out and let us know what you think!
 
 - [API Docs](https://openfga.dev/api/service#/Relationship%20Tuples/Write)
 - [JavaScript SDK](https://github.com/openfga/js-sdk?tab=readme-ov-file#conflict-options-for-write-operations)
