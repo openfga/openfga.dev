@@ -4,7 +4,7 @@ description: OpenFGA now supports ignoring duplicate writes and missing deletes,
 slug: ignore-duplicate-writes-announcement
 date: 2025-10-31
 authors: tylernix
-tags: [openfga,features,write-api]
+tags: [openfga,features,api]
 image: https://openfga.dev/img/og-rich-embed.png
 hide_table_of_contents: false
 ---
