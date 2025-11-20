@@ -14,7 +14,9 @@ import {
 
 <DocumentationNotice />
 
-If you're experiencing performance issues with OpenFGA, gathering the right information upfront will help us diagnose and resolve the problem much faster. This guide outlines the key details we need to investigate performance-related issues effectively.
+If you're experiencing performance issues with OpenFGA, gathering the right information upfront will help us diagnose the problem. The more details you can share, the faster we can help. 
+
+This guide outlines the key details necessary to investigate performance-related issues.
 
 ## Full Reproduction
 
@@ -22,23 +24,34 @@ The absolute best way to help us diagnose your performance issue is to provide e
 
 1. **Authorization model** (`.fga` file)
 2. **Relationship tuples** (export via the [OpenFGA CLI](https://github.com/openfga/cli))
-3. **Script or steps** that reproduce the performance problem
+3. **Script or steps** to reproduce the performance problem
 
 With these three items, we can recreate your exact scenario in our own environment, which dramatically speeds up diagnosis and resolution.
 
-:::note
-If you cannot share your real model and tuples due to data sensitivity, consider **creating a synthetic reproduction**. Build a simplified model and generate synthetic tuples that demonstrate the same performance characteristics. This approach still allows us to reproduce the issue without exposing sensitive data.
+:::warning
+If you cannot share your real model and tuples due to data sensitivity, consider **creating a synthetic reproduction**.
+
+Build a simplified model and generate mock tuples that demonstrate the same performance characteristics. This approach still allows us to reproduce the issue without exposing sensitive data.
 :::
 
 If you can provide this information, please see the sections below for details on how to export and share it. If you cannot share this level of detail due to data sensitivity or other constraints, don't worry—the following sections detail alternative information that will still help us investigate your issue.
 
-## Authorization Setup
+## Performance Investigation Requirements
 
-### Authorization Model
+### Timeline Of Events
+
+1. When did the performance issue start?
+2. Were there any changes made to your OpenFGA setup around that time? (e.g., model changes, configuration changes, infrastructure changes)
+3. Is the performance issue consistent or intermittent? If intermittent, how often does it occur?
+4. What troubleshooting have you already attempted?
+
+### Authorization Data
+
+#### Authorization Model
 
 Please provide your current authorization model (`.fga` file). This helps us understand the complexity of your relationships and potential performance implications.
 
-### Relationship Tuples
+#### Relationship Tuples
 
 The best-case scenario is if you can share an export of your relationship tuples. You can get this by running:
 
@@ -46,30 +59,27 @@ The best-case scenario is if you can share an export of your relationship tuples
 fga tuple read --output-format=csv --max-pages 0 > tuples.csv
 ```
 
-**Alternative: Synthetic Data**
+#### Alternative: Simplified Reproduction
 
-If you can't share your real tuples due to data sensitivity, consider creating a **synthetic dataset** that reproduces the same performance issue. Generate fake tuples with similar:
-- Volume (same number of tuples)
-- Cardinality patterns (similar relationship distributions)
-- Structure (same types and relations)
+If you can't share your real tuples due to data sensitivity, consider creating a **mock dataset** that reproduces the same performance issue. This allows us to reproduce the problem without handling sensitive information. Generate fake tuples with similar:
+- **Volume** (same number of tuples)
+- **Cardinality patterns** (i.e. how many or how few objects are related to another object)
+- **Structure** (same types and relations)
 
-This allows us to reproduce the problem without exposing sensitive information.
 
-**Last Resort: Cardinality Information**
+As a last resort, if you can't share tuples directly (real or mock), please provide:
+- The **cardinality** distribution for your most common object type/relation pairs
+- Approximate order of magnitude (hundreds, thousands, millions) **counts** are fine—we mainly need to understand the scale and distribution of your data
 
-If you can't share tuples directly (real or synthetic), please provide:
-- The **cardinality** (i.e., how many or how few objects are related to another object) for your most common object type/relation pairs
-- Approximate counts are fine—we mainly need to understand the scale and distribution of your data
+### OpenFGA Configuration
 
-## OpenFGA Configuration
-
-### Version Information
+#### Version Information
 
 Which version of OpenFGA are you running? This is critical as performance characteristics can vary significantly between versions.
 
-### Configuration Settings
+#### Configuration Settings
 
-Please share your configuration settings (you can omit any secrets). You can find more information on configuration in the [Configure OpenFGA documentation](./configure-openfga.mdx).
+Please share your configuration settings (you should omit any secrets). You can find more information on configuration settings in the [Configure OpenFGA documentation](./configure-openfga.mdx).
 
 Key settings we're interested in include:
 - Cache configuration
@@ -77,20 +87,20 @@ Key settings we're interested in include:
 - Database connection pool settings
 - Any performance-related flags you've enabled
 
-### Infrastructure Details
+#### Infrastructure Details
 
 - **OpenFGA nodes**: How many OpenFGA nodes/pods are you running? What are the CPU and RAM specs for each?
 - **Database**: Which database are you using (e.g., PostgreSQL, MySQL)? What are its specs (e.g., instance type, vCPU, RAM)?
 
-## Load Testing Scenario
+### Load Testing Scenario
 
 Understanding how you're testing helps us reproduce and diagnose the issue. Ideally, this would be part of your full reproduction package.
 
-### Load Testing Script
+#### Load Testing Script
 
 If you're using a load-testing script, please share it. This allows us to reproduce your scenario exactly and is one of the three key components needed for full reproduction.
 
-### Request Examples
+#### Request Examples
 
 If you don't have a script or cannot share your full reproduction, please provide example requests and responses for the calls that are slow:
 - Check API calls
@@ -99,17 +109,17 @@ If you don't have a script or cannot share your full reproduction, please provid
 - ListUsers API calls
 - Other relevant API calls
 
-### Performance Expectations
+#### Performance Expectations
 
 What are your target p95/p99 response times for these queries? Understanding your requirements helps us determine if there's a performance issue or if expectations need adjustment.
 
-## Observability
+### Observability
 
 If you cannot provide a full reproduction, observability data becomes especially valuable for diagnosing your issue.
 
 Screenshots from your monitoring dashboards are incredibly helpful! We're most interested in the following metrics, grouped by request type:
 
-### Key Metrics
+#### Key Metrics
 
 - **Request latency**: p50, p95, p99 percentiles
 - **Database query counts**: p50, p95 percentiles
@@ -118,11 +128,11 @@ Screenshots from your monitoring dashboards are incredibly helpful! We're most i
 - **Cache hit ratio**: Effectiveness of caching
 - **Goroutine count**: Concurrency patterns
 
-### Traces
+#### Traces
 
 If you have a specific query that is consistently slow, a **trace for that request is the single most valuable piece of information you can provide**. Traces allow us to see exactly where time is being spent in the request lifecycle.
 
-## How to Share This Information
+### How to Share This Information
 
 When reporting a performance issue, please:
 
@@ -132,7 +142,7 @@ When reporting a performance issue, please:
 4. If sharing sensitive information, consider creating sanitized/anonymized versions of your data
 
 :::tip
-The best way to help us is to provide a **full reproduction** (model + tuples + script). If that's not possible, providing as much of the information above as you can will still help us diagnose and resolve your performance issue!
+The absolute best way to help us diagnose your performance issue is to provide a **full reproduction** (model + tuples + script). If that's not possible, providing as much of the information above as you can will still help us investigate and resolve your performance issue.
 :::
 
 ## Related Sections
