@@ -65,11 +65,12 @@ curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/write \
 
 Try it out and let us know what you think!
 
-- [Java SDK](https://github.com/openfga/java-sdk?tab=readme-ov-file#conflict-options-for-write-operations)
+- [API Docs](https://openfga.dev/api/service#/Relationship%20Tuples/Write)
+- [JavaScript SDK](https://github.com/openfga/js-sdk?tab=readme-ov-file#conflict-options-for-write-operations)
+- [Go SDK](https://github.com/openfga/go-sdk?tab=readme-ov-file#conflict-options-for-write-operations)
 - [.NET SDK](https://github.com/openfga/dotnet-sdk?tab=readme-ov-file#conflict-options-for-write-operations)
 - [Python SDK](https://github.com/openfga/python-sdk?tab=readme-ov-file#conflict-options-for-write-operations)
-- [Go SDK](https://github.com/openfga/go-sdk?tab=readme-ov-file#conflict-options-for-write-operations)
-- [JavaScript SDK](https://github.com/openfga/js-sdk?tab=readme-ov-file#conflict-options-for-write-operations)
+- [Java SDK](https://github.com/openfga/java-sdk?tab=readme-ov-file#conflict-options-for-write-operations)
 
 Special thanks to [@phamhieu](https://github.com/phamhieu) for his [contribution](https://github.com/openfga/js-sdk/pull/276) to the JavaScript SDK! 🙏
 
