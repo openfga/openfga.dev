@@ -9,6 +9,11 @@ image: https://openfga.dev/img/og-rich-embed.png
 hide_table_of_contents: false
 ---
 
+import {
+  SupportedLanguage,
+  WriteRequestViewer,
+} from '@components/Docs';
+
 # Announcing "Ignore Duplicate Writes" in OpenFGA
 
 We've added two new optional parameters to the Write API endpoint to improve the experience of writing data to FGA. You can now gracefully ["ignore" duplicate writes and missing deletes](https://openfga.dev/docs/getting-started/update-tuples#05-ignoring-duplicate-or-missing-tuples).
@@ -31,35 +36,55 @@ Now, you can send large batches of writes and deletes without worrying about the
 
 ## See it in Action
 
-Here's an example cURL request showing the new parameters:
+For writes:
 
-```bash
-curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/write \
-  -H "Authorization: Bearer $FGA_API_TOKEN" \
-  -H "content-type: application/json" \
-  -d '{
-  "writes": {
-    "tuple_keys": [
-      {
-        "user": "user:anne",
-        "relation": "viewer",
-        "object": "document:123"
-      }
-    ],
-    "on_duplicate": "ignore"
-  },
-  "deletes": {
-    "tuple_keys": [
-      {
-        "user": "user:anne",
-        "relation": "owner",
-        "object": "document:123"
-      }
-    ],
-    "on_missing": "ignore" 
-  }
-}'
-```
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'viewer',
+      object: 'document:roadmap'
+    },
+  ]}
+  conflictOptions={{
+    onDuplicateWrites: 'ignore',
+  }}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
+    SupportedLanguage.CLI,
+    SupportedLanguage.CURL,
+  ]}
+/>
+
+And deletes:
+
+<WriteRequestViewer
+  deleteRelationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'owner',
+      object: 'document:roadmap'
+    },
+  ]}
+  conflictOptions={{
+    onMissingDeletes: 'ignore',
+  }}
+  skipSetup={true}
+  allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
+    SupportedLanguage.CLI,
+    SupportedLanguage.CURL,
+  ]}
+/>
 
 ## Get Started
 
