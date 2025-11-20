@@ -63,7 +63,7 @@ Congrats to [Luke Woloszyn](https://www.linkedin.com/in/lukewoloszyn/), [Andrew 
 
 - [Tyler Nix](https://www.linkedin.com/in/tylernix/) from Okta will host the OpenFGA Project Lightning talk [OpenFGA: Google Zanzibar Style Authorization Made Developer-Friendly](https://kccncna2025.sched.com/event/27d4i).
 
-OpenFGA will also have a kiosk at the KubeCon Project Pavilion. [Tyler Nix](https://www.linkedin.com/in/tyler-nix/) and [José Padilla](https://www.linkedin.com/in/joseapadilla/) will be there!
+OpenFGA will also have a kiosk at the KubeCon Project Pavilion. [Tyler Nix](https://www.linkedin.com/in/tylernix/) and [José Padilla](https://www.linkedin.com/in/joseapadilla/) will be there!
 
 The OpenFGA community submitted six proposals to present at KubeCon Europe! A great way to celebrate the upcoming CNCF Incubation stage!
 
