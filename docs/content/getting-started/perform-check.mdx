@@ -144,11 +144,11 @@ To obtain the [access token](https://auth0.com/docs/get-started/authentication-a
 
 ### 02. Calling Check API
 
-To check whether user `user:anne` has relationship `can_view` with object `document:Z`
+To check whether user `user:anne` has relationship `reader` with object `document:Z`
 
 <CheckRequestViewer
   user={'user:anne'}
-  relation={'can_view'}
+  relation={'reader'}
   object={'document:Z'}
   allowed={true}
   skipSetup={true}
@@ -170,9 +170,15 @@ The result's `allowed` field will return `true` if the relationship exists and `
 If you want to check multiple user-object-relationship combinations in a single request, you can use the [Batch Check](/api/service#Relationship%20Queries/BatchCheck) API endpoint. Batching authorization checks together in a single request significantly reduces overall network latency.    
 
 :::note
-The BatchCheck endpoint is currently only supported by the JS SDK (>=[v0.8.0](https://github.com/openfga/js-sdk/releases/tag/v0.8.0) and the Python SDK (>=[v0.9.0](https://github.com/openfga/python-sdk/releases/tag/v0.9.0)). Support in the other SDKs is being worked on.
+The BatchCheck endpoint is currently supported by:
+- JS SDK (>=[v0.8.0](https://github.com/openfga/js-sdk/releases/tag/v0.8.0))
+- Python SDK (>=[v0.9.0](https://github.com/openfga/python-sdk/releases/tag/v0.9.0))
+- Go SDK (>=[v0.7.0](https://github.com/openfga/go-sdk/releases/tag/v0.7.0))
+- Java SDK (>=[v0.8.0](https://github.com/openfga/java-sdk/releases/tag/v0.8.0))
 
-In the SDKs that don't support the server-side `BatchCheck`, the `BatchCheck` method performs client-side batch checks by making multiple check requests with limited parallelization, in SDK versions that do support the server-side `BatchCheck`, the existing method has been renamed to `ClientBatchCheck`.
+Support in the other SDKs is being worked on.
+
+In the SDKs that don't support the server-side `BatchCheck`, the `BatchCheck` method performs client-side batch checks by making multiple check requests with limited parallelization. In SDK versions that do support the server-side `BatchCheck`, the existing method has been renamed to `ClientBatchCheck`.
 
 Refer to the README for each SDK for more information. Refer to the release notes of the relevant SDK version for more information on how to migrate from client-side to the server-side `BatchCheck`.
 :::

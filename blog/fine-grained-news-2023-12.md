@@ -1,6 +1,6 @@
 ---
-title: Fine Grained News - December 2023
-description: Fine Grained News
+title: Fine-Grained News - December 2023
+description: Fine-Grained News
 slug: fine-grained-news-2023-12
 date: 2023-12-18
 authors: aaguiar
@@ -8,11 +8,11 @@ tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
 hide_table_of_contents: false
 ---
-# Fine Grained News
+# Fine-Grained News
 
 Hi Everyone!
 
-We've been publishing a monthly internal newsletter we called **Fine Grained News** since the beginning on 2023, and we just thought it would be a good idea to share it with the community. Yeah, we are slow thinkers!
+We've been publishing a monthly internal newsletter we called **Fine-Grained News** since the beginning on 2023, and we just thought it would be a good idea to share it with the community. Yeah, we are slow thinkers!
 
 You can expect to find here a summary of what we've been up to, what we are planning to do, and some other random stuff we think you might find interesting.
 
@@ -93,4 +93,4 @@ We have a very welcoming community, and we'd love to have you there! You can joi
 
 ## See you next month!
 
-We'll keep publishing our Fine Grained News each month, after the OpenFGA community meeting. If you have any feedback, you want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!
+We'll keep publishing our Fine-Grained News each month, after the OpenFGA community meeting. If you have any feedback, you want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!

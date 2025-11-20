@@ -1,6 +1,6 @@
 ---
-title: Fine Grained News - May 2024
-description: Fine Grained News
+title: Fine-Grained News - May 2024
+description: Fine-Grained News
 slug: fine-grained-news-2024-05
 date: 2024-05-30
 authors: aaguiar
@@ -8,9 +8,9 @@ tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
 hide_table_of_contents: false
 ---
-# Fine Grained News
+# Fine-Grained News
 
-Welcome to Fine Grained News, May edition!
+Welcome to Fine-Grained News, May edition!
 
 ## New Releases!
 
@@ -54,4 +54,4 @@ Checkout https://openfga.dev/community for all the places to find us.
 
 ## See you next month!
 
-Fine Grained News are published every month. If you have any feedback, want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!
+Fine-Grained News are published every month. If you have any feedback, want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!

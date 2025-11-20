@@ -101,7 +101,6 @@ OpenFGA implements authorization through:
   - [Manage Group Access](https://openfga.dev/docs/interacting/managing-group-access)
   - [Manage Group Membership](https://openfga.dev/docs/interacting/managing-group-membership)
   - [Manage Relationships Between Objects](https://openfga.dev/docs/interacting/managing-relationships-between-objects)
-  - [Transactional Writes](https://openfga.dev/docs/interacting/transactional-writes)
   - [Contextual Tuples](https://openfga.dev/docs/interacting/contextual-tuples)
   - [Query Consistency](https://openfga.dev/docs/interacting/consistency)
   - [Relationship Queries](https://openfga.dev/docs/interacting/relationship-queries)
