@@ -40,7 +40,7 @@ OpenFGA implements authorization through:
     - [☸️ Kubernetes](https://openfga.dev/docs/getting-started/setup-openfga/kubernetes-setup)
     - [🛡️Access Control](https://openfga.dev/docs/getting-started/setup-openfga/access-control)
     - [Playground](https://openfga.dev/docs/getting-started/setup-openfga/playground)
-    - [Reporting Performance Issues](https://openfga.dev/docs/getting-started/setup-openfga/troubleshooting-performance)
+    - [Reporting Runtime Issues](https://openfga.dev/docs/getting-started/setup-openfga/reporting-runtime-issues)
 
   - [Install SDK Client](https://openfga.dev/docs/getting-started/install-sdk)
   - [Create a Store](https://openfga.dev/docs/getting-started/create-store)

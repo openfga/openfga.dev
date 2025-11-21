@@ -78,8 +78,8 @@ const sidebars = {
             },
             {
               type: 'doc',
-              label: 'Reporting Performance Issues',
-              id: 'content/getting-started/setup-openfga/troubleshooting-performance',
+              label: 'Reporting Runtime Issues',
+              id: 'content/getting-started/setup-openfga/reporting-runtime-issues',
             },
           ],
         },
