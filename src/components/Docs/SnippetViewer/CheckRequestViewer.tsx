@@ -15,10 +15,13 @@ interface CheckRequestViewerOpts {
   context?: Record<string, any>;
   skipSetup?: boolean;
   allowedLanguages?: SupportedLanguage[];
+
+  // Optional custom headers
+  headers?: Record<string, string>;
 }
 
 function checkRequestViewer(lang: SupportedLanguage, opts: CheckRequestViewerOpts): string {
-  const { user, relation, object, allowed, contextualTuples, context } = opts;
+  const { user, relation, object, allowed, contextualTuples, context, headers } = opts;
   const modelId = opts.authorizationModelId ? opts.authorizationModelId : DefaultAuthorizationModelId;
 
   switch (lang) {
@@ -29,28 +32,48 @@ ${
     ? `
 # Note: Contextual Tuples are not supported on the playground`
     : ''
-}
+}${
+        context
+          ? `
+# Note: Check context is not supported on the playground`
+          : ''
+      }${
+        headers
+          ? `
+# Note: Custom headers are not supported on the playground`
+          : ''
+      }
 
 # Response: ${
         allowed ? 'A green path from the user to the object' : 'A red object'
       } indicating that the response from the API is \`{"allowed":${allowed ? 'true' : 'false'}}\`
 `;
     case SupportedLanguage.CLI:
-      return `fga query check --store-id=$FGA_STORE_ID --model-id=${modelId} ${user} ${relation} ${object}${
+      return `fga query check --store-id=$FGA_STORE_ID${modelId ? ` --model-id=${modelId}` : ''} ${user} ${relation} ${object}${
         contextualTuples
           ? `${contextualTuples
               .map((tuple) => ` --contextual-tuple "${tuple.user} ${tuple.relation} ${tuple.object}"`)
               .join(' ')}`
           : ''
-      }${context ? ` --context='${JSON.stringify(context)}'` : ''}
+      }${context ? ` --context='${JSON.stringify(context)}'` : ''}${
+        headers
+          ? `
+# Note: Custom headers are not supported in the CLI`
+          : ''
+      }
 
 # Response: {"allowed":${allowed}}`;
     case SupportedLanguage.CURL:
-      /* eslint-disable max-len */
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/check \\
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
-  -H "content-type: application/json" \\
-  -d '{"authorization_model_id": "${modelId}", "tuple_key":{"user":"${user}","relation":"${relation}","object":"${object}"}${
+  -H "content-type: application/json" \\${
+    headers
+      ? Object.entries(headers)
+          .map(([key, value]) => `\n  -H "${key}: ${value}" \\`)
+          .join('')
+      : ''
+  }
+  -d '{${modelId ? `"authorization_model_id": "${modelId}", ` : ''}"tuple_key":{"user":"${user}","relation":"${relation}","object":"${object}"}${
     contextualTuples
       ? `,"contextual_tuples":{"tuple_keys":[${contextualTuples
           .map((tuple) => `{"user":"${tuple.user}","relation":"${tuple.relation}","object":"${tuple.object}"}`)
@@ -59,7 +82,7 @@ ${
   }${context ? `,"context":${JSON.stringify(context)}}` : '}'}'
 
 # Response: {"allowed":${allowed}}`;
-    /* eslint-enable max-len */
+
     case SupportedLanguage.JS_SDK:
       return `
 // Run a check
@@ -72,17 +95,33 @@ const { allowed } = await fgaClient.check({
         : `
     contextualTuples: [\n      ${contextualTuples.map((tuple) => `${JSON.stringify(tuple)}`).join(',')}
     ],`
-    }${!context ? `\n  }` : `\n    context: ${JSON.stringify(context)}\n  }`}, {
-  authorizationModelId: '${modelId}',
+    }${!context ? `\n  }` : `\n    context: ${JSON.stringify(context)}\n  }`}, {${
+      modelId ? `\n    authorizationModelId: '${modelId}',` : ''
+    }${
+      headers && Object.keys(headers).length > 0
+        ? `\n    headers: {\n${Object.entries(headers)
+            .map(([key, value]) => `      "${key}": "${value}",`)
+            .join('\n')}\n  },`
+        : ''
+    }
 });
 
 // allowed = ${allowed}`;
     case SupportedLanguage.GO_SDK:
-      /* eslint-disable no-tabs */
       return `
-options := ClientCheckOptions{
-    AuthorizationModelId: PtrString("${modelId}"),
-}
+options := ClientCheckOptions{${
+        modelId
+          ? `
+    AuthorizationModelId: openfga.PtrString("${modelId}"),`
+          : ''
+      }${
+        headers && Object.keys(headers).length > 0
+          ? `\n    RequestOptions: RequestOptions{
+        Headers: map[string]string{\n${Object.entries(headers)
+          .map(([key, value]) => `            "${key}": "${value}"`)
+          .join(',\n')}\n        }\n    }`
+          : ''
+      }\n}
 
 body := ClientCheckRequest{
     User:     "${user}",
@@ -124,24 +163,29 @@ data, err := fgaClient.Check(context.Background()).
     case SupportedLanguage.DOTNET_SDK:
       return `
 var options = new ClientCheckOptions {
-    AuthorizationModelId = "${modelId}",
+    AuthorizationModelId = "${modelId}"${
+      headers && Object.keys(headers).length > 0
+        ? `,\n    Headers = new Dictionary<string, string> {\n${Object.entries(headers)
+            .map(([key, value]) => `        { "${key}", "${value}" }`)
+            .join(',\n')}\n    }`
+        : ''
+    }
 };
 var body = new ClientCheckRequest {
     User = "${user}",
     Relation = "${relation}",
     Object = "${object}",${
       contextualTuples
-        ? `,
-    ContextualTuples = new List<ClientTupleKey>({
+        ? `
+    ContextualTuples = new List<ClientTupleKey> {
     ${contextualTuples
       .map((tuple) => `new(user: "${tuple.user}", relation: "${tuple.relation}", _object: "${tuple.object}")`)
       .join(',\n    ')}
-})`
+    }`
         : ''
-    }
-    ${
+    }${
       context
-        ? `Context = new { ${Object.entries(context)
+        ? `\n    Context = new { ${Object.entries(context)
             .map(([k, v]) => `${k}="${v}"`)
             .join(',')} }`
         : ''
@@ -151,8 +195,13 @@ var response = await fgaClient.Check(body, options);
 
 // response.Allowed = ${allowed}`;
     case SupportedLanguage.PYTHON_SDK:
-      return `options = {
-    authorization_model_id="${modelId}"
+      return `options = {${modelId ? `\n    "authorization_model_id": "${modelId}",` : ''}${
+        headers && Object.keys(headers).length > 0
+          ? `\n    "headers": {\n${Object.entries(headers)
+              .map(([key, value]) => `        "${key}": "${value}"`)
+              .join(',\n')}\n    }`
+          : ''
+      }
 }
 body = ClientCheckRequest(
     user="${user}",
@@ -197,7 +246,21 @@ response = await fga_client.check(body, options)
       .join(',\n    ')}
   ],`
       : ''
-  } authorization_id = "${modelId}"
+  }${
+    context
+      ? `
+  context = { ${Object.entries(context)
+    .map(([k, v]) => `${k} = "${v}"`)
+    .join(', ')} },`
+      : ''
+  } authorization_id = "${modelId}"${
+    headers && Object.keys(headers).length > 0
+      ? `
+  extra_headers = { ${Object.entries(headers)
+    .map(([k, v]) => `"${k}": "${v}"`)
+    .join(', ')} },`
+      : ''
+  }
 );
 
 Reply: ${allowed}`;
@@ -221,8 +284,21 @@ Reply: ${allowed}`;
           .map(([k, v]) => `"${k}", "${v}"`)
           .join(',')}))`
         : '';
-      return `var options = new ClientCheckOptions()
-        .authorizationModelId("${modelId}");
+
+      const withHeaders = headers
+        ? `
+        .additionalHeaders(Map.of(${Object.entries(headers)
+          .map(
+            ([k, v]) => `
+            "${k}", "${v}"`,
+          )
+          .join(',')}
+          )
+        )`
+        : '';
+      return `var options = new ClientCheckOptions()${
+        modelId ? `\n        .authorizationModelId("${modelId}")` : ''
+      }${withHeaders};
 
 var body = new ClientCheckRequest()
         .user("${user}")
@@ -236,7 +312,6 @@ var response = fgaClient.check(body, options).get();
     default:
       assertNever(lang);
   }
-  /* eslint-enable no-tabs */
 }
 
 export function CheckRequestViewer(opts: CheckRequestViewerOpts): JSX.Element {

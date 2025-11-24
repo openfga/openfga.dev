@@ -42,7 +42,7 @@ docker network create openfga
 You can then start Postgres in the network you created above:
 
 ```shell
-docker run -d --name postgres --network=openfga -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password postgres:14
+docker run -d --name postgres --network=openfga -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password postgres:17
 ```
 
 You should now have Postgres running in a container in the `openfga` network. However, it will not have the tables required for running OpenFGA. You can use the `migrate` command to create the tables. Using the OpenFGA container, this will look like:
@@ -74,7 +74,7 @@ networks:
 
 services:
   postgres:
-    image: postgres:14
+    image: postgres:17
     container_name: postgres
     networks:
       - openfga
@@ -388,11 +388,10 @@ docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3002:3002 openfga/openfga r
   description="Check the following sections for more on how to use OpenFGA."
   relatedLinks={[
     {
-      title: 'Production Best Practices',
+      title: 'Running OpenFGA in Production',
       description: 'Learn the best practices of running OpenFGA in a production environment',
-      link: '../running-in-production',
-      id: './running-in-production',
-    }
+      link: '../../best-practices/running-in-production',
+      id: './best-practices/running-in-production',    }
   ]}
 />
 

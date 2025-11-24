@@ -1,6 +1,6 @@
 ---
-title: Fine Grained News - February 2024
-description: Fine Grained News
+title: Fine-Grained News - February 2024
+description: Fine-Grained News
 slug: fine-grained-news-2024-02
 date: 2024-02-27
 authors: aaguiar
@@ -8,9 +8,9 @@ tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
 hide_table_of_contents: false
 ---
-# Fine Grained News
+# Fine-Grained News
 
-Welcome to the 3rd edition of Fine Grained News! 
+Welcome to the 3rd edition of Fine-Grained News! 
 
 ## KubeCon Europe 2024 is getting closer!
 
@@ -22,7 +22,7 @@ We'll be pretty busy during [KubeCon Europe 2024](https://events.linuxfoundation
 
 - OpenFGA will be present in [Canonical's Operator's day](https://app.myonvent.com/event/operator-day/), co-located at KubeCon EU. Andres Aguiar and Massimilano Gori from Canonical, will talk about how Canonical adopted OpenFGA for implementing authorization in [Juju](https://juju.is/).
 
--  Andres Aguiar will also be delivering a Lightning Talk titled **OpenFGA - The Cloud Native way to implement Fine Grained Authorization** (link not available yet :) ).
+-  Andres Aguiar will also be delivering a Lightning Talk titled **OpenFGA - The Cloud Native way to implement Fine-Grained Authorization** (link not available yet :) ).
 
 We'll also have a kiosk in the CNCF Project Pavilion, so if you plan to attend let us know and we can schedule some time together!
 
@@ -72,4 +72,4 @@ As you may know, we've been using Discord for the OpenFGA community. We’ll tra
 
 ## See you next month!
 
-Fine Grained News are published every month, after the OpenFGA community meeting. If you have any feedback, you want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!
+Fine-Grained News are published every month, after the OpenFGA community meeting. If you have any feedback, you want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!

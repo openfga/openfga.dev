@@ -1,15 +1,13 @@
 ---
 title: Adoption Patterns
-sidebar_position: 3
 slug: /best-practices/adoption-patterns
 description: Describe different ways FGA can be adopted in an organization
+sidebar_position: 1
 ---
-
 import {
   ProductName,
   ProductNameFormat,
   RelatedSection,
-
 } from '@components/Docs';
 
 # <ProductName format={ProductNameFormat.ShortForm}/> Adoption Patterns
@@ -124,8 +122,7 @@ However, you might have a large set of APIs that are already making authorizatio
 
 Over time, you'll migrate the applications and APIs to use authorization check instead.
 
-Authentication services usually provide a way to enrich access tokens during the authorization flow. You can see an example on how to do it with Auth0 [here](https://auth0.com/blog/adding-custom-claims-to-id-token-with-auth0-actions/).
-
+Authentication services usually provide a way to enrich access tokens during the authorization flow. You can see an example on how to do it with Auth0 [here](https://auth0.com/blog/enrich-auth0-access-tokens-with-auth0-fga-data/).
 
 For example, if you want to include in the access token the organizations that a user can log-in to, based on the following model:
 
@@ -162,7 +159,7 @@ On the other hand, adding another service increases latency, adds additional com
 
 ## Shadowing the <ProductName format={ProductNameFormat.ShortForm}/> API
 
-When migrating from an existing authorization system to <ProductName format={ProductNameFormat.ShortForm}/>, it's recommended to first run both systems in parallel, with <ProductName format={ProductNameFormat.ShortForm}/> in "shadow mode". This means that while the existing system continues to make the actual authorization decisions, you also make calls to <ProductName format={ProductNameFormat.ShortForm}/> asynchornously and compare the results.
+When migrating from an existing authorization system to <ProductName format={ProductNameFormat.ShortForm}/>, it's recommended to first run both systems in parallel, with <ProductName format={ProductNameFormat.ShortForm}/> in "shadow mode". This means that while the existing system continues to make the actual authorization decisions, you also make calls to <ProductName format={ProductNameFormat.ShortForm}/> asynchronously and compare the results.
 
 This approach has several benefits:
 
@@ -186,9 +183,9 @@ This pattern is particularly useful for critical systems where authorization err
   description="Check out these related resources for more information about adopting OpenFGA"
   relatedLinks={[
     {
-      title: 'Production Best Practices',
+      title: 'Running OpenFGA in Production',
       description: 'Learn about best practices for running OpenFGA in production environments.',
-      link: './../getting-started/running-in-production',
+      link: './running-in-production',
     },
     {
       title: 'Modular Authorization Models',

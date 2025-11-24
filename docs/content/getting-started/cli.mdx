@@ -19,7 +19,18 @@ The CLI is configured to use a specific FGA server in one of three ways:
 
 - Using CLI flags.
 - Using environment variables.
-- Storing configuration values in a .fga.yaml located in the user’s root directory.
+- Using a `.fga.yaml` configuration file, searched in the following order (highest to lowest priority):
+
+  1. **Current working directory**
+  2. **User-specific config directory**
+
+     * Unix: `$XDG_CONFIG_HOME` (if set), otherwise `$HOME/.config`
+     * Windows: `%AppData%`
+  3. **`fga` subdirectory under the user config directory**
+  4. **User's home directory**
+
+     * Unix: `$HOME`
+     * Windows: `%USERPROFILE%`
 
 The API Url setting needs to point to the OpenFGA server:
 
@@ -327,7 +338,7 @@ When using the CSV format, you can omit certain headers, and you don’t need to
 
 ## Delete Tuples
 
-To delete a tuple, specify the user/relation/object you want to delete. To delete a group of tuples, specify a file that contains those tuples.
+To delete a tuple, specify the user/relation/object you want to delete. To delete a group of tuples, specify a file that contains those tuples. Supported file formats are `json`, `yaml` and `csv`.
 
 ```bash
 $ fga tuple delete --file tuples.yaml

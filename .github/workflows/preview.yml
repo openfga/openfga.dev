@@ -1,5 +1,7 @@
 # .github/workflows/preview.yml
 name: Deploy PR previews
+permissions:
+  contents: read
 concurrency:
   group: preview-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -14,24 +16,41 @@ on:
 jobs:
   deploy-preview:
     runs-on: ubuntu-latest
-    if: github.actor != 'dependabot[bot]'
+    if: |
+      github.actor != 'dependabot[bot]' &&
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: write # Required for pr-preview-action to push to gh-pages
+      pull-requests: write # Required for PR comments
     steps:
       - name: Cached LFS checkout
         uses: nschloe/action-cached-lfs-checkout@f46300cd8952454b9f0a21a3d133d4bd5684cfc2
 
-      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
+      - name: Set up node
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903
         with:
-          node-version: 18.x
-          cache: npm
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
 
-      - name: Install and Build
-        run: |
-          npm clean-install
-          npm run build
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build website
+        run: npm run build
         env:
           BASE_URL: /pr-preview/pr-${{ github.event.number }}
 
       - name: Deploy preview
-        uses: rossjrw/pr-preview-action@430e3dfc1de8a8ae77e77d862d25676ef9db55d1
+        uses: rossjrw/pr-preview-action@9f77b1d057b494e662c50b8ca40ecc63f21e0887
+        id: preview-step
         with:
           source-dir: ./build/
+
+      - name: Publish preview link to job summary
+        if: steps['preview-step'].outputs['deployment-action'] == 'deploy'
+        run: |
+          url="${{ steps['preview-step'].outputs['preview-url'] }}"
+          echo "Preview visible at ${url}" >> "$GITHUB_STEP_SUMMARY"
+          echo "[Open preview](${url})" >> "$GITHUB_STEP_SUMMARY"

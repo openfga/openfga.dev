@@ -1,63 +1,74 @@
 {
-	"ignorePatterns": [
-	  {
-		"pattern": "^https://twitter.com/"
-	  },
-	  {
-		"pattern": "^/api/service#"
-	  },
-	  {
-		"pattern": "^http://localhost:3000"
-	  },
-	  {
-		"pattern": "^https://api.openfga.example"
-	  },
-	  {
-		"pattern": "https://www.nuget.org/packages/OpenFga.Sdk"
-	  },
-	  {
-		"pattern": "https://www.npmjs.com/package/@openfga/sdk"
-	  },
-	  {
-		"pattern": "https://github.com/openfga/go-sdk"
-	  },
-	  {
-		"pattern": "https://github.com/openfga/dotnet-sdk"
-	  },
-	  {
-		"pattern": "https://github.com/openfga/python-sdk"
-	  },
-	  {
-		"pattern": "https://pypi.org/project/openfga-sdk"
-	  },
-	  {
-		"pattern": "^https://app.fossa.com"
-	  },
-	  {
-		"pattern": "^https://www.linkedin.com"
-	  },
-	  {
-		"pattern": "https://gradle.org/"
-	  },
-	  {
-		"pattern": "https://github.com/openfga/java-sdk"
-	  },
-	  {
-		"pattern": "https://maven.apache.org/"
-	  },
-	  {
-		"pattern": "https://calendar.google.com"
-	  },
-	  {
-		"pattern": "https://openfga.dev/docs/modeling/modular-models"
-	  }
-	],
-	"httpHeaders": [
-		{
-		  "urls": ["https://docs.github.com/"],
-		  "headers": {
-			"Accept-Encoding": "zstd, br, gzip, deflate"
-		  }
-		}
-	  ]
-  }
+  "ignorePatterns": [
+    {
+      "pattern": "^https://twitter.com/"
+    },
+    {
+      "pattern": "^/api/service#"
+    },
+    {
+      "pattern": "^http://localhost:3000"
+    },
+    {
+      "pattern": "^https://api.openfga.example"
+    },
+    {
+      "pattern": "https://www.nuget.org/packages/OpenFga.Sdk"
+    },
+    {
+      "pattern": "https://www.npmjs.com/package/@openfga/sdk"
+    },
+    {
+      "pattern": "https://github.com/openfga/go-sdk"
+    },
+    {
+      "pattern": "https://github.com/openfga/dotnet-sdk"
+    },
+    {
+      "pattern": "https://github.com/openfga/python-sdk"
+    },
+    {
+      "pattern": "https://pypi.org/project/openfga-sdk"
+    },
+    {
+      "pattern": "^https://app.fossa.com"
+    },
+    {
+      "pattern": "^https://www.linkedin.com"
+    },
+    {
+      "pattern": "https://gradle.org/"
+    },
+    {
+      "pattern": "https://github.com/openfga/java-sdk"
+    },
+    {
+      "pattern": "https://maven.apache.org/"
+    },
+    {
+      "pattern": "https://calendar.google.com"
+    },
+    {
+      "pattern": "https://openfga.dev/docs/modeling/modular-models"
+    },
+    {
+      "pattern": "https://auth0.com"
+    },
+    {
+      "pattern": "https://github.com/bytefish/gitclub-dotnet"
+    }
+  ],
+  "httpHeaders": [
+    {
+      "urls": ["https://docs.github.com/"],
+      "headers": {
+        "Accept-Encoding": "zstd, br, gzip, deflate"
+      }
+    }
+  ],
+  "retryOn429": true,
+  "retryCount": 5,
+  "fallbackRetryDelay": "10s",
+  "timeout": "30s",
+  "aliveStatusCodes": [200, 206, 403]
+}

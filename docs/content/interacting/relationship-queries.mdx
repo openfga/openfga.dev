@@ -181,12 +181,24 @@ For example, you can call Batch Check to determine whether `bob` has `can_view_n
 
 The <ProductName format={ProductNameFormat.ShortForm}/> API will return `true` depending on the level of access assigned to that user and the implied relationships inherited in the authorization model.
 
-
 ### Caveats and when not to use it
 
 If you are making less than 10 checks, it may be faster to call the [Check API](/api/service#Relationship%20Queries/Check) in parallel instead of Batch Check.
 
-The new BatchCheck endpoint is currently supported by the JS SDK (>=[v0.8.0](https://github.com/openfga/js-sdk/releases/tag/v0.8.0) and the Python SDK (>=[v0.9.0](https://github.com/openfga/python-sdk/releases/tag/v0.9.0)). Support in the other SDKs is being worked on.
+:::note
+The BatchCheck endpoint is currently supported by the following SDKs:
+- Go SDK ([>=0.7.0](https://github.com/openfga/go-sdk/releases/tag/v0.7.0))
+- JavaScript SDK ([>=v0.8.0](https://github.com/openfga/js-sdk/releases/tag/v0.8.0))
+- Python SDK ([>=v0.9.0](https://github.com/openfga/python-sdk/releases/tag/v0.9.0))
+- Java SDK ([>=0.8.1](https://github.com/openfga/java-sdk/releases/tag/v0.8.1))
+- Support for .NET is in progress and coming soon.
+
+In SDKs that support the `BatchCheck` endpoint (server-side batch checks), the previous `BatchCheck` method has been renamed to `ClientBatchCheck`. `ClientBatchCheck` performs client-side batch checks by making multiple check requests with limited parallelization.
+
+The .NET SDK does not yet support the `BatchCheck` endpoint (coming soon). Until then, the `BatchCheck` method maintains its current behavior, performing client-side batch checks equivalent to `ClientBatchCheck` in other SDKs.
+
+Refer to the README for each SDK for more information. Refer to the release notes of the relevant SDK version for more information on how to migrate from client-side to the server-side `BatchCheck`.
+:::
 
 ## Read
 
@@ -198,13 +210,34 @@ The [Read API](/api/service#Relationship%20Tuples/Read) is an API endpoint that 
 
 Read can be called if you need to get all the stored relationship tuples that relate:
 
-1. [a particular user to any objects of a specific type with a particular relation](#1-a-particular-user-to-any-objects-of-a-specific-type-with-a-particular-relation)
-2. [a particular user to any objects of a specific type with any relation](#2-a-particular-user-to-any-objects-of-a-specific-type-with-any-relation)
-3. [a particular object to any user with a particular relation](#3-a-particular-object-to-any-user-with-a-particular-relation)
+1. [**user + relation + object**](#1-read-a-tuple-related-to-a-particular-user-relation-and-object)
+2. [**user + relation + object type**](#2-read-all-tuples-related-to-a-particular-user-relation-and-object-type)
+3. [**user + object** with any relation](#3-read-all-tuples-related-to-a-particular-user-and-object-with-any-relation)
+4. [**user + object type** with any relation](#4-read-all-tuples-related-to-a-particular-user-and-object-type-with-any-relation)
+5. [**relation + object** for any user](#5-read-all-tuples-related-to-a-particular-relation-and-object-for-any-user)
+6. [**object** with any user and relation](#6-read-all-tuples-related-to-a-particular-object-with-any-user-or-relation)
+7. [**all** with any user, relation, or object](#7-read-all-tuples-for-any-user-relation-or-object)
 
-#### 1. A particular user to any objects of a specific type with a particular relation
+#### 1. Read a tuple related to a particular user, relation, and object
 
-For example, to query all the stored relationship tuples `bob` has a `writer` relationship with, one can ask
+For example, to query if `bob` has a `writer` relationship on `document:planning` (essentially finding out if a tuple exists), one can ask
+
+<ReadRequestViewer
+  user={'user:bob'}
+  relation={'writer'}
+  object={'document:planning'}
+  tuples={[
+    {
+      user: 'user:bob',
+      relation: 'writer',
+      object: 'document:planning',
+    },
+  ]}
+/>
+
+#### 2. Read all tuples related to a particular user, relation, and object type
+
+For example, to query all the stored relationship tuples `bob` has a `writer` relationship with on type `document:`, one can ask
 
 <ReadRequestViewer
   user={'user:bob'}
@@ -219,9 +252,25 @@ For example, to query all the stored relationship tuples `bob` has a `writer` re
   ]}
 />
 
-#### 2. A particular user to any objects of a specific type with any relation
+#### 3. Read all tuples related to a particular user and object with any relation
 
-For example, to query all the stored relationship tuples in which `bob` is related to objects of type `document` as any relation, one can issue the following call:
+For example, to query all the stored relationship tuples `bob` has on type `document:planning`, one can ask
+
+<ReadRequestViewer
+  user={'user:bob'}
+  object={'document:planning'}
+  tuples={[
+    {
+      user: 'user:bob',
+      relation: 'writer',
+      object: 'document:planning',
+    },
+  ]}
+/>
+
+#### 4. Read all tuples related to a particular user and object type with any relation
+
+For example, to query all the stored relationship tuples `bob` has on object type `document:`, one can ask
 
 <ReadRequestViewer
   user={'user:bob'}
@@ -235,13 +284,42 @@ For example, to query all the stored relationship tuples in which `bob` is relat
   ]}
 />
 
-#### 3. A particular object to any user with a particular relation
+#### 5. Read all tuples related to a particular relation and object for any user
 
-For example, to query all the stored relationship tuples in which any user is related to `document:planning` as a `writer`, one can issue the following call:
+For example, to query all the stored relationship tuples which have the `writer` relation on object `document:planning`, one can ask
 
 <ReadRequestViewer
   relation={'writer'}
   object={'document:planning'}
+  tuples={[
+    {
+      user: 'user:bob',
+      relation: 'writer',
+      object: 'document:planning',
+    },
+  ]}
+/>
+
+#### 6. Read all tuples related to a particular object with any user or relation
+
+For example, to query all the stored relationship tuples for object `document:planning`, one can ask
+
+<ReadRequestViewer
+  object={'document:planning'}
+  tuples={[
+    {
+      user: 'user:bob',
+      relation: 'writer',
+      object: 'document:planning',
+    },
+  ]}
+/>
+
+#### 7. Read all tuples for any user, relation, or object
+
+For example, to query all stored relationship tuples, one can ask
+
+<ReadRequestViewer
   tuples={[
     {
       user: 'user:bob',

@@ -101,7 +101,7 @@ docker run docker.io/openfga/openfga:latest run \
 
 ## List of options
 
-The following table lists the configuration options for the OpenFGA server [v1.8.6](https://github.com/openfga/openfga/releases/tag/v1.8.6), based on the [config-schema.json](https://raw.githubusercontent.com/openfga/openfga/refs/tags/v1.8.6/.config-schema.json).
+The following table lists the configuration options for the OpenFGA server [v1.8.9](https://github.com/openfga/openfga/releases/tag/v1.8.9), based on the [config-schema.json](https://raw.githubusercontent.com/openfga/openfga/refs/tags/v1.8.9/.config-schema.json).
 
 | Config File | Env Var | Flag Name | Type | Description | Default Value |
 |-------------|---------|-----------|------|-------------|---------------|
@@ -124,7 +124,7 @@ The following table lists the configuration options for the OpenFGA server [v1.8
 | `requestDurationDatastoreQueryCountBuckets` | <div id="OPENFGA_REQUEST_DURATION_DATASTORE_QUERY_COUNT_BUCKETS"><code>OPENFGA_REQUEST_DURATION_DATASTORE_QUERY_COUNT_BUCKETS</code></div> | `request-duration-datastore-query-count-buckets` | []integer | Datastore query count buckets used to label the histogram metric for measuring request duration. | `50,200` |
 | `requestDurationDispatchCountBuckets` | <div id="OPENFGA_REQUEST_DURATION_DISPATCH_COUNT_BUCKETS"><code>OPENFGA_REQUEST_DURATION_DISPATCH_COUNT_BUCKETS</code></div> | `request-duration-dispatch-count-buckets` | []integer | Dispatch count buckets used to label the histogram metric for measuring request duration. | `50,200` |
 | `contextPropagationToDatastore` | <div id="OPENFGA_CONTEXT_PROPAGATION_TO_DATASTORE"><code>OPENFGA_CONTEXT_PROPAGATION_TO_DATASTORE</code></div> | `context-propagation-to-datastore` | boolean | Propagate a requests context to the datastore implementation. Settings this parameter can result in connection pool draining on request aborts and timeouts. | `false` |
-| `experimentals` | <div id="OPENFGA_EXPERIMENTALS"><code>OPENFGA_EXPERIMENTALS</code></div> | `experimentals` | []string (enum=[`enable-check-optimizations`, `enable-access-control`]) | a list of experimental features to enable | `` |
+| `experimentals` | <div id="OPENFGA_EXPERIMENTALS"><code>OPENFGA_EXPERIMENTALS</code></div> | `experimentals` | []string (enum=[`enable-check-optimizations`, `enable-list-objects-optimizations`, `enable-access-control`]) | a list of experimental features to enable | `` |
 | `accessControl.enabled` | <div id="OPENFGA_ACCESS_CONTROL_ENABLED"><code>OPENFGA_ACCESS_CONTROL_ENABLED</code></div> | `access-control-enabled` | boolean | Enable/disable the access control store. | `false` |
 | `accessControl.storeId` | <div id="OPENFGA_ACCESS_CONTROL_STORE_ID"><code>OPENFGA_ACCESS_CONTROL_STORE_ID</code></div> | `access-control-store-id` | string | The storeId to be used for the access control store. |  |
 | `accessControl.modelId` | <div id="OPENFGA_ACCESS_CONTROL_MODEL_ID"><code>OPENFGA_ACCESS_CONTROL_MODEL_ID</code></div> | `access-control-model-id` | string | The modelId to be used for the access control store. |  |
@@ -207,10 +207,10 @@ The following table lists the configuration options for the OpenFGA server [v1.8
       id: './configure-openfga',
     },
     {
-      title: 'Production Best Practices',
+      title: 'Running OpenFGA in Production',
       description: 'Learn the best practices of running OpenFGA in a production environment',
-      link: '../running-in-production',
-      id: './running-in-production',
+      link: '../../best-practices/running-in-production',
+      id: './best-practices/running-in-production'
     }
   ]}
 />

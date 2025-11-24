@@ -1,13 +1,19 @@
 import * as React from 'react';
-import { Player } from '@lottiefiles/react-lottie-player';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 
-type AnimatedIconProps = {
-  element?: string | object;
+type AnimatedIconProps = { element?: string | object };
+const AnimatedIcon: React.FC<AnimatedIconProps> = ({ element }) => {
+  return (
+    <div style={{ height: '100%' }}>
+      <BrowserOnly>
+        {() => {
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          const { Player } = require('@lottiefiles/react-lottie-player');
+          return <Player autoplay={true} loop={true} controls={true} src={element} />;
+        }}
+      </BrowserOnly>
+    </div>
+  );
 };
-const AnimatedIcon: React.FC<AnimatedIconProps> = ({ element }) => (
-  <div style={{ height: '100%' }}>
-    <Player autoplay={true} loop={true} controls={true} src={element} />
-  </div>
-);
 
 export { AnimatedIcon };

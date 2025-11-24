@@ -13,7 +13,7 @@ type AuthzModelCodeBlockProps = {
 const AuthzModelCodeBlock: React.FC<AuthzModelCodeBlockProps> = ({ configuration, syntaxFormat, skipVersion }) => {
   return (
     <CodeBlock
-      className={`language-${syntaxFormat === SyntaxFormat.Api ? 'json' : tools.PrismExtensions.LANGUAGE_NAME}`}
+      className={`language-${syntaxFormat === SyntaxFormat.Json ? 'json' : tools.PrismExtensions.LANGUAGE_NAME}`}
     >
       {loadSyntax(configuration, syntaxFormat, skipVersion)}
     </CodeBlock>
