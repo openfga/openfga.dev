@@ -320,28 +320,30 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
     }),
 
   scripts: [
+    // Kapa.ai website widget - values can be provided via environment variables:
+    // KAPA_WEBSITE_ID, KAPA_PROJECT_NAME, KAPA_PROJECT_COLOR, KAPA_PROJECT_LOGO
     {
       src: "https://widget.kapa.ai/kapa-widget.bundle.js",
-      "data-website-id": "XXX-XXX-XXX",
-      "data-project-name": "OpenFGA",
-      "data-project-color": "#HEX_COLOR_CODE",
-      "data-project-logo": "https://LINK_TO_LOGO.com/logo.png",
+      "data-website-id": process.env.KAPA_WEBSITE_ID || "XXX-XXX-XXX",
+      "data-project-name": process.env.KAPA_PROJECT_NAME || "OpenFGA",
+      "data-project-color": process.env.KAPA_PROJECT_COLOR || "#HEX_COLOR_CODE",
+      "data-project-logo": process.env.KAPA_PROJECT_LOGO || "https://openfga.dev/img/openfga_logo.svg",
       async: true,
     },
   ],
 };
 
 if (process.env.HUBSPOT_TRACKING_ID) {
-  config.scripts = [
-    {
-      src: `https://js.hs-scripts.com/${process.env.HUBSPOT_TRACKING_ID}.js`,
-      type: "text/javascript",
-      charset: "UTF-8",
-      id: "hs-script-loader",
-      async: true,
-      defer: true,
-    },
-  ];
+  // Ensure config.scripts exists and append the HubSpot loader instead of replacing the whole scripts array.
+  config.scripts = config.scripts || [];
+  config.scripts.push({
+    src: `https://js.hs-scripts.com/${process.env.HUBSPOT_TRACKING_ID}.js`,
+    type: "text/javascript",
+    charset: "UTF-8",
+    id: "hs-script-loader",
+    async: true,
+    defer: true,
+  });
 }
 
 module.exports = config;
