@@ -318,6 +318,17 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
         },
       },
     }),
+
+  scripts: [
+    {
+      src: "https://widget.kapa.ai/kapa-widget.bundle.js",
+      "data-website-id": "XXX-XXX-XXX",
+      "data-project-name": "OpenFGA",
+      "data-project-color": "#HEX_COLOR_CODE",
+      "data-project-logo": "https://LINK_TO_LOGO.com/logo.png",
+      async: true,
+    },
+  ],
 };
 
 if (process.env.HUBSPOT_TRACKING_ID) {
