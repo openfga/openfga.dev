@@ -40,3 +40,66 @@ html[data-theme='dark'] {
 table td {
   overflow-wrap: break-word;
 }
+
+/* Ask AI Button Styling */
+.ask-ai-button-wrapper {
+  position: relative !important;
+}
+
+.ask-ai-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white !important;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.ask-ai-button:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.ask-ai-button:active {
+  transform: translateY(0);
+}
+
+.navbar__items.navbar__items--right {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  position: relative !important;
+}
+
+.ask-ai-button-wrapper {
+  order: 9999 !important;
+  margin-left: auto !important;
+  padding-left: 0.75rem !important;
+  flex-shrink: 0 !important;
+}
+
+.navbar__items--right > *:not(.ask-ai-button-wrapper) {
+  order: 1 !important;
+  margin-left: 0 !important;
+}
+
+.navbar__items--right .navbar__search,
+.navbar__items--right [class*="search"],
+.navbar__items--right [class*="navbarSearchContainer"],
+.navbar__items--right > div:not(.ask-ai-button-wrapper) {
+  order: 1 !important;
+}
+
+@media (max-width: 996px) {
+  .ask-ai-button {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin: 0.5rem 0;
+  }
+}
+
