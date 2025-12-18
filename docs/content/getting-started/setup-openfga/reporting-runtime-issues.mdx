@@ -1,0 +1,171 @@
+---
+title: Reporting Runtime Issues
+description: Information to gather when reporting OpenFGA runtime issues
+slug: /getting-started/setup-openfga/reporting-runtime-issues
+sidebar_position: 6
+---
+
+import {
+  DocumentationNotice,
+  RelatedSection,
+} from "@components/Docs";
+
+# Reporting Runtime Issues
+
+<DocumentationNotice />
+
+If you're experiencing runtime issues with OpenFGA, such as unexpected latency or runtime errors, gathering the right information upfront will help us diagnose the problem. The more details you can share, the faster we can help. 
+
+This guide outlines the key details necessary to investigate runtime issues.
+
+## Full Reproduction
+
+The best way to help us diagnose your issue is to provide everything needed to **fully reproduce the problem**:
+
+1. **Authorization model** (`.fga` file)
+2. **Relationship tuples** (export via the [OpenFGA CLI](https://github.com/openfga/cli))
+3. **Script or steps** to reproduce the problem
+
+With these three items, we can recreate your exact scenario in our own environment, which speeds up diagnosis and resolution.
+
+:::warning
+If you cannot share your real model and tuples due to data sensitivity, consider **creating a synthetic reproduction**.
+
+Build a simplified model and generate mock tuples that demonstrate the same characteristics. This approach still allows us to reproduce the issue without exposing sensitive data.
+:::
+
+If you can provide this information, please see the sections below for details on how to export and share it. If you cannot share this level of detail due to data sensitivity or other constraints, don't worry—the following sections detail alternative information that will still help us investigate the issue.
+
+## Runtime Investigation Requirements
+
+### Timeline Of Events
+
+1. When did the issue start?
+2. Were there any changes made to your OpenFGA setup around that time? (e.g., model changes, configuration changes, infrastructure changes)
+3. Is the issue consistent or intermittent? If intermittent, how often does it occur?
+4. What troubleshooting have you already attempted?
+
+### Authorization Data
+
+#### Authorization Model
+
+Please provide your current authorization model (`.fga` file). This helps us understand the complexity of your relationships and potential performance implications.
+
+#### Relationship Tuples
+
+The best-case scenario is if you can share an export of your relationship tuples. You can get this by running:
+
+```bash
+fga tuple read --output-format=csv --max-pages 0 > tuples.csv
+```
+
+#### Alternative: Simplified Reproduction
+
+If you can't share your real tuples due to data sensitivity, consider creating a **mock dataset** that reproduces the same issue. This allows us to reproduce the problem without handling sensitive information. Generate fake tuples with similar:
+- **Volume** (same number of tuples)
+- **Cardinality patterns** (i.e. how many or how few objects are related to another object)
+- **Structure** (same types and relations)
+
+
+As a last resort, if you can't share tuples directly (real or mock), please provide:
+- The **cardinality** distribution for your most common object type/relation pairs
+- Approximate order of magnitude (hundreds, thousands, millions) **counts** are fine—we mainly need to understand the scale and distribution of your data
+
+### OpenFGA Configuration
+
+#### Version Information
+
+Which version of OpenFGA are you running? This is critical as performance characteristics can vary significantly between versions.
+
+#### Configuration Settings
+
+Please share your configuration settings (you should omit any secrets). You can find more information on configuration settings in the [Configure OpenFGA documentation](./configure-openfga.mdx).
+
+Key settings we're interested in include:
+- Cache configuration
+- Concurrency limits
+- Database connection pool settings
+- Any experimental flags you've enabled
+
+#### Infrastructure Details
+
+- **OpenFGA nodes**: How many OpenFGA nodes/pods are you running? What are the CPU and RAM specs for each?
+- **Database**: Which database are you using (e.g., PostgreSQL, MySQL)? What are its specs (e.g., instance type, vCPU, RAM)?
+
+### Testing Scenario
+
+Understanding how you're testing helps us reproduce and diagnose the issue. Ideally, this would be part of your full reproduction package.
+
+#### Load Testing Script
+
+If you're using a load-testing script, please share it. This allows us to reproduce your scenario exactly and is one of the three key components needed for full reproduction.
+
+#### Request Examples
+
+If you don't have a script or cannot share your full reproduction, please provide example requests and responses for the calls that are problematic:
+- Check API calls
+- Write API calls
+- ListObjects API calls
+- ListUsers API calls
+- Other relevant API calls
+
+#### Performance Expectations
+
+What are your target p95/p99 response times for these queries? Understanding your requirements helps us determine if there's a performance issue or if expectations need adjustment.
+
+### Observability
+
+If you cannot provide a full reproduction, observability data becomes especially valuable for diagnosing your issue.
+
+Screenshots from your monitoring dashboards are incredibly helpful! We're most interested in the following metrics, grouped by request type:
+
+#### Key Metrics
+
+- **Request latency**: p50, p95, p99 percentiles
+- **Database query counts**: p50, p95 percentiles
+- **Requests Per Second (RPS)**: Overall throughput
+- **Database connections**: Active and idle connections
+- **Cache hit ratio**: Effectiveness of caching
+- **Goroutine count**: Concurrency patterns
+
+#### Traces
+
+If you have a specific query that is consistently slow, a **trace for that request is the single most valuable piece of information you can provide**. Traces allow us to see exactly where time is being spent in the request lifecycle.
+
+#### Logs
+
+OpenFGA logs are critical for diagnosing runtime errors and understanding system behavior. When you can't reproduce the issue, logs can help us diagnose the problem. Please include all logs from the moment the OpenFGA instance is launched, using the default logging verbosity configuration.
+
+### How to Share This Information
+
+When reporting an issue, please:
+
+1. Create a GitHub issue in the [OpenFGA repository](https://github.com/openfga/openfga/issues)
+2. Include as many of the above details as possible
+3. If sharing sensitive information, consider creating sanitized/anonymized versions of your data
+4. If you prefer to share the data confidentially, send it by email to contact@openfga.dev, or suggest an alternative method on the issue
+
+
+:::note
+The best way to help us diagnose your issue is to provide a **full reproduction** (model + tuples + script). If that's not possible, providing as much of the information above as you can will still help us investigate and resolve your issue.
+:::
+
+## Related Sections
+
+<RelatedSection
+  description="Check the following sections for more on how to configure OpenFGA."
+  relatedLinks={[
+    {
+      title: 'Configuring OpenFGA',
+      description: 'Learn more about the different ways to configure OpenFGA',
+      link: './configure-openfga',
+      id: './configure-openfga',
+    },
+    {
+      title: 'Running OpenFGA in Production',
+      description: 'Learn the best practices of running OpenFGA in a production environment',
+      link: '../../best-practices/running-in-production',
+      id: './best-practices/running-in-production'
+    }
+  ]}
+/>
