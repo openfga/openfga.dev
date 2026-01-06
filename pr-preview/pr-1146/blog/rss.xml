@@ -24,44 +24,44 @@
 <p>Learn more about <a href="https://www.cncf.io/projects/" target="_blank" rel="noopener noreferrer" class="">CNCF project stages</a>.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="how-we-got-here">How We Got Here<a href="https://openfga.dev/pr-preview/pr-1146/blog/incubation-announcement#how-we-got-here" class="hash-link" aria-label="Direct link to How We Got Here" title="Direct link to How We Got Here" translate="no">​</a></h2>
 <ul>
-<li class="">Community and learning. Two years of public community meetings, talks, and guides. Join us in <a href="https://openfga.dev/docs/community" target="_blank" rel="noopener noreferrer" class="">CNCF Slack</a> and find recordings on our <a href="https://www.youtube.com/@OpenFGA" target="_blank" rel="noopener noreferrer" class="">YouTube channel</a>.</li>
-<li class="">Adopter validation through public adopter interviews.</li>
-<li class="">Grafana Labs joined the maintainer team.</li>
+<li class="">Community and learning: two years of public community meetings, talks, and guides. Join us in <a href="https://openfga.dev/docs/community" target="_blank" rel="noopener noreferrer" class="">CNCF Slack</a> and find recordings on our <a href="https://www.youtube.com/@OpenFGA" target="_blank" rel="noopener noreferrer" class="">YouTube channel</a>.</li>
+<li class="">Several adopter went on the record in interviews with CNCF around their OpenFGA experience.</li>
+<li class="">Many contributions from the community - whether through questions, feedback, feature requests, PRs, bug reports, guides and tools they have built around OpenFGA - thank you all!</li>
+<li class=""><a href="https://grafana.com/" target="_blank" rel="noopener noreferrer" class="">Grafana Labs</a> joined the maintainer team!</li>
 </ul>
 <p>A few highlights from the journey:</p>
 <ul>
 <li class="">More than 600 people have contributed PRs across the OpenFGA org</li>
-<li class="">4,500 stars across OpenFGA repositories</li>
+<li class="">5,000+ stars across OpenFGA repositories</li>
 <li class="">Breakout sessions and a kiosk at five KubeCon editions</li>
 <li class="">Monthly community meetings running consistently for over 2 years</li>
-<li class="">Production adopters include Canonical, Docker, Grafana Labs, Read AI, Agicap, Headspace, Zuplo, and Sourcegraph along with others</li>
+<li class="">Production adopters include Canonical, Docker, Grafana Labs, Read AI, Agicap, Headspace, Zuplo, and Sourcegraph - along with <a href="https://github.com/openfga/community/blob/main/ADOPTERS.md" target="_blank" rel="noopener noreferrer" class="">many others</a></li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="thank-you">Thank You<a href="https://openfga.dev/pr-preview/pr-1146/blog/incubation-announcement#thank-you" class="hash-link" aria-label="Direct link to Thank You" title="Direct link to Thank You" translate="no">​</a></h2>
 <p>A lot of people contributed to OpenFGA's success, a few of which are highlighted below.</p>
 <ul>
 <li class=""><a href="https://www.linkedin.com/in/massi-gori" target="_blank" rel="noopener noreferrer" class="">Massimiliano Gori</a> believed in OpenFGA early and led integration across Canonical.</li>
-<li class=""><a href="https://www.linkedin.com/in/paulinejamin" target="_blank" rel="noopener noreferrer" class="">Pauline Jamin</a> spearheaded adoption at Agicap and presented the solution at KubeCon Europe 2024.</li>
-<li class=""><a href="https://www.linkedin.com/in/andrew-powers-geo" target="_blank" rel="noopener noreferrer" class="">Andrew Powers</a> led Read AI implementation supporting collaboration and RAG for enterprise search.</li>
-<li class=""><a href="https://www.linkedin.com/in/joguer" target="_blank" rel="noopener noreferrer" class="">Jo G</a> led the implementation at Grafana and presented their journey at KubeCon Europe 2025.</li>
-<li class=""><a href="https://www.linkedin.com/in/dancech" target="_blank" rel="noopener noreferrer" class="">Dan Cech</a> from Grafana contributed the SQLite adapter and serves as a maintainer.</li>
-<li class=""><a href="https://www.linkedin.com/in/nathantotten" target="_blank" rel="noopener noreferrer" class="">Nathan Totten</a> led Zuplo integration, implementing authorization at the edge for the API gateway.</li>
-<li class=""><a href="https://www.linkedin.com/in/gurleensethi" target="_blank" rel="noopener noreferrer" class="">Gurleen Sethi</a> led the implementation of organization and team management at Docker, Inc.</li>
+<li class=""><a href="https://www.linkedin.com/in/paulinejamin" target="_blank" rel="noopener noreferrer" class="">Pauline Jamin</a> spearheaded adoption at <a href="https://agicap.com/" target="_blank" rel="noopener noreferrer" class="">Agicap</a> and presented their learnings at <a href="https://colocatedeventseu2024.sched.com/event/1YFhM/implementing-modern-cloud-native-authorization-using-openfga-andres-aguiar-okta-pauline-jamin-agicap" target="_blank" rel="noopener noreferrer" class="">KubeCon Europe 2024</a>.</li>
+<li class=""><a href="https://www.linkedin.com/in/andrew-powers-geo" target="_blank" rel="noopener noreferrer" class="">Andrew Powers</a> led <a href="https://www.read.ai/" target="_blank" rel="noopener noreferrer" class="">Read AI</a> implementation supporting collaboration and RAG for enterprise search.</li>
+<li class=""><a href="https://www.linkedin.com/in/joguer" target="_blank" rel="noopener noreferrer" class="">Jo G</a> led the implementation at <a href="https://grafana.com/" target="_blank" rel="noopener noreferrer" class="">Grafana</a> and presented their journey at <a href="https://kccnceu2025.sched.com/event/1txIJ/from-chaos-to-control-migrating-access-control-to-openfga-in-a-multi-tenant-world-jo-guerreiro-grafana-labs-poovamraj-thanganadar-thiagarajan-okta" target="_blank" rel="noopener noreferrer" class="">KubeCon Europe 2025</a>.</li>
+<li class=""><a href="https://www.linkedin.com/in/dancech" target="_blank" rel="noopener noreferrer" class="">Dan Cech</a> from <a href="https://grafana.com/" target="_blank" rel="noopener noreferrer" class="">Grafana</a> contributed the SQLite adapter and serves as a maintainer.</li>
+<li class=""><a href="https://www.linkedin.com/in/nathantotten" target="_blank" rel="noopener noreferrer" class="">Nathan Totten</a> led <a href="https://zuplo.com/" target="_blank" rel="noopener noreferrer" class="">Zuplo</a> integration, implementing <a href="https://zuplo.com/examples/openfga" target="_blank" rel="noopener noreferrer" class="">authorization at the edge</a> for the API gateway.</li>
+<li class=""><a href="https://www.linkedin.com/in/gurleensethi" target="_blank" rel="noopener noreferrer" class="">Gurleen Sethi</a> led the implementation of organization and team management at <a href="https://www.docker.com/" target="_blank" rel="noopener noreferrer" class="">Docker, Inc</a>.</li>
 <li class=""><a href="https://github.com/Siddhant-K-code" target="_blank" rel="noopener noreferrer" class="">Siddhant Khare</a> was the first independent contributor who onboarded as an maintainer of the OpenFGA project.</li>
-<li class=""><a href="https://github.com/mauriceackel" target="_blank" rel="noopener noreferrer" class="">Maurice Ackel</a> donated the OpenFGA Terraform Provider, and joined as a maintainer.</li>
-<li class=""><a href="https://www.linkedin.com/in/yann-d-19851110" target="_blank" rel="noopener noreferrer" class="">Yann D'Isanto</a> from Agicap, who contributed the JetBrains IDE plugin</li>
-<li class=""><a href="https://www.linkedin.com/in/embesozzi" target="_blank" rel="noopener noreferrer" class="">Martin Besozzi</a> has been involved in the OpenFGA community from the beginning, driving integrations with Keycloak.</li>
+<li class=""><a href="https://github.com/mauriceackel" target="_blank" rel="noopener noreferrer" class="">Maurice Ackel</a> donated the <a href="https://registry.terraform.io/providers/openfga/openfga/latest/docs" target="_blank" rel="noopener noreferrer" class="">OpenFGA Terraform Provider</a>, and joined as a maintainer.</li>
+<li class=""><a href="https://www.linkedin.com/in/yann-d-19851110" target="_blank" rel="noopener noreferrer" class="">Yann D'Isanto</a> from <a href="https://agicap.com/" target="_blank" rel="noopener noreferrer" class="">Agicap</a>, who contributed the JetBrains IDE plugin</li>
+<li class=""><a href="https://www.linkedin.com/in/embesozzi" target="_blank" rel="noopener noreferrer" class="">Martin Besozzi</a> has been involved in the OpenFGA community from the beginning, driving integrations with <a href="https://www.keycloak.org/" target="_blank" rel="noopener noreferrer" class="">Keycloak</a>.</li>
 <li class=""><a href="https://github.com/Hawxy" target="_blank" rel="noopener noreferrer" class="">JT aka Hawxy</a> has been maintaining <a href="https://github.com/Hawxy/Fga.Net" target="_blank" rel="noopener noreferrer" class="">Fga.net</a> and has been graciously providing us feedback since.</li>
 </ul>
 <p>Thanks to Agicap, Grafana Labs, Docker, Inc., Zuplo, and Read AI graciously agreed to be interviewed by CNCF as part of due diligence.</p>
 <p>On the CNCF side:</p>
 <ul>
 <li class=""><a href="https://www.linkedin.com/in/caniszczyk" target="_blank" rel="noopener noreferrer" class="">Chris Aniszczyk</a> helped guide the project donation and acceptance.</li>
-<li class=""><a href="https://www.linkedin.com/in/knight1776" target="_blank" rel="noopener noreferrer" class="">Eddie Knight</a>, <a href="https://www.linkedin.com/in/evankanderson" target="_blank" rel="noopener noreferrer" class="">Evan Anderson</a>, <a href="https://www.linkedin.com/in/marina-moore-5a7242105" target="_blank" rel="noopener noreferrer" class="">Marina Moore</a> and Justin Cappos from CNCF TAG Security supported the self-assessment and helped strengthen our posture for due diligence.</li>
+<li class=""><a href="https://www.linkedin.com/in/knight1776" target="_blank" rel="noopener noreferrer" class="">Eddie Knight</a>, <a href="https://www.linkedin.com/in/evankanderson" target="_blank" rel="noopener noreferrer" class="">Evan Anderson</a>, <a href="https://www.linkedin.com/in/marina-moore-5a7242105" target="_blank" rel="noopener noreferrer" class="">Marina Moore</a> and <a href="https://github.com/JustinCappos" target="_blank" rel="noopener noreferrer" class="">Justin Cappos</a> from <a href="https://tag-security.cncf.io/" target="_blank" rel="noopener noreferrer" class="">CNCF TAG Security</a> supported the self-assessment and helped strengthen our posture for due diligence.</li>
 <li class=""><a href="https://www.linkedin.com/in/karenaangell" target="_blank" rel="noopener noreferrer" class="">Karena Angell</a> and <a href="https://www.linkedin.com/in/faseela-k-42178528" target="_blank" rel="noopener noreferrer" class="">Faseela K</a> helped us navigate the due diligence process and carried much of the heavy lift to make it happen.</li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="whats-next">What's Next<a href="https://openfga.dev/pr-preview/pr-1146/blog/incubation-announcement#whats-next" class="hash-link" aria-label="Direct link to What's Next" title="Direct link to What's Next" translate="no">​</a></h2>
-<p>Incubation is not the finish line.  It is a bigger stage, higher expecations and a chance to level up with the community.</p>
-<p>We are going to keep pushing on performance, options, docs and governance as we work towards Graduation.</p>
+<p>Incubation isn't the end of our journey. It brings with it increased visibility, higher expectations and the chance to attract an even bigger community and pool of contributors. We will keep working to deliver on performance, tackle more use-cases, improve our DX and tooling, broadening integrations, mature our documentation, samples and governance. Next milestone - graduation!</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="get-involved">Get Involved<a href="https://openfga.dev/pr-preview/pr-1146/blog/incubation-announcement#get-involved" class="hash-link" aria-label="Direct link to Get Involved" title="Direct link to Get Involved" translate="no">​</a></h2>
 <p>This achievement belongs to every contributor, user and community member.  There has never been a better time to join the OpenFGA community:</p>
 <ul>
