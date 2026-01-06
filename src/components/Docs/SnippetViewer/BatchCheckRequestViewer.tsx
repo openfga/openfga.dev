@@ -177,63 +177,74 @@ data.GetResult() = map[string]BatchCheckSingleResult{${checks
 `;
 
     case SupportedLanguage.DOTNET_SDK:
-      return `// The .NET SDK does not yet support server-side batch checks. This currently just calls the check endpoint in parallel.
-
-var body = new ClientBatchCheckRequest {
-  Checks = new List<ClientCheckRequest>() {
+      return `var body = new ClientBatchCheckRequest {
+  Checks = new List<ClientBatchCheckItem> {
     ${checks
       .map(
         (check) => `new() {
       User = "${check.user}",
       Relation = "${check.relation}",
-      Object = "${check.object}",${
+      Object = "${check.object}",
+      CorrelationId = "${check.correlation_id}"${
         check.contextualTuples
           ? `,
-      ContextualTuples = new List<ClientTupleKey>() {
+      ContextualTuples = new List<ClientTupleKey> {
         ${check.contextualTuples
           .map(
             (tuple) => `new() {
           User = "${tuple.user}",
           Relation = "${tuple.relation}",
-          Object = "${tuple.object}",
+          Object = "${tuple.object}"
         }`,
           )
-          .join(',')},
-      },`
+          .join(',')}
+      }`
+          : ''
+      }`,
+      )
+      .join(',\n    ')}
+  }
+};
+
+var options = new ClientBatchCheckOptions {${
+        modelId
+          ? `
+  AuthorizationModelId = "${modelId}",`
           : ''
       }
-    },`,
-      )
-      .join('\n    ')}
-  },
-}
-var options = new ClientBatchCheckOptions {${modelId ? `\n  AuthorizationModelId: "${modelId}",\n` : ''}}
+  MaxBatchSize = 50, // optional, default is 50
+  MaxParallelRequests = 10 // optional, default is 10
+};
+
 var response = await fgaClient.BatchCheck(body, options);
+
 /*
-response.Responses = [${checks
+response.Result = [${checks
         .map(
           (check) => `{
-  Allowed: ${check.allowed},
-  Request: {
-    User: '${check.user}',
-    Relation: '${check.relation}',
-    Object: '${check.object}'${
+  CorrelationId = "${check.correlation_id}",
+  Allowed = ${check.allowed},
+  Request = {
+    User = "${check.user}",
+    Relation = "${check.relation}",
+    Object = "${check.object}"${
       check.contextualTuples
-        ? `,\n    ContextualTuples: [${check.contextualTuples
-            .map(
-              (tuple) => `{
-      User: '${tuple.user}',
-      Relation: '${tuple.relation}',
-      Object: '${tuple.object}'
+        ? `,
+    ContextualTuples = [${check.contextualTuples
+      .map(
+        (tuple) => `{
+      User = "${tuple.user}",
+      Relation = "${tuple.relation}",
+      Object = "${tuple.object}"
     }`,
-            )
-            .join(',\n    ')}]
-  `
-        : '\n  '
-    }}
+      )
+      .join(',')}]`
+        : ''
+    }
+  }
 }`,
         )
-        .join(', ')}]
+        .join(',\n')}]
 */
 `;
 
