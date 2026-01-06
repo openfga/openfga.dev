@@ -76,6 +76,11 @@ const sidebars = {
               label: 'Playground',
               id: 'content/getting-started/setup-openfga/playground',
             },
+            {
+              type: 'doc',
+              label: 'Reporting Runtime Issues',
+              id: 'content/getting-started/setup-openfga/reporting-runtime-issues',
+            },
           ],
         },
         {

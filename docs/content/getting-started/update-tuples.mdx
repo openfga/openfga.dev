@@ -257,17 +257,23 @@ For example, if you want to ensure `user:anne` has `reader` access to `document:
       object: 'document:Z'
     },
   ]}
-  writeOptions={{
-    on_duplicate: 'ignore',
+  conflictOptions={{
+    onDuplicateWrites: 'ignore',
   }}
   skipSetup={true}
   allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
+    SupportedLanguage.CLI,
     SupportedLanguage.CURL,
   ]}
 />
 
 :::caution
-At the moment, this feature is only available on the API (v1.10.0). Supported SDKs will follow shortly after.
+At the moment, this feature requires [OpenFGA v1.10.0](https://github.com/openfga/openfga/releases/tag/v1.10.0)+. All latest releases of the SDKs support this.
 :::
 
 Similarly, you can use `on_missing: "ignore"` when deleting tuples that might not exist.
@@ -281,13 +287,19 @@ Similarly, you can use `on_missing: "ignore"` when deleting tuples that might no
       object: 'document:Z'
     },
   ]}
-  deleteOptions={{
-    on_missing: 'ignore',
+  conflictOptions={{
+    onMissingDeletes: 'ignore',
   }}
   expectedResponse={{
     data: {},
   }}
   allowedLanguages={[
+    SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
+    SupportedLanguage.DOTNET_SDK,
+    SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
+    SupportedLanguage.CLI,
     SupportedLanguage.CURL,
   ]}
 />
