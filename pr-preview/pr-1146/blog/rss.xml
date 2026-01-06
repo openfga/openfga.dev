@@ -16,26 +16,22 @@
             <description><![CDATA[OpenFGA has been accepted into the Cloud Native Computing Foundation Incubation stage]]></description>
             <content:encoded><![CDATA[<p>We are thrilled to announce that the Cloud Native Computing Foundation (CNCF) Technical Oversight Commitee (TOC) has voted to accept OpenFGA as as <strong>Incubation</strong> project! This milestone reflects years of community work and real world adoption.</p>
 <ul>
-<li class="">CNCF announcement: <a href="https://www.cncf.io/blog/2025/11/11/openfga-becomes-a-cncf-incubating-project/" target="_blank" rel="noopener noreferrer" class="">OpenFGA becomes a CNCF Incubating Project</a></li>
-<li class="">TOC tracker: <a href="https://github.com/cncf/toc/issues/1949" target="_blank" rel="noopener noreferrer" class="">Issue #1949</a></li>
+<li class="">CNCF announcement: <a href="https://www.cncf.io/blog/2025/11/11/openfga-becomes-a-cncf-incubating-project/" target="_blank" rel="noopener noreferrer" class="">OpenFGA becomes a CNCF Incubating Project</a>.</li>
+<li class="">TOC tracker: <a href="https://github.com/cncf/toc/issues/1949" target="_blank" rel="noopener noreferrer" class="">Issue #1949</a>.</li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="why-this-matters">Why This Matters<a href="https://openfga.dev/pr-preview/pr-1146/blog/incubation-announcement#why-this-matters" class="hash-link" aria-label="Direct link to Why This Matters" title="Direct link to Why This Matters" translate="no">​</a></h2>
-<p>Incubation is a signal that a project is healthy, vendor neutral, and ready for broad adoption. It places OpenFGA on the same maturity path as OpenTelemetry, Keycloak, Artifact Hub and Backstage.</p>
+<p>Incubation is a signal that a project is healthy, vendor neutral, and ready for broad adoption. It places OpenFGA on the same maturity path as other CNCF projects, including OpenTelemetry, Keycloak, Artifact Hub, and Backstage.</p>
 <p>Learn more about <a href="https://www.cncf.io/projects/" target="_blank" rel="noopener noreferrer" class="">CNCF project stages</a>.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="how-we-got-here">How We Got Here<a href="https://openfga.dev/pr-preview/pr-1146/blog/incubation-announcement#how-we-got-here" class="hash-link" aria-label="Direct link to How We Got Here" title="Direct link to How We Got Here" translate="no">​</a></h2>
 <ul>
 <li class="">Community and learning: two years of public community meetings, talks, and guides. Join us in <a href="https://openfga.dev/docs/community" target="_blank" rel="noopener noreferrer" class="">CNCF Slack</a> and find recordings on our <a href="https://www.youtube.com/@OpenFGA" target="_blank" rel="noopener noreferrer" class="">YouTube channel</a>.</li>
-<li class="">Several adopter went on the record in interviews with CNCF around their OpenFGA experience.</li>
+<li class="">Several adopters went on the record in interviews with CNCF around their OpenFGA experience.</li>
 <li class="">Many contributions from the community - whether through questions, feedback, feature requests, PRs, bug reports, guides and tools they have built around OpenFGA - thank you all!</li>
 <li class=""><a href="https://grafana.com/" target="_blank" rel="noopener noreferrer" class="">Grafana Labs</a> joined the maintainer team!</li>
-</ul>
-<p>A few highlights from the journey:</p>
-<ul>
-<li class="">More than 600 people have contributed PRs across the OpenFGA org</li>
-<li class="">5,000+ stars across OpenFGA repositories</li>
-<li class="">Breakout sessions and a kiosk at five KubeCon editions</li>
-<li class="">Monthly community meetings running consistently for over 2 years</li>
-<li class="">Production adopters include Canonical, Docker, Grafana Labs, Read AI, Agicap, Headspace, Zuplo, and Sourcegraph - along with <a href="https://github.com/openfga/community/blob/main/ADOPTERS.md" target="_blank" rel="noopener noreferrer" class="">many others</a></li>
+<li class="">More than 600 people have contributed PRs across the OpenFGA org.</li>
+<li class="">5,000+ stars across OpenFGA repositories.</li>
+<li class="">Breakout sessions and a kiosk at five KubeCon editions.</li>
+<li class="">Production adopters include Canonical, Docker, Grafana Labs, Read AI, Agicap, Headspace, Zuplo, and Sourcegraph - along with <a href="https://github.com/openfga/community/blob/main/ADOPTERS.md" target="_blank" rel="noopener noreferrer" class="">many others</a>.</li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="thank-you">Thank You<a href="https://openfga.dev/pr-preview/pr-1146/blog/incubation-announcement#thank-you" class="hash-link" aria-label="Direct link to Thank You" title="Direct link to Thank You" translate="no">​</a></h2>
 <p>A lot of people contributed to OpenFGA's success, a few of which are highlighted below.</p>
@@ -49,11 +45,10 @@
 <li class=""><a href="https://www.linkedin.com/in/gurleensethi" target="_blank" rel="noopener noreferrer" class="">Gurleen Sethi</a> led the implementation of organization and team management at <a href="https://www.docker.com/" target="_blank" rel="noopener noreferrer" class="">Docker, Inc</a>.</li>
 <li class=""><a href="https://github.com/Siddhant-K-code" target="_blank" rel="noopener noreferrer" class="">Siddhant Khare</a> was the first independent contributor who onboarded as an maintainer of the OpenFGA project.</li>
 <li class=""><a href="https://github.com/mauriceackel" target="_blank" rel="noopener noreferrer" class="">Maurice Ackel</a> donated the <a href="https://registry.terraform.io/providers/openfga/openfga/latest/docs" target="_blank" rel="noopener noreferrer" class="">OpenFGA Terraform Provider</a>, and joined as a maintainer.</li>
-<li class=""><a href="https://www.linkedin.com/in/yann-d-19851110" target="_blank" rel="noopener noreferrer" class="">Yann D'Isanto</a> from <a href="https://agicap.com/" target="_blank" rel="noopener noreferrer" class="">Agicap</a>, who contributed the JetBrains IDE plugin</li>
+<li class=""><a href="https://www.linkedin.com/in/yann-d-19851110" target="_blank" rel="noopener noreferrer" class="">Yann D'Isanto</a> from <a href="https://agicap.com/" target="_blank" rel="noopener noreferrer" class="">Agicap</a>, who contributed the JetBrains IDE plugin.</li>
 <li class=""><a href="https://www.linkedin.com/in/embesozzi" target="_blank" rel="noopener noreferrer" class="">Martin Besozzi</a> has been involved in the OpenFGA community from the beginning, driving integrations with <a href="https://www.keycloak.org/" target="_blank" rel="noopener noreferrer" class="">Keycloak</a>.</li>
 <li class=""><a href="https://github.com/Hawxy" target="_blank" rel="noopener noreferrer" class="">JT aka Hawxy</a> has been maintaining <a href="https://github.com/Hawxy/Fga.Net" target="_blank" rel="noopener noreferrer" class="">Fga.net</a> and has been graciously providing us feedback since.</li>
 </ul>
-<p>Thanks to Agicap, Grafana Labs, Docker, Inc., Zuplo, and Read AI graciously agreed to be interviewed by CNCF as part of due diligence.</p>
 <p>On the CNCF side:</p>
 <ul>
 <li class=""><a href="https://www.linkedin.com/in/caniszczyk" target="_blank" rel="noopener noreferrer" class="">Chris Aniszczyk</a> helped guide the project donation and acceptance.</li>
@@ -65,10 +60,10 @@
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="get-involved">Get Involved<a href="https://openfga.dev/pr-preview/pr-1146/blog/incubation-announcement#get-involved" class="hash-link" aria-label="Direct link to Get Involved" title="Direct link to Get Involved" translate="no">​</a></h2>
 <p>This achievement belongs to every contributor, user and community member. Thank you for being part of our journey! For those who want to be part of this:</p>
 <ul>
-<li class="">Star the repo and follow development: <a href="https://github.com/openfga/openfga" target="_blank" rel="noopener noreferrer" class="">github.com/openfga/openfga</a></li>
-<li class="">Join the conversation in CNCF Slack via our <a href="https://openfga.dev/community" target="_blank" rel="noopener noreferrer" class="">community page</a></li>
-<li class="">Try OpenFGA locally and explore the <a href="https://openfga.dev/" target="_blank" rel="noopener noreferrer" class="">docs</a></li>
-<li class="">Track the <a href="https://github.com/orgs/openfga/projects/1" target="_blank" rel="noopener noreferrer" class="">roadmap</a></li>
+<li class="">Star the repo and follow development: <a href="https://github.com/openfga/openfga" target="_blank" rel="noopener noreferrer" class="">github.com/openfga/openfga</a>.</li>
+<li class="">Join the conversation in CNCF Slack via our <a href="https://openfga.dev/community" target="_blank" rel="noopener noreferrer" class="">community page</a>.</li>
+<li class="">Try OpenFGA locally and explore the <a href="https://openfga.dev/" target="_blank" rel="noopener noreferrer" class="">docs</a>.</li>
+<li class="">Track the <a href="https://github.com/orgs/openfga/projects/1" target="_blank" rel="noopener noreferrer" class="">roadmap</a>.</li>
 </ul>]]></content:encoded>
             <category>announcement</category>
         </item>
