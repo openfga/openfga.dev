@@ -12,29 +12,25 @@ hide_table_of_contents: false
 
 We are thrilled to announce that the Cloud Native Computing Foundation (CNCF) Technical Oversight Commitee (TOC) has voted to accept OpenFGA as as **Incubation** project! This milestone reflects years of community work and real world adoption.
 
-- CNCF announcement: [OpenFGA becomes a CNCF Incubating Project](https://www.cncf.io/blog/2025/11/11/openfga-becomes-a-cncf-incubating-project/)
-- TOC tracker: [Issue #1949](https://github.com/cncf/toc/issues/1949)
+- CNCF announcement: [OpenFGA becomes a CNCF Incubating Project](https://www.cncf.io/blog/2025/11/11/openfga-becomes-a-cncf-incubating-project/).
+- TOC tracker: [Issue #1949](https://github.com/cncf/toc/issues/1949).
 
 ## Why This Matters
 
-Incubation is a signal that a project is healthy, vendor neutral, and ready for broad adoption. It places OpenFGA on the same maturity path as OpenTelemetry, Keycloak, Artifact Hub and Backstage.
+Incubation is a signal that a project is healthy, vendor neutral, and ready for broad adoption. It places OpenFGA on the same maturity path as other CNCF projects, including OpenTelemetry, Keycloak, Artifact Hub, and Backstage.
 
 Learn more about [CNCF project stages](https://www.cncf.io/projects/).
 
 ## How We Got Here
 
 - Community and learning: two years of public community meetings, talks, and guides. Join us in [CNCF Slack](https://openfga.dev/docs/community) and find recordings on our [YouTube channel](https://www.youtube.com/@OpenFGA).
-- Several adopter went on the record in interviews with CNCF around their OpenFGA experience.
+- Several adopters went on the record in interviews with CNCF around their OpenFGA experience.
 - Many contributions from the community - whether through questions, feedback, feature requests, PRs, bug reports, guides and tools they have built around OpenFGA - thank you all!
 - [Grafana Labs](https://grafana.com/) joined the maintainer team!
-
-A few highlights from the journey:
-
-- More than 600 people have contributed PRs across the OpenFGA org
-- 5,000+ stars across OpenFGA repositories
-- Breakout sessions and a kiosk at five KubeCon editions
-- Monthly community meetings running consistently for over 2 years
-- Production adopters include Canonical, Docker, Grafana Labs, Read AI, Agicap, Headspace, Zuplo, and Sourcegraph - along with [many others](https://github.com/openfga/community/blob/main/ADOPTERS.md)
+- More than 600 people have contributed PRs across the OpenFGA org.
+- 5,000+ stars across OpenFGA repositories.
+- Breakout sessions and a kiosk at five KubeCon editions.
+- Production adopters include Canonical, Docker, Grafana Labs, Read AI, Agicap, Headspace, Zuplo, and Sourcegraph - along with [many others](https://github.com/openfga/community/blob/main/ADOPTERS.md).
 
 ## Thank You
 
@@ -49,11 +45,9 @@ A lot of people contributed to OpenFGA's success, a few of which are highlighted
 - [Gurleen Sethi](https://www.linkedin.com/in/gurleensethi) led the implementation of organization and team management at [Docker, Inc](https://www.docker.com/).
 - [Siddhant Khare](https://github.com/Siddhant-K-code) was the first independent contributor who onboarded as an maintainer of the OpenFGA project.
 - [Maurice Ackel](https://github.com/mauriceackel) donated the [OpenFGA Terraform Provider](https://registry.terraform.io/providers/openfga/openfga/latest/docs), and joined as a maintainer.
-- [Yann D'Isanto](https://www.linkedin.com/in/yann-d-19851110) from [Agicap](https://agicap.com), who contributed the JetBrains IDE plugin
+- [Yann D'Isanto](https://www.linkedin.com/in/yann-d-19851110) from [Agicap](https://agicap.com), who contributed the JetBrains IDE plugin.
 - [Martin Besozzi](https://www.linkedin.com/in/embesozzi) has been involved in the OpenFGA community from the beginning, driving integrations with [Keycloak](https://www.keycloak.org/).
 - [JT aka Hawxy](https://github.com/Hawxy) has been maintaining [Fga.net](https://github.com/Hawxy/Fga.Net) and has been graciously providing us feedback since.
-
-Thanks to Agicap, Grafana Labs, Docker, Inc., Zuplo, and Read AI graciously agreed to be interviewed by CNCF as part of due diligence.
 
 On the CNCF side:
 
@@ -69,7 +63,7 @@ Incubation isn't the end of our journey. It brings with it increased visibility,
 
 This achievement belongs to every contributor, user and community member. Thank you for being part of our journey! For those who want to be part of this:
 
-- Star the repo and follow development: [github.com/openfga/openfga](https://github.com/openfga/openfga)
-- Join the conversation in CNCF Slack via our [community page](https://openfga.dev/community)
-- Try OpenFGA locally and explore the [docs](https://openfga.dev)
-- Track the [roadmap](https://github.com/orgs/openfga/projects/1)
+- Star the repo and follow development: [github.com/openfga/openfga](https://github.com/openfga/openfga).
+- Join the conversation in CNCF Slack via our [community page](https://openfga.dev/community).
+- Try OpenFGA locally and explore the [docs](https://openfga.dev).
+- Track the [roadmap](https://github.com/orgs/openfga/projects/1).
