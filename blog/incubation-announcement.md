@@ -67,7 +67,7 @@ Incubation isn't the end of our journey. It brings with it increased visibility,
 
 ## Get Involved
 
-This achievement belongs to every contributor, user and community member.  There has never been a better time to join the OpenFGA community:
+This achievement belongs to every contributor, user and community member. Thank you for being part of our journey! For those who want to be part of this:
 
 - Star the repo and follow development: [github.com/openfga/openfga](https://github.com/openfga/openfga)
 - Join the conversation in CNCF Slack via our [community page](https://openfga.dev/community)
