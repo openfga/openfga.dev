@@ -10,15 +10,13 @@ hide_table_of_contents: false
 ---
 # OpenFGA Accepted into CNCF Incubation 🎉
 
-We are thrilled to announce that the Cloud Native Computing Foundation (CNCF) Technical Oversight Commitee (TOC) [has voted]((https://github.com/cncf/toc/issues/1949)) to accept OpenFGA as as **Incubation** project! This milestone reflects years of community work and real world adoption. Learn more at our CNCF joint announcement [OpenFGA becomes a CNCF Incubating Project](https://www.cncf.io/blog/2025/11/11/openfga-becomes-a-cncf-incubating-project/).
+OpenFGA has been accepted as a CNCF **Incubation** project! The Cloud Native Computing Foundation (CNCF) Technical Oversight Committee (TOC) [voted to advance OpenFGA](https://github.com/cncf/toc/issues/1287#issuecomment-3458442973) from Sandbox to Incubation status, recognizing years of community work and real-world adoption. This places OpenFGA on the same maturity path as other CNCF projects like OpenTelemetry, Keycloak, Artifact Hub, and Backstage. Learn more at the CNCF joint announcement: [OpenFGA becomes a CNCF Incubating Project](https://www.cncf.io/blog/2025/11/11/openfga-becomes-a-cncf-incubating-project/).
 
-## Why This Matters
+## Why Incubation Matters
 
-Incubation is a signal that a project is healthy, and ready for broad adoption. It places OpenFGA on the same maturity path as other CNCF projects, including OpenTelemetry, Keycloak, Artifact Hub, and Backstage.
+Incubation signals that OpenFGA is production-ready with a healthy, diverse contributor base and real-world adoption at scale. For organizations evaluating OpenFGA, this milestone validates the project's maturity, governance, and long-term sustainability. The CNCF due diligence process assessed our security posture, documentation, community health, and adoption metrics—all meeting the standards required for broad enterprise use.
 
-Learn more about [CNCF project stages](https://www.cncf.io/projects/).
-
-https://github.com/cncf/toc/pull/1923
+Learn more about [CNCF project stages](https://www.cncf.io/projects/) and review our [due diligence documentation](https://github.com/cncf/toc/blob/main/projects/openfga/openfga-incubation-dd.md).
 
 ## How We Got Here
 
@@ -30,7 +28,7 @@ OpenFGA was open sourced in June 2022 and accepted as a CNCF Sandbox project in 
 - More than 600 people have contributed PRs across the OpenFGA org.
 - 5,000+ stars across OpenFGA repositories.
 - Breakout sessions and a kiosk at six KubeCon US and EU editions in a row. 
-- Production adopters include [Canonical](https://canonical.com/), [Docker](https://grafana.com), [Grafana Labs](https://grafana.com), [Read AI](https://read.ai/), [Agicap](https://agicap.com), [Headspace](https://headspace.com), [Zuplo](https://zuplo.com), [Sourcegraph](https://sourcegraph.com/), [OpenObserve](https://openobserve.ai/) and [LakeKeeper](https://lakekeeper.io/) along with [many others](https://github.com/openfga/community/blob/main/ADOPTERS.md).
+- Production adopters include [Canonical](https://canonical.com/), [Docker](https://www.docker.com), [Grafana Labs](https://grafana.com), [Read AI](https://read.ai/), [Agicap](https://agicap.com), [Headspace](https://headspace.com), [Zuplo](https://zuplo.com), [Sourcegraph](https://sourcegraph.com/), [OpenObserve](https://openobserve.ai/) and [LakeKeeper](https://lakekeeper.io/) along with [many others](https://github.com/openfga/community/blob/main/ADOPTERS.md).
 - Several adopters [went on the record](https://github.com/cncf/toc/tree/main/projects/openfga) in interviews with CNCF around their OpenFGA experience through the due diligence project.
 
 ## Thank You
@@ -58,15 +56,27 @@ On the CNCF side:
 
 ## What's Next
 
-Incubation isn't the end of our journey. It brings with it increased visibility, higher expectations and the chance to attract an even bigger community and pool of contributors. We will keep working to deliver on performance, tackle more use-cases, improve our DX and tooling, broadening integrations, mature our documentation, samples and governance. Next milestone - graduation!
+Incubation is a milestone, not a destination. Our focus continues on:
+
+- **Performance**: Optimizing latency and throughput for large-scale deployments
+- **Developer Experience**: Enhanced tooling, IDE plugins, and debugging capabilities
+- **Integrations**: Expanding our ecosystem with more identity providers, frameworks, and platforms
+- **Documentation**: Comprehensive guides, tutorials, and real-world implementation patterns
+- **Governance**: Strengthening our contributor pathways and security practices
+
+Our next milestone: CNCF Graduation. Track our progress on the [project roadmap](https://github.com/orgs/openfga/projects/1).
 
 ## Get Involved
 
-This achievement belongs to every contributor, user and community member. Thank you for being part of our journey! For those who want to be part of this:
+This achievement belongs to every contributor, user, and community member who has supported OpenFGA. Thank you for being part of our journey!
 
-- Star the repo and follow development: [github.com/openfga/openfga](https://github.com/openfga/openfga).
-- Join the conversation in CNCF Slack via our [community page](https://openfga.dev/community).
-- Try OpenFGA locally and explore the [docs](https://openfga.dev).
-- Track the [roadmap](https://github.com/orgs/openfga/projects/1).
+**New to OpenFGA?** Start here:
+- [Try OpenFGA locally](https://openfga.dev/docs/getting-started) and explore the documentation
+- [Join our CNCF Slack community](https://openfga.dev/community) to ask questions and connect with users
+
+**Already using OpenFGA?**
+- [Star the repo](https://github.com/openfga/openfga) and follow development
+- Share your adoption story—add your organization to our [ADOPTERS.md](https://github.com/openfga/community/blob/main/ADOPTERS.md)
+- Check out the [roadmap](https://github.com/orgs/openfga/projects/1) and contribute to upcoming features
 
 
