@@ -18,11 +18,23 @@ Incubation signals that OpenFGA is production-ready with a healthy, diverse cont
 
 Learn more about [CNCF project stages](https://www.cncf.io/projects/) and review our [due diligence documentation](https://github.com/cncf/toc/blob/main/projects/openfga/openfga-incubation-dd.md).
 
+## Technical Maturity Since Sandbox
+
+Since joining CNCF as a Sandbox project in December 2022, OpenFGA has evolved significantly:
+
+- **Performance improvements**: Substantial optimizations in query execution and caching, enabling sub-millisecond authorization checks at scale
+- **Enhanced capabilities**: Introduction of conditional tuples, modular models, and list users functionality to support more complex authorization scenarios
+- **Expanded ecosystem**: New SDKs, database adapters (including SQLite), Terraform provider, and IDE plugins
+- **Production hardening**: Improved observability, configuration options, and operational tooling based on real-world deployment feedback
+- **Security posture**: Comprehensive security assessments, vulnerability management processes, and regular dependency updates
+
+These improvements reflect our commitment to building a reliable, performant authorization system ready for enterprise production use.
+
 ## How We Got Here
 
 OpenFGA was open sourced in June 2022 and accepted as a CNCF Sandbox project in December 2022. Since then, we've seen incredible community support:
 
-- Regular community meetings since 2022, available on [our YouTube channel](https://www.youtube.com/@OpenFGA), together with more than 40 presentations from community members.
+- Regular community meetings since 2022, available on [our YouTube channel](https://www.youtube.com/@OpenFGA), along with more than 40 presentations from community members.
 - Contributions from the community—whether through questions, feedback, feature requests, PRs, bug reports, or guides and tools built around OpenFGA.
 - [Grafana Labs](https://grafana.com/) joined the maintainer team.
 - 600+ contributors across the OpenFGA organization.
