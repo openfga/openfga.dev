@@ -27,16 +27,7 @@ export default function Root({ children }: RootProps): JSX.Element {
       }
     };
 
-    // Run immediately
     moveAskAIButton();
-
-    // Run multiple times with different delays to catch async search bar loading
-    setTimeout(moveAskAIButton, 50);
-    setTimeout(moveAskAIButton, 100);
-    setTimeout(moveAskAIButton, 250);
-    setTimeout(moveAskAIButton, 500);
-    setTimeout(moveAskAIButton, 1000);
-    setTimeout(moveAskAIButton, 2000); // Add longer delay for search plugin
 
     const observer = new MutationObserver((mutations) => {
       const hasSearchContainer = mutations.some(mutation =>
