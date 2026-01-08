@@ -22,6 +22,7 @@ const SocialMedia: React.FC = () => {
     <div className={styles[baseClassName]}>
       {filteredItems.map(({ label, to, ['aria-label']: ariaLabel }) => (
         <Link
+          key={label}
           to={useBaseUrl(to as string)}
           className={clsx(
             styles[baseClassName + '-item'],
