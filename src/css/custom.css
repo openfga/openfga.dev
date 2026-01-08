@@ -44,25 +44,36 @@ table td {
 /* Ask AI Button Styling */
 .ask-ai-button-wrapper {
   position: relative !important;
+  order: 1000 !important;
+  padding-left: 0.75rem !important;
+  flex-shrink: 0 !important;
+  margin-left: 0 !important;
 }
 
 .ask-ai-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white !important;
-  border: none;
+  background: linear-gradient(
+    135deg,
+    var(--ofga-color-module) 0%,
+    var(--ofga-color-relation) 100%
+  );
+
+  color: var(--ofga-color-background) !important;
+
+  border: 1px solid color-mix(in srgb, var(--ofga-color-relation), var(--ofga-neutral-darkest) 70%);
   border-radius: 6px;
   padding: 0.5rem 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
   font-size: 0.9rem;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--ofga-color-background), transparent 80%);
+
 }
 
 .ask-ai-button:hover {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 18px var(--ofga-color-background);
+  filter: saturate(1.05);
 }
 
 .ask-ai-button:active {
@@ -72,26 +83,14 @@ table td {
 .navbar__items.navbar__items--right {
   display: flex !important;
   flex-wrap: nowrap !important;
-  position: relative !important;
 }
 
-.ask-ai-button-wrapper {
-  order: 9999 !important;
-  margin-left: auto !important;
-  padding-left: 0.75rem !important;
-  flex-shrink: 0 !important;
+.navbar__items--right > .navbarSearchContainer_Bca1 {
+  order: 999 !important;
 }
 
-.navbar__items--right > *:not(.ask-ai-button-wrapper) {
-  order: 1 !important;
-  margin-left: 0 !important;
-}
-
-.navbar__items--right .navbar__search,
-.navbar__items--right [class*="search"],
-.navbar__items--right [class*="navbarSearchContainer"],
-.navbar__items--right > div:not(.ask-ai-button-wrapper) {
-  order: 1 !important;
+.navbar__items--right > .navbar__item:has(.ask-ai-button-wrapper) {
+  order: 1000 !important;
 }
 
 @media (max-width: 996px) {
