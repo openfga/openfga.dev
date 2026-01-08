@@ -328,7 +328,7 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
     // KAPA_WEBSITE_ID, KAPA_PROJECT_NAME, KAPA_PROJECT_COLOR, KAPA_PROJECT_LOGO
     {
       src: "https://widget.kapa.ai/kapa-widget.bundle.js",
-      "data-website-id": "XXX-XXX-XXX",
+      "data-website-id": process.env.KAPA_WEBSITE_ID || "",
       "data-project-name": "OpenFGA",
       "data-project-color": "#79ED83",
       "data-project-logo": "https://openfga.dev/img/openfga_logo.svg",
