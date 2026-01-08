@@ -51,11 +51,7 @@ table td {
 }
 
 .ask-ai-button {
-  background: linear-gradient(
-    135deg,
-    var(--ofga-color-module) 0%,
-    var(--ofga-color-relation) 100%
-  );
+  background: linear-gradient(135deg, var(--ofga-color-module) 0%, var(--ofga-color-relation) 100%);
 
   color: var(--ofga-color-background) !important;
 
@@ -65,9 +61,11 @@ table td {
   font-weight: 600;
   cursor: pointer;
   font-size: 0.9rem;
-  transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
   box-shadow: 0 2px 10px color-mix(in srgb, var(--ofga-color-background), transparent 80%);
-
 }
 
 .ask-ai-button:hover {
@@ -101,4 +99,3 @@ table td {
     margin: 0.5rem 0;
   }
 }
-
