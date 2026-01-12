@@ -60,7 +60,6 @@ const config = {
       : 'https://raw.githubusercontent.com/openfga/api/main/docs/openapiv2/apidocs.swagger.json',
 
     // Customization for product information
-    kapaWebsiteId: process.env.KAPA_WEBSITE_ID || '',
     description: `OpenFGA is an open source Fine-Grained Authorization solution based on Google's Zanzibar.`,
     productName: `OpenFGA`,
     // link to product description section (relative to baseURL)
@@ -323,22 +322,24 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
       },
     }),
 
-  scripts: [
-    // Kapa.ai website widget - values can be provided via environment variables:
-    // KAPA_WEBSITE_ID, KAPA_PROJECT_NAME, KAPA_PROJECT_COLOR, KAPA_PROJECT_LOGO
-    {
-      src: "https://widget.kapa.ai/kapa-widget.bundle.js",
-      "data-website-id": process.env.KAPA_WEBSITE_ID || "",
-      "data-project-name": "OpenFGA",
-      "data-project-color": "#79ED83",
-      "data-project-logo": "https://openfga.dev/img/openfga_logo.svg",
-      "data-button-hide": "true",
-      "data-modal-override-open-selector": ".ask-ai-button",
-      "data-modal-open-on-command-k": "true",
-      async: true,
-    },
-  ],
+  scripts: [],
 };
+
+// Kapa.ai website widget - KAPA_WEBSITE_ID can be provided via environment variable
+if (process.env.KAPA_WEBSITE_ID) {
+  config.scripts = config.scripts || [];
+  config.scripts.push({
+    src: "https://widget.kapa.ai/kapa-widget.bundle.js",
+    "data-website-id": process.env.KAPA_WEBSITE_ID,
+    "data-project-name": "OpenFGA",
+    "data-project-color": "#79ED83",
+    "data-project-logo": "https://openfga.dev/img/openfga_logo.svg",
+    "data-button-hide": "true",
+    "data-modal-override-open-selector": ".ask-ai-button",
+    "data-modal-open-on-command-k": "true",
+    async: true,
+  });
+}
 
 if (process.env.HUBSPOT_TRACKING_ID) {
   // Ensure config.scripts exists and append the HubSpot loader instead of replacing the whole scripts array.
