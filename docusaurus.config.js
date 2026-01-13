@@ -324,6 +324,7 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
 
   scripts: [],
 };
+
 // Kapa.ai website widget - KAPA_WEBSITE_ID can be provided via environment variable
 if (process.env.KAPA_WEBSITE_ID) {
   config.scripts = config.scripts || [];
@@ -336,6 +337,7 @@ if (process.env.KAPA_WEBSITE_ID) {
     "data-button-hide": "true",
     "data-modal-override-open-selector": ".ask-ai-button",
     "data-modal-open-on-command-k": "true",
+    async: true,
   });
 }
 
