@@ -92,7 +92,6 @@ table td {
 /* Mobile Layout */
 
 @media (max-width: 996px) {
-
   .navbar__items--right .header-social {
     display: none;
   }
@@ -139,5 +138,4 @@ table td {
     width: 100%;
     min-width: 0;
   }
-
 }
