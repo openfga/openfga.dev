@@ -121,7 +121,7 @@ table td {
     margin: 0;
   }
 
-  .navbar__items--right .navbarSearchContainer_Bca1 {
+  .navbar__items--right [class*='navbarSearchContainer'] {
     order: 1;
     margin-right: calc(var(--ask-ai-mobile-width) + 20px);
     flex: 1 1 auto;
