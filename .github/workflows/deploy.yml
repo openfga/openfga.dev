@@ -35,6 +35,7 @@ jobs:
         run: npm run build
         env:
           HUBSPOT_TRACKING_ID: ${{ secrets.HUBSPOT_TRACKING_ID }}
+          KAPA_WEBSITE_ID: ${{ secrets.KAPA_WEBSITE_ID }}
 
       # Popular action to deploy to GitHub Pages:
       # Docs: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-docusaurus
