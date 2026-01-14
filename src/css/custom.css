@@ -41,26 +41,22 @@ table td {
   overflow-wrap: break-word;
 }
 
-/* Ask AI Button Styling */
-.ask-ai-button-wrapper {
-  position: relative !important;
-  order: 1000 !important;
-  padding-left: 0.75rem !important;
-  flex-shrink: 0 !important;
-  margin-left: 0 !important;
-}
-
+/* =========================
+   Ask AI button styling
+   ========================= */
 .ask-ai-button {
   background: linear-gradient(135deg, var(--ofga-color-module) 0%, var(--ofga-color-relation) 100%);
-
   color: var(--ofga-color-background) !important;
 
   border: 1px solid color-mix(in srgb, var(--ofga-color-relation), var(--ofga-neutral-darkest) 70%);
   border-radius: 6px;
+
   padding: 0.5rem 1rem;
   font-weight: 600;
   cursor: pointer;
   font-size: 0.9rem;
+  white-space: nowrap;
+
   transition:
     background 0.25s ease,
     transform 0.25s ease,
@@ -78,24 +74,68 @@ table td {
   transform: translateY(0);
 }
 
-.navbar__items.navbar__items--right {
-  display: flex !important;
-  flex-wrap: nowrap !important;
+.navbar__items--right {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 12px;
 }
 
-.navbar__items--right > .navbarSearchContainer_Bca1 {
-  order: 999 !important;
+.navbar__items--right .navbarSearchContainer_Bca1 {
+  order: 1;
 }
 
-.navbar__items--right > .navbar__item:has(.ask-ai-button-wrapper) {
-  order: 1000 !important;
+.navbar__items--right .ask-ai-nav-item {
+  order: 2;
 }
+
+/* Mobile Layout */
 
 @media (max-width: 996px) {
-  .ask-ai-button {
+  .navbar__items--right .header-social {
+    display: none;
+  }
+
+  .navbar-sidebar .ask-ai-nav-item {
+    display: none;
+  }
+
+  .navbar__items--right {
+    position: relative;
+    --ask-ai-mobile-width: 92px;
+  }
+
+  .navbar__items--right > .ask-ai-nav-item {
     display: block;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 0;
+  }
+
+  .navbar__items--right .ask-ai-nav-button {
+    width: var(--ask-ai-mobile-width);
+    padding: 0.45rem 0.75rem;
+    font-size: 0.85rem;
+    margin: 0;
+  }
+
+  .navbar__items--right [class*='navbarSearchContainer'] {
+    order: 1;
+    margin-right: calc(var(--ask-ai-mobile-width) + 20px);
+    flex: 1 1 auto;
+    min-width: 0;
+    position: static;
+  }
+
+  .navbar__items--right .searchBar_RVTs {
     width: 100%;
-    text-align: center;
-    margin: 0.5rem 0;
+    min-width: 0;
+  }
+
+  .navbar__items--right .navbar__search-input {
+    width: 100%;
+    min-width: 0;
   }
 }
