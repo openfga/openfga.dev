@@ -60,7 +60,6 @@ const config = {
       : 'https://raw.githubusercontent.com/openfga/api/main/docs/openapiv2/apidocs.swagger.json',
 
     // Customization for product information
-     
     description: `OpenFGA is an open source Fine-Grained Authorization solution based on Google's Zanzibar.`,
     productName: `OpenFGA`,
     // link to product description section (relative to baseURL)
@@ -115,18 +114,17 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
       block-all-mixed-content;
       worker-src 'self';
       child-src www.youtube-nocookie.com;
-      prefetch-src 'self';
-      connect-src 'self' https://raw.githubusercontent.com https://s3.amazonaws.com https://cdn.cookielaw.org https://privacyportal.onetrust.com https://heapanalytics.com https://js.hs-scripts.com https://api.github.com https://js.hscollectedforms.net https://js.hs-analytics.net https://js.hs-banner.com https://forms.hscollectedforms.net ;
+      connect-src 'self' https://raw.githubusercontent.com https://s3.amazonaws.com https://cdn.cookielaw.org https://privacyportal.onetrust.com https://heapanalytics.com https://js.hs-scripts.com https://api.github.com https://js.hscollectedforms.net https://js.hs-analytics.net https://js.hs-banner.com https://forms.hscollectedforms.net https://proxy.kapa.ai https://kapa-widget-proxy-la7dkmplpq-uc.a.run.app https://metrics.kapa.ai https://www.google.com/recaptcha/ https://hcaptcha.com https://*.hcaptcha.com ;
       font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;
       form-action 'none';
-      frame-src www.youtube-nocookie.com;
-      img-src 'self' data: https://pbs.twimg.com https://docs.github.com https://heapanalytics.com https://forms.hsforms.com https://track.hubspot.com ;
+      frame-src www.youtube-nocookie.com https://www.google.com https://hcaptcha.com https://*.hcaptcha.com;
+      img-src 'self' data: https://openfga.dev https://pbs.twimg.com https://docs.github.com https://heapanalytics.com https://forms.hsforms.com https://track.hubspot.com ;
       media-src 'self';
       object-src 'none';
       script-src 'self' ${
         process.env.NODE_ENV === 'development' ? `'unsafe-eval'` : ``
-      } 'unsafe-inline' https://cdn.cookielaw.org https://geolocation.onetrust.com https://cdn.heapanalytics.com https://js.hs-scripts.com https://api.github.com https://js.hscollectedforms.net https://js.hs-analytics.net https://js.hs-banner.com;
-      style-src 'unsafe-inline' 'self' https://fonts.googleapis.com;`,
+      } 'unsafe-inline' https://cdn.cookielaw.org https://geolocation.onetrust.com https://cdn.heapanalytics.com https://js.hs-scripts.com https://api.github.com https://js.hscollectedforms.net https://js.hs-analytics.net https://js.hs-banner.com https://widget.kapa.ai https://www.google.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ https://hcaptcha.com https://*.hcaptcha.com;
+      style-src 'unsafe-inline' 'self' https://fonts.googleapis.com https://hcaptcha.com https://*.hcaptcha.com;`,
   },
 
   themes: [
@@ -272,6 +270,12 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
             className: 'header-social header-slack-link',
             'aria-label': 'OpenFGA on Slack',
           },
+          {
+            type: 'html',
+            position: 'right',
+            className: 'ask-ai-nav-item',
+            value: '<button class="ask-ai-button ask-ai-nav-button" aria-label="Ask AI">Ask AI</button>',
+          },
         ],
       },
       footer: {
@@ -318,19 +322,37 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
         },
       },
     }),
+
+  scripts: [],
 };
 
+// Kapa.ai website widget - KAPA_WEBSITE_ID can be provided via environment variable
+if (process.env.KAPA_WEBSITE_ID) {
+  config.scripts = config.scripts || [];
+  config.scripts.push({
+    src: "https://widget.kapa.ai/kapa-widget.bundle.js",
+    "data-website-id": process.env.KAPA_WEBSITE_ID,
+    "data-project-name": "OpenFGA",
+    "data-project-color": "#79ED83",
+    "data-project-logo": "https://openfga.dev/img/openfga_logo.svg",
+    "data-button-hide": "true",
+    "data-modal-override-open-selector": ".ask-ai-button",
+    "data-modal-open-on-command-k": "true",
+    async: true,
+  });
+}
+
 if (process.env.HUBSPOT_TRACKING_ID) {
-  config.scripts = [
-    {
-      src: `https://js.hs-scripts.com/${process.env.HUBSPOT_TRACKING_ID}.js`,
-      type: "text/javascript",
-      charset: "UTF-8",
-      id: "hs-script-loader",
-      async: true,
-      defer: true,
-    },
-  ];
+  // Ensure config.scripts exists and append the HubSpot loader instead of replacing the whole scripts array.
+  config.scripts = config.scripts || [];
+  config.scripts.push({
+    src: `https://js.hs-scripts.com/${process.env.HUBSPOT_TRACKING_ID}.js`,
+    type: "text/javascript",
+    charset: "UTF-8",
+    id: "hs-script-loader",
+    async: true,
+    defer: true,
+  });
 }
 
 module.exports = config;
