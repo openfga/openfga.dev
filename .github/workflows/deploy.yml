@@ -22,7 +22,7 @@ jobs:
         uses: nschloe/action-cached-lfs-checkout@f46300cd8952454b9f0a21a3d133d4bd5684cfc2
 
       - name: Set up node
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238
         with:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
