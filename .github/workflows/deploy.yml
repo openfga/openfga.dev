@@ -22,7 +22,7 @@ jobs:
         uses: nschloe/action-cached-lfs-checkout@f46300cd8952454b9f0a21a3d133d4bd5684cfc2
 
       - name: Set up node
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238
         with:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
@@ -35,6 +35,7 @@ jobs:
         run: npm run build
         env:
           HUBSPOT_TRACKING_ID: ${{ secrets.HUBSPOT_TRACKING_ID }}
+          KAPA_WEBSITE_ID: ${{ secrets.KAPA_WEBSITE_ID }}
 
       # Popular action to deploy to GitHub Pages:
       # Docs: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-docusaurus
