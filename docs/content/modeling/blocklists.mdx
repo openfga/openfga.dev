@@ -39,14 +39,10 @@ This is useful when:
 
 Before you start this guide, make sure you're familiar with some <ProductConcept /> and know how to develop the things listed below.
 
-<details>
-<summary>
 
 You will start with the _<ProductConcept section="what-is-an-authorization-model" linkName="authorization model" />_ below, it represents a `document` _<ProductConcept section="what-is-a-type" linkName="type" />_ that can have users **<ProductConcept section="what-is-a-relation" linkName="related" />** as `editor`, and `team` type that can have users related as `member`.
 
-Let us also assume that we have a `document` called "planning", shared for editing within the product `team` (comprised of becky and carl).
 
-</summary>
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -85,62 +81,51 @@ Let us also assume that we have a `document` called "planning", shared for editi
   }}
 />
 
-The current state of the system is represented by the following relationship tuples being in the system already:
+Let us also assume that we have a `document` called "planning", shared for editing within the product `team` (comprised of becky and carl).
 
-<RelationshipTuplesViewer
-  relationshipTuples={[
-    {
-      _description: 'Members of the product team can edit the planning document',
-      user: 'team:product#member',
-      relation: 'editor',
-      object: 'document:planning',
-    },
-    {
-      _description: 'Becky is a member of the product team',
-      user: 'user:becky',
-      relation: 'member',
-      object: 'team:product',
-    },
-    {
-      _description: 'Carl is a member of the product team',
-      user: 'user:carl',
-      relation: 'member',
-      object: 'team:product',
-    },
-  ]}
-/>
+```yaml
+  # Becky is a member of the product team
+  - user: user:becky
+    relation: member
+    object: team:product
+
+  # Carl is a member of the product team
+  - user: user:carl
+    relation: member
+    object: team:product
+
+  # Members of the product team can edit the planning document
+  - user: team:product#member
+    relation: editor
+    object: document:planning
+```
+
 
 <hr />
 
-In addition, you will need to know the following:
 
-### Modeling user groups
-
-You need to know how to add users to groups and grant groups access to resources. [Learn more →](.//user-groups.mdx)
-
-### <ProductName format={ProductNameFormat.ShortForm} /> Concepts
-
-- A <ProductConcept section="what-is-a-type" linkName="Type" />: a class of objects that have similar characteristics
-- A <ProductConcept section="what-is-a-user" linkName="User" />: an entity in the system that can be related to an object
-- A <ProductConcept section="what-is-a-relation" linkName="Relation" />: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
-- An <ProductConcept section="what-is-an-object" linkName="Object" />: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
-- A <ProductConcept section="what-is-a-relationship-tuple" linkName="Relationship Tuple" />: a grouping consisting of a user, a relation and an object stored in <ProductName format={ProductNameFormat.ShortForm} />
-- [Exclusion Operator](../configuration-language.mdx#the-exclusion-operator): the exclusion operator can be used to exclude certain usersets from being related to an object
-
-</details>
-
-<Playground />
 
 ## Step by step
 
 With the above authorization model and relationship tuples, <ProductName format={ProductNameFormat.LongForm} /> will correctly respond with `{"allowed":true}` when <ProductConcept section="what-is-a-check-request" linkName="check" /> is called to see if Carl and Becky can edit this `document`.
 
-We can verify that by issuing two check requests:
+We can verify that with these two tests which will pass:
 
-<CheckRequestViewer user={'user:becky'} relation={'editor'} object={'document:planning'} allowed={true} />
-
-<CheckRequestViewer user={'user:carl'} relation={'editor'} object={'document:planning'} allowed={true} />
-
+```yaml
+- tests:
+  - name: "Becky can edit the 'planning' document"
+    check:
+      - user: user:becky
+        object: document:planning
+        assertions:
+          editor: true
+  - name: "Carl can edit the 'planning' document"
+    check:
+      - user: user:carl
+        object: document:planning
+        assertions:
+          editor: true
+```
 We want to share a document with the product team and also have the ability to deny certain users access, even if they have the document shared with them already. We can verify this by blocking Carl (who we have seen already has edit access) from editing the document.
 
 In order to do that, we need to:
@@ -149,11 +134,9 @@ In order to do that, we need to:
 2. [Modify our model to indicate that users who are blocked can no longer edit the document](#02-modify-our-model-so-users-who-are-blocked-can-no-longer-edit-the-document)
 3. [Verify that our solution works](#03-verify-our-solution-works):
 
-a. [Indicate that Carl is blocked from the planning document](#a-indicate-that-carl-is-blocked-from-the-planning-document)
-
-b. [Carl (now blocked) can no longer edit the document](#b-carl-now-blocked-can-no-longer-edit-the-document)
-
-c. [Becky still has edit access](#c-becky-still-has-edit-access)
+  a. [Indicate that Carl is blocked from the planning document](#a-indicate-that-carl-is-blocked-from-the-planning-document)
+  
+  b. [Carl (now blocked) can no longer edit the document](#b-carl-now-blocked-can-no-longer-edit-the-document), but Becky still has edit access
 
 ### 01. Modify our model so users can be blocked from accessing a document
 
@@ -266,34 +249,33 @@ To check if our new model works, we'll add a relationship tuple with Carl as `bl
 
 With our modified authorization model, we can indicate that Carl is blocked by adding this _<ProductConcept section="what-is-a-relationship-tuple" linkName="relationship tuple" />_.
 
-<WriteRequestViewer
-  relationshipTuples={[
-    {
-      _description: 'Carl is blocked from editing the planning document',
-      user: 'user:carl',
-      relation: 'blocked',
-      object: 'document:planning',
-    },
-  ]}
-/>
+```yaml
+  # Carl is blocked from the planning document
+  - user: user:carl
+    relation: blocked
+    object: document:planning
+```
 
 #### b. Carl (now blocked) can no longer edit the document
 
 We have modified the authorization model and added relationship tuples to indicate that Carl is `blocked`. Now let's make sure our solution works as expected.
 
-To check if Carl still has access to the document, we can issue a check request with Carl as the user.
-
-<CheckRequestViewer user={'user:carl'} relation={'editor'} object={'document:planning'} allowed={false} />
-
-The response is `false`, so our solution is working as expected.
-
-#### c. Becky still has edit access
-
-To check if Becky still has access to the document, we'll issue another check request with Becky as the user.
-
-<CheckRequestViewer user={'user:becky'} relation={'editor'} object={'document:planning'} allowed={true} />
-
-The response is `true`, indicating our model change did not inadvertently deny access for users who have access but are not blocked.
+With these tuples, Carl will not be able to edit the document, but Becky will:
+```yaml
+- tests:
+  - name: "Carl can edit the 'planning' document"
+    check:
+      - user: user:carl
+        object: document:planning
+        assertions:
+          editor: false
+  - name: "Becky can edit the 'planning' document"
+    check:
+      - user: user:becky
+        object: document:planning
+        assertions:
+          editor: true
+```
 
 :::caution
 When creating tuples for <ProductName format={ProductNameFormat.LongForm} /> make sure to use unique ids for each object and user within your application domain. We are using first names and human-readable identifiers to make this task easier to read.
