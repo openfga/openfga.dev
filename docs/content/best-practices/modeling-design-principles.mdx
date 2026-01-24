@@ -1,6 +1,6 @@
 ---
-title: Modeling Best Practices
-slug: /best-practices/modeling
+title: Authorization Model Design Principles
+slug: /best-practices/modeling-design-principles
 description: Best practices for creating clear, performant, and maintainable authorization models.
 sidebar_position: 1
 ---
@@ -10,7 +10,7 @@ import {
   RelatedSection,
 } from '@components/Docs';
 
-# Modeling Best Practices
+# Authorization Model Design Principles
 
 A well-designed authorization model is easier to understand, debug, and maintain. It also performs better and scales more gracefully as your application grows. This guide covers key principles for modeling authorization in <ProductName format={ProductNameFormat.ShortForm}/>.
 
@@ -96,7 +96,7 @@ type resource
 
 While flexible, this approach creates problems:
 - The model doesn't communicate what your application actually does
-- To understand the actual relationships you need to rely on tuples, e.g. the fact that a project can have documents.
+- To understand the actual relationships you need to rely on tuples, e.g., the fact that a project can have documents.
 - Generic recursive relations are slower to evaluate
 - You can't use modules to isolate different resource types
 - ListObjects returns mixed results (all "resources" instead of just "documents")
@@ -290,7 +290,7 @@ Benefits of specific types:
 <details>
 <summary>What to avoid: The generic resource type</summary>
 
-```
+```dsl.openfga
 type resource
   relations
     define entity: [entity]
@@ -317,6 +317,7 @@ Problems with this approach:
 | Customer org hierarchies | Add recursive `parent` relation only if needed |
 | Different resource types | Create specific types (`document`, `folder`), not generic `resource` |
 | Type-specific permissions | Define permissions on the relevant type only |
+| Team ownership of resource types |Use modules to separate concerns |
 
 ## Related Sections
 
