@@ -1,0 +1,306 @@
+---
+title: Modeling Atrribute Based Access Control
+slug: /best-practices/modeling
+description: Modeling ABAC
+sidebar_position: 1
+---
+import {
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+} from '@components/Docs';
+
+# Modeling ABAC with <ProductName format={ProductNameFormat.ShortForm}/>
+
+Attribute-Based Access Control allows making authorization decisions with attributes that are be stored in a database, or that are part of an authorization request. You can do both with <ProductName format={ProductNameFormat.ShortForm}/>.
+
+## Attribute data stored in <ProductName format={ProductNameFormat.ShortForm}/>
+
+Assume you want to allow users to perform an action only if they have verified their email, and you want to have a stored attribute that indicates that. 
+
+### Attributes as Relation
+
+**Using `user:*` as a boolean relation**
+
+You can use the [Public Access](../modeling/public-access.mdx) feature to simulate a boolean relation:
+
+```dsl.openfga
+model: |
+  model
+    schema 1.1
+
+  type user
+  type organization
+    relations
+      define member : [user]
+      define sso_enabled : [user:*]
+      define can_use_sso : sso_enabled and member
+
+tuples:
+  - user: user:* 
+    relation: sso_enabled
+    object: organization:acme
+  - user: user:anne
+    relation: member
+    object: organization:acme
+
+tests:
+  - check:
+    - user: user:anne
+      object: organization:acme
+      assertions:
+        can_use_sso: true
+```
+
+**Using self-relations**
+
+```dsl.openfga
+model: |
+  model
+    schema 1.1
+
+  type user
+
+  type organization
+    relations
+      define member : [user]
+      define sso_enabled : [organization]
+      define can_use_sso : member from sso_enabled
+
+tuples:
+  - user: organization:acme 
+    relation: sso_enabled
+    object: organization:acme
+
+  - user: user:anne
+    relation: member
+    object: organization:acme
+
+tests:
+  - check:
+    - user: user:anne
+      object: organization:acme
+      assertions:
+        can_use_sso: true
+```
+
+### Attributes as Conditional Relationship Tuples Context
+
+```dsl.openfga
+model: |
+  model
+    schema 1.1
+  type user
+  type organization
+    relations
+      define member : [user]
+      define sso_enabled : [organization#member with sso_enabled]
+      define can_use_sso : sso_enabled
+
+  condition sso_enabled(sso_enabled: bool) {
+    sso_enabled
+  }
+
+tuples:
+  - user: organization:acme#member
+    relation: sso_enabled
+    object: organization:acme
+    condition:
+      name: sso_enabled
+      context:
+        sso_enabled : true
+
+  - user: user:anne
+    relation: member
+    object: organization:acme
+
+tests:
+  - check:
+    - user: user:anne
+      object: organization:acme
+      assertions:
+        can_use_sso: true
+```
+
+## Attribute data sent in each request
+
+In some cases you can't store the data in <ProductName format={ProductNameFormat.ShortForm}/> because it's dynamic per request. The most common examples are current time and current ip. You can look at examples on how to achieve it [here](../modeling/conditions.mdx).
+
+Another common example is where you have a user that can authenticate to more than one organization, and that when accessing content, you need to make sure the content is part of the organization they are logged with.
+
+We can achieve that use case by providing context with Contextual Tuples or with Conditional Relationship Tuples:
+
+**Using contextual tuples**
+
+We'll add an additional relation called 'user_in_context' that will not be stored in <ProductName format={ProductNameFormat.ShortForm}/> but sent in each request. For each relation at the organization level, you'd add `and user_in_context`:
+
+```dsl.openfga
+model: |
+  model
+    schema 1.1
+
+  type user
+
+  type organization
+    relations
+      define user_in_context: [user] 
+      define project_editor: [user] and user_in_context
+      define project_viewer: [user] and user_in_context
+
+  type project
+    relations
+      define organization: [organization]
+      define editor: project_editor from organization
+      define viewer: project_viewer from organization
+
+tuples:
+  - user: user:anne 
+    relation: project_editor
+    object: organization:acme
+
+  - user: organization:acme
+    relation: organization
+    object: project:acme-website
+
+  - user: user:anne 
+    relation: project_editor
+    object: organization:contoso
+
+  - user: organization:contoso
+    relation: organization
+    object: project:contoso-website
+
+tests:
+  - name: Anne can access the acme-website when she's in context of the acme organization    
+    tuples:
+      # this is sent as a contextual tuple in the check request
+      - user: user:anne
+        relation: user_in_context
+        object: organization:acme
+    check:
+      # Anne can edit the acme project but can't edit the contoso project
+      - user: user:anne
+        object: project:acme-website
+        assertions:
+            editor: true
+      - user: user:anne
+        object: project:contoso-website
+        assertions:
+            editor: false
+  - name: Anne can access the contoso-website when she's in context of the contoso organization
+    tuples:
+      # this is sent as a contextual tuple in the check request
+      - user: user:anne
+        relation: user_in_context
+        object: organization:contoso
+    check:
+      # Anne can't edit the acme project but can edit the contoso project
+      - user: user:anne
+        object: project:acme-website
+        assertions:
+            editor: false
+      - user: user:anne
+        object: project:contoso-website
+        assertions:
+            editor: true
+```
+
+**Using conditional relationship tuples**
+
+Instead of adding a contextual tuple, we'll set all role membership at the organization level with conditional relationship tuples. 
+
+```dsl.openfga
+model: |
+  model
+    schema 1.1
+
+  type user
+
+  type organization
+    relations
+      define project_editor: [user with in_context]
+      define project_viewer: [user with in_context]
+
+  type project
+    relations
+      define organization: [organization]
+      define editor: project_editor from organization
+      define viewer: project_viewer from organization
+
+  condition in_context(project_org: string, user_org: string) {
+      project_org == user_org
+  }
+
+tuples:
+  - user: user:anne 
+    relation: project_editor
+    object: organization:acme
+    condition:
+      name: in_context
+      context: 
+        project_org: "acme"
+
+  - user: user:anne 
+    relation: project_editor
+    object: organization:contoso
+    condition:
+      name: in_context
+      context: 
+        project_org: "contoso"
+
+  - user: organization:acme
+    relation: organization
+    object: project:acme-website
+
+  - user: organization:contoso
+    relation: organization
+    object: project:contoso-website
+
+tests:
+  - name: Anne can access the acme-website when she's in context of the acme organization    
+    check:
+      # Anne can edit the acme project but can't edit the contoso project
+      - user: user:anne
+        object: project:acme-website
+        context:
+          user_org: "acme"
+        assertions:
+            editor: true
+      - user: user:anne
+        object: project:contoso-website
+        context:
+          user_org: "acme"
+        assertions:
+            editor: false
+  - name: Anne can access the contoso-website when she's in context of the contoso organization
+    check:
+      # Anne can't edit the acme project but can edit the contoso project
+      - user: user:anne
+        object: project:acme-website
+        context:
+          user_org: "contoso"
+      # this is sent as a contextual tuple in the check request
+        assertions:
+            editor: false
+      - user: user:anne
+        object: project:contoso-website
+        context:
+          user_org: "contoso"
+        assertions:
+            editor: true
+```
+
+
+## Related Sections
+
+<RelatedSection
+  description="Check out these related resources for more information about adopting OpenFGA"
+  relatedLinks={[
+    {
+      title: 'Modular Authorization Models',
+      description: 'Learn how to break down your authorization model into modules.',
+      link: './../modeling/modular-models',
+    }
+  ]}
+/>
+
