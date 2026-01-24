@@ -165,6 +165,50 @@ model
 ```
 In this case, it's clear that you have two hierarchies, one is recursive and the other is not.
 
+### Resource Hierarchies
+
+Your application will have difference kinds of resources. They can be folders, documents, projects, tickets, appointments, accounts, medical records,etc. They sometimes have a hierarchical relationships like folders/documents, project/tickets. 
+
+As mentioned above, you could represent any resource hierarchy like: 
+
+```
+  type resource
+    relations
+      # Resources belong to an entity
+      define entity : [entity]
+
+      # Resources can have a parent
+      define parent: [resource]
+      
+      define editor : [role#assignee] or editor from entity or editor from parent
+      define viewer : [role#assignee] or editor or viewer from parent
+```
+
+We recommend instead that you define a type for every kind if resource:
+
+```
+  type folder
+    relations
+      # Resources can have a parent
+      define parent: [folder]
+      
+      define editor : [user] or editor from parent
+      define viewer : [user] or editor or viewer from parent
+
+ type document
+    relations
+      # Resources can have a parent
+      define parent: [folder]
+      
+      define editor : [user] or editor from parent
+      define viewer : [user] or editor or viewer from parent      
+```
+
+In addition of the reasons mentioned above regarding clarity & maintanability, performance and leveraging modules, this second approach has other advantages:
+
+  - If you want to retrieve a list of documents the user can view with a generic `resource` type, you'll get all resource objects, not just documents. 
+  - It is likely that some resources will have additional permissions. For example `can_print` makes sense for `document` but not for `folder`. With a generic model, you'll end having a superset of all relations in the generic resource type, making it dificult to understand which relations apply to each resource type.
+
 ## Related Sections
 
 <RelatedSection
