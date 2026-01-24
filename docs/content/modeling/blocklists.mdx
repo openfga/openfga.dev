@@ -112,7 +112,7 @@ With the above authorization model and relationship tuples, <ProductName format=
 We can verify that with these two tests which will pass:
 
 ```yaml
-- tests:
+tests:
   - name: "Becky can edit the 'planning' document"
     check:
       - user: user:becky
@@ -262,7 +262,7 @@ We have modified the authorization model and added relationship tuples to indica
 
 With these tuples, Carl will not be able to edit the document, but Becky will:
 ```yaml
-- tests:
+tests:
   - name: "Carl can edit the 'planning' document"
     check:
       - user: user:carl
