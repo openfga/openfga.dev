@@ -1,1 +1,0 @@
-(self.webpackChunkopenfga_dev=self.webpackChunkopenfga_dev||[]).push([[8122],{45741:()=>{}}]);
