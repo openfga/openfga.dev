@@ -24,7 +24,7 @@ help:
 	@echo "  make clean            - Clean build artifacts and cache"
 	@echo ""
 	@echo "All-in-one:"
-	@echo "  make check-all        - Run all CI checks (format, lint, typecheck, circular, build)"
+	@echo "  make check-all        - Run all CI checks (format-check, lint, typecheck, check-circular, build)"
 	@echo ""
 
 # Install dependencies
