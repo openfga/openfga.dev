@@ -11,10 +11,7 @@ interface StreamedListObjectsRequestViewerOpts {
   allowedLanguages?: SupportedLanguage[];
 }
 
-function streamedListObjectsRequestViewer(
-  lang: SupportedLanguage,
-  opts: StreamedListObjectsRequestViewerOpts,
-): string {
+function streamedListObjectsRequestViewer(lang: SupportedLanguage, opts: StreamedListObjectsRequestViewerOpts): string {
   const { user, relation, objectType, expectedResults } = opts;
 
   switch (lang) {
@@ -96,9 +93,7 @@ fgaClient.streamedListObjects(request, new ClientStreamedListObjectsOptions(), r
   }
 }
 
-export function StreamedListObjectsRequestViewer(
-  opts: StreamedListObjectsRequestViewerOpts,
-): JSX.Element {
+export function StreamedListObjectsRequestViewer(opts: StreamedListObjectsRequestViewerOpts): JSX.Element {
   const defaultLangs = [
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
@@ -109,4 +104,3 @@ export function StreamedListObjectsRequestViewer(
   const allowedLanguages = getFilteredAllowedLangs(opts.allowedLanguages, defaultLangs);
   return defaultOperationsViewer(allowedLanguages, opts, streamedListObjectsRequestViewer);
 }
-
