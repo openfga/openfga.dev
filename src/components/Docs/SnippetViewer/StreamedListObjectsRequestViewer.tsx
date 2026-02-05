@@ -27,33 +27,14 @@ function streamedListObjectsRequestViewer(
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
   -d '{
-        "authorization_model_id": "${modelId}",
         "type": "${objectType}",
         "relation": "${relation}",
-        "user":"${user}"${
-          contextualTuples
-            ? `,
-        "contextual_tuples": {
-          "tuple_keys": [${contextualTuples
-            .map(
-              (tuple) => `
-            {"object": "${tuple.object}", "relation": "${tuple.relation}", "user": "${tuple.user}"}`,
-            )
-            .join(',')}
-          ]
-        }`
-            : ''
-        }${
-          context
-            ? `,
-        "context":${JSON.stringify(context)}`
-            : ''
-        }
+        "user":"${user}"
     }'
 
 
 # Response:
-${expectedResults.map((r) => `{"result":{"object":"${r}"}}`).join('\n')}`
+${expectedResults.map((r) => `{"result":{"object":"${r}"}}`).join('\n')}`;
     case SupportedLanguage.JS_SDK:
       return `const objects = [];
 for await (const response of fgaClient.streamedListObjects(
@@ -85,9 +66,29 @@ async for response in fga_client.streamed_list_objects(
     objects.append(response.object)
 # objects = [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
     case SupportedLanguage.GO_SDK:
-      return `# Note: Streamed List Objects is not yet available in the Go SDK`;
+      return `objects := []string{}
+err := fgaClient.StreamedListObjects(context.Background()).
+    Body(client.ClientListObjectsRequest{
+        User:     "${user}",
+        Relation: "${relation}",
+        Type:     "${objectType}",
+    }).
+    Execute(func(response *client.ClientStreamedListObjectsResponse) error {
+        objects = append(objects, response.Object)
+        return nil
+    })
+// objects = [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
     case SupportedLanguage.JAVA_SDK:
-      return `# Note: Streamed List Objects is not yet available in the Java SDK`;
+      return `var objects = new ArrayList<String>();
+var request = new ClientListObjectsRequest()
+    .user("${user}")
+    .relation("${relation}")
+    .type("${objectType}");
+
+fgaClient.streamedListObjects(request, new ClientStreamedListObjectsOptions(), response -> {
+    objects.add(response.getObject());
+}).get();
+// objects = [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
     case SupportedLanguage.RPC:
       return `# Note: Use CURL or SDK for streaming examples`;
     default:
@@ -100,8 +101,10 @@ export function StreamedListObjectsRequestViewer(
 ): JSX.Element {
   const defaultLangs = [
     SupportedLanguage.JS_SDK,
+    SupportedLanguage.GO_SDK,
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
+    SupportedLanguage.JAVA_SDK,
   ];
   const allowedLanguages = getFilteredAllowedLangs(opts.allowedLanguages, defaultLangs);
   return defaultOperationsViewer(allowedLanguages, opts, streamedListObjectsRequestViewer);
