@@ -413,6 +413,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Modeling ABAC',
+          id: 'content/best-practices/modeling-abac',
+        },
+        {
+          type: 'doc',
           label: 'Modeling Roles',
           id: 'content/best-practices/modeling-roles',
         },        
