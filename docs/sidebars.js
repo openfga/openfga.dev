@@ -408,8 +408,13 @@ const sidebars = {
         },
         {
           type: 'doc',
-          label: 'Modeling Best Practices',
-          id: 'content/best-practices/modeling',
+          label: 'Authorization Model Design Principles',
+          id: 'content/best-practices/modeling-design-principles',
+        },
+        {
+          type: 'doc',
+          label: 'Modeling ABAC',
+          id: 'content/best-practices/modeling-abac',
         },
         {
           type: 'doc',
