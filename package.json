@@ -29,7 +29,7 @@
     "@docusaurus/core": "3.9.2",
     "@docusaurus/plugin-client-redirects": "3.9.2",
     "@docusaurus/preset-classic": "3.9.2",
-    "@easyops-cn/docusaurus-search-local": "0.52.3",
+    "@easyops-cn/docusaurus-search-local": "0.54.0",
     "@lottiefiles/react-lottie-player": "3.6.0",
     "@openfga/frontend-utils": "^0.2.0-beta.11",
     "@openfga/sdk": "^0.9.1",
@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.9.2",
-    "@tsconfig/docusaurus": "2.0.7",
+    "@tsconfig/docusaurus": "2.0.8",
     "@types/prismjs": "1.26.5",
     "@types/react": "18.3.9",
     "@types/react-router-dom": "5.3.3",

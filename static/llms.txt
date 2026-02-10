@@ -110,7 +110,7 @@ OpenFGA implements authorization through:
 #### Best Practices
 - [Overview](https://openfga.dev/docs/best-practices/overview) - Best Practices overview
   - [Adoption Patterns](https://openfga.dev/docs/best-practices/adoption-patterns)
-  - [Modeling Best Practices](https://openfga.dev/docs/best-practices/modeling)
+  - [Authorization Model Design Principles](https://openfga.dev/docs/best-practices/modeling-design-principles)
   - [Modeling Roles](https://openfga.dev/docs/best-practices/modeling-roles)
   - [Source of Truth](https://openfga.dev/docs/best-practices/source-of-truth)
   - [Running OpenFGA in Production](https://openfga.dev/docs/best-practices/running-in-production)
