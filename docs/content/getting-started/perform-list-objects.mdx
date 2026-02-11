@@ -9,6 +9,7 @@ import {
   SupportedLanguage,
   languageLabelMap,
   ListObjectsRequestViewer,
+  StreamedListObjectsRequestViewer,
   DocumentationNotice,
   ProductConcept,
   ProductName,
@@ -182,6 +183,27 @@ The result `document:otherdoc` and `document:planning` are the document objects 
 The performance characteristics of the ListObjects endpoint vary drastically depending on the model complexity, number of tuples, and the relations it needs to evaluate. Relations with 'and' or 'but not' are more expensive to evaluate than relations with 'or'.
 :::
 
+## Streamed List Objects
+
+The Streamed ListObjects API is similar to the ListObjects API, with two key differences:
+
+1. **Streaming Response**: Instead of collecting all objects before returning a response, it streams them to the client as they are collected.
+2. **No Result Limit**: The number of results returned is only limited by the execution timeout specified in the flag `OPENFGA_LIST_OBJECTS_DEADLINE`, not by a fixed limit.
+
+:::info
+The streaming functionality is currently available in the **Node.js SDK**, **Go SDK**, **.NET SDK**, **Python SDK**, and **Java SDK**.
+:::
+
+### Using Streamed List Objects
+
+<StreamedListObjectsRequestViewer
+  user="user:anne"
+  relation="reader"
+  objectType="document"
+  expectedResults={['document:otherdoc', 'document:planning']}
+  skipSetup={true}
+/>
+
 ## Related Sections
 
 <RelatedSection
@@ -191,6 +213,11 @@ The performance characteristics of the ListObjects endpoint vary drastically dep
       title: '{ProductName} List Objects API',
       description: 'Read the List Objects API documentation and see how it works.',
       link: '/api/service#Relationship%20Queries/ListObjects',
+    },
+    {
+      title: '{ProductName} Streamed List Objects API',
+      description: 'Read the Streamed List Objects API documentation.',
+      link: '/api/service#Relationship%20Queries/StreamedListObjects',
     },
   ]}
 />
