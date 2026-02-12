@@ -7,7 +7,7 @@
   box-shadow: 0 18px 40px color-mix(in srgb, var(--ofga-neutral-black), transparent 55%);
 }
 
-@media screen and (min-width: 996px) {
+@media screen and (width >= 996px) {
   .banner {
     margin-top: 4rem;
     padding: 2.5rem 3rem 3rem;
@@ -88,7 +88,7 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (width <= 600px) {
   .track {
     gap: 1.75rem;
   }

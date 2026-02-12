@@ -37,7 +37,7 @@ const AdoptersCarousel = () => {
   const repeatedLogos = [...adopterLogos, ...adopterLogos];
 
   return (
-    <div className={styles.banner} aria-label="OpenFGA adopters">
+    <section className={styles.banner} aria-label="OpenFGA adopters">
       <p className={styles.title}>Adopted by teams at</p>
       <div className={styles.carousel}>
         <div className={styles.track}>
@@ -52,7 +52,7 @@ const AdoptersCarousel = () => {
           })}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
