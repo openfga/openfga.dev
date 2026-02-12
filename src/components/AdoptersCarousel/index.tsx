@@ -40,12 +40,7 @@ const AdoptersCarousel = () => {
 
             return (
               <div className={styles.logo} key={`${logo.name}-${index}`} aria-hidden={isDuplicate}>
-                <img
-                  src={logo.src}
-                  alt={isDuplicate ? '' : logo.name}
-                  loading="lazy"
-                  decoding="async"
-                />
+                <img src={logo.src} alt={isDuplicate ? '' : logo.name} loading="lazy" decoding="async" />
               </div>
             );
           })}

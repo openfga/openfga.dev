@@ -40,12 +40,20 @@
 
 .carousel::before {
   left: 0;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--ofga-neutral-darker), var(--ofga-neutral-black) 40%), transparent);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--ofga-neutral-darker), var(--ofga-neutral-black) 40%),
+    transparent
+  );
 }
 
 .carousel::after {
   right: 0;
-  background: linear-gradient(270deg, color-mix(in srgb, var(--ofga-neutral-darker), var(--ofga-neutral-black) 40%), transparent);
+  background: linear-gradient(
+    270deg,
+    color-mix(in srgb, var(--ofga-neutral-darker), var(--ofga-neutral-black) 40%),
+    transparent
+  );
 }
 
 .track {
