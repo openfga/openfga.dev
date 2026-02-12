@@ -1,4 +1,5 @@
 import * as React from 'react';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 import styles from './AdoptersCarousel.module.css';
 
@@ -27,6 +28,11 @@ const adopterLogos: AdopterLogo[] = [
   { name: 'Zuplo', src: '/img/adopters/zuplo.svg' },
 ];
 
+const AdopterImage: React.FC<{ logo: AdopterLogo; isDuplicate: boolean }> = ({ logo, isDuplicate }) => {
+  const src = useBaseUrl(logo.src);
+  return <img src={src} alt={isDuplicate ? '' : logo.name} loading="lazy" decoding="async" />;
+};
+
 const AdoptersCarousel = () => {
   const repeatedLogos = [...adopterLogos, ...adopterLogos];
 
@@ -40,7 +46,7 @@ const AdoptersCarousel = () => {
 
             return (
               <div className={styles.logo} key={`${logo.name}-${index}`} aria-hidden={isDuplicate}>
-                <img src={logo.src} alt={isDuplicate ? '' : logo.name} loading="lazy" decoding="async" />
+                <AdopterImage logo={logo} isDuplicate={isDuplicate} />
               </div>
             );
           })}
