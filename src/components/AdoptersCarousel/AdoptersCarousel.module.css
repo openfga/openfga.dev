@@ -10,7 +10,7 @@
 @media screen and (width >= 996px) {
   .banner {
     margin-top: 4rem;
-    padding: 2rem 2rem 2.5rem;
+    padding: 3.75rem;
   }
 }
 
@@ -61,7 +61,11 @@
   align-items: center;
   gap: 2.5rem;
   width: max-content;
-  animation: scroll 36s linear infinite;
+  animation: scroll 50s linear infinite;
+}
+
+.carousel:hover .track {
+  animation-play-state: paused;
 }
 
 .logo {
