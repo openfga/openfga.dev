@@ -1,1 +1,0 @@
-"use strict";(globalThis.webpackChunkopenfga_dev=globalThis.webpackChunkopenfga_dev||[]).push([[3395],{3395(e,a,h){h.r(a)}}]);
