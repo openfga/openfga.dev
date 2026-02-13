@@ -1,0 +1,114 @@
+.banner {
+  margin-top: 3rem;
+  padding: 2rem 2rem 2.5rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--ofga-neutral-darker), var(--ofga-neutral-black) 40%);
+  border: 1px solid color-mix(in srgb, var(--ofga-neutral-base), transparent 85%);
+  box-shadow: 0 18px 40px color-mix(in srgb, var(--ofga-neutral-black), transparent 55%);
+}
+
+@media screen and (width >= 996px) {
+  .banner {
+    margin-top: 4rem;
+    padding: 3.75rem;
+  }
+}
+
+.title {
+  margin: 0 0 1.5rem;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ofga-neutral-light);
+}
+
+.carousel {
+  overflow: hidden;
+  position: relative;
+}
+
+.carousel::before,
+.carousel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 80px;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.carousel::before {
+  left: 0;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--ofga-neutral-darker), var(--ofga-neutral-black) 40%),
+    transparent
+  );
+}
+
+.carousel::after {
+  right: 0;
+  background: linear-gradient(
+    270deg,
+    color-mix(in srgb, var(--ofga-neutral-darker), var(--ofga-neutral-black) 40%),
+    transparent
+  );
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  width: max-content;
+  animation: scroll 50s linear infinite;
+}
+
+.carousel:hover .track {
+  animation-play-state: paused;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+}
+
+.logo img {
+  height: 34px;
+  width: auto;
+  max-width: 140px;
+  opacity: 0.92;
+  transition: opacity 0.25s ease;
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (width <= 600px) {
+  .track {
+    gap: 1.75rem;
+  }
+
+  .logo {
+    min-width: 96px;
+  }
+
+  .logo img {
+    height: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+    transform: translateX(0);
+  }
+}
