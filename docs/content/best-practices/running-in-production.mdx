@@ -41,9 +41,21 @@ To ensure good performance for OpenFGA, it is recommended that the [database](..
 - Used exclusively for OpenFGA and not shared with other applications. This allows scaling the database independently and avoiding contention with your database.
 - Bootstrapped and managed with the `openfga migrate` command. This will ensure the appropriate database indexes are created.
 
-It's strongly recommended to fine-tune your server database connection settings to avoid having to re-establish database connections frequently. Establishing database connections is slow and will negatively impact performance, and so here are some guidelines for managing database connection settings:
+It's strongly recommended to fine-tune your server database connection settings to avoid having to re-establish database connections frequently. Establishing database connections is slow and will negatively impact performance. The recommended settings differ depending on your database type:
 
-- The server setting `OPENFGA_DATASTORE_MAX_OPEN_CONNS` should be set to be equal to your database's max connections. For example, in Postgres, you can see this value via running the SQL query `SHOW max_connections;`. If you are running multiple instances of the OpenFGA server, you should divide this setting equally among the instances. For example, if your database's `max_connections` is 100, and you have 2 OpenFGA instances, `OPENFGA_DATASTORE_MAX_OPEN_CONNS` should be set to 50 for each instance.
+### PostgreSQL
+
+For PostgreSQL, tune the server database with the following parameters:
+
+- `OPENFGA_DATASTORE_MIN_OPEN_CONNS`: This parameter should be the minimum number of database connections you want to maintain. This helps ensure that a baseline pool of connections is always available.
+
+- `OPENFGA_DATASTORE_MIN_IDLE_CONNS`: This parameter allows connections from being reaped too frequently. Setting this appropriately will help maintain a stable connection pool and avoid the overhead of recreating connections.
+
+### MySQL and SQLite
+
+For MySQL and SQLite, tune the server database with the following parameters:
+
+- The server setting `OPENFGA_DATASTORE_MAX_OPEN_CONNS` should be set to be equal to your database's max connections. For example, in MySQL, you can see this value via running the SQL query `SHOW VARIABLES LIKE 'max_connections';`. If you are running multiple instances of the OpenFGA server, you should divide this setting equally among the instances. For example, if your database's `max_connections` is 100, and you have 2 OpenFGA instances, `OPENFGA_DATASTORE_MAX_OPEN_CONNS` should be set to 50 for each instance.
 
 - The `OPENFGA_DATASTORE_MAX_IDLE_CONNS` should be set to a value no greater than the maximum open connections (see the bullet point above), but it should be set sufficiently high enough to avoid having to recreate connections on each request.
 
