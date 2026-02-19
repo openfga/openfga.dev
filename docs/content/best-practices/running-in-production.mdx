@@ -47,23 +47,25 @@ It's strongly recommended to fine-tune your server database connection settings 
 
 For PostgreSQL, tune the server database with the following parameters:
 
-- `OPENFGA_DATASTORE_MIN_OPEN_CONNS`: This parameter should be the minimum number of database connections you want to maintain. This helps ensure that a baseline pool of connections is always available. As a starting point, consider setting this to a small, fixed baseline (for example between 5 and 20 connections), or roughly 10–30% of the maximum connections your PostgreSQL instance allows, while ensuring it does not exceed that database limit.  If you are running multiple instances of the OpenFGA server, you should divide this setting equally among the instances. 
+- [OPENFGA_DATASTORE_MIN_OPEN_CONNS](./configuration.mdx#OPENFGA_DATASTORE_MIN_OPEN_CONNS): This parameter should be the minimum number of database connections you want to maintain. This helps ensure that a baseline pool of connections is always available. As a starting point, consider setting this to a small, fixed baseline (for example between 5 and 20 connections), or roughly 10–30% of the maximum connections your PostgreSQL instance allows, while ensuring it does not exceed that database limit.  If you are running multiple instances of the OpenFGA server, you should divide this setting equally among the instances.
 
-- `OPENFGA_DATASTORE_MIN_IDLE_CONNS`: This parameter controls how many connections can remain idle before being closed. As a starting point, set this to around 50–75% of your `OPENFGA_DATASTORE_MAX_OPEN_CONNS` value to maintain a stable connection pool and avoid the overhead of frequently recreating connections, then adjust based on observed connection churn and database load.
+- [OPENFGA_DATASTORE_MIN_IDLE_CONNS](./configuration.mdx#OPENFGA_DATASTORE_MIN_IDLE_CONNS): This parameter controls how many connections can remain idle before being closed. As a starting point, set this to around 50–75% of your `OPENFGA_DATASTORE_MAX_OPEN_CONNS` value to maintain a stable connection pool and avoid the overhead of frequently recreating connections, then adjust based on observed connection churn and database load.
 
-- The server setting `OPENFGA_DATASTORE_MAX_OPEN_CONNS` should be set to be equal to your database's max connections.  For example, in Postgres, you can see this value via running the SQL query `SHOW max_connections;`. If you are running multiple instances of the OpenFGA server, you should divide this setting equally among the instances. For example, if your database's max_connections is 100, and you have 2 OpenFGA instances, OPENFGA_DATASTORE_MAX_OPEN_CONNS should be set to 50 for each instance.
+- The server setting [OPENFGA_DATASTORE_MAX_OPEN_CONNS](./configuration.mdx#OPENFGA_DATASTORE_MAX_OPEN_CONNS) should be set to be equal to your database's max connections.  For example, in Postgres, you can see this value via running the SQL query `SHOW max_connections;`. If you are running multiple instances of the OpenFGA server, you should divide this setting equally among the instances. For example, if your database's `max_connections` is 100, and you have 2 OpenFGA instances, `OPENFGA_DATASTORE_MAX_OPEN_CONNS` should be set to 50 for each instance.
+
+PostgreSQL also accepts connection to secondary datastore by setting [OPENFGA_DATASTORE_SECONDARY_URI](./configuration.mdx#OPENFGA_DATASTORE_SECONDARY_URI), [OPENFGA_DATASTORE_SECONDARY_USERNAME](./configuration.mdx#OPENFGA_DATASTORE_SECONDARY_USERNAME) and [OPENFGA_DATASTORE_SECONDARY_PASSWORD](./configuration.mdx#OPENFGA_DATASTORE_SECONDARY_PASSWORD).
 
 ### MySQL and SQLite
 
 For MySQL and SQLite, tune the server database with the following parameters:
 
-- The server setting `OPENFGA_DATASTORE_MAX_OPEN_CONNS` should be set to be equal to your database's max connections. For example, in MySQL, you can see this value via running the SQL query `SHOW VARIABLES LIKE 'max_connections';`. If you are running multiple instances of the OpenFGA server, you should divide this setting equally among the instances. For example, if your database's `max_connections` is 100, and you have 2 OpenFGA instances, `OPENFGA_DATASTORE_MAX_OPEN_CONNS` should be set to 50 for each instance.
+- The server setting [OPENFGA_DATASTORE_MAX_OPEN_CONNS](./configuration.mdx#OPENFGA_DATASTORE_MAX_OPEN_CONNS) should be set to be equal to your database's max connections. For example, in MySQL, you can see this value via running the SQL query `SHOW VARIABLES LIKE 'max_connections';`. If you are running multiple instances of the OpenFGA server, you should divide this setting equally among the instances. For example, if your database's `max_connections` is 100, and you have 2 OpenFGA instances, `OPENFGA_DATASTORE_MAX_OPEN_CONNS` should be set to 50 for each instance.
 
-- The `OPENFGA_DATASTORE_MAX_IDLE_CONNS` should be set to a value no greater than the maximum open connections (see the bullet point above), but it should be set sufficiently high enough to avoid having to recreate connections on each request.
+- The [OPENFGA_DATASTORE_MAX_IDLE_CONNS](./configuration.mdx#OPENFGA_DATASTORE_MAX_IDLE_CONNS) should be set to a value no greater than the maximum open connections (see the bullet point above), but it should be set sufficiently high enough to avoid having to recreate connections on each request.
 
 If, when monitoring your database stats, you see a lot of database connections being closed and subsequently reopened, then you should consider setting the `OPENFGA_DATASTORE_MAX_IDLE_CONNS` to the same number as `OPENFGA_DATASTORE_MAX_OPEN_CONNS`.
 
-- If idle connections are getting reaped frequently, then consider increasing the `OPENFGA_DATASTORE_CONN_MAX_IDLE_TIME` to a large value. When in doubt, prioritize keeping connections around for longer rather than shorter, because doing so will drastically improve performance.
+- If idle connections are getting reaped frequently, then consider increasing the [OPENFGA_DATASTORE_CONN_MAX_IDLE_TIME](./configuration.mdx#OPENFGA_DATASTORE_CONN_MAX_IDLE_TIME) to a large value. When in doubt, prioritize keeping connections around for longer rather than shorter, because doing so will drastically improve performance.
 
 ## Concurrency limits
 :::note
