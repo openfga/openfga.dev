@@ -1,1 +1,0 @@
-"use strict";(globalThis.webpackChunkopenfga_dev=globalThis.webpackChunkopenfga_dev||[]).push([[1903],{1912(e){e.exports=JSON.parse('{"blogBasePath":"/pr-preview/pr-1193/blog","blogTitle":"Blog","authorsListPath":"/pr-preview/pr-1193/blog/authors"}')}}]);
