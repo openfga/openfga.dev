@@ -177,20 +177,7 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
         },
       },
     ],
-    function () {
-      return {
-        name: 'docusaurus-resolve',
-        configureWebpack() {
-          return {
-            resolve: {
-              fallback: {
-                crypto: false,
-              }
-            }
-          }
-        },
-      };
-    }],
+  ],
 
   presets: [
     [
