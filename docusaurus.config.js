@@ -350,6 +350,7 @@ if (process.env.KAPA_WEBSITE_ID) {
     "data-button-hide": "true",
     "data-modal-override-open-selector": ".ask-ai-button",
     "data-modal-open-on-command-k": "true",
+    "data-modal-disclaimer": "AI-generated responses may be inaccurate or contain mistakes. Always verify important information.",
     async: true,
   });
 }
