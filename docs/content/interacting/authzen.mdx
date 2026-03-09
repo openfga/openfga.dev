@@ -227,8 +227,6 @@ If `reader` is permitted, only one evaluation response is returned.
 
 If `evaluations` is omitted or empty, OpenFGA treats the request like a single [Evaluation](#evaluation) using the top-level `subject`, `action`, `resource`, and optional `context`, and returns a single-item `evaluations` array.
 
-`options.evaluations_semantic` only accepts defined values (`execute_all`, `deny_on_first_deny`, `permit_on_first_permit`). Unknown values are rejected with `InvalidArgument`.
-
 ## Subject Search
 
 The Subject Search endpoint returns all subjects that have a specific action (relation) on a given resource. It maps to the OpenFGA [ListUsers](./relationship-queries.mdx) endpoint.
