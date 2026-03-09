@@ -29,23 +29,23 @@ The AuthZEN API is experimental and must be explicitly enabled. The API surface 
 
 ## Enabling AuthZEN
 
-To enable the AuthZEN endpoints, start the server with the `enable_authzen` experimental flag:
+To enable the AuthZEN endpoints, start the server with the `authzen` experimental flag:
 
 ```shell
-openfga run --experimentals=enable_authzen
+openfga run --experimentals=authzen
 ```
 
 Or via environment variable:
 
 ```shell
-OPENFGA_EXPERIMENTALS=enable_authzen openfga run
+OPENFGA_EXPERIMENTALS=authzen openfga run
 ```
 
 Or in a configuration file:
 
 ```yaml
 experimentals:
-  - enable_authzen
+  - authzen
 ```
 
 All AuthZEN endpoints return an `Unimplemented` error if the experimental flag is not enabled.
