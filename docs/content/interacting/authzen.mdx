@@ -21,6 +21,8 @@ specification, a standard API for authorization interoperability defined by the 
 
 We recommend that you use the native API when integrating your application with <ProductName format={ProductNameFormat.ShortForm}/>, and you use AuthZEN when you are integrating an AuthZEN-compatible product like an API/MCP Gateway, or an Identity Provider. It's not possible to implement <ProductName format={ProductNameFormat.ShortForm}/> only with AuthZEN endpoints, as it does not specify endpoints to [Write](./../getting-started/update-tuples.mdx) and [Read](./relationship-queries.mdx).
 
+You can validate the implementation using the [AuthZEN interop scenarios for OpenFGA](https://github.com/openfga/authzen-interop), which cover the standard [AuthZEN interop scenarios](https://authzen-interop.net/docs/category/scenarios).
+
 :::caution Experimental
 The AuthZEN API is experimental and must be explicitly enabled. The API surface may change in future releases.
 :::
@@ -223,6 +225,10 @@ When using `deny_on_first_deny` or `permit_on_first_permit`, the response may co
 
 If `reader` is permitted, only one evaluation response is returned.
 
+If `evaluations` is omitted or empty, OpenFGA treats the request like a single [Evaluation](#evaluation) using the top-level `subject`, `action`, `resource`, and optional `context`, and returns a single-item `evaluations` array.
+
+`options.evaluations_semantic` only accepts defined values (`execute_all`, `deny_on_first_deny`, `permit_on_first_permit`). Unknown values are rejected with `InvalidArgument`.
+
 ## Subject Search
 
 The Subject Search endpoint returns all subjects that have a specific action (relation) on a given resource. It maps to the OpenFGA [ListUsers](./relationship-queries.mdx) endpoint.
@@ -252,7 +258,7 @@ POST /stores/{store_id}/access/v1/search/subject
 }
 ```
 
-The `subject` field filters results by subject type and is required (the underlying ListUsers endpoint needs a user type filter).
+The `subject` field is required and must include `type`. If `subject.id` is provided, it is ignored (per AuthZEN Subject Search semantics).
 
 :::note
 Pagination is not currently supported for search endpoints. See [Implementation Notes](#pagination) for details.
@@ -287,7 +293,7 @@ POST /stores/{store_id}/access/v1/search/resource
 }
 ```
 
-The `resource` field filters by resource type and is required (the underlying ListObjects endpoint needs an object type).
+The `resource` field is required and must include `type`. If `resource.id` is provided, it is ignored (per AuthZEN Resource Search semantics).
 
 :::note
 Pagination is not currently supported for search endpoints. See [Implementation Notes](#pagination) for details.
@@ -386,7 +392,7 @@ The AuthZEN spec defines endpoints at `/access/v1/evaluation`, `/access/v1/evalu
 
 ### Response context fields
 
-The spec allows an optional `context` object in evaluation responses to convey additional information such as reasons, obligations, or UI hints. The spec does not prescribe specific field names within `context` — examples like `reason_admin` and `reason_user` in the spec are non-normative.
+The spec allows an optional `context` object in evaluation responses to convey additional information such as reasons, obligations, or UI hints. Per the spec, `context` is an arbitrary JSON object whose format is implementation-defined.
 
 The current implementation:
 
@@ -406,7 +412,7 @@ The current implementation:
 ```
 ### Identifier validation constraints
 
-The AuthZEN spec models `subject.type`, `subject.id`, `resource.type`, `resource.id`, and `action.name` as strings. <ProductName format={ProductNameFormat.ShortForm}/> applies additional OpenFGA identifier constraints (for example: no spaces, `:`, `#`, or `@`, and length limits).
+The AuthZEN spec models `subject.type`, `subject.id`, `resource.type`, `resource.id`, and `action.name` as strings. <ProductName format={ProductNameFormat.ShortForm}/> applies additional OpenFGA identifier constraints (pattern and length checks). Constraints are field-specific.
 
 ### Pagination
 
