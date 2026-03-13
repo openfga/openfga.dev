@@ -337,7 +337,7 @@ if (process.env.KAPA_WEBSITE_ID) {
     "data-button-hide": "true",
     "data-modal-override-open-selector": ".ask-ai-button",
     "data-modal-open-on-command-k": "true",
-    "data-modal-disclaimer": "AI-generated responses may be inaccurate or contain mistakes. Always verify important information.",
+    "data-modal-disclaimer": "This OpenFGA chatbot is powered by kapa.ai and uses AI to answer questions about OpenFGA based on OpenFGA's documentation, OpenFGA's GitHub, and other resources. Please do not input any sensitive or private information. Responses are for informational purposes and may be inaccurate. Please verify for accuracy. By using this chatbot, you agree to the Linux Foundation's Privacy Policy and Terms.",
     async: true,
   });
 }
