@@ -1,0 +1,460 @@
+---
+title: AuthZEN API (Experimental)
+description: Using the AuthZEN interoperability API with OpenFGA
+sidebar_position: 8
+slug: /interacting/authzen
+---
+
+import {
+  DocumentationNotice,
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+} from '@components/Docs';
+
+# AuthZEN API (Experimental)
+
+<DocumentationNotice />
+
+<ProductName format={ProductNameFormat.ShortForm}/> implements the [AuthZEN](https://openid.net/specs/authorization-api-1_0.html) 
+specification, a standard API for authorization interoperability defined by the OpenID AuthZEN working group. This allows you to use <ProductName format={ProductNameFormat.ShortForm}/> as an AuthZEN-compliant Policy Decision Point (PDP).
+
+We recommend that you use the native API when integrating your application with <ProductName format={ProductNameFormat.ShortForm}/>, and you use AuthZEN when you are integrating an AuthZEN-compatible product like an API/MCP Gateway, or an Identity Provider. It's not possible to implement <ProductName format={ProductNameFormat.ShortForm}/> only with AuthZEN endpoints, as it does not specify endpoints to [Write](./../getting-started/update-tuples.mdx) and [Read](./relationship-queries.mdx).
+
+You can validate the implementation using the [AuthZEN interop scenarios for OpenFGA](https://github.com/openfga/authzen-interop), which cover the standard [AuthZEN interop scenarios](https://authzen-interop.net/docs/category/scenarios).
+
+:::caution Experimental
+The AuthZEN API is experimental and must be explicitly enabled. The API surface may change in future releases.
+:::
+
+## Enabling AuthZEN
+
+To enable the AuthZEN endpoints, start the server with the `authzen` experimental flag:
+
+```shell
+openfga run --experimentals=authzen
+```
+
+Or via environment variable:
+
+```shell
+OPENFGA_EXPERIMENTALS=authzen openfga run
+```
+
+Or in a configuration file:
+
+```yaml
+experimentals:
+  - authzen
+```
+
+All AuthZEN endpoints return an `Unimplemented` error if the experimental flag is not enabled.
+
+## Endpoints
+
+All AuthZEN endpoints are scoped to a store and available under `/stores/{store_id}/access/v1/`. 
+
+| Endpoint | Method | Path | Description |
+|---|---|---|---|
+| [Evaluation](#evaluation) | POST | `/stores/{store_id}/access/v1/evaluation` | Check if a subject can perform an action on a resource |
+| [Evaluations](#evaluations) | POST | `/stores/{store_id}/access/v1/evaluations` | Batch check multiple authorization decisions |
+| [Subject Search](#subject-search) | POST | `/stores/{store_id}/access/v1/search/subject` | Find subjects with access to a resource |
+| [Resource Search](#resource-search) | POST | `/stores/{store_id}/access/v1/search/resource` | Find resources a subject can access |
+| [Action Search](#action-search) | POST | `/stores/{store_id}/access/v1/search/action` | Find actions a subject can perform on a resource |
+| [Get Configuration](#get-configuration) | GET | `/.well-known/authzen-configuration/{store_id}` | PDP discovery and endpoint URLs |
+
+## Specifying an Authorization Model
+
+By default, AuthZEN endpoints use the latest authorization model in the store. To pin requests to a specific model version, pass the `Openfga-Authorization-Model-Id` header:
+
+```
+POST /stores/01G5JAVJ41T49E9TT3SKVS7X1J/access/v1/evaluation
+Openfga-Authorization-Model-Id: 01G50QVV17PECNVAHX1GG4Y5NC
+Content-Type: application/json
+
+{
+  "subject": {"type": "user", "id": "anne"},
+  "action": {"name": "reader"},
+  "resource": {"type": "document", "id": "roadmap"}
+}
+```
+
+This header is optional and works with all AuthZEN endpoints.
+
+## Evaluation
+
+The Evaluation endpoint determines whether a subject is authorized to perform an action on a resource. It maps to the OpenFGA [Check](./relationship-queries.mdx) endpoint.
+
+**Request:**
+
+```json
+POST /stores/{store_id}/access/v1/evaluation
+
+{
+  "subject": {"type": "user", "id": "anne"},
+  "action": {"name": "reader"},
+  "resource": {"type": "document", "id": "roadmap"}
+}
+```
+
+**Response:**
+
+```json
+{
+  "decision": true
+}
+```
+
+The `action.name` must exactly match a relation defined on the resource type in your authorization model. For example, `{"name": "reader"}` checks the `reader` relation on the resource type.
+
+You can also pass ABAC attributes and additional context — see [ABAC Support](#abac-support) below.
+
+### ABAC Support
+
+Properties on the subject, resource, and action are automatically merged into the evaluation context with prefixes, enabling Attribute-Based Access Control (ABAC) with [conditions](../modeling/conditions.mdx):
+
+- Subject properties are prefixed with `subject_`
+- Resource properties are prefixed with `resource_`
+- Action properties are prefixed with `action_`
+
+```json
+{
+  "subject": {
+    "type": "user",
+    "id": "anne",
+    "properties": {"department": "engineering", "clearance_level": 3}
+  },
+  "action": {"name": "reader"},
+  "resource": {
+    "type": "document",
+    "id": "secret-project",
+    "properties": {"classification": "confidential", "required_clearance": 2}
+  }
+}
+```
+
+The merged context will contain `subject_department`, `subject_clearance_level`, `resource_classification`, and `resource_required_clearance`.
+
+You can also pass context directly using the `context` field:
+
+```json
+{
+  "subject": {"type": "user", "id": "bob"},
+  "action": {"name": "reader"},
+  "resource": {"type": "system", "id": "production"},
+  "context": {
+    "current_time": "2024-01-15T14:30:00Z",
+    "ip_address": "192.168.1.100"
+  }
+}
+```
+
+## Evaluations
+
+The Evaluations endpoint performs batch authorization checks in a single request. It supports request-level defaults for subject, action, resource, and context that can be overridden per evaluation item.
+
+**Request:**
+
+```json
+POST /stores/{store_id}/access/v1/evaluations
+
+{
+  "subject": {"type": "user", "id": "anne"},
+  "resource": {"type": "document", "id": "roadmap"},
+  "evaluations": [
+    {"action": {"name": "reader"}},
+    {"action": {"name": "writer"}},
+    {"action": {"name": "owner"}}
+  ]
+}
+```
+
+**Response:**
+
+```json
+{
+  "evaluations": [
+    {"decision": true},
+    {"decision": false},
+    {"decision": false}
+  ]
+}
+```
+
+### Overriding Defaults
+
+Each evaluation item can override the request-level defaults:
+
+```json
+{
+  "subject": {"type": "user", "id": "anne"},
+  "action": {"name": "reader"},
+  "evaluations": [
+    {"resource": {"type": "document", "id": "doc1"}},
+    {"resource": {"type": "document", "id": "doc2"}},
+    {"resource": {"type": "folder", "id": "folder1"}}
+  ]
+}
+```
+
+### Evaluation Semantics
+
+The `options.evaluations_semantic` field controls how evaluations are processed:
+
+| Semantic | Description |
+|---|---|
+| `execute_all` (default) | Execute all evaluations and return all results |
+| `deny_on_first_deny` | Stop on first deny decision |
+| `permit_on_first_permit` | Stop on first permit decision |
+
+When using `deny_on_first_deny` or `permit_on_first_permit`, the response may contain **fewer items** than the number of evaluations in the request because processing short-circuits when the condition is met.
+
+```json
+{
+  "subject": {"type": "user", "id": "anne"},
+  "resource": {"type": "document", "id": "roadmap"},
+  "evaluations": [
+    {"action": {"name": "reader"}},
+    {"action": {"name": "writer"}}
+  ],
+  "options": {
+    "evaluations_semantic": "permit_on_first_permit"
+  }
+}
+```
+
+If `reader` is permitted, only one evaluation response is returned.
+
+If `evaluations` is omitted or empty, OpenFGA treats the request like a single [Evaluation](#evaluation) using the top-level `subject`, `action`, `resource`, and optional `context`, and returns a single-item `evaluations` array.
+
+## Subject Search
+
+The Subject Search endpoint returns all subjects that have a specific action (relation) on a given resource. It maps to the OpenFGA [ListUsers](./relationship-queries.mdx) endpoint.
+
+This answers questions like "Who can read this document?"
+
+**Request:**
+
+```json
+POST /stores/{store_id}/access/v1/search/subject
+
+{
+  "resource": {"type": "document", "id": "roadmap"},
+  "action": {"name": "reader"},
+  "subject": {"type": "user"}
+}
+```
+
+**Response:**
+
+```json
+{
+  "results": [
+    {"type": "user", "id": "anne"},
+    {"type": "user", "id": "bob"}
+  ]
+}
+```
+
+The `subject` field is required and must include `type`. If `subject.id` is provided, it is ignored (per AuthZEN Subject Search semantics).
+
+:::note
+Pagination is not currently supported for search endpoints. See [Implementation Notes](#pagination) for details.
+:::
+
+## Resource Search
+
+The Resource Search endpoint returns all resources of a given type that a subject has a specific action (relation) on. It maps to the OpenFGA [ListObjects](./relationship-queries.mdx) endpoint.
+
+This answers questions like "What documents can Anne read?"
+
+**Request:**
+
+```json
+POST /stores/{store_id}/access/v1/search/resource
+
+{
+  "subject": {"type": "user", "id": "anne"},
+  "action": {"name": "reader"},
+  "resource": {"type": "document"}
+}
+```
+
+**Response:**
+
+```json
+{
+  "results": [
+    {"type": "document", "id": "roadmap"},
+    {"type": "document", "id": "budget-2024"}
+  ]
+}
+```
+
+The `resource` field is required and must include `type`. If `resource.id` is provided, it is ignored (per AuthZEN Resource Search semantics).
+
+:::note
+Pagination is not currently supported for search endpoints. See [Implementation Notes](#pagination) for details.
+:::
+
+## Action Search
+
+The Action Search endpoint returns all actions (relations) that a subject can perform on a specific resource. This is useful for building dynamic UIs that show only the actions a user is permitted to perform.
+
+This answers questions like "What can Anne do with this document?"
+
+**Request:**
+
+```json
+POST /stores/{store_id}/access/v1/search/action
+
+{
+  "subject": {"type": "user", "id": "anne"},
+  "resource": {"type": "document", "id": "roadmap"}
+}
+```
+
+**Response:**
+
+```json
+{
+  "results": [
+    {"name": "reader"},
+    {"name": "writer"}
+  ]
+}
+```
+
+Action Search evaluates all relations defined on the resource type in your authorization model (including computed and inherited relations) and returns those where the subject has access. The checks are performed using the same logic as the [Evaluation](#evaluation) endpoint.
+
+:::note
+Pagination is not currently supported for search endpoints. See [Implementation Notes](#pagination) for details.
+:::
+
+## Get Configuration
+
+The Get Configuration endpoint returns PDP discovery information per [AuthZEN specification section 9.2.2](https://openid.net/specs/authorization-api-1_0.html#section-9.2.2). It provides the PDP identifier URL and absolute endpoint URLs for that store.
+
+Each store has its own discovery endpoint.
+
+**Request:**
+
+```
+GET /.well-known/authzen-configuration/{store_id}
+```
+
+**Response:**
+
+```json
+{
+  "policy_decision_point": "https://example.com/stores/01G5JAVJ41T49E9TT3SKVS7X1J",
+  "access_evaluation_endpoint": "https://example.com/stores/01G5JAVJ41T49E9TT3SKVS7X1J/access/v1/evaluation",
+  "access_evaluations_endpoint": "https://example.com/stores/01G5JAVJ41T49E9TT3SKVS7X1J/access/v1/evaluations",
+  "search_subject_endpoint": "https://example.com/stores/01G5JAVJ41T49E9TT3SKVS7X1J/access/v1/search/subject",
+  "search_resource_endpoint": "https://example.com/stores/01G5JAVJ41T49E9TT3SKVS7X1J/access/v1/search/resource",
+  "search_action_endpoint": "https://example.com/stores/01G5JAVJ41T49E9TT3SKVS7X1J/access/v1/search/action"
+}
+```
+
+## Mapping AuthZEN to OpenFGA Concepts
+
+The AuthZEN API uses its own terminology that maps directly to OpenFGA concepts:
+
+| AuthZEN | OpenFGA | Description |
+|---|---|---|
+| Subject (`type` + `id`) | User (`type:id`) | The entity requesting access |
+| Resource (`type` + `id`) | Object (`type:id`) | The entity being accessed |
+| Action (`name`) | Relation | The operation being performed |
+| Evaluation | Check | Single authorization decision |
+| Evaluations | BatchCheck | Batch authorization decisions |
+| Subject Search | ListUsers | Find users with access to an object |
+| Resource Search | ListObjects | Find objects a user can access |
+| Properties | Conditions / Context | ABAC attributes for conditional evaluation |
+
+## Implementation Notes
+
+The <ProductName format={ProductNameFormat.ShortForm}/> AuthZEN implementation follows the [AuthZEN Authorization API 1.0](https://openid.net/specs/authorization-api-1_0.html) specification with a few adaptations for multi-tenancy. This section documents the key differences.
+
+### Multi-tenant URL paths
+
+The AuthZEN spec defines endpoints at `/access/v1/evaluation`, `/access/v1/evaluations`, etc. Because <ProductName format={ProductNameFormat.ShortForm}/> is multi-tenant, all endpoints are scoped under `/stores/{store_id}/`:
+
+| AuthZEN Spec | OpenFGA |
+|---|---|
+| `/access/v1/evaluation` | `/stores/{store_id}/access/v1/evaluation` |
+| `/access/v1/evaluations` | `/stores/{store_id}/access/v1/evaluations` |
+| `/access/v1/search/subject` | `/stores/{store_id}/access/v1/search/subject` |
+| `/access/v1/search/resource` | `/stores/{store_id}/access/v1/search/resource` |
+| `/access/v1/search/action` | `/stores/{store_id}/access/v1/search/action` |
+| `/.well-known/authzen-configuration` | `/.well-known/authzen-configuration/{store_id}` |
+
+### Response context fields
+
+The spec allows an optional `context` object in evaluation responses to convey additional information such as reasons, obligations, or UI hints. Per the spec, `context` is an arbitrary JSON object whose format is implementation-defined.
+
+The current implementation:
+
+- Does **not** populate `context` in successful evaluation responses
+- Does populate `context.error` (with `status` and `message`) for individual failures in batch evaluations:
+
+```json
+{
+  "decision": false,
+  "context": {
+    "error": {
+      "status": 500,
+      "message": "missing result for evaluation 0"
+    }
+  }
+}
+```
+### Identifier validation constraints
+
+The AuthZEN spec models `subject.type`, `subject.id`, `resource.type`, `resource.id`, and `action.name` as strings. <ProductName format={ProductNameFormat.ShortForm}/> applies additional OpenFGA identifier constraints (pattern and length checks). Constraints are field-specific.
+
+### Pagination
+
+The spec defines optional pagination for search endpoints using opaque continuation tokens (`next_token`). The current implementation does **not** support pagination — all matching results are returned in a single response. The `page` field in search requests is accepted but ignored.
+
+### PDP metadata fields
+
+The AuthZEN metadata model defines optional fields such as `capabilities` and `signed_metadata`. The current implementation returns endpoint metadata fields but does not expose `signed_metadata` and does not currently advertise capability URNs.
+
+### Authorization model selection extension
+
+The AuthZEN spec does not define a standard way to pin requests to a specific model version. <ProductName format={ProductNameFormat.ShortForm}/> adds `Openfga-Authorization-Model-Id` as an OpenFGA-specific request header extension.
+
+### X-Request-ID header
+
+The spec RECOMMENDS that PEPs include an `X-Request-ID` header in requests and that PDPs echo it back in responses. <ProductName format={ProductNameFormat.ShortForm}/> returns an `X-Request-Id` header in all responses but does not currently echo back client-provided request IDs.
+
+### Contextual Tuples
+
+The AuthZEN spec does not define a concept equivalent to [Contextual Tuples](./contextual-tuples.mdx). If your authorization model depends on contextual tuples for certain checks, you must use the native <ProductName format={ProductNameFormat.ShortForm}/> API for those checks.
+
+
+## Related Sections
+
+<RelatedSection
+  description="Learn more about the concepts and APIs used by the AuthZEN integration."
+  relatedLinks={[
+    {
+      title: 'Relationship Queries',
+      description: 'Learn about the underlying Check, ListObjects, and ListUsers APIs.',
+      link: './relationship-queries',
+      id: './relationship-queries.mdx',
+    },
+    {
+      title: 'Conditions',
+      description: 'Learn how to use conditions for attribute-based access control.',
+      link: '../modeling/conditions',
+      id: '../modeling/conditions.mdx',
+    },
+    {
+      title: 'Contextual Tuples',
+      description: 'Learn about temporary relationship tuples for request-scoped authorization.',
+      link: './contextual-tuples',
+      id: './contextual-tuples.mdx',
+    },
+  ]}
+/>
