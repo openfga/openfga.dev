@@ -52,7 +52,7 @@ All AuthZEN endpoints return an `Unimplemented` error if the experimental flag i
 
 ## Endpoints
 
-All AuthZEN endpoints are scoped to a store and available under `/stores/{store_id}/access/v1/`. 
+All AuthZEN endpoints are scoped to a store. Evaluation and search endpoints are available under `/stores/{store_id}/access/v1/`. The Get Configuration (discovery) endpoint uses a different path: `/.well-known/authzen-configuration/{store_id}`.
 
 | Endpoint | Method | Path | Description |
 |---|---|---|---|
@@ -87,7 +87,7 @@ The Evaluation endpoint determines whether a subject is authorized to perform an
 
 **Request:**
 
-```json
+```http
 POST /stores/{store_id}/access/v1/evaluation
 
 {
@@ -155,7 +155,7 @@ The Evaluations endpoint performs batch authorization checks in a single request
 
 **Request:**
 
-```json
+```http
 POST /stores/{store_id}/access/v1/evaluations
 
 {
@@ -235,7 +235,7 @@ This answers questions like "Who can read this document?"
 
 **Request:**
 
-```json
+```http
 POST /stores/{store_id}/access/v1/search/subject
 
 {
@@ -270,7 +270,7 @@ This answers questions like "What documents can Anne read?"
 
 **Request:**
 
-```json
+```http
 POST /stores/{store_id}/access/v1/search/resource
 
 {
@@ -305,7 +305,7 @@ This answers questions like "What can Anne do with this document?"
 
 **Request:**
 
-```json
+```http
 POST /stores/{store_id}/access/v1/search/action
 
 {
@@ -426,7 +426,7 @@ The AuthZEN spec does not define a standard way to pin requests to a specific mo
 
 ### X-Request-ID header
 
-The spec RECOMMENDS that PEPs include an `X-Request-ID` header in requests and that PDPs echo it back in responses. <ProductName format={ProductNameFormat.ShortForm}/> returns an `X-Request-Id` header in all responses but does not currently echo back client-provided request IDs.
+The spec RECOMMENDS that PEPs include an `X-Request-ID` header in requests and that PDPs echo it back in responses. <ProductName format={ProductNameFormat.ShortForm}/> returns an `X-Request-ID` header in all responses but does not currently echo back client-provided request IDs.
 
 ### Contextual Tuples
 
