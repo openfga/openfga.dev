@@ -106,6 +106,7 @@ OpenFGA implements authorization through:
   - [Relationship Queries](https://openfga.dev/docs/interacting/relationship-queries)
   - [Get Tuple Changes](https://openfga.dev/docs/interacting/read-tuple-changes)
   - [Search with Permissions](https://openfga.dev/docs/interacting/search-with-permissions)
+  - [AuthZEN API](https://openfga.dev/docs/interacting/authzen)
 
 #### Best Practices
 - [Overview](https://openfga.dev/docs/best-practices/overview) - Best Practices overview
