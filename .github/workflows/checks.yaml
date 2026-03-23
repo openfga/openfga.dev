@@ -14,7 +14,7 @@ jobs:
     steps:
       # Check out the repository
       - name: Cached LFS checkout
-        uses: nschloe/action-cached-lfs-checkout@f46300cd8952454b9f0a21a3d133d4bd5684cfc2
+        uses: nschloe/action-cached-lfs-checkout@1c185ad576953eab13e35ffe1bffef437d97e9d2
 
       - name: Set up node
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
