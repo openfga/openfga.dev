@@ -388,6 +388,11 @@ const sidebars = {
           label: 'Search with Permissions',
           id: 'content/interacting/search-with-permissions',
         },
+        {
+          type: 'doc',
+          label: 'AuthZEN API',
+          id: 'content/interacting/authzen',
+        },
       ],
     },
 
