@@ -1,0 +1,229 @@
+---
+title: Task-Based Authorization
+description: Modeling task-based authorization for agents
+sidebar_position: 1
+slug: /modeling/agents/task-based-authorization
+---
+
+import {
+  DocumentationNotice,
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+} from '@components/Docs';
+
+# Modeling Task-Based Authorization for Agents
+
+<DocumentationNotice />
+
+Agents need credentials to interact with APIs. These can be user or service credentials, for internal or third-party systems. In most cases, those permissions grant agents broad access to the system, as the authorization services that issue credentials for those APIs do not support granting fine-grained permissions. Consent prompts and service credentials are too coarse.
+
+Task-Based Authorization is an emerging authorization pattern designed to grant agents (such as AI systems or automated processes) access to perform specific actions only when necessary, without granting permanent permissions. The core principle is to avoid granting agents permanent access to perform actions, instead restricting their capabilities to the exact tasks they are explicitly authorized to execute. Agents start with zero permissions.
+
+For example, rather than allowing an agent to create tickets across all projects, you might configure it to perform the task "Create a ticket on project X" — limiting its permissions to a specific context. Agents operate within the constraints of the tasks they are assigned, meaning they cannot act independently unless their task explicitly includes the required permissions.
+
+This approach enhances security by ensuring permissions are scoped to specific tasks, reducing the risk of unintended actions. By aligning authorization with actionable goals, Task-Based Authorization provides granular control over agent behavior while maintaining flexibility in task execution.
+
+## A simple model
+
+Below is a very simple version of an <ProductName format={ProductNameFormat.ShortForm}/> model that represents tool authorization for a [Model Context Protocol](https://modelcontextprotocol.io/) server. You have a set of tools, and when a task starts, you write the tuples that grant the task the permissions to call the tools it needs.
+
+```dsl.openfga
+model
+  schema 1.1
+
+type task
+type tool
+  relations
+    define can_call: [task]
+```
+
+That works, but it's not much better than using a database table with task/operation/resource. To leverage the benefits of <ProductName format={ProductNameFormat.ShortForm}/> you'd want to model a resource hierarchy where permissions can be inherited.
+
+## Tool hierarchy
+
+A slightly more interesting model includes a tool hierarchy. In the model below, you can configure permissions per tool resource. We are also adding that certain tools can be set to be called by any task.
+
+```dsl.openfga
+model
+  schema 1.1
+
+type task
+
+type tool
+  relations
+    define can_call: [task, task:*]
+
+type tool_resource
+  relations
+    # this would be sent as a contextual tuple
+    define tool: [tool]
+    define can_call: [task] or can_call from tool
+```
+
+## Domain-specific models
+
+The example above models a generic tool-calling domain. If you are building a generic authorization model for any tool, it can work. However, if you are building your own agents for your own application, the model should reflect the application's domain. Let's take a model for a simple project management system and adjust it to handle tasks:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type task
+
+type organization
+  relations
+    define admin: [user]
+    define member: [user]
+
+type project
+  relations
+    define organization: [organization]
+    define owner: [user]
+    define member: [user]
+    define read: [task]
+    define write: [task]
+    define delete: [task]
+    define can_delete: delete or owner or admin from organization
+    define can_edit: write or owner or admin from organization
+    define can_read: read or can_edit or member from organization
+    define can_create_ticket: can_edit
+
+type ticket
+  relations
+    define project: [project]
+    define owner: [user]
+    define read: [task]
+    define write: [task]
+    define delete: [task]
+    define can_delete: owner or delete or can_delete from project
+    define can_edit: owner or write or can_edit from project
+    define can_read: read or write or can_read from project
+```
+
+In this case, we are enriching the user-oriented model that we already had, and adding `task` as a principal. You can now decide to give a `task` permissions to `write` a project. That will include permissions to read/edit the project and edit/read all the project tickets. Or you can decide to grant permissions at the ticket level instead. This enables you to make your applications ready for agent authorization with little effort.
+
+## Session and agent-level permissions
+
+Imagine you are creating an interactive agent, where the user can create many sessions, and you want the ability to grant permissions at the session level. When the user grants a permission, you can give them the option to do it "for this session".
+
+Back to our simple model to illustrate the concept, we can add a `session` type, where we add all the tasks for the session, and we grant permissions to `session:1#task`. That implies that any task linked to the session will be able to call the tool:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type task
+
+# A client session. Tasks are members of a session.
+type session
+  relations
+    define task: [task]
+
+type tool
+  relations
+    define can_call: [task, session#task]
+```
+
+You can use a similar approach if you want the user to allow the agent to always perform the calls. We assign the tasks to the agent and write a tuple saying "all the tasks for this agent can call this tool":
+
+```dsl.openfga
+model
+  schema 1.1
+
+type task
+
+type agent
+  relations
+    define task: [task]
+
+# A client session. Tasks are members of a session.
+type session
+  relations
+    define task: [task]
+
+type tool
+  relations
+    define can_call: [task, session#task, agent#task]
+```
+
+## Expiration and turn count
+
+You can use <ProductName format={ProductNameFormat.ShortForm}/> [conditions](../../configuration-language.mdx#conditions) to model time-based or turn-based expiration for task permissions.
+
+```dsl.openfga
+model
+  schema 1.1
+
+type task
+
+type tool
+  relations
+    define can_call: [task, task with expiration, task with turn_count]
+
+condition expiration(grant_time: timestamp, grant_duration: duration, current_time: timestamp) {
+  current_time < grant_time + grant_duration
+}
+
+condition turn_count(turns_granted: int, current_turn: int) {
+  current_turn <= turns_granted
+}
+```
+
+## Binding agents to tasks
+
+In the examples above, there wasn't a way to verify that the agent making the call was actually assigned to the task being executed. We can use contextual tuples to send the agent that is making the call and verify it's actually linked to the task. This is a scenario similar to [Organizational Context](../modeling/organization-context-authorization.mdx).
+
+```dsl.openfga
+model
+  schema 1.1
+
+type task
+
+type agent
+  relations
+    define task: [task]
+
+type tool
+  relations
+    define agent_in_context: [agent]
+    define can_call: [task] and task from agent_in_context
+```
+
+### Delegating task permissions to sub-agents
+
+In the same way agents start with zero permissions, sub-agents will too. If you want to delegate work to a sub-agent, you have two options:
+
+- You ask the sub-agent to keep working on the same task, assign the task to the sub-agent too, and inherit all the permissions it can perform.
+- You further restrict the permissions and create a new task with just what the sub-agent can do.
+
+## Identifying permissions required per task
+
+This is the fun part! It's not trivial, and there's a lot of research going on to map user intent to permissions. Some documents that explore the topic:
+
+- [Intent-Based Access Control: Securing Agentic AI Through Fine-Grained Authorization](https://ibac.dev/)
+- [Delegated Authorization for Agents Constrained to
+Semantic Task-to-Scope Matching](https://arxiv.org/abs/2510.26702)
+- [The Mission Shaping Problem](https://notes.karlmcguinness.com/notes/the-mission-shaping-problem/) 
+- [Securing Agentic AI: authorization patterns for autonomous systems](https://dev.to/siddhantkcode/securing-agentic-ai-authorization-patterns-for-autonomous-systems-3ajo)
+
+
+## Related Sections
+
+<RelatedSection
+  description="Take a look at the following sections for more information."
+  relatedLinks={[
+    {
+      title: 'Conditions',
+      description: 'Learn how to model relationships with conditions such as expiration and turn count',
+      link: '../../modeling/conditions',
+    },
+    {
+      title: 'Contextual Tuples',
+      description: 'Learn how to use contextual tuples to send dynamic context at query time',
+      link: '../../interacting/contextual-tuples',
+    }
+  ]}
+/>

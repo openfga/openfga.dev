@@ -1,0 +1,28 @@
+---
+id: overview
+title: 'Authorization for Agents'
+slug: /modeling/agents
+sidebar_position: 0
+description: Authorization patterns for AI agents and automated processes
+---
+
+import { CardGrid, DocumentationNotice, IntroCard, ProductName, ProductNameFormat } from '@components/Docs';
+
+<DocumentationNotice />
+
+This section presents authorization patterns for AI agents and automated processes using <ProductName format={ProductNameFormat.LongForm}/>.
+
+<IntroCard
+  title="When to use"
+  description="The content in this section is useful if you are building AI agents or automated systems that need fine-grained, scoped permissions to perform actions on behalf of users."
+/>
+
+<CardGrid
+  middle={[
+    {
+      title: 'Task-Based Authorization',
+      description: 'Grant agents access to perform specific actions only when necessary, without granting permanent permissions.',
+      to: 'agents/task-based-authorization',
+    },
+  ]}
+/>
