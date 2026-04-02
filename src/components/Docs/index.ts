@@ -2,6 +2,7 @@ export * from './AuthorizationModel';
 export * from './Banner';
 export * from './CardBox';
 export * from './Column';
+export * from './ConfigValue';
 export * from './DocumentationNotice';
 export * from './Feedback';
 export * from './Overview';
