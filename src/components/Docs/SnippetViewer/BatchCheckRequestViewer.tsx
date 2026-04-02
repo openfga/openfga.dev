@@ -401,11 +401,11 @@ Reply:${checks
           ? `,
       "contextual_tuples": {
         "tuple_keys": [${check.contextualTuples
-              .map(
-                (tuple) => `
+          .map(
+            (tuple) => `
           {"user": "${tuple.user}", "relation": "${tuple.relation}", "object": "${tuple.object}"}`,
-              )
-              .join(',')}
+          )
+          .join(',')}
         ]
       }`
           : ''

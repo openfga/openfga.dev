@@ -79,19 +79,19 @@ ${
       "relation": "${relation}",
       "object": "${object}"
     }${
-    contextualTuples
-      ? `,
+      contextualTuples
+        ? `,
     "contextual_tuples": {
       "tuple_keys": [${contextualTuples
-          .map(
-            (tuple) => `
+        .map(
+          (tuple) => `
         {"user": "${tuple.user}", "relation": "${tuple.relation}", "object": "${tuple.object}"}`,
-          )
-          .join(',')}
+        )
+        .join(',')}
       ]
     }`
-      : ''
-  }${context ? `,\n    "context": ${JSON.stringify(context)}` : ''}
+        : ''
+    }${context ? `,\n    "context": ${JSON.stringify(context)}` : ''}
   }'
 
 # Response: {"allowed": ${allowed}}`;
