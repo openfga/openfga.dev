@@ -89,6 +89,10 @@ OpenFGA implements authorization through:
     - [IoT](https://openfga.dev/docs/modeling/advanced/iot)
     - [Entitlements](https://openfga.dev/docs/modeling/advanced/entitlements)
 
+  #### Authorization for Agents
+  - [Overview](https://openfga.dev/docs/modeling/agents/overview) - Authorization for Agents overview
+    - [Task-Based Authorization](https://openfga.dev/docs/modeling/agents/task-based-authorization)
+
   #### Migrations
   - [Overview](https://openfga.dev/docs/modeling/migrating/overview) - Migrations overview
     - [Migrating Relations](https://openfga.dev/docs/modeling/migrating/migrating-relations)
