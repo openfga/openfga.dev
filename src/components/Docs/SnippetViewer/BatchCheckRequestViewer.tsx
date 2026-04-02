@@ -398,11 +398,18 @@ Reply:${checks
       },
       "correlation_id": "${check.correlation_id}"${
         check.contextualTuples
-          ? `,"contextual_tuples":{"tuple_keys":[${check.contextualTuples
-              .map((tuple) => `{"user":"${tuple.user}","relation":"${tuple.relation}","object":"${tuple.object}"}`)
-              .join(',')}]}`
+          ? `,
+      "contextual_tuples": {
+        "tuple_keys": [${check.contextualTuples
+              .map(
+                (tuple) => `
+          {"user": "${tuple.user}", "relation": "${tuple.relation}", "object": "${tuple.object}"}`,
+              )
+              .join(',')}
+        ]
+      }`
           : ''
-      }${check.context ? `,"context":${JSON.stringify(check.context)}}` : ''}
+      }${check.context ? `,\n      "context": ${JSON.stringify(check.context)}` : ''}
     },
   `,
     )
