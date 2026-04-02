@@ -73,15 +73,28 @@ ${
           .join('')
       : ''
   }
-  -d '{${modelId ? `"authorization_model_id": "${modelId}", ` : ''}"tuple_key":{"user":"${user}","relation":"${relation}","object":"${object}"}${
+  -d '{${modelId ? `\n    "authorization_model_id": "${modelId}",` : ''}
+    "tuple_key": {
+      "user": "${user}",
+      "relation": "${relation}",
+      "object": "${object}"
+    }${
     contextualTuples
-      ? `,"contextual_tuples":{"tuple_keys":[${contextualTuples
-          .map((tuple) => `{"user":"${tuple.user}","relation":"${tuple.relation}","object":"${tuple.object}"}`)
-          .join(',')}]}`
+      ? `,
+    "contextual_tuples": {
+      "tuple_keys": [${contextualTuples
+          .map(
+            (tuple) => `
+        {"user": "${tuple.user}", "relation": "${tuple.relation}", "object": "${tuple.object}"}`,
+          )
+          .join(',')}
+      ]
+    }`
       : ''
-  }${context ? `,"context":${JSON.stringify(context)}}` : '}'}'
+  }${context ? `,\n    "context": ${JSON.stringify(context)}` : ''}
+  }'
 
-# Response: {"allowed":${allowed}}`;
+# Response: {"allowed": ${allowed}}`;
 
     case SupportedLanguage.JS_SDK:
       return `
@@ -93,7 +106,13 @@ const { allowed } = await fgaClient.check({
       !contextualTuples
         ? ``
         : `
-    contextualTuples: [\n      ${contextualTuples.map((tuple) => `${JSON.stringify(tuple)}`).join(',')}
+    contextualTuples: [
+      ${contextualTuples
+        .map(
+          (tuple) =>
+            `{\n        user: '${tuple.user}',\n        relation: '${tuple.relation}',\n        object: '${tuple.object}',\n      }`,
+        )
+        .join(',\n      ')}
     ],`
     }${!context ? `\n  }` : `\n    context: ${JSON.stringify(context)}\n  }`}, {${
       modelId ? `\n    authorizationModelId: '${modelId}',` : ''
