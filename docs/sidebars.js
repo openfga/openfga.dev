@@ -313,6 +313,23 @@ const sidebars = {
           type: 'category',
           collapsed: true,
           collapsible: true,
+          label: 'Authorization for Agents',
+          link: {
+            type: 'doc',
+            id: 'content/modeling/agents/overview',
+          },
+          items: [
+            {
+              type: 'doc',
+              label: 'Task-Based Authorization',
+              id: 'content/modeling/agents/task-based-authorization',
+            },
+          ],
+        },
+        {
+          type: 'category',
+          collapsed: true,
+          collapsible: true,
           label: 'Migrations',
           link: {
             type: 'doc',
