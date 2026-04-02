@@ -6,6 +6,7 @@ slug: /modeling/agents/task-based-authorization
 ---
 
 import {
+  CheckRequestViewer,
   DocumentationNotice,
   ProductName,
   ProductNameFormat,
@@ -64,22 +65,23 @@ tuples:
     object: tool_resource:slack_send_message/XGA14FG
 ```
 
-When checking whether `task:2` can call `tool_resource:slack_send_message/XGA14FG`, send a [contextual tuple](../../interacting/contextual-tuples.mdx) linking the resource to its tool:
+When checking whether `task:2` can call `tool_resource:slack_send_message/XGA14FG`, send a [contextual tuple](../../interacting/contextual-tuples.mdx) linking the resource to its tool. This avoids storing a tuple for every channel — you provide the tool-to-resource relationship at query time.
 
-```yaml
-tests:
-  - tuples:
-    - user: tool:slack_send_message
-      relation: tool
-      object: tool_resource:slack_send_message/XGA14FG
-    check: 
-        - user: task:1
-          object: tool_resource:slack_send_message/XGA14FG
-          assertions:
-            can_call : true
-```
-
-This avoids storing a tuple for every channel — you provide the tool-to-resource relationship at query time.
+<CheckRequestViewer
+  user={'task:2'}
+  relation={'can_call'}
+  object={'tool_resource:slack_send_message/XGA14FG'}
+  allowed={true}
+  skipSetup={true}
+  contextualTuples={[
+    {
+      _description: 'Link the tool_resource to its parent tool',
+      user: 'tool:slack_send_message',
+      relation: 'tool',
+      object: 'tool_resource:slack_send_message/XGA14FG',
+    },
+  ]}
+/>
 
 ## Domain-specific models
 
@@ -182,7 +184,7 @@ tuples:
 
 ## Expiration and turn count
 
-You can use <ProductName format={ProductNameFormat.ShortForm}/> [conditions](../../configuration-language.mdx#conditions) to make permissions expire after a duration or a number of agent turns.
+You can use <ProductName format={ProductNameFormat.ShortForm}/> [conditions](../../configuration-language.mdx#conditional-relationships) to make permissions expire after a duration or a number of agent turns.
 
 ```dsl.openfga
 model
@@ -261,22 +263,41 @@ tuples:
     object: tool:slack_send_message
 ```
 
-At check time, send a contextual tuple identifying the calling agent:
+At check time, send a contextual tuple identifying the calling agent. If the agent is linked to the task, the check returns `true`:
 
-```yaml
-tests:
-  - tuples:
-    - user: agent:1
-      relation: agent_in_context
-      object: tool:slack_send_message
-    check: 
-      - user: task:1
-        object: tool_resource:slack_send_message/XGA14FG
-        assertions:
-          can_call : true
-```
+<CheckRequestViewer
+  user={'task:1'}
+  relation={'can_call'}
+  object={'tool:slack_send_message'}
+  allowed={true}
+  skipSetup={true}
+  contextualTuples={[
+    {
+      _description: 'The agent making the call',
+      user: 'agent:1',
+      relation: 'agent_in_context',
+      object: 'tool:slack_send_message',
+    },
+  ]}
+/>
 
-If a different agent tries to use `task:1`, the check will return `false` because the agent-to-task link won't match.
+If a different agent tries to use `task:1`, the check returns `false` because the agent-to-task link won't match:
+
+<CheckRequestViewer
+  user={'task:1'}
+  relation={'can_call'}
+  object={'tool:slack_send_message'}
+  allowed={false}
+  skipSetup={true}
+  contextualTuples={[
+    {
+      _description: 'A different agent making the call',
+      user: 'agent:2',
+      relation: 'agent_in_context',
+      object: 'tool:slack_send_message',
+    },
+  ]}
+/>
 
 ### Delegating task permissions to sub-agents
 
