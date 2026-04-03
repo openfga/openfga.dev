@@ -1,0 +1,291 @@
+---
+title: Authorization for MCP Servers
+description: Controlling which tools users can access on an MCP server
+sidebar_position: 3
+slug: /modeling/agents/mcp-authorization
+---
+
+import {
+  CheckRequestViewer,
+  DocumentationNotice,
+  ListObjectsRequestViewer,
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+} from '@components/Docs';
+
+# Authorization for MCP Servers
+
+<DocumentationNotice />
+
+[Model Context Protocol (MCP)](https://modelcontextprotocol.io/) servers expose tools that AI agents can call. Without authorization, any authenticated user can invoke any tool. <ProductName format={ProductNameFormat.ShortForm}/> lets you control which tools each user can access, based on their role, group membership, or time-limited grants.
+
+This guide shows how to model tool-level authorization for an MCP server using <ProductName format={ProductNameFormat.ShortForm}/>, covering public tools, role-based access, group membership, temporal access, and resource-level permissions within tools.
+
+## Authorization model
+
+The model defines four types: users, groups, roles, and tools. Users belong to groups, groups are assigned to roles, and roles grant access to tools. Tools can also be made public or granted directly to a user.
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type group
+  relations
+    define member: [user]
+
+type role
+  relations
+    define assignee: [user, group#member]
+
+type tool
+  relations
+    define can_call: [user:*, user, role#assignee, user with temporal_grant, role#assignee with temporal_grant]
+
+condition temporal_grant(grant_time: timestamp, grant_duration: duration, current_time: timestamp) {
+  current_time < grant_time + grant_duration
+}
+```
+
+The `can_call` relation on `tool` accepts several types of assignments:
+
+- `user:*` — any authenticated user can call the tool (public tools).
+- `user` — a specific user can call the tool.
+- `role#assignee` — anyone assigned to the role can call the tool, either directly or through group membership.
+- `user with temporal_grant` or `role#assignee with temporal_grant` — access is granted for a limited duration.
+
+## Setting up groups and roles
+
+Link users to groups, and groups to roles:
+
+```yaml
+tuples:
+  # anne is a member of the managers group
+  - user: user:anne
+    relation: member
+    object: group:managers
+
+  # beth is a member of the marketing group
+  - user: user:beth
+    relation: member
+    object: group:marketing
+
+  # the managers group is assigned the admin role
+  - user: group:managers#member
+    relation: assignee
+    object: role:admin
+
+  # the marketing group is assigned the content_editor role
+  - user: group:marketing#member
+    relation: assignee
+    object: role:content_editor
+```
+
+## Granting tool access
+
+With groups and roles in place, grant tool access through role assignments and public access:
+
+```yaml
+tuples:
+  # get_datetime is public — any authenticated user can call it
+  - user: user:*
+    relation: can_call
+    object: tool:get_datetime
+
+  # the admin role can call all tools
+  - user: role:admin#assignee
+    relation: can_call
+    object: tool:greet
+  - user: role:admin#assignee
+    relation: can_call
+    object: tool:whoami
+  - user: role:admin#assignee
+    relation: can_call
+    object: tool:get_documents
+
+  # the content_editor role can call greet, whoami, and get_documents
+  - user: role:content_editor#assignee
+    relation: can_call
+    object: tool:greet
+  - user: role:content_editor#assignee
+    relation: can_call
+    object: tool:whoami
+  - user: role:content_editor#assignee
+    relation: can_call
+    object: tool:get_documents
+```
+
+With this setup:
+- **anne** (managers → admin) can call `greet`, `whoami`, `get_documents`, and `get_datetime`.
+- **beth** (marketing → content_editor) can call `greet`, `whoami`, `get_documents`, and `get_datetime`.
+- **carl** (no group) can only call `get_datetime`.
+
+## Filtering the tool list
+
+When a user connects to the MCP server, use [`ListObjects`](../../interacting/relationship-queries.mdx#listobjects) to retrieve all tools they are authorized to call. The MCP server then exposes only those tools.
+
+For example, listing all tools `user:carl` can call:
+
+<ListObjectsRequestViewer
+  objectType="tool"
+  relation="can_call"
+  user="user:carl"
+  expectedResults={['tool:get_datetime']}
+  skipSetup={true}
+/>
+
+The MCP server only exposes `get_datetime` to carl. The other tools are hidden from the tool list entirely.
+
+For `user:anne` (managers → admin), the result includes all tools:
+
+<ListObjectsRequestViewer
+  objectType="tool"
+  relation="can_call"
+  user="user:anne"
+  expectedResults={['tool:get_datetime', 'tool:greet', 'tool:whoami', 'tool:get_documents']}
+  skipSetup={true}
+/>
+
+## Temporal access
+
+You can grant time-limited access to a tool using the `temporal_grant` [condition](../../configuration-language.mdx#conditional-relationships). This is useful when a user needs temporary access to a tool for a specific task.
+
+```yaml
+tuples:
+  # carl can call greet for 1 hour
+  - user: user:carl
+    relation: can_call
+    object: tool:greet
+    condition:
+      name: temporal_grant
+      context:
+        grant_time: "2026-04-03T10:00:00Z"
+        grant_duration: 1h
+```
+
+When checking access, pass the current time in the request context. The check returns `true` only if the current time is within the grant window:
+
+<CheckRequestViewer
+  user={'user:carl'}
+  relation={'can_call'}
+  object={'tool:greet'}
+  allowed={true}
+  skipSetup={true}
+  context={{current_time: '2026-04-03T10:30:00Z'}}
+/>
+
+After the grant expires, the same check returns `false`:
+
+<CheckRequestViewer
+  user={'user:carl'}
+  relation={'can_call'}
+  object={'tool:greet'}
+  allowed={false}
+  skipSetup={true}
+  context={{current_time: '2026-04-03T11:30:00Z'}}
+/>
+
+## Resource-level permissions within tools
+
+Some tools return different results depending on user permissions. For example, a `get_documents` tool might return public documents to all users but restrict private documents to specific roles. You can model this by adding a separate relation to the tool:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type group
+  relations
+    define member: [user]
+
+type role
+  relations
+    define assignee: [user, group#member]
+
+type tool
+  relations
+    define can_call: [user:*, user, role#assignee, user with temporal_grant, role#assignee with temporal_grant]
+    define can_view_private_documents: [role#assignee]
+
+condition temporal_grant(grant_time: timestamp, grant_duration: duration, current_time: timestamp) {
+  current_time < grant_time + grant_duration
+}
+```
+
+Grant the `can_view_private_documents` relation to the admin role:
+
+```yaml
+tuples:
+  - user: role:admin#assignee
+    relation: can_view_private_documents
+    object: tool:get_documents
+```
+
+When the tool executes, check whether the user has the `can_view_private_documents` relation and adjust the response accordingly:
+
+<CheckRequestViewer
+  user={'user:anne'}
+  relation={'can_view_private_documents'}
+  object={'tool:get_documents'}
+  allowed={true}
+  skipSetup={true}
+/>
+
+<CheckRequestViewer
+  user={'user:beth'}
+  relation={'can_view_private_documents'}
+  object={'tool:get_documents'}
+  allowed={false}
+  skipSetup={true}
+/>
+
+Since anne is an admin, she sees all documents. Beth, as a content editor, sees only public documents.
+
+:::tip
+If you have many tools with resource-level permissions, consider creating separate types for each tool's resources instead of adding relations to the `tool` type. See [Domain-specific models](./task-based-authorization.mdx#domain-specific-models) for an example.
+:::
+
+## Integration pattern
+
+The authorization flow for an MCP server follows this pattern:
+
+1. **Authentication**: The user authenticates with an identity provider (e.g., via OAuth 2.0). The MCP server verifies the token and extracts the user ID.
+2. **Tool filtering**: On each request, call `ListObjects` to retrieve all tools the user is authorized to call. Only expose those tools.
+3. **Tool execution**: When a tool is invoked, verify the user still has access. For tools with resource-level permissions, perform additional checks to determine what data to return.
+4. **Dynamic grants**: Use temporal access or direct user grants to provide just-in-time access to tools as needed.
+
+## Sample implementation
+
+For a complete working example of an MCP server with <ProductName format={ProductNameFormat.ShortForm}/> authorization, see the [FastMCP + OpenFGA sample](https://github.com/auth0-samples/auth0-ai-samples/tree/main/auth-for-mcp/fastmcp-mcp-fga-js). The sample includes:
+
+- A fully configured authorization model and tuples
+- OAuth 2.0 authentication with token verification
+- `ListObjects` for tool filtering at connection time
+- `Check` for resource-level permissions at execution time
+- Shell scripts for managing group membership and temporal access
+
+## Related Sections
+
+<RelatedSection
+  description="Take a look at the following sections for more information."
+  relatedLinks={[
+    {
+      title: 'Task-Based Authorization',
+      description: 'Grant agents scoped permissions to perform specific actions without permanent access',
+      link: './task-based-authorization',
+    },
+    {
+      title: 'Conditions',
+      description: 'Learn how to add time-based expiration or other conditions to access grants',
+      link: '../../modeling/conditions',
+    },
+    {
+      title: 'Search With Permissions',
+      description: 'Integrate authorization into search and retrieval workflows',
+      link: '../../interacting/search-with-permissions',
+    },
+  ]}
+/>
