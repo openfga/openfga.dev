@@ -1,0 +1,41 @@
+name: Check Image Upload Size
+
+on:
+  pull_request:
+    paths:
+      - '**/*.jpg'
+      - '**/*.jpeg'
+      - '**/*.png'
+      - '**/*.gif'
+
+jobs:
+  check_image_size:
+    runs-on: ubuntu-latest
+    env:
+      MAX_IMAGE_SIZE_MB: 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Check image sizes
+        run: |
+          #!/bin/bash
+          set -e
+
+          MAX_SIZE_BYTES=$((${MAX_IMAGE_SIZE_MB} * 1024 * 1024))
+          OVERSIZED_IMAGES=()
+
+          for img in $(git diff --name-only --diff-filter=AM ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep -E '\.(jpg|jpeg|png|gif)$'); do
+            size=$(wc -c < "$img")
+            if [ $size -gt $MAX_SIZE_BYTES ]; then
+              OVERSIZED_IMAGES+=("$img ($(numfmt --to=iec-i --suffix=B --format="%.2f" $size))")
+            fi
+          done
+
+          if [ ${#OVERSIZED_IMAGES[@]} -gt 0 ]; then
+            echo "Error: The following images exceed the maximum allowed size of ${MAX_IMAGE_SIZE_MB}MB:"
+            printf '%s\n' "${OVERSIZED_IMAGES[@]}"
+            exit 1
+          else
+            echo "All new or modified images are within the size limit."
+          fi
