@@ -17,9 +17,9 @@ import {
 
 <DocumentationNotice />
 
-Agents need credentials to interact with APIs. These can be user or service credentials, for internal or third-party systems. In most cases, those permissions grant agents broad access to the system, as the authorization services that issue credentials for those APIs do not support granting fine-grained permissions. Consent prompts and service credentials are too coarse.
+Agents need credentials to interact with APIs. These can be user or service credentials, for internal or third-party systems. In most cases, these credentials grant agents broad access because the underlying authorization systems do not support fine-grained permissions. Consent prompts and service credentials are too coarse for agent use cases.
 
-Task-Based Authorization grants agents access to perform specific actions only when necessary, without permanent permissions. Agents start with zero permissions and receive only what a given task requires. For example, rather than allowing an agent to create tickets across all projects, you authorize it to "Create a ticket on project X" — scoping permissions to a specific context.
+Task-Based Authorization grants agents access to perform specific actions only when necessary, without permanent permissions. Agents start with no permissions and receive only what a given task requires. For example, rather than allowing an agent to create tickets across all projects, you authorize it to "create a ticket in project X" — scoping permissions to a specific context.
 
 This guide shows how to model task-based authorization in <ProductName format={ProductNameFormat.ShortForm}/>, progressing from a basic tool-calling model to patterns that support permission hierarchies, session scoping, expiration, and agent binding.
 
@@ -43,7 +43,7 @@ type tool_resource
     define can_call: [task] or can_call from tool
 ```
 
-A `tool` represents a capability (e.g. `slack_send_message`), and a `tool_resource` represents a specific target within that tool (e.g. a Slack channel). Granting `can_call` on a `tool` automatically grants access to all its resources. You can also grant access to individual resources, or use `task:*` to allow any task to call a tool.
+A `tool` represents a capability (e.g., `slack_send_message`), and a `tool_resource` represents a specific target within that tool (e.g., a Slack channel). Granting `can_call` on a `tool` automatically grants access to all of its resources. You can also grant access to individual resources, or use `task:*` to allow any task to call a tool.
 
 For example, you can grant `task:1` access to send any Slack message, while restricting `task:2` to a specific channel:
 
@@ -85,7 +85,7 @@ When checking whether `task:2` can call `tool_resource:slack_send_message/XGA14F
 
 ## Domain-specific models
 
-The model above is generic. If you are building agents for your own application, the authorization model should reflect your application's domain. Consider a project management system:
+The model above is generic. If you are building agents for your own application, your authorization model should reflect your domain. Consider a project management system:
 
 ```dsl.openfga
 model
@@ -133,11 +133,11 @@ type ticket
     define can_read: read or write or can_read from project
 ```
 
-Here we enrich an existing user-oriented model by adding `task` as a principal. Granting a `task` the `write` relation on a project gives it permission to read/edit the project and all its tickets. You can also grant permissions at the ticket level for more granular control. This makes your application ready for agent authorization with minimal changes to your existing model.
+This enriches an existing user-oriented model by adding `task` as a principal. Granting a `task` the `write` relation on a project gives it permission to read and edit the project and all its tickets. You can also grant permissions at the ticket level for more granular control. This makes your application ready for agent authorization with minimal changes to your existing model.
 
 ## Scoping permissions to sessions and agents
 
-In interactive agents, users may create multiple sessions. You can scope permissions to a session so that granting access applies to all tasks within it. You can also scope permissions to an agent, so they persist across sessions.
+In interactive scenarios, users may create multiple sessions. You can scope permissions to a session so that access applies to all tasks within it. You can also scope permissions to an agent so they persist across sessions.
 
 ```dsl.openfga
 model
@@ -182,9 +182,9 @@ tuples:
     object: tool:slack_send_message
 ```
 
-## Expiration and turn count
+## Expiration and call count
 
-You can use <ProductName format={ProductNameFormat.ShortForm}/> [conditions](../../configuration-language.mdx#conditional-relationships) to make permissions expire after a duration or a number of agent turns.
+You can use <ProductName format={ProductNameFormat.ShortForm}/> [conditions](../../configuration-language.mdx#conditional-relationships) to make permissions expire after a duration, or limit how many times the tool can be called.
 
 ```dsl.openfga
 model
@@ -194,18 +194,18 @@ type task
 
 type tool
   relations
-    define can_call: [task, task with expiration, task with turn_count]
+    define can_call: [task, task with expiration, task with max_call_count]
 
 condition expiration(grant_time: timestamp, grant_duration: duration, current_time: timestamp) {
   current_time < grant_time + grant_duration
 }
 
-condition turn_count(turns_granted: int, current_turn: int) {
-  current_turn <= turns_granted
+condition max_call_count(max_tool_calls: int, current_tool_count: int) {
+  current_tool_count < max_tool_calls
 }
 ```
 
-The `expiration` condition grants access for a fixed duration from the grant time. The `turn_count` condition grants access for a fixed number of agent turns. When writing the tuple, you provide the condition parameters:
+The `expiration` condition grants access for a fixed duration from the grant time. The `max_call_count` condition limits how many times the tool can be called. When writing the tuple, you provide the condition parameters:
 
 ```yaml
 tuples:
@@ -219,21 +219,21 @@ tuples:
         grant_time: "2026-03-22T00:00:00Z"
         grant_duration: 10m
 
-  # task:2 can call the tool for 2 turns
+  # task:2 can call the tool up to 2 times
   - user: task:2
     relation: can_call
     object: tool:slack_send_message
     condition:
-      name: turn_count
+      name: max_call_count
       context:
-        turns_granted: 2
+        max_tool_calls: 2
 ```
 
-When checking access, pass the current time or turn number in the request context.
+When checking access, pass the current time or current call count in the request context.
 
 ## Binding agents to tasks
 
-The examples above don't verify that the agent making the call is actually assigned to the task. You can enforce this using [contextual tuples](../../interacting/contextual-tuples.mdx) and an intersection (`and`) in the model, similar to the [Authorization Through Organization Context](../organization-context-authorization.mdx) pattern.
+The examples above do not verify that the agent making the call is actually assigned to the task. You can enforce this using [contextual tuples](../../interacting/contextual-tuples.mdx) and an intersection (`and`) in the model, similar to the [Authorization Through Organization Context](../organization-context-authorization.mdx) pattern.
 
 ```dsl.openfga
 model
@@ -247,8 +247,8 @@ type agent
 
 type tool
   relations
-    define agent_in_context: [agent]
-    define can_call: [task] and task from agent_in_context
+    define calling_agent: [agent]
+    define can_call: [task] and task from calling_agent
 ```
 
 The `can_call` relation requires both that the task has been granted access **and** that the agent making the call is linked to the task. When the task is created, link it to its agent:
@@ -275,13 +275,13 @@ At check time, send a contextual tuple identifying the calling agent. If the age
     {
       _description: 'The agent making the call',
       user: 'agent:1',
-      relation: 'agent_in_context',
+      relation: 'calling_agent',
       object: 'tool:slack_send_message',
     },
   ]}
 />
 
-If a different agent tries to use `task:1`, the check returns `false` because the agent-to-task link won't match:
+If a different agent tries to use `task:1`, the check returns `false` because the agent-to-task link does not match:
 
 <CheckRequestViewer
   user={'task:1'}
@@ -293,23 +293,28 @@ If a different agent tries to use `task:1`, the check returns `false` because th
     {
       _description: 'A different agent making the call',
       user: 'agent:2',
-      relation: 'agent_in_context',
+      relation: 'calling_agent',
       object: 'tool:slack_send_message',
     },
   ]}
 />
 
-### Delegating task permissions to sub-agents
+## Delegating task permissions to sub-agents
 
 Sub-agents also start with zero permissions. When delegating work, you have two options:
 
 - **Share the task**: assign the same task to the sub-agent, giving it all the task's permissions.
 - **Restrict further**: create a new task with a narrower set of permissions for the sub-agent.
 
+## Tuple cleanup
+
+When a task completes, delete all tuples associated with it to revoke its permissions.
+
 ## Further reading
 
 Mapping user intent to the right set of permissions is an active area of research. These resources explore the topic:
 
+- [From Scopes To Intent: Reimagining Authorization for Autonomous Agents](https://mcpdevsummitna26.sched.com/event/2Hbg0/from-scopes-to-intent-reimagining-authorization-for-autonomous-agents-andres-aguiar-abhishek-hingnikar-okta), MCP Dev Summit NY 2026 [code repository](https://github.com/aaguiarz/ibac-talk-demo) and [demo](https://www.youtube.com/watch?v=IVIvtusd7LA)
 - [Intent-Based Access Control: Securing Agentic AI Through Fine-Grained Authorization](https://ibac.dev/)
 - [Delegated Authorization for Agents Constrained to Semantic Task-to-Scope Matching](https://arxiv.org/abs/2510.26702)
 - [The Mission Shaping Problem](https://notes.karlmcguinness.com/notes/the-mission-shaping-problem/)
@@ -322,7 +327,7 @@ Mapping user intent to the right set of permissions is an active area of researc
   relatedLinks={[
     {
       title: 'Conditions',
-      description: 'Learn how to model relationships with conditions such as expiration and turn count',
+      description: 'Learn how to model relationships with conditions such as expiration and call count',
       link: '../../modeling/conditions',
     },
     {
