@@ -92,6 +92,8 @@ OpenFGA implements authorization through:
   #### Authorization for Agents
   - [Overview](https://openfga.dev/docs/modeling/agents/overview) - Authorization for Agents overview
     - [Task-Based Authorization](https://openfga.dev/docs/modeling/agents/task-based-authorization)
+    - [RAG Authorization](https://openfga.dev/docs/modeling/agents/rag-authorization)
+    - [Authorization for MCP Servers](https://openfga.dev/docs/modeling/agents/mcp-authorization)
 
   #### Migrations
   - [Overview](https://openfga.dev/docs/modeling/migrating/overview) - Migrations overview
