@@ -51,8 +51,8 @@ const features = [
   {
     id: 'sponsored',
     icon: <CNCFIcon />,
-    title: 'CNCF Sandbox Project',
-    content: ["We are a <a href='https://www.cncf.io/'>Cloud Native Computing Foundation</a> sandbox project."],
+    title: 'CNCF Incubation Project',
+    content: ["We are a <a href='https://www.cncf.io/'>Cloud Native Computing Foundation</a> incubating project."],
   },
   {
     id: 'contribute',

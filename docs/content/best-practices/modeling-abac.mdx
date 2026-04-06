@@ -1,0 +1,374 @@
+---
+title: Modeling Attribute Based Access Control
+slug: /best-practices/modeling-abac
+description: Learn how to model Attribute-Based Access Control (ABAC) patterns using stored and dynamic attributes in OpenFGA.
+sidebar_position: 2
+---
+import {
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+} from '@components/Docs';
+
+# Modeling ABAC with <ProductName format={ProductNameFormat.ShortForm}/>
+
+Attribute-Based Access Control (ABAC) extends traditional relationship-based access control by incorporating attributes into authorization decisions. While Role-Based Access Control (RBAC) answers "does this user have this role?", ABAC answers questions like "does this user have this role AND is their email verified?" or "can this user access this resource given their current session context?".
+
+With <ProductName format={ProductNameFormat.ShortForm}/>, you can model ABAC patterns using attributes that are stored in the system or attributes that are provided dynamically with each authorization request.
+
+This guide covers two main approaches:
+
+1. **Stored attributes**: Attributes persisted in <ProductName format={ProductNameFormat.ShortForm}/> as part of your relationship data
+2. **Request-time attributes**: Dynamic attributes sent with each authorization check request
+
+## Stored Attribute Data
+
+When attributes are relatively static and can be stored alongside your relationship data, you can model them directly in <ProductName format={ProductNameFormat.ShortForm}/>. This approach works well for attributes like "email verified", "SSO enabled", or "account tier".
+
+Consider a scenario where you want to allow users to perform an action only if their organization has SSO enabled. Below are three patterns for modeling this requirement.
+
+### Modeling Attributes as Relations
+
+#### Using `user:*` as a Boolean Flag
+
+The simplest approach for boolean attributes is using the [Public Access](../modeling/public-access.mdx) pattern. By assigning `user:*` to a relation, you effectively create a boolean flag that applies to all users.
+
+**When to use this approach:**
+- You need a simple true/false flag
+- The attribute applies uniformly to all users in a context
+- You want minimal tuple overhead
+
+```dsl.openfga
+model: |
+  model
+    schema 1.1
+
+  type user
+  
+  type organization
+    relations
+      define member : [user]
+      define sso_enabled : [user:*]
+      define can_use_sso : sso_enabled and member
+
+tuples:
+  - user: user:*
+    relation: sso_enabled
+    object: organization:acme
+  - user: user:anne
+    relation: member
+    object: organization:acme
+
+tests:
+  - check:
+    - user: user:anne
+      object: organization:acme
+      assertions:
+        can_use_sso: true
+```
+
+#### Using Self-Relations
+
+An alternative approach is to use a self-referential relation, where an object points to itself to indicate an attribute is set. This pattern makes the relationship semantics more explicit.
+
+**When to use this approach:**
+- You want clearer semantics about what the attribute represents
+- The attribute is a property of the object itself rather than a universal grant
+- You prefer explicit object references over wildcards
+
+```dsl.openfga
+model: |
+  model
+    schema 1.1
+
+  type user
+
+  type organization
+    relations
+      define member : [user]
+      define sso_enabled : [organization]
+      define can_use_sso : member from sso_enabled
+
+tuples:
+  - user: organization:acme
+    relation: sso_enabled
+    object: organization:acme
+
+  - user: user:anne
+    relation: member
+    object: organization:acme
+
+tests:
+  - check:
+    - user: user:anne
+      object: organization:acme
+      assertions:
+        can_use_sso: true
+```
+
+### Storing Attributes in Conditional Tuple Context
+
+For attributes that require typed values beyond simple booleans, you can store the attribute value directly in the condition context of a relationship tuple. This approach combines the relationship with its associated attribute data.
+
+**When to use this approach:**
+- You need typed attribute values (strings, numbers, etc.)
+- The attribute is tightly coupled to a specific relationship
+- You want to avoid additional tuples for attribute storage
+
+```dsl.openfga
+model: |
+  model
+    schema 1.1
+    
+  type user
+  
+  type organization
+    relations
+      define member : [user]
+      define sso_enabled : [organization#member with sso_enabled]
+      define can_use_sso : sso_enabled
+
+  condition sso_enabled(sso_enabled: bool) {
+    sso_enabled
+  }
+
+tuples:
+  - user: organization:acme#member
+    relation: sso_enabled
+    object: organization:acme
+    condition:
+      name: sso_enabled
+      context:
+        sso_enabled : true
+
+  - user: user:anne
+    relation: member
+    object: organization:acme
+
+tests:
+  - check:
+    - user: user:anne
+      object: organization:acme
+      assertions:
+        can_use_sso: true
+```
+
+## Request-Time Attribute Data
+
+Some attributes cannot be stored because they are dynamic and change with each request. Common examples include the current time, client IP address, or the user's current session context. For these scenarios, you provide the attribute values at request time.
+
+For time-based, IP-based conditions and more, see the [Conditions documentation](../modeling/conditions.mdx) for detailed examples.
+
+### Multi-Organization Session Context
+
+A common use case is when users can authenticate to multiple organizations but should only access resources belonging to their currently active organization. When accessing content, you need to verify the content belongs to the organization the user is currently logged into.
+
+You can achieve this with either contextual tuples or conditional relationship tuples.
+
+#### Using Contextual Tuples
+
+With this approach, you add a relation (e.g., `user_in_context`) that is not stored but sent as a contextual tuple with each request. This contextual tuple represents the user's current session context.
+
+**When to use this approach:**
+- Session context is determined entirely at request time
+- You want to keep stored tuples simple and context-free
+- The context applies across multiple relation checks
+
+```dsl.openfga
+model: |
+  model
+    schema 1.1
+
+  type user
+
+  type organization
+    relations
+      define user_in_context: [user]
+      define project_editor: [user] and user_in_context
+      define project_viewer: [user] and user_in_context
+
+  type project
+    relations
+      define organization: [organization]
+      define editor: project_editor from organization
+      define viewer: project_viewer from organization
+
+tuples:
+  - user: user:anne
+    relation: project_editor
+    object: organization:acme
+
+  - user: organization:acme
+    relation: organization
+    object: project:acme-website
+
+  - user: user:anne
+    relation: project_editor
+    object: organization:contoso
+
+  - user: organization:contoso
+    relation: organization
+    object: project:contoso-website
+
+tests:
+  - name: Anne can access the acme-website when she's in context of the acme organization
+    tuples:
+      # This contextual tuple represents Anne's current session
+      - user: user:anne
+        relation: user_in_context
+        object: organization:acme
+    check:
+      - user: user:anne
+        object: project:acme-website
+        assertions:
+            editor: true
+      - user: user:anne
+        object: project:contoso-website
+        assertions:
+            editor: false
+  - name: Anne can access the contoso-website when she's in context of the contoso organization
+    tuples:
+      # This contextual tuple represents Anne's current session
+      - user: user:anne
+        relation: user_in_context
+        object: organization:contoso
+    check:
+      - user: user:anne
+        object: project:acme-website
+        assertions:
+            editor: false
+      - user: user:anne
+        object: project:contoso-website
+        assertions:
+            editor: true
+```
+
+#### Using Conditional Relationship Tuples
+
+Instead of adding contextual tuples, you can attach conditions to your stored relationship tuples and provide the context values at request time. The condition compares stored values against request-time values.
+
+**When to use this approach:**
+- You want to avoid sending contextual tuples with every request
+- The condition logic involves comparing stored and request-time values
+- You prefer conditions over additional relations in your model
+
+```dsl.openfga
+model: |
+  model
+    schema 1.1
+
+  type user
+
+  type organization
+    relations
+      define project_editor: [user with in_context]
+      define project_viewer: [user with in_context]
+
+  type project
+    relations
+      define organization: [organization]
+      define editor: project_editor from organization
+      define viewer: project_viewer from organization
+
+  condition in_context(project_org: string, user_org: string) {
+      project_org == user_org
+  }
+
+tuples:
+  - user: user:anne
+    relation: project_editor
+    object: organization:acme
+    condition:
+      name: in_context
+      context:
+        project_org: "acme"
+
+  - user: user:anne
+    relation: project_editor
+    object: organization:contoso
+    condition:
+      name: in_context
+      context:
+        project_org: "contoso"
+
+  - user: organization:acme
+    relation: organization
+    object: project:acme-website
+
+  - user: organization:contoso
+    relation: organization
+    object: project:contoso-website
+
+tests:
+  - name: Anne can access the acme-website when she's in context of the acme organization
+    check:
+      - user: user:anne
+        object: project:acme-website
+        context:
+          user_org: "acme"
+        assertions:
+            editor: true
+      - user: user:anne
+        object: project:contoso-website
+        context:
+          user_org: "acme"
+        assertions:
+            editor: false
+  - name: Anne can access the contoso-website when she's in context of the contoso organization
+    check:
+      - user: user:anne
+        object: project:acme-website
+        context:
+          user_org: "contoso"
+        assertions:
+            editor: false
+      - user: user:anne
+        object: project:contoso-website
+        context:
+          user_org: "contoso"
+        assertions:
+            editor: true
+```
+
+## Choosing the Right Approach
+
+| Approach | Best For | Pros | Cons |
+|----------|----------|------|------|
+| `user:*` boolean flag | Simple on/off attributes | Minimal tuples, easy to understand | Limited to boolean values |
+| Self-relations | Object-level properties | Clear semantics, explicit references | Requires self-referential tuple |
+| Contextual tuples | Dynamic session context | Context-free stored data, flexible | Must send tuples with every request |
+| Conditional relationship tuples | Comparing stored vs. request values | No extra tuples per request, powerful conditions | Condition logic can become complex |
+
+When deciding between these approaches, consider:
+
+- **Data volatility**: Use stored attributes for stable data, request-time attributes for dynamic data
+- **Model complexity**: Start with simpler patterns (like `user:*`) and evolve to more complex ones as needed
+- **Attribute types**: Use conditions when you need typed values beyond booleans
+
+## Related Sections
+
+<RelatedSection
+  description="Check out these related resources for more information about ABAC patterns in OpenFGA"
+  relatedLinks={[
+    {
+      title: 'Conditions',
+      description: 'Learn how to use conditions for time-based, IP-based, and other dynamic checks.',
+      link: './../modeling/conditions',
+    },
+    {
+      title: 'Contextual Tuples',
+      description: 'Understand how to send dynamic relationship data with each request.',
+      link: './../interacting/contextual-tuples',
+    },
+    {
+      title: 'Public Access',
+      description: 'Learn about the user:* pattern for granting access to everyone.',
+      link: './../modeling/public-access',
+    },
+    {
+      title: 'Modular Authorization Models',
+      description: 'Learn how to break down your authorization model into modules.',
+      link: './../modeling/modular-models',
+    }
+  ]}
+/>

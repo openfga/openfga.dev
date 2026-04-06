@@ -14,13 +14,15 @@ on:
 jobs:
   deploy:
     name: Deploy to GitHub Pages
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Cached LFS checkout
-        uses: nschloe/action-cached-lfs-checkout@f46300cd8952454b9f0a21a3d133d4bd5684cfc2
+        uses: nschloe/action-cached-lfs-checkout@1c185ad576953eab13e35ffe1bffef437d97e9d2
 
       - name: Set up node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
         with:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
@@ -33,6 +35,7 @@ jobs:
         run: npm run build
         env:
           HUBSPOT_TRACKING_ID: ${{ secrets.HUBSPOT_TRACKING_ID }}
+          KAPA_WEBSITE_ID: ${{ secrets.KAPA_WEBSITE_ID }}
 
       # Popular action to deploy to GitHub Pages:
       # Docs: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-docusaurus

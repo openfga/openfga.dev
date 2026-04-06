@@ -1,7 +1,7 @@
-import { getFilteredAllowedLangs, SupportedLanguage, DefaultAuthorizationModelId } from './SupportedLanguage';
-import { defaultOperationsViewer } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
 import { RelationshipCondition } from '@components/Docs/RelationshipTuples';
+import { getFilteredAllowedLangs, SupportedLanguage, DefaultAuthorizationModelId } from './SupportedLanguage';
+import { defaultOperationsViewer } from './DefaultTabbedViewer';
 
 interface RelationshipTuple {
   user: string;
@@ -25,6 +25,10 @@ interface WriteRequestViewerOpts {
   isDelete?: boolean;
   skipSetup?: boolean;
   allowedLanguages?: SupportedLanguage[];
+  conflictOptions?: {
+    onDuplicateWrites?: 'error' | 'ignore';
+    onMissingDeletes?: 'error' | 'ignore';
+  };
 }
 
 function writeRequestViewer(lang: SupportedLanguage, opts: WriteRequestViewerOpts) {
@@ -44,6 +48,10 @@ function writeRequestViewer(lang: SupportedLanguage, opts: WriteRequestViewerOpt
                           tuple.condition.context,
                         )}'`
                       : ''
+                  } ${
+                    opts.conflictOptions?.onDuplicateWrites
+                      ? `--on-duplicate ${opts.conflictOptions.onDuplicateWrites}`
+                      : ''
                   }`,
               )
               .join('\n')
@@ -53,27 +61,67 @@ function writeRequestViewer(lang: SupportedLanguage, opts: WriteRequestViewerOpt
 ${
   opts.deleteRelationshipTuples?.length
     ? opts.deleteRelationshipTuples
-        .map((tuple) => `fga tuple delete --store-id=\${FGA_STORE_ID} ${tuple.user} ${tuple.relation} ${tuple.object}`)
+        .map(
+          (tuple) =>
+            `fga tuple delete --store-id=\${FGA_STORE_ID} ${tuple.user} ${tuple.relation} ${tuple.object}  ${
+              opts.conflictOptions?.onMissingDeletes ? `--on-missing ${opts.conflictOptions.onMissingDeletes}` : ''
+            }`,
+        )
         .join('\n')
     : ''
 }`;
     }
     case SupportedLanguage.CURL: {
-      const writeTuples = opts.relationshipTuples
-        ? opts.relationshipTuples.map((tuple) => `${JSON.stringify(tuple)}`).join(',')
-        : '';
-      const deleteTuples = opts.deleteRelationshipTuples
-        ? opts.deleteRelationshipTuples.map((tuple) => `${JSON.stringify(tuple)}`).join(',')
-        : '';
-      const writes = `"writes": { "tuple_keys" : [${writeTuples}] }`;
-      const deletes = `"deletes": { "tuple_keys" : [${deleteTuples}] }`;
-      const separator = `${opts.deleteRelationshipTuples && opts.relationshipTuples ? ',' : ''}`;
+      // Build the JSON object for pretty printing
+      interface RequestBody {
+        writes?: {
+          tuple_keys: Array<Omit<RelationshipTuple, '_description'>>;
+          on_duplicate?: string;
+        };
+        deletes?: {
+          tuple_keys: Array<Omit<RelationshipTuple, '_description'>>;
+          on_missing?: string;
+        };
+        authorization_model_id?: string;
+      }
+
+      const requestBody: RequestBody = {};
+
+      if (opts.relationshipTuples?.length) {
+        requestBody.writes = {
+          tuple_keys: opts.relationshipTuples.map((tuple) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { _description, ...cleanTuple } = tuple;
+            return cleanTuple;
+          }),
+        };
+        if (opts.conflictOptions?.onDuplicateWrites) {
+          requestBody.writes.on_duplicate = opts.conflictOptions.onDuplicateWrites;
+        }
+      }
+
+      if (opts.deleteRelationshipTuples?.length) {
+        requestBody.deletes = {
+          tuple_keys: opts.deleteRelationshipTuples.map((tuple) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { _description, ...cleanTuple } = tuple;
+            return cleanTuple;
+          }),
+        };
+        if (opts.conflictOptions?.onMissingDeletes) {
+          requestBody.deletes.on_missing = opts.conflictOptions.onMissingDeletes;
+        }
+      }
+
+      // Add authorization_model_id at the end
+      requestBody.authorization_model_id = modelId;
+
+      const prettyJson = JSON.stringify(requestBody, null, 2);
+
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/write \\
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
-  -d '{${opts.relationshipTuples ? writes : ''}${separator}${
-    opts.deleteRelationshipTuples ? deletes : ''
-  }, "authorization_model_id": "${modelId}"}'`;
+  -d '${prettyJson}'`;
     }
 
     case SupportedLanguage.JS_SDK: {
@@ -99,16 +147,38 @@ ${
       const writes = `writes: [${writeTuples.length > 0 ? `${writeTuples}\n  ]` : ']'}`;
       const deletes = `deletes: [${deleteTuples.length > 0 ? `${deleteTuples}\n  ]` : ']'}`;
       const separator = `${opts.deleteRelationshipTuples && opts.relationshipTuples ? ',\n  ' : ''}`;
+
       return `
+const options = {${
+        modelId
+          ? `
+  authorizationModelId: "${modelId}",`
+          : ''
+      }${
+        opts.conflictOptions
+          ? `
+  conflict: {${
+    opts.conflictOptions.onDuplicateWrites
+      ? `
+    onDuplicateWrites: OnDuplicateWrites.${opts.conflictOptions.onDuplicateWrites.charAt(0).toUpperCase() + opts.conflictOptions.onDuplicateWrites.slice(1)},`
+      : ''
+  }${
+    opts.conflictOptions.onMissingDeletes
+      ? `
+    onMissingDeletes: OnMissingDeletes.${opts.conflictOptions.onMissingDeletes.charAt(0).toUpperCase() + opts.conflictOptions.onMissingDeletes.slice(1)}`
+      : ''
+  }
+  }`
+          : ''
+      }
+};
+
 await fgaClient.write({
   ${opts.relationshipTuples ? writes : ''}${separator}${opts.deleteRelationshipTuples ? deletes : ''},
-}, {
-  authorizationModelId: "${modelId}" 
-});`;
+}, options);`;
     }
 
     case SupportedLanguage.GO_SDK: {
-      /* eslint-disable no-tabs */
       const writeTuples = opts.relationshipTuples
         ? opts.relationshipTuples
             .map(
@@ -168,9 +238,19 @@ await fgaClient.write({
       }`;
 
       return `
-options := ClientWriteOptions{
-    AuthorizationModelId: PtrString("${modelId}"),
-}
+options := ClientWriteOptions{${modelId ? `\n    AuthorizationModelId: openfga.PtrString("${modelId}"),` : ''}${
+        opts.conflictOptions
+          ? `\n    Conflict: ClientWriteConflictOptions{${
+              opts.conflictOptions.onDuplicateWrites
+                ? `\n        OnDuplicateWrites: CLIENT_WRITE_REQUEST_ON_DUPLICATE_WRITES_${opts.conflictOptions.onDuplicateWrites.toUpperCase()},`
+                : ''
+            }${
+              opts.conflictOptions.onMissingDeletes
+                ? `\n        OnMissingDeletes: CLIENT_WRITE_REQUEST_ON_MISSING_DELETES_${opts.conflictOptions.onMissingDeletes.toUpperCase()},`
+                : ''
+            }\n},`
+          : ''
+      }\n}
 
 body := ClientWriteRequest{${opts.relationshipTuples ? writes : ''}${opts.deleteRelationshipTuples ? deletes : ''} 
 }
@@ -233,8 +313,23 @@ ${deleteTuples}
   }`;
       const separator = `${opts.deleteRelationshipTuples && opts.relationshipTuples ? ',\n  ' : ''}`;
       return `
-var options = new ClientWriteOptions {
-    AuthorizationModelId = "${modelId}",
+var options = new ClientWriteOptions {${modelId ? `\n    AuthorizationModelId = "${modelId}",` : ''}${
+        opts.conflictOptions
+          ? `
+    Conflict = new ConflictOptions {${
+      opts.conflictOptions.onDuplicateWrites
+        ? `
+        OnDuplicateWrites = OnDuplicateWrites.${opts.conflictOptions.onDuplicateWrites.charAt(0).toUpperCase() + opts.conflictOptions.onDuplicateWrites.slice(1)},`
+        : ''
+    }${
+      opts.conflictOptions.onMissingDeletes
+        ? `
+        OnMissingDeletes = OnMissingDeletes.${opts.conflictOptions.onMissingDeletes.charAt(0).toUpperCase() + opts.conflictOptions.onMissingDeletes.slice(1)}`
+        : ''
+    }
+    }`
+          : ''
+      }
 };
 var body = new ClientWriteRequest() {
     ${opts.relationshipTuples ? writes : ''}${separator}${opts.deleteRelationshipTuples ? deletes : ''},
@@ -286,9 +381,23 @@ ${_description ? `                    # ${_description}\n                    ` :
       const deletes = `    deletes=[${deleteTuples}
         ],`;
 
-      return `options = {
-    "authorization_model_id": "${modelId}"
-}
+      return `options = {${modelId ? `\n    "authorization_model_id": "${modelId}"` : ''}${
+        opts.conflictOptions
+          ? `,
+    "conflict": ConflictOptions(${
+      opts.conflictOptions.onDuplicateWrites
+        ? `
+        on_duplicate_writes=ClientWriteRequestOnDuplicateWrites.${opts.conflictOptions.onDuplicateWrites.toUpperCase()},`
+        : ''
+    }${
+      opts.conflictOptions.onMissingDeletes
+        ? `
+        on_missing_deletes=ClientWriteRequestOnMissingDeletes.${opts.conflictOptions.onMissingDeletes.toUpperCase()}`
+        : ''
+    }
+    )`
+          : ''
+      }\n}
 body = ClientWriteRequest(
     ${opts.relationshipTuples ? writes : ''}${opts.deleteRelationshipTuples ? deletes : ''}
 )
@@ -336,7 +445,6 @@ response = await fga_client.write(body, options)
 
       return `${opts.relationshipTuples ? writes : ''}${separator}
 ${opts.deleteRelationshipTuples ? deletes : ''}`;
-      /* eslint-enable no-tabs */
     }
 
     case SupportedLanguage.JAVA_SDK: {
@@ -382,8 +490,22 @@ ${opts.deleteRelationshipTuples ? deletes : ''}`;
         .deletes(List.of(${deleteTuples}
         ))`;
 
-      return `var options = new ClientWriteOptions()
-        .authorizationModelId("${modelId}");
+      return `var options = new ClientWriteOptions()${
+        modelId
+          ? `
+        .authorizationModelId("${modelId}")`
+          : ''
+      }${
+        opts.conflictOptions?.onDuplicateWrites
+          ? `
+        .onDuplicate(WriteRequestWrites.OnDuplicateEnum.${opts.conflictOptions.onDuplicateWrites.toUpperCase()})`
+          : ''
+      }${
+        opts.conflictOptions?.onMissingDeletes
+          ? `
+        .onMissing(WriteRequestDeletes.OnMissingEnum.${opts.conflictOptions.onMissingDeletes.toUpperCase()})`
+          : ''
+      };
 
 var body = new ClientWriteRequest()${opts.relationshipTuples ? writes : ' '}${
         opts.deleteRelationshipTuples ? deletes : ''

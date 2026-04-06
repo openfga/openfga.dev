@@ -25,5 +25,5 @@ export default function prismIncludeLanguages(PrismObject: typeof PrismNamespace
 
   PrismObject.languages[PrismExtensions.LANGUAGE_NAME] = PrismExtensions.languageDefinition;
 
-  delete (globalThis as unknown as Global & { Prism?: typeof PrismNamespace }).Prism;
+  delete (globalThis as typeof globalThis & { Prism?: typeof PrismNamespace }).Prism;
 }

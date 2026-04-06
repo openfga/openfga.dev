@@ -23,7 +23,6 @@ function readRequestViewer(lang: SupportedLanguage, opts: ReadRequestViewerOpts)
     ? opts.tuples
         .map(
           ({ user, relation, object }) =>
-            // eslint-disable-next-line max-len
             `{"key": {"user":"${user}","relation":"${relation}","object":"${object}"}, "timestamp": "2021-10-06T15:32:11.128Z"}`,
         )
         .join(',')
@@ -47,7 +46,6 @@ function readRequestViewer(lang: SupportedLanguage, opts: ReadRequestViewerOpts)
   -d '{"tuple_key":{${requestTuples}}}`
         : '';
 
-      // eslint-disable-next-line max-len
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/read \\
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" ${requestTuplePayload}'
@@ -78,7 +76,6 @@ const { tuples } = await fgaClient.read({
           `\tObject: PtrString("${opts.object}"),\n`
         : '';
 
-      /* eslint-disable no-tabs */
       return `options := ClientReadOptions{}
 body := ClientReadRequest{
 ${requestTuples}
@@ -99,7 +96,6 @@ data, err := fgaClient.Read(context.Background()).
           `  Object = "${opts.object}",`
         : '';
 
-      /* eslint-disable no-tabs */
       return `var options = new ClientReadOptions {}
 var body = new ClientReadRequest() {
 ${requestTuples}
@@ -130,7 +126,7 @@ response = await fga_client.read(body, options)
       const objectOrType = opts.object ? (opts.object.slice(-1) === ':' ? 'type' : 'object') : '';
       const requestTuples = opts.object
         ? (opts.user
-            ? `  "${opts.user}", // where user \`${opts.user}\` has $(opts.relation ? '': 'any ' )relation\n`
+            ? `  "${opts.user}", // where user \`${opts.user}\` has ${opts.relation ? '' : 'any '}relation\n`
             : `  // for users who have relation\n`) +
           (opts.relation ? `  "${opts.relation}", // \`${opts.relation}\`\n` : '') +
           `  "${opts.object}", // with the ${objectOrType} \`${opts.object}\``
@@ -140,7 +136,6 @@ response = await fga_client.read(body, options)
         ? opts.tuples
             .map(
               ({ user, relation, object }) =>
-                // eslint-disable-next-line max-len
                 `{"key": {"user":"${user}","relation":"${relation}","object":"${object}"}, "timestamp": "2021-10-06T15:32:11.128Z"}`,
             )
             .join(',')
@@ -172,7 +167,6 @@ var response = fgaClient.read(body).get();
     default:
       assertNever(lang);
   }
-  /* eslint-enable no-tabs */
 }
 
 export function ReadRequestViewer(opts: ReadRequestViewerOpts): JSX.Element {

@@ -76,6 +76,11 @@ const sidebars = {
               label: 'Playground',
               id: 'content/getting-started/setup-openfga/playground',
             },
+            {
+              type: 'doc',
+              label: 'Reporting Runtime Issues',
+              id: 'content/getting-started/setup-openfga/reporting-runtime-issues',
+            },
           ],
         },
         {
@@ -227,6 +232,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Store File Format',
+          id: 'content/modeling/store-file-format',
+        },
+        {
+          type: 'doc',
           label: 'Modular Models',
           id: 'content/modeling/modular-models',
         },
@@ -303,6 +313,23 @@ const sidebars = {
           type: 'category',
           collapsed: true,
           collapsible: true,
+          label: 'Authorization for Agents',
+          link: {
+            type: 'doc',
+            id: 'content/modeling/agents/overview',
+          },
+          items: [
+            {
+              type: 'doc',
+              label: 'Task-Based Authorization',
+              id: 'content/modeling/agents/task-based-authorization',
+            },
+          ],
+        },
+        {
+          type: 'category',
+          collapsed: true,
+          collapsible: true,
           label: 'Migrations',
           link: {
             type: 'doc',
@@ -355,11 +382,6 @@ const sidebars = {
         },
         {
           type: 'doc',
-          label: 'Transactional Writes',
-          id: 'content/interacting/transactional-writes',
-        },
-        {
-          type: 'doc',
           label: 'Contextual Tuples',
           id: 'content/interacting/contextual-tuples',
         },
@@ -383,6 +405,11 @@ const sidebars = {
           label: 'Search with Permissions',
           id: 'content/interacting/search-with-permissions',
         },
+        {
+          type: 'doc',
+          label: 'AuthZEN API',
+          id: 'content/interacting/authzen',
+        },
       ],
     },
 
@@ -403,9 +430,19 @@ const sidebars = {
         },
         {
           type: 'doc',
-          label: 'Modeling Best Practices',
-          id: 'content/best-practices/modeling',
+          label: 'Authorization Model Design Principles',
+          id: 'content/best-practices/modeling-design-principles',
         },
+        {
+          type: 'doc',
+          label: 'Modeling ABAC',
+          id: 'content/best-practices/modeling-abac',
+        },
+        {
+          type: 'doc',
+          label: 'Modeling Roles',
+          id: 'content/best-practices/modeling-roles',
+        },        
         {
           type: 'doc',
           label: 'Source of Truth',

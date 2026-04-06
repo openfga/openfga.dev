@@ -1,6 +1,6 @@
 ---
-title: Fine Grained News - August 2024
-description: Fine Grained News
+title: Fine-Grained News - August 2024
+description: Fine-Grained News
 slug: fine-grained-news-2024-08
 date: 2024-08-30
 authors: hello-caleb
@@ -8,9 +8,9 @@ tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
 hide_table_of_contents: false
 ---
-# Fine Grained News
+# Fine-Grained News
 
-Welcome to the August 2024 edition of Fine Grained News! We are excited to bring you the latest updates, features, and community highlights from OpenFGA. 
+Welcome to the August 2024 edition of Fine-Grained News! We are excited to bring you the latest updates, features, and community highlights from OpenFGA. 
 
 ## Just Shipped!
 
@@ -60,7 +60,7 @@ We’ve added a new section within the Adopters list for those offering OpenFGA 
 
 ## See You Next Month!
 
-Fine Grained News is published every month. Although we have transitioned from Discord to the CNCF Slack channel, we want to continue to hear from you\! Whether you have questions or feedback or just want to connect with others using OpenFGA, our community channels are the best place to do so. You can reach us at:
+Fine-Grained News is published every month. Although we have transitioned from Discord to the CNCF Slack channel, we want to continue to hear from you\! Whether you have questions or feedback or just want to connect with others using OpenFGA, our community channels are the best place to do so. You can reach us at:
 
 * **CNCF Slack:** Join the conversation in the [#openfga](https://cloud-native.slack.com/archives/C06G1NNH47N) channel. Please note: If you are not currently part of the CNCF Slack channel, you will need to click [here](https://slack.cncf.io/) to join the channel first.  
 * **GitHub Discussions:** Share your feedback, ask questions, and engage with the community on [GitHub Discussions](https://github.com/orgs/openfga/discussions).  
