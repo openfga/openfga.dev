@@ -347,7 +347,7 @@ const sidebars = {
           type: 'doc',
           label: 'Modeling Agents as Principals',
           id: 'content/modeling/agents/agents-as-principals',
-        },        
+        },
         {
           type: 'doc',
           label: 'RAG Authorization',
