@@ -313,33 +313,6 @@ const sidebars = {
           type: 'category',
           collapsed: true,
           collapsible: true,
-          label: 'Authorization for Agents',
-          link: {
-            type: 'doc',
-            id: 'content/modeling/agents/overview',
-          },
-          items: [
-            {
-              type: 'doc',
-              label: 'Task-Based Authorization',
-              id: 'content/modeling/agents/task-based-authorization',
-            },
-            {
-              type: 'doc',
-              label: 'RAG Authorization',
-              id: 'content/modeling/agents/rag-authorization',
-            },
-            {
-              type: 'doc',
-              label: 'Authorization for MCP Servers',
-              id: 'content/modeling/agents/mcp-authorization',
-            },
-          ],
-        },
-        {
-          type: 'category',
-          collapsed: true,
-          collapsible: true,
           label: 'Migrations',
           link: {
             type: 'doc',
@@ -357,6 +330,38 @@ const sidebars = {
               id: 'content/modeling/migrating/migrating-models',
             },
           ],
+        },
+      ],
+    },
+    {
+      type: 'category',
+      collapsible: true,
+      collapsed: false,
+      label: 'Authorization for Agents',
+      link: {
+        type: 'doc',
+        id: 'content/modeling/agents/overview',
+      },
+      items: [
+        {
+          type: 'doc',
+          label: 'Agent Principals in Existing Models',
+          id: 'content/modeling/agents/agent-principals-in-existing-app',
+        },        
+        {
+          type: 'doc',
+          label: 'RAG Authorization',
+          id: 'content/modeling/agents/rag-authorization',
+        },
+        {
+          type: 'doc',
+          label: 'Authorization for MCP Servers',
+          id: 'content/modeling/agents/mcp-authorization',
+        },
+        {
+          type: 'doc',
+          label: 'Task-Based Authorization',
+          id: 'content/modeling/agents/task-based-authorization',
         },
       ],
     },

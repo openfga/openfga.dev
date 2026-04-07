@@ -22,6 +22,11 @@ Retrieval-Augmented Generation (RAG) enhances LLM responses by retrieving releva
 
 This guide shows how to model document permissions in <ProductName format={ProductNameFormat.ShortForm}/> and integrate authorization checks into a RAG pipeline, regardless of the framework or vector database you use.
 
+This pattern applies to both first-party and third-party scenarios:
+
+- **First-party** - Your application owns the documents and manages permissions directly. You write tuples to <ProductName format={ProductNameFormat.ShortForm}/> as part of your normal application flow (e.g., when a user creates a folder or shares a document).
+- **Third-party** - Documents and permissions live in an external system (Google Drive, Confluence, SharePoint, etc.). You synchronize content into your vector database and permissions into <ProductName format={ProductNameFormat.ShortForm}/>, keeping both in sync with the source system. The authorization model and filtering approaches are the same - the difference is that tuples come from a sync pipeline rather than your application.
+
 ## Authorization model
 
 A typical RAG knowledge base contains documents organized in folders, with access controlled at both levels. The following model represents this structure:
@@ -44,7 +49,7 @@ type document
     define viewer: [user] or owner or viewer from folder
 ```
 
-A `folder` has `owner` and `viewer` relations. A `document` belongs to a folder and inherits its viewers — anyone who can view the folder can view all documents inside it. You can also grant direct access to individual documents.
+A `folder` has `owner` and `viewer` relations. A `document` belongs to a folder and inherits its viewers - anyone who can view the folder can view all documents inside it. You can also grant direct access to individual documents.
 
 ## Writing tuples
 
@@ -88,7 +93,7 @@ With this setup:
 
 There are two main approaches to integrate <ProductName format={ProductNameFormat.ShortForm}/> into a RAG pipeline. Both ensure that the LLM only sees documents the user is authorized to access.
 
-### Retrieve then check
+### Post-filtering
 
 Query the vector database first, then filter results by checking permissions with <ProductName format={ProductNameFormat.ShortForm}/>. This is the most common approach and works well when the vector search returns a manageable number of candidates.
 
@@ -131,7 +136,7 @@ Use the [`BatchCheck`](../../interacting/relationship-queries.mdx#batch-check) A
 
 Only `document:roadmap` is returned as allowed. The pipeline filters out the other two documents before passing context to the LLM.
 
-### Build an authorized list, then retrieve
+### Pre-filtering
 
 Retrieve the list of documents the user can access first, then pass those IDs as a filter to the vector search. This approach works well when the user has access to a relatively small number of documents.
 
@@ -152,11 +157,11 @@ For example, to get all documents `user:carl` can view:
   skipSetup={true}
 />
 
-Pass the resulting document IDs as a filter to your vector database. Most vector databases support metadata filtering — use the document ID stored in each vector's metadata to restrict the search.
+Pass the resulting document IDs as a filter to your vector database. Most vector databases support metadata filtering - use the document ID stored in each vector's metadata to restrict the search.
 
 ## Choosing an approach
 
-| Criteria | Retrieve then check | Build list, then retrieve |
+| Criteria | Post-filtering | Pre-filtering |
 |---|---|---|
 | Vector search returns few candidates | Good fit | Works, but unnecessary overhead |
 | User has access to few documents | Works, but may discard many results | Good fit |
@@ -166,7 +171,7 @@ Pass the resulting document IDs as a filter to your vector database. Most vector
 For detailed guidance on choosing between these approaches and handling more complex scenarios, see [Search With Permissions](../../interacting/search-with-permissions.mdx).
 
 :::tip
-When using "retrieve then check", request more candidates than you need from the vector database (e.g., 2-3x your target count) to account for documents that will be filtered out.
+When using post-filtering, request more candidates than you need from the vector database (e.g., 2-3x your target count) to account for documents that will be filtered out.
 :::
 
 ## Framework integration
