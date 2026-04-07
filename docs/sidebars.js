@@ -324,6 +324,16 @@ const sidebars = {
               label: 'Task-Based Authorization',
               id: 'content/modeling/agents/task-based-authorization',
             },
+            {
+              type: 'doc',
+              label: 'RAG Authorization',
+              id: 'content/modeling/agents/rag-authorization',
+            },
+            {
+              type: 'doc',
+              label: 'Authorization for MCP Servers',
+              id: 'content/modeling/agents/mcp-authorization',
+            },
           ],
         },
         {
