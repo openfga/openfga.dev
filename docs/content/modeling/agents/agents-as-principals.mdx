@@ -1,8 +1,8 @@
 ---
-title: Add Agent Principals to Existing Models
-description: Extend a user-centric authorization model with agent principals and least-privilege delegation
+title: Modeling Agents as Principals
+description: Model agents as first-class principals in your authorization model so they inherit access through the same permission hierarchy as users
 sidebar_position: 4
-slug: /modeling/agents/agent-principals-in-existing-app
+slug: /modeling/agents/agents-as-principals
 ---
 
 import {
@@ -13,56 +13,19 @@ import {
   RelatedSection,
 } from '@components/Docs';
 
-# Add Agent Principals to Existing Models
+# Modeling Agents as Principals
 
 <DocumentationNotice />
 
-Most applications already have authorization models centered on human users. If you are building agents as part of your application, you can extend the existing model by adding `agent` as a first-class principal - the same way users are granted access to resources today.
+Most applications already have authorization models centered on human users. If you are building agents as part of your application, one common pattern is to model `agent` as a first-class principal - the same way users are granted access to resources today.
 
 This is orthogonal to patterns like [Task-Based Authorization](./task-based-authorization.mdx). Even if you use task-scoped permissions, you still want to constrain what an agent can do in general - beyond the permissions required for a specific task.
 
-This guide shows how to add agent principals to a <ProductName format={ProductNameFormat.ShortForm}/> model using an issue-tracking application as an example. The agent receives permissions on domain resources (projects, issues) and inherits access through the same hierarchy that users do.
+This guide shows how to model agents as principals in a <ProductName format={ProductNameFormat.ShortForm}/> authorization model using an issue-tracking application as an example. The agent receives permissions on domain resources (projects, issues) and inherits access through the same hierarchy that users do.
 
-## Before: user-centric model
+## Authorization model
 
-A typical issue-tracking model grants access to users and organization members:
-
-```dsl.openfga
-model
-  schema 1.1
-
-type user
-
-type organization
-  relations
-    define admin: [user]
-    define member: [user]
-
-type project
-  relations
-    define organization: [organization]
-    define owner: [user]
-    define member: [user]
-    define can_delete: owner or admin from organization
-    define can_edit: owner or admin from organization
-    define can_read: can_edit or member or member from organization
-    define can_create_issue: can_edit
-
-type issue
-  relations
-    define project: [project]
-    define reporter: [user]
-    define assignee: [user]
-    define can_delete: reporter or can_delete from project
-    define can_edit: assignee or can_edit from project
-    define can_read: reporter or can_edit or can_read from project
-```
-
-Users get access to issues through project membership, organization membership, or direct assignment. Agents have no place in this model yet.
-
-## After: adding agent principals
-
-Add an `agent` type and include it alongside `user` in the relations where agents need access:
+The following issue-tracking model treats `agent` as a first-class principal alongside `user`:
 
 ```dsl.openfga
 model
@@ -82,7 +45,7 @@ type project
     define owner: [user]
     define member: [user, agent]
     define can_delete: owner or admin from organization
-    define can_edit: owner or member or admin from organization
+    define can_edit: owner or admin from organization
     define can_read: can_edit or member or member from organization
     define can_create_issue: can_edit
 
@@ -96,13 +59,16 @@ type issue
     define can_read: reporter or can_edit or can_read from project
 ```
 
-The key changes:
+If your current model is user-centric, the main change is to allow `agent` anywhere you already allow `user` for the relationships an agent should hold.
+
+In this example:
 
 - `agent` is added as an allowed subject on `organization.member`, `project.member`, `issue.reporter`, and `issue.assignee`.
-- `member` is added to `project.can_edit` so that project members (including agents) can edit the project and its issues. In the original model, only `owner` and `admin` could edit.
 - No new permission types or hierarchies are needed - agents participate in the same structure as users.
 
-## Granting agent access
+This example keeps the original permission semantics intact. The only change is that `agent` can now appear in the same relations as `user`. If your application wants project members to edit projects or issues, that is a separate permission-model decision.
+
+## Granting access to agents
 
 Grant an agent membership on a specific project:
 
@@ -113,7 +79,7 @@ tuples:
     object: project:alpha
 ```
 
-Because the updated model includes `member` in both `can_read` and `can_edit`, this single tuple lets `agent:triage-bot` read and edit the project and its issues. The agent still cannot delete anything - `can_delete` requires `owner` or `admin`.
+Because `can_read` includes `member`, this single tuple lets `agent:triage-bot` read the project and its issues. The agent still cannot edit or delete anything - `can_edit` and `can_delete` retain the original `owner` and `admin` requirements.
 
 ## Checking permissions
 
@@ -159,7 +125,7 @@ tuples:
 
 Now the agent can edit `issue:issue-456` but has no access to other issues in the project.
 
-## Scoping agent access to an organization
+## Organization-level agent access
 
 You can also grant an agent membership at the organization level. This gives it read access to all projects in the organization:
 
@@ -171,6 +137,17 @@ tuples:
 ```
 
 The agent inherits `can_read` on every project that belongs to `organization:acme`, and through that, can read all issues in those projects.
+
+## When to use this pattern
+
+Modeling agents as principals works well when:
+
+1. Your application already has a user-centric authorization model.
+2. Agents act inside your application's own domain.
+3. You want agents to inherit access through the same resource hierarchy as users.
+4. You want to grant durable, non-task-specific permissions such as project membership or issue assignment.
+
+This pattern does not replace task-based authorization. It defines what an agent can do in general. Task-based authorization can then further constrain that access at runtime.
 
 ## Migration strategy
 

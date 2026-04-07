@@ -16,7 +16,7 @@ AI agents interact with internal APIs on behalf of users, or with their own iden
 
 Agent authorization typically involves two domains:
 
-- **First-party authorization** — What can the agent do inside your own application? You extend your existing authorization model so agents participate in the same permission hierarchy as users. For example, an agent with project membership can read all issues in that project. See [Agent Principals in Existing Models](./agent-principals-in-existing-app.mdx).
+- **First-party authorization** — What can the agent do inside your own application? One common pattern is to model agents as first-class principals in your authorization model so they participate in the same permission hierarchy as users. For example, an agent with project membership can read all issues in that project. See [Modeling Agents as Principals](./agents-as-principals.mdx).
 - **Third-party authorization** — What can the agent do in external systems (Slack, Jira, GitHub, etc.)? Because you do not control those systems, you model permissions around the tools and resources the agent can access, and narrow the scope beyond what the external credential allows. See [Authorization for MCP Servers](./mcp-authorization.mdx) and [RAG Authorization](./rag-authorization.mdx) — both patterns also apply to first-party resources.
 
 Cutting across both domains, [Task-Based Authorization](./task-based-authorization.mdx) constrains what an agent can do at runtime. Agents start with zero permissions and receive narrowly scoped grants for each task, with optional expiration, turn limits, and agent binding — regardless of whether the agent is acting on first-party or third-party resources.
@@ -44,9 +44,9 @@ Cutting across both domains, [Task-Based Authorization](./task-based-authorizati
       to: 'agents/mcp-authorization',
     },
     {
-      title: 'Add Agent Principals to Existing Models',
-      description: 'Extend a user-centric authorization model with agent principals using the same permission structure as users.',
-      to: 'agents/agent-principals-in-existing-app',
+      title: 'Modeling Agents as Principals',
+      description: 'Model agents as first-class principals in a user-centric authorization model so they inherit access through the same permission hierarchy as users.',
+      to: 'agents/agents-as-principals',
     },
   ]}
 />

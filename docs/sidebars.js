@@ -345,8 +345,8 @@ const sidebars = {
       items: [
         {
           type: 'doc',
-          label: 'Agent Principals in Existing Models',
-          id: 'content/modeling/agents/agent-principals-in-existing-app',
+          label: 'Modeling Agents as Principals',
+          id: 'content/modeling/agents/agents-as-principals',
         },        
         {
           type: 'doc',
