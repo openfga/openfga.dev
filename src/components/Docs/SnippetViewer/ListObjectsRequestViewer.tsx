@@ -14,6 +14,7 @@ interface ListObjectsRequestViewerOpts {
   context?: Record<string, any>;
   expectedResults: string[];
   skipSetup?: boolean;
+  pseudoCodeMode?: boolean;
   allowedLanguages?: SupportedLanguage[];
 }
 
@@ -206,8 +207,7 @@ response = await fga_client.list_objects(body, options)
       return `listObjects(
   "${user}", // list the objects that the user \`${user}\`
   "${relation}", // has an \`${relation}\` relation
-  "${objectType}", // and that are of type \`${objectType}\`
-  authorization_model_id = "${modelId}", // for this particular authorization model id ${
+  "${objectType}", // and that are of type \`${objectType}\`  ${
     contextualTuples
       ? `
   contextual_tuples = [ // Assuming the following is true

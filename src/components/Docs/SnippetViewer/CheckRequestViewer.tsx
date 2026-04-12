@@ -14,6 +14,7 @@ interface CheckRequestViewerOpts {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context?: Record<string, any>;
   skipSetup?: boolean;
+  pseudoCodeMode?: boolean;
   allowedLanguages?: SupportedLanguage[];
 
   // Optional custom headers
@@ -256,12 +257,12 @@ response = await fga_client.check(body, options)
       return `check(
   user = "${user}", // check if the user \`${user}\`
   relation = "${relation}", // has an \`${relation}\` relation
-  object = "${object}", // with the object \`${object}\`
-  ${
+  object = "${object}", // with the object \`${object}\`${
     contextualTuples
-      ? `contextual_tuples = [ // Assuming the following is true
+      ? `
+  contextual_tuples = [ // Assuming the following is true
     ${contextualTuples
-      .map((tuple) => `{user = "${tuple.user}", relation = "${tuple.relation}", object = "${tuple.object}"}`)
+      .map((tuple) => `{\n      user = "${tuple.user}",\n      relation = "${tuple.relation}",\n      object = "${tuple.object}",\n    }`)
       .join(',\n    ')}
   ],`
       : ''
@@ -270,13 +271,6 @@ response = await fga_client.check(body, options)
       ? `
   context = { ${Object.entries(context)
     .map(([k, v]) => `${k} = "${v}"`)
-    .join(', ')} },`
-      : ''
-  } authorization_id = "${modelId}"${
-    headers && Object.keys(headers).length > 0
-      ? `
-  extra_headers = { ${Object.entries(headers)
-    .map(([k, v]) => `"${k}": "${v}"`)
     .join(', ')} },`
       : ''
   }

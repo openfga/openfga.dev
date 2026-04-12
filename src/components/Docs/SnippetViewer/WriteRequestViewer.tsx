@@ -439,8 +439,8 @@ response = await fga_client.write(body, options)
     }`,
         )
         .join(',');
-      const writes = `write([${writeTuples}\n], authorization_model_id="${modelId}")`;
-      const deletes = `delete([${deleteTuples}\n], authorization_model_id="${modelId}")`;
+      const writes = `write([${writeTuples}\n])`;
+      const deletes = `delete([${deleteTuples}\n])`;
       const separator = `${opts.deleteRelationshipTuples && opts.relationshipTuples ? ',' : ''}`;
 
       return `${opts.relationshipTuples ? writes : ''}${separator}

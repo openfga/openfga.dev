@@ -100,6 +100,7 @@ Check whether the agent can read a specific issue. The agent's project membershi
   object={'issue:issue-123'}
   allowed={true}
   skipSetup={true}
+  pseudoCodeMode={true}
 />
 
 The agent cannot delete the issue because `can_delete` requires `reporter` or project-level `can_delete` (which requires `owner` or `admin`):
@@ -110,6 +111,7 @@ The agent cannot delete the issue because `can_delete` requires `reporter` or pr
   object={'issue:issue-123'}
   allowed={false}
   skipSetup={true}
+  pseudoCodeMode={true}
 />
 
 ## Direct assignment for fine-grained control
