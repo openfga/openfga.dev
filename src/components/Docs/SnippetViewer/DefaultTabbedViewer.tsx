@@ -35,7 +35,7 @@ function SdkToggle<T extends DefaultTabbedViewerOpts>({
         background: 'none',
         border: 'none',
         cursor: 'pointer',
-        color: 'inherit',
+        color: 'var(--ifm-color-primary)',
         padding: 0,
         font: 'inherit',
       }}
