@@ -6,8 +6,10 @@
  * - Copy button writes valid YAML list format to the clipboard.
  * - Optional `rightColumnTuples` renders two columns via CSS grid with a mobile fallback.
  */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { usePrismTheme } from '@docusaurus/theme-common';
+import { CodeBlockContextProvider, createCodeBlockMetadata } from '@docusaurus/theme-common/internal';
+import CopyButton from '@theme/CodeBlock/Buttons/CopyButton';
 import type { RelationshipCondition } from '../RelationshipTuples/Viewer';
 
 interface Tuple {
@@ -25,8 +27,6 @@ interface TupleViewerProps {
 const PAD = 'condition'.length;
 const INNER_PAD = 'context'.length;
 const keyStyle: React.CSSProperties = { fontStyle: 'italic' };
-
-type CopyStatus = 'idle' | 'success' | 'error';
 
 function Key({ name, pad }: { name: string; pad: number }): JSX.Element {
   return (
@@ -64,7 +64,7 @@ function TupleBlock({ tuple }: { tuple: Tuple }): JSX.Element {
   const contextEntries = Object.entries(tuple.condition?.context ?? {});
 
   return (
-    <div>
+    <div className="tuple-viewer__tuple-block">
       <div>
         <Key name="user" pad={PAD} /> : {tuple.user}
       </div>
@@ -79,7 +79,7 @@ function TupleBlock({ tuple }: { tuple: Tuple }): JSX.Element {
           <div>
             <Key name="condition" pad={PAD} /> :
           </div>
-          <div style={{ paddingLeft: '2ch' }}>
+          <div className="tuple-viewer__nested-block">
             <div>
               <Key name="name" pad={INNER_PAD} /> : {tuple.condition.name}
             </div>
@@ -88,7 +88,7 @@ function TupleBlock({ tuple }: { tuple: Tuple }): JSX.Element {
                 <div>
                   <Key name="context" pad={INNER_PAD} /> :
                 </div>
-                <div style={{ paddingLeft: '2ch' }}>
+                <div className="tuple-viewer__nested-block tuple-viewer__context-block">
                   {contextEntries.map(([key, value]) => (
                     <div key={key}>
                       <Key name={key} pad={0} /> : {formatDisplayValue(value)}
@@ -115,12 +115,7 @@ function TupleList({ tuples }: { tuples: Tuple[] }): JSX.Element {
         seenTuples.set(baseKey, count + 1);
         const tupleKey = count === 0 ? baseKey : `${baseKey}:${count}`;
 
-        return (
-          <React.Fragment key={tupleKey}>
-            {index > 0 && <div style={{ height: '1em' }} />}
-            <TupleBlock tuple={tuple} />
-          </React.Fragment>
-        );
+        return <TupleBlock key={tupleKey} tuple={tuple} />;
       })}
     </>
   );
@@ -146,75 +141,37 @@ function formatYaml(tuple: Tuple): string {
   return lines.join('\n');
 }
 
-function CopyButton({ text }: { text: string }): JSX.Element {
-  const [status, setStatus] = useState<CopyStatus>('idle');
-  const timeout = useRef<ReturnType<typeof setTimeout>>();
-  const canCopy = typeof navigator !== 'undefined' && typeof navigator.clipboard?.writeText === 'function';
-
-  const resetStatus = useCallback(() => {
-    clearTimeout(timeout.current);
-    timeout.current = setTimeout(() => setStatus('idle'), 2000);
-  }, []);
-
-  useEffect(() => () => clearTimeout(timeout.current), []);
-
-  const handleCopy = useCallback(() => {
-    if (!canCopy) {
-      setStatus('error');
-      resetStatus();
-      return;
-    }
-
-    void navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        setStatus('success');
-        resetStatus();
-      })
-      .catch(() => {
-        setStatus('error');
-        resetStatus();
-      });
-  }, [canCopy, resetStatus, text]);
+function TupleViewerCopyButton({ text }: { text: string }): JSX.Element {
+  const codeBlockRef = useRef<HTMLPreElement>(null);
+  const metadata = useMemo(
+    () =>
+      createCodeBlockMetadata({
+        code: text,
+        className: 'language-yaml',
+        language: 'yaml',
+        defaultLanguage: undefined,
+        metastring: undefined,
+        magicComments: [],
+        title: null,
+        showLineNumbers: false,
+      }),
+    [text],
+  );
 
   return (
-    <button
-      type="button"
-      aria-label="Copy YAML to clipboard"
-      title={canCopy ? 'Copy YAML' : 'Clipboard unavailable'}
-      onClick={handleCopy}
-      className="clean-btn tuple-viewer__copy-button"
-      disabled={!canCopy}
-      style={{
-        position: 'absolute',
-        top: 'calc(var(--ifm-pre-padding) / 2)',
-        right: 'calc(var(--ifm-pre-padding) / 2)',
-        background: 'none',
-        border: 'none',
-        color: status === 'error' ? 'var(--ifm-color-danger)' : undefined,
-        cursor: canCopy ? 'pointer' : 'not-allowed',
-        padding: 4,
-        borderRadius: 'var(--ifm-global-radius)',
-        opacity: status === 'idle' ? undefined : 1,
-        transition: 'opacity 0.2s',
+    <CodeBlockContextProvider
+      metadata={metadata}
+      wordWrap={{
+        codeBlockRef,
+        isEnabled: false,
+        isCodeScrollable: false,
+        toggle: () => undefined,
       }}
     >
-      {status === 'success' ? (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ifm-color-success)" strokeWidth="2.5">
-          <polyline points="20 6 9 17 4 12" />
-        </svg>
-      ) : status === 'error' ? (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-          <path d="M18 6L6 18" />
-          <path d="M6 6L18 18" />
-        </svg>
-      ) : (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-          <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-        </svg>
-      )}
-    </button>
+      <div className="tuple-viewer__button-group">
+        <CopyButton className="tuple-viewer__copy-button" />
+      </div>
+    </CodeBlockContextProvider>
   );
 }
 
@@ -246,10 +203,10 @@ export function TupleViewer({ tuples, rightColumnTuples }: TupleViewerProps): JS
       >
         {rightColumnTuples ? (
           <div className="tuple-viewer__grid">
-            <div>
+            <div className="tuple-viewer__column">
               <TupleList tuples={tuples} />
             </div>
-            <div>
+            <div className="tuple-viewer__column tuple-viewer__column--secondary">
               <TupleList tuples={rightColumnTuples} />
             </div>
           </div>
@@ -257,7 +214,7 @@ export function TupleViewer({ tuples, rightColumnTuples }: TupleViewerProps): JS
           <TupleList tuples={tuples} />
         )}
       </div>
-      <CopyButton text={yaml} />
+      <TupleViewerCopyButton text={yaml} />
     </div>
   );
 }
