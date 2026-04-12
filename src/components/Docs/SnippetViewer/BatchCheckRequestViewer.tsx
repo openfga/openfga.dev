@@ -1,5 +1,5 @@
 import { getFilteredAllowedLangs, SupportedLanguage, DefaultAuthorizationModelId } from './SupportedLanguage';
-import { defaultOperationsViewer } from './DefaultTabbedViewer';
+import { defaultOperationsViewer, type DefaultTabbedViewerOpts } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
 import { TupleKey } from '@openfga/sdk';
 
@@ -13,11 +13,9 @@ interface Check {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context?: Record<string, any>;
 }
-interface BatchCheckRequestViewerOpts {
+interface BatchCheckRequestViewerOpts extends DefaultTabbedViewerOpts {
   authorizationModelId?: string;
   checks: Check[];
-  skipSetup?: boolean;
-  pseudoCodeMode?: boolean;
   allowedLanguages?: SupportedLanguage[];
 }
 

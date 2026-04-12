@@ -24,11 +24,12 @@ function SdkToggle<T extends DefaultTabbedViewerOpts>({
 }): JSX.Element {
   const [showSdk, setShowSdk] = useState(false);
 
-  const sdkLanguages = allowedLanguages.filter((l) => l !== SupportedLanguage.RPC);
+  const sdkLanguages = allowedLanguages.filter((language) => language !== SupportedLanguage.RPC);
 
   const toggleLink = (
     <button
       type="button"
+      aria-pressed={showSdk}
       onClick={() => setShowSdk((prev) => !prev)}
       style={{
         fontSize: 'calc(1em - 4px)',
@@ -40,15 +41,13 @@ function SdkToggle<T extends DefaultTabbedViewerOpts>({
         font: 'inherit',
       }}
     >
-      {showSdk ? 'View Pseudocode' : 'View SDK syntax'}
+      {showSdk ? 'View pseudocode' : 'View code'}
     </button>
   );
 
   return (
     <div style={{ position: 'relative' }}>
-      <div style={{ position: 'absolute', right: 0, top: 14, zIndex: 1 }}>
-        {toggleLink}
-      </div>
+      <div style={{ position: 'absolute', right: 0, top: 14, zIndex: 1 }}>{toggleLink}</div>
       {showSdk ? (
         sdkLanguages.length > 0 && (
           <Tabs groupId="languages" values={getAllowedValuesLabels({ allowedLanguages: sdkLanguages })}>
@@ -81,15 +80,21 @@ export function defaultOperationsViewer<T extends DefaultTabbedViewerOpts>(
   tabViewFn: (lang: SupportedLanguage, opts: T, langMappings: LanguageMappings) => string,
 ): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
-  const configuredLanguage = siteConfig.customFields?.languageMapping as LanguageMappings;
+  const configuredLanguageMapping = siteConfig.customFields?.languageMapping;
+
+  if (!configuredLanguageMapping) {
+    throw new Error('Missing required siteConfig.customFields.languageMapping configuration.');
+  }
+
+  const configuredLanguage = configuredLanguageMapping as LanguageMappings;
 
   const pseudoCodeMode = opts.pseudoCodeMode ?? false;
   const hasRpc = allowedLanguages.includes(SupportedLanguage.RPC);
-  const hasSdkLanguages = allowedLanguages.some((l) => l !== SupportedLanguage.RPC);
+  const hasSdkLanguages = allowedLanguages.some((language) => language !== SupportedLanguage.RPC);
 
   if (pseudoCodeMode && hasRpc && hasSdkLanguages) {
     return (
-      <div style={{ marginTop: - 20}}>
+      <div style={{ marginTop: -20 }}>
         <SdkToggle
           allowedLanguages={allowedLanguages}
           opts={opts}

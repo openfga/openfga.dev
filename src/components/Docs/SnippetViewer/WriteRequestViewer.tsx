@@ -24,6 +24,7 @@ interface WriteRequestViewerOpts {
   deleteRelationshipTuples: RelationshipTupleWithoutCondition[];
   isDelete?: boolean;
   skipSetup?: boolean;
+  pseudoCodeMode?: boolean;
   allowedLanguages?: SupportedLanguage[];
   conflictOptions?: {
     onDuplicateWrites?: 'error' | 'ignore';

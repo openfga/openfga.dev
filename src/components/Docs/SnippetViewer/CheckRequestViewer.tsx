@@ -258,11 +258,21 @@ response = await fga_client.check(body, options)
   user = "${user}", // check if the user \`${user}\`
   relation = "${relation}", // has an \`${relation}\` relation
   object = "${object}", // with the object \`${object}\`${
+    headers && Object.keys(headers).length > 0
+      ? `
+  headers = { ${Object.entries(headers)
+    .map(([key, value]) => `"${key}" = "${value}"`)
+    .join(', ')} },`
+      : ''
+  }${
     contextualTuples
       ? `
   contextual_tuples = [ // Assuming the following is true
     ${contextualTuples
-      .map((tuple) => `{\n      user = "${tuple.user}",\n      relation = "${tuple.relation}",\n      object = "${tuple.object}",\n    }`)
+      .map(
+        (tuple) =>
+          `{\n      user = "${tuple.user}",\n      relation = "${tuple.relation}",\n      object = "${tuple.object}",\n    }`,
+      )
       .join(',\n    ')}
   ],`
       : ''
