@@ -2,9 +2,9 @@
  * TupleViewer — displays OpenFGA relationship tuples in a styled code block.
  *
  * - Renders tuples with column-aligned keys in italic muted color.
- * - Uses a fixed TupleViewer background with Prism text color and code-block spacing.
+ * - Exposes CSS hook classes so shared styles can control the block surface, keys, copy button, and responsive layout.
  * - Copy button writes valid YAML list format to the clipboard.
- * - Optional `rightColumnTuples` renders two columns via CSS grid in a single block.
+ * - Optional `rightColumnTuples` renders two columns via CSS grid with a mobile fallback.
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { usePrismTheme } from '@docusaurus/theme-common';
@@ -22,15 +22,18 @@ interface TupleViewerProps {
   rightColumnTuples?: Tuple[];
 }
 
-const TUPLE_VIEWER_BACKGROUND = 'rgb(19, 21, 25)';
 const PAD = 'condition'.length;
 const INNER_PAD = 'context'.length;
-const keyStyle: React.CSSProperties = { color: 'rgb(170, 170, 170)', fontStyle: 'italic' };
+const keyStyle: React.CSSProperties = { fontStyle: 'italic' };
 
 type CopyStatus = 'idle' | 'success' | 'error';
 
 function Key({ name, pad }: { name: string; pad: number }): JSX.Element {
-  return <span style={keyStyle}>{name.padEnd(pad)}</span>;
+  return (
+    <span className="tuple-viewer__key" style={keyStyle}>
+      {name.padEnd(pad)}
+    </span>
+  );
 }
 
 function formatDisplayValue(value: unknown): string {
@@ -180,7 +183,7 @@ function CopyButton({ text }: { text: string }): JSX.Element {
       aria-label="Copy YAML to clipboard"
       title={canCopy ? 'Copy YAML' : 'Clipboard unavailable'}
       onClick={handleCopy}
-      className="clean-btn"
+      className="clean-btn tuple-viewer__copy-button"
       disabled={!canCopy}
       style={{
         position: 'absolute',
@@ -192,7 +195,7 @@ function CopyButton({ text }: { text: string }): JSX.Element {
         cursor: canCopy ? 'pointer' : 'not-allowed',
         padding: 4,
         borderRadius: 'var(--ifm-global-radius)',
-        opacity: status === 'idle' ? 0.4 : 1,
+        opacity: status === 'idle' ? undefined : 1,
         transition: 'opacity 0.2s',
       }}
     >
@@ -222,17 +225,16 @@ export function TupleViewer({ tuples, rightColumnTuples }: TupleViewerProps): JS
 
   return (
     <div
-      className="theme-code-block"
+      className="theme-code-block tuple-viewer"
       style={{
         position: 'relative',
         marginBottom: 'var(--ifm-leading)',
-        backgroundColor: TUPLE_VIEWER_BACKGROUND,
         color: plain.color,
         borderRadius: 'var(--ifm-code-border-radius)',
-        boxShadow: 'var(--ifm-global-shadow-lw)',
       }}
     >
       <div
+        className="tuple-viewer__body"
         style={{
           padding: 'var(--ifm-pre-padding)',
           fontFamily: 'var(--ifm-font-family-monospace)',
@@ -243,7 +245,7 @@ export function TupleViewer({ tuples, rightColumnTuples }: TupleViewerProps): JS
         }}
       >
         {rightColumnTuples ? (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 2ch' }}>
+          <div className="tuple-viewer__grid">
             <div>
               <TupleList tuples={tuples} />
             </div>
