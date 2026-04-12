@@ -48,11 +48,13 @@ A `tool` represents a capability (e.g., `slack_send_message`), and a `tool_resou
 
 For example, you can grant `task:1` access to send any Slack message, while restricting `task:2` to a specific channel:
 
-<TupleViewer tuples={[
-  { user: 'task:*', relation: 'can_call', object: 'tool:slack_list_channels' },
-  { user: 'task:1', relation: 'can_call', object: 'tool:slack_send_message' },
-  { user: 'task:2', relation: 'can_call', object: 'tool_resource:slack_send_message/XGA14FG' },
-]} />
+<TupleViewer
+  tuples={[
+    { user: 'task:*', relation: 'can_call', object: 'tool:slack_list_channels' },
+    { user: 'task:1', relation: 'can_call', object: 'tool:slack_send_message' },
+    { user: 'task:2', relation: 'can_call', object: 'tool_resource:slack_send_message/XGA14FG' },
+  ]}
+/>
 
 When checking whether `task:2` can call `tool_resource:slack_send_message/XGA14FG`, send a [contextual tuple](../../interacting/contextual-tuples.mdx) linking the resource to its tool. This avoids storing a tuple for every channel — you provide the tool-to-resource relationship at query time.
 
@@ -92,11 +94,11 @@ type organization
 type project
   relations
     define organization: [organization]
-    
+
     # relations for users
     define owner: [user]
     define member: [user]
-    
+
     # relations for tasks
     define read: [task]
     define write: [task]
@@ -157,11 +159,13 @@ The `can_call` relation accepts three types of assignments:
 
 Each task is linked to its session and agent when created:
 
-<TupleViewer tuples={[
-  { user: 'task:1', relation: 'task', object: 'agent:1' },
-  { user: 'task:1', relation: 'task', object: 'session:1' },
-  { user: 'session:1#task', relation: 'can_call', object: 'tool:slack_send_message' },
-]} />
+<TupleViewer
+  tuples={[
+    { user: 'task:1', relation: 'task', object: 'agent:1' },
+    { user: 'task:1', relation: 'task', object: 'session:1' },
+    { user: 'session:1#task', relation: 'can_call', object: 'tool:slack_send_message' },
+  ]}
+/>
 
 ## Expiration and call count
 
@@ -202,7 +206,7 @@ The `expiration` condition grants access for a fixed duration from the grant tim
       user: 'task:2',
       relation: 'can_call',
       object: 'tool:slack_send_message',
-      condition: { name: 'max_call_count', context: { max_tool_calls: '2' } },
+      condition: { name: 'max_call_count', context: { max_tool_calls: 2 } },
     },
   ]}
 />
@@ -231,10 +235,12 @@ type tool
 
 The `can_call` relation requires both that the task has been granted access **and** that the agent making the call is linked to the task. When the task is created, link it to its agent:
 
-<TupleViewer tuples={[
-  { user: 'task:1', relation: 'task', object: 'agent:1' },
-  { user: 'task:1', relation: 'can_call', object: 'tool:slack_send_message' },
-]} />
+<TupleViewer
+  tuples={[
+    { user: 'task:1', relation: 'task', object: 'agent:1' },
+    { user: 'task:1', relation: 'can_call', object: 'tool:slack_send_message' },
+  ]}
+/>
 
 At check time, send a contextual tuple identifying the calling agent. If the agent is linked to the task, the check returns `true`:
 
@@ -307,6 +313,6 @@ Mapping user intent to the right set of permissions is an active area of researc
       title: 'Contextual Tuples',
       description: 'Learn how to use contextual tuples to send dynamic context at query time',
       link: '../../interacting/contextual-tuples',
-    }
+    },
   ]}
 />

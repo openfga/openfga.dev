@@ -2,22 +2,19 @@
  * TupleViewer — displays OpenFGA relationship tuples in a styled code block.
  *
  * - Renders tuples with column-aligned keys in italic muted color.
- * - Matches the site's code block styling (background from global `pre` CSS rule,
- *   text color from the Prism theme, padding/radius from Infima variables).
+ * - Uses a fixed TupleViewer background with Prism text color and code-block spacing.
  * - Copy button writes valid YAML list format to the clipboard.
  * - Optional `rightColumnTuples` renders two columns via CSS grid in a single block.
  */
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { usePrismTheme } from '@docusaurus/theme-common';
+import type { RelationshipCondition } from '../RelationshipTuples/Viewer';
 
 interface Tuple {
   user: string;
   relation: string;
   object: string;
-  condition?: {
-    name: string;
-    context: Record<string, string>;
-  };
+  condition?: RelationshipCondition;
 }
 
 interface TupleViewerProps {
@@ -25,33 +22,78 @@ interface TupleViewerProps {
   rightColumnTuples?: Tuple[];
 }
 
-// Keys are padded so values start at the same column.
+const TUPLE_VIEWER_BACKGROUND = 'rgb(19, 21, 25)';
 const PAD = 'condition'.length;
 const INNER_PAD = 'context'.length;
-
 const keyStyle: React.CSSProperties = { color: 'rgb(170, 170, 170)', fontStyle: 'italic' };
+
+type CopyStatus = 'idle' | 'success' | 'error';
 
 function Key({ name, pad }: { name: string; pad: number }): JSX.Element {
   return <span style={keyStyle}>{name.padEnd(pad)}</span>;
 }
 
+function formatDisplayValue(value: unknown): string {
+  return typeof value === 'string' ? value : JSON.stringify(value);
+}
+
+function formatYamlValue(value: unknown): string {
+  if (value === null) {
+    return 'null';
+  }
+
+  if (typeof value === 'string') {
+    return JSON.stringify(value);
+  }
+
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return String(value);
+  }
+
+  return JSON.stringify(value);
+}
+
+function getTupleKey(tuple: Tuple): string {
+  return JSON.stringify([tuple.user, tuple.relation, tuple.object, tuple.condition ?? null]);
+}
+
 function TupleBlock({ tuple }: { tuple: Tuple }): JSX.Element {
+  const contextEntries = Object.entries(tuple.condition?.context ?? {});
+
   return (
     <div>
-      <div><Key name="user" pad={PAD} /> : {tuple.user}</div>
-      <div><Key name="relation" pad={PAD} /> : {tuple.relation}</div>
-      <div><Key name="object" pad={PAD} /> : {tuple.object}</div>
+      <div>
+        <Key name="user" pad={PAD} /> : {tuple.user}
+      </div>
+      <div>
+        <Key name="relation" pad={PAD} /> : {tuple.relation}
+      </div>
+      <div>
+        <Key name="object" pad={PAD} /> : {tuple.object}
+      </div>
       {tuple.condition && (
         <>
-          <div><Key name="condition" pad={PAD} /> :</div>
+          <div>
+            <Key name="condition" pad={PAD} /> :
+          </div>
           <div style={{ paddingLeft: '2ch' }}>
-            <div><Key name="name" pad={INNER_PAD} /> : {tuple.condition.name}</div>
-            <div><Key name="context" pad={INNER_PAD} /> :</div>
-            <div style={{ paddingLeft: '2ch' }}>
-              {Object.entries(tuple.condition.context).map(([k, v]) => (
-                <div key={k}><Key name={k} pad={0} /> : {v}</div>
-              ))}
+            <div>
+              <Key name="name" pad={INNER_PAD} /> : {tuple.condition.name}
             </div>
+            {contextEntries.length > 0 && (
+              <>
+                <div>
+                  <Key name="context" pad={INNER_PAD} /> :
+                </div>
+                <div style={{ paddingLeft: '2ch' }}>
+                  {contextEntries.map(([key, value]) => (
+                    <div key={key}>
+                      <Key name={key} pad={0} /> : {formatDisplayValue(value)}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </>
       )}
@@ -60,70 +102,108 @@ function TupleBlock({ tuple }: { tuple: Tuple }): JSX.Element {
 }
 
 function TupleList({ tuples }: { tuples: Tuple[] }): JSX.Element {
+  const seenTuples = new Map<string, number>();
+
   return (
     <>
-      {tuples.map((tuple, i) => (
-        <React.Fragment key={i}>
-          {i > 0 && <div style={{ height: '1em' }} />}
-          <TupleBlock tuple={tuple} />
-        </React.Fragment>
-      ))}
+      {tuples.map((tuple, index) => {
+        const baseKey = getTupleKey(tuple);
+        const count = seenTuples.get(baseKey) ?? 0;
+        seenTuples.set(baseKey, count + 1);
+        const tupleKey = count === 0 ? baseKey : `${baseKey}:${count}`;
+
+        return (
+          <React.Fragment key={tupleKey}>
+            {index > 0 && <div style={{ height: '1em' }} />}
+            <TupleBlock tuple={tuple} />
+          </React.Fragment>
+        );
+      })}
     </>
   );
 }
 
 function formatYaml(tuple: Tuple): string {
-  const lines = [
-    `- user: ${tuple.user}`,
-    `  relation: ${tuple.relation}`,
-    `  object: ${tuple.object}`,
-  ];
+  const lines = [`- user: ${tuple.user}`, `  relation: ${tuple.relation}`, `  object: ${tuple.object}`];
+
   if (tuple.condition) {
     lines.push(`  condition:`);
     lines.push(`    name: ${tuple.condition.name}`);
-    lines.push(`    context:`);
-    for (const [k, v] of Object.entries(tuple.condition.context)) {
-      lines.push(`      ${k}: "${v}"`);
+
+    const contextEntries = Object.entries(tuple.condition.context ?? {});
+    if (contextEntries.length > 0) {
+      lines.push(`    context:`);
+    }
+
+    for (const [key, value] of contextEntries) {
+      lines.push(`      ${key}: ${formatYamlValue(value)}`);
     }
   }
+
   return lines.join('\n');
 }
 
 function CopyButton({ text }: { text: string }): JSX.Element {
-  const [copied, setCopied] = useState(false);
+  const [status, setStatus] = useState<CopyStatus>('idle');
   const timeout = useRef<ReturnType<typeof setTimeout>>();
+  const canCopy = typeof navigator !== 'undefined' && typeof navigator.clipboard?.writeText === 'function';
+
+  const resetStatus = useCallback(() => {
+    clearTimeout(timeout.current);
+    timeout.current = setTimeout(() => setStatus('idle'), 2000);
+  }, []);
+
+  useEffect(() => () => clearTimeout(timeout.current), []);
 
   const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(true);
-      clearTimeout(timeout.current);
-      timeout.current = setTimeout(() => setCopied(false), 2000);
-    });
-  }, [text]);
+    if (!canCopy) {
+      setStatus('error');
+      resetStatus();
+      return;
+    }
+
+    void navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        setStatus('success');
+        resetStatus();
+      })
+      .catch(() => {
+        setStatus('error');
+        resetStatus();
+      });
+  }, [canCopy, resetStatus, text]);
 
   return (
     <button
       type="button"
       aria-label="Copy YAML to clipboard"
-      title="Copy"
+      title={canCopy ? 'Copy YAML' : 'Clipboard unavailable'}
       onClick={handleCopy}
       className="clean-btn"
+      disabled={!canCopy}
       style={{
         position: 'absolute',
         top: 'calc(var(--ifm-pre-padding) / 2)',
         right: 'calc(var(--ifm-pre-padding) / 2)',
         background: 'none',
         border: 'none',
-        cursor: 'pointer',
+        color: status === 'error' ? 'var(--ifm-color-danger)' : undefined,
+        cursor: canCopy ? 'pointer' : 'not-allowed',
         padding: 4,
         borderRadius: 'var(--ifm-global-radius)',
-        opacity: copied ? 1 : 0.4,
+        opacity: status === 'idle' ? 0.4 : 1,
         transition: 'opacity 0.2s',
       }}
     >
-      {copied ? (
+      {status === 'success' ? (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ifm-color-success)" strokeWidth="2.5">
           <polyline points="20 6 9 17 4 12" />
+        </svg>
+      ) : status === 'error' ? (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M18 6L6 18" />
+          <path d="M6 6L18 18" />
         </svg>
       ) : (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -140,28 +220,41 @@ export function TupleViewer({ tuples, rightColumnTuples }: TupleViewerProps): JS
   const allTuples = rightColumnTuples ? [...tuples, ...rightColumnTuples] : tuples;
   const yaml = allTuples.map(formatYaml).join('\n');
 
-  const content = rightColumnTuples ? (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 2ch' }}>
-      <div><TupleList tuples={tuples} /></div>
-      <div><TupleList tuples={rightColumnTuples} /></div>
-    </div>
-  ) : (
-    <TupleList tuples={tuples} />
-  );
-
   return (
-    <div className="theme-code-block" style={{ position: 'relative', marginBottom: 'var(--ifm-leading)' }}>
-      <pre style={{
+    <div
+      className="theme-code-block"
+      style={{
+        position: 'relative',
+        marginBottom: 'var(--ifm-leading)',
+        backgroundColor: TUPLE_VIEWER_BACKGROUND,
         color: plain.color,
-        margin: 0,
-        padding: 'var(--ifm-pre-padding)',
         borderRadius: 'var(--ifm-code-border-radius)',
-        fontSize: 'var(--ifm-code-font-size)',
-        lineHeight: 'var(--ifm-pre-line-height)',
-        overflow: 'auto',
-      }}>
-        <code>{content}</code>
-      </pre>
+        boxShadow: 'var(--ifm-global-shadow-lw)',
+      }}
+    >
+      <div
+        style={{
+          padding: 'var(--ifm-pre-padding)',
+          fontFamily: 'var(--ifm-font-family-monospace)',
+          fontSize: 'var(--ifm-code-font-size)',
+          lineHeight: 'var(--ifm-pre-line-height)',
+          overflow: 'auto',
+          whiteSpace: 'pre',
+        }}
+      >
+        {rightColumnTuples ? (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 2ch' }}>
+            <div>
+              <TupleList tuples={tuples} />
+            </div>
+            <div>
+              <TupleList tuples={rightColumnTuples} />
+            </div>
+          </div>
+        ) : (
+          <TupleList tuples={tuples} />
+        )}
+      </div>
       <CopyButton text={yaml} />
     </div>
   );
