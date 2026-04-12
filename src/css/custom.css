@@ -102,7 +102,7 @@ table td {
 
 .snippet-mode-toggle__button {
   border: 0;
-  border-bottom: 1px solid currentColor;
+  border-bottom: 1px solid transparent;
   border-radius: 0;
   background: transparent;
   color: var(--ifm-font-color-base);
@@ -112,9 +112,10 @@ table td {
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.01em;
-  opacity: 0.58;
+  opacity: 0.78;
   padding: 0.2rem 0;
   transition:
+    border-color 0.2s ease,
     color 0.2s ease,
     opacity 0.2s ease;
 }
@@ -126,16 +127,18 @@ table td {
 
 .snippet-mode-toggle__button:hover {
   color: var(--ifm-font-color-base);
-  opacity: 0.82;
+  border-color: currentColor;
+  opacity: 1;
 }
 
 [data-theme='light'] .snippet-mode-toggle__button {
   color: var(--ifm-font-color-base);
-  opacity: 0.68;
+  opacity: 0.72;
 }
 
 [data-theme='light'] .snippet-mode-toggle__button:hover {
   color: var(--ifm-font-color-base);
+  border-color: currentColor;
   opacity: 0.9;
 }
 
