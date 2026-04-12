@@ -41,6 +41,10 @@ table td {
   overflow-wrap: break-word;
 }
 
+.markdown h3 {
+  margin-top: calc(var(--ifm-heading-margin-top) - 50px);
+}
+
 /* =========================
    Ask AI button styling
    ========================= */
