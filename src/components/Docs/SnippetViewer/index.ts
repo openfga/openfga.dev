@@ -11,3 +11,4 @@ export { SupportedLanguage, languageLabelMap } from './SupportedLanguage';
 export * from './StreamedListObjectsRequestViewer';
 export * from './WriteRequestViewer';
 export * from './WriteAuthzModelViewer';
+export * from './TupleViewer';
