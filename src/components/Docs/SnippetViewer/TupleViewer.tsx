@@ -109,7 +109,7 @@ function TupleList({ tuples }: { tuples: Tuple[] }): JSX.Element {
 
   return (
     <>
-      {tuples.map((tuple, index) => {
+      {tuples.map((tuple) => {
         const baseKey = getTupleKey(tuple);
         const count = seenTuples.get(baseKey) ?? 0;
         seenTuples.set(baseKey, count + 1);
