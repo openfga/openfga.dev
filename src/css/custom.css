@@ -89,6 +89,56 @@ table td {
   order: 2;
 }
 
+.snippet-mode-toggle-wrapper {
+  position: relative;
+}
+
+.snippet-mode-toggle {
+  position: absolute;
+  right: 0;
+  top: 0.85rem;
+  z-index: 2;
+}
+
+.snippet-mode-toggle__button {
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ifm-font-color-base);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  opacity: 0.58;
+  padding: 0.2rem 0;
+  transition:
+    color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.snippet-mode-toggle__button:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--ifm-font-color-base), transparent 35%);
+  outline-offset: 2px;
+}
+
+.snippet-mode-toggle__button:hover {
+  color: var(--ifm-font-color-base);
+  opacity: 0.82;
+}
+
+[data-theme='light'] .snippet-mode-toggle__button {
+  color: var(--ifm-font-color-base);
+  opacity: 0.68;
+}
+
+[data-theme='light'] .snippet-mode-toggle__button:hover {
+  color: var(--ifm-font-color-base);
+  opacity: 0.9;
+}
+
 /* Mobile Layout */
 
 @media (max-width: 996px) {

@@ -25,29 +25,21 @@ function SdkToggle<T extends DefaultTabbedViewerOpts>({
   const [showSdk, setShowSdk] = useState(false);
 
   const sdkLanguages = allowedLanguages.filter((language) => language !== SupportedLanguage.RPC);
-
-  const toggleLink = (
-    <button
-      type="button"
-      aria-pressed={showSdk}
-      onClick={() => setShowSdk((prev) => !prev)}
-      style={{
-        fontSize: 'calc(1em - 4px)',
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        color: 'var(--ifm-color-primary)',
-        padding: 0,
-        font: 'inherit',
-      }}
-    >
-      {showSdk ? 'View pseudocode' : 'View code'}
-    </button>
-  );
+  const toggleLabel = showSdk ? 'View pseudocode' : 'View code';
 
   return (
-    <div style={{ position: 'relative' }}>
-      <div style={{ position: 'absolute', right: 0, top: 14, zIndex: 1 }}>{toggleLink}</div>
+    <div className="snippet-mode-toggle-wrapper">
+      <div className="snippet-mode-toggle">
+        <button
+          type="button"
+          aria-pressed={showSdk}
+          aria-label={toggleLabel}
+          className="snippet-mode-toggle__button"
+          onClick={() => setShowSdk((prev) => !prev)}
+        >
+          {toggleLabel}
+        </button>
+      </div>
       {showSdk ? (
         sdkLanguages.length > 0 && (
           <Tabs groupId="languages" values={getAllowedValuesLabels({ allowedLanguages: sdkLanguages })}>
