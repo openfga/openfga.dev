@@ -27,16 +27,21 @@ function SdkToggle<T extends DefaultTabbedViewerOpts>({
   const sdkLanguages = allowedLanguages.filter((l) => l !== SupportedLanguage.RPC);
 
   const toggleLink = (
-    <a
-      href="#"
-      onClick={(e) => {
-        e.preventDefault();
-        setShowSdk(!showSdk);
+    <button
+      type="button"
+      onClick={() => setShowSdk((prev) => !prev)}
+      style={{
+        fontSize: 'calc(1em - 4px)',
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        color: 'inherit',
+        padding: 0,
+        font: 'inherit',
       }}
-      style={{ fontSize: 'calc(1em - 4px)',  textDecoration: 'none' }}
     >
       {showSdk ? 'View Pseudocode' : 'View SDK syntax'}
-    </a>
+    </button>
   );
 
   return (
@@ -80,8 +85,9 @@ export function defaultOperationsViewer<T extends DefaultTabbedViewerOpts>(
 
   const pseudoCodeMode = opts.pseudoCodeMode ?? false;
   const hasRpc = allowedLanguages.includes(SupportedLanguage.RPC);
+  const hasSdkLanguages = allowedLanguages.some((l) => l !== SupportedLanguage.RPC);
 
-  if (pseudoCodeMode && hasRpc) {
+  if (pseudoCodeMode && hasRpc && hasSdkLanguages) {
     return (
       <div style={{ marginTop: - 20}}>
         <SdkToggle
