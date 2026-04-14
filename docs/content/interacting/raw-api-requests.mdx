@@ -83,14 +83,19 @@ import (
     "fmt"
     "log"
     "net/http"
+    "os"
 
     openfga "github.com/openfga/go-sdk"
     . "github.com/openfga/go-sdk/client"
 )
 
 func main() {
+    ctx := context.Background()
+    storeID := os.Getenv("FGA_STORE_ID")
+
     fgaClient, err := NewSdkClient(&ClientConfiguration{
-        // ... configure as usual
+        ApiUrl:  os.Getenv("FGA_API_URL"),
+        StoreId: storeID,
     })
     if err != nil {
         log.Fatalf("Failed to create client: %v", err)
@@ -114,7 +119,7 @@ func main() {
         WithBody(requestBody).
         Build()
 
-    rawResponse, err := executor.Execute(context.Background(), request)
+    rawResponse, err := executor.Execute(ctx, request)
     if err != nil {
         log.Fatalf("Request failed: %v", err)
     }
@@ -147,7 +152,7 @@ var executor = fgaClient.ApiExecutor;
 // Build the request using fluent API
 var request = RequestBuilder<object>
     .Create(HttpMethod.Post, configuration.ApiUrl, "/stores/{store_id}/custom-endpoint")
-    .WithPathParameter("store_id", storeId)
+    .WithPathParameter("store_id", configuration.StoreId)
     .WithQueryParameter("page_size", "20")
     .WithBody(new {
         user = "user:bob",
@@ -359,6 +364,7 @@ console.log("Reason:", response.reason);
 Use `ExecuteWithDecode` to automatically unmarshal the response into a Go struct:
 
 ```go
+// Using ctx, executor, and request from the example above
 type CustomEndpointResponse struct {
     Allowed bool   `json:"allowed"`
     Reason  string `json:"reason"`
@@ -477,9 +483,16 @@ Use `ExecuteStreaming` which returns an `APIExecutorStreamingChannel` with `Resu
 ```go
 import (
     "encoding/json"
+    "fmt"
+    "log"
+    "net/http"
+    "os"
 
     openfga "github.com/openfga/go-sdk"
 )
+
+storeID := os.Getenv("FGA_STORE_ID")
+modelID := os.Getenv("FGA_MODEL_ID")
 
 request := openfga.NewAPIExecutorRequestBuilder(
     "StreamedListObjects", http.MethodPost, "/stores/{store_id}/streamed-list-objects",
@@ -537,6 +550,9 @@ Use `ExecuteStreamingAsync` which returns an `IAsyncEnumerable<TResponse>`:
 ```csharp
 using OpenFga.Sdk.Client;
 using OpenFga.Sdk.ApiClient;
+
+var storeId = configuration.StoreId;
+var authorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID");
 
 var request = RequestBuilder<object>
     .Create(HttpMethod.Post, configuration.ApiUrl,
@@ -750,6 +766,11 @@ For complete working examples, refer to the API Executor examples in each SDK re
     },
   ]}
 />
+
+
+
+
+
 
 
 
