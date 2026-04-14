@@ -425,6 +425,11 @@ const sidebars = {
           label: 'AuthZEN API',
           id: 'content/interacting/authzen',
         },
+        {
+          type: 'doc',
+          label: 'Calling Other Endpoints',
+          id: 'content/interacting/raw-api-requests',
+        },
       ],
     },
 

@@ -95,6 +95,13 @@ OpenFGA implements authorization through:
     - [Migrating Models](https://openfga.dev/docs/modeling/migrating/migrating-models)
 
 
+#### Authorization for Agents
+- [Overview](https://openfga.dev/docs/modeling/agents/overview) - Authorization for Agents overview
+  - [Modeling Agents as Principals](https://openfga.dev/docs/modeling/agents/agents-as-principals)
+  - [RAG Authorization](https://openfga.dev/docs/modeling/agents/rag-authorization)
+  - [Authorization for MCP Servers](https://openfga.dev/docs/modeling/agents/mcp-authorization)
+  - [Task-Based Authorization](https://openfga.dev/docs/modeling/agents/task-based-authorization)
+
 #### Interacting with the API
 - [Overview](https://openfga.dev/docs/interacting/overview) - Interacting with the API overview
   - [Manage User Access](https://openfga.dev/docs/interacting/managing-user-access)
@@ -106,11 +113,14 @@ OpenFGA implements authorization through:
   - [Relationship Queries](https://openfga.dev/docs/interacting/relationship-queries)
   - [Get Tuple Changes](https://openfga.dev/docs/interacting/read-tuple-changes)
   - [Search with Permissions](https://openfga.dev/docs/interacting/search-with-permissions)
+  - [AuthZEN API](https://openfga.dev/docs/interacting/authzen)
+  - [Calling Other Endpoints](https://openfga.dev/docs/interacting/raw-api-requests)
 
 #### Best Practices
 - [Overview](https://openfga.dev/docs/best-practices/overview) - Best Practices overview
   - [Adoption Patterns](https://openfga.dev/docs/best-practices/adoption-patterns)
   - [Authorization Model Design Principles](https://openfga.dev/docs/best-practices/modeling-design-principles)
+  - [Modeling ABAC](https://openfga.dev/docs/best-practices/modeling-abac)
   - [Modeling Roles](https://openfga.dev/docs/best-practices/modeling-roles)
   - [Source of Truth](https://openfga.dev/docs/best-practices/source-of-truth)
   - [Running OpenFGA in Production](https://openfga.dev/docs/best-practices/running-in-production)
