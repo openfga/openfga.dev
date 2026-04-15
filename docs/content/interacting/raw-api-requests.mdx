@@ -29,7 +29,7 @@ In certain cases you may want to call API endpoints that are not yet available a
 This is useful when:
 
 - You want to call a **new endpoint** that is not yet supported by the SDK.
-- You are using an **earlier version** of the SDK that doesn't yet have a particular method.
+- You are using an **earlier version** of the SDK that doesn't support a particular endpoint, and can't update.
 - You have a **custom endpoint** deployed that extends the <ProductName format={ProductNameFormat.ShortForm}/> API.
 
 ## Before you start
@@ -40,7 +40,7 @@ This is useful when:
 
 Initialize the SDK client as usual (see [Setup SDK Client](../getting-started/setup-sdk-client.mdx)), then use the API Executor to build and send a request.
 
-The examples below call a hypothetical custom endpoint, but you can use the same pattern for **any** <ProductName format={ProductNameFormat.ShortForm}/> API path.
+The examples below call a hypothetical custom endpoint (`/stores/{store_id}/custom-endpoint`), but you can use the same pattern for any <ProductName format={ProductNameFormat.ShortForm}/> API path.
 
 ### Calling a custom endpoint with POST
 
