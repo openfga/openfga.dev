@@ -1,1 +1,0 @@
-"use strict";(globalThis.webpackChunkopenfga_dev=globalThis.webpackChunkopenfga_dev||[]).push([[9647],{7121(e,a,s){s.r(a),s.d(a,{default:()=>d});s(96540);var r=s(34164),n=s(17559),u=s(45500),c=s(22831),l=s(2680),o=s(74848);function d(e){return(0,o.jsx)(u.e3,{className:(0,r.A)(n.G.wrapper.docsPages),children:(0,o.jsx)(l.A,{children:(0,c.v)(e.route.routes)})})}}}]);
