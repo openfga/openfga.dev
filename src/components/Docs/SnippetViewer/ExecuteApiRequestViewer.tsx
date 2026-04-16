@@ -14,7 +14,8 @@ interface ExecuteApiRequestViewerOpts {
 // 1. ExecuteApiRequestViewer – POST custom endpoint (full setup)
 // ---------------------------------------------------------------------------
 
-function executeApiRequestViewer(lang: SupportedLanguage, _opts: ExecuteApiRequestViewerOpts): string {
+function executeApiRequestViewer(lang: SupportedLanguage, opts: ExecuteApiRequestViewerOpts): string {
+  void opts;
   switch (lang) {
     case SupportedLanguage.JS_SDK:
       return `const { OpenFgaClient } = require("@openfga/sdk");
@@ -229,10 +230,8 @@ export function ExecuteApiRequestViewer(opts: ExecuteApiRequestViewerOpts): JSX.
 // 2. ExecuteApiRequestPathParamsViewer – path parameter example
 // ---------------------------------------------------------------------------
 
-function executeApiRequestPathParamsViewer(
-  lang: SupportedLanguage,
-  _opts: ExecuteApiRequestViewerOpts,
-): string {
+function executeApiRequestPathParamsViewer(lang: SupportedLanguage, opts: ExecuteApiRequestViewerOpts): string {
+  void opts;
   switch (lang) {
     case SupportedLanguage.JS_SDK:
       return `const response = await fgaClient.executeApiRequest({
@@ -305,10 +304,8 @@ export function ExecuteApiRequestPathParamsViewer(opts: ExecuteApiRequestViewerO
 // 3. ExecuteApiRequestDecodeViewer – typed response decoding
 // ---------------------------------------------------------------------------
 
-function executeApiRequestDecodeViewer(
-  lang: SupportedLanguage,
-  _opts: ExecuteApiRequestViewerOpts,
-): string {
+function executeApiRequestDecodeViewer(lang: SupportedLanguage, opts: ExecuteApiRequestViewerOpts): string {
+  void opts;
   switch (lang) {
     case SupportedLanguage.JS_SDK:
       return `// The JavaScript SDK's executeApiRequest already returns a parsed JSON
@@ -403,21 +400,15 @@ export function ExecuteApiRequestDecodeViewer(opts: ExecuteApiRequestViewerOpts)
     SupportedLanguage.JAVA_SDK,
   ];
   const allowedLanguages = getFilteredAllowedLangs(opts.allowedLanguages, defaultLangs);
-  return defaultOperationsViewer<ExecuteApiRequestViewerOpts>(
-    allowedLanguages,
-    opts,
-    executeApiRequestDecodeViewer,
-  );
+  return defaultOperationsViewer<ExecuteApiRequestViewerOpts>(allowedLanguages, opts, executeApiRequestDecodeViewer);
 }
 
 // ---------------------------------------------------------------------------
 // 4. ExecuteApiRequestStreamingViewer – streaming endpoint example
 // ---------------------------------------------------------------------------
 
-function executeApiRequestStreamingViewer(
-  lang: SupportedLanguage,
-  _opts: ExecuteApiRequestViewerOpts,
-): string {
+function executeApiRequestStreamingViewer(lang: SupportedLanguage, opts: ExecuteApiRequestViewerOpts): string {
+  void opts;
   switch (lang) {
     case SupportedLanguage.JS_SDK:
       return `// Use executeStreamedApiRequest instead of executeApiRequest
@@ -590,21 +581,15 @@ export function ExecuteApiRequestStreamingViewer(opts: ExecuteApiRequestViewerOp
     SupportedLanguage.JAVA_SDK,
   ];
   const allowedLanguages = getFilteredAllowedLangs(opts.allowedLanguages, defaultLangs);
-  return defaultOperationsViewer<ExecuteApiRequestViewerOpts>(
-    allowedLanguages,
-    opts,
-    executeApiRequestStreamingViewer,
-  );
+  return defaultOperationsViewer<ExecuteApiRequestViewerOpts>(allowedLanguages, opts, executeApiRequestStreamingViewer);
 }
 
 // ---------------------------------------------------------------------------
 // 5. ExecuteApiRequestErrorViewer – error handling example
 // ---------------------------------------------------------------------------
 
-function executeApiRequestErrorViewer(
-  lang: SupportedLanguage,
-  _opts: ExecuteApiRequestViewerOpts,
-): string {
+function executeApiRequestErrorViewer(lang: SupportedLanguage, opts: ExecuteApiRequestViewerOpts): string {
+  void opts;
   switch (lang) {
     case SupportedLanguage.JS_SDK:
       return `try {
@@ -696,10 +681,5 @@ export function ExecuteApiRequestErrorViewer(opts: ExecuteApiRequestViewerOpts):
     SupportedLanguage.JAVA_SDK,
   ];
   const allowedLanguages = getFilteredAllowedLangs(opts.allowedLanguages, defaultLangs);
-  return defaultOperationsViewer<ExecuteApiRequestViewerOpts>(
-    allowedLanguages,
-    opts,
-    executeApiRequestErrorViewer,
-  );
+  return defaultOperationsViewer<ExecuteApiRequestViewerOpts>(allowedLanguages, opts, executeApiRequestErrorViewer);
 }
-
