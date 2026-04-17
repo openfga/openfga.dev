@@ -3,207 +3,271 @@ import { defaultOperationsViewer } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
 
 // ---------------------------------------------------------------------------
-// Shared opts
+// Helpers – value serialisation per language
 // ---------------------------------------------------------------------------
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function jsValue(val: any, indent: number): string {
+  if (typeof val === 'string') return `"${val}"`;
+  if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+  if (Array.isArray(val)) {
+    const items = val.map((v) => jsValue(v, indent + 2));
+    return `[${items.join(', ')}]`;
+  }
+  if (typeof val === 'object' && val !== null) {
+    const pad = ' '.repeat(indent);
+    const closePad = ' '.repeat(indent - 2);
+    const entries = Object.entries(val).map(([k, v]) => `${pad}${k}: ${jsValue(v, indent + 2)}`);
+    return `{\n${entries.join(',\n')}\n${closePad}}`;
+  }
+  return String(val);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function pyValue(val: any, indent: number): string {
+  if (typeof val === 'string') return `"${val}"`;
+  if (typeof val === 'number') return String(val);
+  if (typeof val === 'boolean') return val ? 'True' : 'False';
+  if (Array.isArray(val)) {
+    const items = val.map((v) => pyValue(v, indent + 4));
+    return `[${items.join(', ')}]`;
+  }
+  if (typeof val === 'object' && val !== null) {
+    const pad = ' '.repeat(indent);
+    const closePad = ' '.repeat(indent - 4);
+    const entries = Object.entries(val).map(([k, v]) => `${pad}"${k}": ${pyValue(v, indent + 4)}`);
+    return `{\n${entries.join(',\n')},\n${closePad}}`;
+  }
+  return String(val);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function goValue(val: any, indent: number): string {
+  if (typeof val === 'string') return `"${val}"`;
+  if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+  if (typeof val === 'object' && val !== null) {
+    const pad = ' '.repeat(indent);
+    const closePad = ' '.repeat(indent - 4);
+    const entries = Object.entries(val).map(([k, v]) => `${pad}"${k}": ${goValue(v, indent + 4)}`);
+    return `map[string]interface{}{\n${entries.join(',\n')},\n${closePad}}`;
+  }
+  return String(val);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function javaValue(val: any, indent: number): string {
+  if (typeof val === 'string') return `"${val}"`;
+  if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+  if (typeof val === 'object' && val !== null) {
+    const pad = ' '.repeat(indent);
+    const entries = Object.entries(val);
+    const pairs = entries.map(([k, v]) => `${pad}"${k}", ${javaValue(v, indent + 4)}`);
+    return `Map.of(\n${pairs.join(',\n')}\n${' '.repeat(indent - 4)})`;
+  }
+  return String(val);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function csharpValue(val: any, indent: number): string {
+  if (typeof val === 'string') return `"${val}"`;
+  if (typeof val === 'number' || typeof val === 'boolean') return String(val).toLowerCase();
+  if (typeof val === 'object' && val !== null) {
+    const pad = ' '.repeat(indent);
+    const closePad = ' '.repeat(indent - 4);
+    const entries = Object.entries(val).map(([k, v]) => `${pad}${k} = ${csharpValue(v, indent + 4)}`);
+    return `new {\n${entries.join(',\n')}\n${closePad}}`;
+  }
+  return String(val);
+}
+
+function goMethod(method: string): string {
+  const map: Record<string, string> = {
+    GET: 'http.MethodGet',
+    POST: 'http.MethodPost',
+    PUT: 'http.MethodPut',
+    DELETE: 'http.MethodDelete',
+    PATCH: 'http.MethodPatch',
+  };
+  return map[method.toUpperCase()] || `"${method}"`;
+}
+
+function csharpMethod(method: string): string {
+  const map: Record<string, string> = {
+    GET: 'HttpMethod.Get',
+    POST: 'HttpMethod.Post',
+    PUT: 'HttpMethod.Put',
+    DELETE: 'HttpMethod.Delete',
+    PATCH: 'HttpMethod.Patch',
+  };
+  return map[method.toUpperCase()] || `new HttpMethod("${method}")`;
+}
+
+function javaMethod(method: string): string {
+  return `HttpMethod.${method.toUpperCase()}`;
+}
+
+// ---------------------------------------------------------------------------
+// 1. ExecuteApiRequestViewer – configurable non-streaming request
+// ---------------------------------------------------------------------------
+
 interface ExecuteApiRequestViewerOpts {
+  /** Name used for telemetry / logging. */
+  operationName: string;
+  /** HTTP method, e.g. "POST", "GET". */
+  method: string;
+  /** URL path template, e.g. "/stores/{store_id}/check". */
+  path: string;
+  /** Path parameter substitutions. */
+  pathParams?: Record<string, string>;
+  /** Request body (omit for GET). */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  body?: Record<string, any>;
+  /** Query parameter key-value pairs. */
+  queryParams?: Record<string, string>;
+  /** Optional example response shown in a trailing comment. */
+  responseExample?: string;
+
   skipSetup?: boolean;
   allowedLanguages?: SupportedLanguage[];
 }
 
-// ---------------------------------------------------------------------------
-// 1. ExecuteApiRequestViewer – POST custom endpoint (full setup)
-// ---------------------------------------------------------------------------
-
 function executeApiRequestViewer(lang: SupportedLanguage, opts: ExecuteApiRequestViewerOpts): string {
-  void opts;
+  const { operationName, method, path, pathParams, body, queryParams, responseExample } = opts;
+
   switch (lang) {
-    case SupportedLanguage.JS_SDK:
-      return `const { OpenFgaClient } = require("@openfga/sdk");
-
-const fgaClient = new OpenFgaClient({
-  apiUrl: process.env.FGA_API_URL,
-  storeId: process.env.FGA_STORE_ID,
-});
-
-// Call a custom endpoint using path parameters
-const response = await fgaClient.executeApiRequest({
-  operationName: "CustomEndpoint", // For telemetry/logging
-  method: "POST",
-  path: "/stores/{store_id}/custom-endpoint",
-  pathParams: { store_id: process.env.FGA_STORE_ID },
-  body: {
-    user: "user:bob",
-    action: "custom_action",
-    resource: "resource:123",
-  },
-  queryParams: {
-    page_size: 20,
-  },
-});
-
-console.log("Response:", response);`;
-    case SupportedLanguage.GO_SDK:
-      return `import (
-    "context"
-    "encoding/json"
-    "fmt"
-    "log"
-    "net/http"
-    "os"
-
-    openfga "github.com/openfga/go-sdk"
-    . "github.com/openfga/go-sdk/client"
-)
-
-func main() {
-    ctx := context.Background()
-    storeID := os.Getenv("FGA_STORE_ID")
-
-    fgaClient, err := NewSdkClient(&ClientConfiguration{
-        ApiUrl:  os.Getenv("FGA_API_URL"),
-        StoreId: storeID,
-    })
-    if err != nil {
-        log.Fatalf("Failed to create client: %v", err)
+    case SupportedLanguage.JS_SDK: {
+      const parts: string[] = [];
+      parts.push(`  operationName: "${operationName}",`);
+      parts.push(`  method: "${method}",`);
+      parts.push(`  path: "${path}",`);
+      if (pathParams && Object.keys(pathParams).length > 0) {
+        const entries = Object.entries(pathParams)
+          .map(([k, v]) => `${k}: "${v}"`)
+          .join(', ');
+        parts.push(`  pathParams: { ${entries} },`);
+      }
+      if (body) {
+        parts.push(`  body: ${jsValue(body, 4)},`);
+      }
+      if (queryParams && Object.keys(queryParams).length > 0) {
+        const entries = Object.entries(queryParams)
+          .map(([k, v]) => `${k}: "${v}"`)
+          .join(', ');
+        parts.push(`  queryParams: { ${entries} },`);
+      }
+      return `const response = await fgaClient.executeApiRequest({
+${parts.join('\n')}
+});${responseExample ? `\n\n// response: ${responseExample}` : ''}`;
     }
 
-    // Get the generic API executor
-    executor := fgaClient.GetAPIExecutor()
-
-    requestBody := map[string]interface{}{
-        "user":     "user:bob",
-        "action":   "custom_action",
-        "resource": "resource:123",
+    case SupportedLanguage.GO_SDK: {
+      let code = '';
+      if (body) {
+        code += `requestBody := ${goValue(body, 8)}\n\n`;
+      }
+      code += `request := openfga.NewAPIExecutorRequestBuilder(\n`;
+      code += `    "${operationName}", ${goMethod(method)}, "${path}",\n)`;
+      if (pathParams) {
+        for (const [k, v] of Object.entries(pathParams)) {
+          code += `.\n    WithPathParameter("${k}", "${v}")`;
+        }
+      }
+      if (queryParams) {
+        for (const [k, v] of Object.entries(queryParams)) {
+          code += `.\n    WithQueryParameter("${k}", "${v}")`;
+        }
+      }
+      if (body) {
+        code += `.\n    WithBody(requestBody)`;
+      }
+      code += `.\n    Build()\n\n`;
+      code += `rawResponse, err := executor.Execute(ctx, request)\nif err != nil {\n    log.Fatalf("Request failed: %v", err)\n}\n\n`;
+      code += `var result map[string]interface{}\njson.Unmarshal(rawResponse.Body, &result)`;
+      if (responseExample) {
+        code += `\n\n// result: ${responseExample}`;
+      }
+      return code;
     }
 
-    // Build and execute the request
-    request := openfga.NewAPIExecutorRequestBuilder(
-        "CustomEndpoint", http.MethodPost, "/stores/{store_id}/custom-endpoint",
-    ).
-        WithPathParameter("store_id", storeID).
-        WithQueryParameter("page_size", "20").
-        WithBody(requestBody).
-        Build()
-
-    rawResponse, err := executor.Execute(ctx, request)
-    if err != nil {
-        log.Fatalf("Request failed: %v", err)
+    case SupportedLanguage.DOTNET_SDK: {
+      let code = `var request = RequestBuilder<object>\n`;
+      code += `    .Create(${csharpMethod(method)}, configuration.ApiUrl, "${path}")`;
+      if (pathParams) {
+        for (const [k, v] of Object.entries(pathParams)) {
+          code += `\n    .WithPathParameter("${k}", "${v}")`;
+        }
+      }
+      if (queryParams) {
+        for (const [k, v] of Object.entries(queryParams)) {
+          code += `\n    .WithQueryParameter("${k}", "${v}")`;
+        }
+      }
+      if (body) {
+        code += `\n    .WithBody(${csharpValue(body, 8)})`;
+      }
+      code += `;\n\nvar response = await executor.ExecuteAsync<object, Dictionary<string, object>>(\n`;
+      code += `    request, "${operationName}"\n);`;
+      if (responseExample) {
+        code += `\n\n// response.Data: ${responseExample}`;
+      }
+      return code;
     }
 
-    var result map[string]interface{}
-    if err := json.Unmarshal(rawResponse.Body, &result); err != nil {
-        log.Fatalf("Failed to decode: %v", err)
+    case SupportedLanguage.PYTHON_SDK: {
+      const parts: string[] = [];
+      parts.push(`    operation_name="${operationName}",`);
+      parts.push(`    method="${method}",`);
+      parts.push(`    path="${path}",`);
+      if (pathParams && Object.keys(pathParams).length > 0) {
+        const entries = Object.entries(pathParams)
+          .map(([k, v]) => `"${k}": "${v}"`)
+          .join(', ');
+        parts.push(`    path_params={${entries}},`);
+      }
+      if (body) {
+        parts.push(`    body=${pyValue(body, 8)},`);
+      }
+      if (queryParams && Object.keys(queryParams).length > 0) {
+        const entries = Object.entries(queryParams)
+          .map(([k, v]) => `"${k}": "${v}"`)
+          .join(', ');
+        parts.push(`    query_params={${entries}},`);
+      }
+      let code = `response = await fga_client.execute_api_request(\n${parts.join('\n')}\n)\n\nresult = response.json()`;
+      if (responseExample) {
+        code += `\n\n# result: ${responseExample}`;
+      }
+      return code;
     }
 
-    fmt.Printf("Status Code: %d\\n", rawResponse.StatusCode)
-    fmt.Printf("Response: %+v\\n", result)
-}`;
-    case SupportedLanguage.DOTNET_SDK:
-      return `using OpenFga.Sdk.Client;
-using OpenFga.Sdk.ApiClient;
-
-var configuration = new ClientConfiguration() {
-    ApiUrl = Environment.GetEnvironmentVariable("FGA_API_URL") ?? "http://localhost:8080",
-    StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"),
-};
-
-var fgaClient = new OpenFgaClient(configuration);
-var executor = fgaClient.ApiExecutor;
-
-// Build the request using fluent API
-var request = RequestBuilder<object>
-    .Create(HttpMethod.Post, configuration.ApiUrl, "/stores/{store_id}/custom-endpoint")
-    .WithPathParameter("store_id", configuration.StoreId)
-    .WithQueryParameter("page_size", "20")
-    .WithBody(new {
-        user = "user:bob",
-        action = "custom_action",
-        resource = "resource:123"
-    });
-
-var response = await executor.ExecuteAsync<object, Dictionary<string, object>>(
-    request, "CustomEndpoint"
-);
-
-if (response.IsSuccessful) {
-    Console.WriteLine($"Status: {response.StatusCode}");
-    Console.WriteLine($"Raw JSON: {response.RawResponse}");
-    Console.WriteLine($"Data: {response.Data}");
-} else {
-    Console.WriteLine($"Request failed: {response.StatusCode}");
-}`;
-    case SupportedLanguage.PYTHON_SDK:
-      return `import asyncio
-import os
-from openfga_sdk import ClientConfiguration, OpenFgaClient
-
-FGA_API_URL = os.environ.get("FGA_API_URL")
-FGA_STORE_ID = os.environ.get("FGA_STORE_ID")
-
-async def main():
-    configuration = ClientConfiguration(
-        api_url=FGA_API_URL,
-        store_id=FGA_STORE_ID,
-    )
-
-    async with OpenFgaClient(configuration) as fga_client:
-        response = await fga_client.execute_api_request(
-            operation_name="CustomEndpoint",
-            method="POST",
-            path="/stores/{store_id}/custom-endpoint",
-            path_params={"store_id": FGA_STORE_ID},
-            body={
-                "user": "user:bob",
-                "action": "custom_action",
-                "resource": "resource:123",
-            },
-            query_params={
-                "page_size": 20,
-            },
-        )
-
-        if response.status == 200:
-            result = response.json()
-            print(f"Response: {result}")
-
-asyncio.run(main())`;
-    case SupportedLanguage.JAVA_SDK:
-      return `import dev.openfga.sdk.api.client.OpenFgaClient;
-import dev.openfga.sdk.api.client.HttpMethod;
-import dev.openfga.sdk.api.client.ApiExecutorRequestBuilder;
-import dev.openfga.sdk.api.configuration.ClientConfiguration;
-
-import java.util.Map;
-
-public class Example {
-    public static void main(String[] args) throws Exception {
-        var config = new ClientConfiguration()
-                .apiUrl(System.getenv("FGA_API_URL"))
-                .storeId(System.getenv("FGA_STORE_ID"));
-
-        var fgaClient = new OpenFgaClient(config);
-        String storeId = System.getenv("FGA_STORE_ID");
-
-        Map<String, Object> requestBody = Map.of(
-            "user", "user:bob",
-            "action", "custom_action",
-            "resource", "resource:123"
-        );
-
-        var request = ApiExecutorRequestBuilder.builder(
-            HttpMethod.POST, "/stores/{store_id}/custom-endpoint"
-        )
-            .pathParam("store_id", storeId)
-            .queryParam("page_size", "20")
-            .body(requestBody)
-            .build();
-
-        // Get raw response
-        var rawResponse = fgaClient.apiExecutor().send(request).get();
-        System.out.println("Status Code: " + rawResponse.getStatusCode());
-        System.out.println("Response: " + rawResponse.getData());
+    case SupportedLanguage.JAVA_SDK: {
+      let code = '';
+      if (body) {
+        code += `Map<String, Object> requestBody = ${javaValue(body, 8)};\n\n`;
+      }
+      code += `var request = ApiExecutorRequestBuilder.builder(\n`;
+      code += `    ${javaMethod(method)}, "${path}"\n)`;
+      if (pathParams) {
+        for (const [k, v] of Object.entries(pathParams)) {
+          code += `\n    .pathParam("${k}", "${v}")`;
+        }
+      }
+      if (queryParams) {
+        for (const [k, v] of Object.entries(queryParams)) {
+          code += `\n    .queryParam("${k}", "${v}")`;
+        }
+      }
+      if (body) {
+        code += `\n    .body(requestBody)`;
+      }
+      code += `\n    .build();\n\n`;
+      code += `var rawResponse = fgaClient.apiExecutor().send(request).get();`;
+      if (responseExample) {
+        code += `\n\n// rawResponse.getData(): ${responseExample}`;
+      }
+      return code;
     }
-}`;
+
     case SupportedLanguage.CLI:
     case SupportedLanguage.CURL:
     case SupportedLanguage.RPC:
@@ -227,64 +291,137 @@ export function ExecuteApiRequestViewer(opts: ExecuteApiRequestViewerOpts): JSX.
 }
 
 // ---------------------------------------------------------------------------
-// 2. ExecuteApiRequestPathParamsViewer – path parameter example
+// 2. ExecuteApiRequestStreamingViewer – configurable streaming request
 // ---------------------------------------------------------------------------
 
-function executeApiRequestPathParamsViewer(lang: SupportedLanguage, opts: ExecuteApiRequestViewerOpts): string {
-  void opts;
+interface ExecuteApiRequestStreamingViewerOpts {
+  /** Name used for telemetry / logging. */
+  operationName: string;
+  /** URL path template, e.g. "/stores/{store_id}/streamed-list-objects". */
+  path: string;
+  /** Path parameter substitutions. */
+  pathParams?: Record<string, string>;
+  /** Request body. */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  body: Record<string, any>;
+  /** Field name to extract from each streamed result, e.g. "object". */
+  responseField?: string;
+
+  skipSetup?: boolean;
+  allowedLanguages?: SupportedLanguage[];
+}
+
+function executeApiRequestStreamingViewer(lang: SupportedLanguage, opts: ExecuteApiRequestStreamingViewerOpts): string {
+  const { operationName, path, pathParams, body, responseField } = opts;
+  const field = responseField || 'object';
+
   switch (lang) {
-    case SupportedLanguage.JS_SDK:
-      return `const response = await fgaClient.executeApiRequest({
-  operationName: "GetAuthorizationModel",
-  method: "GET",
-  path: "/stores/{store_id}/authorization-models/{model_id}",
-  pathParams: {
-    store_id: "your-store-id",
-    model_id: "your-model-id",
-  },
-});`;
-    case SupportedLanguage.GO_SDK:
-      return `request := openfga.NewAPIExecutorRequestBuilder(
-    "GetAuthorizationModel", http.MethodGet,
-    "/stores/{store_id}/authorization-models/{model_id}",
-).
-    WithPathParameter("store_id", "your-store-id").
-    WithPathParameter("model_id", "your-model-id").
-    Build()`;
-    case SupportedLanguage.DOTNET_SDK:
-      return `var request = RequestBuilder<object>
-    .Create(HttpMethod.Get, configuration.ApiUrl,
-        "/stores/{store_id}/authorization-models/{model_id}")
-    .WithPathParameter("store_id", "your-store-id")
-    .WithPathParameter("model_id", "your-model-id");`;
-    case SupportedLanguage.PYTHON_SDK:
-      return `response = await fga_client.execute_api_request(
-    operation_name="GetAuthorizationModel",
-    method="GET",
-    path="/stores/{store_id}/authorization-models/{model_id}",
-    path_params={
-        "store_id": "your-store-id",
-        "model_id": "your-model-id",
-    },
-)`;
-    case SupportedLanguage.JAVA_SDK:
-      return `var request = ApiExecutorRequestBuilder.builder(
-    HttpMethod.GET, "/stores/{store_id}/authorization-models/{model_id}"
-)
-    .pathParam("store_id", "your-store-id")
-    .pathParam("model_id", "your-model-id")
-    .build();`;
+    case SupportedLanguage.JS_SDK: {
+      const parts: string[] = [];
+      parts.push(`  operationName: "${operationName}",`);
+      parts.push(`  method: "POST",`);
+      parts.push(`  path: "${path}",`);
+      if (pathParams && Object.keys(pathParams).length > 0) {
+        const entries = Object.entries(pathParams)
+          .map(([k, v]) => `${k}: "${v}"`)
+          .join(', ');
+        parts.push(`  pathParams: { ${entries} },`);
+      }
+      parts.push(`  body: ${jsValue(body, 4)},`);
+      return `for await (const chunk of fgaClient.executeStreamedApiRequest({
+${parts.join('\n')}
+})) {
+  if (chunk.result) {
+    console.log(chunk.result.${field});
+  }
+}`;
+    }
+
+    case SupportedLanguage.GO_SDK: {
+      let code = `requestBody := ${goValue(body, 8)}\n\n`;
+      code += `request := openfga.NewAPIExecutorRequestBuilder(\n`;
+      code += `    "${operationName}", http.MethodPost, "${path}",\n)`;
+      if (pathParams) {
+        for (const [k, v] of Object.entries(pathParams)) {
+          code += `.\n    WithPathParameter("${k}", "${v}")`;
+        }
+      }
+      code += `.\n    WithBody(requestBody).\n    Build()\n\n`;
+      code += `channel, err := executor.ExecuteStreaming(ctx, request, openfga.DefaultStreamBufferSize)\n`;
+      code += `if err != nil {\n    log.Fatalf("Streaming request failed: %v", err)\n}\ndefer channel.Close()\n\n`;
+      code += `for {\n    select {\n    case result, ok := <-channel.Results:\n        if !ok {\n            return\n        }\n`;
+      code += `        var obj map[string]interface{}\n        json.Unmarshal(result, &obj)\n`;
+      code += `        fmt.Println(obj["${field}"])\n`;
+      code += `    case err := <-channel.Errors:\n        if err != nil {\n            log.Fatalf("Stream error: %v", err)\n        }\n    }\n}`;
+      return code;
+    }
+
+    case SupportedLanguage.DOTNET_SDK: {
+      let code = `var request = RequestBuilder<object>\n`;
+      code += `    .Create(HttpMethod.Post, configuration.ApiUrl, "${path}")`;
+      if (pathParams) {
+        for (const [k, v] of Object.entries(pathParams)) {
+          code += `\n    .WithPathParameter("${k}", "${v}")`;
+        }
+      }
+      code += `\n    .WithBody(${csharpValue(body, 8)});\n\n`;
+      code += `await foreach (var item in executor.ExecuteStreamingAsync<object, StreamedListObjectsResponse>(\n`;
+      code += `    request, "${operationName}"))\n{\n`;
+      code += `    Console.WriteLine(item.${field.charAt(0).toUpperCase() + field.slice(1)});`;
+      code += `\n}`;
+      return code;
+    }
+
+    case SupportedLanguage.PYTHON_SDK: {
+      const parts: string[] = [];
+      parts.push(`    operation_name="${operationName}",`);
+      parts.push(`    method="POST",`);
+      parts.push(`    path="${path}",`);
+      if (pathParams && Object.keys(pathParams).length > 0) {
+        const entries = Object.entries(pathParams)
+          .map(([k, v]) => `"${k}": "${v}"`)
+          .join(', ');
+        parts.push(`    path_params={${entries}},`);
+      }
+      parts.push(`    body=${pyValue(body, 8)},`);
+      return `async for chunk in fga_client.execute_streamed_api_request(
+${parts.join('\n')}
+):
+    if "result" in chunk:
+        print(chunk["result"]["${field}"])`;
+    }
+
+    case SupportedLanguage.JAVA_SDK: {
+      let code = '';
+      code += `Map<String, Object> requestBody = ${javaValue(body, 8)};\n\n`;
+      code += `var request = ApiExecutorRequestBuilder.builder(\n`;
+      code += `    HttpMethod.POST, "${path}"\n)`;
+      if (pathParams) {
+        for (const [k, v] of Object.entries(pathParams)) {
+          code += `\n    .pathParam("${k}", "${v}")`;
+        }
+      }
+      code += `\n    .body(requestBody)\n    .build();\n\n`;
+      code += `fgaClient.streamingApiExecutor(StreamedListObjectsResponse.class)\n`;
+      code += `    .stream(\n`;
+      code += `        request,\n`;
+      code += `        response -> System.out.println(response.get${field.charAt(0).toUpperCase() + field.slice(1)}()),\n`;
+      code += `        error -> System.err.println("Stream error: " + error.getMessage())\n`;
+      code += `    )\n    .get();`;
+      return code;
+    }
+
     case SupportedLanguage.CLI:
     case SupportedLanguage.CURL:
     case SupportedLanguage.RPC:
     case SupportedLanguage.PLAYGROUND:
-      return `# API Executor is only available through the SDKs`;
+      return `# API Executor streaming is only available through the SDKs`;
     default:
       assertNever(lang);
   }
 }
 
-export function ExecuteApiRequestPathParamsViewer(opts: ExecuteApiRequestViewerOpts): JSX.Element {
+export function ExecuteApiRequestStreamingViewer(opts: ExecuteApiRequestStreamingViewerOpts): JSX.Element {
   const defaultLangs = [
     SupportedLanguage.JS_SDK,
     SupportedLanguage.GO_SDK,
@@ -293,393 +430,9 @@ export function ExecuteApiRequestPathParamsViewer(opts: ExecuteApiRequestViewerO
     SupportedLanguage.JAVA_SDK,
   ];
   const allowedLanguages = getFilteredAllowedLangs(opts.allowedLanguages, defaultLangs);
-  return defaultOperationsViewer<ExecuteApiRequestViewerOpts>(
+  return defaultOperationsViewer<ExecuteApiRequestStreamingViewerOpts>(
     allowedLanguages,
     opts,
-    executeApiRequestPathParamsViewer,
+    executeApiRequestStreamingViewer,
   );
-}
-
-// ---------------------------------------------------------------------------
-// 3. ExecuteApiRequestDecodeViewer – typed response decoding
-// ---------------------------------------------------------------------------
-
-function executeApiRequestDecodeViewer(lang: SupportedLanguage, opts: ExecuteApiRequestViewerOpts): string {
-  void opts;
-  switch (lang) {
-    case SupportedLanguage.JS_SDK:
-      return `// The JavaScript SDK's executeApiRequest already returns a parsed JSON
-// object by default — no additional decoding step is needed.
-const response = await fgaClient.executeApiRequest({
-  operationName: "CustomEndpoint",
-  method: "POST",
-  path: "/stores/{store_id}/custom-endpoint",
-  pathParams: { store_id: process.env.FGA_STORE_ID },
-  body: { user: "user:bob" },
-});
-
-// response is already a parsed object
-console.log("Allowed:", response.allowed);
-console.log("Reason:", response.reason);`;
-    case SupportedLanguage.GO_SDK:
-      return `// Using ctx, executor, and request from the example above
-// Use ExecuteWithDecode to automatically unmarshal the response into a Go struct
-type CustomEndpointResponse struct {
-    Allowed bool   \`json:"allowed"\`
-    Reason  string \`json:"reason"\`
-}
-
-var customResponse CustomEndpointResponse
-
-rawResponse, err := executor.ExecuteWithDecode(ctx, request, &customResponse)
-if err != nil {
-    log.Fatalf("Request failed: %v", err)
-}
-
-fmt.Printf("Allowed: %v, Reason: %s\\n", customResponse.Allowed, customResponse.Reason)
-fmt.Printf("Status Code: %d\\n", rawResponse.StatusCode)`;
-    case SupportedLanguage.DOTNET_SDK:
-      return `// Specify the response type as a generic parameter to ExecuteAsync
-var response = await executor.ExecuteAsync<object, GetStoreResponse>(
-    request, "GetStore"
-);
-
-if (response.IsSuccessful) {
-    Console.WriteLine($"Store Name: {response.Data.Name}");
-    Console.WriteLine($"Raw JSON: {response.RawResponse}");
-}`;
-    case SupportedLanguage.PYTHON_SDK:
-      return `# The Python SDK returns a response object whose .json() method
-# gives you a parsed dictionary
-response = await fga_client.execute_api_request(
-    operation_name="CustomEndpoint",
-    method="POST",
-    path="/stores/{store_id}/custom-endpoint",
-    path_params={"store_id": FGA_STORE_ID},
-    body={"user": "user:bob"},
-)
-
-result = response.json()
-print(f"Allowed: {result['allowed']}, Reason: {result['reason']}")`;
-    case SupportedLanguage.JAVA_SDK:
-      return `// Pass a class to send() to have the response decoded automatically
-class CustomEndpointResponse {
-    private boolean allowed;
-    private String reason;
-
-    public boolean isAllowed() { return allowed; }
-    public void setAllowed(boolean allowed) { this.allowed = allowed; }
-    public String getReason() { return reason; }
-    public void setReason(String reason) { this.reason = reason; }
-}
-
-var response = fgaClient.apiExecutor()
-    .send(request, CustomEndpointResponse.class)
-    .get();
-
-CustomEndpointResponse data = response.getData();
-System.out.println("Allowed: " + data.isAllowed());
-System.out.println("Reason: " + data.getReason());
-System.out.println("Status Code: " + response.getStatusCode());`;
-    case SupportedLanguage.CLI:
-    case SupportedLanguage.CURL:
-    case SupportedLanguage.RPC:
-    case SupportedLanguage.PLAYGROUND:
-      return `# API Executor is only available through the SDKs`;
-    default:
-      assertNever(lang);
-  }
-}
-
-export function ExecuteApiRequestDecodeViewer(opts: ExecuteApiRequestViewerOpts): JSX.Element {
-  const defaultLangs = [
-    SupportedLanguage.JS_SDK,
-    SupportedLanguage.GO_SDK,
-    SupportedLanguage.DOTNET_SDK,
-    SupportedLanguage.PYTHON_SDK,
-    SupportedLanguage.JAVA_SDK,
-  ];
-  const allowedLanguages = getFilteredAllowedLangs(opts.allowedLanguages, defaultLangs);
-  return defaultOperationsViewer<ExecuteApiRequestViewerOpts>(allowedLanguages, opts, executeApiRequestDecodeViewer);
-}
-
-// ---------------------------------------------------------------------------
-// 4. ExecuteApiRequestStreamingViewer – streaming endpoint example
-// ---------------------------------------------------------------------------
-
-function executeApiRequestStreamingViewer(lang: SupportedLanguage, opts: ExecuteApiRequestViewerOpts): string {
-  void opts;
-  switch (lang) {
-    case SupportedLanguage.JS_SDK:
-      return `// Use executeStreamedApiRequest instead of executeApiRequest
-const stream = fgaClient.executeStreamedApiRequest({
-  operationName: "StreamedListObjects",
-  method: "POST",
-  path: "/stores/{store_id}/streamed-list-objects",
-  pathParams: { store_id: process.env.FGA_STORE_ID },
-  body: {
-    type: "document",
-    relation: "viewer",
-    user: "user:anne",
-    authorization_model_id: process.env.FGA_MODEL_ID,
-  },
-});
-
-for await (const chunk of stream) {
-  if (chunk.result) {
-    console.log("Object:", chunk.result.object); // e.g. "document:roadmap"
-  }
-}`;
-    case SupportedLanguage.GO_SDK:
-      return `import (
-    "encoding/json"
-    "fmt"
-    "log"
-    "net/http"
-    "os"
-
-    openfga "github.com/openfga/go-sdk"
-)
-
-storeID := os.Getenv("FGA_STORE_ID")
-modelID := os.Getenv("FGA_MODEL_ID")
-
-// Use ExecuteStreaming which returns an APIExecutorStreamingChannel
-// with Results and Errors channels
-request := openfga.NewAPIExecutorRequestBuilder(
-    "StreamedListObjects", http.MethodPost, "/stores/{store_id}/streamed-list-objects",
-).
-    WithPathParameter("store_id", storeID).
-    WithBody(openfga.ListObjectsRequest{
-        AuthorizationModelId: openfga.PtrString(modelID),
-        Type:                 "document",
-        Relation:             "viewer",
-        User:                 "user:alice",
-    }).
-    Build()
-
-channel, err := executor.ExecuteStreaming(ctx, request, openfga.DefaultStreamBufferSize)
-if err != nil {
-    log.Fatalf("Streaming request failed: %v", err)
-}
-defer channel.Close()
-
-for {
-    select {
-    case result, ok := <-channel.Results:
-        if !ok {
-            // Stream completed — check for final errors
-            select {
-            case err := <-channel.Errors:
-                if err != nil {
-                    log.Fatalf("Stream error: %v", err)
-                }
-            default:
-            }
-            fmt.Println("Stream completed successfully")
-            return
-        }
-
-        var response openfga.StreamedListObjectsResponse
-        if err := json.Unmarshal(result, &response); err != nil {
-            log.Fatalf("Failed to decode: %v", err)
-        }
-        fmt.Printf("Object: %s\\n", response.Object)
-
-    case err := <-channel.Errors:
-        if err != nil {
-            log.Fatalf("Stream error: %v", err)
-        }
-    }
-}`;
-    case SupportedLanguage.DOTNET_SDK:
-      return `using OpenFga.Sdk.Client;
-using OpenFga.Sdk.ApiClient;
-
-var storeId = configuration.StoreId;
-var authorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID");
-
-// Use ExecuteStreamingAsync which returns an IAsyncEnumerable<TResponse>
-var request = RequestBuilder<object>
-    .Create(HttpMethod.Post, configuration.ApiUrl,
-        "/stores/{store_id}/streamed-list-objects")
-    .WithPathParameter("store_id", storeId)
-    .WithBody(new {
-        user = "user:anne",
-        relation = "can_read",
-        type = "document",
-        authorization_model_id = authorizationModelId
-    });
-
-await foreach (var item in executor.ExecuteStreamingAsync<object, StreamedListObjectsResponse>(
-    request, "StreamedListObjects"))
-{
-    Console.WriteLine($"Object: {item.Object}");
-}`;
-    case SupportedLanguage.PYTHON_SDK:
-      return `# Use execute_streamed_api_request which returns an AsyncIterator
-# (or Iterator in the sync client) that yields one parsed JSON object per chunk
-async for chunk in fga_client.execute_streamed_api_request(
-    operation_name="StreamedListObjects",
-    method="POST",
-    path="/stores/{store_id}/streamed-list-objects",
-    path_params={"store_id": FGA_STORE_ID},
-    body={
-        "type": "document",
-        "relation": "viewer",
-        "user": "user:anne",
-        "authorization_model_id": FGA_MODEL_ID,
-    },
-):
-    # Each chunk has the shape {"result": {"object": "..."}} or {"error": {...}}
-    if "result" in chunk:
-        print(chunk["result"]["object"])  # e.g. "document:roadmap"`;
-    case SupportedLanguage.JAVA_SDK:
-      return `import dev.openfga.sdk.api.client.ApiExecutorRequestBuilder;
-import dev.openfga.sdk.api.model.ListObjectsRequest;
-import dev.openfga.sdk.api.model.StreamedListObjectsResponse;
-import dev.openfga.sdk.api.client.HttpMethod;
-
-// Use streamingApiExecutor which delivers each response object
-// to a consumer callback as it arrives
-var request = ApiExecutorRequestBuilder.builder(
-    HttpMethod.POST, "/stores/{store_id}/streamed-list-objects"
-)
-    .body(new ListObjectsRequest()
-        .user("user:anne")
-        .relation("viewer")
-        .type("document"))
-    .build();
-
-fgaClient.streamingApiExecutor(StreamedListObjectsResponse.class)
-    .stream(
-        request,
-        response -> System.out.println("Object: " + response.getObject()),
-        error -> System.err.println("Stream error: " + error.getMessage())
-    )
-    .thenRun(() -> System.out.println("Streaming complete"))
-    .exceptionally(err -> {
-        System.err.println("Fatal error: " + err.getMessage());
-        return null;
-    });`;
-    case SupportedLanguage.CLI:
-    case SupportedLanguage.CURL:
-    case SupportedLanguage.RPC:
-    case SupportedLanguage.PLAYGROUND:
-      return `# API Executor is only available through the SDKs`;
-    default:
-      assertNever(lang);
-  }
-}
-
-export function ExecuteApiRequestStreamingViewer(opts: ExecuteApiRequestViewerOpts): JSX.Element {
-  const defaultLangs = [
-    SupportedLanguage.JS_SDK,
-    SupportedLanguage.GO_SDK,
-    SupportedLanguage.DOTNET_SDK,
-    SupportedLanguage.PYTHON_SDK,
-    SupportedLanguage.JAVA_SDK,
-  ];
-  const allowedLanguages = getFilteredAllowedLangs(opts.allowedLanguages, defaultLangs);
-  return defaultOperationsViewer<ExecuteApiRequestViewerOpts>(allowedLanguages, opts, executeApiRequestStreamingViewer);
-}
-
-// ---------------------------------------------------------------------------
-// 5. ExecuteApiRequestErrorViewer – error handling example
-// ---------------------------------------------------------------------------
-
-function executeApiRequestErrorViewer(lang: SupportedLanguage, opts: ExecuteApiRequestViewerOpts): string {
-  void opts;
-  switch (lang) {
-    case SupportedLanguage.JS_SDK:
-      return `try {
-  const response = await fgaClient.executeApiRequest({
-    operationName: "CustomEndpoint",
-    method: "POST",
-    path: "/stores/{store_id}/custom-endpoint",
-    pathParams: { store_id: process.env.FGA_STORE_ID },
-    body: { user: "user:bob" },
-  });
-  console.log("Success:", response);
-} catch (error) {
-  console.error("Request failed:", error.message);
-}`;
-    case SupportedLanguage.GO_SDK:
-      return `rawResponse, err := executor.Execute(ctx, request)
-if err != nil {
-    log.Fatalf("Request failed: %v", err)
-}
-
-fmt.Printf("Status Code: %d\\n", rawResponse.StatusCode)
-fmt.Printf("Headers: %+v\\n", rawResponse.Headers)`;
-    case SupportedLanguage.DOTNET_SDK:
-      return `var response = await executor.ExecuteAsync<object, GetStoreResponse>(
-    request, "GetStore"
-);
-
-if (!response.IsSuccessful) {
-    switch ((int)response.StatusCode) {
-        case 404:
-            Console.WriteLine("Not found");
-            break;
-        case 401:
-            Console.WriteLine("Unauthorized — check your credentials");
-            break;
-        case 429:
-            Console.WriteLine("Rate limited — retry after delay");
-            break;
-        case >= 500:
-            Console.WriteLine($"Server error: {response.RawResponse}");
-            break;
-        default:
-            Console.WriteLine($"Request failed: {response.StatusCode}");
-            break;
-    }
-    return;
-}
-
-Console.WriteLine($"Store Name: {response.Data.Name}");`;
-    case SupportedLanguage.PYTHON_SDK:
-      return `response = await fga_client.execute_api_request(
-    operation_name="CustomEndpoint",
-    method="POST",
-    path="/stores/{store_id}/custom-endpoint",
-    path_params={"store_id": FGA_STORE_ID},
-    body={"user": "user:bob"},
-)
-
-if response.status == 200:
-    result = response.json()
-    print(f"Response: {result}")
-else:
-    print(f"Request failed with status: {response.status}")`;
-    case SupportedLanguage.JAVA_SDK:
-      return `try {
-    var rawResponse = fgaClient.apiExecutor().send(request).get();
-    System.out.println("Status Code: " + rawResponse.getStatusCode());
-    System.out.println("Response: " + rawResponse.getData());
-} catch (Exception e) {
-    System.err.println("Request failed: " + e.getMessage());
-    System.err.println("Cause: " + e.getCause().getClass().getSimpleName());
-}`;
-    case SupportedLanguage.CLI:
-    case SupportedLanguage.CURL:
-    case SupportedLanguage.RPC:
-    case SupportedLanguage.PLAYGROUND:
-      return `# API Executor is only available through the SDKs`;
-    default:
-      assertNever(lang);
-  }
-}
-
-export function ExecuteApiRequestErrorViewer(opts: ExecuteApiRequestViewerOpts): JSX.Element {
-  const defaultLangs = [
-    SupportedLanguage.JS_SDK,
-    SupportedLanguage.GO_SDK,
-    SupportedLanguage.DOTNET_SDK,
-    SupportedLanguage.PYTHON_SDK,
-    SupportedLanguage.JAVA_SDK,
-  ];
-  const allowedLanguages = getFilteredAllowedLangs(opts.allowedLanguages, defaultLangs);
-  return defaultOperationsViewer<ExecuteApiRequestViewerOpts>(allowedLanguages, opts, executeApiRequestErrorViewer);
 }
