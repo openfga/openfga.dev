@@ -114,7 +114,6 @@ OpenFGA implements authorization through:
   - [Get Tuple Changes](https://openfga.dev/docs/interacting/read-tuple-changes)
   - [Search with Permissions](https://openfga.dev/docs/interacting/search-with-permissions)
   - [AuthZEN API](https://openfga.dev/docs/interacting/authzen)
-  - [Calling Other Endpoints](https://openfga.dev/docs/interacting/raw-api-requests)
 
 #### Best Practices
 - [Overview](https://openfga.dev/docs/best-practices/overview) - Best Practices overview
