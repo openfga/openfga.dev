@@ -17,6 +17,7 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
   --ifm-pre-padding: 2rem;
   --ifm-navbar-height: 6.5rem;
+  --ofga-markdown-h3-margin-top-adjustment: 50px;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -39,6 +40,11 @@ html[data-theme='dark'] {
 
 table td {
   overflow-wrap: break-word;
+}
+
+.markdown h3 {
+  /* Intentionally negative to reduce Docusaurus's default markdown h3 spacing. */
+  margin-top: calc(var(--ifm-heading-margin-top) - var(--ofga-markdown-h3-margin-top-adjustment));
 }
 
 /* =========================

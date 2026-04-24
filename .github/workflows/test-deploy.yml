@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cached LFS checkout
-        uses: nschloe/action-cached-lfs-checkout@1c185ad576953eab13e35ffe1bffef437d97e9d2
+        uses: nschloe/action-cached-lfs-checkout@385a8ecc719e50b8c71af6ab01a624b486b7c3bc
       - name: Set up node
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
         with:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
