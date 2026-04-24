@@ -11,7 +11,7 @@ export interface DefaultTabbedViewerOpts {
   pseudoCodeMode?: boolean;
 }
 
-function SdkToggle<T extends DefaultTabbedViewerOpts>({
+function CodeToggle<T extends DefaultTabbedViewerOpts>({
   allowedLanguages,
   opts,
   tabViewFn,
@@ -22,28 +22,28 @@ function SdkToggle<T extends DefaultTabbedViewerOpts>({
   tabViewFn: (lang: SupportedLanguage, opts: T, langMappings: LanguageMappings) => string;
   langMappings: LanguageMappings;
 }): JSX.Element {
-  const [showSdk, setShowSdk] = useState(false);
+  const [showCode, setShowCode] = useState(false);
 
-  const sdkLanguages = allowedLanguages.filter((language) => language !== SupportedLanguage.RPC);
-  const toggleLabel = showSdk ? 'View pseudocode' : 'View code';
+  const codeLanguages = allowedLanguages.filter((language) => language !== SupportedLanguage.RPC);
+  const toggleLabel = showCode ? 'View pseudocode' : 'View code';
 
   return (
     <div className="snippet-mode-toggle-wrapper">
       <div className="snippet-mode-toggle">
         <button
           type="button"
-          aria-pressed={showSdk}
+          aria-pressed={showCode}
           aria-label={toggleLabel}
           className="snippet-mode-toggle__button"
-          onClick={() => setShowSdk((prev) => !prev)}
+          onClick={() => setShowCode((prev) => !prev)}
         >
           {toggleLabel}
         </button>
       </div>
-      {showSdk ? (
-        sdkLanguages.length > 0 && (
-          <Tabs groupId="languages" values={getAllowedValuesLabels({ allowedLanguages: sdkLanguages })}>
-            {sdkLanguages.map((allowedLanguage) => (
+      {showCode ? (
+        codeLanguages.length > 0 && (
+          <Tabs groupId="languages" values={getAllowedValuesLabels({ allowedLanguages: codeLanguages })}>
+            {codeLanguages.map((allowedLanguage) => (
               <TabItem value={allowedLanguage} key={allowedLanguage}>
                 {GenerateSetupHeader(allowedLanguage, opts.skipSetup)}
                 {LanguageWrapper({
@@ -87,7 +87,7 @@ export function defaultOperationsViewer<T extends DefaultTabbedViewerOpts>(
   if (pseudoCodeMode && hasRpc && hasSdkLanguages) {
     return (
       <div style={{ marginTop: -20 }}>
-        <SdkToggle
+        <CodeToggle
           allowedLanguages={allowedLanguages}
           opts={opts}
           tabViewFn={tabViewFn}
