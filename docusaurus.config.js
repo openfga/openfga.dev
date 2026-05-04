@@ -121,8 +121,7 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
       img-src 'self' data: https://openfga.dev https://pbs.twimg.com https://docs.github.com https://heapanalytics.com https://forms.hsforms.com https://track.hubspot.com ;
       media-src 'self';
       object-src 'none';
-      script-src 'self' ${
-        process.env.NODE_ENV === 'development' ? `'unsafe-eval'` : ``
+      script-src 'self' ${process.env.NODE_ENV === 'development' ? `'unsafe-eval'` : ``
       } 'unsafe-inline' https://cdn.cookielaw.org https://geolocation.onetrust.com https://cdn.heapanalytics.com https://js.hs-scripts.com https://api.github.com https://js.hscollectedforms.net https://js.hs-analytics.net https://js.hs-banner.com https://widget.kapa.ai https://www.google.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ https://hcaptcha.com https://*.hcaptcha.com;
       style-src 'unsafe-inline' 'self' https://fonts.googleapis.com https://hcaptcha.com https://*.hcaptcha.com;`,
   },
@@ -151,7 +150,7 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
       ({
         fromExtensions: ['html'],
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        createRedirects: (path) => {},
+        createRedirects: (path) => { },
         redirects: [
           {
             to: '/api/service',
@@ -338,6 +337,7 @@ if (process.env.KAPA_WEBSITE_ID) {
     "data-button-hide": "true",
     "data-modal-override-open-selector": ".ask-ai-button",
     "data-modal-open-on-command-k": "true",
+    "data-modal-disclaimer": "This OpenFGA chatbot is powered by kapa.ai and uses AI to answer questions about OpenFGA based on OpenFGA's documentation, OpenFGA's GitHub, and other resources. Please do not input any sensitive or private information. Responses are for informational purposes and may be inaccurate. Please verify for accuracy. By using this chatbot, you agree to the Linux Foundation's Privacy Policy and Terms.",
     async: true,
   });
 }

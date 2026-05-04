@@ -1,0 +1,318 @@
+---
+title: Task-Based Authorization
+description: Modeling task-based authorization for agents
+sidebar_position: 1
+slug: /modeling/agents/task-based-authorization
+---
+
+import {
+  CheckRequestViewer,
+  DocumentationNotice,
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+  TupleViewer,
+} from '@components/Docs';
+
+# Modeling Task-Based Authorization for Agents
+
+<DocumentationNotice />
+
+Agents need credentials to interact with APIs. These can be user or service credentials, for internal or third-party systems. In most cases, these credentials grant agents broad access because the underlying authorization systems do not support fine-grained permissions. Consent prompts and service credentials are too coarse for agent use cases.
+
+Task-Based Authorization grants agents access to perform specific actions only when necessary, without permanent permissions. Agents start with no permissions and receive only what a given task requires. For example, rather than allowing an agent to create tickets across all projects, you authorize it to "create a ticket in project X" — scoping permissions to a specific context.
+
+This guide shows how to model task-based authorization in <ProductName format={ProductNameFormat.ShortForm}/>, progressing from a basic tool-calling model to patterns that support permission hierarchies, session scoping, expiration, and agent binding.
+
+## Tool authorization
+
+The simplest model represents tool authorization for a [Model Context Protocol](https://modelcontextprotocol.io/) server. When a task starts, you write tuples granting it permission to call the tools it needs.
+
+```dsl.openfga
+model
+  schema 1.1
+
+type task
+
+type tool
+  relations
+    define can_call: [task, task:*]
+
+type tool_resource
+  relations
+    define tool: [tool]
+    define can_call: [task] or can_call from tool
+```
+
+A `tool` represents a capability (e.g., `slack_send_message`), and a `tool_resource` represents a specific target within that tool (e.g., a Slack channel). Granting `can_call` on a `tool` automatically grants access to all of its resources. You can also grant access to individual resources, or use `task:*` to allow any task to call a tool.
+
+For example, you can grant `task:1` access to send any Slack message, while restricting `task:2` to a specific channel:
+
+<TupleViewer
+  tuples={[
+    { user: 'task:*', relation: 'can_call', object: 'tool:slack_list_channels' },
+    { user: 'task:1', relation: 'can_call', object: 'tool:slack_send_message' },
+    { user: 'task:2', relation: 'can_call', object: 'tool_resource:slack_send_message/XGA14FG' },
+  ]}
+/>
+
+When checking whether `task:2` can call `tool_resource:slack_send_message/XGA14FG`, send a [contextual tuple](../../interacting/contextual-tuples.mdx) linking the resource to its tool. This avoids storing a tuple for every channel — you provide the tool-to-resource relationship at query time.
+
+<CheckRequestViewer
+  user={'task:2'}
+  relation={'can_call'}
+  object={'tool_resource:slack_send_message/XGA14FG'}
+  allowed={true}
+  skipSetup={true}
+  contextualTuples={[
+    {
+      _description: 'Link the tool_resource to its parent tool',
+      user: 'tool:slack_send_message',
+      relation: 'tool',
+      object: 'tool_resource:slack_send_message/XGA14FG',
+    },
+  ]}
+/>
+
+## Domain-specific models
+
+The model above is generic. If you are building agents for your own application, your authorization model should reflect your domain. Consider a project management system:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type task
+
+type organization
+  relations
+    define admin: [user]
+    define member: [user]
+
+type project
+  relations
+    define organization: [organization]
+
+    # relations for users
+    define owner: [user]
+    define member: [user]
+
+    # relations for tasks
+    define read: [task]
+    define write: [task]
+    define delete: [task]
+
+    # permissions for users
+    define can_delete: delete or owner or admin from organization
+    define can_edit: write or owner or admin from organization
+    define can_read: read or can_edit or member from organization
+    define can_create_ticket: can_edit
+
+type ticket
+  relations
+    define project: [project]
+    define owner: [user]
+
+    # relations for tasks
+    define read: [task]
+    define write: [task]
+    define delete: [task]
+    define can_delete: owner or delete or can_delete from project
+    define can_edit: owner or write or can_edit from project
+    define can_read: read or write or can_read from project
+```
+
+This enriches an existing user-oriented model by adding `task` as a principal. Granting a `task` the `write` relation on a project gives it permission to read and edit the project and all its tickets. You can also grant permissions at the ticket level for more granular control. This makes your application ready for agent authorization with minimal changes to your existing model.
+
+If you follow this approach, your application needs to perform both user and task authorization. This means two separate checks: one to verify the user has access to a resource, and another to verify the task has permission to perform the action on behalf of the agent, as described in [Binding agents to tasks](#binding-agents-to-tasks).
+
+## Scoping permissions to sessions and agents
+
+In interactive scenarios, users may create multiple sessions. You can scope permissions to a session so that access applies to all tasks within it. You can also scope permissions to an agent so they persist across sessions.
+
+```dsl.openfga
+model
+  schema 1.1
+
+type task
+
+type agent
+  relations
+    define task: [task]
+
+type session
+  relations
+    define task: [task]
+
+type tool
+  relations
+    define can_call: [task, session#task, agent#task]
+```
+
+The `can_call` relation accepts three types of assignments:
+
+- `task` — grant permission to a specific task.
+- `session#task` — grant permission to all tasks in a session. When the user says "allow this for this session", write a tuple like `user: session:1#task, relation: can_call, object: tool:slack_send_message`.
+- `agent#task` — grant permission to all tasks for an agent, across sessions. When the user says "always allow this", write a tuple with `agent:1#task` instead.
+
+Each task is linked to its session and agent when created:
+
+<TupleViewer
+  tuples={[
+    { user: 'task:1', relation: 'task', object: 'agent:1' },
+    { user: 'task:1', relation: 'task', object: 'session:1' },
+    { user: 'session:1#task', relation: 'can_call', object: 'tool:slack_send_message' },
+  ]}
+/>
+
+## Expiration and call count
+
+You can use <ProductName format={ProductNameFormat.ShortForm}/> [conditions](../../configuration-language.mdx#conditional-relationships) to make permissions expire after a duration, or limit how many times the tool can be called.
+
+```dsl.openfga
+model
+  schema 1.1
+
+type task
+
+type tool
+  relations
+    define can_call: [task, task with expiration, task with max_call_count]
+
+condition expiration(grant_time: timestamp, grant_duration: duration, current_time: timestamp) {
+  current_time < grant_time + grant_duration
+}
+
+condition max_call_count(max_tool_calls: int, current_tool_count: int) {
+  current_tool_count < max_tool_calls
+}
+```
+
+The `expiration` condition grants access for a fixed duration from the grant time. The `max_call_count` condition limits how many times the tool can be called. When writing the tuple, you provide the condition parameters:
+
+<TupleViewer
+  tuples={[
+    {
+      user: 'task:1',
+      relation: 'can_call',
+      object: 'tool:slack_send_message',
+      condition: { name: 'expiration', context: { grant_time: '2026-03-22T00:00:00Z', grant_duration: '10m' } },
+    },
+  ]}
+  rightColumnTuples={[
+    {
+      user: 'task:2',
+      relation: 'can_call',
+      object: 'tool:slack_send_message',
+      condition: { name: 'max_call_count', context: { max_tool_calls: 2 } },
+    },
+  ]}
+/>
+
+When checking access, pass the current time or current call count in the request context.
+
+## Binding agents to tasks
+
+The examples above do not verify that the agent making the call is actually assigned to the task. You can enforce this using [contextual tuples](../../interacting/contextual-tuples.mdx) and an intersection (`and`) in the model, similar to the [Authorization Through Organization Context](../organization-context-authorization.mdx) pattern.
+
+```dsl.openfga
+model
+  schema 1.1
+
+type task
+
+type agent
+  relations
+    define task: [task]
+
+type tool
+  relations
+    define calling_agent: [agent]
+    define can_call: [task] and task from calling_agent
+```
+
+The `can_call` relation requires both that the task has been granted access **and** that the agent making the call is linked to the task. When the task is created, link it to its agent:
+
+<TupleViewer
+  tuples={[
+    { user: 'task:1', relation: 'task', object: 'agent:1' },
+    { user: 'task:1', relation: 'can_call', object: 'tool:slack_send_message' },
+  ]}
+/>
+
+At check time, send a contextual tuple identifying the calling agent. If the agent is linked to the task, the check returns `true`:
+
+<CheckRequestViewer
+  user={'task:1'}
+  relation={'can_call'}
+  object={'tool:slack_send_message'}
+  allowed={true}
+  skipSetup={true}
+  contextualTuples={[
+    {
+      _description: 'The agent making the call',
+      user: 'agent:1',
+      relation: 'calling_agent',
+      object: 'tool:slack_send_message',
+    },
+  ]}
+/>
+
+If a different agent tries to use `task:1`, the check returns `false` because the agent-to-task link does not match:
+
+<CheckRequestViewer
+  user={'task:1'}
+  relation={'can_call'}
+  object={'tool:slack_send_message'}
+  allowed={false}
+  skipSetup={true}
+  contextualTuples={[
+    {
+      _description: 'A different agent making the call',
+      user: 'agent:2',
+      relation: 'calling_agent',
+      object: 'tool:slack_send_message',
+    },
+  ]}
+/>
+
+## Delegating task permissions to sub-agents
+
+Sub-agents also start with no permissions. When delegating work, you have two options:
+
+- **Share the task**: assign the same task to the sub-agent, giving it all the task's permissions.
+- **Restrict further**: create a new task with a narrower set of permissions for the sub-agent.
+
+## Tuple cleanup
+
+When a task completes, delete all tuples associated with it to revoke its permissions.
+
+## Further reading
+
+Mapping user intent to the right set of permissions is an active area of research. These resources explore the topic:
+
+- [From Scopes To Intent: Reimagining Authorization for Autonomous Agents](https://mcpdevsummitna26.sched.com/event/2Hbg0/from-scopes-to-intent-reimagining-authorization-for-autonomous-agents-andres-aguiar-abhishek-hingnikar-okta), MCP Dev Summit NY 2026 [code repository](https://github.com/aaguiarz/ibac-talk-demo) and [demo](https://www.youtube.com/watch?v=IVIvtusd7LA)
+- [Intent-Based Access Control: Securing Agentic AI Through Fine-Grained Authorization](https://ibac.dev/)
+- [Delegated Authorization for Agents Constrained to Semantic Task-to-Scope Matching](https://arxiv.org/abs/2510.26702)
+- [The Mission Shaping Problem](https://notes.karlmcguinness.com/notes/the-mission-shaping-problem/)
+- [Securing Agentic AI: authorization patterns for autonomous systems](https://dev.to/siddhantkcode/securing-agentic-ai-authorization-patterns-for-autonomous-systems-3ajo)
+
+## Related Sections
+
+<RelatedSection
+  description="Take a look at the following sections for more information."
+  relatedLinks={[
+    {
+      title: 'Conditions',
+      description: 'Learn how to model relationships with conditions such as expiration and call count',
+      link: '../../modeling/conditions',
+    },
+    {
+      title: 'Contextual Tuples',
+      description: 'Learn how to use contextual tuples to send dynamic context at query time',
+      link: '../../interacting/contextual-tuples',
+    },
+  ]}
+/>

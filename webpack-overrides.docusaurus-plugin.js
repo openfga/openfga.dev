@@ -10,6 +10,7 @@ module.exports = function (context, options) {
         resolve: {
           fallback: {
             path: require.resolve('path-browserify'),
+            crypto: false,
           },
         },
       };

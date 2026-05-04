@@ -14,6 +14,7 @@ interface CheckRequestViewerOpts {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context?: Record<string, any>;
   skipSetup?: boolean;
+  pseudoCodeMode?: boolean;
   allowedLanguages?: SupportedLanguage[];
 
   // Optional custom headers
@@ -73,15 +74,28 @@ ${
           .join('')
       : ''
   }
-  -d '{${modelId ? `"authorization_model_id": "${modelId}", ` : ''}"tuple_key":{"user":"${user}","relation":"${relation}","object":"${object}"}${
-    contextualTuples
-      ? `,"contextual_tuples":{"tuple_keys":[${contextualTuples
-          .map((tuple) => `{"user":"${tuple.user}","relation":"${tuple.relation}","object":"${tuple.object}"}`)
-          .join(',')}]}`
-      : ''
-  }${context ? `,"context":${JSON.stringify(context)}}` : '}'}'
+  -d '{${modelId ? `\n    "authorization_model_id": "${modelId}",` : ''}
+    "tuple_key": {
+      "user": "${user}",
+      "relation": "${relation}",
+      "object": "${object}"
+    }${
+      contextualTuples
+        ? `,
+    "contextual_tuples": {
+      "tuple_keys": [${contextualTuples
+        .map(
+          (tuple) => `
+        {"user": "${tuple.user}", "relation": "${tuple.relation}", "object": "${tuple.object}"}`,
+        )
+        .join(',')}
+      ]
+    }`
+        : ''
+    }${context ? `,\n    "context": ${JSON.stringify(context)}` : ''}
+  }'
 
-# Response: {"allowed":${allowed}}`;
+# Response: {"allowed": ${allowed}}`;
 
     case SupportedLanguage.JS_SDK:
       return `
@@ -93,7 +107,13 @@ const { allowed } = await fgaClient.check({
       !contextualTuples
         ? ``
         : `
-    contextualTuples: [\n      ${contextualTuples.map((tuple) => `${JSON.stringify(tuple)}`).join(',')}
+    contextualTuples: [
+      ${contextualTuples
+        .map(
+          (tuple) =>
+            `{\n        user: '${tuple.user}',\n        relation: '${tuple.relation}',\n        object: '${tuple.object}',\n      }`,
+        )
+        .join(',\n      ')}
     ],`
     }${!context ? `\n  }` : `\n    context: ${JSON.stringify(context)}\n  }`}, {${
       modelId ? `\n    authorizationModelId: '${modelId}',` : ''
@@ -237,12 +257,22 @@ response = await fga_client.check(body, options)
       return `check(
   user = "${user}", // check if the user \`${user}\`
   relation = "${relation}", // has an \`${relation}\` relation
-  object = "${object}", // with the object \`${object}\`
-  ${
+  object = "${object}", // with the object \`${object}\`${
+    headers && Object.keys(headers).length > 0
+      ? `
+  headers = { ${Object.entries(headers)
+    .map(([key, value]) => `"${key}" = "${value}"`)
+    .join(', ')} },`
+      : ''
+  }${
     contextualTuples
-      ? `contextual_tuples = [ // Assuming the following is true
+      ? `
+  contextual_tuples = [ // Assuming the following is true
     ${contextualTuples
-      .map((tuple) => `{user = "${tuple.user}", relation = "${tuple.relation}", object = "${tuple.object}"}`)
+      .map(
+        (tuple) =>
+          `{\n      user = "${tuple.user}",\n      relation = "${tuple.relation}",\n      object = "${tuple.object}",\n    }`,
+      )
       .join(',\n    ')}
   ],`
       : ''
@@ -251,13 +281,6 @@ response = await fga_client.check(body, options)
       ? `
   context = { ${Object.entries(context)
     .map(([k, v]) => `${k} = "${v}"`)
-    .join(', ')} },`
-      : ''
-  } authorization_id = "${modelId}"${
-    headers && Object.keys(headers).length > 0
-      ? `
-  extra_headers = { ${Object.entries(headers)
-    .map(([k, v]) => `"${k}": "${v}"`)
     .join(', ')} },`
       : ''
   }
