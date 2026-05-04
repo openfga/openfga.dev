@@ -295,9 +295,6 @@ export function ExecuteApiRequestViewer(opts: ExecuteApiRequestViewerOpts): JSX.
 // ---------------------------------------------------------------------------
 
 interface ExecuteApiRequestStreamingViewerOpts extends ExecuteApiRequestViewerOpts {
-  /** Request body (required for streaming). */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body: Record<string, any>;
   /** Field name to extract from each streamed result, e.g. "object". */
   responseField?: string;
 }
