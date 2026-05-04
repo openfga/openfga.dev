@@ -1,5 +1,5 @@
 import { getFilteredAllowedLangs, SupportedLanguage, DefaultAuthorizationModelId } from './SupportedLanguage';
-import { defaultOperationsViewer } from './DefaultTabbedViewer';
+import { defaultOperationsViewer, type DefaultTabbedViewerOpts } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
 import { TupleKey } from '@openfga/sdk';
 
@@ -13,10 +13,9 @@ interface Check {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context?: Record<string, any>;
 }
-interface BatchCheckRequestViewerOpts {
+interface BatchCheckRequestViewerOpts extends DefaultTabbedViewerOpts {
   authorizationModelId?: string;
   checks: Check[];
-  skipSetup?: boolean;
   allowedLanguages?: SupportedLanguage[];
 }
 
@@ -32,8 +31,7 @@ function batchCheckRequestViewer(lang: SupportedLanguage, opts: BatchCheckReques
       throw new Error('Batch check is not supported in the CLI');
 
     case SupportedLanguage.JS_SDK:
-      return `// Requires >=v0.8.0 for the server side BatchCheck, earlier versions support a client-side BatchCheck with a slightly different interface
-const body = {
+      return `const body = {
   checks: [
     ${checks
       .map(
@@ -108,8 +106,7 @@ const { result } = await fgaClient.batchCheck(body, options);
 */`;
 
     case SupportedLanguage.GO_SDK:
-      return `// Requires >=v0.7.0 for the server side BatchCheck, earlier versions support a client-side BatchCheck with a slightly different interface
-body := ClientBatchCheckRequest{
+      return `body := ClientBatchCheckRequest{
   Checks: []ClientBatchCheckItem{${checks
     .map(
       (check) => `
@@ -249,9 +246,7 @@ response.Result = [${checks
 `;
 
     case SupportedLanguage.PYTHON_SDK:
-      return `# Requires >=v0.9.0 for the server side BatchCheck, earlier versions support a client-side BatchCheck with a slightly different interface
-
-checks = [${checks
+      return `checks = [${checks
         .map(
           (check) => `
   ClientBatchCheckItem(
@@ -298,7 +293,7 @@ response = await fga_client.batch_check(ClientBatchCheckRequest(checks=checks), 
         .join(', ')}]`;
 
     case SupportedLanguage.JAVA_SDK:
-      return ` // Requires >=v0.8.0 for the server side BatchCheck, earlier versions support a client-side BatchCheck with a slightly different interface
+      return `
 var request = new ClientBatchCheckRequest().checks(
     List.of(
       ${checks
