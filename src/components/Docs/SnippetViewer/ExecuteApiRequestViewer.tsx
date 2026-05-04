@@ -294,21 +294,12 @@ export function ExecuteApiRequestViewer(opts: ExecuteApiRequestViewerOpts): JSX.
 // 2. ExecuteApiRequestStreamingViewer – configurable streaming request
 // ---------------------------------------------------------------------------
 
-interface ExecuteApiRequestStreamingViewerOpts {
-  /** Name used for telemetry / logging. */
-  operationName: string;
-  /** URL path template, e.g. "/stores/{store_id}/streamed-list-objects". */
-  path: string;
-  /** Path parameter substitutions. */
-  pathParams?: Record<string, string>;
-  /** Request body. */
+interface ExecuteApiRequestStreamingViewerOpts extends ExecuteApiRequestViewerOpts {
+  /** Request body (required for streaming). */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   body: Record<string, any>;
   /** Field name to extract from each streamed result, e.g. "object". */
   responseField?: string;
-
-  skipSetup?: boolean;
-  allowedLanguages?: SupportedLanguage[];
 }
 
 function executeApiRequestStreamingViewer(lang: SupportedLanguage, opts: ExecuteApiRequestStreamingViewerOpts): string {
