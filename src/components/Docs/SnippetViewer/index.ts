@@ -2,6 +2,7 @@ export * from './CheckRequestViewer';
 export * from './BatchCheckRequestViewer';
 export * from './DefaultTabbedViewer';
 export * from './ExpandRequestViewer';
+export * from './ExecuteApiRequestViewer';
 export * from './ListObjectsRequestViewer';
 export * from './ListUsersRequestViewer';
 export * from './ReadChangesRequestViewer';
