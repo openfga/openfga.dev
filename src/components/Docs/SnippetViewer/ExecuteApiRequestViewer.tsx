@@ -120,8 +120,9 @@ function buildCurlSnippet(opts: {
   queryParams?: Record<string, string>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   body?: Record<string, any>;
+  streaming?: boolean;
 }): string {
-  const { method, path, pathParams, queryParams, body } = opts;
+  const { method, path, pathParams, queryParams, body, streaming } = opts;
   let url = `$FGA_API_URL${path}`;
   if (pathParams) {
     for (const [k, v] of Object.entries(pathParams)) {
@@ -134,7 +135,7 @@ function buildCurlSnippet(opts: {
       .join('&');
     url += `?${qs}`;
   }
-  let code = `curl -X ${method} '${url}' \\\n`;
+  let code = streaming ? `curl -N -X ${method} '${url}' \\\n` : `curl -X ${method} '${url}' \\\n`;
   code += `  -H 'Content-Type: application/json' \\\n`;
   code += `  -H 'Authorization: Bearer $FGA_API_TOKEN'`;
   if (body) {
@@ -489,7 +490,7 @@ ${parts.join('\n')}
     }
 
     case SupportedLanguage.CURL: {
-      return buildCurlSnippet({ method, path, pathParams, queryParams, body });
+      return buildCurlSnippet({ method, path, pathParams, queryParams, body, streaming: true });
     }
 
     case SupportedLanguage.CLI:
