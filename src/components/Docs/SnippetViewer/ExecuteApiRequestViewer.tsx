@@ -103,7 +103,44 @@ function csharpMethod(method: string): string {
 }
 
 function javaMethod(method: string): string {
-  return `HttpMethod.${method.toUpperCase()}`;
+  const map: Record<string, string> = {
+    GET: 'HttpMethod.GET',
+    POST: 'HttpMethod.POST',
+    PUT: 'HttpMethod.PUT',
+    DELETE: 'HttpMethod.DELETE',
+    PATCH: 'HttpMethod.PATCH',
+  };
+  return map[method.toUpperCase()] || `HttpMethod.valueOf("${method.toUpperCase()}")`;
+}
+
+function buildCurlSnippet(opts: {
+  method: string;
+  path: string;
+  pathParams?: Record<string, string>;
+  queryParams?: Record<string, string>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  body?: Record<string, any>;
+}): string {
+  const { method, path, pathParams, queryParams, body } = opts;
+  let url = `$FGA_API_URL${path}`;
+  if (pathParams) {
+    for (const [k, v] of Object.entries(pathParams)) {
+      url = url.split(`{${k}}`).join(v);
+    }
+  }
+  if (queryParams && Object.keys(queryParams).length > 0) {
+    const qs = Object.entries(queryParams)
+      .map(([k, v]) => `${k}=${v}`)
+      .join('&');
+    url += `?${qs}`;
+  }
+  let code = `curl -X ${method} '${url}' \\\n`;
+  code += `  -H 'Content-Type: application/json' \\\n`;
+  code += `  -H 'Authorization: Bearer $FGA_API_TOKEN'`;
+  if (body) {
+    code += ` \\\n  -d '${JSON.stringify(body, null, 2)}'`;
+  }
+  return code;
 }
 
 // ---------------------------------------------------------------------------
@@ -269,24 +306,7 @@ ${parts.join('\n')}
     }
 
     case SupportedLanguage.CURL: {
-      let url = `$FGA_API_URL${path}`;
-      if (pathParams) {
-        for (const [k, v] of Object.entries(pathParams)) {
-          url = url.split(`{${k}}`).join(v);
-        }
-      }
-      if (queryParams && Object.keys(queryParams).length > 0) {
-        const qs = Object.entries(queryParams)
-          .map(([k, v]) => `${k}=${v}`)
-          .join('&');
-        url += `?${qs}`;
-      }
-      let code = `curl -X ${method} '${url}' \\\n`;
-      code += `  -H 'Content-Type: application/json' \\\n`;
-      code += `  -H 'Authorization: Bearer $FGA_BEARER_TOKEN'`;
-      if (body) {
-        code += ` \\\n  -d '${JSON.stringify(body, null, 2)}'`;
-      }
+      let code = buildCurlSnippet({ method, path, pathParams, queryParams, body });
       if (responseExample) {
         code += `\n\n# Response: ${responseExample}`;
       }
@@ -346,9 +366,15 @@ function executeApiRequestStreamingViewer(lang: SupportedLanguage, opts: Execute
           .join(', ');
         parts.push(`  queryParams: { ${entries} },`);
       }
-      return `for await (const chunk of fgaClient.executeStreamedApiRequest({
+      return `import { parseNDJSONStream } from '@openfga/sdk';
+
+const streamResp = await fgaClient.executeStreamedApiRequest({
 ${parts.join('\n')}
-})) {
+});
+
+const source = streamResp.$response?.data ?? streamResp;
+
+for await (const chunk of parseNDJSONStream(source)) {
   console.log(chunk);
 }`;
     }
@@ -401,7 +427,7 @@ ${parts.join('\n')}
       code += `;\n\n`;
       code += `await foreach (var item in executor.ExecuteStreamingAsync<object, Dictionary<string, object>>(\n`;
       code += `    request, "${operationName}"))\n{\n`;
-      code += `    Console.WriteLine(item);`;
+      code += `    Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(item));`;
       code += `\n}`;
       return code;
     }
@@ -463,25 +489,7 @@ ${parts.join('\n')}
     }
 
     case SupportedLanguage.CURL: {
-      let url = `$FGA_API_URL${path}`;
-      if (pathParams) {
-        for (const [k, v] of Object.entries(pathParams)) {
-          url = url.split(`{${k}}`).join(v);
-        }
-      }
-      if (queryParams && Object.keys(queryParams).length > 0) {
-        const qs = Object.entries(queryParams)
-          .map(([k, v]) => `${k}=${v}`)
-          .join('&');
-        url += `?${qs}`;
-      }
-      let code = `curl -X ${method} '${url}' \\\n`;
-      code += `  -H 'Content-Type: application/json' \\\n`;
-      code += `  -H 'Authorization: Bearer $FGA_BEARER_TOKEN'`;
-      if (body) {
-        code += ` \\\n  -d '${JSON.stringify(body, null, 2)}'`;
-      }
-      return code;
+      return buildCurlSnippet({ method, path, pathParams, queryParams, body });
     }
 
     case SupportedLanguage.CLI:
