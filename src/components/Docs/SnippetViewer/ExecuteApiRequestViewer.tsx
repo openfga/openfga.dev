@@ -268,8 +268,32 @@ ${parts.join('\n')}
       return code;
     }
 
+    case SupportedLanguage.CURL: {
+      let url = `$FGA_API_URL${path}`;
+      if (pathParams) {
+        for (const [k, v] of Object.entries(pathParams)) {
+          url = url.split(`{${k}}`).join(v);
+        }
+      }
+      if (queryParams && Object.keys(queryParams).length > 0) {
+        const qs = Object.entries(queryParams)
+          .map(([k, v]) => `${k}=${v}`)
+          .join('&');
+        url += `?${qs}`;
+      }
+      let code = `curl -X ${method} '${url}' \\\n`;
+      code += `  -H 'Content-Type: application/json' \\\n`;
+      code += `  -H 'Authorization: Bearer $FGA_BEARER_TOKEN'`;
+      if (body) {
+        code += ` \\\n  -d '${JSON.stringify(body, null, 2)}'`;
+      }
+      if (responseExample) {
+        code += `\n\n# Response: ${responseExample}`;
+      }
+      return code;
+    }
+
     case SupportedLanguage.CLI:
-    case SupportedLanguage.CURL:
     case SupportedLanguage.RPC:
     case SupportedLanguage.PLAYGROUND:
       return `# API Executor is only available through the SDKs`;
@@ -285,6 +309,7 @@ export function ExecuteApiRequestViewer(opts: ExecuteApiRequestViewerOpts): JSX.
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
     SupportedLanguage.JAVA_SDK,
+    SupportedLanguage.CURL,
   ];
   const allowedLanguages = getFilteredAllowedLangs(opts.allowedLanguages, defaultLangs);
   return defaultOperationsViewer<ExecuteApiRequestViewerOpts>(allowedLanguages, opts, executeApiRequestViewer);
@@ -294,20 +319,16 @@ export function ExecuteApiRequestViewer(opts: ExecuteApiRequestViewerOpts): JSX.
 // 2. ExecuteApiRequestStreamingViewer – configurable streaming request
 // ---------------------------------------------------------------------------
 
-interface ExecuteApiRequestStreamingViewerOpts extends ExecuteApiRequestViewerOpts {
-  /** Field name to extract from each streamed result, e.g. "object". */
-  responseField?: string;
-}
+interface ExecuteApiRequestStreamingViewerOpts extends ExecuteApiRequestViewerOpts {}
 
 function executeApiRequestStreamingViewer(lang: SupportedLanguage, opts: ExecuteApiRequestStreamingViewerOpts): string {
-  const { operationName, path, pathParams, body, responseField } = opts;
-  const field = responseField || 'object';
+  const { operationName, method, path, pathParams, body, queryParams } = opts;
 
   switch (lang) {
     case SupportedLanguage.JS_SDK: {
       const parts: string[] = [];
       parts.push(`  operationName: "${operationName}",`);
-      parts.push(`  method: "POST",`);
+      parts.push(`  method: "${method}",`);
       parts.push(`  path: "${path}",`);
       if (pathParams && Object.keys(pathParams).length > 0) {
         const entries = Object.entries(pathParams)
@@ -315,47 +336,71 @@ function executeApiRequestStreamingViewer(lang: SupportedLanguage, opts: Execute
           .join(', ');
         parts.push(`  pathParams: { ${entries} },`);
       }
-      parts.push(`  body: ${jsValue(body, 4)},`);
+      if (body) {
+        parts.push(`  body: ${jsValue(body, 4)},`);
+      }
+      if (queryParams && Object.keys(queryParams).length > 0) {
+        const entries = Object.entries(queryParams)
+          .map(([k, v]) => `${k}: "${v}"`)
+          .join(', ');
+        parts.push(`  queryParams: { ${entries} },`);
+      }
       return `for await (const chunk of fgaClient.executeStreamedApiRequest({
 ${parts.join('\n')}
 })) {
-  if (chunk.result) {
-    console.log(chunk.result.${field});
-  }
+  console.log(chunk);
 }`;
     }
 
     case SupportedLanguage.GO_SDK: {
-      let code = `requestBody := ${goValue(body, 8)}\n\n`;
+      let code = '';
+      if (body) {
+        code += `requestBody := ${goValue(body, 8)}\n\n`;
+      }
       code += `request := openfga.NewAPIExecutorRequestBuilder(\n`;
-      code += `    "${operationName}", http.MethodPost, "${path}",\n)`;
+      code += `    "${operationName}", ${goMethod(method)}, "${path}",\n)`;
       if (pathParams) {
         for (const [k, v] of Object.entries(pathParams)) {
           code += `.\n    WithPathParameter("${k}", "${v}")`;
         }
       }
-      code += `.\n    WithBody(requestBody).\n    Build()\n\n`;
+      if (queryParams) {
+        for (const [k, v] of Object.entries(queryParams)) {
+          code += `.\n    WithQueryParameter("${k}", "${v}")`;
+        }
+      }
+      if (body) {
+        code += `.\n    WithBody(requestBody)`;
+      }
+      code += `.\n    Build()\n\n`;
       code += `channel, err := executor.ExecuteStreaming(ctx, request, openfga.DefaultStreamBufferSize)\n`;
       code += `if err != nil {\n    log.Fatalf("Streaming request failed: %v", err)\n}\ndefer channel.Close()\n\n`;
       code += `for {\n    select {\n    case result, ok := <-channel.Results:\n        if !ok {\n            return\n        }\n`;
-      code += `        var obj map[string]interface{}\n        json.Unmarshal(result, &obj)\n`;
-      code += `        fmt.Println(obj["${field}"])\n`;
+      code += `        fmt.Println(string(result))\n`;
       code += `    case err := <-channel.Errors:\n        if err != nil {\n            log.Fatalf("Stream error: %v", err)\n        }\n    }\n}`;
       return code;
     }
 
     case SupportedLanguage.DOTNET_SDK: {
       let code = `var request = RequestBuilder<object>\n`;
-      code += `    .Create(HttpMethod.Post, configuration.ApiUrl, "${path}")`;
+      code += `    .Create(${csharpMethod(method)}, configuration.ApiUrl, "${path}")`;
       if (pathParams) {
         for (const [k, v] of Object.entries(pathParams)) {
           code += `\n    .WithPathParameter("${k}", "${v}")`;
         }
       }
-      code += `\n    .WithBody(${csharpValue(body, 8)});\n\n`;
-      code += `await foreach (var item in executor.ExecuteStreamingAsync<object, StreamedListObjectsResponse>(\n`;
+      if (queryParams) {
+        for (const [k, v] of Object.entries(queryParams)) {
+          code += `\n    .WithQueryParameter("${k}", "${v}")`;
+        }
+      }
+      if (body) {
+        code += `\n    .WithBody(${csharpValue(body, 8)})`;
+      }
+      code += `;\n\n`;
+      code += `await foreach (var item in executor.ExecuteStreamingAsync<object, Dictionary<string, object>>(\n`;
       code += `    request, "${operationName}"))\n{\n`;
-      code += `    Console.WriteLine(item.${field.charAt(0).toUpperCase() + field.slice(1)});`;
+      code += `    Console.WriteLine(item);`;
       code += `\n}`;
       return code;
     }
@@ -363,7 +408,7 @@ ${parts.join('\n')}
     case SupportedLanguage.PYTHON_SDK: {
       const parts: string[] = [];
       parts.push(`    operation_name="${operationName}",`);
-      parts.push(`    method="POST",`);
+      parts.push(`    method="${method}",`);
       parts.push(`    path="${path}",`);
       if (pathParams && Object.keys(pathParams).length > 0) {
         const entries = Object.entries(pathParams)
@@ -371,36 +416,74 @@ ${parts.join('\n')}
           .join(', ');
         parts.push(`    path_params={${entries}},`);
       }
-      parts.push(`    body=${pyValue(body, 8)},`);
+      if (body) {
+        parts.push(`    body=${pyValue(body, 8)},`);
+      }
+      if (queryParams && Object.keys(queryParams).length > 0) {
+        const entries = Object.entries(queryParams)
+          .map(([k, v]) => `"${k}": "${v}"`)
+          .join(', ');
+        parts.push(`    query_params={${entries}},`);
+      }
       return `async for chunk in fga_client.execute_streamed_api_request(
 ${parts.join('\n')}
 ):
-    if "result" in chunk:
-        print(chunk["result"]["${field}"])`;
+    print(chunk)`;
     }
 
     case SupportedLanguage.JAVA_SDK: {
       let code = '';
-      code += `Map<String, Object> requestBody = ${javaValue(body, 8)};\n\n`;
+      if (body) {
+        code += `Map<String, Object> requestBody = ${javaValue(body, 8)};\n\n`;
+      }
       code += `var request = ApiExecutorRequestBuilder.builder(\n`;
-      code += `    HttpMethod.POST, "${path}"\n)`;
+      code += `    ${javaMethod(method)}, "${path}"\n)`;
       if (pathParams) {
         for (const [k, v] of Object.entries(pathParams)) {
           code += `\n    .pathParam("${k}", "${v}")`;
         }
       }
-      code += `\n    .body(requestBody)\n    .build();\n\n`;
-      code += `fgaClient.streamingApiExecutor(StreamedListObjectsResponse.class)\n`;
+      if (queryParams) {
+        for (const [k, v] of Object.entries(queryParams)) {
+          code += `\n    .queryParam("${k}", "${v}")`;
+        }
+      }
+      if (body) {
+        code += `\n    .body(requestBody)`;
+      }
+      code += `\n    .build();\n\n`;
+      code += `fgaClient.streamingApiExecutor(Map.class)\n`;
       code += `    .stream(\n`;
       code += `        request,\n`;
-      code += `        response -> System.out.println(response.get${field.charAt(0).toUpperCase() + field.slice(1)}()),\n`;
+      code += `        response -> System.out.println(response),\n`;
       code += `        error -> System.err.println("Stream error: " + error.getMessage())\n`;
       code += `    )\n    .get();`;
       return code;
     }
 
+    case SupportedLanguage.CURL: {
+      let url = `$FGA_API_URL${path}`;
+      if (pathParams) {
+        for (const [k, v] of Object.entries(pathParams)) {
+          url = url.split(`{${k}}`).join(v);
+        }
+      }
+      if (queryParams && Object.keys(queryParams).length > 0) {
+        const qs = Object.entries(queryParams)
+          .map(([k, v]) => `${k}=${v}`)
+          .join('&');
+        url += `?${qs}`;
+      }
+      let code = `curl -X ${method} '${url}' \\\n`;
+      code += `  -H 'Content-Type: application/json' \\\n`;
+      code += `  -H 'Authorization: Bearer $FGA_BEARER_TOKEN'`;
+      if (body) {
+        code += ` \\\n  -d '${JSON.stringify(body, null, 2)}'`;
+      }
+      return code;
+    }
+
     case SupportedLanguage.CLI:
-    case SupportedLanguage.CURL:
     case SupportedLanguage.RPC:
     case SupportedLanguage.PLAYGROUND:
       return `# API Executor streaming is only available through the SDKs`;
@@ -416,6 +499,7 @@ export function ExecuteApiRequestStreamingViewer(opts: ExecuteApiRequestStreamin
     SupportedLanguage.DOTNET_SDK,
     SupportedLanguage.PYTHON_SDK,
     SupportedLanguage.JAVA_SDK,
+    SupportedLanguage.CURL,
   ];
   const allowedLanguages = getFilteredAllowedLangs(opts.allowedLanguages, defaultLangs);
   return defaultOperationsViewer<ExecuteApiRequestStreamingViewerOpts>(
