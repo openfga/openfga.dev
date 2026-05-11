@@ -319,6 +319,7 @@ export function ExecuteApiRequestViewer(opts: ExecuteApiRequestViewerOpts): JSX.
 // 2. ExecuteApiRequestStreamingViewer – configurable streaming request
 // ---------------------------------------------------------------------------
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface ExecuteApiRequestStreamingViewerOpts extends ExecuteApiRequestViewerOpts {}
 
 function executeApiRequestStreamingViewer(lang: SupportedLanguage, opts: ExecuteApiRequestStreamingViewerOpts): string {
