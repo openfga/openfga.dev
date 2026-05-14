@@ -1,9 +1,9 @@
 ---
 title: "OpenFGA's Move to Weighted Graph Resolution: What's Changing"
-description: OpenFGA is transitioning to a weighted graph-based resolution algorithm. Learn what's changing, why, and how to migrate your models.
-slug: weighted-graph-upcoming-changes
-date: 2026-05-14
-authors: tylernix
+description: "OpenFGA is transitioning to a weighted graph-based resolution algorithm. Learn what's changing, why, and how to migrate your models."
+slug: check-resolution-weighted-graph
+date: 2026-XX-XX
+authors: tyler
 tags: [announcement, check, migration]
 image: https://openfga.dev/img/og-rich-embed.png
 hide_table_of_contents: false
@@ -122,7 +122,7 @@ type group
     define allowed_member: member but not blocked  # Exclusion at leaf level only
 ```
 
-**Migration impact:** Your existing `member` and `blocked` tuples stay exactly as they are — no tuple writes or deletes needed. The only change is in how your application calls Check: replace `check(object, "member", user)` with `check(object, "allowed_member", user)`. The new `allowed_member` relation reads from the same underlying data, just with the exclusion gate applied at the right level.
+> **Migration impact:** Your existing `member` and `blocked` tuples stay exactly as they are — no tuple writes or deletes needed. The only change is in how your application calls Check: replace `check(user, "member", object)` with `check(user, "allowed_member", object)`. The new `allowed_member` relation reads from the same underlying data, just with the exclusion gate applied at the right level.
 
 ### Check Request Errors
 
@@ -141,7 +141,7 @@ type document
 ```
 
 ```
-check("document:report", "viewer", "document:contract#owner")
+check("document:contract#owner", "viewer", "document:report")
 # ❌ Error — can't confirm every owner passes the exclusion
 ```
 
@@ -156,15 +156,15 @@ type document
 ```
 
 ```
-check("document:readme", "viewer", "user:*")
+check("user:*", "viewer", "document:readme")
 # ❌ Error — can't confirm no one in user:* is blocked
 ```
 
 **Fix:** Check specific users individually instead:
 
 ```
-check("document:report", "viewer", "user:alice")  # ✓ — userset exclusion applied correctly per user
-check("document:readme", "viewer", "user:alice")  # ✓ — wildcard exclusion applied correctly per user
+check("user:alice", "viewer", "document:report")  # ✓ — userset exclusion applied correctly per user
+check("user:alice", "viewer", "document:readme")  # ✓ — wildcard exclusion applied correctly per user
 ```
 
 ---
@@ -192,10 +192,10 @@ type document
 ```
 # Stored tuple: {document:source#allowed, viewer, document:target}
 
-check("document:target", "viewer", "document:source#allowed")
+check("document:source#allowed", "viewer", "document:target")
 # ✓ Returns TRUE — matches what's stored
 
-check("document:target", "viewer", "document:source#reader")
+check("document:source#reader", "viewer", "document:target")
 # ❌ Returns FALSE — the stored tuple only uses #allowed, not #reader
 ```
 
@@ -212,24 +212,89 @@ write(document:source#reader, viewer, document:target)   # Store explicitly
 
 #### 5. Self-Referential Usersets
 
-**What was broken:** Previously, asking "do the viewers of document A have access to document A?" `check("document:A", "viewer", "document:A#viewer")` always returned `TRUE`, just because the relation existed in the model, not because an actual tuple granted that access.
+**What was broken:** Previously, asking "do the viewers of document A have access to document A?" like `check("document:A#viewer", "viewer", "document:A")`, the legacy algorithm always evaluated `TRUE`, just because the relation existed in the model, not because an actual tuple granted that access.
 
-**What is changing:** The weighted graph requires both schema and data to grant access — a relation existing in the model is not sufficient evidence that a group has access to an object. Now it returns `FALSE` unless there's an actual tuple granting that access.
+**What is changing:** The weighted graph requires both schema and data to grant access. A relation existing in the model is not sufficient evidence that a group has access to an object. Now it returns `FALSE` unless actual tuples exist to support the access decision. The weighted graph algorithm requires both schema and data, not schema alone.
+
+This can be represented in three scenarios:
+
+**Scenario A — Direct relation:**
+
+```dsl
+type document
+  relations
+    define viewer: [user]
+```
 
 ```
-check("document:d1", "viewer", "document:d1#viewer")
-# ❌ Always returned TRUE before, now returns FALSE (no tuple data exists)
+check("document:d1#viewer", "viewer", "document:d1")
+# ❌ OLD: TRUE (just because the viewer relation exists on type document)
+# ✓  NEW: FALSE (since no tuple grants document:d1#viewer access to document:d1)
 ```
 
-**Fix:** Check individual users instead:
+**Scenario B — Computed relation:**
+
+```dsl
+type document
+  relations
+    define editor: [user]
+    define writer: [user]
+    define viewer: editor or writer
+```
 
 ```
-check("document:d1", "viewer", "user:alice")  # ✓ Checks actual data
+check("document:d1#writer", "viewer", "document:d1")
+# ❌ OLD: TRUE (model has viewer = editor or writer, and writer exists on type document)
+# ✓  NEW: FALSE (since no tuple grants document:d1#writer as a viewer of document:d1)
 ```
 
-> **Migration impact:** This pattern — asking whether a group defined on an object has access to that same object — is uncommon. Search your application for check calls where the object and the group reference share the same type and ID. If you find any, replace them with checks against specific users, or use ListUsers to find who actually has the relation.
+**Scenario C — TTU (tuple-to-userset) relation:**
+
+```dsl
+type folder
+  relations
+    define viewer: [user]
+
+type document
+  relations
+    define parent: [folder]
+    define viewer: viewer from parent
+```
+
+```
+# Given tuple: (folder:f2, parent, document:d1)
+
+check("folder:f2#viewer", "viewer", "document:d1")
+# ❌ OLD: TRUE (the parent tuple exists and the schema connects them)
+# ✓  NEW: FALSE (since no explicit userset tuple stores folder:f2#viewer as viewer of document:d1)
+```
+
+**Fix:** Check individual users instead of self-referential group references:
+
+```
+check("user:alice", "viewer", "document:d1")  # ✓ Checks actual data
+```
+
+Or use ListUsers to discover who has the relation:
+
+```
+listUsers("document:d1", "viewer") → [user:alice, user:bob]
+```
+
+> **Migration impact:** This self-referential userset pattern — asking whether a group defined on an object has access to that same object — is uncommon. Search your application for check calls  where the user field is a group reference and the object and the group reference share the same type and ID. If you find any, replace them with checks against specific users, or use ListUsers to find who actually has the relation.
 
 ---
+
+## How to Check If You're Model Is Affected
+
+1. **Model validation**: Run `fga model validate` against your model. If it reports errors about missing relations or tuple cycles with AND/BUT NOT, your model needs updating.
+
+2. **Userset/wildcard checks**: Audit your application for check requests that use:
+   - Usersets (`type:id#relation`) against relations with `but not`
+   - Wildcards (`user:*`) against relations with `but not`
+   - Self-referential patterns (`check(X#rel, rel, X)`)
+
+3. **Test your models**: Use `fga model test` with `.fga.yaml` test files to validate expected behavior.
 
 ## Timeline
 
