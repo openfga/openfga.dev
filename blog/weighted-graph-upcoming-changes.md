@@ -1,6 +1,6 @@
 ---
-title: OpenFGA's Move to Weighted Graph Resolution: What's Changing
-description: OpenFGA is transitioning to a weighted graph-based resolution algorithm. Learn what's changing, why, and how to migrate your models.
+title: "OpenFGA's Move to Weighted Graph Resolution: What's Changing"
+description: "OpenFGA is transitioning to a weighted graph-based resolution algorithm. Learn what's changing, why, and how to migrate your models."
 slug: weighted-graph-upcoming-changes
 date: 2026-05-14
 authors: tylernix
@@ -15,6 +15,7 @@ OpenFGA is continuing to roll out a **weighted graph-based resolution algorithm*
 
 This post explains which modeling and check patterns are incompatible with the weighted graph algorithm, and how to migrate before the fallback is removed. 
 
+<!-- truncate -->
 
 ## Why a Weighted Graph?
 
