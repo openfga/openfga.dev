@@ -98,23 +98,6 @@
 <p><strong>Migration impact:</strong> This pattern — asking whether a group defined on an object has access to that same object — is uncommon. Search your application for check calls where the object and the group reference share the same type and ID. If you find any, replace them with checks against specific users, or use ListUsers to find who actually has the relation.</p>
 </blockquote>
 <hr>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="how-to-check-if-youre-model-is-affected">How to Check If You're Model Is Affected<a href="https://openfga.dev/pr-preview/pr-1259/blog/weighted-graph-upcoming-changes#how-to-check-if-youre-model-is-affected" class="hash-link" aria-label="Direct link to How to Check If You're Model Is Affected" title="Direct link to How to Check If You're Model Is Affected" translate="no">​</a></h2>
-<ol>
-<li class="">
-<p><strong>Model validation</strong>: Run <code>fga model validate</code> against your model. If it reports errors about missing relations or tuple cycles with AND/BUT NOT, your model needs updating.</p>
-</li>
-<li class="">
-<p><strong>Userset/wildcard checks</strong>: Audit your application for check requests that use:</p>
-<ul>
-<li class="">Usersets (<code>type:id#relation</code>) against relations with <code>but not</code></li>
-<li class="">Wildcards (<code>user:*</code>) against relations with <code>but not</code></li>
-<li class="">Self-referential patterns (<code>check(X, rel, X#rel)</code>)</li>
-</ul>
-</li>
-<li class="">
-<p><strong>Test your models</strong>: Use <code>fga model test</code> with <code>.fga.yaml</code> test files to validate expected behavior.</p>
-</li>
-</ol>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="timeline">Timeline<a href="https://openfga.dev/pr-preview/pr-1259/blog/weighted-graph-upcoming-changes#timeline" class="hash-link" aria-label="Direct link to Timeline" title="Direct link to Timeline" translate="no">​</a></h2>
 <p><strong>Now</strong>:</p>
 <ul>
