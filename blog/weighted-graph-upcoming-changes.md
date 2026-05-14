@@ -11,7 +11,7 @@ hide_table_of_contents: false
 
 # OpenFGA's Move to Weighted Graph Resolution: What's Changing
 
-OpenFGA is continuing to roll out a **weighted graph-based resolution algorithm** across its core query endpoints. ListObjects already runs on this update algorithm, and Check is next. As a precaution, both endpoints currently fall back to the legacy algorithm for models that are incompatible with the weighted graph — but **that fallback option will be removed soon**. A date for the final changeover has not been set at this time. 
+OpenFGA is continuing to roll out a **weighted graph-based resolution algorithm** across its core query endpoints. ListObjects already runs on this updated algorithm, and Check is next. As a precaution, both endpoints currently fall back to the legacy algorithm for models that are incompatible with the weighted graph — but **that fallback option will be removed soon**. A date for the final changeover has not been set at this time. 
 
 This post explains which modeling and check patterns are incompatible with the weighted graph algorithm, and how to migrate before the fallback is removed. 
 
@@ -38,7 +38,7 @@ The benefits, however, are:
 
 ### Model Build Errors
 
-The following model patterns are incompatible with the weighted graph algorithm. Today, requests using these models fallback to the legacy algorithm. When the fallback is eventually removed, these models will fail to build and return a model build error.
+The following model patterns are incompatible with the weighted graph algorithm. Today, requests using these models fall back to the legacy algorithm. When the fallback is eventually removed, these models will fail to build and return a model build error.
 
 #### 1. Missing Relation 
 
@@ -46,7 +46,7 @@ When a relation uses `relation from parent` and the `parent` relation allows mul
 
 **Broken pattern:**
 
-```dsl
+```dsl.openfga
 type organization
   relations
     define member: [user]
@@ -66,18 +66,18 @@ type document
 
 **Fix 1:** Add the missing relation to the type. If the type has an equivalent role, you can alias it:
 
-```dsl
+```dsl.openfga
 type folder
   relations
     define viewer: [user]
     define member: viewer # alias of viewer
 ```
 
-> **Migration impact:** No tuple changes required. The model change is additive — existing `viewer` tuples on `folder` objects continue to work, and the new `member` alias picks them up automatically. No check call changes needed either, since `viewer from parent` already resolves through the new `member` relation.
+> **Migration impact:** No tuple changes required. The model change is additive — existing `viewer` tuples on `folder` objects continue to work, and the new `member` alias picks them up automatically. No check call changes needed either, since `member from parent` already resolves through the new `member` relation.
 
 **Fix 2:** Alternatively, you can separate out the `parent` relation in `type document` into explicit per-type relations. This is more verbose but makes the intent explicit in the model.
 
-```dsl
+```dsl.openfga
 type document
   relations
     define organization: [organization]
@@ -94,7 +94,7 @@ Recursive relations (like nested group membership) that use `and` or `but not` c
 
 **Broken pattern (AND):**
 
-```dsl
+```dsl.openfga
 type group
   relations
     define approved: [user, group#member]
@@ -103,7 +103,7 @@ type group
 
 **Broken pattern (BUT NOT):**
 
-```dsl
+```dsl.openfga
 type group
   relations
     define blocked: [user, group#member]
@@ -114,7 +114,7 @@ type group
 
 **Fix:** Split into a "base" relation (allows recursion) and an "allowed" relation (applies the access gate):
 
-```dsl
+```dsl.openfga
 type group
   relations
     define blocked: [user, group#member]
@@ -132,7 +132,7 @@ Sometimes you want to ask "Does this whole group have access?" (i.e. Userset `do
 
 **Userset example:**
 
-```dsl
+```dsl.openfga
 type document
   relations
     define owner: [user]
@@ -140,14 +140,14 @@ type document
     define viewer: [document#owner] but not member
 ```
 
-```
+```text
 check("document:contract#owner", "viewer", "document:report")
 # ❌ Error — can't confirm every owner passes the exclusion
 ```
 
 **Wildcard example:**
 
-```dsl
+```dsl.openfga
 type document
   relations
     define public: [user:*]
@@ -155,14 +155,14 @@ type document
     define viewer: public but not blocked
 ```
 
-```
+```text
 check("user:*", "viewer", "document:readme")
 # ❌ Error — can't confirm no one in user:* is blocked
 ```
 
 **Fix:** Check specific users individually instead:
 
-```
+```text
 check("user:alice", "viewer", "document:report")  # ✓ — userset exclusion applied correctly per user
 check("user:alice", "viewer", "document:readme")  # ✓ — wildcard exclusion applied correctly per user
 ```
@@ -171,7 +171,7 @@ check("user:alice", "viewer", "document:readme")  # ✓ — wildcard exclusion a
 
 ### Check Resolution Changes
 
-These changes affect the same Check request pattern as #3: passing a group reference (e.g., userset `document:d1#viewer`) as the user. But in these scenarios, the request does not error — it completes, but may return a different answer than before. Since most applications check access for a specific user (`user:alice`), these scenarios are rare and likely won't encounter these, but are still worth mentioning. 
+These changes affect the same Check request pattern as #3: passing a group reference (e.g., userset `document:d1#viewer`) as the user. But in these scenarios, the request does not error — it completes, but may return a different answer than before. Since most applications check access for a specific user (`user:alice`), these scenarios are rare and most applications likely won't encounter them, but are still worth mentioning. 
 
 #### 4. Userset Must Exist
 
@@ -181,7 +181,7 @@ When you write a tuple granting a group access to something, the relation name u
 
 **What is changing:** The weighted graph resolves this by making stored tuples the authoritative source of truth. Alias traversal is no longer performed during a check — what's stored is what counts. This makes access decisions deterministic and independent of how relations happen to be defined at check time.
 
-```dsl
+```dsl.openfga
 type document
   relations
     define reader: [user]
@@ -189,7 +189,7 @@ type document
     define viewer: [user, document#allowed]
 ```
 
-```
+```text
 # Stored tuple: {document:source#allowed, viewer, document:target}
 
 check("document:source#allowed", "viewer", "document:target")
@@ -201,7 +201,7 @@ check("document:source#reader", "viewer", "document:target")
 
 **Fix:** Check using the relation name that's actually stored in the tuple. If you need to check both names, store a tuple for each:
 
-```
+```text
 write(document:source#allowed, viewer, document:target)  # Already stored
 write(document:source#reader, viewer, document:target)   # Store explicitly
 ```
@@ -220,13 +220,13 @@ This can be represented in three scenarios:
 
 **Scenario A — Direct relation:**
 
-```dsl
+```dsl.openfga
 type document
   relations
     define viewer: [user]
 ```
 
-```
+```text
 check("document:d1#viewer", "viewer", "document:d1")
 # ❌ OLD: TRUE (just because the viewer relation exists on type document)
 # ✓  NEW: FALSE (since no tuple grants document:d1#viewer access to document:d1)
@@ -234,7 +234,7 @@ check("document:d1#viewer", "viewer", "document:d1")
 
 **Scenario B — Computed relation:**
 
-```dsl
+```dsl.openfga
 type document
   relations
     define editor: [user]
@@ -242,7 +242,7 @@ type document
     define viewer: editor or writer
 ```
 
-```
+```text
 check("document:d1#writer", "viewer", "document:d1")
 # ❌ OLD: TRUE (model has viewer = editor or writer, and writer exists on type document)
 # ✓  NEW: FALSE (since no tuple grants document:d1#writer as a viewer of document:d1)
@@ -250,7 +250,7 @@ check("document:d1#writer", "viewer", "document:d1")
 
 **Scenario C — TTU (tuple-to-userset) relation:**
 
-```dsl
+```dsl.openfga
 type folder
   relations
     define viewer: [user]
@@ -261,7 +261,7 @@ type document
     define viewer: viewer from parent
 ```
 
-```
+```text
 # Given tuple: (folder:f2, parent, document:d1)
 
 check("folder:f2#viewer", "viewer", "document:d1")
@@ -271,30 +271,19 @@ check("folder:f2#viewer", "viewer", "document:d1")
 
 **Fix:** Check individual users instead of self-referential group references:
 
-```
+```text
 check("user:alice", "viewer", "document:d1")  # ✓ Checks actual data
 ```
 
 Or use ListUsers to discover who has the relation:
 
-```
+```text
 listUsers("document:d1", "viewer") → [user:alice, user:bob]
 ```
 
 > **Migration impact:** This self-referential userset pattern — asking whether a group defined on an object has access to that same object — is uncommon. Search your application for check calls  where the user field is a group reference and the object and the group reference share the same type and ID. If you find any, replace them with checks against specific users, or use ListUsers to find who actually has the relation.
 
 ---
-
-## How to Check If You're Model Is Affected
-
-1. **Model validation**: Run `fga model validate` against your model. If it reports errors about missing relations or tuple cycles with AND/BUT NOT, your model needs updating.
-
-2. **Userset/wildcard checks**: Audit your application for check requests that use:
-   - Usersets (`type:id#relation`) against relations with `but not`
-   - Wildcards (`user:*`) against relations with `but not`
-   - Self-referential patterns (`check(X#rel, rel, X)`)
-
-3. **Test your models**: Use `fga model test` with `.fga.yaml` test files to validate expected behavior.
 
 ## Timeline
 
