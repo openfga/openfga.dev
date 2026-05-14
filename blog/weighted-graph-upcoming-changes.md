@@ -231,17 +231,6 @@ check("document:d1", "viewer", "user:alice")  # ✓ Checks actual data
 
 ---
 
-## How to Check If You're Model Is Affected
-
-1. **Model validation**: Run `fga model validate` against your model. If it reports errors about missing relations or tuple cycles with AND/BUT NOT, your model needs updating.
-
-2. **Userset/wildcard checks**: Audit your application for check requests that use:
-   - Usersets (`type:id#relation`) against relations with `but not`
-   - Wildcards (`user:*`) against relations with `but not`
-   - Self-referential patterns (`check(X, rel, X#rel)`)
-
-3. **Test your models**: Use `fga model test` with `.fga.yaml` test files to validate expected behavior.
-
 ## Timeline
 
 **Now**: 
