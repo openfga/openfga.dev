@@ -1,0 +1,147 @@
+---
+title: OpenFGA Alternatives
+description: An honest guide to OpenFGA alternatives — SpiceDB, Cerbos, Permit.io, Oso, Topaz, Permify, Ory Keto, OPA — and when each is the better fit.
+sidebar_position: 1
+slug: /alternatives
+---
+
+# OpenFGA Alternatives
+
+If you're evaluating OpenFGA, you're almost certainly evaluating something else alongside it. This page is an honest hub: a short summary of each serious alternative, what makes it distinctive, and the cases where it is genuinely the better choice over OpenFGA.
+
+The authorization ecosystem in 2026 is crowded, and "best" depends on where the work lives — application code, infrastructure admission control, or a hosted control plane. Pick the engine whose centre of gravity matches your problem, not whichever has the loudest landing page.
+
+## Quick comparison
+
+| Alternative | Style | Hosted option | License | Best fit |
+| --- | --- | --- | --- | --- |
+| [SpiceDB](#spicedb) | Zanzibar / ReBAC | Authzed | Apache 2.0 | Want a Zanzibar engine with a commercial vendor behind it |
+| [Cerbos](#cerbos) | PBAC (YAML policies) | Cerbos Hub | Apache 2.0 (PDP) | Stateless, attribute-driven decisions across many services |
+| [Permit.io](#permit-io) | Control plane over OPA/Cedar | Hosted-first | Commercial | Want a SaaS UI on top of an OPA/Cedar engine |
+| [Oso](#oso) | Polar DSL | Oso Cloud | Commercial (Cloud) | Want a managed engine with a single application-focused DSL |
+| [Topaz](#topaz) | Zanzibar + Rego (hybrid) | Aserto | Apache 2.0 | Want ReBAC and Rego in one process, edge-deployed |
+| [Permify](#permify) | Zanzibar / ReBAC | Permify Cloud | Apache 2.0 | Want a Zanzibar engine with a smaller, simpler surface |
+| [Ory Keto](#ory-keto) | Zanzibar / ReBAC | Ory Network | Apache 2.0 + Enterprise | Already inside the Ory ecosystem (Kratos / Hydra) |
+| [OPA](#opa) | General-purpose policy (Rego) | Self-hosted | Apache 2.0 (CNCF graduated) | Infrastructure / admission control, not application authorization |
+
+## When OpenFGA is the right pick
+
+Before the alternatives, the short version of where OpenFGA fits:
+
+- You want a **Zanzibar-style relationship engine** — typed model, tuple store, fast Check, reverse queries.
+- You want it **CNCF-governed and self-hostable** on PostgreSQL, MySQL, or SQLite, with an in-memory mode for tests.
+- You want **fine-grained, per-resource authorization** — document sharing, multi-tenant SaaS, AI agent / RAG access — rather than coarse role checks.
+- You're comfortable owning the deployment (operator, Helm chart), or you're already using a hosted OpenFGA service such as **Auth0 FGA / Okta FGA** — managed OpenFGA from Auth0/Okta, the original creators who donated the project to the CNCF.
+
+If those bullets describe your problem, OpenFGA is purpose-built for it and you're in the right place. The rest of this page is for cases where the answer is genuinely something else.
+
+## SpiceDB
+
+[SpiceDB](https://authzed.com/spicedb) is the closest peer — a Zanzibar implementation with a typed schema language, multiple storage backends, and a Kubernetes operator. It's Apache 2.0 with a commercial vendor (Authzed) selling a managed and dedicated offering.
+
+**Pick SpiceDB over OpenFGA when:**
+
+- You specifically want a single commercial vendor on the support contract and roadmap, not a CNCF-governed project with multiple maintainers from different companies.
+- You're already standardised on Authzed Cloud or Dedicated for hosting.
+- Your team prefers SpiceDB's schema language ergonomics — both DSLs are expressive, and personal preference is a fine reason to choose.
+
+OpenFGA and SpiceDB will solve nearly the same problems. The decision usually comes down to governance model and which DSL the team finds easier to read. See the side-by-side: [OpenFGA vs SpiceDB](/docs/compare/spicedb).
+
+## Cerbos
+
+[Cerbos](https://www.cerbos.dev/) is a stateless policy decision point. Policies are YAML files, kept in Git, and the PDP evaluates them against attributes you pass at request time. There's no relationship database — that's a feature, not a gap.
+
+**Pick Cerbos over OpenFGA when:**
+
+- Authorization is **mostly attribute-driven**: claims from the JWT, resource metadata you already have at hand, request context.
+- You don't need reverse queries (*"list every resource this user can read"*) — you only need yes/no on a known resource.
+- You want decisions to scale horizontally without a shared database behind them.
+
+The honest framing: Cerbos and OpenFGA are answers to *different* questions. Cerbos shines on stateless ABAC across many services. OpenFGA shines when relationships change at write time and you need to query the graph. Many teams end up running both. See [OpenFGA vs Cerbos](/docs/compare/cerbos).
+
+## Permit.io
+
+[Permit.io](https://www.permit.io/) is a hosted control plane built on top of open-source engines (OPA / OPAL, Cedar). It bundles a UI, audit logs, low-code policy editing, and an MCP gateway.
+
+**Pick Permit.io over OpenFGA when:**
+
+- You want a **managed product with a UI** that non-engineers can edit policy in, not a library you embed in your stack.
+- You want compliance certifications (SOC2/HIPAA/GDPR) included in the hosted product rather than something you assemble.
+- You're happy delegating the engine choice to the vendor — Permit decides whether OPA or Cedar evaluates a given request.
+
+If self-hosting is the requirement, Permit isn't the right shape. If managed-with-a-UI is the requirement, OpenFGA isn't. See [OpenFGA vs Permit.io](/docs/compare/permit).
+
+## Oso
+
+[Oso](https://www.osohq.com/) ships **Oso Cloud** — a managed authorization service driven by the Polar DSL. The on-prem open-source library is in maintenance; the active product is the cloud service.
+
+**Pick Oso over OpenFGA when:**
+
+- You want a **single managed service** and don't want to operate an authorization engine.
+- You like the Polar DSL specifically. Polar is expressive in a different way than the Zanzibar-style DSLs — closer to a logic language.
+- Your scale targets match Oso Cloud's published numbers and you're comfortable with the commercial terms.
+
+The deployment-model trade-off is the main fork: OpenFGA is built to be self-hosted; Oso's current centre of gravity is the cloud. See [OpenFGA vs Oso](/docs/compare/oso).
+
+## Topaz
+
+[Topaz](https://www.topaz.sh/) is Aserto's open-source authorizer. Its distinctive choice is **combining a Zanzibar-style relationship store with Rego** — Topaz lets you write attribute rules in OPA's policy language alongside relationships in a directory.
+
+**Pick Topaz over OpenFGA when:**
+
+- You want both ReBAC and Rego in **one process** and don't want to wire two engines together yourself.
+- You're deploying authorizers **at the edge** of each application and want the authorizer to embed cleanly there.
+- You want to use existing Rego skills on policies you already maintain for OPA.
+
+OpenFGA covers most attribute-driven cases via [conditions](/docs/modeling/conditions) and [contextual tuples](/docs/interacting/contextual-tuples) without adding Rego. If you want Rego specifically, Topaz is the right tool for that.
+
+## Permify
+
+[Permify](https://permify.co/) is another open-source Zanzibar implementation with a smaller surface than OpenFGA or SpiceDB. It supports Postgres for storage and ships a self-hosted server plus a managed cloud.
+
+**Pick Permify over OpenFGA when:**
+
+- You prefer Permify's specific schema syntax or developer ergonomics after trying both.
+- The smaller community and smaller feature surface is a feature, not a drawback, for your team.
+
+OpenFGA has CNCF governance, multiple production references documented in the [adopters file](https://github.com/openfga/community/blob/main/ADOPTERS.md), and a larger SDK matrix. For most teams that's the deciding factor; if it's not, Permify is a perfectly reasonable Zanzibar engine.
+
+## Ory Keto
+
+[Ory Keto](https://www.ory.com/keto/) is a Zanzibar implementation inside the Ory ecosystem — alongside Kratos (identity), Hydra (OAuth2), and Oathkeeper (proxy). Apache 2.0 plus an Enterprise edition and the hosted Ory Network.
+
+**Pick Ory Keto over OpenFGA when:**
+
+- You're **already running the Ory stack** (Kratos for users, Hydra for OAuth, Oathkeeper for proxying) and want one vendor across the identity-and-access surface.
+- You want Ory Network as the managed option.
+
+If you're not already in the Ory ecosystem, OpenFGA's modeling tools, SDK matrix, and CNCF governance generally make it the easier standalone choice. See [OpenFGA vs Ory Keto](/docs/compare/keto).
+
+## OPA
+
+[Open Policy Agent](https://www.openpolicyagent.org/) (OPA) is a CNCF **graduated** general-purpose policy engine. Rego policies evaluate against any JSON input — Kubernetes admission, Terraform, service-mesh, application requests.
+
+**Pick OPA over OpenFGA when:**
+
+- You're solving **infrastructure or admission-control** problems — Kubernetes admission webhooks, Terraform plan checks, Envoy authorization filters.
+- The same policy must apply across **many domains**, not just one application's resource model.
+- You want a stateless engine where the data is supplied per request, not stored in a graph.
+
+OPA and OpenFGA solve different layers of the authorization stack — see [Policy Engines vs Relationship Engines](/docs/learn/policy-engine) for the longer version. Many teams run both: OPA at the platform layer, OpenFGA inside applications. The detailed comparison: [OpenFGA vs OPA](/docs/compare/opa).
+
+## How to actually choose
+
+Three questions cut through the marketing:
+
+1. **Where does the data live?** If your authorization data is mostly *relationships that change at write time* (group membership, sharing, ownership, hierarchy), pick a relationship engine — OpenFGA, SpiceDB, Permify, Keto, Topaz. If it's mostly *attributes you already have on the request*, pick a policy engine — Cerbos, OPA.
+2. **Who operates it?** If you want a managed product with a UI, look at Permit.io and Oso Cloud first. If you want to self-host with open-source governance, look at OpenFGA, SpiceDB, Cerbos PDP, OPA.
+3. **What ecosystem are you already in?** Already running Ory? Keto. Already running Authzed? SpiceDB. Already running Aserto? Topaz. The integration cost of a second vendor is real.
+
+If after that the answer is OpenFGA, the [Getting Started](/docs/getting-started) guide is twenty minutes of work. If it's something else, the linked comparison pages and the alternative's own docs will get you the rest of the way.
+
+## Related reading
+
+- [Compare overview](/docs/compare) — side-by-side detail on each engine
+- [Policy Engines vs Relationship Engines](/docs/learn/policy-engine)
+- [What is Fine-Grained Authorization?](/docs/learn/fine-grained-authorization)
+- [Customer case studies](/docs/adopters)

@@ -1,0 +1,43 @@
+---
+title: What is Google Zanzibar?
+description: Google Zanzibar is the paper behind Google's global authorization system. Learn what Zanzibar is, what it solved, and how OpenFGA implements it.
+sidebar_position: 2
+slug: /learn/zanzibar
+---
+
+# What is Google Zanzibar?
+
+[Zanzibar](https://research.google/pubs/zanzibar-googles-consistent-global-authorization-system/) is a 2019 paper from Google describing the authorization system used by Google Drive, YouTube, Calendar, Cloud, and most other Google products. It is the source of the design pattern OpenFGA implements.
+
+## What Zanzibar actually is
+
+Zanzibar is a globally distributed database of **relationship tuples** that answers two questions in milliseconds at Google scale:
+
+1. *"Is user U related to object O via relation R?"* (check)
+2. *"What objects of type T is user U related to via relation R?"* (reverse index / list-objects)
+
+Two ideas make it work:
+
+- A **typed schema** (called a *namespace configuration* in the paper) defining types and the relations between them — for example, that `document#viewer` includes `document#editor`.
+- A **tuple store** indexed for both forward and reverse queries, with a consistency mechanism (Zookies) that lets clients tie permission checks to the version of the data they read.
+
+## What Zanzibar solved
+
+Before Zanzibar, every Google product had its own authorization layer. Cross-product features ("share a Drive doc to a Calendar event guest") meant authorization logic had to be duplicated and kept in sync. Zanzibar gave Google one model, one store, one decision surface.
+
+## How OpenFGA maps to Zanzibar
+
+OpenFGA implements the same model:
+
+- **Schema** — written in the [OpenFGA DSL](/docs/configuration-language).
+- **Tuples** — stored in PostgreSQL, MySQL, or SQLite.
+- **Check** and **List-objects** — exposed via the [API](/docs/interacting/relationship-queries).
+- **Conditions** (CEL) — OpenFGA's equivalent of caveats for attribute-based decisions.
+
+OpenFGA does not replicate Zanzibar's globally distributed Spanner-backed architecture; it is designed to run on your existing databases. For most applications, that's the point — Zanzibar's *model* is what's valuable, not its operational scale.
+
+## Related reading
+
+- [ReBAC: Relationship-Based Access Control](/docs/learn/rebac)
+- [Fine-Grained Authorization](/docs/learn/fine-grained-authorization)
+- [Authorization Concepts](/docs/authorization-concepts)

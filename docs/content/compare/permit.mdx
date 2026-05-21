@@ -1,0 +1,42 @@
+---
+title: OpenFGA vs Permit.io
+description: Compare OpenFGA's self-hosted Zanzibar-style engine with Permit.io's hosted authorization control plane.
+sidebar_position: 4
+slug: /compare/permit
+---
+
+# OpenFGA vs Permit.io
+
+OpenFGA is a self-hostable, CNCF-governed Zanzibar-style engine. [Permit.io](https://www.permit.io) is a commercial **hosted authorization control plane** that wraps existing policy engines (historically OPA / Cedar) with a UI, audit, MCP gateway, and SDKs.
+
+## Side by side
+
+| | OpenFGA | Permit.io |
+| --- | --- | --- |
+| Primary delivery | Self-hosted open source, or Auth0 FGA / Okta FGA (managed OpenFGA from Auth0/Okta) | Hosted control plane (commercial) |
+| License | Apache 2.0 | Commercial |
+| Governance | CNCF Sandbox | Single vendor |
+| Model | Zanzibar-style ReBAC, conditions for ABAC | RBAC, ABAC, ReBAC over OPA-style engines |
+| Data residency | Wherever you run OpenFGA | Vendor-managed unless self-hosted PDP is purchased |
+| First-party UI | OpenFGA Playground (web) | Full no-code/low-code admin UI |
+
+## When OpenFGA is the right pick
+
+- You want **self-hosted, open source, and CNCF-governed**. Every adopter we document picked OpenFGA partly to avoid licensing risk and vendor lock-in (see [customer case studies](/docs/adopters)).
+- You need **regulatory data residency** — e.g. fintech (Agicap), healthcare, or air-gapped environments — that a hosted SaaS makes harder.
+- You want a **single, typed model file** versioned alongside code, not a vendor admin UI as the source of truth. The [FGA CLI](https://github.com/openfga/cli) and [Terraform provider](https://registry.terraform.io/providers/openfga/openfga/latest) make the model-as-code workflow first-class — write the DSL, lint and test it locally, diff it in PRs, and deploy it like any other code artifact.
+
+## When Permit.io may be the right pick
+
+- You want a turn-key hosted authorization product with built-in admin UI, audit, and SOC 2 / HIPAA / GDPR / CCPA compliance attestations from the vendor.
+- You don't want to operate the authorization data store yourself and are willing to pay for managed infrastructure.
+
+## Migration shape
+
+Teams that move from a hosted control plane to OpenFGA typically:
+
+1. Re-express their current RBAC/ABAC rules in the OpenFGA DSL — relations replace roles, conditions cover attribute checks.
+2. Run [parallel checks](/docs/best-practices) against both engines for a period, comparing decisions. Docker [used exactly this pattern](/docs/adopters/docker).
+3. Cut over per-feature once both systems agree.
+
+> Permit.io product details above were collected from [permit.io](https://www.permit.io) on 2026-05-20. Verify current product scope with the vendor before making a decision.

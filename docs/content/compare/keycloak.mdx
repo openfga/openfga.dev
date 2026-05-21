@@ -1,0 +1,58 @@
+---
+title: OpenFGA vs Keycloak
+description: Compare OpenFGA's Zanzibar-style fine-grained authorization with Keycloak Authorization Services, the policy engine bundled with the Keycloak IdP.
+sidebar_position: 9
+slug: /compare/keycloak
+---
+
+# OpenFGA vs Keycloak
+
+[Keycloak](https://www.keycloak.org/) is an open source identity and access management server: OIDC/SAML SSO, user federation, social login, and an admin console. Its **Authorization Services** module adds policy-based access control on top of that identity stack — resources, scopes, permissions, and policies (role, user, time, JS, aggregated) evaluated by the Keycloak server.
+
+OpenFGA solves a narrower problem: fine-grained, relationship-based authorization at scale. It does not issue tokens or manage users. The two are often used together — Keycloak as the IdP, OpenFGA as the authorization engine.
+
+## Side by side
+
+| | OpenFGA | Keycloak Authorization Services |
+| --- | --- | --- |
+| Primary role | Authorization engine (ReBAC) | IdP + policy engine bundled |
+| Model | Zanzibar-style typed DSL, conditions (CEL) | Resources, scopes, permissions, policies (role/user/time/JS/aggregated) |
+| Storage of permissions | Relationship tuples in Postgres / MySQL / SQLite | Policies + resources stored in Keycloak realm DB |
+| Identity | Identity-agnostic — works with any IdP, including Keycloak | Tied to Keycloak realms and users |
+| Query shape | `check`, `list-objects`, `list-users`, `expand` | Token introspection / UMA permission ticket / policy evaluation endpoint |
+| Governance | CNCF Sandbox | CNCF Incubating (donated by Red Hat) |
+| License | Apache 2.0 | Apache 2.0 |
+| Production references | [Read AI](/docs/adopters/read-ai) (5,200 RPS, 5.3B+ tuples), [Agicap](/docs/adopters/agicap), [Grafana Labs](/docs/adopters/grafana), [Docker](/docs/adopters/docker) | Widely deployed as IdP; Authorization Services usage less commonly profiled |
+
+## Where OpenFGA tends to win
+
+- **Fine-grained relationships at scale.** OpenFGA is purpose-built for Zanzibar-style ReBAC: hierarchical objects, parent-child inheritance, user-to-user-group-to-resource paths, and `list-objects` queries that return every resource a user can access. Keycloak Authorization Services models resources and scopes with policies but is not designed around relationship graphs over millions of objects.
+- **Identity independence.** OpenFGA does not care who issued the token. You can pair it with Keycloak, Auth0, Okta, Cognito, or any custom IdP. Keycloak Authorization Services is bound to Keycloak realms.
+- **Versioned model as code.** The OpenFGA DSL plus the [Playground](https://play.fga.dev) and Terraform provider give you a reviewable, versioned authorization model. Keycloak policies live in the realm and are typically managed through the admin console or the admin REST API.
+- **Horizontal scale and dedicated storage.** OpenFGA scales the authorization tier independently of identity, on its own database. Keycloak Authorization Services scales with the Keycloak server itself.
+
+## Where Keycloak tends to win
+
+- **Single deployment for IdP + authorization.** If you need an open source IdP and want coarse-to-medium-grained authorization without a second service, Keycloak handles both in one server.
+- **UMA 2.0 and permission tickets.** Keycloak implements User-Managed Access flows out of the box. OpenFGA does not — you would build the UMA layer separately if you need it.
+- **Operator familiarity.** Many teams already run Keycloak. Adding policies there is incremental rather than introducing a new service.
+
+## Using them together
+
+The most common pairing: Keycloak as the IdP issuing OIDC tokens, OpenFGA as the authorization engine. Your application validates the Keycloak token, extracts the subject and any relevant claims, then asks OpenFGA `check`, `list-objects`, or `list-users` for permission decisions. Keycloak roles and group memberships can be mirrored into OpenFGA tuples, or passed as [contextual tuples](/docs/modeling/token-claims-contextual-tuples) at query time.
+
+Community resources on this pairing:
+
+- [keycloak-openfga-event-publisher](https://github.com/embesozzi/keycloak-openfga-event-publisher) — a Keycloak SPI that listens to admin events (user/group/role changes) and syncs them into OpenFGA tuples automatically.
+- [keycloak-openfga-workshop](https://github.com/embesozzi/keycloak-openfga-workshop) — hands-on workshop wiring Keycloak as the IdP to OpenFGA as the authorization engine end-to-end.
+- [Keycloak integration with OpenFGA based on Zanzibar for fine-grained authorization at scale](https://embesozzi.medium.com/keycloak-integration-with-openfga-based-on-zanzibar-for-fine-grained-authorization-at-scale-d3376de00f9a) — walkthrough of the same pattern with architecture diagrams.
+
+## When to pick OpenFGA
+
+You need fine-grained, relationship-based authorization (documents, folders, tenants, agents, RAG chunks) decoupled from your identity provider, with a typed model you can version and a query API designed for `check` and `list-objects` at scale.
+
+## When to pick Keycloak Authorization Services
+
+You're already on Keycloak, your authorization needs are role- and scope-shaped rather than relationship-shaped, and you'd rather extend the existing IdP than introduce a separate authorization service.
+
+> Comparison facts about Keycloak Authorization Services above are drawn from the [Keycloak Authorization Services Guide](https://www.keycloak.org/docs/latest/authorization_services/) as of May 2026. Verify current scope and capabilities with the Keycloak documentation before making a decision.

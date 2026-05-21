@@ -1,0 +1,37 @@
+---
+title: OpenFGA vs Auth0 FGA
+description: Compare self-hosted OpenFGA with Auth0 FGA / Okta FGA, the managed OpenFGA service from the original creators.
+sidebar_position: 9
+slug: /compare/auth0-fga
+---
+
+# OpenFGA vs Auth0 FGA
+
+[Auth0 FGA](https://docs.fga.dev/) is a managed authorization service built on OpenFGA. The engine, DSL, and API are the same — the difference is who operates the infrastructure, and what runs on top of it.
+
+## Side by side
+
+| | OpenFGA | Auth0 FGA |
+| --- | --- | --- |
+| Delivery | Self-hosted open source | Managed SaaS from Auth0/Okta |
+| License | Apache 2.0 | Commercial |
+| Engine & API | OpenFGA | OpenFGA |
+| Availability | Self-managed | Multi-region, active-active |
+| Upgrades & backups | Your responsibility | Handled by Auth0 |
+| Dashboard | Local Playground | Hosted dashboard with SSO |
+| Logging | You build the pipeline | Logging API with retention |
+| Support | Community | 24/7 monitoring, enterprise support |
+
+## When to pick OpenFGA (self-hosted)
+
+You want the engine to run inside your own infrastructure — for data residency, air-gapped environments, or full control over database, version, and topology — and you're comfortable owning availability, backups, and upgrades.
+
+## When to pick Auth0 FGA / Okta FGA
+
+You want the same engine without operating it, or you're already on Auth0 / Okta for identity and want authorization in the same vendor relationship with enterprise support.
+
+## Migration shape
+
+Because Auth0 FGA is OpenFGA, moving in either direction is mostly an operational exercise — the model and tuples are portable, and SDK calls don't change. Most teams export the model and tuples and then cut over.
+
+> Auth0 FGA facts above are drawn from [docs.fga.dev](https://docs.fga.dev/openfga-vs-auth0-fga) as of May 2026. Verify current SLA, region availability, and pricing with Auth0/Okta before making a decision.

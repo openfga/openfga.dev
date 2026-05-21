@@ -1,0 +1,33 @@
+---
+title: OpenFGA vs Alternatives
+description: Compare OpenFGA with SpiceDB, Cerbos, Permit.io, Oso, Ory Keto, and OPA across model, storage, deployment, language, and governance.
+sidebar_position: 1
+slug: /compare
+---
+
+# OpenFGA vs alternatives
+
+These pages compare OpenFGA to other authorization systems based on each project's publicly documented features as of May 2026. They are written from OpenFGA's perspective but stick to verifiable facts — model, storage, deployment, language, governance — rather than benchmark numbers we cannot reproduce.
+
+| Compared system | Style | Hosted? | License |
+| --- | --- | --- | --- |
+| [SpiceDB](/docs/compare/spicedb) | Zanzibar / ReBAC | Authzed (managed) and self-hosted | Apache 2.0 |
+| [Cerbos](/docs/compare/cerbos) | PBAC (RBAC/ABAC/ReBAC via YAML) | Cerbos Hub and self-hosted | Apache 2.0 (PDP) |
+| [Permit.io](/docs/compare/permit) | Control plane over OPA/Cedar | Hosted-first | Commercial |
+| [Oso](/docs/compare/oso) | Polar DSL | Oso Cloud (managed) | Commercial (Cloud) |
+| [Ory Keto](/docs/compare/keto) | Zanzibar / ReBAC | Ory Network and self-hosted | Apache 2.0 + Enterprise |
+| [OPA](/docs/compare/opa) | General-purpose policy (Rego) | Self-hosted | Apache 2.0 (CNCF graduated) |
+| [WorkOS FGA](/docs/compare/workos) | Hosted FGA bundled with WorkOS identity | Hosted only | Commercial |
+| [Keycloak](/docs/compare/keycloak) | IdP with bundled Authorization Services (policy-based) | Self-hosted | Apache 2.0 |
+| [Auth0 FGA](/docs/compare/auth0-fga) | Managed OpenFGA from Auth0/Okta | Hosted only | Commercial (managed service) |
+
+## Why OpenFGA
+
+OpenFGA's specific niche is:
+
+- **Zanzibar-style ReBAC** with a typed DSL and a relationship tuple store — designed for fine-grained authorization, not generic policy.
+- **CNCF Sandbox project** with public governance, an ADOPTERS file, and a Security Insights manifest.
+- **Self-hostable** with PostgreSQL, MySQL, and SQLite backends and an in-memory mode for tests. A managed offering is also available as **Auth0 FGA / Okta FGA** from Auth0/Okta, the team that originally built OpenFGA and donated it to the CNCF.
+- **Production references** at [Read AI](/docs/adopters/read-ai), [Agicap](/docs/adopters/agicap), [Grafana Labs](/docs/adopters/grafana), [Docker](/docs/adopters/docker), and [Zuplo](/docs/adopters/zuplo).
+
+If you want a hosted policy-as-a-service, several entries above will be a better fit — or you can use **Auth0 FGA / Okta FGA**, a managed OpenFGA service from the original creators. If you need a self-hostable Zanzibar-style engine with first-class modeling tools, OpenFGA is built for that case.

@@ -1,0 +1,36 @@
+---
+title: MCP Server Authorization with OpenFGA
+description: Authorize Model Context Protocol (MCP) servers with OpenFGA. Per-tool, per-resource permission checks on every MCP request.
+sidebar_position: 4
+slug: /use-cases/mcp-server-authorization
+---
+
+# MCP Server Authorization
+
+A Model Context Protocol server exposes tools and resources to an AI client. That makes it an authorization surface: every tool call and every resource read should be checked against the calling user (and the calling agent, if they're separate principals).
+
+## The pattern
+
+Model the MCP server's surface in OpenFGA:
+
+- `tool` and `resource` types, each with relations like `can_invoke` or `can_read`.
+- `user` and `agent` types as principals.
+- Relationship tuples that grant specific users or agents access to specific tools and resources.
+
+On every MCP request:
+
+1. Identify the caller (user, agent, or both via [agents as principals](/docs/modeling/agents/agents-as-principals)).
+2. Call [check](/docs/interacting/relationship-queries) against the requested tool or resource.
+3. Allow or deny.
+
+For listing tools and resources to the client, use [list-objects](/docs/interacting/relationship-queries) so the client only ever sees what it could actually invoke.
+
+## Bounding agent scope
+
+A common pitfall is granting agents the same broad role as the user they serve. Instead, model the delegation explicitly: the user grants the agent access to *this workspace* or *this set of tools* for *this session*, and revoke when done. The [task-based authorization](/docs/modeling/agents/task-based-authorization) guide walks through this.
+
+## Related reading
+
+- [MCP authorization modeling guide](/docs/modeling/agents/mcp-authorization)
+- [AI agent authorization](/docs/use-cases/ai-agent-authorization)
+- [Authorization for AI Agents overview](/docs/modeling/agents)

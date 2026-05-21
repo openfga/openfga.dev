@@ -1,0 +1,43 @@
+---
+title: OpenFGA vs Cerbos
+description: Compare OpenFGA's Zanzibar-style ReBAC with Cerbos's stateless YAML-policy PDP for RBAC, ABAC, and policy-based authorization.
+sidebar_position: 3
+slug: /compare/cerbos
+---
+
+# OpenFGA vs Cerbos
+
+OpenFGA and [Cerbos](https://www.cerbos.dev) solve different shapes of the authorization problem. OpenFGA is a Zanzibar-style **relationship database**: it stores tuples and answers questions like *"can user A read document D?"* across deeply nested relationships. Cerbos is a **stateless policy decision point** that evaluates YAML policies against the principal, resource, and action you pass in on each request.
+
+## Side by side
+
+| | OpenFGA | Cerbos |
+| --- | --- | --- |
+| Primary model | ReBAC (Zanzibar) | RBAC / ABAC / PBAC, plus ReBAC patterns |
+| Relationship storage | First-class — tuples are the source of truth | None — policies are stateless; data is passed in |
+| Language | OpenFGA DSL | YAML policies |
+| Storage | PostgreSQL, MySQL, SQLite | Stateless; policies on disk, in Git, or in Cerbos Hub |
+| Reverse queries | `list-objects`, `list-users` | Not first-class (stateless) |
+| Governance | CNCF Sandbox | Open source PDP, commercial Hub |
+
+## When ReBAC + a tuple store is the right tool
+
+If your access rules involve **graphs that change at write time** — folder hierarchies, organization membership, document sharing, multi-tenant teams — storing those edges centrally and querying them is exactly what OpenFGA does.
+
+Real production deployments of this shape:
+
+- [Read AI](/docs/adopters/read-ai): 5.3B+ tuples, 5,200 RPS, 20 ms p99.
+- [Agicap](/docs/adopters/agicap): conditional ReBAC, 8,000+ customers.
+- [Grafana Labs](/docs/adopters/grafana): multi-tenant SaaS plus embedded OSS, single authorization platform.
+
+## When Cerbos's stateless PDP is the right tool
+
+- Authorization rules are mostly **attribute-based** (role, department, resource owner) and the data needed to decide is already on the request.
+- You want to keep authorization logic in Git as YAML and avoid running a database for permissions.
+- You don't need reverse queries (*"list every document user X can read"*) — these inherently require a stored relationship graph.
+
+## Combining both
+
+Some teams pair them: OpenFGA for relationship-heavy permissions (membership, sharing, hierarchies), and a separate policy engine for attribute-heavy compliance rules. OpenFGA's [contextual tuples](/docs/interacting/contextual-tuples) and [conditions](/docs/modeling/conditions) cover most ABAC needs without a second engine.
+
+> Comparison facts in this page are drawn from each project's public site as of May 2026.

@@ -1,0 +1,55 @@
+---
+title: Grafana Labs Case Study
+description: Why Grafana Labs replaced its single-tenant access control engine with OpenFGA to power multi-tenant Grafana Cloud and embedded OSS deployments.
+sidebar_position: 4
+slug: /adopters/grafana
+---
+
+# Grafana Labs: From single-tenant engine to multi-tenant ReBAC
+
+[Grafana Labs](https://grafana.com) is the company behind Grafana, Loki, Tempo, Mimir, and the LGTM observability stack. Grafana adopted OpenFGA to replace an internal single-tenant access-control engine that no longer fit the multi-tenant architecture of Grafana Cloud.
+
+## At a glance
+
+| | |
+| --- | --- |
+| **Industry** | Observability |
+| **First experiments** | February 2024 |
+| **Mainline integration** | August 2024 |
+| **Version** | v1.10.0 |
+| **Deployment** | Multi-tenant SaaS, embedded OSS, on-premises |
+
+## Why OpenFGA
+
+Grafana needed an engine that did **two** things competitors did not bundle:
+
+1. **Authorization evaluation** — like an OPA-style policy engine.
+2. **A storage layer for permissions** — a tuple store with a per-tenant schema.
+
+That combination, plus OpenFGA's **CNCF affiliation** and explicit governance policy, made it preferable to building yet another in-house system or adopting a project that could change its license later.
+
+## Architecture and scale
+
+OpenFGA runs in three Grafana environments:
+
+- **Development and staging** — already serving internal production workloads.
+- **External production** — deployed to a single cluster in a pre-production capacity, shadowing real traffic to validate consistency and performance before broader rollout.
+
+The team standardized on the **PostgreSQL adapter** after finding the MySQL adapter less mature. Refactoring Grafana's legacy schema toward OpenFGA-native modeling produced significant performance gains — an outcome echoed by the [source-of-truth best practice](/docs/best-practices).
+
+## Upstream investment
+
+- Grafana **maintains the SQLite adapter**, which was contributed back to OpenFGA so it can ship with embedded Grafana.
+- One Grafana engineer is listed in `SECURITY-INSIGHTS.yml` as a core maintainer; three others have contributed changes.
+- Future areas of contribution include **pluggable storage** (so non-core storage adapters work without rebuilding OpenFGA) and **observability** improvements.
+- KubeCon EU 2025 talk: *From Chaos To Control: Migrating Access Control* by Jo Guerreiro and Poovamraj Thanganadar Thiagarajan.
+
+## Outcomes
+
+- One authorization platform spans Grafana Cloud (multi-tenant SaaS) and Grafana OSS (embedded), removing the need to maintain separate engines.
+- Schema-driven iteration replaced engine-tuning work the team used to do manually.
+- The team is targeting **list-users** to enable reverse permission search — showing all users who can access a given resource — a capability the legacy engine never had.
+
+## Source
+
+This case study is based on the public CNCF TOC adopter interview with Joao Guerreiro, Senior Engineering Manager at Grafana Labs, available in the [`cncf/toc` repository](https://github.com/cncf/toc/tree/main/projects/openfga).

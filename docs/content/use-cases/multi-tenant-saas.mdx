@@ -1,0 +1,41 @@
+---
+title: Multi-Tenant SaaS Authorization with OpenFGA
+description: Authorize multi-tenant SaaS applications with OpenFGA. Strict tenant isolation, shared infrastructure, and cross-tenant sharing where you want it.
+sidebar_position: 5
+slug: /use-cases/multi-tenant-saas
+---
+
+# Multi-Tenant SaaS Authorization
+
+Multi-tenant SaaS is one of OpenFGA's most common production shapes. The same binary serves every tenant; tenant boundaries are enforced inside the authorization model rather than at the database or service layer.
+
+## The pattern
+
+Model an `organization` (or `tenant`) type and make every other resource belong to it:
+
+- `organization` has members, admins, and owners.
+- `workspace`, `project`, and `document` types each declare a `parent` relation pointing at an `organization`.
+- Relations like `can_view` and `can_edit` traverse the parent edge so organization membership grants the right access automatically.
+
+This gives you:
+
+- **Hard tenant isolation by default.** A user only has tuples for the organizations they belong to, so list-objects naturally returns nothing cross-tenant.
+- **Cross-tenant sharing when you want it.** A document can also have individually granted users from other organizations — same model, no special case.
+- **A single store for all tenants.** Operationally cheaper than per-tenant databases; the tuple count grows linearly with usage rather than fan-out.
+
+## Production references
+
+- [Grafana Labs](/docs/adopters/grafana) — single platform serving multi-tenant Grafana Cloud and embedded OSS.
+- [Agicap](/docs/adopters/agicap) — 8,000+ customer organizations on a single OpenFGA store with conditional ReBAC.
+- [Read AI](/docs/adopters/read-ai) — 5.3B+ tuples across many tenants on PostgreSQL.
+
+## Modeling building blocks
+
+- [Modeling parent-child](/docs/modeling/parent-child)
+- [Modeling roles](/docs/best-practices/modeling-roles)
+- [Source of truth](/docs/best-practices/source-of-truth)
+
+## Related reading
+
+- [Customer case studies](/docs/adopters)
+- [Microservices authorization](/docs/use-cases/microservices-authorization)

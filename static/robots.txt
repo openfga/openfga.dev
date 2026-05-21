@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://openfga.dev/sitemap.xml

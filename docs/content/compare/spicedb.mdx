@@ -1,0 +1,43 @@
+---
+title: OpenFGA vs SpiceDB
+description: Compare OpenFGA and SpiceDB on Zanzibar foundations, schema language, storage backends, deployment, and governance.
+sidebar_position: 2
+slug: /compare/spicedb
+---
+
+# OpenFGA vs SpiceDB
+
+OpenFGA and [SpiceDB](https://authzed.com/spicedb) are the two most prominent open-source implementations of Google's [Zanzibar](https://research.google/pubs/zanzibar-googles-consistent-global-authorization-system/) paper. Both store relationship tuples and answer permission checks against a typed schema. The differences are in governance, modeling ergonomics, and storage strategy.
+
+## Side by side
+
+| | OpenFGA | SpiceDB |
+| --- | --- | --- |
+| Origin | Auth0/Okta, donated to CNCF | Authzed |
+| Governance | CNCF Sandbox | Open core, Authzed-led |
+| License | Apache 2.0 | Apache 2.0 |
+| Model language | OpenFGA DSL (concise types + relations) | SpiceDB Schema |
+| Storage | PostgreSQL, MySQL, SQLite, in-memory | PostgreSQL, MySQL, CockroachDB, Spanner, in-memory |
+| Hosted offering | Auth0 FGA / Okta FGA (managed OpenFGA from Auth0/Okta, the original creators) | Authzed (managed) |
+| Conditions / ABAC | Conditional tuples (CEL) | Caveats (CEL) |
+
+## Where OpenFGA tends to win
+
+- **CNCF governance.** Adopters such as [Grafana Labs](/docs/adopters/grafana) cited CNCF stewardship and an explicit governance policy as a reason to prefer OpenFGA over a vendor-led project that could re-license.
+- **Modeling ergonomics.** The OpenFGA DSL aims to be the smallest readable expression of a relationship model; the [Playground](https://play.fga.dev) visualizes graphs and runs assertions in the browser.
+- **SQLite + embedded.** [Grafana maintains the SQLite adapter](/docs/adopters/grafana) upstream so OpenFGA ships inside embedded Grafana OSS — a deployment shape SpiceDB does not target.
+
+## Where SpiceDB tends to win
+
+- **Wider storage matrix.** Out-of-the-box CockroachDB and Spanner adapters matter for teams that already standardize on those engines.
+- **Authzed managed service.** A first-party SaaS removes operational work for teams that prefer to outsource the database tier.
+
+## When to pick OpenFGA
+
+You want a CNCF-governed, self-hosted Zanzibar-style engine, ideally on Postgres or MySQL, with a concise DSL and visual playground, and you value production references such as Read AI (5,200 RPS, 5.3B+ tuples), Agicap, Grafana, Docker, and Zuplo. See [the customer overview](/docs/adopters).
+
+## When to pick SpiceDB
+
+You need CockroachDB or Spanner storage, or you want a managed Zanzibar-style service from the same vendor that ships the engine.
+
+> Comparison facts in this page are drawn from each project's public site as of May 2026. License or feature claims may change — always confirm against the upstream project before making a decision.

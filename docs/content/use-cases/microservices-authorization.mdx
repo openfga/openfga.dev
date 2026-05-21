@@ -1,0 +1,35 @@
+---
+title: Microservices Authorization with OpenFGA
+description: Centralize authorization across microservices with OpenFGA. One model, one store, one set of decisions — instead of a roles table per service.
+sidebar_position: 6
+slug: /use-cases/microservices-authorization
+---
+
+# Microservices Authorization
+
+Microservices repeat the same pattern: each service ends up with its own roles table, its own permission checks, and its own subtle drift. OpenFGA centralizes that into a single authorization service that every microservice consults.
+
+## The pattern
+
+- **One OpenFGA store** holds the model and tuples for the whole system.
+- **Each microservice** calls `check`, `list-objects`, or `list-users` over the OpenFGA API rather than implementing its own permission logic.
+- **Writes go through the service that owns the relationship** (e.g. the membership service writes `member` tuples; the document service writes `can_share` tuples).
+
+## Why this beats per-service authorization
+
+- **One model to reason about.** Cross-service questions (*"can this user read this document via their team's project access?"*) become a single graph traversal instead of a coordination dance.
+- **No more drifted roles tables.** A relation defined once in the OpenFGA model is the same relation in every service.
+- **Reverse queries work across services.** `list-objects` returns every resource the user can access, regardless of which service owns it.
+
+## Operational shape
+
+- **Latency.** Run OpenFGA close to the calling services. Read AI runs [5,200 RPS at 20 ms p99](/docs/adopters/read-ai) on PostgreSQL — a useful reference for sizing.
+- **Caching.** OpenFGA supports check caching; pair with short cache TTLs in clients for hot paths.
+- **Observability.** Treat authorization decisions as a first-class metric. Track check rate, latency, and authorization failures per service.
+
+## Related reading
+
+- [Running OpenFGA in production](/docs/best-practices/running-in-production)
+- [Source of truth](/docs/best-practices/source-of-truth)
+- [Multi-tenant SaaS](/docs/use-cases/multi-tenant-saas)
+- [Customer case studies](/docs/adopters)

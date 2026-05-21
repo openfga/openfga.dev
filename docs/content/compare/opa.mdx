@@ -1,0 +1,39 @@
+---
+title: OpenFGA vs Open Policy Agent (OPA)
+description: Compare OpenFGA's Zanzibar-style relationship engine with Open Policy Agent (OPA), the CNCF general-purpose policy engine using Rego.
+sidebar_position: 7
+slug: /compare/opa
+---
+
+# OpenFGA vs Open Policy Agent (OPA)
+
+OpenFGA and [Open Policy Agent](https://www.openpolicyagent.org) are both CNCF projects, but they solve different problems. OPA is a **general-purpose policy engine** that evaluates [Rego](https://www.openpolicyagent.org/docs/latest/policy-language/) policies against arbitrary JSON input — it is widely used for Kubernetes admission control, infrastructure policy, and service-mesh authorization. OpenFGA is a **relationship database** that answers "can user A do X on resource B?" against a stored, typed graph of tuples.
+
+## Side by side
+
+| | OpenFGA | OPA |
+| --- | --- | --- |
+| Primary use | Application authorization (ReBAC) | General-purpose policy (admission, infra, app) |
+| Model | Typed schema + relationship tuples | Rego policies + arbitrary JSON data |
+| State | Stores tuples — relationships are the source of truth | Stateless; data is supplied per-query or bundled |
+| Reverse queries | `list-objects`, `list-users` first-class | Not first-class — Rego evaluates per request |
+| Governance | CNCF Sandbox | CNCF Graduated |
+| License | Apache 2.0 | Apache 2.0 |
+
+## When OpenFGA is the right pick
+
+- Your authorization rules involve **relationships that change at write time** — group membership, document sharing, folder hierarchies, multi-tenant ownership — and you want a database to store and query them.
+- You need **reverse queries** like *"list every document this user can read"* for UI rendering or filtered listings. These require a stored graph.
+- You want a **narrow, typed DSL** for relationship modeling rather than a general logic language.
+
+## When OPA is the right pick
+
+- You need **policy across many domains** — Kubernetes admission, Terraform plans, service-mesh request authorization, CI gates — not only application authorization.
+- Your decisions are mostly **attribute-based** and the input is already on the request (claims, resource metadata, labels).
+- You prefer Rego's general expressiveness and an established ecosystem of policy bundles.
+
+## Using both together
+
+Pairing the two is common: OPA at the infrastructure and request-admission layer, OpenFGA inside the application for relationship-heavy permissions. OpenFGA's [conditions](/docs/modeling/conditions) and [contextual tuples](/docs/interacting/contextual-tuples) cover most ABAC needs inside an application; OPA covers everything outside it.
+
+> Comparison facts in this page were collected from [openpolicyagent.org](https://www.openpolicyagent.org) on 2026-05-20.

@@ -1,0 +1,46 @@
+---
+title: Docker Case Study
+description: How Docker migrated to OpenFGA with a parallel-run strategy and now uses ReBAC to centralize permissions across products.
+sidebar_position: 3
+slug: /adopters/docker
+---
+
+# Docker: Centralizing permissions with ReBAC
+
+[Docker](https://www.docker.com) provides tools that help developers build, share, run, and verify applications across environments. Docker adopted OpenFGA in early 2024 and uses it to centralize authorization across an expanding set of products.
+
+## At a glance
+
+| | |
+| --- | --- |
+| **Industry** | Developer tools / platform |
+| **In production since** | March 2024 |
+| **Scale** | 100-150 requests per second |
+| **Deployment** | Self-hosted |
+| **Key features used** | ReBAC, DSL, SDKs and CLI |
+
+## Why OpenFGA
+
+Docker evaluated several access-control systems — including Authzed and Ory Keto, plus non-ReBAC options — before choosing OpenFGA. The decision came down to:
+
+- **ReBAC** as a more flexible model than RBAC for the products Docker builds.
+- **Self-hosted, open source**, easy to run locally (a working stack via Docker Compose in under five minutes).
+- **CNCF backing** and contributors with strong security pedigree.
+- Mature **SDKs, APIs, and testing tools**.
+- A responsive maintainer community.
+
+## Migration approach
+
+Docker ran OpenFGA in **parallel with the existing authorization system**: every permission check went to both engines, and results were compared. Once both systems consistently agreed, traffic was incrementally cut over to OpenFGA. The parallel-run pattern is one we recommend for any production migration — see the [adoption patterns guide](/docs/best-practices).
+
+## Outcomes
+
+- Permission changes that previously required code changes are now centralized in the authorization model file.
+- New Docker products integrate into the access-control system faster.
+- Operational overhead for permission updates dropped substantially.
+
+The early scaling pain points the team hit — particularly batch checks across many records — were addressed quickly by upstream releases.
+
+## Source
+
+This case study is based on the public CNCF TOC adopter interview with Gurleen Sethi, Senior Software Engineer at Docker, Inc., available in the [`cncf/toc` repository](https://github.com/cncf/toc/tree/main/projects/openfga).
