@@ -186,6 +186,10 @@ The result `user:anne` and `user:beth` are the `user` objects that have the `rea
 The performance characteristics of the List Users endpoint vary drastically depending on the model complexity, number of tuples, and the relations it needs to evaluate. Relations with 'and' or 'but not' are particularly expensive to evaluate.
 :::
 
+:::info Conditions and List Users
+When a relation uses a [condition](../modeling/conditions.mdx) with a per-user attribute (e.g., `user_clearance`), the List Users API may not return correct results. The API accepts a single `context` per call, but each candidate user may have a different value for that attribute. If you need to enumerate users based on a per-user attribute comparison, consider modeling the attribute as a [type hierarchy using relationship tuples](../best-practices/modeling-abac.mdx) instead of a condition. See [Conditions: Limitations](../modeling/conditions.mdx#conditions-and-enumeration-queries-listobjects--listusers) for details.
+:::
+
 ## Usersets
 
 In the above example, only specific subjects of the `user` type were returned. However, groups of users, known as [usersets](../modeling/building-blocks/usersets.mdx), can also be returned from the List Users API. This is done by specifying a `relation` field in the `user_filters` request object. Usersets will only expand to the underlying subjects if that `type` is specified as the user filter object.
