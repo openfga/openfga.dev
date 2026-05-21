@@ -1,11 +1,79 @@
 ---
-title: Authorization Concepts
-description: Introduction to Authorization 
+title: 'Fine-Grained Authorization, ReBAC, ABAC & Zanzibar Explained | OpenFGA'
+description: 'Learn fine-grained authorization concepts: ReBAC, RBAC, ABAC, PBAC, and Google Zanzibar. Understand how OpenFGA models permissions for modern apps.'
 sidebar_position: 1
 slug: /authorization-concepts
 ---
 
+import Head from '@docusaurus/Head';
 import { ProductName, ProductNameFormat, RelatedSection } from '@components/Docs';
+
+export const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What is the difference between authentication and authorization?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: "Authentication ensures a user's identity. Authorization determines if a user can perform a certain action on a particular resource. For example, when you log in to Google, authentication verifies your username and password are correct, while authorization ensures that you can access a given Google service or feature.",
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What is Fine-Grained Authorization?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Fine-Grained Authorization (FGA) implies the ability to grant specific users permission to perform certain actions in specific resources. Well-designed FGA systems allow you to manage permissions for millions of objects and users, with permissions that can change rapidly. A notable example is Google Drive, where access can be granted to documents or folders, to individual users or groups.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What is Role-Based Access Control?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'In Role-Based Access Control (RBAC), permissions are assigned to users based on their role in a system. For example, a user needs the editor role to edit content. RBAC systems enable you to define users, groups, roles, and permissions, then store them in a centralized location that applications access to make authorization decisions.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What is Attribute-Based Access Control?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'In Attribute-Based Access Control (ABAC), permissions are granted based on a set of attributes that a user or resource possesses. For example, a user assigned both marketing and manager attributes is entitled to publish and delete posts that have a marketing attribute. Applications implementing ABAC retrieve information from multiple data sources to make authorization decisions.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What is Policy-Based Access Control?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: "Policy-Based Access Control (PBAC) is the ability to manage authorization policies in a centralized way that's external to the application code. Most implementations of ABAC are also PBAC.",
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What is Relationship-Based Access Control?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: "Relationship-Based Access Control (ReBAC) enables user access rules to be conditional on relations that a given user has with a given object and that object's relationship with other objects. For example, a user can view a document if the user has access to the document's parent folder. ReBAC is a superset of RBAC and can natively solve for ABAC when attributes are expressed as relationships.",
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What is Zanzibar?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: "Zanzibar is Google's global authorization system across Google's product suite. It's based on ReBAC and uses object-relation-user tuples to store relationship data, then checks those relations for a match between a user and an object. ReBAC systems based on Zanzibar store authorization data in a centralized database that applications query via API. OpenFGA is an example of a Zanzibar-based authorization system.",
+      },
+    },
+  ],
+};
+
+<Head>
+  <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
+</Head>
 
 # Authorization Concepts 
 
