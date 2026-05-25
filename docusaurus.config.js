@@ -177,7 +177,6 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
         },
       },
     ],
-    '@stackql/docusaurus-plugin-structured-data',
   ],
 
   presets: [
@@ -222,58 +221,6 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
         { name: 'twitter:site', content: '@openfga' },
         { name: 'twitter:image', content: 'https://openfga.dev/img/og-rich-embed.png' },
       ],
-      structuredData: {
-        excludedRoutes: ['/blog/authors', '/blog/archive', '/blog/tags', '/api/service'],
-        verbose: false,
-        featuredImageDimensions: { width: 1200, height: 627 },
-        authors: {
-          aaguiar: { authorId: 'aaguiar', url: 'https://github.com/aaguiarz', imageUrl: 'https://openfga.dev/img/blog/authors/andres.jpg', sameAs: [] },
-          eharris: { authorId: 'eharris', url: 'https://github.com/ewanharris', imageUrl: 'https://openfga.dev/img/blog/authors/ewan.jpg', sameAs: [] },
-          jakub: { authorId: 'jakub', url: 'https://github.com/curfew-marathon', imageUrl: 'https://openfga.dev/img/blog/authors/jakub.jpg', sameAs: [] },
-          miparnisari: { authorId: 'miparnisari', url: 'https://github.com/miparnisari', imageUrl: 'https://openfga.dev/img/blog/authors/miparnisari.jpg', sameAs: [] },
-          'hello-caleb': { authorId: 'hello-caleb', url: 'https://github.com/hello-caleb', imageUrl: 'https://openfga.dev/img/blog/authors/caleb.jpg', sameAs: [] },
-          tylernix: { authorId: 'tylernix', url: 'https://github.com/tylernix', imageUrl: 'https://openfga.dev/img/blog/authors/tyler.jpg', sameAs: [] },
-        },
-        organization: {
-          name: 'OpenFGA',
-          url: 'https://openfga.dev',
-          logo: 'https://openfga.dev/img/openfga_logo.png',
-          sameAs: [
-            'https://github.com/openfga',
-            'https://twitter.com/openfga',
-            'https://hachyderm.io/@openfga',
-            'https://openfga.dev/community',
-          ],
-          parentOrganization: {
-            '@type': 'Organization',
-            name: 'Cloud Native Computing Foundation',
-            url: 'https://www.cncf.io',
-            parentOrganization: {
-              '@type': 'Organization',
-              name: 'The Linux Foundation',
-              url: 'https://www.linuxfoundation.org',
-            },
-          },
-        },
-        website: {
-          inLanguage: 'en-US',
-          potentialAction: {
-            '@type': 'SearchAction',
-            target: {
-              '@type': 'EntryPoint',
-              urlTemplate: 'https://openfga.dev/search?q={search_term_string}',
-            },
-            'query-input': 'required name=search_term_string',
-          },
-        },
-        webpage: {
-          inLanguage: 'en-US',
-          datePublished: '2022-09-13',
-        },
-        breadcrumbLabelMap: {
-          docs: 'Docs',
-        },
-      },
       colorMode: {
         defaultMode: 'dark',
         disableSwitch: true,

@@ -29,7 +29,7 @@ This gives you:
 
 Most SaaS products eventually need tenant-defined roles — *"Acme wants a `billing-manager` role; Globex wants a `compliance-reviewer` role"* — without redeploying the model. The pattern is to make `role` a first-class type whose `assignee` relation can be a user, another role, or a group, and then bind those roles to organization-level permissions:
 
-```dsl
+```dsl.openfga
 type user
 
 type group

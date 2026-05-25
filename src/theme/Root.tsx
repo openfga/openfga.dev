@@ -88,8 +88,48 @@ function buildBreadcrumbJsonLd(pathname: string, siteUrl: string): string | null
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement,
-  });
+  }).replace(/</g, '\\u003c');
 }
+
+const ORGANIZATION_JSON_LD = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'OpenFGA',
+  url: 'https://openfga.dev',
+  logo: 'https://openfga.dev/img/openfga_logo.png',
+  sameAs: [
+    'https://github.com/openfga',
+    'https://twitter.com/openfga',
+    'https://hachyderm.io/@openfga',
+    'https://openfga.dev/community',
+  ],
+  parentOrganization: {
+    '@type': 'Organization',
+    name: 'Cloud Native Computing Foundation',
+    url: 'https://www.cncf.io',
+    parentOrganization: {
+      '@type': 'Organization',
+      name: 'The Linux Foundation',
+      url: 'https://www.linuxfoundation.org',
+    },
+  },
+});
+
+const WEBSITE_JSON_LD = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'OpenFGA',
+  url: 'https://openfga.dev',
+  inLanguage: 'en-US',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: 'https://openfga.dev/search?q={search_term_string}',
+    },
+    'query-input': 'required name=search_term_string',
+  },
+});
 
 export default function Root({ children }: RootProps): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
@@ -99,11 +139,14 @@ export default function Root({ children }: RootProps): JSX.Element {
   // Fine-Grained News digests are time-sensitive newsletters — keep them visible in the blog
   // index/RSS but noindex them so they don't compete with evergreen pages in search results.
   const noindex = /^\/blog\/fine-grained-news-/.test(pathname);
+  const isHome = pathname === '/' || pathname === '';
   return (
     <div className="CustomizedRoot">
       <Head>
         <meta httpEquiv="Content-Security-Policy" content={contentSecurityPolicy as string} />
         {noindex && <meta name="robots" content="noindex, follow" />}
+        {isHome && <script type="application/ld+json">{ORGANIZATION_JSON_LD}</script>}
+        {isHome && <script type="application/ld+json">{WEBSITE_JSON_LD}</script>}
         {breadcrumbJsonLd && (
           <script type="application/ld+json">{breadcrumbJsonLd}</script>
         )}
