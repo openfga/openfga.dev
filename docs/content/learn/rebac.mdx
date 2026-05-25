@@ -5,6 +5,8 @@ sidebar_position: 3
 slug: /learn/rebac
 ---
 
+import { ProductName, ProductNameFormat, RelatedSection } from '@components/Docs';
+
 # What is ReBAC?
 
 **Relationship-Based Access Control (ReBAC)** models permissions as relationships between users and resources, rather than as roles assigned to users or attributes attached to objects. *"Alice is an editor of doc-42"* and *"doc-42 is in folder-7"* and *"folder-7 is in workspace-A"* are all relationships; whether Alice can read doc-42 falls out of traversing those relationships.
@@ -19,9 +21,9 @@ Most real authorization questions are graph questions:
 
 Roles can model the simple cases but blow up combinatorially as soon as hierarchy or sharing enters the picture. ReBAC stores the edges directly and queries them.
 
-## ReBAC in OpenFGA
+## ReBAC in <ProductName format={ProductNameFormat.ShortForm}/>
 
-OpenFGA is a ReBAC engine in the [Zanzibar](/docs/learn/zanzibar) tradition. You define types and relations in a typed [DSL](/docs/configuration-language), write tuples like `(document:42, editor, user:alice)`, and call [check](/docs/interacting/relationship-queries) or `list-objects`.
+<ProductName format={ProductNameFormat.ShortForm}/> is a ReBAC engine in the [Zanzibar](/docs/learn/zanzibar) tradition. You define types and relations in a typed [DSL](/docs/configuration-language), write tuples like `(document:42, editor, user:alice)`, and call [check](/docs/interacting/relationship-queries) or `list-objects`.
 
 ## When ReBAC is the right tool
 
@@ -31,11 +33,31 @@ OpenFGA is a ReBAC engine in the [Zanzibar](/docs/learn/zanzibar) tradition. You
 
 ## When something else fits better
 
-- Pure attribute checks (department equals "engineering", region equals "EU") are better served by attributes — see [ABAC vs. ReBAC](/docs/learn/abac-vs-rebac). OpenFGA covers these with [conditions](/docs/modeling/conditions).
+- Pure attribute checks (department equals "engineering", region equals "EU") are better served by attributes — see [ABAC vs. ReBAC](/docs/learn/abac-vs-rebac). <ProductName format={ProductNameFormat.ShortForm}/> covers these with [conditions](/docs/modeling/conditions).
 - Infrastructure or admission policy across many domains — see [policy engines](/docs/learn/policy-engine).
 
 ## Related reading
 
-- [RBAC vs. ReBAC](/docs/learn/rbac-vs-rebac)
-- [ABAC vs. ReBAC](/docs/learn/abac-vs-rebac)
-- [Authorization Concepts](/docs/authorization-concepts)
+<RelatedSection
+  description="Learn more about {ProductName}."
+  relatedLinks={[
+    {
+      title: 'RBAC vs. ReBAC',
+      description: 'How roles and relationships compare.',
+      link: './rbac-vs-rebac',
+      id: './rbac-vs-rebac',
+    },
+    {
+      title: 'ABAC vs. ReBAC',
+      description: 'Attributes vs. relationships — and how they combine.',
+      link: './abac-vs-rebac',
+      id: './abac-vs-rebac',
+    },
+    {
+      title: 'Authorization Concepts',
+      description: 'Core authorization terminology.',
+      link: '../authorization-concepts',
+      id: '../authorization-concepts',
+    },
+  ]}
+/>

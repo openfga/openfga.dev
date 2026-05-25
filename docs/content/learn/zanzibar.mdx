@@ -5,9 +5,11 @@ sidebar_position: 2
 slug: /learn/zanzibar
 ---
 
+import { ProductName, ProductNameFormat, RelatedSection } from '@components/Docs';
+
 # What is Google Zanzibar?
 
-[Zanzibar](https://research.google/pubs/zanzibar-googles-consistent-global-authorization-system/) is a 2019 paper from Google describing the authorization system used by Google Drive, YouTube, Calendar, Cloud, and most other Google products. It is the source of the design pattern OpenFGA implements.
+[Zanzibar](https://research.google/pubs/zanzibar-googles-consistent-global-authorization-system/) is a 2019 paper from Google describing the authorization system used by Google Drive, YouTube, Calendar, Cloud, and most other Google products. It is the source of the design pattern <ProductName format={ProductNameFormat.ShortForm}/> implements.
 
 ## What Zanzibar actually is
 
@@ -25,19 +27,46 @@ Two ideas make it work:
 
 Before Zanzibar, every Google product had its own authorization layer. Cross-product features ("share a Drive doc to a Calendar event guest") meant authorization logic had to be duplicated and kept in sync. Zanzibar gave Google one model, one store, one decision surface.
 
-## How OpenFGA maps to Zanzibar
+## How <ProductName format={ProductNameFormat.ShortForm}/> maps to Zanzibar
 
-OpenFGA implements the same model:
+<ProductName format={ProductNameFormat.ShortForm}/> implements the core Zanzibar operations — `Write`, `Read`, `Check`, `Expand`, and `Watch` — and extends them with capabilities that aren't in the paper:
 
-- **Schema** — written in the [OpenFGA DSL](/docs/configuration-language).
+- **Schema** — written in the [<ProductName format={ProductNameFormat.ShortForm}/> DSL](/docs/configuration-language).
 - **Tuples** — stored in PostgreSQL, MySQL, or SQLite.
-- **Check** and **List-objects** — exposed via the [API](/docs/interacting/relationship-queries).
-- **Conditions** (CEL) — OpenFGA's equivalent of caveats for attribute-based decisions.
+- **Check** and **Expand** — exposed via the [API](/docs/interacting/relationship-queries).
+- **ListObjects** and **ListUsers** — reverse queries that aren't in the Zanzibar paper, for answering *"what can this user see?"* and *"who has access to this object?"*.
+- **Conditions** (CEL) — also not in the paper; <ProductName format={ProductNameFormat.ShortForm}/>'s mechanism for attribute-based decisions, similar in spirit to caveats.
 
-OpenFGA does not replicate Zanzibar's globally distributed Spanner-backed architecture; it is designed to run on your existing databases. For most applications, that's the point — Zanzibar's *model* is what's valuable, not its operational scale.
+<ProductName format={ProductNameFormat.ShortForm}/> does not replicate Zanzibar's globally distributed Spanner-backed architecture; it is designed to run on your existing databases. For most applications, that's the point — Zanzibar's *model* is what's valuable, not its operational scale.
 
 ## Related reading
 
-- [ReBAC: Relationship-Based Access Control](/docs/learn/rebac)
-- [Fine-Grained Authorization](/docs/learn/fine-grained-authorization)
-- [Authorization Concepts](/docs/authorization-concepts)
+<RelatedSection
+  description="Learn more about {ProductName}."
+  relatedLinks={[
+    {
+      title: 'Zanzibar Academy',
+      description: 'A guided walkthrough of the Zanzibar paper.',
+      link: 'https://www.zanzibar.academy/',
+      id: 'https://www.zanzibar.academy/',
+    },
+    {
+      title: 'ReBAC: Relationship-Based Access Control',
+      description: 'Relationship-Based Access Control explained.',
+      link: './rebac',
+      id: './rebac',
+    },
+    {
+      title: 'Fine-Grained Authorization',
+      description: 'What FGA is and what it buys you.',
+      link: './fine-grained-authorization',
+      id: './fine-grained-authorization',
+    },
+    {
+      title: 'Authorization Concepts',
+      description: 'Core authorization terminology.',
+      link: '../authorization-concepts',
+      id: '../authorization-concepts',
+    },
+  ]}
+/>

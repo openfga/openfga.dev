@@ -1,11 +1,13 @@
 ---
-title: Banking Authorization with OpenFGA
-description: Model account managers, account owners, per-transaction limits, and delegation in OpenFGA for banking and fintech applications.
+title: Fine-Grained Authorization for Banking & Fintech with FGA
+description: Model account managers, account owners, per-transaction limits, and delegation in FGA for banking, fintech, and PCI-DSS-regulated applications.
 sidebar_position: 3
 slug: /industries/banking
 ---
 
-# Banking Authorization with OpenFGA
+import { ProductName, ProductNameFormat } from '@components/Docs';
+
+# Banking Authorization with <ProductName format={ProductNameFormat.ShortForm}/>
 
 Banking and fintech authorization isn't just "who can read this record?" — it's "who can move *how much* money out of *which* account, and who approved that delegation?". A relationship-based model captures the answer without scattering the rules across application code.
 
@@ -31,11 +33,11 @@ A typical "manager", "owner", "delegate" RBAC scheme answers *what action is all
 - Audit can't answer "who could have wired more than $50k from account A on date D" without joining application code with role tables.
 - Delegation expiry, per-transaction overrides, and dual-control approvals each become bespoke features.
 
-OpenFGA expresses the limit *as part of the relationship* using [conditions](/docs/modeling/conditions), so the check `can_initiate_transfer` takes the transaction amount as a contextual parameter and returns a single allow/deny.
+<ProductName format={ProductNameFormat.ShortForm}/> expresses the limit *as part of the relationship* using [conditions](/docs/modeling/conditions), so the check `can_initiate_transfer` takes the transaction amount as a contextual parameter and returns a single allow/deny.
 
-## Where this maps to OpenFGA features
+## Where this maps to <ProductName format={ProductNameFormat.ShortForm}/> features
 
-| Banking requirement | OpenFGA feature |
+| Banking requirement | <ProductName format={ProductNameFormat.ShortForm}/> feature |
 | --- | --- |
 | Per-actor transaction limits | [conditions](/docs/modeling/conditions) on `can_initiate_transfer` |
 | Owner / co-owner / delegate roles | direct relations on `account` |

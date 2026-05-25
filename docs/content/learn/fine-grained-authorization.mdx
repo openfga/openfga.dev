@@ -5,6 +5,8 @@ sidebar_position: 6
 slug: /learn/fine-grained-authorization
 ---
 
+import { ProductName, ProductNameFormat, RelatedSection } from '@components/Docs';
+
 # What is Fine-Grained Authorization?
 
 **Fine-grained authorization (FGA)** means deciding access at the level of the individual resource and action, rather than at the role or coarse-scope level. *"Alice can edit document-42"* is fine-grained; *"Alice is an editor"* is not.
@@ -18,7 +20,7 @@ slug: /learn/fine-grained-authorization
 
 Coarse-grained models can simulate these with enough effort, but the authorization layer ends up duplicating a graph database in roles tables. Fine-grained engines store the graph directly.
 
-## How OpenFGA implements FGA
+## How <ProductName format={ProductNameFormat.ShortForm}/> implements FGA
 
 - A typed [model](/docs/configuration-language) defines resource types and the relations between them.
 - [Tuples](/docs/concepts) record specific relationships between specific principals and specific resources.
@@ -33,6 +35,20 @@ Coarse-grained models can simulate these with enough effort, but the authorizati
 
 ## Related reading
 
-- [Authorization Concepts](/docs/authorization-concepts)
-- [ReBAC overview](/docs/learn/rebac)
-- [Customer case studies](/docs/adopters)
+<RelatedSection
+  description="Learn more about {ProductName}."
+  relatedLinks={[
+    {
+      title: 'Authorization Concepts',
+      description: 'Core authorization terminology.',
+      link: '../authorization-concepts',
+      id: '../authorization-concepts',
+    },
+    {
+      title: 'ReBAC overview',
+      description: 'Relationship-Based Access Control explained.',
+      link: './rebac',
+      id: './rebac',
+    },
+  ]}
+/>

@@ -5,9 +5,11 @@ sidebar_position: 5
 slug: /use-cases/multi-tenant-saas
 ---
 
+import { ProductName, ProductNameFormat } from '@components/Docs';
+
 # Multi-Tenant SaaS Authorization
 
-Multi-tenant SaaS is one of OpenFGA's most common production shapes. The same binary serves every tenant; tenant boundaries are enforced inside the authorization model rather than at the database or service layer.
+Multi-tenant SaaS is one of <ProductName format={ProductNameFormat.ShortForm}/>'s most common production shapes. The same binary serves every tenant; tenant boundaries are enforced inside the authorization model rather than at the database or service layer.
 
 ## The pattern
 
@@ -23,11 +25,44 @@ This gives you:
 - **Cross-tenant sharing when you want it.** A document can also have individually granted users from other organizations — same model, no special case.
 - **A single store for all tenants.** Operationally cheaper than per-tenant databases; the tuple count grows linearly with usage rather than fan-out.
 
-## Production references
+## Per-tenant custom roles
 
-- [Grafana Labs](/docs/adopters/grafana) — single platform serving multi-tenant Grafana Cloud and embedded OSS.
-- [Agicap](/docs/adopters/agicap) — 8,000+ customer organizations on a single OpenFGA store with conditional ReBAC.
-- [Read AI](/docs/adopters/read-ai) — 5.3B+ tuples across many tenants on PostgreSQL.
+Most SaaS products eventually need tenant-defined roles — *"Acme wants a `billing-manager` role; Globex wants a `compliance-reviewer` role"* — without redeploying the model. The pattern is to make `role` a first-class type whose `assignee` relation can be a user, another role, or a group, and then bind those roles to organization-level permissions:
+
+```dsl
+type user
+
+type group
+  relations
+    define member: [user, group#member]
+
+type role
+  relations
+    define assignee: [user, role#assignee, group#member]
+
+type organization
+  relations
+    define admin: [user, role#assignee]
+    define billing_manager: [role#assignee] or admin
+    define document_manager: [role#assignee] or admin
+
+    define can_invite_user: admin
+    define can_edit_billing: billing_manager
+    define can_create_document: document_manager
+
+type document
+  relations
+    define organization: [organization]
+    define editor: document_manager from organization
+    define viewer: document_manager from organization
+
+    define can_view: viewer or editor
+    define can_edit: editor
+```
+
+Each tenant creates its own `role:acme-billing-manager`, `role:acme-document-management`, etc., and binds them to the predefined organization-level relations (`billing_manager`, `document_manager`, `admin`). Users or groups become assignees of those roles, and document-level permissions inherit through the organization. The model itself stays static; tenants get full flexibility on which roles exist and who is in them.
+
+The full working example — including tuples, group nesting (`group:acme-data-engineering#member` ∈ `group:engineering#member`), and `list_users` assertions — is in the [multitenant-rbac sample store](https://github.com/openfga/sample-stores/tree/main/stores/multitenant-rbac). You can run it locally with the [FGA CLI](/docs/getting-started/cli) to see the checks pass.
 
 ## Modeling building blocks
 
@@ -37,5 +72,4 @@ This gives you:
 
 ## Related reading
 
-- [Customer case studies](/docs/adopters)
 - [Microservices authorization](/docs/use-cases/microservices-authorization)

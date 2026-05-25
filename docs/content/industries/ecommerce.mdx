@@ -1,15 +1,17 @@
 ---
-title: E-commerce Authorization with OpenFGA
-description: Model multi-store organizations, staff roles, products, orders, and refunds in OpenFGA for Shopify-style and BigCommerce-style platforms.
+title: Fine-Grained Authorization for E-commerce with FGA
+description: Model multi-store organizations, staff roles, products, orders, and refunds in FGA for Shopify-style and BigCommerce-style e-commerce platforms.
 sidebar_position: 4
 slug: /industries/ecommerce
 ---
 
-# E-commerce Authorization with OpenFGA
+import { ProductName, ProductNameFormat } from '@components/Docs';
+
+# E-commerce Authorization with <ProductName format={ProductNameFormat.ShortForm}/>
 
 E-commerce platforms — Shopify-style multi-store SaaS, BigCommerce, Etsy-like marketplaces — share an authorization shape that role-only systems struggle with: a merchant has *one organization* but *many stores*, and staff often have different permissions in different stores. A category manager might be a `manager` in the apparel store and just a `staff` member in the home-goods store.
 
-OpenFGA models the org/store split natively. The full sample lives in [openfga/sample-stores/stores/ecommerce](https://github.com/openfga/sample-stores/tree/main/stores/ecommerce).
+<ProductName format={ProductNameFormat.ShortForm}/> models the org/store split natively. The full sample lives in [openfga/sample-stores/stores/ecommerce](https://github.com/openfga/sample-stores/tree/main/stores/ecommerce).
 
 ## Core resources and relations
 
@@ -37,9 +39,9 @@ Object types:
 
 **Refund vs. delete.** Refund is a manager-level permission; delete is admin only. Two separate relations means audits can answer "who could have refunded this order" independently of "who could have deleted it".
 
-## Where this maps to OpenFGA features
+## Where this maps to <ProductName format={ProductNameFormat.ShortForm}/> features
 
-| E-commerce requirement | OpenFGA feature |
+| E-commerce requirement | <ProductName format={ProductNameFormat.ShortForm}/> feature |
 | --- | --- |
 | Multi-store organizations | [parent-child relationships](/docs/modeling/parent-child) |
 | Per-store roles | direct relations on `store` |
@@ -57,4 +59,4 @@ Object types:
 
 ## Working sample
 
-Schema, sample tuples, and assertions are in [openfga/sample-stores/stores/ecommerce](https://github.com/openfga/sample-stores/tree/main/stores/ecommerce). For the broader multi-tenant question (one OpenFGA store across many merchants), see [Multi-Tenant SaaS](/docs/use-cases/multi-tenant-saas).
+Schema, sample tuples, and assertions are in [openfga/sample-stores/stores/ecommerce](https://github.com/openfga/sample-stores/tree/main/stores/ecommerce). For the broader multi-tenant question (one <ProductName format={ProductNameFormat.ShortForm}/> store across many merchants), see [Multi-Tenant SaaS](/docs/use-cases/multi-tenant-saas).

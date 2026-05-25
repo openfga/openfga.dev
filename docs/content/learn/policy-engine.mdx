@@ -5,12 +5,14 @@ sidebar_position: 7
 slug: /learn/policy-engine
 ---
 
+import { ProductName, ProductNameFormat, RelatedSection } from '@components/Docs';
+
 # Policy Engines vs. Relationship Engines
 
 The authorization toolbox has two broad shapes:
 
 - **Policy engines** — OPA (Rego), Cedar, Ory's OPL, Oso's Polar — evaluate policies expressed in a DSL against input data passed on each request. The engine is **stateless**; you supply the data.
-- **Relationship engines** — OpenFGA, SpiceDB, Ory Keto, all in the [Zanzibar](/docs/learn/zanzibar) tradition — store relationship tuples in a database and answer queries against the stored graph. The engine **is the database**.
+- **Relationship engines** — <ProductName format={ProductNameFormat.ShortForm}/>, SpiceDB, Ory Keto, all in the [Zanzibar](/docs/learn/zanzibar) tradition — store relationship tuples in a database and answer queries against the stored graph. The engine **is the database**.
 
 ## When a policy engine fits
 
@@ -28,10 +30,18 @@ OPA's [graduated CNCF status](https://www.cncf.io/projects/open-policy-agent-opa
 
 ## You can use both
 
-Pairing them is common: a relationship engine for application authorization, a policy engine at the infrastructure or admission layer. Inside the application, OpenFGA covers most attribute-driven rules with [conditions](/docs/modeling/conditions) and [contextual tuples](/docs/interacting/contextual-tuples), so a second engine isn't always needed.
+Pairing them is common: a relationship engine for application authorization, a policy engine at the infrastructure or admission layer. Inside the application, <ProductName format={ProductNameFormat.ShortForm}/> covers most attribute-driven rules with [conditions](/docs/modeling/conditions) and [contextual tuples](/docs/interacting/contextual-tuples), so a second engine isn't always needed.
 
 ## Related reading
 
-- [OpenFGA vs. OPA](/docs/compare/opa)
-- [OpenFGA vs. Cerbos](/docs/compare/cerbos)
-- [ABAC vs. ReBAC](/docs/learn/abac-vs-rebac)
+<RelatedSection
+  description="Learn more about {ProductName}."
+  relatedLinks={[
+    {
+      title: 'ABAC vs. ReBAC',
+      description: 'Attributes vs. relationships — and how they combine.',
+      link: './abac-vs-rebac',
+      id: './abac-vs-rebac',
+    },
+  ]}
+/>

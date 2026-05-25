@@ -7,7 +7,7 @@ slug: /compare/permit
 
 # OpenFGA vs Permit.io
 
-OpenFGA is a self-hostable, CNCF-governed Zanzibar-style engine. [Permit.io](https://www.permit.io) is a commercial **hosted authorization control plane** that wraps existing policy engines (historically OPA / Cedar) with a UI, audit, MCP gateway, and SDKs.
+OpenFGA is a self-hostable, CNCF-governed Zanzibar-style engine with official SDKs, a Playground UI, an [FGA CLI](https://github.com/openfga/cli), a [Terraform provider](https://registry.terraform.io/providers/openfga/openfga/latest), a Helm chart, and a managed option via [Auth0 FGA](/docs/compare/auth0-fga). [Permit.io](https://www.permit.io) is a commercial **hosted authorization control plane** that wraps existing policy engines — historically OPA and Cedar, with OpenFGA as one of several supported engines — behind a unified UI, audit pipeline, MCP gateway, and SDKs. The two are not the same shape: OpenFGA is an engine plus tooling; Permit.io is a multi-engine control plane.
 
 ## Side by side
 
@@ -15,16 +15,19 @@ OpenFGA is a self-hostable, CNCF-governed Zanzibar-style engine. [Permit.io](htt
 | --- | --- | --- |
 | Primary delivery | Self-hosted open source, or Auth0 FGA / Okta FGA (managed OpenFGA from Auth0/Okta) | Hosted control plane (commercial) |
 | License | Apache 2.0 | Commercial |
-| Governance | CNCF Sandbox | Single vendor |
+| Governance | CNCF Incubation | Single vendor |
 | Model | Zanzibar-style ReBAC, conditions for ABAC | RBAC, ABAC, ReBAC over OPA-style engines |
 | Data residency | Wherever you run OpenFGA | Vendor-managed unless self-hosted PDP is purchased |
-| First-party UI | OpenFGA Playground (web) | Full no-code/low-code admin UI |
+| First-party UI | OpenFGA Playground (web); hosted dashboard via Auth0 FGA / Okta FGA | Full no-code/low-code admin UI |
+| Official SDKs | Go, Java, .NET, Python, JavaScript/TypeScript | Multiple languages |
+| IaC & CLI | FGA CLI, Terraform provider, Helm chart | Terraform provider, CLI |
 
 ## When OpenFGA is the right pick
 
 - You want **self-hosted, open source, and CNCF-governed**. Every adopter we document picked OpenFGA partly to avoid licensing risk and vendor lock-in (see [customer case studies](/docs/adopters)).
 - You need **regulatory data residency** — e.g. fintech (Agicap), healthcare, or air-gapped environments — that a hosted SaaS makes harder.
 - You want a **single, typed model file** versioned alongside code, not a vendor admin UI as the source of truth. The [FGA CLI](https://github.com/openfga/cli) and [Terraform provider](https://registry.terraform.io/providers/openfga/openfga/latest) make the model-as-code workflow first-class — write the DSL, lint and test it locally, diff it in PRs, and deploy it like any other code artifact.
+
 
 ## When Permit.io may be the right pick
 

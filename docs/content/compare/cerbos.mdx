@@ -17,8 +17,9 @@ OpenFGA and [Cerbos](https://www.cerbos.dev) solve different shapes of the autho
 | Relationship storage | First-class — tuples are the source of truth | None — policies are stateless; data is passed in |
 | Language | OpenFGA DSL | YAML policies |
 | Storage | PostgreSQL, MySQL, SQLite | Stateless; policies on disk, in Git, or in Cerbos Hub |
-| Reverse queries | `list-objects`, `list-users` | Not first-class (stateless) |
-| Governance | CNCF Sandbox | Open source PDP, commercial Hub |
+| Reverse queries | Engine-side `list-objects`, `list-users` over the tuple graph | `PlanResources` returns a query-plan AST you translate into a native DB query |
+| Query-plan adapters | N/A — engine returns objects directly | Prisma, Drizzle, Mongoose, Convex, LangChain/ChromaDB (TS); SQLAlchemy (Python) |
+| Governance | CNCF Incubation | Open source PDP, commercial Hub |
 
 ## When ReBAC + a tuple store is the right tool
 
@@ -34,7 +35,11 @@ Real production deployments of this shape:
 
 - Authorization rules are mostly **attribute-based** (role, department, resource owner) and the data needed to decide is already on the request.
 - You want to keep authorization logic in Git as YAML and avoid running a database for permissions.
-- You don't need reverse queries (*"list every document user X can read"*) — these inherently require a stored relationship graph.
+- Reverse queries (*"list every document user X can read"*) can be answered by pushing a query plan into your existing database via Cerbos's [PlanResources API](https://docs.cerbos.dev/cerbos/latest/recipes/filtering-resources) and [query plan adapters](https://docs.cerbos.dev/cerbos/latest/recipes/query-plan-adapters/) (Prisma, Drizzle, Mongoose, Convex, LangChain/ChromaDB, SQLAlchemy) — a good fit when the data needed for the decision already lives in your application DB.
+
+## Two shapes of reverse query
+
+OpenFGA and Cerbos both let you answer *"which resources can this user access?"*, but the mechanics are different. OpenFGA's `ListObjects` and `ListUsers` traverse the tuple graph in the engine and return the objects directly — the relationship data is the source of truth and lives in OpenFGA's store. Cerbos's `PlanResources` returns a `CONDITIONAL` AST (or `ALWAYS_ALLOWED` / `ALWAYS_DENIED`) that your application or an adapter compiles into a `WHERE` clause against your own database. If the data needed to authorize lives in your app DB and you want a single filtered query, the Cerbos pushdown is ergonomic; if the relationships themselves are the source of truth and span hierarchies that don't map cleanly to your row model, the OpenFGA engine-side approach fits better.
 
 ## Combining both
 

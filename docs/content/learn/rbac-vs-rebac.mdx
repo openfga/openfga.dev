@@ -5,6 +5,8 @@ sidebar_position: 4
 slug: /learn/rbac-vs-rebac
 ---
 
+import { ProductName, ProductNameFormat, RelatedSection } from '@components/Docs';
+
 # RBAC vs. ReBAC
 
 **Role-Based Access Control (RBAC)** assigns named roles to users; the role implies a set of permissions. **Relationship-Based Access Control (ReBAC)** models permissions as relationships between specific users and specific resources.
@@ -28,12 +30,32 @@ Sharing breaks RBAC for the same reason: "viewer of doc-42" is not a useful role
 - "User X is a member of team Y, which owns project Z, which contains document D" — four tuples, one check, no role explosion.
 - Cross-tenant sharing — a user in one org can be an `editor` of a single document in another org without granting them anything else.
 
-## Doing both in OpenFGA
+## Doing both in <ProductName format={ProductNameFormat.ShortForm}/>
 
-OpenFGA is a [ReBAC](/docs/learn/rebac) engine that **also models RBAC cleanly**: a role is a relation on a tenant, and the model lets the same user be a different role in different tenants without any duplication. The [Modeling Roles](/docs/best-practices/modeling-roles) guide walks through the pattern.
+<ProductName format={ProductNameFormat.ShortForm}/> is a [ReBAC](/docs/learn/rebac) engine that **also models RBAC cleanly**: a role is a relation on a tenant, and the model lets the same user be a different role in different tenants without any duplication. The [Modeling Roles](/docs/best-practices/modeling-roles) guide walks through the pattern.
 
 ## Related reading
 
-- [ReBAC overview](/docs/learn/rebac)
-- [ABAC vs. ReBAC](/docs/learn/abac-vs-rebac)
-- [Modeling roles](/docs/best-practices/modeling-roles)
+<RelatedSection
+  description="Learn more about {ProductName}."
+  relatedLinks={[
+    {
+      title: 'ReBAC overview',
+      description: 'Relationship-Based Access Control explained.',
+      link: './rebac',
+      id: './rebac',
+    },
+    {
+      title: 'ABAC vs. ReBAC',
+      description: 'Attributes vs. relationships — and how they combine.',
+      link: './abac-vs-rebac',
+      id: './abac-vs-rebac',
+    },
+    {
+      title: 'Modeling roles',
+      description: 'Patterns for representing roles in {ProductName}.',
+      link: '../best-practices/modeling-roles',
+      id: '../best-practices/modeling-roles',
+    },
+  ]}
+/>

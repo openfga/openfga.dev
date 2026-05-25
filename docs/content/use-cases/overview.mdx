@@ -5,9 +5,11 @@ sidebar_position: 1
 slug: /use-cases
 ---
 
-# OpenFGA Use Cases
+import { ProductName, ProductNameFormat } from '@components/Docs';
 
-OpenFGA is a Zanzibar-style relationship engine. The patterns below are the ones that show up most often in production — each links to the modeling guide and, where available, a customer reference that runs the pattern at scale.
+# <ProductName format={ProductNameFormat.ShortForm}/> Use Cases
+
+<ProductName format={ProductNameFormat.ShortForm}/> is a Zanzibar-style relationship engine. The patterns below are the ones that show up most often in production — each links to the modeling guide and, where available, an adopter reference that runs the pattern at scale.
 
 ## AI and agent authorization
 
@@ -17,9 +19,6 @@ OpenFGA is a Zanzibar-style relationship engine. The patterns below are the ones
 
 ## Application authorization
 
-- **[Multi-tenant SaaS](/docs/use-cases/multi-tenant-saas)** — one OpenFGA store, many tenants, with strict isolation. Used by Grafana Labs, Agicap, and others.
+- **[Multi-tenant SaaS](/docs/use-cases/multi-tenant-saas)** — one <ProductName format={ProductNameFormat.ShortForm}/> store, many tenants, with strict isolation. Used by Grafana Labs, Agicap, and others.
 - **[Microservices authorization](/docs/use-cases/microservices-authorization)** — a central authorization service that every microservice consults, instead of each service rolling its own roles table.
 
-## Customer references
-
-The [adopters section](/docs/adopters) documents how Read AI, Agicap, Grafana, Docker, and Zuplo run OpenFGA in production — including the patterns above at scale.
