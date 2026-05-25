@@ -112,7 +112,7 @@ const ORGANIZATION_JSON_LD = JSON.stringify({
   '@type': 'Organization',
   name: 'OpenFGA',
   url: 'https://openfga.dev',
-  logo: 'https://openfga.dev/img/openfga_logo.png',
+  logo: 'https://openfga.dev/img/openfga_logo.svg',
   sameAs: [
     'https://github.com/openfga',
     'https://twitter.com/openfga',

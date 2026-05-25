@@ -6,6 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const SIDEBARS_FILE = path.join(__dirname, '../docs/sidebars.js');
+const DOCS_CONTENT_DIR = path.join(__dirname, '../docs/content');
 const OUTPUT_FILE = path.join(__dirname, '../static/llms.txt');
 const BASE_URL = 'https://openfga.dev/docs';
 
@@ -28,13 +29,76 @@ async function loadSidebars() {
 }
 
 /**
+ * Recursively lists markdown documents in a directory.
+ * @param {string} dir
+ * @returns {Promise<string[]>}
+ */
+async function listDocFiles(dir) {
+    const entries = await fs.readdir(dir, { withFileTypes: true });
+    const files = await Promise.all(entries.map((entry) => {
+        const fullPath = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+            return listDocFiles(fullPath);
+        }
+        if (entry.isFile() && /\.(md|mdx)$/.test(entry.name)) {
+            return [fullPath];
+        }
+        return [];
+    }));
+
+    return files.flat();
+}
+
+/**
+ * Reads the frontmatter slug from a markdown document.
+ * @param {string} content
+ * @returns {string | null}
+ */
+function readSlug(content) {
+    const frontmatter = /^---\n([\s\S]*?)\n---/.exec(content);
+    if (!frontmatter) {
+        return null;
+    }
+
+    const slug = /^slug:\s*(.+)$/m.exec(frontmatter[1]);
+    if (!slug) {
+        return null;
+    }
+
+    return slug[1].trim().replace(/^['"]|['"]$/g, '');
+}
+
+/**
+ * Creates a map from Docusaurus doc IDs to published URL paths.
+ * @returns {Promise<Map<string, string>>}
+ */
+async function loadDocUrlMap() {
+    const docFiles = await listDocFiles(DOCS_CONTENT_DIR);
+    const urls = new Map();
+
+    for (const file of docFiles) {
+        const relativePath = path.relative(path.join(__dirname, '../docs'), file);
+        const id = relativePath.replace(/\.(md|mdx)$/, '').split(path.sep).join('/');
+        const content = await fs.readFile(file, 'utf8');
+        const slug = readSlug(content);
+
+        if (slug) {
+            urls.set(id, slug.startsWith('/') ? slug : `/${slug}`);
+        }
+    }
+
+    return urls;
+}
+
+/**
  * Converts a doc ID to a URL path
  * @param {string} id - Document ID like 'content/intro'
+ * @param {Map<string, string>} docUrlMap
  * @returns {string} - URL path like '/fga'
  */
-function docIdToUrl(id) {
-    if (id === 'content/intro') {
-        return '/fga';
+function docIdToUrl(id, docUrlMap) {
+    if (docUrlMap.has(id)) {
+        return docUrlMap.get(id);
     }
     return '/' + id.replace('content/', '');
 }
@@ -42,16 +106,17 @@ function docIdToUrl(id) {
 /**
  * Processes sidebar items recursively and generates markdown content
  * @param {Array} items - Sidebar items
+ * @param {Map<string, string>} docUrlMap
  * @param {number} depth - Current nesting depth
  * @returns {string} - Markdown content
  */
-function processItems(items, depth = 0) {
+function processItems(items, docUrlMap, depth = 0) {
     let content = '';
     const indent = '  '.repeat(depth);
     
     for (const item of items) {
         if (item.type === 'doc') {
-            const url = `${BASE_URL}${docIdToUrl(item.id)}`;
+            const url = `${BASE_URL}${docIdToUrl(item.id, docUrlMap)}`;
             content += `${indent}- [${item.label}](${url})`;
             if (item.description) {
                 content += ` - ${item.description}`;
@@ -60,11 +125,11 @@ function processItems(items, depth = 0) {
         } else if (item.type === 'category') {
             content += `${indent}#### ${item.label}\n`;
             if (item.link && item.link.type === 'doc') {
-                const url = `${BASE_URL}${docIdToUrl(item.link.id)}`;
+                const url = `${BASE_URL}${docIdToUrl(item.link.id, docUrlMap)}`;
                 content += `${indent}- [Overview](${url}) - ${item.label} overview\n`;
             }
             if (item.items && item.items.length > 0) {
-                content += processItems(item.items, depth + 1);
+                content += processItems(item.items, docUrlMap, depth + 1);
             }
             content += '\n';
         }
@@ -76,9 +141,10 @@ function processItems(items, depth = 0) {
 /**
  * Generates the complete llms.txt content
  * @param {Object} sidebars - Parsed sidebars configuration
+ * @param {Map<string, string>} docUrlMap
  * @returns {string} - Complete llms.txt content
  */
-function generateLlmsTxtContent(sidebars) {
+function generateLlmsTxtContent(sidebars, docUrlMap) {
     const header = `# OpenFGA Documentation
 
 ## Project Overview
@@ -111,7 +177,7 @@ OpenFGA implements authorization through:
     let content = header;
     
     if (sidebars.docs) {
-        content += processItems(sidebars.docs);
+        content += processItems(sidebars.docs, docUrlMap);
     }
 
     const footer = `
@@ -151,9 +217,10 @@ async function generateLlmsTxt() {
     try {
         console.log('Loading sidebars configuration...');
         const sidebars = await loadSidebars();
+        const docUrlMap = await loadDocUrlMap();
         
         console.log('Generating llms.txt content...');
-        const content = generateLlmsTxtContent(sidebars);
+        const content = generateLlmsTxtContent(sidebars, docUrlMap);
         
         console.log('Writing llms.txt file...');
         await fs.writeFile(OUTPUT_FILE, content, 'utf8');
