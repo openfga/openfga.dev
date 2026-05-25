@@ -190,6 +190,7 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
           routeBasePath: '/docs',
           exclude: ['**/README.md'],
           showLastUpdateAuthor: false,
+          showLastUpdateTime: true,
           editUrl: 'https://github.com/openfga/openfga.dev/edit/main/',
         },
         blog: {

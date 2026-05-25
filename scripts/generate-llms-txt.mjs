@@ -147,6 +147,8 @@ function processItems(items, docUrlMap, depth = 0) {
 function generateLlmsTxtContent(sidebars, docUrlMap) {
     const header = `# OpenFGA Documentation
 
+> OpenFGA is a CNCF open source authorization system for fine-grained, relationship-based access control in modern applications.
+
 ## Project Overview
 
 OpenFGA (Fine-Grained Authorization) is an open source authorization system based on Google's Zanzibar. It's a Cloud Native Computing Foundation (CNCF) project that provides scalable, fine-grained authorization for applications using Relationship-Based Access Control (ReBAC).
@@ -170,7 +172,7 @@ OpenFGA implements authorization through:
 4. **Stores** - Isolated authorization environments
 5. **Conditional Tuples** - Attribute-based access control capabilities
 
-## Complete Documentation Structure
+## Docs
 
 `;
 
@@ -181,6 +183,19 @@ OpenFGA implements authorization through:
     }
 
     const footer = `
+## API
+
+- [OpenFGA API Reference](https://openfga.dev/api/service) - HTTP API documentation for OpenFGA operations
+- [Install SDK Client](https://openfga.dev/docs/getting-started/install-sdk) - Client SDK setup for supported languages
+- [Use the FGA CLI](https://openfga.dev/docs/getting-started/cli) - Command line interface documentation
+
+## Optional
+
+- [Advanced Modeling](https://openfga.dev/docs/modeling/advanced) - Production-style modeling examples for common applications
+- [Authorization for Agents](https://openfga.dev/docs/modeling/agents) - Modeling patterns for AI agents, RAG, and MCP servers
+- [Use Cases](https://openfga.dev/docs/use-cases) - High-level authorization use cases and solution patterns
+- [Best Practices](https://openfga.dev/docs/best-practices) - Guidance for adopting and operating OpenFGA
+
 ## Supported Features
 
 - Multiple database backends (PostgreSQL, MySQL, SQLite)
