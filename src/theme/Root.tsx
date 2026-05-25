@@ -58,7 +58,23 @@ const SLUG_OVERRIDES: Record<string, string> = {
   'mcp-authorization': 'MCP Authorization',
 };
 
-const SMALL_WORDS = new Set(['a', 'an', 'and', 'as', 'at', 'but', 'by', 'for', 'in', 'of', 'on', 'or', 'the', 'to', 'vs']);
+const SMALL_WORDS = new Set([
+  'a',
+  'an',
+  'and',
+  'as',
+  'at',
+  'but',
+  'by',
+  'for',
+  'in',
+  'of',
+  'on',
+  'or',
+  'the',
+  'to',
+  'vs',
+]);
 
 function titleCase(segment: string): string {
   const lower = segment.toLowerCase();
@@ -147,9 +163,7 @@ export default function Root({ children }: RootProps): JSX.Element {
         {noindex && <meta name="robots" content="noindex, follow" />}
         {isHome && <script type="application/ld+json">{ORGANIZATION_JSON_LD}</script>}
         {isHome && <script type="application/ld+json">{WEBSITE_JSON_LD}</script>}
-        {breadcrumbJsonLd && (
-          <script type="application/ld+json">{breadcrumbJsonLd}</script>
-        )}
+        {breadcrumbJsonLd && <script type="application/ld+json">{breadcrumbJsonLd}</script>}
       </Head>
       {children}
     </div>
