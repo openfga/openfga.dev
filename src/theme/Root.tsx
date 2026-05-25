@@ -96,10 +96,14 @@ export default function Root({ children }: RootProps): JSX.Element {
   const { contentSecurityPolicy } = siteConfig.customFields;
   const { pathname } = useLocation();
   const breadcrumbJsonLd = buildBreadcrumbJsonLd(pathname, siteConfig.url);
+  // Fine-Grained News digests are time-sensitive newsletters — keep them visible in the blog
+  // index/RSS but noindex them so they don't compete with evergreen pages in search results.
+  const noindex = /^\/blog\/fine-grained-news-/.test(pathname);
   return (
     <div className="CustomizedRoot">
       <Head>
         <meta httpEquiv="Content-Security-Policy" content={contentSecurityPolicy as string} />
+        {noindex && <meta name="robots" content="noindex, follow" />}
         {breadcrumbJsonLd && (
           <script type="application/ld+json">{breadcrumbJsonLd}</script>
         )}

@@ -7,7 +7,6 @@ authors: hello-caleb
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
 hide_table_of_contents: false
-unlisted: true
 ---
 # Fine-Grained News
 Welcome to the September edition of Fine-Grained News! As we transition into the fall season, we’re excited to bring you the latest updates on the progress of OpenFGA.

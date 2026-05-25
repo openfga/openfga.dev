@@ -7,7 +7,6 @@ authors: aaguiar
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
 hide_table_of_contents: false
-unlisted: true
 ---
 # Fine-Grained News
 
