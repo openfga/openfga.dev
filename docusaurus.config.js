@@ -190,6 +190,7 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
           routeBasePath: '/docs',
           exclude: ['**/README.md'],
           showLastUpdateAuthor: false,
+          showLastUpdateTime: true,
           editUrl: 'https://github.com/openfga/openfga.dev/edit/main/',
         },
         blog: {
@@ -213,13 +214,13 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
     ({
       metadata: [
         {
-          name: 'keywords',
-          content: 'OpenFGA, open source, fine-grained-authorization, fine grained authorization, Zanzibar',
-        },
-        {
           property: 'og:image',
           content: 'https://openfga.dev/img/og-rich-embed.png',
         },
+        { property: 'og:type', content: 'website' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:site', content: '@openfga' },
+        { name: 'twitter:image', content: 'https://openfga.dev/img/og-rich-embed.png' },
       ],
       colorMode: {
         defaultMode: 'dark',

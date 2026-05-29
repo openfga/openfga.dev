@@ -65,6 +65,21 @@ const HeroHeader = () => {
         <div className={styles.container}>
           <div className={styles.content}>
             <h1 className={styles.heading} ref={headingRef}>
+              <span
+                style={{
+                  position: 'absolute',
+                  width: '1px',
+                  height: '1px',
+                  padding: 0,
+                  margin: '-1px',
+                  overflow: 'hidden',
+                  clip: 'rect(0, 0, 0, 0)',
+                  whiteSpace: 'nowrap',
+                  border: 0,
+                }}
+              >
+                OpenFGA
+              </span>
               {<HeroLogo />}
               <span className={styles.headingSubtitle}>{siteConfig.tagline}</span>
             </h1>
