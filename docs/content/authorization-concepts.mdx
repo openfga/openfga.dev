@@ -49,7 +49,7 @@ export const faqJsonLd = {
       name: 'What is Policy-Based Access Control?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: "Policy-Based Access Control (PBAC) manages authorization policies centrally, external to application code. Most ABAC implementations are also PBAC. OpenFGA's model DSL is itself a policy: committed to Git, reviewed via PR, deployed like any other code.",
+        text: "Policy-Based Access Control (PBAC) manages authorization policies centrally, external to application code. Most ABAC implementations are also PBAC. OpenFGA's authorization model DSL is functionally similar to a policy: it can be committed, PR reviewed and CI/CD deployed.",
       },
     },
     {
@@ -65,7 +65,7 @@ export const faqJsonLd = {
       name: 'What is Zanzibar?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: "Zanzibar is Google's global authorization system, used by Drive, YouTube, Calendar, and Cloud. It stores object-relation-user tuples and answers checks and reverse queries against the resulting graph. OpenFGA implements the Zanzibar model on your existing databases.",
+        text: "Zanzibar is Google's global authorization system, used by Drive, YouTube, Calendar, and Cloud. It stores object-relation-user tuples and answers checks and reverse queries against the resulting graph. OpenFGA is an authorization service, similar to Zanzibar, and is open source and can be used with your data and services.",
       },
     },
   ],
