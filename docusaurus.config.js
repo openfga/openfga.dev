@@ -11,7 +11,7 @@ const baseUrl = process.env.BASE_URL ?? '/';
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'OpenFGA — Open Source Fine-Grained Authorization | CNCF',
+  title: 'OpenFGA',
   tagline: 'Relationship-based access control made fast, scalable, and easy to use.',
   url: 'https://openfga.dev',
   baseUrl: baseUrl,
