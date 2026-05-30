@@ -30,7 +30,15 @@ const adopterLogos: AdopterLogo[] = [
 
 const AdopterImage: React.FC<{ logo: AdopterLogo; isDuplicate: boolean }> = ({ logo, isDuplicate }) => {
   const src = useBaseUrl(logo.src);
-  return <img src={src} alt={isDuplicate ? '' : logo.name} loading="lazy" decoding="async" />;
+  return (
+    <img
+      src={src}
+      alt={isDuplicate ? '' : logo.name}
+      aria-hidden={isDuplicate || undefined}
+      loading="lazy"
+      decoding="async"
+    />
+  );
 };
 
 const AdoptersCarousel = () => {
