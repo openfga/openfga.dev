@@ -85,7 +85,7 @@ const QuickStartSection = () => {
           </p>
         </div>
         <div className={styles.terminalContainer}>
-          <video width="646" preload="auto" autoPlay muted loop className={styles.terminalImg} poster={terminalImg}>
+          <video width="646" preload="none" autoPlay muted loop className={styles.terminalImg} poster={terminalImg}>
             <source src={terminalWebm} type="video/webm" />
             <source src={terminalMp4} type="video/mp4" />
           </video>
