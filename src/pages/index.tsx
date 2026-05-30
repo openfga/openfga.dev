@@ -45,7 +45,7 @@ const softwareJsonLd = {
 
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
-  const title = siteConfig.title;
+  const title = siteConfig.customFields.landingPageTitle as string;
   return (
     <Layout
       title={`${title}`}
