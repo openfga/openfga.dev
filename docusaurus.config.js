@@ -194,6 +194,8 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
           editUrl: 'https://github.com/openfga/openfga.dev/edit/main/',
         },
         blog: {
+          blogDescription:
+            'OpenFGA blog: authorization engineering, ReBAC patterns, Google Zanzibar deep-dives, product updates, and CNCF community news.',
           blogSidebarTitle: 'All posts',
           blogSidebarCount: 'ALL',
         },
