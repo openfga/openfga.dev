@@ -199,6 +199,7 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
             'OpenFGA blog: authorization engineering, ReBAC patterns, Google Zanzibar deep-dives, product updates, and CNCF community news.',
           blogSidebarTitle: 'All posts',
           blogSidebarCount: 'ALL',
+          showLastUpdateTime: true,
         },
         theme: {
           customCss: [path.resolve('static/css/openfga.css'), path.resolve('src/css/custom.css')],
