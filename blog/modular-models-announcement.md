@@ -3,6 +3,7 @@ title: Modular Models
 description: Modular Models 
 slug: modular-models-announcement
 date: 2024-04-25
+last_update: { date: '2024-04-25' }
 authors: eharris
 tags: [openfga,features]
 image: https://openfga.dev/img/og-rich-embed.png
