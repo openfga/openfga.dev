@@ -78,7 +78,7 @@ const HeroHeader = () => {
                   border: 0,
                 }}
               >
-                OpenFGA — Fine-Grained Authorization
+                OpenFGA —
               </span>
               {<HeroLogo />}
               <span className={styles.headingSubtitle}>{siteConfig.customFields.landingPageTitle as string}</span>
