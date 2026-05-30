@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
-        <title>OpenFGA — Open Source Fine-Grained Authorization | CNCF Blog</title>
+        <title>OpenFGA Blog</title>
         <link>https://openfga.dev/pr-preview/pr-1272/blog</link>
-        <description>OpenFGA — Open Source Fine-Grained Authorization | CNCF Blog</description>
+        <description>OpenFGA Blog</description>
         <lastBuildDate>Wed, 07 Jan 2026 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
