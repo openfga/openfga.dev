@@ -3,6 +3,7 @@ title: List Users API
 description: List Users API 
 slug: list-users-announcement
 date: 2024-05-30
+last_update: { date: '2024-05-30' }
 authors: miparnisari
 tags: [openfga,features]
 image: https://openfga.dev/img/og-rich-embed.png

@@ -3,6 +3,7 @@ title: Conditional Relationship Tuples for OpenFGA
 description: Conditional Relationship Tuples for OpenFGA
 slug: conditional-tuples-announcement
 date: 2023-11-06
+last_update: { date: '2023-11-06' }
 authors: aaguiar
 tags: [openfga, features]
 image: https://openfga.dev/img/openfga_logo.svg

@@ -78,10 +78,10 @@ const HeroHeader = () => {
                   border: 0,
                 }}
               >
-                OpenFGA
+                OpenFGA —
               </span>
               {<HeroLogo />}
-              <span className={styles.headingSubtitle}>{siteConfig.tagline}</span>
+              <span className={styles.headingSubtitle}>{siteConfig.customFields.landingPageTitle as string}</span>
             </h1>
             <p className={styles.headingDescription}>
               OpenFGA is an open-source authorization solution that allows developers to build granular access control

@@ -3,6 +3,7 @@ title: Fine Grained News - September 2025
 description: Fine Grained News
 slug: fine-grained-news-2025-09
 date: 2025-09-05
+last_update: { date: '2025-09-05' }
 authors: aaguiar
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png

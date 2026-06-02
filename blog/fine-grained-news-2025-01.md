@@ -3,6 +3,7 @@ title: Fine-Grained News - January 2025
 description: Fine-Grained News
 slug: fine-grained-news-2025-01
 date: 2025-01-29
+last_update: { date: '2025-01-29' }
 authors: aaguiar
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png

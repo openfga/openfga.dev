@@ -122,6 +122,7 @@ const SITE_JSON_LD = JSON.stringify({
         'https://mastodon.social/@openfga',
         'https://www.linkedin.com/company/openfga/',
         'https://www.youtube.com/@OpenFGA',
+        'https://www.cncf.io/projects/openfga/',
       ],
       parentOrganization: { '@id': 'https://www.cncf.io/#organization' },
     },
