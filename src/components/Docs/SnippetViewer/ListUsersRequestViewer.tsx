@@ -16,6 +16,7 @@ interface ListUsersRequestViewerOpts {
   context?: Record<string, any>;
   expectedResults: ListUsersResponse;
   skipSetup?: boolean;
+  pseudoCodeMode?: boolean;
   allowedLanguages?: SupportedLanguage[];
 }
 
@@ -263,8 +264,7 @@ var response = await fgaClient.ListUsers(body, options);
       return `listUsers(
   user_filter=[ "${userFilterType}" ], // list users of type \`${userFilterType}\`
   "${relation}", // that have the \`${relation}\` relation
-  "${objectType}:${objectId}", // for the object \`${objectType}:${objectId}\`
-  authorization_model_id = "${modelId}", // for this particular authorization model id ${
+  "${objectType}:${objectId}", // for the object \`${objectType}:${objectId}\` ${
     contextualTuples
       ? `
   contextual_tuples = [ // Assuming the following is true

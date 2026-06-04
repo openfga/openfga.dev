@@ -1,0 +1,56 @@
+---
+title: Fine-Grained Authorization for LMS & EdTech with FGA
+description: Model courses, classes, enrollments, content authorship, and grading workflows in FGA for Canvas-style and Moodle-style learning management systems.
+sidebar_position: 7
+slug: /industries/lms
+---
+
+import { ProductName, ProductNameFormat } from '@components/Docs';
+
+# LMS Authorization with <ProductName format={ProductNameFormat.ShortForm}/>
+
+Learning management systems — Canvas, Moodle, Blackboard, plus internal corporate training platforms — combine curriculum hierarchy with per-user enrollment. A student enrolled in *one* class section sees *that* class's materials but not the rest of the course catalog; an instructor authoring a quiz can edit it even when their general role is "instructor, not owner".
+
+The full sample lives in [openfga/sample-stores/stores/lms](https://github.com/openfga/sample-stores/tree/main/stores/lms).
+
+## Core resources and relations
+
+- **organization** — the tenant (school or training department). Roles: `admin`, `instructor`, `student`.
+- **course** — has an `owner` who publishes; enrolled `instructor`s edit content; enrolled `student`s view.
+- **class** — a section of a course with its own enrollment list; instructors and admins enroll students.
+- **content** — authored by a user; the `author` can edit/delete; instructors org-wide can edit.
+- **activity** — assignments and quizzes. The `creator` and any course `instructor` can grade; only the assigned `student` can submit.
+- **collection** — groupings of materials; collection `owner` and instructors organize, only admins delete.
+
+## What the model gets right
+
+**Enrollment is per-class, not per-course.** A student enrolled in section A of *Intro to Biology* doesn't automatically see section B. Modeling the class as its own object with its own enrollment list keeps cross-section data isolated, which matters for grades and discussion threads.
+
+**Author-edit on content.** Whoever authored a piece of content can keep editing it even after their role changes — implemented as a `creator` (or `author`) relation in union with the broader `instructor` relation.
+
+**Submit is exclusive to the assigned student.** Only the student the activity is assigned to can submit, preventing one student from submitting on behalf of another. The grading side is open to instructors and the activity's creator independently.
+
+**Publish gated to owners.** A course can be edited by enrolled instructors but only published by the `owner` or an admin. This separates "draft work" from "goes live to students", which curriculum review processes depend on.
+
+## Where this maps to <ProductName format={ProductNameFormat.ShortForm}/> features
+
+| LMS requirement | <ProductName format={ProductNameFormat.ShortForm}/> feature |
+| --- | --- |
+| Per-class enrollment | direct relations on `class`, evaluated per-section |
+| Course → class hierarchy | [parent-child relationships](/docs/modeling/parent-child) |
+| Author can edit own content | union of `instructor` and `author` relations |
+| Submit-only-if-assigned | direct `student` relation on `activity` |
+| Grade-by-creator-or-instructor | union relation on `activity` |
+| Publish gated to owners | distinct `can_publish` separate from `can_edit` |
+| Multi-tenant LMS SaaS | tenant-scoped types, see [multi-tenant SaaS](/docs/use-cases/multi-tenant-saas) |
+
+## Common extensions
+
+- **Cohorts and programs.** Group classes into a `program` type with its own enrollment list — useful for multi-course certifications.
+- **Proctored exams.** Add a `proctor` relation on activity, distinct from `creator` and `instructor`, so exam supervision can be delegated without granting grading rights.
+- **Time-bounded enrollment.** Use [conditions](/docs/modeling/conditions) to expire student access at the end of a term without rewriting tuples.
+- **Parent / guardian access.** A `guardian` relation on the student lets a parent view a child's grades through a single tuple, without granting any course-edit rights.
+
+## Working sample
+
+Schema, sample tuples, and assertions are in [openfga/sample-stores/stores/lms](https://github.com/openfga/sample-stores/tree/main/stores/lms). For the broader pattern of "role at the org, scoped relationships per record", see [Modeling Roles](/docs/best-practices/modeling-roles).
