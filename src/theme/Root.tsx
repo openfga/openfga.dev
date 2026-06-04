@@ -175,6 +175,12 @@ export default function Root({ children }: RootProps): JSX.Element {
         {noindex && <meta name="robots" content="noindex, follow" />}
         {isHome && <script type="application/ld+json">{SITE_JSON_LD}</script>}
         {breadcrumbJsonLd && <script type="application/ld+json">{breadcrumbJsonLd}</script>}
+        {isHome && (
+          <meta
+            name="ahrefs-site-verification"
+            content="9e1b5f58edf2d6711cf4a74b7756b9e13a3b59b3d6d89cc3bc38be8ad1834567"
+          />
+        )}
       </Head>
       {children}
     </div>
