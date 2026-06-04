@@ -1,0 +1,59 @@
+---
+title: Fine-Grained Authorization for ATS & Recruiting with FGA
+description: Model jobs, candidates, applications, interviews, scorecards, and offer workflows in FGA for Greenhouse-style and Lever-style applicant tracking systems.
+sidebar_position: 8
+slug: /industries/applicant-tracking-system
+---
+
+import { ProductName, ProductNameFormat } from '@components/Docs';
+
+# ATS Authorization with <ProductName format={ProductNameFormat.ShortForm}/>
+
+Applicant tracking systems — Greenhouse, Lever, Workday Recruiting, Ashby — handle data that is sensitive both ways: candidates expect their applications to stay private, and hiring teams need scoped access to only the roles they are working on. Recruiters coordinate across many jobs; hiring managers see only their own openings; interviewers see only the candidates they are interviewing; offer approval is reserved for admins.
+
+The full sample lives in [openfga/sample-stores/stores/applicant-tracking-system](https://github.com/openfga/sample-stores/tree/main/stores/applicant-tracking-system).
+
+## Core resources and relations
+
+- **organization** — the tenant (employer). Roles: `admin`, `recruiter`, `hiring_manager`.
+- **department** and **office** — group jobs by team and location; department heads see scorecards for their org.
+- **job** — has per-position `recruiter` and `hiring_manager` relations distinct from the org-wide roles.
+- **candidate** — visible to recruiters and admins directly; hiring managers reach a candidate only through an `application` to one of their jobs.
+- **application** — links a candidate to a job; inherits visibility from the parent job.
+- **interview** — the `organizer` schedules; an `interviewer` sees only the interviews assigned to them.
+- **scorecard** — visible to the authoring interviewer, the hiring manager, the department head, and admins.
+- **offer** — anyone on the hiring team can draft and edit, but only an admin can approve.
+
+## What the model gets right
+
+**Per-job hiring teams, not org-wide visibility.** Recruiter and hiring manager are relations on each `job`, not just org roles. A hiring manager working on the *Senior Backend Engineer* req does not see candidates from the *Sales Director* req — even though both are "hiring managers" in the org.
+
+**Hiring manager access flows through applications.** A hiring manager doesn't have a direct relation to the candidate; they reach the candidate through an application to a job they own. When the application closes or moves jobs, visibility tracks the relationship automatically.
+
+**Interviewer scoping.** Interviewers see only the interviews they're assigned to and the scorecards they author. They don't see the rest of the candidate's pipeline, other interviewers' notes, or the offer details — a common compliance requirement so that interview feedback stays independent.
+
+**Offer approval separated from offer authorship.** Recruiters and hiring managers draft offers; only admins approve. Modeling `can_edit` and `can_approve` as distinct relations on `offer` keeps the four-eyes control without a separate workflow service.
+
+## Where this maps to <ProductName format={ProductNameFormat.ShortForm}/> features
+
+| ATS requirement | <ProductName format={ProductNameFormat.ShortForm}/> feature |
+| --- | --- |
+| Per-job hiring team | direct `recruiter` / `hiring_manager` relations on `job` |
+| Hiring manager → candidate via application | userset traversal through `application` parent |
+| Interviewer sees only assigned interviews | direct `interviewer` relation on `interview` |
+| Scorecard visibility to dept head | role at `department`, inherited by scorecards |
+| Offer draft vs. approve | distinct `can_edit` / `can_approve` relations on `offer` |
+| Multi-tenant ATS SaaS | tenant-scoped types, see [multi-tenant SaaS](/docs/use-cases/multi-tenant-saas) |
+| Reassign a recruiter's reqs | bulk tuple writes against `recruiter` on `job` |
+
+## Common extensions
+
+- **Candidate self-service portal.** A `candidate#self` relation lets the candidate view their own application status without granting access to interviewer notes or scorecards.
+- **Referrals.** A `referrer` relation on `application` lets the referring employee see the application status — but not the scorecards or offer terms.
+- **External recruiters and agencies.** Add an `agency` type with scoped access to the jobs they're sourcing for, without giving them visibility into the rest of the pipeline.
+- **EEO / sensitive demographic fields.** Gate via [conditions](/docs/modeling/conditions) or a separate `can_view_eeo` relation restricted to compliance staff, distinct from the general candidate viewer set.
+- **Time-bound interviewer access.** Use [conditions](/docs/modeling/conditions) so an interviewer's access to a candidate expires after the debrief, instead of relying on a cleanup job.
+
+## Working sample
+
+Schema, sample tuples, and assertions are in [openfga/sample-stores/stores/applicant-tracking-system](https://github.com/openfga/sample-stores/tree/main/stores/applicant-tracking-system). For the broader pattern of "role at the org, scoped relationships per record", see [Modeling Roles](/docs/best-practices/modeling-roles).

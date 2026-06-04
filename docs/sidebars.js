@@ -470,6 +470,51 @@ const sidebars = {
         }
       ],
     },
+    {
+      type: 'category',
+      collapsible: true,
+      collapsed: true,
+      label: 'Industries',
+      link: { type: 'doc', id: 'content/industries/overview' },
+      items: [
+        { type: 'doc', label: 'Healthcare', id: 'content/industries/healthcare' },
+        { type: 'doc', label: 'Banking', id: 'content/industries/banking' },
+        { type: 'doc', label: 'E-commerce', id: 'content/industries/ecommerce' },
+        { type: 'doc', label: 'Human Resources', id: 'content/industries/human-resources' },
+        { type: 'doc', label: 'CRM', id: 'content/industries/crm' },
+        { type: 'doc', label: 'Learning Management', id: 'content/industries/lms' },
+        { type: 'doc', label: 'Applicant Tracking', id: 'content/industries/applicant-tracking-system' },
+      ],
+    },
+    {
+      type: 'category',
+      collapsible: true,
+      collapsed: true,
+      label: 'Use Cases',
+      link: { type: 'doc', id: 'content/use-cases/overview' },
+      items: [
+        { type: 'doc', label: 'AI Agent Authorization', id: 'content/use-cases/ai-agent-authorization' },
+        { type: 'doc', label: 'RAG Authorization', id: 'content/use-cases/rag-authorization' },
+        { type: 'doc', label: 'MCP Server Authorization', id: 'content/use-cases/mcp-server-authorization' },
+        { type: 'doc', label: 'Multi-Tenant SaaS', id: 'content/use-cases/multi-tenant-saas' },
+        { type: 'doc', label: 'Microservices Authorization', id: 'content/use-cases/microservices-authorization' },
+      ],
+    },
+    {
+      type: 'category',
+      collapsible: true,
+      collapsed: true,
+      label: 'Learn',
+      link: { type: 'doc', id: 'content/learn/overview' },
+      items: [
+        { type: 'doc', label: 'Zanzibar', id: 'content/learn/zanzibar' },
+        { type: 'doc', label: 'What is ReBAC?', id: 'content/learn/rebac' },
+        { type: 'doc', label: 'RBAC vs ReBAC', id: 'content/learn/rbac-vs-rebac' },
+        { type: 'doc', label: 'ABAC vs ReBAC', id: 'content/learn/abac-vs-rebac' },
+        { type: 'doc', label: 'Fine-Grained Authorization', id: 'content/learn/fine-grained-authorization' },
+        { type: 'doc', label: 'Policy vs Relationship Engines', id: 'content/learn/policy-engine' },
+      ],
+    },
   ],
 };
 
