@@ -1,6 +1,6 @@
 ---
 title: Headspace Case Study
-description: How Headspace authorizes Ebb, its empathetic AI companion, with OpenFGA — driving end-to-end checks down from 10–15 seconds to 10–15 milliseconds.
+description: How Headspace authorizes Ebb, its empathetic AI companion, with OpenFGA — driving end-to-end checks down from 10-15 seconds to 10-15 milliseconds.
 sidebar_position: 6
 slug: /adopters/headspace
 ---
@@ -21,14 +21,14 @@ slug: /adopters/headspace
 
 ## Why OpenFGA
 
-Ebb is gated on a combination of business rules: who the member is contracted through, which country they are messaging from, which language their app is set to, and whether their employer has opted them out. A pure RBAC system could not express this without exploding into a role per combination, and a hand-rolled SQL check ran 10–15 seconds in the worst case — unacceptable for a chat experience.
+Ebb is gated on a combination of business rules: who the member is contracted through, which country they are messaging from, which language their app is set to, and whether their employer has opted them out. A pure RBAC system could not express this without exploding into a role per combination, and a hand-rolled SQL check ran 10-15 seconds in the worst case — unacceptable for a chat experience.
 
 The Headspace team chose OpenFGA so the AI gating rules could live in a single relationship graph the platform team owned, with the same model evaluated from every service that fronts Ebb.
 
 ## Architecture
 
 - **Wrapper API in front of OpenFGA.** Application services do not call the OpenFGA store directly. They call an internal authorization service that fans out **four parallel [BatchCheck](/docs/interacting/relationship-queries) requests** — assigned-to-Ebb, country-allowed, language-allowed, and not-blocked-by-org — and combines the results.
-- **Inverted graph for performance.** The original model put the AI feature at the top with users below; a check meant traversing the entire user population. Flipping the direction so the user is the object and Ebb access is reached through unions of small relations dropped end-to-end latency from 10–15 seconds to 10–15 milliseconds.
+- **Inverted graph for performance.** The original model put the AI feature at the top with users below; a check meant traversing the entire user population. Flipping the direction so the user is the object and Ebb access is reached through unions of small relations dropped end-to-end latency from 10-15 seconds to 10-15 milliseconds.
 - **Bidirectional tuple writes.** When a member-to-feature relationship is written, the inverse tuple is written at the same time, keeping reads cheap in either direction.
 - **Terraform-managed model and static tuples.** The authorization model and the static enablement tuples (countries, languages, default org policies) ship through the Headspace [OpenFGA Terraform provider](https://github.com/openfga/terraform-provider-openfga), so model changes go through the same review pipeline as infrastructure.
 - **Hidden model version.** The wrapper API does not expose the OpenFGA model ID to consumers; rolling forward to a new model version is a deploy of the wrapper, not a coordinated change across every caller.
