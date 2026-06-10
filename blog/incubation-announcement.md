@@ -3,6 +3,7 @@ title: OpenFGA Accepted into CNCF Incubation 🎉
 description: OpenFGA has been accepted into the Cloud Native Computing Foundation Incubation stage
 slug: incubation-announcement
 date: 2026-01-07
+last_update: { date: '2026-01-07' }
 authors: [aaguiar, jakub]
 tags: [announcement]
 image: /img/og-rich-embed.png

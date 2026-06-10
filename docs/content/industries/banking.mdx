@@ -1,0 +1,59 @@
+---
+title: Fine-Grained Authorization for Banking & Fintech with FGA
+description: Model account managers, account owners, per-transaction limits, and delegation in FGA for banking, fintech, and PCI-DSS-regulated applications.
+sidebar_position: 3
+slug: /industries/banking
+---
+
+import { ProductName, ProductNameFormat } from '@components/Docs';
+
+# Banking Authorization with <ProductName format={ProductNameFormat.ShortForm}/>
+
+Banking and fintech authorization isn't just "who can read this record?" — it's "who can move *how much* money out of *which* account, and who approved that delegation?". A relationship-based model captures the answer without scattering the rules across application code.
+
+The full working model is in [openfga/sample-stores/stores/banking](https://github.com/openfga/sample-stores/tree/main/stores/banking).
+
+## Core resources and relations
+
+- **organization** — the bank tenant.
+- **account** — has an `owner`, optional `co_owners`, and an `account_manager` assigned by the bank.
+- **transaction** — initiated against an `account`, subject to a per-actor amount limit.
+
+The interesting relations:
+
+- `owner` and `co_owner` on `account` — full read and full transaction rights up to a personal limit.
+- `account_manager` on `account` — bank staff who can view the account and initiate transactions, but only up to a *manager-specific* limit that may differ from the owner's.
+- `delegate` on `account` — owners can delegate a subset of rights to another person (a spouse, a bookkeeper) with a separate, lower limit.
+
+## Why this is hard in role-only systems
+
+A typical "manager", "owner", "delegate" RBAC scheme answers *what action is allowed* but not *up to what amount*. Hard-coding the amount in application logic means:
+
+- The auth decision is split across two systems (an RBAC check + an `if amount > X` branch).
+- Audit can't answer "who could have wired more than $50k from account A on date D" without joining application code with role tables.
+- Delegation expiry, per-transaction overrides, and dual-control approvals each become bespoke features.
+
+<ProductName format={ProductNameFormat.ShortForm}/> expresses the limit *as part of the relationship* using [conditions](/docs/modeling/conditions), so the check `can_initiate_transfer` takes the transaction amount as a contextual parameter and returns a single allow/deny.
+
+## Where this maps to <ProductName format={ProductNameFormat.ShortForm}/> features
+
+| Banking requirement | <ProductName format={ProductNameFormat.ShortForm}/> feature |
+| --- | --- |
+| Per-actor transaction limits | [conditions](/docs/modeling/conditions) on `can_initiate_transfer` |
+| Owner / co-owner / delegate roles | direct relations on `account` |
+| Delegated authority (bookkeeper) | userset relations + condition on amount |
+| Time-bounded delegation | [contextual tuples](/docs/interacting/contextual-tuples) carrying expiry |
+| Tenant isolation per bank brand | tenant-scoped types, see [multi-tenant SaaS](/docs/use-cases/multi-tenant-saas) |
+| Audit who-could-have-done-what | [Read Changes API](/docs/interacting/read-tuple-changes) |
+
+## Common extensions
+
+The base sample covers individual accounts. Adopters typically extend it with:
+
+- **Joint accounts and trusts.** Add a `beneficiary` relation that grants read access only.
+- **Corporate accounts.** Introduce a `company` type; assign signatories via `signatory` and require N-of-M via your application calling `Check` for each required signer.
+- **Step-up authentication.** When the transaction amount exceeds a threshold, pass a contextual tuple `mfa_verified=true` and gate the relevant relation on it.
+
+## Working sample
+
+The schema, sample tuples, and assertions are in [openfga/sample-stores/stores/banking](https://github.com/openfga/sample-stores/tree/main/stores/banking). For the broader pattern of "permissions plus runtime context", see [Modeling ABAC](/docs/best-practices/modeling-abac) and [Contextual and Time-Based Authorization](/docs/modeling/contextual-time-based-authorization).
