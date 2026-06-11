@@ -513,7 +513,7 @@ const sidebars = {
         { type: 'doc', label: 'Read AI', id: 'content/adopters/read-ai' },
         { type: 'doc', label: 'Headspace', id: 'content/adopters/headspace' },
         { type: 'doc', label: 'Zuplo', id: 'content/adopters/zuplo' },
-        { type: 'doc', label: 'OpenLane', id: 'content/adopters/openlane' },
+        { type: 'doc', label: 'Openlane', id: 'content/adopters/openlane' },
         { type: 'doc', label: 'Vitrolife Group', id: 'content/adopters/vitrolife' },
       ],
     },
