@@ -152,7 +152,7 @@ OpenFGA implements authorization through:
   - [Read AI](https://openfga.dev/docs/adopters/read-ai)
   - [Headspace](https://openfga.dev/docs/adopters/headspace)
   - [Zuplo](https://openfga.dev/docs/adopters/zuplo)
-  - [OpenLane](https://openfga.dev/docs/adopters/openlane)
+  - [Openlane](https://openfga.dev/docs/adopters/openlane)
   - [Vitrolife Group](https://openfga.dev/docs/adopters/vitrolife)
 
 #### Learn
