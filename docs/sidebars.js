@@ -504,6 +504,23 @@ const sidebars = {
       type: 'category',
       collapsible: true,
       collapsed: true,
+      label: 'Adopters',
+      link: { type: 'doc', id: 'content/adopters/overview' },
+      items: [
+        { type: 'doc', label: 'Agicap', id: 'content/adopters/agicap' },
+        { type: 'doc', label: 'Docker', id: 'content/adopters/docker' },
+        { type: 'doc', label: 'Grafana Labs', id: 'content/adopters/grafana' },
+        { type: 'doc', label: 'Read AI', id: 'content/adopters/read-ai' },
+        { type: 'doc', label: 'Headspace', id: 'content/adopters/headspace' },
+        { type: 'doc', label: 'Zuplo', id: 'content/adopters/zuplo' },
+        { type: 'doc', label: 'Openlane', id: 'content/adopters/openlane' },
+        { type: 'doc', label: 'Vitrolife Group', id: 'content/adopters/vitrolife' },
+      ],
+    },
+    {
+      type: 'category',
+      collapsible: true,
+      collapsed: true,
       label: 'Learn',
       link: { type: 'doc', id: 'content/learn/overview' },
       items: [
