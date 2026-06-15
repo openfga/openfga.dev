@@ -144,6 +144,17 @@ OpenFGA implements authorization through:
   - [Multi-Tenant SaaS](https://openfga.dev/docs/use-cases/multi-tenant-saas)
   - [Microservices Authorization](https://openfga.dev/docs/use-cases/microservices-authorization)
 
+#### Adopters
+- [Overview](https://openfga.dev/docs/adopters) - Adopters overview
+  - [Agicap](https://openfga.dev/docs/adopters/agicap)
+  - [Docker](https://openfga.dev/docs/adopters/docker)
+  - [Grafana Labs](https://openfga.dev/docs/adopters/grafana)
+  - [Read AI](https://openfga.dev/docs/adopters/read-ai)
+  - [Headspace](https://openfga.dev/docs/adopters/headspace)
+  - [Zuplo](https://openfga.dev/docs/adopters/zuplo)
+  - [Openlane](https://openfga.dev/docs/adopters/openlane)
+  - [Vitrolife Group](https://openfga.dev/docs/adopters/vitrolife)
+
 #### Learn
 - [Overview](https://openfga.dev/docs/learn) - Learn overview
   - [Zanzibar](https://openfga.dev/docs/learn/zanzibar)
