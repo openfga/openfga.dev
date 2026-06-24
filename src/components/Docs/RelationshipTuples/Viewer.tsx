@@ -11,9 +11,7 @@ interface RelationshipTuple {
 
 export interface RelationshipCondition {
   name: string;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
 }
 
 interface RelationshipTuplesViewerOpts {
