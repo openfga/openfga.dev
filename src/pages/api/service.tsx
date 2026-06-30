@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { lazy, Suspense } from 'react';
 import Layout from '@theme/Layout';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
-const SwaggerUI = lazy(() =>
+const SwaggerUI = React.lazy(() =>
   import('../../components/SwaggerUI/swagger-ui').then((module) => ({ default: module.SwaggerUI })),
 );
 
@@ -22,9 +21,9 @@ const ApiService = () => {
     <Layout title="Open FGA API Explorer">
       <BrowserOnly fallback={<div>Loading...</div>}>
         {() => (
-          <Suspense fallback={<div>Loading...</div>}>
+          <React.Suspense fallback={<div>Loading...</div>}>
             <SwaggerUI apiDocsBasePath={apiDocsBasePath} />
-          </Suspense>
+          </React.Suspense>
         )}
       </BrowserOnly>
     </Layout>

@@ -14,12 +14,16 @@ interface GithubStarsSessionStorage {
 }
 
 function readCachedGithubStars(): GithubStarsSessionStorage | null {
-  const raw = sessionStorage.getItem(GITHUB_STARS_SESSION_STORAGE_NAME);
-  if (!raw) {
+  try {
+    const raw = sessionStorage.getItem(GITHUB_STARS_SESSION_STORAGE_NAME);
+    if (!raw) {
+      return null;
+    }
+    const parsed = JSON.parse(raw);
+    return typeof parsed?.count === 'number' && typeof parsed?.retrievedTime === 'number' ? parsed : null;
+  } catch {
     return null;
   }
-  const parsed = JSON.parse(raw);
-  return typeof parsed?.count === 'number' && typeof parsed?.retrievedTime === 'number' ? parsed : null;
 }
 
 export default function NavbarNavLink({
