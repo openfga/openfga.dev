@@ -258,6 +258,28 @@ Note that some of the types support generics, these types are indicated with `<T
 
 
 ## Limitations
+
+### Conditions and enumeration queries (ListObjects / ListUsers)
+
+The Check, ListObjects, and ListUsers APIs all accept a single `context` per call. This means every condition parameter must have one value for the entire query. When a condition compares a per-user attribute against a per-object attribute, one side varies across the enumeration set and cannot be supplied as a single value:
+
+- **ListObjects** iterates over objects. If a condition parameter is a per-object attribute that is NOT stored in the tuple context, it varies across the enumeration set and there is no single value to pass.
+- **ListUsers** iterates over users. If a condition parameter is a per-user attribute, it varies across the enumeration set and there is no single value to pass.
+- **Check** evaluates a single (user, object) pair. Both sides are fixed, so conditions always work.
+
+For example, consider a condition `clearance_sufficient(user_clearance: int, resource_sensitivity: int)` where `resource_sensitivity` is stored in the tuple context and `user_clearance` is passed at request time:
+
+- **ListObjects** works: the user is fixed (one `user_clearance` value to pass), and `resource_sensitivity` is resolved per tuple from the stored context.
+- **ListUsers** does not work as expected: each candidate user has a different `user_clearance`, but only one value can be passed per call.
+
+If you need both ListObjects and ListUsers to work for a level-based comparison, consider modeling the levels as a [type hierarchy using relationship tuples](../best-practices/modeling-abac.mdx) instead of conditions.
+
+### Tuple uniqueness
+
+A conditional tuple shares the same uniqueness constraint as any other tuple: the triple `(user, relation, object)` must be unique. You cannot write two tuples with the same user, relation, and object but different condition names or different condition context values. If you need multiple conditional relationships for the same subject-object pair, introduce an intermediary type so each instance gets a unique object ID.
+
+### Size and cost limits
+
 * The size of the condition `context` parameter that can be written alongside a relationship tuple is limited to 32KB in size.
 
 * The size of the condition `context` parameter for query requests (e.g. Check, ListObjects, etc.) is not explicitly limited, but the OpenFGA server has an overall request size limit of 512KB at this time.
