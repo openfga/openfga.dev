@@ -12,8 +12,7 @@ interface ListUsersRequestViewerOpts {
   userFilterRelation?: string;
   contextualTuples?: TupleKey[];
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
   expectedResults: ListUsersResponse;
   skipSetup?: boolean;
   pseudoCodeMode?: boolean;
