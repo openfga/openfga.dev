@@ -76,6 +76,11 @@ const sidebars = {
               label: 'Playground',
               id: 'content/getting-started/setup-openfga/playground',
             },
+            {
+              type: 'doc',
+              label: 'Reporting Runtime Issues',
+              id: 'content/getting-started/setup-openfga/reporting-runtime-issues',
+            },
           ],
         },
         {
@@ -227,6 +232,11 @@ const sidebars = {
         },
         {
           type: 'doc',
+          label: 'Store File Format',
+          id: 'content/modeling/store-file-format',
+        },
+        {
+          type: 'doc',
           label: 'Modular Models',
           id: 'content/modeling/modular-models',
         },
@@ -325,6 +335,38 @@ const sidebars = {
     },
     {
       type: 'category',
+      collapsible: true,
+      collapsed: false,
+      label: 'Authorization for Agents',
+      link: {
+        type: 'doc',
+        id: 'content/modeling/agents/overview',
+      },
+      items: [
+        {
+          type: 'doc',
+          label: 'Modeling Agents as Principals',
+          id: 'content/modeling/agents/agents-as-principals',
+        },
+        {
+          type: 'doc',
+          label: 'RAG Authorization',
+          id: 'content/modeling/agents/rag-authorization',
+        },
+        {
+          type: 'doc',
+          label: 'Authorization for MCP Servers',
+          id: 'content/modeling/agents/mcp-authorization',
+        },
+        {
+          type: 'doc',
+          label: 'Task-Based Authorization',
+          id: 'content/modeling/agents/task-based-authorization',
+        },
+      ],
+    },
+    {
+      type: 'category',
       label: 'Interacting with the API',
       collapsible: true,
       collapsed: true,
@@ -355,11 +397,6 @@ const sidebars = {
         },
         {
           type: 'doc',
-          label: 'Transactional Writes',
-          id: 'content/interacting/transactional-writes',
-        },
-        {
-          type: 'doc',
           label: 'Contextual Tuples',
           id: 'content/interacting/contextual-tuples',
         },
@@ -383,6 +420,11 @@ const sidebars = {
           label: 'Search with Permissions',
           id: 'content/interacting/search-with-permissions',
         },
+        {
+          type: 'doc',
+          label: 'AuthZEN API',
+          id: 'content/interacting/authzen',
+        },
       ],
     },
 
@@ -403,8 +445,13 @@ const sidebars = {
         },
         {
           type: 'doc',
-          label: 'Modeling Best Practices',
-          id: 'content/best-practices/modeling',
+          label: 'Authorization Model Design Principles',
+          id: 'content/best-practices/modeling-design-principles',
+        },
+        {
+          type: 'doc',
+          label: 'Modeling ABAC',
+          id: 'content/best-practices/modeling-abac',
         },
         {
           type: 'doc',
@@ -421,6 +468,68 @@ const sidebars = {
           label: 'Running OpenFGA in Production',
           id: 'content/best-practices/running-in-production',
         }
+      ],
+    },
+    {
+      type: 'category',
+      collapsible: true,
+      collapsed: true,
+      label: 'Industries',
+      link: { type: 'doc', id: 'content/industries/overview' },
+      items: [
+        { type: 'doc', label: 'Healthcare', id: 'content/industries/healthcare' },
+        { type: 'doc', label: 'Banking', id: 'content/industries/banking' },
+        { type: 'doc', label: 'E-commerce', id: 'content/industries/ecommerce' },
+        { type: 'doc', label: 'Human Resources', id: 'content/industries/human-resources' },
+        { type: 'doc', label: 'CRM', id: 'content/industries/crm' },
+        { type: 'doc', label: 'Learning Management', id: 'content/industries/lms' },
+        { type: 'doc', label: 'Applicant Tracking', id: 'content/industries/applicant-tracking-system' },
+      ],
+    },
+    {
+      type: 'category',
+      collapsible: true,
+      collapsed: true,
+      label: 'Use Cases',
+      link: { type: 'doc', id: 'content/use-cases/overview' },
+      items: [
+        { type: 'doc', label: 'AI Agent Authorization', id: 'content/use-cases/ai-agent-authorization' },
+        { type: 'doc', label: 'RAG Authorization', id: 'content/use-cases/rag-authorization' },
+        { type: 'doc', label: 'MCP Server Authorization', id: 'content/use-cases/mcp-server-authorization' },
+        { type: 'doc', label: 'Multi-Tenant SaaS', id: 'content/use-cases/multi-tenant-saas' },
+        { type: 'doc', label: 'Microservices Authorization', id: 'content/use-cases/microservices-authorization' },
+      ],
+    },
+    {
+      type: 'category',
+      collapsible: true,
+      collapsed: true,
+      label: 'Adopters',
+      link: { type: 'doc', id: 'content/adopters/overview' },
+      items: [
+        { type: 'doc', label: 'Agicap', id: 'content/adopters/agicap' },
+        { type: 'doc', label: 'Docker', id: 'content/adopters/docker' },
+        { type: 'doc', label: 'Grafana Labs', id: 'content/adopters/grafana' },
+        { type: 'doc', label: 'Read AI', id: 'content/adopters/read-ai' },
+        { type: 'doc', label: 'Headspace', id: 'content/adopters/headspace' },
+        { type: 'doc', label: 'Zuplo', id: 'content/adopters/zuplo' },
+        { type: 'doc', label: 'Openlane', id: 'content/adopters/openlane' },
+        { type: 'doc', label: 'Vitrolife Group', id: 'content/adopters/vitrolife' },
+      ],
+    },
+    {
+      type: 'category',
+      collapsible: true,
+      collapsed: true,
+      label: 'Learn',
+      link: { type: 'doc', id: 'content/learn/overview' },
+      items: [
+        { type: 'doc', label: 'Zanzibar', id: 'content/learn/zanzibar' },
+        { type: 'doc', label: 'What is ReBAC?', id: 'content/learn/rebac' },
+        { type: 'doc', label: 'RBAC vs ReBAC', id: 'content/learn/rbac-vs-rebac' },
+        { type: 'doc', label: 'ABAC vs ReBAC', id: 'content/learn/abac-vs-rebac' },
+        { type: 'doc', label: 'Fine-Grained Authorization', id: 'content/learn/fine-grained-authorization' },
+        { type: 'doc', label: 'Policy vs Relationship Engines', id: 'content/learn/policy-engine' },
       ],
     },
   ],

@@ -1,6 +1,7 @@
 import Link from '@docusaurus/Link';
 import * as React from 'react';
 import { Section } from '@components/Section';
+import { AdoptersCarousel } from '@components/AdoptersCarousel';
 
 import terminalMp4 from './terminal.mp4';
 import terminalWebm from './terminal.webm';
@@ -90,6 +91,7 @@ const QuickStartSection = () => {
           </video>
         </div>
       </div>
+      <AdoptersCarousel />
     </Section>
   );
 };

@@ -14,6 +14,7 @@ interface ListObjectsRequestViewerOpts {
   context?: Record<string, any>;
   expectedResults: string[];
   skipSetup?: boolean;
+  pseudoCodeMode?: boolean;
   allowedLanguages?: SupportedLanguage[];
 }
 
@@ -35,7 +36,6 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
 
 # Response: {"objects": [${expectedResults.map((r) => `"${r}"`).join(', ')}]}`;
     case SupportedLanguage.CURL:
-      /* eslint-disable max-len */
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/list-objects \\
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
@@ -66,7 +66,7 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
 
 
 # Response: {"objects": [${expectedResults.map((r) => `"${r}"`).join(', ')}]}`;
-    /* eslint-enable max-len */
+
     case SupportedLanguage.JS_SDK:
       return `const response = await fgaClient.listObjects({
   user: "${user}",
@@ -97,7 +97,6 @@ function listObjectsRequestViewer(lang: SupportedLanguage, opts: ListObjectsRequ
 });
 // response.objects = [${expectedResults.map((r) => `"${r}"`).join(', ')}]`;
     case SupportedLanguage.GO_SDK:
-      /* eslint-disable no-tabs */
       return `options := ClientListObjectsOptions{
     AuthorizationModelId: PtrString("${modelId}"),
 }
@@ -208,8 +207,7 @@ response = await fga_client.list_objects(body, options)
       return `listObjects(
   "${user}", // list the objects that the user \`${user}\`
   "${relation}", // has an \`${relation}\` relation
-  "${objectType}", // and that are of type \`${objectType}\`
-  authorization_model_id = "${modelId}", // for this particular authorization model id ${
+  "${objectType}", // and that are of type \`${objectType}\`  ${
     contextualTuples
       ? `
   contextual_tuples = [ // Assuming the following is true

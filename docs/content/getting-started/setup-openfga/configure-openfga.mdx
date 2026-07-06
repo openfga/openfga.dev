@@ -58,13 +58,13 @@ To use read replicas, you need to configure both a primary datastore (for writes
 openfga run \
     --datastore-engine postgres \
     --datastore-uri 'postgres://postgres:password@primary:5432/postgres?sslmode=disable' \
-    --secondary-datastore-uri 'postgres://postgres:password@replica:5432/postgres?sslmode=disable'
+    --datastore-secondary-uri 'postgres://postgres:password@replica:5432/postgres?sslmode=disable'
 ```
 
 **Important considerations:**
 
 - The `--datastore-uri` parameter specifies the primary database (used for writes and high-consistency reads)
-- The `--secondary-datastore-uri` parameter specifies the read replica (used for regular read operations)
+- The `--datastore-secondary-uri` parameter specifies the read replica (used for regular read operations)
 - Both databases must have the same schema and should be kept in sync through PostgreSQL replication
 
 ##### Synchronous vs Asynchronous Replication

@@ -7,15 +7,17 @@ on:
     # Review gh actions docs if you want to further define triggers, paths, etc
     # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
 
+permissions:
+  contents: read
 jobs:
   test-deploy:
     name: Test deployment
     runs-on: ubuntu-latest
     steps:
       - name: Cached LFS checkout
-        uses: nschloe/action-cached-lfs-checkout@f46300cd8952454b9f0a21a3d133d4bd5684cfc2
+        uses: nschloe/action-cached-lfs-checkout@385a8ecc719e50b8c71af6ab01a624b486b7c3bc
       - name: Set up node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
         with:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'

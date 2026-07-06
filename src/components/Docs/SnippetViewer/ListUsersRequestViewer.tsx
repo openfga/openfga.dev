@@ -16,6 +16,7 @@ interface ListUsersRequestViewerOpts {
   context?: Record<string, any>;
   expectedResults: ListUsersResponse;
   skipSetup?: boolean;
+  pseudoCodeMode?: boolean;
   allowedLanguages?: SupportedLanguage[];
 }
 
@@ -48,7 +49,6 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
 
 # Response: ${response}`;
     case SupportedLanguage.CURL:
-      /* eslint-disable max-len */
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/list-users \\
   -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
@@ -91,7 +91,7 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
 
 
 # Response: ${response}`;
-    /* eslint-enable max-len */
+
     case SupportedLanguage.JS_SDK:
       return `const response = await fgaClient.listUsers({
   object: {
@@ -132,7 +132,6 @@ function listUsersRequestViewer(lang: SupportedLanguage, opts: ListUsersRequestV
 });
 // response.users = [${expectedResults.users.map((u) => JSON.stringify(u)).join(',')}]`;
     case SupportedLanguage.GO_SDK:
-      /* eslint-disable no-tabs */
       return `options := ClientListUsersOptions{
     AuthorizationModelId: PtrString("${modelId}"),
 }
@@ -265,8 +264,7 @@ var response = await fgaClient.ListUsers(body, options);
       return `listUsers(
   user_filter=[ "${userFilterType}" ], // list users of type \`${userFilterType}\`
   "${relation}", // that have the \`${relation}\` relation
-  "${objectType}:${objectId}", // for the object \`${objectType}:${objectId}\`
-  authorization_model_id = "${modelId}", // for this particular authorization model id ${
+  "${objectType}:${objectId}", // for the object \`${objectType}:${objectId}\` ${
     contextualTuples
       ? `
   contextual_tuples = [ // Assuming the following is true

@@ -3,6 +3,7 @@ title: Join the OpenFGA team at KubeCon NA 2023
 description: OpenFGA at KubeCon
 slug: kubecon-na-2023
 date: 2023-10-12
+last_update: { date: '2023-10-12' }
 authors: aaguiar
 tags: [conferences, kubecon]
 image: https://openfga.dev/img/openfga_logo.svg

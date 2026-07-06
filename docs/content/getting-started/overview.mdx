@@ -3,9 +3,33 @@ id: overview
 title: 'Getting Started'
 slug: /getting-started
 sidebar_position: 0
+description: 'OpenFGA tutorial and quickstart: install the server, configure an authorization model, write tuples, and run your first permission checks in minutes.'
 ---
 
+import Head from '@docusaurus/Head';
 import { DocumentationNotice, IntroCard, CardGrid, ProductName } from '@components/Docs';
+
+export const howToJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Getting Started with OpenFGA',
+  description: 'Step-by-step guide to install OpenFGA, configure an authorization model, write relationship tuples, and run permission checks.',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'Setup OpenFGA', text: 'Setup an OpenFGA server.', url: 'https://openfga.dev/docs/getting-started/setup-openfga/overview' },
+    { '@type': 'HowToStep', position: 2, name: 'Install SDK Client', text: 'Install the SDK for the language of your choice.', url: 'https://openfga.dev/docs/getting-started/install-sdk' },
+    { '@type': 'HowToStep', position: 3, name: 'Create a Store', text: 'Create an OpenFGA store that owns an authorization model and relationship tuples.', url: 'https://openfga.dev/docs/getting-started/create-store' },
+    { '@type': 'HowToStep', position: 4, name: 'Setup SDK Client for Store', text: 'Configure the SDK client for your store.', url: 'https://openfga.dev/docs/getting-started/setup-sdk-client' },
+    { '@type': 'HowToStep', position: 5, name: 'Configure Authorization Model', text: 'Programmatically configure an authorization model for an OpenFGA store.', url: 'https://openfga.dev/docs/getting-started/configure-model' },
+    { '@type': 'HowToStep', position: 6, name: 'Update Relationship Tuples', text: 'Programmatically write authorization data to an OpenFGA store.', url: 'https://openfga.dev/docs/getting-started/update-tuples' },
+    { '@type': 'HowToStep', position: 7, name: 'Perform a Check', text: 'Programmatically perform an authorization check against an OpenFGA store.', url: 'https://openfga.dev/docs/getting-started/perform-check' },
+    { '@type': 'HowToStep', position: 8, name: 'Perform a List Objects Request', text: 'Programmatically perform a list objects request against an OpenFGA store.', url: 'https://openfga.dev/docs/getting-started/perform-list-objects' },
+    { '@type': 'HowToStep', position: 9, name: 'Integrate Within a Framework', text: 'Integrate authorization checks with a framework.', url: 'https://openfga.dev/docs/getting-started/framework' },
+  ],
+};
+
+<Head>
+  <script type="application/ld+json">{JSON.stringify(howToJsonLd)}</script>
+</Head>
 
 <DocumentationNotice />
 

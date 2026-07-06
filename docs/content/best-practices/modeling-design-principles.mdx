@@ -1,0 +1,348 @@
+---
+title: Authorization Model Design Principles
+slug: /best-practices/modeling-design-principles
+description: Best practices for creating clear, performant, and maintainable authorization models.
+sidebar_position: 1
+---
+import {
+  ProductName,
+  ProductNameFormat,
+  RelatedSection,
+} from '@components/Docs';
+
+# Authorization Model Design Principles
+
+A well-designed authorization model is easier to understand, debug, and maintain. It also performs better and scales more gracefully as your application grows. This guide covers key principles for modeling authorization in <ProductName format={ProductNameFormat.ShortForm}/>.
+
+## Core Principle: Model Your Domain, Not a Meta-Model
+
+The most common mistake when starting with <ProductName format={ProductNameFormat.ShortForm}/> is creating an overly generic model that can represent "anything." While this seems flexible, it trades clarity for abstraction and often hurts performance.
+
+:::tip Rule of Thumb
+**If end-users can define it, store it in tuples. If it's built into your application, define it in the model.**
+
+For example: built-in roles like "admin" or "billing_manager" should be relations in your model. User-defined custom roles should be stored as tuples with a `role` type.
+:::
+
+### The Recommended Approach
+
+Define types and relations that mirror your application's domain. If your app has organizations, projects, and documents, model exactly that with explicit relationships:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type organization
+  relations
+    define admin: [user]
+    define member: [user]
+
+type project
+  relations
+    define org: [organization]
+    define lead: [user]
+    define member: [user] or member from org
+
+type document
+  relations
+    define project: [project]
+    define owner: [user]
+    define editor: [user] or owner or lead from project
+    define viewer: [user] or editor or member from project
+```
+
+Notice how this model has a clear hierarchy (organization → project → document) where each type and relationship directly reflects the application's domain. Permission inheritance follows a well-defined path that's easy to understand and audit.
+
+This approach has several advantages:
+
+- **Enhanced clarity and maintainability**: Authorization logic is easier to understand, debug, and maintain. Developers and security auditors can readily grasp the meaning of each type and relationship just by reading the model.
+
+- **Better performance**: Models with specific types and flatter hierarchies perform better. <ProductName format={ProductNameFormat.ShortForm}/> processes queries more efficiently with well-defined types compared to navigating complex recursive relationships within generic types.
+
+- **Easier evolution**: <ProductName format={ProductNameFormat.ShortForm}/>'s modeling language is designed to be adaptable. You can define numerous distinct types and relationships without significant overhead. Model changes rarely require data migrations, allowing you to evolve your model as your application grows.
+
+- **Team autonomy with modules**: Resource types owned by each application team can be maintained in independent [modules](./../modeling/modular-models.mdx). You can control which application can write to specific resource types through API credentials, providing better security boundaries.
+
+<details>
+<summary>What to avoid: The overly generic model</summary>
+
+The model below can technically represent any organization hierarchy, any resource hierarchy, and any role hierarchy:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type role
+  relations
+    define assignee: [user, role#assignee]
+
+type entity
+  relations
+    define parent: [entity]
+    define editor: [role#assignee] or editor from parent
+    define viewer: [role#assignee] or editor or viewer from parent
+
+type resource
+  relations
+    define entity: [entity]
+    define parent: [resource]
+    define editor: [role#assignee] or editor from entity or editor from parent
+    define viewer: [role#assignee] or editor or viewer from parent
+```
+
+While flexible, this approach creates problems:
+- The model doesn't communicate what your application actually does
+- To understand the actual relationships you need to rely on tuples, e.g., the fact that a project can have documents.
+- Generic recursive relations are slower to evaluate
+- You can't use modules to isolate different resource types
+- ListObjects returns mixed results (all "resources" instead of just "documents")
+
+</details>
+
+## Modeling Roles
+
+Most applications have roles. The key question is: are they built-in or user-defined?
+
+### Built-in Roles
+
+For roles that come with your application (admin, member, viewer, etc.), define them directly as relations:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type organization
+  relations
+    define admin: [user]
+    define member: [user]
+    define billing_manager: [user]
+
+    define can_manage_billing: admin or billing_manager
+    define can_manage_users: admin
+    define can_view_dashboard: admin or member
+```
+
+Adding new built-in roles is straightforward: add a relation to the model. This happens infrequently and doesn't require data migration.
+
+### Custom Roles (User-Defined)
+
+Some applications let end-users create their own roles. In this case, combine static roles with a dynamic `role` type:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type role
+  relations
+    define assignee: [user]
+
+type organization
+  relations
+    # Built-in roles
+    define admin: [user]
+    define billing_manager: [user]
+
+    # Permissions combine built-in and custom roles
+    define can_manage_billing: [role#assignee] or admin or billing_manager
+    define can_manage_users: [role#assignee] or admin
+```
+
+This hybrid approach gives you the clarity of static roles for common cases while supporting custom roles when needed.
+
+For more details, see [Modeling Roles](./modeling-roles) and [Custom Roles](./../modeling/custom-roles).
+
+## Modeling Organizational Structures
+
+B2B SaaS applications often have two distinct organizational requirements:
+
+1. **Super-admin access**: Your company's employees need to access customer data for support or disaster recovery
+2. **Customer hierarchies**: Your customers have their own organizational structures
+
+### Super-Admin Access
+
+For internal support and admin access, use a dedicated `system` type rather than making organizations recursive:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type system
+  relations
+    define admin: [user]
+
+type organization
+  relations
+    define system: [system]
+    define admin: [user] or admin from system
+    define member: [user]
+```
+
+This approach:
+- Clearly separates your internal access from customer access
+- Avoids recursive relations (faster to evaluate)
+- Makes audit and compliance reviews easier
+
+See a complete [super-admin example](https://github.com/openfga/sample-stores/blob/main/stores/superadmin) for more details.
+
+### Customer Organization Hierarchies
+
+If customers need hierarchical organizations, prefer explicit types for each level when the structure is well-defined:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type system
+  relations
+    define admin: [user]
+
+type organization
+  relations
+    define system: [system]
+    define admin: [user] or admin from system
+    define member: [user]
+
+type department
+  relations
+    define org: [organization]
+    define manager: [user]
+    define member: [user] or member from org
+```
+
+This makes the hierarchy explicit: organizations contain departments, and department members inherit from the organization.
+
+If the hierarchy depth is truly dynamic (customers can nest arbitrarily), then add recursion only where needed:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type system
+  relations
+    define admin: [user]
+
+type organization
+  relations
+    define system: [system]
+    define parent: [organization]
+    define admin: [user] or admin from system or admin from parent
+    define member: [user] or member from parent
+```
+
+Now you have two distinct hierarchies:
+- **System hierarchy**: Non-recursive, for your internal super-admin access
+- **Organization hierarchy**: Recursive only if customers truly need arbitrary nesting
+
+Prefer explicit types when possible; use recursion only when the depth is genuinely unbounded.
+
+## Modeling Resource Types
+
+Applications have different kinds of resources: documents, folders, projects, tickets, accounts, etc. Some have parent-child relationships (folders contain documents, projects contain tickets).
+
+### Use Specific Types, Not a Generic "Resource"
+
+Define a type for each kind of resource in your application:
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type folder
+  relations
+    define parent: [folder]
+    define owner: [user]
+    define editor: [user] or owner or editor from parent
+    define viewer: [user] or editor or viewer from parent
+
+type document
+  relations
+    define parent: [folder]
+    define owner: [user]
+    define editor: [user] or owner or editor from parent
+    define viewer: [user] or editor or viewer from parent
+    define can_print: [user] or owner
+    define can_share: owner
+```
+
+Benefits of specific types:
+
+- **Accurate ListObjects results**: Querying for documents returns only documents, not all resources
+- **Type-specific permissions**: `can_print` makes sense for documents but not folders
+- **Clearer model**: Each type shows exactly what permissions apply to it
+- **Module support**: Different teams can own different resource types
+
+<details>
+<summary>What to avoid: The generic resource type</summary>
+
+```dsl.openfga
+type resource
+  relations
+    define entity: [entity]
+    define parent: [resource]
+    define editor: [role#assignee] or editor from entity or editor from parent
+    define viewer: [role#assignee] or editor or viewer from parent
+```
+
+Problems with this approach:
+- ListObjects returns mixed results (folders, documents, and everything else)
+- You end up with a superset of all permissions, making it unclear which apply to what
+- No way to use modules for team ownership
+- Harder to understand and audit
+
+</details>
+
+## Quick Reference
+
+| Scenario | Recommendation |
+|----------|----------------|
+| Built-in roles (admin, member) | Define as relations directly in the model |
+| User-defined custom roles | Create a `role` type, store assignments as tuples |
+| Internal super-admin access | Use a non-recursive `system` type |
+| Customer org hierarchies | Add recursive `parent` relation only if needed |
+| Different resource types | Create specific types (`document`, `folder`), not generic `resource` |
+| Type-specific permissions | Define permissions on the relevant type only |
+| Team ownership of resource types |Use modules to separate concerns |
+
+## Related Sections
+
+<RelatedSection
+  description="Check out these related resources for more information about modeling in OpenFGA"
+  relatedLinks={[
+    {
+      title: 'Custom Roles',
+      description: 'Learn how to implement user-defined custom roles.',
+      link: './../modeling/custom-roles',
+    },
+    {
+      title: 'Modular Authorization Models',
+      description: 'Learn how to break down your authorization model into modules.',
+      link: './../modeling/modular-models',
+    },
+    {
+      title: 'Modeling Roles',
+      description: 'Detailed guidance on role-based access control patterns.',
+      link: './modeling-roles',
+    },
+    {
+      title: 'Building Blocks',
+      description: 'Understand the fundamental concepts for building authorization models.',
+      link: './../modeling/building-blocks',
+    }
+  ]}
+/>

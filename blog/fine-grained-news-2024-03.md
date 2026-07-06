@@ -1,16 +1,17 @@
 ---
-title: Fine Grained News - March 2024
-description: Fine Grained News
+title: Fine-Grained News - March 2024
+description: Fine-Grained News
 slug: fine-grained-news-2024-03
 date: 2024-03-28
+last_update: { date: '2024-03-28' }
 authors: aaguiar
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
 hide_table_of_contents: false
 ---
-# Fine Grained News
+# Fine-Grained News
 
-Welcome to Fine Grained News, KubeCon Edition!
+Welcome to Fine-Grained News, KubeCon Edition!
 
 ## KubeCon Europe 2024 was super-busy!
 
@@ -74,4 +75,4 @@ As we mentioned in the last edition, we transitioned out from Discord for OpenFG
 
 ## See you next month!
 
-Fine Grained News are published every month. If you have any feedback, want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!
+Fine-Grained News are published every month. If you have any feedback, want to share your OpenFGA story, or know about something that you think is worth mentioning, please let us know!
