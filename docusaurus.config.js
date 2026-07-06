@@ -44,7 +44,7 @@ const config = {
       },
       {
         text: 'Podcast - Authorization in Software →',
-        href: 'https://authorizationinsoftware.auth0.com/',
+        href: 'https://podcastindex.org/podcast/4368675',
         icon: 'PodcastIcon',
       },
     ],
