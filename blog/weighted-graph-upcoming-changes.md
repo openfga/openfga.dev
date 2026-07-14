@@ -63,7 +63,7 @@ type document
     define viewer: member from parent  # but folder has no member, only viewer!
 ```
 
-**Why this fails:** Access checks through `folder` as `parent` silently return `false` — users never get access even if they should.
+**Why this fails:** The weighted graph cannot build a graph with unreachable nodes. Since `member` does not exist on `folder`, when the `document.viewer` part of the graph attempts to reach all the `member` relations in `parent`, it fails and does not build.
 
 **Fix 1:** Add the missing relation to the type. If the type has an equivalent role, you can alias it:
 
