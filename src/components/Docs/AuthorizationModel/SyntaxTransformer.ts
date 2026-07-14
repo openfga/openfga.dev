@@ -9,18 +9,21 @@ export enum SyntaxFormat {
   Dsl = 'dsl',
 }
 
+const isTypeDefinition = (config: AuthorizationModel | TypeDefinition): config is TypeDefinition =>
+  !(config as AuthorizationModel).type_definitions && Boolean((config as TypeDefinition).type);
+
 export const loadSyntax = (
   configuration: AuthorizationModel,
   format: SyntaxFormat = SyntaxFormat.Json,
   skipVersion?: boolean,
 ) => {
-  let config = configuration;
+  let config: AuthorizationModel = configuration;
   switch (format) {
     case SyntaxFormat.Dsl:
-      if (!config.type_definitions && (config as unknown as TypeDefinition).type) {
+      if (isTypeDefinition(config)) {
         config = {
           schema_version: SchemaVersion.OneDotOne,
-          type_definitions: [config as unknown as TypeDefinition],
+          type_definitions: [config],
           id: '',
         };
         skipVersion = true;
