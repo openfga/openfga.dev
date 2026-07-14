@@ -11,7 +11,7 @@ hide_table_of_contents: false
 
 # OpenFGA's Move to Weighted Graph Resolution: What's Changing
 
-OpenFGA is continuing to roll out a **weighted graph-based resolution algorithm** across its core query endpoints. ListObjects already runs on this updated algorithm, and Check is next. As a precaution, both endpoints currently fall back to the legacy algorithm for models that are incompatible with the weighted graph — but **that fallback option will be removed soon**. A date for the final changeover has not been set at this time. 
+OpenFGA is continuing to roll out a **weighted graph-based resolution algorithm** across its core query endpoints — Check, BatchCheck, ListObjects, Expand, and ListUsers. ListObjects already runs on this updated algorithm, and Check is next. As a precaution, all core query endpoints currently fall back to the legacy algorithm for models that are incompatible with the weighted graph — but **that fallback option will be removed soon**. A date for the final changeover has not been set at this time. 
 
 This post explains which modeling and check patterns are incompatible with the weighted graph algorithm, and how to migrate before the fallback is removed. 
 
