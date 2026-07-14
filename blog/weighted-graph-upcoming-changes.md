@@ -291,12 +291,12 @@ listUsers("document:d1", "viewer") → [user:alice, user:bob]
 - ListObjects runs on the weighted graph algorithm, with a fallback to the legacy algorithm for incompatible models. 
 
 **Next**: 
-- Check transitions to the weighted graph algorithm as default, also with a fallback.
+- All core query endpoints will transition to the weighted graph algorithm as default, with a fallback available for a period of time.
 - A CLI command `fga model validate` to test if your model contains any issues and needs a migration will be coming soon.
 - We will be announcing a final deadline for migrating incompatible models, after which new OpenFGA versions will only support the weighted graph algorithm. 
 
 **Later**: 
-- Weighted graph algorithm is enforced, and the fallback algorithm is removed. Incompatible models will fail to build and requests will be rejected.
+- Weighted graph algorithm is enforced for all core query endpoints, and the fallback algorithm is removed. Incompatible models will fail to build and requests will be rejected.
 
 ## Get Help
 
