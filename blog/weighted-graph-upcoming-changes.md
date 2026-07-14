@@ -208,7 +208,7 @@ write(document:source#allowed, viewer, document:target)  # Already stored
 
 > **Migration impact:** 
 > 1. First, check whether your model has any relations that accept a group reference as a value — look for type lists that include `type:object#relation` (e.g., `define viewer: [user, document#allowed]`). If none of your relations accept group references, this change does not affect you. 
-> 2. If they do exist in your model, audit your check calls for any that pass a group reference as the user. Verify that the relation name in the check matches the relation name used when the tuple was written. If your application relied on alias inference — checking with `#reader` when `#allowed` was stored — update those calls to use the stored relation name, or write additional tuples to explicitly cover the names you check with.
+> 2. If they do exist in your model, audit your check calls for any that pass a group reference as the user. Verify that the relation name in the check matches the relation name used in the model. If your application relied on alias inference — checking with `#reader` when `#allowed` was stored — update those calls to use the stored relation name.
 
 #### 5. Self-Referential Usersets
 
