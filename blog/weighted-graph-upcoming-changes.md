@@ -2,7 +2,7 @@
 title: "OpenFGA's Move to Weighted Graph Resolution: What's Changing"
 description: "OpenFGA is transitioning to a weighted graph-based resolution algorithm. Learn what's changing, why, and how to migrate your models."
 slug: weighted-graph-upcoming-changes
-date: 2026-05-14
+date: 2026-07-14
 authors: tylernix
 tags: [announcement, check, migration]
 image: https://openfga.dev/img/og-rich-embed.png
