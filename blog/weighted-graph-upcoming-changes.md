@@ -197,7 +197,7 @@ check("document:source#allowed", "viewer", "document:target")
 # ✓ Returns TRUE — matches what's stored
 
 check("document:source#reader", "viewer", "document:target")
-# ❌ Returns FALSE — the stored tuple only uses #allowed, not #reader
+# ❌ Returns FALSE (when it previously would return TRUE) — the stored tuple only uses #allowed, not #reader.
 ```
 
 **Fix:** Check using the relation name that's actually stored in the tuple. You will not be able to work around this by writing a tuple with the alias name anymore. Going forward, if the relation isn't in the type, the write will be rejected.
