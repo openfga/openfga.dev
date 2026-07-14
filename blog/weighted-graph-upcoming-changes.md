@@ -212,7 +212,7 @@ write(document:source#allowed, viewer, document:target)  # Already stored
 
 #### 5. Self-Referential Usersets
 
-**What was broken:** Previously, asking "do the viewers of document A have access to document A?" like `check("document:A#viewer", "viewer", "document:A")`, the legacy algorithm always evaluated `TRUE`, just because the relation existed in the model, not because an actual tuple granted that access.
+**What was broken:** Previously, asking "do the viewers of document A have access to document A?" like `check("document:A#viewer", "viewer", "document:A")`, the legacy algorithm always evaluated `TRUE`, just because the relation existed in the model and the `user_id` and `object_id` in the query matched, not because an actual tuple granted that access.
 
 **What is changing:** The weighted graph requires both schema and data to grant access. A relation existing in the model is not sufficient evidence that a group has access to an object. Now it returns `FALSE` unless actual tuples exist to support the access decision. The weighted graph algorithm requires both schema and data, not schema alone.
 
