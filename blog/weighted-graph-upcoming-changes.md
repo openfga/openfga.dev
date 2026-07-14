@@ -293,7 +293,7 @@ listUsers("document:d1", "viewer") → [user:alice, user:bob]
 **Next**: 
 - Check transitions to the weighted graph algorithm as default, also with a fallback.
 - A CLI command `fga model validate` to test if your model contains any issues and needs a migration will be coming soon.
-- Date announced for final deadline to migrate models before new versions of OpenFGA will only support weighted graph algorithm. 
+- We will be announcing a final deadline for migrating incompatible models, after which new OpenFGA versions will only support the weighted graph algorithm. 
 
 **Later**: 
 - Weighted graph algorithm is enforced, and the fallback algorithm is removed. Incompatible models will fail to build and requests will be rejected.
