@@ -138,7 +138,7 @@ type document
   relations
     define owner: [user]
     define member: [user]
-    define viewer: [document#owner] but not member
+    define viewer: [user, document#owner] but not member
 ```
 
 ```text
