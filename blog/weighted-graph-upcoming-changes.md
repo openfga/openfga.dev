@@ -11,7 +11,7 @@ hide_table_of_contents: false
 
 # OpenFGA's Move to Weighted Graph Resolution: What's Changing
 
-OpenFGA is continuing to roll out a **weighted graph-based resolution algorithm** across its core query endpoints — Check, BatchCheck, ListObjects, Expand, and ListUsers. ListObjects already runs on this updated algorithm, and Check is next. As a precaution, all core query endpoints currently fall back to the legacy algorithm for models that are incompatible with the weighted graph — but **that fallback option will be removed soon**. A date for the final changeover has not been set at this time. 
+OpenFGA is continuing to roll out a **weighted graph-based resolution algorithm** across its core query endpoints — Check, BatchCheck, ListObjects, Expand, and ListUsers. ListObjects already runs on this updated algorithm, and Check is next. As a precaution, all core query endpoints currently fall back to the legacy algorithm for models that are incompatible with the weighted graph, but **that fallback option will be removed soon**. A date for the final changeover has not been set at this time. 
 
 This post explains which modeling and check patterns are incompatible with the weighted graph algorithm, and how to migrate before the fallback is removed. 
 
@@ -24,7 +24,7 @@ The legacy Check algorithm resolves authorization queries by recursively travers
 - **Unpredictable resource usage**: A shallow recursive graph can be more resource-intensive than a deep linear one, but the old algorithm used a fixed depth limit of 26 as its only complexity guard.
 - **Non-deterministic error handling**: Errors in one branch of a union could halt evaluation of other valid branches.
 
-The new approach shifts some resolution work earlier to *build time*: when a model is saved, the weighted graph is built and sub-graph weights are calculated for every relation. These weights reflect the relative complexity of traversing each part of the graph. At request time, the algorithm uses those pre-calculated weights to traverse the graph more efficiently — prioritizing lower-cost paths and managing load without arbitrary depth limits.
+The new approach shifts some resolution work earlier to *build time*: when a model is saved, the weighted graph is built and sub-graph weights are calculated for every relation. These weights reflect the relative complexity of traversing each part of the graph. At request time, the algorithm uses those pre-calculated weights to traverse the graph more efficiently, prioritizing lower-cost paths and managing load without arbitrary depth limits.
 
 A key consequence of this shift is that **if a model cannot be resolved, it will not be built**. Problems that previously surfaced at query time are now caught at model validation time, before any requests are made.
 
@@ -74,7 +74,7 @@ type folder
     define member: viewer # alias of viewer
 ```
 
-> **Migration impact:** No tuple changes required. The model change is additive — existing `viewer` tuples on `folder` objects continue to work, and the new `member` alias picks them up automatically. No check call changes needed either, since `member from parent` already resolves through the new `member` relation.
+> **Migration impact:** No tuple changes required. The model change is additive: existing `viewer` tuples on `folder` objects continue to work, and the new `member` alias picks them up automatically. No check call changes needed either, since `member from parent` already resolves through the new `member` relation.
 
 **Fix 2:** Alternatively, you can separate out the `parent` relation in `type document` into explicit per-type relations. This is more verbose but makes the intent explicit in the model.
 
@@ -111,7 +111,7 @@ type group
     define member: [user, group#member] but not blocked  # ❌ Cycle with BUT NOT
 ```
 
-**Why this fails:** To check if a user is a `member`, the system must resolve `group#member` (recursion) while simultaneously checking the `and`/`but not` condition — which itself depends on `member` resolution. This creates a circular dependency.
+**Why this fails:** To check if a user is a `member`, the system must resolve `group#member` (recursion) while simultaneously checking the `and`/`but not` condition, which itself depends on `member` resolution. This creates a circular dependency.
 
 **Fix:** Split into a "base" relation (allows recursion) and an "allowed" relation (applies the access gate):
 
@@ -123,7 +123,7 @@ type group
     define allowed_member: member but not blocked  # Exclusion at leaf level only
 ```
 
-> **Migration impact:** Your existing `member` and `blocked` tuples stay exactly as they are — no tuple writes or deletes needed. The only change is in how your application calls Check: replace `check(user, "member", object)` with `check(user, "allowed_member", object)`. The new `allowed_member` relation reads from the same underlying data, just with the exclusion gate applied at the right level.
+> **Migration impact:** Your existing `member` and `blocked` tuples stay exactly as they are; no tuple writes or deletes needed. The only change is in how your application calls Check: replace `check(user, "member", object)` with `check(user, "allowed_member", object)`. The new `allowed_member` relation reads from the same underlying data, just with the exclusion gate applied at the right level.
 
 ### Check Request Errors
 
@@ -172,11 +172,11 @@ check("user:alice", "viewer", "document:readme")  # ✓ — wildcard exclusion a
 
 ### Check Resolution Changes
 
-These changes affect the same Check request pattern as #3: passing a group reference (e.g., userset `document:d1#viewer`) as the user. But in these scenarios, the request does not error — it completes, but may return a different answer than before. Since most applications check access for a specific user (`user:alice`), these scenarios are rare and most applications likely won't encounter them, but are still worth mentioning. 
+These changes affect the same Check request pattern as #3: passing a group reference (e.g., userset `document:d1#viewer`) as the user. But in these scenarios, the request does not error; it completes, but may return a different answer than before. Since most applications check access for a specific user (`user:alice`), these scenarios are rare and most applications likely won't encounter them, but are still worth mentioning. 
 
 #### 4. Userset Must Exist
 
-When you write a tuple granting a group access to something, the relation name used in the check must use the same as the tuple written. If your model defines two names as equivalent (i.e. aliases), that equivalence is not used when looking up group access — only the exact name stored in the tuple.
+When you write a tuple granting a group access to something, the relation name used in the check must use the same as the tuple written. If your model defines two names as equivalent (i.e. aliases), that equivalence is not used when looking up group access. Only the exact name stored in the tuple is used.
 
 **What was broken:** The legacy algorithm would follow aliases in the model at resolution time by inferring they were equivalent and bridging the gap. The issue appears when subtly renaming a relation or restructuring an alias, silently changing what access checks returned.
 
@@ -207,8 +207,8 @@ write(document:source#allowed, viewer, document:target)  # Already stored
 ```
 
 > **Migration impact:** 
-> 1. First, check whether your model has any relations that accept a group reference as a value — look for type lists that include `type:object#relation` (e.g., `define viewer: [user, document#allowed]`). If none of your relations accept group references, this change does not affect you. 
-> 2. If they do exist in your model, audit your check calls for any that pass a group reference as the user. Verify that the relation name in the check matches the relation name used in the model. If your application relied on alias inference — checking with `#reader` when `#allowed` was stored — update those calls to use the stored relation name.
+> 1. First, check whether your model has any relations that accept a group reference as a value. Look for type lists that include `type:object#relation` (e.g., `define viewer: [user, document#allowed]`). If none of your relations accept group references, this change does not affect you. 
+> 2. If they do exist in your model, audit your check calls for any that pass a group reference as the user. Verify that the relation name in the check matches the relation name used in the model. If your application relied on alias inference (checking with `#reader` when `#allowed` was stored), update those calls to use the stored relation name.
 
 #### 5. Self-Referential Usersets
 
@@ -281,7 +281,7 @@ Or use ListUsers to discover who has the relation:
 listUsers("document:d1", "viewer") → [user:alice, user:bob]
 ```
 
-> **Migration impact:** This self-referential userset pattern — asking whether a group defined on an object has access to that same object — is uncommon. Search your application for check calls  where the user field is a group reference and the object and the group reference share the same type and ID. If you find any, replace them with checks against specific users, or use ListUsers to find who actually has the relation.
+> **Migration impact:** This self-referential userset pattern (asking whether a group defined on an object has access to that same object) is uncommon. Search your application for check calls  where the user field is a group reference and the object and the group reference share the same type and ID. If you find any, replace them with checks against specific users, or use ListUsers to find who actually has the relation.
 
 ---
 
@@ -300,7 +300,7 @@ listUsers("document:d1", "viewer") → [user:alice, user:bob]
 
 ## Get Help
 
-We want to hear from you — if these changes affect your deployment, reach out in our community channels and we'll help you migrate.
+We want to hear from you. If these changes affect your deployment, reach out in our community channels and we'll help you migrate.
 
 - [OpenFGA Community Slack](https://openfga.dev/docs/community)
 - [GitHub Discussions](https://github.com/orgs/openfga/discussions)
