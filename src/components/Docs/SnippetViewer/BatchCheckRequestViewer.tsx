@@ -1,5 +1,5 @@
 import { getFilteredAllowedLangs, SupportedLanguage, DefaultAuthorizationModelId } from './SupportedLanguage';
-import { defaultOperationsViewer } from './DefaultTabbedViewer';
+import { defaultOperationsViewer, type DefaultTabbedViewerOpts } from './DefaultTabbedViewer';
 import assertNever from 'assert-never/index';
 import { TupleKey } from '@openfga/sdk';
 
@@ -10,13 +10,11 @@ interface Check {
   correlation_id: string;
   allowed: boolean;
   contextualTuples?: TupleKey[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
 }
-interface BatchCheckRequestViewerOpts {
+interface BatchCheckRequestViewerOpts extends DefaultTabbedViewerOpts {
   authorizationModelId?: string;
   checks: Check[];
-  skipSetup?: boolean;
   allowedLanguages?: SupportedLanguage[];
 }
 
@@ -32,8 +30,7 @@ function batchCheckRequestViewer(lang: SupportedLanguage, opts: BatchCheckReques
       throw new Error('Batch check is not supported in the CLI');
 
     case SupportedLanguage.JS_SDK:
-      return `// Requires >=v0.8.0 for the server side BatchCheck, earlier versions support a client-side BatchCheck with a slightly different interface
-const body = {
+      return `const body = {
   checks: [
     ${checks
       .map(
@@ -108,8 +105,7 @@ const { result } = await fgaClient.batchCheck(body, options);
 */`;
 
     case SupportedLanguage.GO_SDK:
-      return `// Requires >=v0.7.0 for the server side BatchCheck, earlier versions support a client-side BatchCheck with a slightly different interface
-body := ClientBatchCheckRequest{
+      return `body := ClientBatchCheckRequest{
   Checks: []ClientBatchCheckItem{${checks
     .map(
       (check) => `
@@ -177,70 +173,79 @@ data.GetResult() = map[string]BatchCheckSingleResult{${checks
 `;
 
     case SupportedLanguage.DOTNET_SDK:
-      return `// The .NET SDK does not yet support server-side batch checks. This currently just calls the check endpoint in parallel.
-
-var body = new ClientBatchCheckRequest {
-  Checks = new List<ClientCheckRequest>() {
+      return `var body = new ClientBatchCheckRequest {
+  Checks = new List<ClientBatchCheckItem> {
     ${checks
       .map(
         (check) => `new() {
       User = "${check.user}",
       Relation = "${check.relation}",
-      Object = "${check.object}",${
+      Object = "${check.object}",
+      CorrelationId = "${check.correlation_id}"${
         check.contextualTuples
           ? `,
-      ContextualTuples = new List<ClientTupleKey>() {
+      ContextualTuples = new List<ClientTupleKey> {
         ${check.contextualTuples
           .map(
             (tuple) => `new() {
           User = "${tuple.user}",
           Relation = "${tuple.relation}",
-          Object = "${tuple.object}",
+          Object = "${tuple.object}"
         }`,
           )
-          .join(',')},
-      },`
+          .join(',')}
+      }`
+          : ''
+      }`,
+      )
+      .join(',\n    ')}
+  }
+};
+
+var options = new ClientBatchCheckOptions {${
+        modelId
+          ? `
+  AuthorizationModelId = "${modelId}",`
           : ''
       }
-    },`,
-      )
-      .join('\n    ')}
-  },
-}
-var options = new ClientBatchCheckOptions {${modelId ? `\n  AuthorizationModelId: "${modelId}",\n` : ''}}
+  MaxBatchSize = 50, // optional, default is 50
+  MaxParallelRequests = 10 // optional, default is 10
+};
+
 var response = await fgaClient.BatchCheck(body, options);
+
 /*
-response.Responses = [${checks
+response.Result = [${checks
         .map(
           (check) => `{
-  Allowed: ${check.allowed},
-  Request: {
-    User: '${check.user}',
-    Relation: '${check.relation}',
-    Object: '${check.object}'${
+  CorrelationId = "${check.correlation_id}",
+  Allowed = ${check.allowed},
+  Request = {
+    User = "${check.user}",
+    Relation = "${check.relation}",
+    Object = "${check.object}"${
       check.contextualTuples
-        ? `,\n    ContextualTuples: [${check.contextualTuples
-            .map(
-              (tuple) => `{
-      User: '${tuple.user}',
-      Relation: '${tuple.relation}',
-      Object: '${tuple.object}'
+        ? `,
+    ContextualTuples = [${check.contextualTuples
+      .map(
+        (tuple) => `{
+      User = "${tuple.user}",
+      Relation = "${tuple.relation}",
+      Object = "${tuple.object}"
     }`,
-            )
-            .join(',\n    ')}]
-  `
-        : '\n  '
-    }}
+      )
+      .join(',')}]`
+        : ''
+    }
+  }
 }`,
         )
-        .join(', ')}]
+        .join(',\n')}]
 */
 `;
 
     case SupportedLanguage.PYTHON_SDK:
-      return `# Requires >=v0.9.0 for the server side BatchCheck, earlier versions support a client-side BatchCheck with a slightly different interface
-
-checks = [${checks
+      return `checks = [${checks
         .map(
           (check) => `
   ClientBatchCheckItem(
@@ -287,7 +292,7 @@ response = await fga_client.batch_check(ClientBatchCheckRequest(checks=checks), 
         .join(', ')}]`;
 
     case SupportedLanguage.JAVA_SDK:
-      return ` // Requires >=v0.8.0 for the server side BatchCheck, earlier versions support a client-side BatchCheck with a slightly different interface
+      return `
 var request = new ClientBatchCheckRequest().checks(
     List.of(
       ${checks
@@ -379,23 +384,32 @@ Reply:${checks
   "checks": [
   ${checks
     .map(
-      (check) => `  {
+      (check, index) => `  {
       "tuple_key": {
         "user":"${check.user}",
         "relation":"${check.relation}",
-        "object":"${check.object}",
+        "object":"${check.object}"
       },
       "correlation_id": "${check.correlation_id}"${
         check.contextualTuples
-          ? `,"contextual_tuples":{"tuple_keys":[${check.contextualTuples
-              .map((tuple) => `{"user":"${tuple.user}","relation":"${tuple.relation}","object":"${tuple.object}"}`)
-              .join(',')}]}`
+          ? `,
+      "contextual_tuples": {
+        "tuple_keys": [${check.contextualTuples
+          .map(
+            (tuple) => `
+          {"user": "${tuple.user}", "relation": "${tuple.relation}", "object": "${tuple.object}"}`,
+          )
+          .join(',')}
+        ]
+      }`
           : ''
-      }${check.context ? `,"context":${JSON.stringify(check.context)}}` : ''}
-    },
+      }${check.context ? `,\n      "context": ${JSON.stringify(check.context)}` : ''}
+    }${index < checks.length - 1 ? ',' : ''}
   `,
     )
     .join('')}
+  ]
+}'
 
 # Response: 
 {

@@ -3,6 +3,7 @@ title: Query Consistency Options in OpenFGA
 description: Query Consistency Options in OpenFGA
 slug: query-consistency-options-announcement
 date: 2024-07-30
+last_update: { date: '2024-07-30' }
 authors: aaguiar
 tags: [openfga,features]
 image: https://openfga.dev/img/og-rich-embed.png

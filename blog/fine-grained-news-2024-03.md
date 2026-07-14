@@ -3,6 +3,7 @@ title: Fine-Grained News - March 2024
 description: Fine-Grained News
 slug: fine-grained-news-2024-03
 date: 2024-03-28
+last_update: { date: '2024-03-28' }
 authors: aaguiar
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png

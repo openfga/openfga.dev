@@ -10,10 +10,10 @@ interface ListObjectsRequestViewerOpts {
   objectType: string;
   contextualTuples?: TupleKey[];
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
   expectedResults: string[];
   skipSetup?: boolean;
+  pseudoCodeMode?: boolean;
   allowedLanguages?: SupportedLanguage[];
 }
 
@@ -206,8 +206,7 @@ response = await fga_client.list_objects(body, options)
       return `listObjects(
   "${user}", // list the objects that the user \`${user}\`
   "${relation}", // has an \`${relation}\` relation
-  "${objectType}", // and that are of type \`${objectType}\`
-  authorization_model_id = "${modelId}", // for this particular authorization model id ${
+  "${objectType}", // and that are of type \`${objectType}\`  ${
     contextualTuples
       ? `
   contextual_tuples = [ // Assuming the following is true
