@@ -1,1 +1,0 @@
-"use strict";(globalThis.webpackChunkopenfga_dev=globalThis.webpackChunkopenfga_dev||[]).push([[1903],{1912(e){e.exports=JSON.parse('{"blogBasePath":"/pr-preview/pr-1259/blog","blogTitle":"OpenFGA Blog \u2014 ReBAC, Fine-Grained Authorization & CNCF Updates","authorsListPath":"/pr-preview/pr-1259/blog/authors"}')}}]);
