@@ -1,0 +1,569 @@
+---
+title: How to get tuple changes
+description: Getting tuple changes
+---
+
+# How to get tuple changes
+
+This section illustrates how to call the Read Changes API to get the list of relationship tuple changes that happened in your store, in the exact order that they happened. The API response includes tuples that have been added or removed in your store. It does not include other changes, like updates to your authorization model and adding new assertions.
+
+## Before you start
+
+<Tabs>
+  <Tab title="Node.js">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/modeling) and [added some *relationship tuples*](/docs/getting-started/update-tuples#02-calling-write-api-to-add-new-relationship-tuples).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="Go">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/modeling) and [added some *relationship tuples*](/docs/getting-started/update-tuples#02-calling-write-api-to-add-new-relationship-tuples).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title=".NET">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/modeling).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="Python">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/modeling).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="Java">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/modeling).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="curl">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [configured the *authorization model*](/docs/modeling) and [added some *relationship tuples*](/docs/getting-started/update-tuples#02-calling-write-api-to-add-new-relationship-tuples).
+    3. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+</Tabs>
+
+## Step by step
+
+To get a chronologically ordered list of tuples that have been written or deleted in your store, you can do so by calling the Read Changes API.
+
+### 01. Configure the OpenFGA API client
+
+First you will need to configure the API client.
+
+<Tabs>
+  <Tab title="Node.js">
+    ```javascript
+    // import the SDK
+    const { OpenFgaClient } = require('@openfga/sdk');
+    // Initialize the SDK with no auth - see "How to setup SDK client" for more options
+    const fgaClient = new OpenFgaClient({
+      apiUrl: process.env.FGA_API_URL, // required, e.g. https://api.fga.example
+      storeId: process.env.FGA_STORE_ID,
+      authorizationModelId: process.env.FGA_MODEL_ID, // Optional, can be overridden per request
+    });
+    ```
+  </Tab>
+
+  <Tab title="Go">
+    ```go
+    import (
+        "os"
+        . "github.com/openfga/go-sdk"
+        . "github.com/openfga/go-sdk/client"
+    )
+
+    func main() {
+        // Initialize the SDK with no auth - see "How to setup SDK client" for more options
+        fgaClient, err := NewSdkClient(&ClientConfiguration{
+            ApiUrl:               os.Getenv("FGA_API_URL"), // required, e.g. https://api.fga.example
+            StoreId:              os.Getenv("FGA_STORE_ID"), // optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
+            AuthorizationModelId: os.Getenv("FGA_MODEL_ID"),  // Optional, can be overridden per request
+        })
+
+        if err != nil {
+        // .. Handle error
+        }
+    }
+    ```
+  </Tab>
+
+  <Tab title=".NET">
+    ```csharp
+    // import the SDK
+    using OpenFga.Sdk.Client;
+    using OpenFga.Sdk.Client.Model;
+    using OpenFga.Sdk.Model;
+    using Environment = System.Environment;
+
+    namespace Example;
+
+    class Example {
+        public static async Task Main() {
+            // Initialize the SDK with no auth - see "How to setup SDK client" for more options
+            var configuration = new ClientConfiguration() {
+              ApiUrl = Environment.GetEnvironmentVariable("FGA_API_URL"), ?? "http://localhost:8080", // required, e.g. https://api.fga.example
+              StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"), // optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
+              AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"), // Optional, can be overridden per request
+            };
+            var fgaClient = new OpenFgaClient(configuration);
+        }
+    }
+    ```
+  </Tab>
+
+  <Tab title="Python">
+    ```python
+    import asyncio
+    import os
+    from openfga_sdk.client import ClientConfiguration, OpenFgaClient
+
+    async def main():
+        configuration = ClientConfiguration(
+            api_url = os.environ.get('FGA_API_URL'), # required, e.g. https://api.fga.example
+            store_id = os.environ.get('FGA_STORE_ID'), # optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
+            authorization_model_id = os.environ.get('FGA_MODEL_ID'), # Optional, can be overridden per request
+        )
+
+        # Enter a context with an instance of the OpenFgaClient
+        async with OpenFgaClient(configuration) as fga_client:
+            api_response = await fga_client.read_authorization_models()
+            await fga_client.close()
+
+    asyncio.run(main())
+    ```
+  </Tab>
+
+  <Tab title="Java">
+    ```java
+    import dev.openfga.sdk.api.client.OpenFgaClient;
+    import dev.openfga.sdk.api.configuration.ClientConfiguration;
+
+    public class Example {
+      public static void main(String[] args) throws Exception {
+          var config = new ClientConfiguration()
+                  .apiUrl(System.getenv("FGA_API_URL")) // If not specified, will default to "https://localhost:8080"
+                  .storeId(System.getenv("FGA_STORE_ID")) // Not required when calling createStore() or listStores()
+                  .authorizationModelId(System.getenv("FGA_AUTHORIZATION_MODEL_ID")); // Optional, can be overridden per request
+
+          var fgaClient = new OpenFgaClient(config);
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="curl">
+    To obtain the [access token](https://auth0.com/docs/get-started/authentication-and-authorization-flow/call-your-api-using-the-client-credentials-flow):
+
+    ```bash
+    curl -X POST $FGA_API_TOKEN_ISSUER/oauth/token \
+      -H "content-type: application/x-www-form-urlencoded" \
+      -d "client_id=$FGA_CLIENT_ID&client_secret=$FGA_CLIENT_SECRET&audience=$FGA_API_AUDIENCE&grant_type=client_credentials"
+    # Set FGA_API_URL according to the service you are using (e.g. https://api.fga.example)
+    ```
+  </Tab>
+</Tabs>
+
+### 02. Get changes for all object types
+
+To get a paginated list of changes that happened in your store:
+
+<Tabs>
+  <Tab title="Node.js">
+    ```javascript
+    var type = "";
+    var continuationToken = "";
+    var pageSize = 25;
+
+    await fgaClient.readChanges({ type }, { pageSize, continuationToken });
+    ```
+  </Tab>
+
+  <Tab title="Go">
+    ```go
+    options := ClientReadChangesOptions{
+        PageSize: PtrInt32(25),
+    }
+    body := ClientReadChangesRequest{
+    }
+
+    data, err := fgaClient.ReadChanges(context.Background()).
+        Body(body).
+        Options(options).
+        Execute()
+
+    if err != nil {
+        // .. Handle error
+    }
+    ```
+  </Tab>
+
+  <Tab title=".NET">
+    ```csharp
+    var body = new ClientReadChangesRequest {  };
+    var options = new ClientReadChangesOptions {
+        PageSize = 25,
+    };
+
+    var response = await fgaClient.ReadChanges(body, options);
+    ```
+  </Tab>
+
+  <Tab title="Python">
+    ```python
+    body = ClientReadChangesRequest()
+    options = new ClientReadChangesOptions {
+        page_size: 25,
+    };
+    response = await fga_client.read_changes(body, options)
+    ```
+  </Tab>
+
+  <Tab title="Java">
+    ```java
+    var options = new ClientReadChangesOptions()
+            .pageSize(25);
+
+    var body = new ClientReadChangesRequest();
+
+    var response = fgaClient.readChanges(body, options).get();
+    ```
+  </Tab>
+
+  <Tab title="CLI">
+    ```bash
+    fga tuple changes --store-id=${FGA_STORE_ID}
+    ```
+  </Tab>
+
+  <Tab title="curl">
+    ```bash
+    curl -X GET $FGA_API_URL/stores/$FGA_STORE_ID/changes?page_size=25 \
+      -H "Authorization: Bearer $FGA_API_TOKEN" \ # Not needed if service does not require authorization
+      -H "content-type: application/json"
+    ```
+  </Tab>
+</Tabs>
+
+The result will contain an array of up to 25 tuples, with the operation (`write` or `delete`), and the timestamp in which that operation took place. The result will also contain a continuation token. Save the continuation token in persistent storage between calls so that it is not lost and you do not have to restart from scratch on system restart or on error.
+
+You can then use this token to get the next set of changes:
+
+<Tabs>
+  <Tab title="Node.js">
+    ```javascript
+    var type = "";
+    var continuationToken = "eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ==";
+    var pageSize = 25;
+
+    await fgaClient.readChanges({ type }, { pageSize, continuationToken });
+    ```
+  </Tab>
+
+  <Tab title="Go">
+    ```go
+    options := ClientReadChangesOptions{
+        PageSize: PtrInt32(25),
+        ContinuationToken: PtrString("eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ=="),
+    }
+    body := ClientReadChangesRequest{
+    }
+
+    data, err := fgaClient.ReadChanges(context.Background()).
+        Body(body).
+        Options(options).
+        Execute()
+
+    if err != nil {
+        // .. Handle error
+    }
+    ```
+  </Tab>
+
+  <Tab title=".NET">
+    ```csharp
+    var body = new ClientReadChangesRequest {  };
+    var options = new ClientReadChangesOptions {
+        PageSize = 25,
+        ContinuationToken = "eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ==",
+    };
+
+    var response = await fgaClient.ReadChanges(body, options);
+    ```
+  </Tab>
+
+  <Tab title="Python">
+    ```python
+    body = ClientReadChangesRequest()
+    options = new ClientReadChangesOptions {
+        page_size: 25,
+        continuation_token: "eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ==",
+    };
+    response = await fga_client.read_changes(body, options)
+    ```
+  </Tab>
+
+  <Tab title="Java">
+    ```java
+    var options = new ClientReadChangesOptions()
+            .pageSize(25)
+            .continuationToken("eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ==");
+
+    var body = new ClientReadChangesRequest();
+
+    var response = fgaClient.readChanges(body, options).get();
+    ```
+  </Tab>
+
+  <Tab title="CLI">
+    ```bash
+    fga tuple changes --store-id=${FGA_STORE_ID} --continuation-token eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ==
+    ```
+  </Tab>
+
+  <Tab title="curl">
+    ```bash
+    curl -X GET $FGA_API_URL/stores/$FGA_STORE_ID/changes?page_size=25&continuation_token=eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ== \
+      -H "Authorization: Bearer $FGA_API_TOKEN" \ # Not needed if service does not require authorization
+      -H "content-type: application/json"
+    ```
+  </Tab>
+</Tabs>
+
+Once there are no more changes to retrieve, the API will return the same token as the one you sent. Save the token in persistent storage to use at a later time.
+
+<Note>
+- The default page size is 50. The maximum page size allowed is 100.
+- The API response does not expand the tuples. If you wrote a tuple that includes a userset, like `{"user": "group:abc#member", "relation": "owner": "doc:budget"}`, the Read Changes API will return that exact tuple.
+</Note>
+
+### 03. Get changes for a specific object type
+
+Imagine you have the following authorization model:
+
+import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx'
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'group',
+        relations: {
+          member: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+      {
+        type: 'folder',
+        relations: {
+          owner: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'group', relation: 'member' }, { type: 'user' }] },
+          },
+        },
+      },
+      {
+        type: 'doc',
+        relations: {
+          owner: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'group', relation: 'member' }, { type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+It is possible to get a list of changes that happened in your store that relate only to one specific object type, like `folder`, by issuing a call like this:
+
+<Tabs>
+  <Tab title="Node.js">
+    ```javascript
+    var type = "folder";
+    var continuationToken = "";
+    var pageSize = 25;
+
+    await fgaClient.readChanges({ type }, { pageSize, continuationToken });
+    ```
+  </Tab>
+
+  <Tab title="Go">
+    ```go
+    options := ClientReadChangesOptions{
+        PageSize: PtrInt32(25),
+    }
+    body := ClientReadChangesRequest{
+        Type: "folder",
+    }
+
+    data, err := fgaClient.ReadChanges(context.Background()).
+        Body(body).
+        Options(options).
+        Execute()
+
+    if err != nil {
+        // .. Handle error
+    }
+    ```
+  </Tab>
+
+  <Tab title=".NET">
+    ```csharp
+    var body = new ClientReadChangesRequest { Type = "folder" };
+    var options = new ClientReadChangesOptions {
+        PageSize = 25,
+    };
+
+    var response = await fgaClient.ReadChanges(body, options);
+    ```
+  </Tab>
+
+  <Tab title="Python">
+    ```python
+    body = ClientReadChangesRequest("folder")
+    options = new ClientReadChangesOptions {
+        page_size: 25,
+    };
+    response = await fga_client.read_changes(body, options)
+    ```
+  </Tab>
+
+  <Tab title="Java">
+    ```java
+    var options = new ClientReadChangesOptions()
+            .pageSize(25);
+
+    var body = new ClientReadChangesRequest()
+            .type("folder");
+
+    var response = fgaClient.readChanges(body, options).get();
+    ```
+  </Tab>
+
+  <Tab title="CLI">
+    ```bash
+    fga tuple changes --store-id=${FGA_STORE_ID} --type folder
+    ```
+  </Tab>
+
+  <Tab title="curl">
+    ```bash
+    curl -X GET $FGA_API_URL/stores/$FGA_STORE_ID/changes?type=folder&page_size=25 \
+      -H "Authorization: Bearer $FGA_API_TOKEN" \ # Not needed if service does not require authorization
+      -H "content-type: application/json"
+    ```
+  </Tab>
+</Tabs>
+
+The response will include a continuation token. In subsequent calls, you have to include the token and the `type`. (If you send this continuation token without the `type` parameter set, you will get an error).
+
+<Tabs>
+  <Tab title="Node.js">
+    ```javascript
+    var type = "folder";
+    var continuationToken = "eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ==";
+    var pageSize = 25;
+
+    await fgaClient.readChanges({ type }, { pageSize, continuationToken });
+    ```
+  </Tab>
+
+  <Tab title="Go">
+    ```go
+    options := ClientReadChangesOptions{
+        PageSize: PtrInt32(25),
+        ContinuationToken: PtrString("eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ=="),
+    }
+    body := ClientReadChangesRequest{
+        Type: "folder",
+    }
+
+    data, err := fgaClient.ReadChanges(context.Background()).
+        Body(body).
+        Options(options).
+        Execute()
+
+    if err != nil {
+        // .. Handle error
+    }
+    ```
+  </Tab>
+
+  <Tab title=".NET">
+    ```csharp
+    var body = new ClientReadChangesRequest { Type = "folder" };
+    var options = new ClientReadChangesOptions {
+        PageSize = 25,
+        ContinuationToken = "eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ==",
+    };
+
+    var response = await fgaClient.ReadChanges(body, options);
+    ```
+  </Tab>
+
+  <Tab title="Python">
+    ```python
+    body = ClientReadChangesRequest("folder")
+    options = new ClientReadChangesOptions {
+        page_size: 25,
+        continuation_token: "eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ==",
+    };
+    response = await fga_client.read_changes(body, options)
+    ```
+  </Tab>
+
+  <Tab title="Java">
+    ```java
+    var options = new ClientReadChangesOptions()
+            .pageSize(25)
+            .continuationToken("eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ==");
+
+    var body = new ClientReadChangesRequest()
+            .type("folder");
+
+    var response = fgaClient.readChanges(body, options).get();
+    ```
+  </Tab>
+
+  <Tab title="CLI">
+    ```bash
+    fga tuple changes --store-id=${FGA_STORE_ID} --type folder --continuation-token eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ==
+    ```
+  </Tab>
+
+  <Tab title="curl">
+    ```bash
+    curl -X GET $FGA_API_URL/stores/$FGA_STORE_ID/changes?type=folder&page_size=25&continuation_token=eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ== \
+      -H "Authorization: Bearer $FGA_API_TOKEN" \ # Not needed if service does not require authorization
+      -H "content-type: application/json"
+    ```
+  </Tab>
+</Tabs>

@@ -1,0 +1,58 @@
+---
+title: Fine-Grained Authorization for E-commerce with FGA
+description: Model multi-store organizations, staff roles, products, orders, and refunds in FGA for Shopify-style and BigCommerce-style e-commerce platforms.
+---
+
+# E-commerce Authorization with OpenFGA
+
+E-commerce platforms — Shopify-style multi-store SaaS, BigCommerce, Etsy-like marketplaces — share an authorization shape that role-only systems struggle with: a merchant has *one organization* but *many stores*, and staff often have different permissions in different stores. A category manager might be a `manager` in the apparel store and just a `staff` member in the home-goods store.
+
+OpenFGA models the org/store split natively. The full sample lives in [openfga/sample-stores/stores/ecommerce](https://github.com/openfga/sample-stores/tree/main/stores/ecommerce).
+
+## Core resources and relations
+
+Two-tier role model:
+
+- **organization** roles — `admin`, `store_manager`, `member`. Granted at the org level, inherited where it makes sense.
+- **store** roles — `owner`, `manager`, `staff`. Per-store and *not* automatically inherited from org membership.
+
+Object types:
+
+- **organization** — the merchant tenant.
+- **store** — belongs to an `organization`, has its own `owner`, `manager`s, and `staff`.
+- **product** — belongs to a `store`. Managers create/edit/delete; the staff member who authored a product can edit it; everyone in the store can read.
+- **customer** — staff view, managers edit, admins delete.
+- **order** — the customer who placed the order can view and cancel; staff fulfill; managers refund; admins delete.
+- **store_settings** — owners configure, staff view.
+
+## What the model gets right
+
+**Org admin ≠ store owner.** A platform admin who needs to see every store's data is *not* automatically an owner of any individual store. Role inheritance is opt-in, expressed in the model rather than buried in application code.
+
+**Author-edit on products.** The staff member who created a product can edit it, even though staff in general can only view. This is a classic ReBAC pattern (`creator` relation as a fallback for `manager`).
+
+**Customer self-service.** Customers see only their own orders by being the direct subject of `customer` on the order, which lets the same `Check` API serve both the merchant admin UI and the customer-facing storefront.
+
+**Refund vs. delete.** Refund is a manager-level permission; delete is admin only. Two separate relations means audits can answer "who could have refunded this order" independently of "who could have deleted it".
+
+## Where this maps to OpenFGA features
+
+| E-commerce requirement | OpenFGA feature |
+| --- | --- |
+| Multi-store organizations | [parent-child relationships](/docs/modeling/parent-child) |
+| Per-store roles | direct relations on `store` |
+| Author can edit own product | union of `manager` and `creator` relations |
+| Customer self-service on orders | direct `customer` relation on `order` |
+| Refund vs. delete distinction | separate relations rather than a single `manage` |
+| Tenant isolation per merchant | see [multi-tenant SaaS](/docs/use-cases/multi-tenant-saas) |
+| Marketplaces with seller workspaces | seller as a `store`-equivalent type |
+
+## Common extensions
+
+- **Seller marketplaces (Etsy-like).** Add a `seller` type that owns one or more stores; platform admins moderate but don't own.
+- **Returns and exchanges.** Treat each return as its own object with its own approval chain (manager creates, admin approves) rather than overloading the order's relations.
+- **Promotions and discounts.** Discount codes can be modeled as objects with `creator`, `approver`, and `viewer` relations — useful when finance must approve before a code goes live.
+
+## Working sample
+
+Schema, sample tuples, and assertions are in [openfga/sample-stores/stores/ecommerce](https://github.com/openfga/sample-stores/tree/main/stores/ecommerce). For the broader multi-tenant question (one OpenFGA store across many merchants), see [Multi-Tenant SaaS](/docs/use-cases/multi-tenant-saas).

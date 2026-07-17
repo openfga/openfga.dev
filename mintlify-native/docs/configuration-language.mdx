@@ -1,0 +1,1115 @@
+---
+title: "Configuration Language"
+description: "Learning about the FGA configuration language and using it to build a representation of a system's authorization model"
+---
+
+import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx';
+
+The Configuration Language can be presented in **DSL** or **JSON** syntax. The JSON syntax is accepted by the API and closely tracks the language in the [Zanzibar paper](https://research.google/pubs/pub48190/). The DSL adds syntactic sugar on top of JSON for ease of use, but compiles down to JSON before being sent to OpenFGA's API. JSON syntax is used to call API directly or through the [SDKs](/docs/getting-started), while DSL is used to interact with OpenFGA in the [Playground](https://play.fga.dev/), the [CLI](https://github.com/openfga/cli), and the IDE extensions for [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode) and [IntelliJ](https://plugins.jetbrains.com/plugin/24394-openfga). They can be switched between throughout this documentation.
+
+Please familiarize yourself with basic [OpenFGA Concepts](/docs/concepts) and [How to get started on modeling](/docs/modeling/getting-started) before starting this guide.
+
+## What Does The Configuration Language Look Like?
+
+Below is a sample authorization model. The next sections discuss the basics of the OpenFGA configuration language.
+
+<AuthzModelSnippetViewer
+  syntaxesToShow={['dsl', 'json']}
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'domain',
+        relations: {
+          member: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+      {
+        type: 'folder',
+        relations: {
+          can_share: {
+            computedUserset: {
+              object: '',
+              relation: 'writer',
+            },
+          },
+          owner: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent_folder',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'owner',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          parent_folder: {
+            this: {},
+          },
+          viewer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'writer',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent_folder',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'viewer',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          writer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'owner',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent_folder',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'writer',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            parent_folder: { directly_related_user_types: [{ type: 'folder' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+          },
+        },
+      },
+      {
+        type: 'document',
+        relations: {
+          can_share: {
+            computedUserset: {
+              object: '',
+              relation: 'writer',
+            },
+          },
+          owner: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent_folder',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'owner',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          parent_folder: {
+            this: {},
+          },
+          viewer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'writer',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent_folder',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'viewer',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          writer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'owner',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent_folder',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'writer',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            parent_folder: { directly_related_user_types: [{ type: 'folder' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }, { type: 'domain', relation: 'member' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+<Info>
+  The authorization model describes four [types](/docs/concepts#what-is-a-type) of objects: `user`, `domain`, `folder` and `document`.
+
+  The `domain` [type definition](/docs/concepts#what-is-a-type-definition) has a single [relation](/docs/concepts#what-is-a-relation) called `member` that only allows [direct relationships](/docs/concepts#what-are-direct-and-implied-relationships).
+
+  The `folder` and `document` type definitions each have five relations: `parent_folder`, `owner`, `writer`, `viewer` and `can_share`.
+</Info>
+
+### Direct Relationship Type Restrictions
+
+When used at the beginning of a [relation definition](/docs/concepts#what-is-a-relation-definition), `[<string, <string>, ...]` allows [direct relationships](/docs/concepts#what-are-direct-and-implied-relationships) by the objects of these specified types. The strings can be in one of three formats:
+
+* `<type>`: indicates that tuples relating objects of those types as users can be written. For example, `group:marketing` can be related if `group` is in the type restrictions.
+* `<type:*>`: indicates that a tuple relating all objects of that type can be written. For example, `user:*` can be added if `user:*` is in the type restrictions.
+* `<type>#<relation>`: indicates tuples with sets of users related to an object of that type by that particular relation. For example, `group:marketing#member` can be added if `group#member` is in the type restrictions.
+
+If no direct relationship type restrictions are specified, direct relationships are disallowed and tuples cannot be written relating other objects of this particular relation with objects of this type.
+
+<Info>
+  `[<type1>, <type2>, ...]` in the OpenFGA DSL translates to `this` in the OpenFGA API syntax.
+</Info>
+
+For example, below is a snippet of the `team` type:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type: 'team',
+    relations: {
+      member: {
+        this: {},
+      },
+    },
+    metadata: {
+      relations: {
+        member: { directly_related_user_types: [{ type: 'user' }, { type: 'user:*'}, { type: 'team', relation: 'member' }] },
+      },
+    },
+  }} skipVersion={true}
+/>
+
+The `team` [type definition](/docs/concepts#what-is-a-type-definition) above defines all the [relations](/docs/concepts#what-is-a-relation) that [users](/docs/concepts#what-is-a-user) can have with an *[object](/docs/concepts#what-is-an-object)* of type `team`. In this example, the relation is `member`.
+
+Because of the `[user, team#member]` direct relationship type restrictions used, a user in the system can have a **[direct relationship](/docs/concepts#what-are-direct-and-implied-relationships)** with the `team` type as a `member` for objects of:
+
+* type `user`
+* the `user` [type bound public access](/docs/concepts#what-is-type-bound-public-access) (`user:*`)
+* [usersets](/docs/modeling/building-blocks/usersets) that have a `team` type and a `member` relation (e.g. `team:product#member`)
+
+In the type definition snippet above, `anne` is a `member` of `team:product` if any of the following relationship tuple sets exist:
+
+* ```
+  [// Anne is directly related to the product team as a member
+    {
+    "user": "user:anne",
+    "relation": "member",
+    "object": "team:product",
+    "_description": "Anne is directly related to the product team as a member"
+  }]
+  ```
+* ```
+  [// Everyone (`*`) is directly related to the product team as a member
+    {
+    "user": "user:*",
+    "relation": "member",
+    "object": "team:product",
+    "_description": "Everyone (`*`) is directly related to the product team as a member"
+  }]
+  ```
+* ```
+  [// Members of the contoso team are members of the product team
+    {
+    "user": "team:contoso#member",
+    "relation": "member",
+    "object": "team:product",
+    "_description": "Members of the contoso team are members of the product team"
+  }// Anne is a member of the contoso team
+    {
+    "user": "user:anne",
+    "relation": "member",
+    "object": "team:contoso",
+    "_description": "Anne is a member of the contoso team"
+  }]
+  ```
+
+For more examples, see [Modeling Building Blocks: Direct Relationships](/docs/modeling/building-blocks/direct-relationships).
+
+### Referencing Other Relations On The Same Object
+
+The same object can also reference other relations. Below is a simplified `document` type definition:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type: 'document',
+    relations: {
+      editor: {
+        this: {},
+      },
+      viewer: {
+        union: {
+          child: [
+            { this: {} },
+            {
+              computedUserset: {
+                relation: 'editor',
+              },
+            },
+          ],
+        },
+      },
+      can_rename: {
+        computedUserset: {
+          relation: 'editor',
+        },
+      },
+    },
+    metadata: {
+      relations: {
+        editor: { directly_related_user_types: [{ type: 'user' }] },
+        viewer: { directly_related_user_types: [{ type: 'user' }] },
+      },
+    },
+  }} skipVersion={true}
+/>
+
+Above, `document` [type definition](/docs/concepts#what-is-a-type-definition) defines all the [relations](/docs/concepts#what-is-a-relation) that [users](/docs/concepts#what-is-a-user) can have with an [object](/docs/concepts#what-is-an-object) of type `document`. In this case, the relations are `editor`, `viewer` and `can_rename`. The `viewer` and `can_rename` relation definitions both reference `editor`, which is another relation of the same type.
+
+<Info>
+  `can_rename` does not reference the [direct relationship type restrictions](#direct-relationship-type-restrictions), which means a user cannot be directly assigned this relation and it must be inherited when the `editor` relation is assigned. Conversely, the `viewer` relation allows both direct and indirect relationships using the [Union Operator](#the-union-operator).
+</Info>
+
+In the type definition snippet above, `anne` is a `viewer` of `document:new-roadmap` if any one of the following relationship tuple sets exists:
+
+* *anne* is an *editor* of *document:new-roadmap*
+
+  ```json
+  [// Anne is an editor of the new-roadmap document
+    {
+    "user": "user:anne",
+    "relation": "editor",
+    "object": "document:new-roadmap",
+    "_description": "Anne is an editor of the new-roadmap document"
+  }]
+  ```
+
+* *anne* is a *viewer* of *document:new-roadmap*
+
+  ```json
+  [// Anne is a viewer of the new-roadmap document
+    {
+    "user": "user:anne",
+    "relation": "viewer",
+    "object": "document:new-roadmap",
+    "_description": "Anne is a viewer of the new-roadmap document"
+  }]
+  ```
+
+`anne` has a `can_rename` relationship with `document:new-roadmap` only if `anne` has an `editor` relationship with the document:
+
+* *anne* is an *editor* of *document:new-roadmap*
+  ```json
+  [// Anne is an editor of thew new-roadmap document
+    {
+    "user": "user:anne",
+    "relation": "editor",
+    "object": "document:new-roadmap",
+    "_description": "Anne is an editor of thew new-roadmap document"
+  }]
+  ```
+
+For more examples, see [Modeling Building Blocks: Concentric Relationships](/docs/modeling/building-blocks/concentric-relationships), [Modeling: Roles and Permissions](/docs/modeling/roles-and-permissions) and [Advanced Modeling: Google Drive](/docs/modeling/advanced/gdrive).
+
+### Referencing Relations On Related Objects
+
+Another set of [indirect relationships](/docs/concepts#what-are-direct-and-implied-relationships) are made possible by referencing relations to other objects.
+
+The syntax is `X from Y` and requires that:
+
+* the other object is related to the current object as `Y`
+* the *user* is related to another object as `X`
+
+See the *authorization model* below.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'folder',
+        relations: {
+          viewer: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'folder', relation: 'viewer' }] },
+          },
+        },
+      },
+      {
+        type: 'document',
+        relations: {
+          parent_folder: {
+            this: {},
+          },
+          viewer: {
+            union: {
+              child: [
+                { this: {} },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent_folder',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'viewer',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            parent_folder: { directly_related_user_types: [{ type: 'folder' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+The snippet below (taken from the authorization model above) states that viewers of a document are both (a) all users directly assigned the viewer relation and (b) all users who can view the document's parent folder.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          viewer: {
+            union: {
+              child: [
+                { this: {} },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'parent_folder',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'viewer',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }} skipVersion={true}
+/>
+
+In the authorization model above, `user:anne` is a `viewer` of `document:new-roadmap` if any one of the following relationship tuples sets exists:
+
+* Anne is a viewer of the parent folder of the new-roadmap document
+  ```json
+  [// planning folder is the parent folder of the new-roadmap document
+    {
+    "user": "folder:planning",
+    "relation": "parent_folder",
+    "object": "document:new-roadmap",
+    "_description": "planning folder is the parent folder of the new-roadmap document"
+  }// anne is a viewer of the planning folder
+    {
+    "user": "user:anne",
+    "relation": "viewer",
+    "object": "folder:planning",
+    "_description": "anne is a viewer of the planning folder"
+  }]
+  ```
+* Anne is a viewer of the new-roadmap document (direct relationship)
+  ```json
+  [// anne is a viewer of the new-roadmap document
+    {
+    "user": "user:anne",
+    "relation": "viewer",
+    "object": "document:new-roadmap",
+    "_description": "anne is a viewer of the new-roadmap document"
+  }]
+  ```
+
+Referencing relations on related objects defines transitive implied relationship. If User A is related to Object B as a viewer, and Object B is related to Object C as parent, then User A is related to Object C as viewer. This can indicate that viewers of a folders are viewers of all documents in that folder.
+
+<Warning>
+  OpenFGA does not allow the referenced relation (the word after `from`, also called the tupleset) to reference another relation and does not allow non-concrete types (type bound public access (`<object_type>:*`) or usersets (`<object_type>#<relation>`)) in its type restrictions; adding them throws a validation error when calling `WriteAuthorizationModel`.
+</Warning>
+
+For more examples, see [Modeling: Parent-Child Objects](/docs/modeling/parent-child), [Advanced Modeling: Google Drive](/docs/modeling/advanced/gdrive), [Advanced Modeling: GitHub](/docs/modeling/advanced/github), and [Advanced Modeling: Entitlements](/docs/modeling/advanced/entitlements).
+
+### The Union Operator
+
+The **union operator** (`or` in the DSL, `union` in the JSON syntax) indicates that a [relationship](/docs/concepts#what-is-a-relationship) exists if the [user](/docs/concepts#what-is-a-user) is in any of the sets of users (`union`).
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          viewer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'editor',
+                  },
+                },
+              ],
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }} skipVersion={true}
+/>
+
+In the [type definition](/docs/concepts#what-is-a-type-definition) snippet above, `user:anne` is a `viewer` of `document:new-roadmap` if any of the following conditions are satisfied:
+
+* there exists a [direct relationship](/docs/concepts#what-are-direct-and-implied-relationships) with *anne* as *editor* of *document:new-roadmap*
+  ```json
+  [{
+    "user": "user:anne",
+    "relation": "editor",
+    "object": "document:new-roadmap"
+  }]
+  ```
+* *anne* is a *viewer* of *document:new-roadmap*
+  ```json
+  [{
+    "user": "user:anne",
+    "relation": "viewer",
+    "object": "document:new-roadmap"
+  }]
+  ```
+
+<Info>
+  The above [authorization model](/docs/concepts#what-is-an-authorization-model) indicates that a user is related as a viewer if they are in any of the following:
+
+  * the userset of all users related to the object as "viewer", indicating that a user can be assigned a direct `viewer` relation
+  * the userset of all users related to the object as "editor", indicating that a user who is an editor is also implicitly a viewer
+
+  If `anne` is in at least one of those usersets, meaning `anne` is either an `editor` or a `viewer`, the [check](/docs/concepts#what-is-a-check-request) on `{"user": "user:anne", "relation": "viewer", "object": "document:new-roadmap"}` returns `{"allowed": true}`.
+</Info>
+
+For more examples, see [Modeling Building Blocks: Concentric Relationships](/docs/modeling/building-blocks/concentric-relationships), [Modeling Roles and Permissions](/docs/modeling/roles-and-permissions) and [Advanced Modeling: Modeling for IoT](/docs/modeling/advanced/iot#03-updating-our-authorization-model-to-facilitate-future-changes).
+
+### The Intersection Operator
+
+The **intersection operator** (`and` in the DSL, `intersection` in the JSON syntax) indicates that a [relationship](/docs/concepts#what-is-a-relationship) exists if the [user](/docs/concepts#what-is-a-user) is in all the sets of users.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          viewer: {
+            intersection: {
+              child: [
+                {
+                  computedUserset: {
+                    relation: 'authorized_user',
+                  },
+                },
+                {
+                  computedUserset: {
+                    relation: 'editor',
+                  },
+                },
+              ],
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }} skipVersion={true}
+/>
+
+In the [type definition](/docs/concepts#what-is-a-type-definition) snippet above, `user:anne` is a `viewer` of `document:new-roadmap` if all of the following conditions are satisfied:
+
+* *anne* is an *editor* of *document:new-roadmap*
+  ```json
+  [{
+    "user": "user:anne",
+    "relation": "editor",
+    "object": "document:new-roadmap"
+  }]
+  ```
+  AND
+* *anne* is an *authorized\_user* of *document:new-roadmap*:
+  ```json
+  [{
+    "user": "user:anne",
+    "relation": "authorized_user",
+    "object": "document:new-roadmap"
+  }]
+  ```
+
+<Info>
+  The above [authorization model](/docs/concepts#what-is-an-authorization-model) indicates that a user is related as a viewer if they are in all of the following:
+
+  * the userset of all users related to the object as `authorized_user`
+  * the userset of all users related to the object as `editor`
+
+  `anne` must be in the intersection of the usersets (meaning both an `editor` AND an `authorized_user`) for the [check](/docs/concepts#what-is-a-check-request) on `{"user": "user:anne", "relation": "viewer", "object": "document:new-roadmap"}` to return `{"allowed": true}`.
+
+  `anne` is not a `viewer` for `document:new-roadmap` if either of the following is true:
+
+  * `anne` is not an `editor` to `document:new-roadmap`: no relationship tuple of `{"user": "user:anne", "relation": "editor", "object": "document:new-roadmap"}`
+  * `anne` is not an `authorized_user` on the `document:new-roadmap`: no relationship tuple of `{"user": "user:anne", "relation": "authorized_user", "object": "document:new-roadmap"}`
+</Info>
+
+For more examples, see [Modeling with Multiple Restrictions](/docs/modeling/multiple-restrictions).
+
+### The Exclusion Operator
+
+The **exclusion operator** (`but not` in the DSL, `difference` in the JSON syntax) indicates that a [relationship](/docs/concepts#what-is-a-relationship) exists if the [user](/docs/concepts#what-is-a-user) is in the base userset but not in the excluded userset. This operator is particularly useful when modeling exclusion or block lists.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          viewer: {
+            difference: {
+              base: {
+                this: {},
+              },
+              subtract: {
+                computedUserset: {
+                  relation: 'blocked',
+                },
+              },
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }} skipVersion={true}
+/>
+
+In the type definition snippet above, `user:anne` is a `viewer` of `document:new-roadmap` if and only if:
+
+* `anne` has a direct relationship as `viewer` to `document:new-roadmap`
+
+  ```json
+  [{
+    "user": "user:anne",
+    "relation": "viewer",
+    "object": "document:new-roadmap"
+  }]
+  ```
+
+  AND
+
+* `anne` is not blocked from `document:new-roadmap` (i.e., the following relationship tuple must not exist):
+
+  ```json
+  [{
+    "user": "user:anne",
+    "relation": "blocked",
+    "object": "document:new-roadmap"
+  }]
+  ```
+
+For more information, see [Modeling: Blocklists](/docs/modeling/blocklists).
+
+<Info>
+  The [authorization model](/docs/concepts#what-is-an-authorization-model) above indicates that a user is related as a viewer if they are in:
+
+  * the userset of all users related to the object as `viewer`
+
+  but not in:
+
+  * the userset of all users related to the object as `blocked`
+
+  `anne` must be both a `viewer` and not `blocked` for the [check](/docs/concepts#what-is-a-check-request) on `{"user": "user:anne", "relation": "viewer", "object": "document:new-roadmap"}` to return `{"allowed": true}`.
+
+  `anne` is not a viewer for document:new-roadmap if either of the following is true:
+
+  * `anne` is **not** assigned direct relationship as viewer to document:new-roadmap: **no relationship tuple of** `{"user": "user:anne", "relation": "viewer", "object": "document:new-roadmap"}`
+  * `anne` is blocked on the document:new-roadmap `{"user": "user:anne", "relation": "blocked", "object": "document:new-roadmap"}`
+</Info>
+
+### Grouping and nesting operators
+
+You can define complex conditions by using parentheses to group and nest operators. Note that direct relationships can be included in an expression with parentheses.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    "schema_version": "1.1",
+    "type_definitions": [
+      {
+        "type": "user",
+        "relations": {},
+        "metadata": null
+      },
+      {
+        "type": "organization",
+        "relations": {
+          "member": {
+            "this": {}
+          }
+        },
+        "metadata": {
+          "relations": {
+            "member": {
+              "directly_related_user_types": [
+                {
+                  "type": "user"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "type": "folder",
+        "relations": {
+          "organization": {
+            "this": {}
+          },
+          "parent": {
+            "this": {}
+          },
+          "viewer": {
+            "intersection": {
+              "child": [
+                {
+                  "union": {
+                    "child": [
+                      {
+                        "this": {}
+                      },
+                      {
+                        "tupleToUserset": {
+                          "computedUserset": {
+                            "relation": "viewer"
+                          },
+                          "tupleset": {
+                            "relation": "parent"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "tupleToUserset": {
+                    "computedUserset": {
+                      "relation": "member"
+                    },
+                    "tupleset": {
+                      "relation": "organization"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "metadata": {
+          "relations": {
+            "organization": {
+              "directly_related_user_types": [
+                {
+                  "type": "organization"
+                }
+              ]
+            },
+            "parent": {
+              "directly_related_user_types": [
+                {
+                  "type": "folder"
+                }
+              ]
+            },
+            "viewer": {
+              "directly_related_user_types": [
+                {
+                  "type": "user"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  }} skipVersion={true}
+/>
+
+### Conditional relationships
+
+OpenFGA supports conditional relationships, which are only considered if a specific condition is met. You can learn more about Conditional Relationships in the [Modeling: Conditional Relationships](/docs/modeling/conditions) guide.
+
+## Equivalent Zanzibar Concepts
+
+The JSON syntax accepted by the OpenFGA API closely mirrors the syntax represented in the Zanzibar paper. The major modifications are a slight flattening and conversion of keys from `snake_case` to `camelCase`.
+
+| Zanzibar           | OpenFGA JSON     | OpenFGA DSL                                                   |
+| ------------------ | ---------------- | ------------------------------------------------------------- |
+| `this`             | `this`           | [`[<type1>,<type2>]`](#direct-relationship-type-restrictions) |
+| `union`            | `union`          | `or`                                                          |
+| `intersection`     | `intersection`   | `and`                                                         |
+| `exclusion`        | `difference`     | `but not`                                                     |
+| `tuple_to_userset` | `tupleToUserset` | `x from y`                                                    |
+
+The [Zanzibar paper](https://research.google/pubs/pub48190/) presents this example:
+
+```
+name: "doc"
+relation { name: "owner" }
+relation {
+  name: "editor"
+  userset_rewrite {
+    union {
+      child { _this {} }
+      child { computed_userset { relation: "owner" } }
+}}}
+relation {
+ name: "viewer"
+ userset_rewrite {
+  union {
+    child { _this {} }
+    child { computed_userset { relation: "editor" } }
+    child { tuple_to_userset {
+      tupleset { relation: "parent" }
+      computed_userset {
+        object: $TUPLE_USERSET_OBJECT  # parent folder
+        relation: "viewer" }}}
+}}}
+```
+
+In the OpenFGA DSL, it becomes:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'doc',
+        relations: {
+          owner: {
+            this: {},
+          },
+          editor: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'owner',
+                  },
+                },
+              ],
+            },
+          },
+          viewer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'editor',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      relation: 'parent',
+                    },
+                    computedUserset: {
+                      relation: 'viewer',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }] },
+            editor: { directly_related_user_types: [{ type: 'user' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+In the OpenFGA JSON, it becomes:
+
+<AuthzModelSnippetViewer
+  syntaxesToShow={['json']}
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'doc',
+        relations: {
+          owner: {
+            this: {},
+          },
+          editor: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'owner',
+                  },
+                },
+              ],
+            },
+          },
+          viewer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'editor',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      relation: 'parent',
+                    },
+                    computedUserset: {
+                      relation: 'viewer',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'user' }] },
+            editor: { directly_related_user_types: [{ type: 'user' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+The following snippet:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'doc',
+        relations: {
+          viewer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'editor',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      relation: 'parent',
+                    },
+                    computedUserset: {
+                      relation: 'viewer',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+Results in the following outcome:
+
+* The users with a viewer relationship to a certain doc are any of:
+
+  * the set of users who are [directly related](/docs/concepts#what-are-direct-and-implied-relationships) with this doc as `viewer`
+  * the set of users who are related to this doc as `editor`
+  * the set of users who are related to any object OBJ\_1 as `viewer`, where object OBJ\_1 is any object related to this doc as `parent` (e.g. viewers of this doc's parent folder, where the parent folder is OBJ\_1)
+
+Learn more about Zanzibar at the [Zanzibar Academy](https://zanzibar.academy).
+
+## Related Sections
+
+Check the following sections for more on how to use the configuration language in modeling authorization.
+
+<CardGroup>
+  <Card title="OpenFGA ConceptsLearn about the OpenFGA Concepts.More" href="/docs/concepts">
+    *
+  </Card>
+
+  <Card title="Modeling: Getting StartedLearn about how to get started with modeling your permission system in OpenFGA.More" href="/docs/modeling/getting-started">
+    *
+  </Card>
+
+  <Card title="Direct AccessLearn about modeling user access to an object.More" href="/docs/modeling/direct-access">
+    *
+  </Card>
+</CardGroup>

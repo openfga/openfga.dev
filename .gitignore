@@ -27,3 +27,8 @@ yarn-error.log*
 .vscode/
 *.sublime-*
 *.orig
+
+# MemPalace per-project files (issue #185)
+mempalace.yaml
+entities.json
+.mintlify/

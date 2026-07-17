@@ -1,0 +1,510 @@
+---
+title: "RAG Authorization"
+description: "Retrieval-Augmented Generation (RAG) enhances LLM responses by retrieving relevant documents from a knowledge base. Without authorization checks, a user can ask a question and receive answers derived from documents they should not have access to. OpenFGA lets you enforce document-level permissions so that RAG pipelines only return content the user is authorized to see."
+---
+
+import { ListObjectsRequestViewer } from '/snippets/ListObjectsRequestViewer.jsx';
+import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
+
+Retrieval-Augmented Generation (RAG) enhances LLM responses by retrieving relevant documents from a knowledge base. Without authorization checks, a user can ask a question and receive answers derived from documents they should not have access to. OpenFGA lets you enforce document-level permissions so that RAG pipelines only return content the user is authorized to see.
+
+This guide shows how to model document permissions in OpenFGA and integrate authorization checks into a RAG pipeline, regardless of the framework or vector database you use.
+
+This pattern applies to both first-party and third-party scenarios:
+
+* **First-party** - Your application owns the documents and manages permissions directly. You write tuples to OpenFGA as part of your normal application flow (e.g., when a user creates a folder or shares a document).
+* **Third-party** - Documents and permissions live in an external system (Google Drive, Confluence, SharePoint, etc.). You synchronize content into your vector database and permissions into OpenFGA, keeping both in sync with the source system. The authorization model and filtering approaches are the same - the difference is that tuples come from a sync pipeline rather than your application.
+
+## Authorization model
+
+A typical RAG knowledge base contains documents organized in folders, with access controlled at both levels. The following model represents this structure:
+
+```text
+model
+  schema 1.1
+type user
+type folder
+  relations
+    define owner: [user]
+    define viewer: [user] or owner
+type document
+  relations
+    define folder: [folder]
+    define owner: [user]
+    define viewer: [user] or owner or viewer from folder
+```
+
+A `folder` has `owner` and `viewer` relations. A `document` belongs to a folder and inherits its viewers - anyone who can view the folder can view all documents inside it. You can also grant direct access to individual documents.
+
+## Writing tuples
+
+Set up the folder structure, document ownership, and user access:
+
+```yaml
+tuples:
+  # anne owns the engineering folder
+  - user: user:anne
+    relation: owner
+    object: folder:engineering
+  # beth can view the engineering folder (and all its documents)
+  - user: user:beth
+    relation: viewer
+    object: folder:engineering
+  # link documents to their folder
+  - user: folder:engineering
+    relation: folder
+    object: document:api_design
+  - user: folder:engineering
+    relation: folder
+    object: document:architecture
+  - user: folder:engineering
+    relation: folder
+    object: document:roadmap
+  # carl can only view the roadmap document
+  - user: user:carl
+    relation: viewer
+    object: document:roadmap
+```
+
+With this setup:
+
+* `anne` can view all documents in the engineering folder (as owner).
+* `beth` can view all documents in the engineering folder (as viewer).
+* `carl` can only view the roadmap document.
+
+## Filtering approaches
+
+There are two main approaches to integrate OpenFGA into a RAG pipeline. Both ensure that the LLM only sees documents the user is authorized to access.
+
+### Post-filtering
+
+Query the vector database first, then filter results by checking permissions with OpenFGA. This is the most common approach and works well when the vector search returns a manageable number of candidates.
+
+The flow is:
+
+1. The user sends a query to the RAG pipeline.
+2. The pipeline retrieves candidate documents from the vector database.
+3. For each candidate, call OpenFGA to check whether the user can view it.
+4. Filter out unauthorized documents.
+5. Pass only the authorized documents to the LLM as context.
+
+Use the [`BatchCheck`](/docs/interacting/relationship-queries#batch-check) API to check multiple documents in a single request. For example, if a vector search returns three documents for `user:carl`:
+
+<Tabs>
+  <Tab title="Node.js">
+    ```javascript
+    const body = {
+      checks: [
+        {
+          user: 'user:carl',
+          relation: 'viewer',
+          object: 'document:roadmap',
+          correlationId: 'roadmap-check'
+        },{
+          user: 'user:carl',
+          relation: 'viewer',
+          object: 'document:api_design',
+          correlationId: 'api-design-check'
+        },{
+          user: 'user:carl',
+          relation: 'viewer',
+          object: 'document:architecture',
+          correlationId: 'architecture-check'
+        }
+      ],
+    }
+    const options = {
+      authorization_model_id: '01HVMMBCMGZNT3SED4Z17ECXCA',
+      maxBatchSize: 50, // optional, default is 50, can be used to limit the number of checks in a single server request
+      maxParallelRequests: 10, // optional, default is 10, can be used to limit the parallelization of the BatchCheck chunks
+    };
+    const { result } = await fgaClient.batchCheck(body, options);
+    /*
+    {
+      "results": [
+        {
+          "correlationId": 'roadmap-check',
+          "allowed": true,
+          "request": {
+            "user": 'user:carl',
+            "relation": 'viewer',
+            "object": 'document:roadmap'}
+        }, {
+          "correlationId": 'api-design-check',
+          "allowed": false,
+          "request": {
+            "user": 'user:carl',
+            "relation": 'viewer',
+            "object": 'document:api_design'}
+        }, {
+          "correlationId": 'architecture-check',
+          "allowed": false,
+          "request": {
+            "user": 'user:carl',
+            "relation": 'viewer',
+            "object": 'document:architecture'}
+        }
+      ],
+    }
+    */
+    ```
+  </Tab>
+
+  <Tab title="Go">
+    ```go
+    body := ClientBatchCheckRequest{
+      Checks: []ClientBatchCheckItem{
+        {
+          User:          "user:carl",
+          Relation:      "viewer",
+          Object:        "document:roadmap",
+          CorrelationId: "roadmap-check",
+        },
+        {
+          User:          "user:carl",
+          Relation:      "viewer",
+          Object:        "document:api_design",
+          CorrelationId: "api-design-check",
+        },
+        {
+          User:          "user:carl",
+          Relation:      "viewer",
+          Object:        "document:architecture",
+          CorrelationId: "architecture-check",
+        },
+      },
+    }
+    options := BatchCheckOptions{
+      MaxBatchSize:         openfga.PtrInt32(50), // optional, default is 50, can be used to limit the number of checks in a single server request
+      MaxParallelRequests:  openfga.PtrInt32(10), // optional, default is 10, can be used to limit the parallelization of the BatchCheck chunks,
+      AuthorizationModelId: openfga.PtrString("01HVMMBCMGZNT3SED4Z17ECXCA"),
+    }
+    data, err := fgaClient.BatchCheck(context.Background()).Body(body).Options(options).Execute()
+    /*
+    // Results are a map keyed by correlationId
+    // Example:
+    data.GetResult() = map[string]BatchCheckSingleResult{
+      "roadmap-check": {
+        Allowed: true,
+      },
+      "api-design-check": {
+        Allowed: false,
+        Error:   <FgaError ...>,
+      },
+      "architecture-check": {
+        Allowed: false,
+        Error:   <FgaError ...>,
+      },
+    }
+    */
+    ```
+  </Tab>
+
+  <Tab title=".NET">
+    ```csharp
+    var body = new ClientBatchCheckRequest {
+      Checks = new List<ClientBatchCheckItem> {
+        new() {
+          User = "user:carl",
+          Relation = "viewer",
+          Object = "document:roadmap",
+          CorrelationId = "roadmap-check",
+        },
+        new() {
+          User = "user:carl",
+          Relation = "viewer",
+          Object = "document:api_design",
+          CorrelationId = "api-design-check",
+        },
+        new() {
+          User = "user:carl",
+          Relation = "viewer",
+          Object = "document:architecture",
+          CorrelationId = "architecture-check",
+        }
+      }
+    };
+    var options = new ClientBatchCheckOptions {
+      AuthorizationModelId = "01HVMMBCMGZNT3SED4Z17ECXCA",
+      MaxBatchSize = 50, // optional, default is 50
+      MaxParallelRequests = 10 // optional, default is 10
+    };
+    var response = await fgaClient.BatchCheck(body, options);
+    /*
+    response.Result = [{
+      CorrelationId = "roadmap-check",
+      Allowed = true,
+      Request = {
+        User = "user:carl",
+        Relation = "viewer",
+        Object = "document:roadmap"
+      }
+    },
+    {
+      CorrelationId = "api-design-check",
+      Allowed = false,
+      Request = {
+        User = "user:carl",
+        Relation = "viewer",
+        Object = "document:api_design"
+      }
+    },
+    {
+      CorrelationId = "architecture-check",
+      Allowed = false,
+      Request = {
+        User = "user:carl",
+        Relation = "viewer",
+        Object = "document:architecture"
+      }
+    }]
+    */
+    ```
+  </Tab>
+
+  <Tab title="Python">
+    ```python
+    checks = [
+      ClientBatchCheckItem(
+        user="user:carl",
+        relation="viewer",
+        object="document:roadmap",
+        correlation_id="roadmap-check"
+      ),
+      ClientBatchCheckItem(
+        user="user:carl",
+        relation="viewer",
+        object="document:api_design",
+        correlation_id="api-design-check"
+      ),
+      ClientBatchCheckItem(
+        user="user:carl",
+        relation="viewer",
+        object="document:architecture",
+        correlation_id="architecture-check"
+      )
+    ]
+    options = {
+      "authorization_model_id": "01HVMMBCMGZNT3SED4Z17ECXCA"}
+    response = await fga_client.batch_check(ClientBatchCheckRequest(checks=checks), options)
+    # response.results = [{
+    #  correlation_id: 'roadmap-check',
+    #  allowed: true,
+    #  request: {
+    #    user: 'user:carl',
+    #    relation: 'viewer',
+    #    object: 'document:roadmap'}
+    #}, {
+    #  correlation_id: 'api-design-check',
+    #  allowed: false,
+    #  request: {
+    #    user: 'user:carl',
+    #    relation: 'viewer',
+    #    object: 'document:api_design'}
+    #}, {
+    #  correlation_id: 'architecture-check',
+    #  allowed: false,
+    #  request: {
+    #    user: 'user:carl',
+    #    relation: 'viewer',
+    #    object: 'document:architecture'}
+    #}]
+    ```
+  </Tab>
+
+  <Tab title="Java">
+    ```java
+    var request = new ClientBatchCheckRequest().checks(
+        List.of(
+          new ClientBatchCheckItem()
+              .user("user:carl")
+              .relation("viewer")
+              ._object("document:roadmap")
+              .correlationId("roadmap-check"),
+          new ClientBatchCheckItem()
+              .user("user:carl")
+              .relation("viewer")
+              ._object("document:api_design")
+              .correlationId("api-design-check"),
+          new ClientBatchCheckItem()
+              .user("user:carl")
+              .relation("viewer")
+              ._object("document:architecture")
+              .correlationId("architecture-check")  
+    );
+    var options = new ClientBatchCheckOptions()
+        .authorizationModelId("01HVMMBCMGZNT3SED4Z17ECXCA")
+        .maxBatchSize(50) // optional, default is 50, can be used to limit the number of checks in a single server request
+        .maxParallelRequests(10); // optional, default is 10, can be used to limit the parallelization of the BatchCheck chunks
+    var response = fgaClient.batchCheck(request, options).get();
+    /*
+    {
+      "result": [
+        {
+          "correlationId": 'roadmap-check',
+          "allowed": true,
+          "request": {
+            "user": 'user:carl',
+            "relation": 'viewer',
+            "_object": 'document:roadmap'}
+        }, {
+          "correlationId": 'api-design-check',
+          "allowed": false,
+          "request": {
+            "user": 'user:carl',
+            "relation": 'viewer',
+            "_object": 'document:api_design'}
+        }, {
+          "correlationId": 'architecture-check',
+          "allowed": false,
+          "request": {
+            "user": 'user:carl',
+            "relation": 'viewer',
+            "_object": 'document:architecture'}
+        }
+      ],
+    }
+    */
+    ```
+  </Tab>
+
+  <Tab title="curl">
+    ```bash
+    curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/batch-check \
+    -H "Authorization: Bearer $FGA_API_TOKEN" \ # Not needed if service does not require authorization
+    -H "content-type: application/json" \
+    -d '{
+      "authorization_model_id": "01HVMMBCMGZNT3SED4Z17ECXCA", 
+      "checks": [
+        {
+          "tuple_key": {
+            "user":"user:carl",
+            "relation":"viewer",
+            "object":"document:roadmap"
+          },
+          "correlation_id": "roadmap-check"
+        },
+        {
+          "tuple_key": {
+            "user":"user:carl",
+            "relation":"viewer",
+            "object":"document:api_design"
+          },
+          "correlation_id": "api-design-check"
+        },
+        {
+          "tuple_key": {
+            "user":"user:carl",
+            "relation":"viewer",
+            "object":"document:architecture"
+          },
+          "correlation_id": "architecture-check"
+        }
+      
+      ]
+    }'
+    # Response: 
+    {
+      "results": {
+        { "roadmap-check": { "allowed": true }}, # viewer
+        { "api-design-check": { "allowed": false }}, # viewer
+        { "architecture-check": { "allowed": false }}, # viewer
+        
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="Pseudocode">
+    ```text
+    BatchCheck([
+      - user="user:carl", relation="viewer", object="document:roadmap"
+      - user="user:carl", relation="viewer", object="document:api_design"
+      - user="user:carl", relation="viewer", object="document:architecture"
+    ])
+    Reply:
+      - correlation_id="roadmap-check": true
+      - correlation_id="api-design-check": false
+      - correlation_id="architecture-check": false
+    ```
+  </Tab>
+</Tabs>
+
+Only `document:roadmap` is returned as allowed. The pipeline filters out the other two documents before passing context to the LLM.
+
+### Pre-filtering
+
+Retrieve the list of documents the user can access first, then pass those IDs as a filter to the vector search. This approach works well when the user has access to a relatively small number of documents.
+
+The flow is:
+
+1. Call the [`ListObjects`](/docs/interacting/relationship-queries#listobjects) API to get all document IDs the user can access.
+2. Pass those IDs as a metadata filter to the vector database query.
+3. The vector search only returns results from authorized documents.
+4. Pass the results to the LLM as context.
+
+For example, to get all documents `user:carl` can view:
+
+<ListObjectsRequestViewer
+  objectType="document"
+  relation="viewer"
+  user="user:carl"
+  expectedResults={['document:roadmap']}
+  skipSetup={true}
+/>
+
+Pass the resulting document IDs as a filter to your vector database. Most vector databases support metadata filtering - use the document ID stored in each vector's metadata to restrict the search.
+
+## Choosing an approach
+
+| Criteria                             | Post-filtering                          | Pre-filtering                         |
+| ------------------------------------ | --------------------------------------- | ------------------------------------- |
+| Vector search returns few candidates | Good fit                                | Works, but unnecessary overhead       |
+| User has access to few documents     | Works, but may discard many results     | Good fit                              |
+| User has access to most documents    | Good fit                                | Unnecessary overhead                  |
+| Need exact top-K results             | May return fewer than K after filtering | Guarantees all results are authorized |
+
+For detailed guidance on choosing between these approaches and handling more complex scenarios, see [Search With Permissions](/docs/interacting/search-with-permissions).
+
+<Check>
+  When using post-filtering, request more candidates than you need from the vector database (e.g., 2-3x your target count) to account for documents that will be filtered out.
+</Check>
+
+## Framework integration
+
+The filtering patterns above are framework-agnostic. Here is how to apply them in popular RAG frameworks:
+
+* **LangChain (Python/JS)**: Implement a custom retriever that wraps your vector store retriever. After retrieving candidates, call OpenFGA `BatchCheck` and filter the results before returning them to the chain.
+* **LlamaIndex**: Use a post-processing step or a custom node postprocessor that checks permissions against OpenFGA before passing nodes to the response synthesizer.
+* **Custom pipelines**: Insert the authorization check between the retrieval and generation steps of your pipeline.
+
+In all cases, the authorization check should happen **after** retrieval and **before** the documents reach the LLM.
+
+## Further reading
+
+These resources explore RAG authorization patterns with OpenFGA in more detail:
+
+* [RAG and Access Control: Where Do You Start?](https://auth0.com/blog/rag-and-access-control-where-do-you-start/)
+* [Building a Secure RAG with Python, LangChain, and OpenFGA](https://auth0.com/blog/building-a-secure-rag-with-python-langchain-and-openfga/)
+* [Build a Secure LangChain RAG Agent Using Auth0 FGA and LangGraph on Node.js](https://auth0.com/blog/genai-langchain-js-fga/)
+* [Securing AI Document Agents with LlamaIndex and Auth0](https://auth0.com/blog/securing-ai-documents-llamaindex-auth0/)
+* [Securing Agentic RAG Pipelines](https://www.couchbase.com/blog/securing-agentic-rag-pipelines/)
+* [Building a Permissions System For Your RAG Application](https://www.useparagon.com/learn/ai-knowledge-chatbot-with-permissions-chapter-2/)
+
+## Related Sections
+
+Take a look at the following sections for more information.
+
+<CardGroup>
+  <Card title="Search With Permissions" href="/docs/interacting/search-with-permissions">
+    Detailed guidance on integrating authorization into search, with trade-off analysis for different approaches
+  </Card>
+
+  <Card title="Task-Based Authorization" href="/docs/modeling/agents/task-based-authorization">
+    Grant agents scoped permissions to perform specific actions without permanent access
+  </Card>
+
+  <Card title="Conditions" href="/docs/modeling/conditions">
+    Add time-based expiration or other conditions to document access grants
+  </Card>
+</CardGroup>

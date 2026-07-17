@@ -1,0 +1,324 @@
+---
+title: "Update Relationship Tuples"
+description: "Introduction to adding and deleting relationship tuples"
+---
+
+import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
+
+# Update Relationship Tuples
+
+This is an introduction to adding and deleting _relationship tuples_.
+
+## Before you start
+
+<Tabs>
+  <Tab title="Node.js">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/getting-started/configure-model).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="Go">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/getting-started/configure-model).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title=".NET">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/getting-started/configure-model).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="Python">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/getting-started/configure-model).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="Java">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/getting-started/configure-model).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="CLI">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [configured the *authorization model*](/docs/getting-started/configure-model).
+    3. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="curl">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [configured the *authorization model*](/docs/getting-started/configure-model).
+    3. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+</Tabs>
+
+## Step by step
+
+Assume that you want to add user `user:anne` to have relationship `reader` with object `document:Z`
+
+```json
+{
+  user: 'user:anne',
+  relation: 'reader',
+  object: 'document:Z'
+}
+```
+
+### 01. Configure the OpenFGA API client
+
+Before calling the write API, you will need to configure the API client.
+
+<Tabs>
+  <Tab title="Node.js">
+    ```javascript
+    // import the SDK
+    const { OpenFgaClient } = require('@openfga/sdk');
+    // Initialize the SDK with no auth - see "How to setup SDK client" for more options
+    const fgaClient = new OpenFgaClient({
+      apiUrl: process.env.FGA_API_URL, // required, e.g. https://api.fga.example
+      storeId: process.env.FGA_STORE_ID,
+      authorizationModelId: process.env.FGA_MODEL_ID, // Optional, can be overridden per request
+    });
+    ```
+  </Tab>
+
+  <Tab title="Go">
+    ```go
+    import (
+        "os"
+        . "github.com/openfga/go-sdk"
+        . "github.com/openfga/go-sdk/client"
+    )
+    func main() {
+        // Initialize the SDK with no auth - see "How to setup SDK client" for more options
+        fgaClient, err := NewSdkClient(&ClientConfiguration{
+            ApiUrl:               os.Getenv("FGA_API_URL"), // required, e.g. https://api.fga.example
+            StoreId:              os.Getenv("FGA_STORE_ID"), // optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
+            AuthorizationModelId: os.Getenv("FGA_MODEL_ID"),  // Optional, can be overridden per request
+        })
+        if err != nil {
+        // .. Handle error
+        }
+    }
+    ```
+  </Tab>
+
+  <Tab title=".NET">
+    ```csharp
+    // import the SDK
+    using OpenFga.Sdk.Client;
+    using OpenFga.Sdk.Client.Model;
+    using OpenFga.Sdk.Model;
+    using Environment = System.Environment;
+    namespace Example;
+    class Example {
+        public static async Task Main() {
+            // Initialize the SDK with no auth - see "How to setup SDK client" for more options
+            var configuration = new ClientConfiguration() {
+              ApiUrl = Environment.GetEnvironmentVariable("FGA_API_URL"), ?? "http://localhost:8080", // required, e.g. https://api.fga.example
+              StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"), // optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
+              AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"), // Optional, can be overridden per request
+            };
+            var fgaClient = new OpenFgaClient(configuration);
+        }
+    }
+    ```
+  </Tab>
+
+  <Tab title="Python">
+    ```python
+    import asyncio
+    import os
+    import json
+    from openfga_sdk.client import ClientConfiguration, OpenFgaClient
+    async def main():
+        configuration = ClientConfiguration(
+            api_url = os.environ.get('FGA_API_URL'), # required, e.g. https://api.fga.example
+            store_id = os.environ.get('FGA_STORE_ID'), # optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
+            authorization_model_id = os.environ.get('FGA_MODEL_ID'), # Optional, can be overridden per request
+        )
+        # Enter a context with an instance of the OpenFgaClient
+        async with OpenFgaClient(configuration) as fga_client:
+            api_response = await fga_client.read_authorization_models()
+            await fga_client.close()
+    asyncio.run(main())
+    ```
+  </Tab>
+
+  <Tab title="Java">
+    ```java
+    import dev.openfga.sdk.api.client.OpenFgaClient;
+    import dev.openfga.sdk.api.configuration.ClientConfiguration;
+    public class Example {
+      public static void main(String[] args) throws Exception {
+          var config = new ClientConfiguration()
+                  .apiUrl(System.getenv("FGA_API_URL")) // If not specified, will default to "https://localhost:8080"
+                  .storeId(System.getenv("FGA_STORE_ID")) // Not required when calling createStore() or listStores()
+                  .authorizationModelId(System.getenv("FGA_AUTHORIZATION_MODEL_ID")); // Optional, can be overridden per request
+          var fgaClient = new OpenFgaClient(config);
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="CLI">
+    ```bash
+    Set FGA_API_URL according to the service you are using (e.g. https://api.fga.example)
+    ```
+  </Tab>
+
+  <Tab title="curl">
+    To obtain the [access token](https://auth0.com/docs/get-started/authentication-and-authorization-flow/client-credentials-flow/call-your-api-using-the-client-credentials-flow):
+  </Tab>
+
+</Tabs>
+
+### 02. Calling write API to add new relationship tuples
+
+To add the relationship tuples, we can invoke the write API.
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'reader',
+      object: 'document:Z',
+    },
+  ]}
+  skipSetup={true}
+  allowedLanguages={['js-sdk', 'go-sdk', 'dotnet-sdk', 'python-sdk', 'java-sdk', 'cli', 'curl']}
+/>
+
+### 03. Calling write API to delete relationship tuples
+
+To delete relationship tuples, we can invoke the write API.
+
+Assume that you want to delete user `user:anne`'s `reader` relationship with object `document:Z`
+
+```json
+{
+  user: 'user:anne',
+  relation: 'reader',
+  object: 'document:Z'
+}
+```
+
+<WriteRequestViewer
+  deleteRelationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'reader',
+      object: 'document:Z',
+    },
+  ]}
+  skipSetup={true}
+  allowedLanguages={['js-sdk', 'go-sdk', 'dotnet-sdk', 'python-sdk', 'java-sdk', 'cli', 'curl']}
+/>
+
+### 04. Writing and deleting relationship tuples in the same request
+
+You can combine both writes and deletes in a single transactional API request. This is useful when you need to update multiple relationships atomically. All operations in the request will either succeed together or fail together.
+
+The Write API allows you to send up to `100` unique tuples in the request. (This limit applies to the sum of both writes and deletes in that request).
+
+For example, you might want to remove `user:anne` as a `writer` of `document:Z` while simultaneously updating `user:anne` as an `reader` of `document:Z`:
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'reader',
+      object: 'document:Z',
+    },
+  ]}
+  deleteRelationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'writer',
+      object: 'document:Z',
+    },
+  ]}
+  skipSetup={true}
+  allowedLanguages={['js-sdk', 'go-sdk', 'dotnet-sdk', 'python-sdk', 'java-sdk', 'cli', 'curl']}
+/>
+
+This approach ensures that both operations succeed or fail together, maintaining transactional data consistency.
+
+<Note>
+  When using the Write API, you cannot include the same tuple (same user, relation, and object) in the writes or deletes arrays within a single request. The API will return an error with code `cannot_allow_duplicate_tuples_in_one_request` if detected.
+</Note>
+
+### 05. Ignoring duplicate or missing tuples
+
+Sometimes you might need to write a tuple that already exists, which would normally cause the whole request to fail. You can use the `on_duplicate: "ignore"` parameter to handle this gracefully.
+
+This is particularly useful for high-volume data imports, migrations, or ensuring certain permissions exist without complex error handling logic.
+
+For example, if you want to ensure `user:anne` has `reader` access to `document:Z` without worrying about whether the relationship already exists in OpenFGA:
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'reader',
+      object: 'document:Z',
+    },
+  ]}
+  conflictOptions={{
+    onDuplicateWrites: 'ignore',
+  }}
+  skipSetup={true}
+  allowedLanguages={['js-sdk', 'go-sdk', 'dotnet-sdk', 'python-sdk', 'java-sdk', 'cli', 'curl']}
+/>
+
+<Warning>
+  At the moment, this feature requires [OpenFGA v1.10.0](https://github.com/openfga/openfga/releases/tag/v1.10.0)+. All latest releases of the SDKs support this.
+</Warning>
+
+Similarly, you can use `on_missing: "ignore"` when deleting tuples that might not exist.
+
+<WriteRequestViewer
+  skipSetup={true}
+  deleteRelationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'writer',
+      object: 'document:Z',
+    },
+  ]}
+  conflictOptions={{
+    onMissingDeletes: 'ignore',
+  }}
+  allowedLanguages={['js-sdk', 'go-sdk', 'dotnet-sdk', 'python-sdk', 'java-sdk', 'cli', 'curl']}
+/>
+
+The behavior of `on_duplicate: "ignore"` is more nuanced for tuples with conditions.
+
+* **Identical Tuples**: If a tuple in the request is identical to an existing tuple (same user, relation, object, condition name, and condition context), it will be safely ignored.
+* **Conflicting Tuples**: If a tuple key (user, relation, object) matches an existing tuple, but the condition name or parameters are different, this is a conflict. The write attempt will be rejected, and the entire transaction will fail with a `409 Conflict` error.
+
+## Related Sections
+
+Check the following sections for more on how to write your authorization data
+
+<CardGroup>
+  <Card title="Write API" href="/api/service#Relationship%20Tuples/Write">
+    Learn more about the Write API options.
+  </Card>
+
+  <Card title="Managing User Access" href="/docs/interacting/managing-user-access">
+    Learn about how to give a user access to a particular object.
+  </Card>
+
+  <Card title="Managing Group Access" href="/docs/interacting/managing-group-access">
+    Learn about how to give a group of users access to a particular object.
+  </Card>
+</CardGroup>

@@ -1,0 +1,257 @@
+---
+description: Modeling custom and dynamically changing roles in your system
+---
+
+import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx';
+import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
+import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
+
+# Custom Roles
+
+In this guide you'll learn how to model custom roles in your system using OpenFGA.
+
+For example, a Business-to-Business (B2B) application could allow customers to create their own custom roles on the application to grant their users.
+
+<Note>
+**When to use**
+
+In many cases, roles would fit in well as relations on an object type, as seen in [Modeling Roles and Permissions](/docs/modeling/roles-and-permissions). In some cases, however, they may not be enough.
+
+Custom roles are useful when:
+
+- Users of the application are able to create arbitrary sets of roles with different permissions that govern the users' access to objects.
+- It is not known beforehand (at the time of Authorization Model creation) what the application roles are.
+- The team responsible for building the authorization model is different from the teams responsible for defining roles and access to the application.
+</Note>
+
+## Before you start
+
+Before you start this guide, make sure you're familiar with some OpenFGA concepts and know how to develop the things listed below.
+
+<details>
+<summary>
+
+### Initial Model
+
+To start, let's say there is an application with a type called `asset-category`. Users can have view and/or edit access to assets in that category. Any user who can edit can also view.
+
+</summary>
+
+We'll start with the following authorization model showing a system with an `asset-category` type. This type allows users to have view and edit access to it.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'asset-category',
+        relations: {
+          viewer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'editor',
+                  },
+                },
+              ],
+            },
+          },
+          editor: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{ type: 'user' }] },
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+<hr />
+
+In addition, you'll need to know the following:
+
+### Modeling Roles and Permissions
+
+You need to know how to add users to groups and grant groups access to resources. [Learn more →](/docs/modeling/user-groups)
+
+### Modeling Object-to-Object Relationships
+
+You need to know how to create relationships between objects and how that might affect a user's relationships to those objects. [Learn more →](/docs/modeling/building-blocks/object-to-object-relationships)
+
+### Concepts & Configuration Language
+
+- [OpenFGA Concepts](/docs/concepts)
+- [Configuration Language](/docs/configuration-language)
+
+</details>
+
+## Step By Step
+
+Starting with the authorization model mentioned above, we want to enable users to create their own custom roles, and tie permissions to those roles to our two users and to the permissions on the logo asset category.
+
+For this guide, we'll model a scenario where a certain organization using our app has created an `asset-category` called "logos", and another called "text content".
+
+The company administrator would like to create:
+
+- a **media-manager** role that allows users to **edit** assets in the **logos asset category**
+- a **media-viewer** role that allows users to **view** all assets in the **logos asset category**
+- a **blog-editor** role that allows users to **edit** all assets in the **text content asset category**
+- a **blog-viewer** role that allows users to **view** all assets in the **text content asset category**
+
+Imagine these are what the permissions the roles in one organization using our service are like:
+
+![Image showing custom roles and permissions](./assets/custom-roles-roles-and-permissions.svg)
+
+Finally, the administrator wants to assign **Anne** the **media-manager** role and **Beth** the **media-viewer** role.
+
+At the end, we'll verify our model by ensuring the following access check requests return the expected result.
+
+![Image showing expected results](./assets/custom-roles-expectations.svg)
+
+In order to do this, we need to:
+
+1. Update the Authorization Model to add a Role Type
+2. Use Relationship Tuples to tie the Users to the Roles
+3. Use Relationship Tuples to associate Permissions with the Roles
+4. Verify that the Authorization Model works
+
+### 01. Update The Authorization Model To Add A Role Type
+
+Because our roles are going to be dynamic and might change frequently, we represent them in a new type instead of as relations on that same type. We'll create new type called `role`, where users can be related as assignee to it.
+
+The authorization model becomes this:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'asset-category',
+        relations: {
+          viewer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'editor',
+                  },
+                },
+              ],
+            },
+          },
+          editor: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }, { type: 'role', relation: 'assignee' }] },
+            editor: { directly_related_user_types: [{ type: 'user' }, { type: 'role', relation: 'assignee' }] },
+          },
+        },
+      },
+      {
+        type: 'role',
+        relations: {
+          assignee: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            assignee: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+With this change we can add relationship tuples indicating that a certain user is `assigned` a certain `role`.
+
+### 02. Use Relationship Tuples To Tie The Users To The Roles
+
+Once we've added the `role` type, we can assign roles to Anne and Beth. Anne is assigned the "media-manager" role and Beth is assigned the "media-viewer" role. We can do that by adding relationship tuples as follows:
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: 'Anne is assigned the media-manager role',
+      user: 'user:anne',
+      relation: 'assignee',
+      object: 'role:media-manager',
+    },
+    {
+      _description: 'Beth is assigned the media-viewer role',
+      user: 'user:beth',
+      relation: 'assignee',
+      object: 'role:media-viewer',
+    },
+  ]}
+/>
+
+We can verify they are members of said roles by issuing the following check requests:
+
+![Image showing expected membership checks](./assets/custom-roles-membership-checks.svg)
+
+<CheckRequestViewer user={'user:anne'} relation={'assignee'} object={'role:media-manager'} allowed={true} />
+
+### 03. Use Relationship Tuples To Associate Permissions With The Roles
+
+With our users and roles set up, we still need to tie members of a certain role to its corresponding permission(s).
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: 'Users assigned the media-manager role can edit in the Logos assets category',
+      user: 'role:media-manager#assignee',
+      relation: 'editor',
+      object: 'asset-category:logos',
+    },
+    {
+      _description: 'Users assigned the media-viewer role can view from the Logos assets category',
+      user: 'role:media-viewer#assignee',
+      relation: 'viewer',
+      object: 'asset-category:logos',
+    },
+  ]}
+/>
+
+### 04. Verify That The Authorization Model Works
+
+To ensure our model works, it needs to match our expectations:
+
+![Image showing expected results](./assets/custom-roles-expectations.svg)
+
+<CheckRequestViewer user={'user:anne'} relation={'editor'} object={'asset-category:logos'} allowed={true} />
+
+The checks come back as we expect, so our model is working correctly.
+
+## Related Sections
+
+<CardGroup>
+  <Card title="Modeling Roles and Permissions" href="/docs/modeling/roles-and-permissions">
+    Learn how to remove the direct relationship to indicate nonassignable permissions.
+  </Card>
+  <Card title="Modeling Concepts: Object to Object Relationships" href="/docs/modeling/building-blocks/object-to-object-relationships">
+    Learn about how to model object to object relationships in OpenFGA.
+  </Card>
+</CardGroup>

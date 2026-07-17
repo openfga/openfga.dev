@@ -1,0 +1,396 @@
+---
+title: "Setup SDK Client for Store"
+description: "Setting up an OpenFGA SDK client"
+---
+
+This article explains how to build an OpenFGA client by using the SDKs.
+
+The first step is to ensure that you have created a store by following [these steps](/docs/getting-started/create-store).
+
+Next, depending on the authentication scheme you want to use, there are different ways to build the client.
+
+## Using No Authentication
+
+This is a simple setup but it is not recommended for production use.
+
+<Tabs>
+  <Tab title="Node.js">
+    ```javascript
+    const { OpenFgaClient } = require('@openfga/sdk'); // OR import { OpenFgaClient } from '@openfga/sdk';
+    const openFga = new OpenFgaClient({
+      apiUrl: process.env.FGA_API_URL, // required, e.g. https://api.fga.example
+      storeId: process.env.FGA_STORE_ID,
+      authorizationModelId: process.env.FGA_MODEL_ID, // Optional, can be overridden per request
+    });
+    ```
+  </Tab>
+
+  <Tab title="Go">
+    ```go
+    import (
+        "os"
+        . "github.com/openfga/go-sdk/client"
+    )
+    func main() {
+        fgaClient, err := NewSdkClient(&ClientConfiguration{
+            ApiUrl:               os.Getenv("FGA_API_URL"), // required, e.g. https://api.fga.example
+            StoreId:              os.Getenv("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+            AuthorizationModelId: os.Getenv("FGA_MODEL_ID"),  // Optional, can be overridden per request
+        })
+        if err != nil {
+            // .. Handle error
+        }
+    }
+    ```
+  </Tab>
+
+  <Tab title=".NET">
+    ```csharp
+    using OpenFga.Sdk.Client;
+    using OpenFga.Sdk.Client.Model;
+    using OpenFga.Sdk.Model;
+    using Environment = System.Environment;
+    namespace ExampleApp;
+    class MyProgram {
+        static async Task Main() {
+            var configuration = new ClientConfiguration() {
+                ApiUrl = Environment.GetEnvironmentVariable("FGA_API_URL") ?? "http://localhost:8080", // required, e.g. https://api.fga.example
+                StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+                AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"), // optional, can be overridden per request
+            };
+            var fgaClient = new OpenFgaClient(configuration);
+        }
+    }
+    ```
+  </Tab>
+
+  <Tab title="Python">
+    ```python
+    import asyncio
+    import os
+    import openfga_sdk
+    from openfga_sdk.client import OpenFgaClient
+    async def main():
+        configuration = openfga_sdk.ClientConfiguration(
+            api_url = os.environ.get('FGA_API_URL'), # required, e.g. https://api.fga.example
+            store_id = os.environ.get('FGA_STORE_ID'), # optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+            authorization_model_id = os.environ.get('FGA_MODEL_ID'), # Optional, can be overridden per request
+        )
+        async with OpenFgaClient(configuration) as fga_client:
+            api_response = await fga_client.read_authorization_models() # call requests
+            await fga_client.close() # close when done
+    asyncio.run(main())
+    ```
+  </Tab>
+
+  <Tab title="Java">
+    ```java
+    import dev.openfga.sdk.api.client.OpenFgaClient;
+    import dev.openfga.sdk.api.configuration.ClientConfiguration;
+    public class Example {
+        public static void main(String[] args) {
+            var config = new ClientConfiguration()
+                    .apiUrl(System.getenv("FGA_API_URL")) // If not specified, will default to "https://localhost:8080"
+                    .storeId(System.getenv("FGA_STORE_ID")) // Not required when calling createStore() or listStores()
+                    .authorizationModelId(System.getenv("FGA_AUTHORIZATION_MODEL_ID")); // Optional, can be overridden per request
+            var fgaClient = new OpenFgaClient(config);
+        }
+    }
+    ```
+  </Tab>
+
+  <Tab title="CLI">
+    ```bash
+    export FGA_API_URL=https://api.fga.example # optional. Defaults to http://localhost:8080
+    export FGA_STORE_ID=YOUR_STORE_ID # required for all calls except \`store create\`, \`store list\` and \`model validate\`
+    export FGA_MODEL_ID=YOUR_MODEL_ID # optional, can be overridden per request, latest is used if this is empty
+    ```
+  </Tab>
+</Tabs>
+
+## Using shared key authentication
+
+If you want to use shared key authentication, you need to generate a random string that will work as secret and set that key when building your OpenFGA server. Then, when building the client, set it as environment variable `FGA_API_TOKEN`.
+
+<Warning>
+  If you are going to use this setup in production, you should enable TLS in your OpenFGA server. Please see the [Running OpenFGA in Production](/docs/best-practices/running-in-production).
+</Warning>
+
+<Tabs>
+  <Tab title="Node.js">
+    ```javascript
+    const { CredentialsMethod, OpenFgaClient } = require('@openfga/sdk'); // OR import { CredentialsMethod, OpenFgaClient } from '@openfga/sdk';
+    const openFga = new OpenFgaClient({
+        apiUrl: process.env.FGA_API_URL, // required, e.g. https://api.fga.example
+        storeId: process.env.FGA_STORE_ID, // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+        authorizationModelId: process.env.FGA_MODEL_ID, // optional, can be overridden per request
+        credentials: {
+            method: CredentialsMethod.ApiToken,
+            config: {
+                token: process.env.FGA_API_TOKEN,
+            },
+        }
+    });
+    ```
+  </Tab>
+
+  <Tab title="Go">
+    ```go
+    import (
+        "os"
+        . "github.com/openfga/go-sdk/client"
+        "github.com/openfga/go-sdk/credentials"
+    )
+    func main() {
+        fgaClient, err := NewSdkClient(&ClientConfiguration{
+            ApiUrl:               os.Getenv("FGA_API_URL"), // required, e.g. https://api.fga.example
+            StoreId:              os.Getenv("FGA_STORE_ID"),   // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+            AuthorizationModelId: os.Getenv("FGA_MODEL_ID"),   // optional, can be overridden per request
+            Credentials: &credentials.Credentials{
+                Method: credentials.CredentialsMethodApiToken,
+                Config: &credentials.Config{
+                    ApiToken: os.Getenv("OPENFGA_API_TOKEN"), // will be passed as the "Authorization: Bearer ${ApiToken}" request header
+                },
+            },
+        })
+        if err != nil {
+            // .. Handle error
+        }
+    }
+    ```
+  </Tab>
+
+  <Tab title=".NET">
+    ```csharp
+    using OpenFga.Sdk.Client;
+    using OpenFga.Sdk.Configuration;
+    using Environment = System.Environment;
+    namespace ExampleApp;
+    class MyProgram {
+        static async Task Main() {
+            var configuration = new ClientConfiguration() {
+                ApiUrl = Environment.GetEnvironmentVariable("FGA_API_URL") ?? "http://localhost:8080", // required, e.g. https://api.fga.example
+                StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+                AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"), // optional, can be overridden per request
+                Credentials = new Credentials() {
+                    Method = CredentialsMethod.ApiToken,
+                    Config = new CredentialsConfig() {
+                        ApiToken = Environment.GetEnvironmentVariable("FGA_API_TOKEN")
+                    },
+                },
+            };
+            var fgaClient = new OpenFgaClient(configuration);
+        }
+    }
+    ```
+  </Tab>
+
+  <Tab title="Python">
+    ```python
+    import asyncio
+    import os
+    import openfga_sdk
+    from openfga_sdk.client import OpenFgaClient
+    from openfga_sdk.credentials import Credentials, CredentialConfiguration
+    async def main():
+        credentials = Credentials(
+            method='api_token',
+            configuration=CredentialConfiguration(
+                api_token=os.environ.get('FGA_API_TOKEN')
+            )
+        )
+        configuration = openfga_sdk.ClientConfiguration(
+            api_url = os.environ.get('FGA_API_URL'), # required, e.g. https://api.fga.example
+            store_id = os.environ.get('FGA_STORE_ID'), # optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+            authorization_model_id = os.environ.get('FGA_MODEL_ID'), # Optional, can be overridden per request
+            credentials = credentials,
+        )
+        async with OpenFgaClient(configuration) as fga_client:
+            api_response = await fga_client.read_authorization_models() # call requests
+            await fga_client.close() # close when done
+    asyncio.run(main())
+    ```
+  </Tab>
+
+  <Tab title="Java">
+    ```java
+    import dev.openfga.sdk.api.client.OpenFgaClient;
+    import dev.openfga.sdk.api.configuration.ApiToken;
+    import dev.openfga.sdk.api.configuration.ClientConfiguration;
+    import dev.openfga.sdk.api.configuration.Credentials;
+    public class Example {
+        public static void main(String[] args) {
+            var config = new ClientConfiguration()
+                    .apiUrl(System.getenv("FGA_API_URL")) // If not specified, will default to "https://localhost:8080"
+                    .storeId(System.getenv("FGA_STORE_ID")) // Not required when calling createStore() or listStores()
+                    .authorizationModelId(System.getenv("FGA_AUTHORIZATION_MODEL_ID")) // Optional, can be overridden per request
+                    .credentials(new Credentials(
+                        new ApiToken(System.getenv("FGA_API_TOKEN")) // will be passed as the "Authorization: Bearer ${ApiToken}" request header
+                    ));
+            var fgaClient = new OpenFgaClient(config);
+        }
+    }
+    ```
+  </Tab>
+
+  <Tab title="CLI">
+    ```bash
+    export FGA_API_URL=https://api.fga.example # optional. Defaults to http://localhost:8080
+    export FGA_STORE_ID=YOUR_STORE_ID # required for all calls except \`store create\`, \`store list\` and \`model validate\`
+    export FGA_MODEL_ID=YOUR_MODEL_ID # optional, can be overridden per request, latest is used if this is empty
+    export FGA_API_TOKEN=YOUR_API_TOKEN
+    ```
+  </Tab>
+</Tabs>
+
+## Using client credentials flow
+
+<Info>
+  The OpenFGA server does not support the client credentials flow, however if you or your OpenFGA provider have implemented a client credentials wrapper on top, follow the instructions here to have the OpenFGA client handle the token exchange for you.
+</Info>
+
+<Tabs>
+  <Tab title="Node.js">
+    ```javascript
+    const { CredentialsMethod, OpenFgaClient } = require('@openfga/sdk'); // OR import { CredentialsMethod, OpenFgaClient } from '@openfga/sdk';
+    const openFga = new OpenFgaClient({
+        apiUrl: process.env.FGA_API_URL, // required, e.g. https://api.fga.example
+        storeId: process.env.FGA_STORE_ID, // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+        authorizationModelId: process.env.FGA_MODEL_ID, // optional, can be overridden per request
+        credentials: {
+            method: CredentialsMethod.ClientCredentials,
+            config: {
+              apiTokenIssuer: process.env.FGA_API_TOKEN_ISSUER,
+              apiAudience: process.env.FGA_API_AUDIENCE,
+              clientId: process.env.FGA_CLIENT_ID,
+              clientSecret: process.env.FGA_CLIENT_SECRET,
+            },
+        }
+    });
+    ```
+  </Tab>
+
+  <Tab title="Go">
+    ```go
+    import (
+        "os"
+        . "github.com/openfga/go-sdk/client"
+        "github.com/openfga/go-sdk/credentials"
+    )
+    func main() {
+        fgaClient, err := NewSdkClient(&ClientConfiguration{
+            ApiUrl:               os.Getenv("FGA_API_URL"), // required, e.g. https://api.fga.example
+            StoreId:              os.Getenv("FGA_STORE_ID"),   // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+            AuthorizationModelId: os.Getenv("FGA_MODEL_ID"),   // optional, can be overridden per request
+            Credentials: &credentials.Credentials{
+                Method: credentials.CredentialsMethodClientCredentials,
+                Config: &credentials.Config{
+                    ClientCredentialsClientId:       os.Getenv("FGA_CLIENT_ID"),
+                    ClientCredentialsClientSecret:   os.Getenv("FGA_CLIENT_SECRET"),
+                    ClientCredentialsApiAudience:    os.Getenv("FGA_API_AUDIENCE"),
+                    ClientCredentialsApiTokenIssuer: os.Getenv("FGA_API_TOKEN_ISSUER"),
+                },
+            },
+        })
+        if err != nil {
+            // .. Handle error
+        }
+    }
+    ```
+  </Tab>
+
+  <Tab title=".NET">
+    ```csharp
+    using OpenFga.Sdk.Client;
+    using OpenFga.Sdk.Configuration;
+    using Environment = System.Environment;
+    namespace ExampleApp;
+    class MyProgram {
+        static async Task Main() {
+            var configuration = new ClientConfiguration() {
+                ApiUrl = Environment.GetEnvironmentVariable("FGA_API_URL") ?? "http://localhost:8080", // required, e.g. https://api.fga.example
+                StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"), // optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+                AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"), // optional, can be overridden per request
+                Credentials = new Credentials() {
+                    Method = CredentialsMethod.ClientCredentials,
+                    Config = new CredentialsConfig() {
+                        ApiTokenIssuer = Environment.GetEnvironmentVariable("FGA_API_TOKEN_ISSUER"),
+                        ApiAudience = Environment.GetEnvironmentVariable("FGA_API_AUDIENCE"),
+                        ClientId = Environment.GetEnvironmentVariable("FGA_CLIENT_ID"),
+                        ClientSecret = Environment.GetEnvironmentVariable("FGA_CLIENT_SECRET"),
+                    }
+                }
+            };
+            var fgaClient = new OpenFgaClient(configuration);
+        }
+    }
+    ```
+  </Tab>
+
+  <Tab title="Python">
+    ```python
+    import asyncio
+    import os
+    import openfga_sdk
+    from openfga_sdk.client import OpenFgaClient
+    from openfga_sdk.credentials import Credentials, CredentialConfiguration
+    async def main():
+        credentials = Credentials(
+            method='client_credentials',
+            configuration=CredentialConfiguration(
+                api_issuer= os.environ.get('FGA_API_TOKEN_ISSUER'),
+                api_audience= os.environ.get('FGA_API_AUDIENCE'),
+                client_id= os.environ.get('FGA_CLIENT_ID'),
+                client_secret= os.environ.get('FGA_CLIENT_SECRET'),
+            )
+        )
+        configuration = openfga_sdk.ClientConfiguration(
+            api_url = os.environ.get('FGA_API_URL'), # required, e.g. https://api.fga.example
+            store_id = os.environ.get('FGA_STORE_ID'), # optional, not needed for \`CreateStore\` and \`ListStores\`, required before calling for all other methods
+            authorization_model_id = os.environ.get('FGA_MODEL_ID'), # Optional, can be overridden per request
+            credentials = credentials,
+        )
+        async with OpenFgaClient(configuration) as fga_client:
+            api_response = await fga_client.read_authorization_models() # call requests
+            await fga_client.close() # close when done
+    asyncio.run(main())
+    ```
+  </Tab>
+
+  <Tab title="Java">
+    ```java
+    import dev.openfga.sdk.api.client.OpenFgaClient;
+    import dev.openfga.sdk.api.configuration.ClientConfiguration;
+    import dev.openfga.sdk.api.configuration.ClientCredentials;
+    import dev.openfga.sdk.api.configuration.Credentials;
+    public class Example {
+        public static void main(String[] args) {
+            var config = new ClientConfiguration()
+                    .apiUrl(System.getenv("FGA_API_URL")) // If not specified, will default to "https://localhost:8080"
+                    .storeId(System.getenv("FGA_STORE_ID")) // Not required when calling createStore() or listStores()
+                    .authorizationModelId(System.getenv("FGA_AUTHORIZATION_MODEL_ID")) // Optional, can be overridden per request
+                    .credentials(new Credentials(
+                        new ClientCredentials()
+                                .apiTokenIssuer(System.getenv("FGA_API_TOKEN_ISSUER"))
+                                .apiAudience(System.getenv("FGA_API_AUDIENCE"))
+                                .clientId(System.getenv("FGA_CLIENT_ID"))
+                                .clientSecret(System.getenv("FGA_CLIENT_SECRET"))
+                    ));
+            var fgaClient = new OpenFgaClient(config);
+        }
+    }
+    ```
+  </Tab>
+
+  <Tab title="CLI">
+    ```bash
+    export FGA_API_URL=https://api.fga.example # optional. Defaults to http://localhost:8080
+    export FGA_STORE_ID=YOUR_STORE_ID # required for all calls except \`store create\`, \`store list\` and \`model validate\`
+    export FGA_MODEL_ID=YOUR_MODEL_ID # optional, can be overridden per request, latest is used if this is empty
+    export FGA_API_TOKEN_ISSUER=YOUR_API_TOKEN_ISSUER
+    export FGA_API_AUDIENCE=YOUR_API_AUDIENCE
+    export FGA_CLIENT_ID=YOUR_CLIENT_ID
+    export FGA_CLIENT_SECRET=YOUR_CLIENT_SECRET
+    ```
+  </Tab>
+</Tabs>

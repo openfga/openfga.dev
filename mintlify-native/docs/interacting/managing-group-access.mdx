@@ -1,0 +1,147 @@
+---
+title: Managing Group Access
+description: Granting a group of users access to a particular object
+---
+
+import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx';
+import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
+import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
+
+# Managing Group Access
+
+OpenFGA allows you to grant a group of users access to a particular object.
+
+<Note>
+**When to use**
+
+Relationship tuples are helpful when you want to specify that a group of users all have the same relation to an object. For example, OpenFGA allows you to:
+
+- Grant a group of `engineers` `viewer` access to `roadmap.doc`
+- Create a `block_list` of `members` who can't access a `document`
+- Share a `document` with a `team`
+- Grant `viewer` access to a `photo` to `followers` only
+- Make a `file` viewable for all `users` within an `organization`
+- Manage access to a `database` for `users` in a certain `locale`
+</Note>
+
+## Before you start
+
+Familiarize yourself with basic OpenFGA concepts before you continue.
+
+<details>
+<summary>
+
+In the example below, you have the following authorization model with two types:
+
+- `company` that can have an `employee` relation
+- `document` that can have a `reader` relation.
+
+</summary>
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'company',
+        relations: {
+          employee: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            employee: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+      {
+        type: 'document',
+        relations: {
+          reader: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            reader: { directly_related_user_types: [{ type: 'company', relation: 'employee' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+---
+
+In addition, the following concepts are important to group access management:
+
+### Modeling user groups
+
+OpenFGA allows you to add users to groups and grant groups access to an object. [For more information, see User Groups.](/docs/modeling/user-groups)
+
+### OpenFGA concepts
+
+- A **Type**: a class of objects that have similar characteristics
+- A **User**: an entity in the system that can be related to an object
+- A **Relation**: a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An **Object**: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
+- A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
+
+</details>
+
+## Step by step
+
+### 01. Adding company to the document
+
+The following Relationship Tuple assigns every `employee` of a type `company` a `reader` relationship with a particular object of type `document`, in this case `document:planning`:
+
+```json
+[
+  {
+    "user": "company:xyz#employee",
+    "relation": "reader",
+    "object": "document:planning"
+  }
+]
+```
+
+### 02. Add an employee to the company
+
+Below is a relationship tuple specifying that `Anne` is an `employee` of `company:xyz`:
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'employee',
+      object: 'company:xyz',
+    },
+  ]}
+/>
+
+### 03. Checking an individual member's access to an object
+
+Call the Check API to verify that Anne can read `document:planning` returns true:
+
+<CheckRequestViewer user={'user:anne'} relation={'reader'} object={'document:planning'} allowed={true} />
+
+The same check for Becky, a different user, returns false, because Becky does not have an `employee` relationship with `company:xyz`:
+
+<CheckRequestViewer user={'user:becky'} relation={'reader'} object={'document:planning'} allowed={false} />
+
+## Related Sections
+
+Check the following sections for more on how to model group.
+
+<CardGroup>
+  <Card title="Modeling User Groups" href="/docs/modeling/user-groups">
+    Learn about how to model users and groups.
+  </Card>
+  <Card title="Managing Group Membership" href="/docs/interacting/managing-group-membership">
+    Learn about managing group membership.
+  </Card>
+</CardGroup>

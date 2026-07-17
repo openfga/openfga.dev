@@ -1,0 +1,307 @@
+---
+title: "Perform a list objects call"
+description: "List all objects a user is authorized to perform a specified action for a given resource type"
+---
+
+import { ListObjectsRequestViewer } from '/snippets/ListObjectsRequestViewer.jsx';
+import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
+
+# Perform a list objects call
+
+This section describes how to perform a list objects request. The List Objects API allows you to retrieve all objects of a specified type that a user has a given relationship with. This can be used in scenarios like displaying all documents a user can read or listing resources a user can manage.
+
+## Before you start
+
+<Tabs>
+  <Tab title="Node.js">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/getting-started/configure-model) and [updated the *relationship tuples*](/docs/getting-started/update-tuples).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="Go">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/getting-started/configure-model) and [updated the *relationship tuples*](/docs/getting-started/update-tuples).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title=".NET">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/getting-started/configure-model) and [updated the *relationship tuples*](/docs/getting-started/update-tuples).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="Python">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/getting-started/configure-model) and [updated the *relationship tuples*](/docs/getting-started/update-tuples).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="Java">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/getting-started/configure-model) and [updated the *relationship tuples*](/docs/getting-started/update-tuples).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="CLI">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [configured the *authorization model*](/docs/getting-started/configure-model).
+    3. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="curl">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [configured the *authorization model*](/docs/getting-started/configure-model) and [updated the *relationship tuples*](/docs/getting-started/update-tuples).
+    3. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+</Tabs>
+
+## Step by step
+
+Consider the following model which includes a `user` that can have a `reader` relationship with a `document`:
+
+```
+model
+  schema 1.1
+type user
+type document
+  relations
+    define reader: [user]
+```
+
+Assume that you want to list all objects of type document that user `anne` has `reader` relationship with:
+
+### 01. Configure the OpenFGA API client
+
+Before calling the check API, you will need to configure the API client.
+
+<Tabs>
+  <Tab title="Node.js">
+    ```javascript
+    // import the SDK
+    const { OpenFgaClient } = require('@openfga/sdk');
+    // Initialize the SDK with no auth - see "How to setup SDK client" for more options
+    const fgaClient = new OpenFgaClient({
+      apiUrl: process.env.FGA_API_URL, // required, e.g. https://api.fga.example
+      storeId: process.env.FGA_STORE_ID,
+      authorizationModelId: process.env.FGA_MODEL_ID, // Optional, can be overridden per request
+    });
+    ```
+  </Tab>
+
+  <Tab title="Go">
+    ```go
+    import (
+        "os"
+        . "github.com/openfga/go-sdk"
+        . "github.com/openfga/go-sdk/client"
+    )
+    func main() {
+        // Initialize the SDK with no auth - see "How to setup SDK client" for more options
+        fgaClient, err := NewSdkClient(&ClientConfiguration{
+            ApiUrl:               os.Getenv("FGA_API_URL"), // required, e.g. https://api.fga.example
+            StoreId:              os.Getenv("FGA_STORE_ID"), // optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
+            AuthorizationModelId: os.Getenv("FGA_MODEL_ID"),  // Optional, can be overridden per request
+        })
+        if err != nil {
+        // .. Handle error
+        }
+    }
+    ```
+  </Tab>
+
+  <Tab title=".NET">
+    ```csharp
+    // import the SDK
+    using OpenFga.Sdk.Client;
+    using OpenFga.Sdk.Client.Model;
+    using OpenFga.Sdk.Model;
+    using Environment = System.Environment;
+    namespace Example;
+    class Example {
+        public static async Task Main() {
+            // Initialize the SDK with no auth - see "How to setup SDK client" for more options
+            var configuration = new ClientConfiguration() {
+              ApiUrl = Environment.GetEnvironmentVariable("FGA_API_URL"), ?? "http://localhost:8080", // required, e.g. https://api.fga.example
+              StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"), // optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
+              AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"), // Optional, can be overridden per request
+            };
+            var fgaClient = new OpenFgaClient(configuration);
+        }
+    }
+    ```
+  </Tab>
+
+  <Tab title="Python">
+    ```python
+    import asyncio
+    import os
+    import json
+    from openfga_sdk.client import ClientConfiguration, OpenFgaClient
+    async def main():
+        configuration = ClientConfiguration(
+            api_url = os.environ.get('FGA_API_URL'), # required, e.g. https://api.fga.example
+            store_id = os.environ.get('FGA_STORE_ID'), # optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
+            authorization_model_id = os.environ.get('FGA_MODEL_ID'), # Optional, can be overridden per request
+        )
+        # Enter a context with an instance of the OpenFgaClient
+        async with OpenFgaClient(configuration) as fga_client:
+            api_response = await fga_client.read_authorization_models()
+            await fga_client.close()
+    asyncio.run(main())
+    ```
+  </Tab>
+
+  <Tab title="Java">
+    ```java
+    import dev.openfga.sdk.api.client.OpenFgaClient;
+    import dev.openfga.sdk.api.configuration.ClientConfiguration;
+    public class Example {
+      public static void main(String[] args) throws Exception {
+          var config = new ClientConfiguration()
+                  .apiUrl(System.getenv("FGA_API_URL")) // If not specified, will default to "https://localhost:8080"
+                  .storeId(System.getenv("FGA_STORE_ID")) // Not required when calling createStore() or listStores()
+                  .authorizationModelId(System.getenv("FGA_AUTHORIZATION_MODEL_ID")); // Optional, can be overridden per request
+          var fgaClient = new OpenFgaClient(config);
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="CLI">
+    ```bash
+    Set FGA_API_URL according to the service you are using (e.g. https://api.fga.example)
+    ```
+  </Tab>
+
+  <Tab title="curl">
+    To obtain the [access token](https://auth0.com/docs/get-started/authentication-and-authorization-flow/call-your-api-using-the-client-credentials-flow):
+  </Tab>
+
+</Tabs>
+
+### 02. Calling list objects API
+
+To return all documents that user `user:anne` has relationship `reader` with:
+
+<ListObjectsRequestViewer
+  authorizationModelId="01HVMMBCMGZNT3SED4Z17ECXCA"
+  objectType="document"
+  relation="reader"
+  user="user:anne"
+  expectedResults={["document:otherdoc", "document:planning"]}
+  skipSetup={true}
+/>
+
+The result `document:otherdoc` and `document:planning` are the document objects that `user:anne` has `reader` relationship with.
+
+<Warning>
+  The performance characteristics of the ListObjects endpoint vary drastically depending on the model complexity, number of tuples, and the relations it needs to evaluate. Relations with 'and' or 'but not' are more expensive to evaluate than relations with 'or'.
+</Warning>
+
+## Streamed List Objects
+
+The Streamed ListObjects API is similar to the ListObjects API, with two key differences:
+
+1. **Streaming Response**: Instead of collecting all objects before returning a response, it streams them to the client as they are collected.
+2. **No Result Limit**: The number of results returned is only limited by the execution timeout specified in the flag `OPENFGA_LIST_OBJECTS_DEADLINE`, not by a fixed limit.
+
+<Info>
+  The streaming functionality is currently available in the **Node.js SDK**, **Go SDK**, **.NET SDK**, **Python SDK**, and **Java SDK**.
+</Info>
+
+### Using Streamed List Objects
+
+<Tabs>
+  <Tab title="Node.js">
+    ```javascript
+    const objects = [];
+    for await (const response of fgaClient.streamedListObjects(
+      { user: "user:anne", relation: "reader", type: "document" }
+    )) {
+      objects.push(response.object);
+    }
+    // objects = ["document:otherdoc", "document:planning"]
+    ```
+  </Tab>
+
+  <Tab title="Go">
+    ```go
+    objects := []string{}
+    err := fgaClient.StreamedListObjects(context.Background()).
+        Body(client.ClientListObjectsRequest{
+            User:     "user:anne",
+            Relation: "reader",
+            Type:     "document",
+        }).
+        Execute(func(response *client.ClientStreamedListObjectsResponse) error {
+            objects = append(objects, response.Object)
+            return nil
+        })
+    // objects = ["document:otherdoc", "document:planning"]
+    ```
+  </Tab>
+
+  <Tab title=".NET">
+    ```csharp
+    var objects = new List<string>();
+    await foreach (var response in fgaClient.StreamedListObjects(
+        new ClientListObjectsRequest {
+            User = "user:anne",
+            Relation = "reader",
+            Type = "document"
+        })) {
+        objects.Add(response.Object);
+    }
+    // objects = ["document:otherdoc", "document:planning"]
+    ```
+  </Tab>
+
+  <Tab title="Python">
+    ```python
+    objects = []
+    async for response in fga_client.streamed_list_objects(
+        ClientListObjectsRequest(
+            user="user:anne",
+            relation="reader",
+            type="document"
+        )
+    ):
+        objects.append(response.object)
+    # objects = ["document:otherdoc", "document:planning"]
+    ```
+  </Tab>
+
+  <Tab title="Java">
+    ```java
+    var objects = new ArrayList<String>();
+    var request = new ClientListObjectsRequest()
+        .user("user:anne")
+        .relation("reader")
+        .type("document");
+    fgaClient.streamedListObjects(request, new ClientStreamedListObjectsOptions(), response -> {
+        objects.add(response.getObject());
+    }).get();
+    // objects = ["document:otherdoc", "document:planning"]
+    ```
+  </Tab>
+</Tabs>
+
+## Related Sections
+
+Take a look at the following section for more on how to perform authorization checks in your system
+
+<CardGroup>
+  <Card title="OpenFGA List Objects API" href="/api/service#Relationship%20Queries/ListObjects">
+    Read the List Objects API documentation and see how it works.
+  </Card>
+
+  <Card title="OpenFGA Streamed List Objects API" href="/api/service#Relationship%20Queries/StreamedListObjects">
+    Read the Streamed List Objects API documentation.
+  </Card>
+</CardGroup>

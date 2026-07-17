@@ -1,0 +1,378 @@
+---
+title: Docker Setup Guide
+description: Setting up an OpenFGA server with Docker
+---
+
+# Setup OpenFGA with Docker
+
+This article explains how to run your own OpenFGA server using Docker. To learn the different ways to configure OpenFGA check [Configuring OpenFGA](./configure-openfga).
+
+## Step by step
+
+If you want to run OpenFGA locally as a Docker container, follow these steps:
+
+1. [Install Docker](https://docs.docker.com/get-docker/) (if not already installed).
+2. Run `docker pull openfga/openfga` to get the latest docker image.
+3. Run `docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 openfga/openfga run`.
+
+This will start an HTTP server and gRPC server with the default configuration options. Port 8080 is used to serve the HTTP API, 8081 is used to serve the gRPC API, and 3000 is used for the [Playground](./playground).
+
+## Using Postgres
+
+<Tabs>
+  <Tab title="Docker">
+
+To run OpenFGA and Postgres in containers, you can create a new network to make communication between containers simpler:
+
+```bash
+docker network create openfga
+```
+
+You can then start Postgres in the network you created above:
+
+```bash
+docker run -d --name postgres --network=openfga -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password postgres:17
+```
+
+You should now have Postgres running in a container in the `openfga` network. However, it will not have the tables required for running OpenFGA. You can use the `migrate` command to create the tables. Using the OpenFGA container, this will look like:
+
+```bash
+docker run --rm --network=openfga openfga/openfga migrate \
+    --datastore-engine postgres \
+    --datastore-uri "postgres://postgres:password@postgres:5432/postgres?sslmode=disable"
+```
+
+Finally, start OpenFGA:
+
+```bash
+docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
+    --datastore-engine postgres \
+    --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
+```
+
+  </Tab>
+  <Tab title="Docker Compose">
+
+Copy the below code block into a local file named: `docker-compose.yaml`
+
+```yaml
+networks:
+  openfga:
+
+services:
+  postgres:
+    image: postgres:17
+    container_name: postgres
+    networks:
+      - openfga
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    depends_on:
+      postgres:
+        condition: service_healthy
+    image: openfga/openfga:latest
+    container_name: migrate
+    command: migrate
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://postgres:password@postgres:5432/postgres?sslmode=disable
+    networks:
+      - openfga
+
+  openfga:
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    image: openfga/openfga:latest
+    container_name: openfga
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://postgres:password@postgres:5432/postgres?sslmode=disable
+      - OPENFGA_LOG_FORMAT=json
+    command: run
+    networks:
+      - openfga
+    ports:
+      # Needed for the http server
+      - "8080:8080"
+      # Needed for the grpc server (if used)
+      - "8081:8081"
+      # Needed for the playground (Do not enable in prod!)
+      - "3000:3000"
+```
+
+In a terminal, navigate to that directory and run:
+
+```bash
+docker-compose up
+```
+
+  </Tab>
+</Tabs>
+
+This will start the Postgres database, run `openfga migrate` to configure the database and finally start the OpenFGA server.
+
+## Using MySQL
+
+<Tabs>
+  <Tab title="Docker">
+
+We first make a network:
+
+```bash
+docker network create openfga
+```
+
+Then, start MySQL in the network you created above:
+
+```bash
+docker run -d --name mysql --network=openfga -e MYSQL_ROOT_PASSWORD=secret -e MYSQL_DATABASE=openfga mysql:8
+```
+
+You should now have MySQL running in a container in the `openfga` network. But we still have to migrate all the tables to be able to run OpenFGA. You can use the `migrate` command to create the tables. Using the OpenFGA container, this will look like:
+
+```bash
+docker run --rm --network=openfga openfga/openfga migrate \
+    --datastore-engine mysql \
+    --datastore-uri 'root:secret@tcp(mysql:3306)/openfga?parseTime=true'
+```
+
+Finally, start OpenFGA:
+
+```bash
+docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
+    --datastore-engine mysql \
+    --datastore-uri 'root:secret@tcp(mysql:3306)/openfga?parseTime=true'
+```
+
+  </Tab>
+  <Tab title="Docker Compose">
+
+Copy the below code block into a local file named: `docker-compose.yaml`
+
+```yaml
+networks:
+  openfga:
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    networks:
+      - openfga
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=openfga
+    healthcheck:
+      test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]
+      timeout: 20s
+      retries: 5
+
+  migrate:
+    depends_on:
+        mysql:
+            condition: service_healthy
+    image: openfga/openfga:latest
+    container_name: migrate
+    command: migrate
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=mysql
+      - OPENFGA_DATASTORE_URI=root:secret@tcp(mysql:3306)/openfga?parseTime=true
+    networks:
+      - openfga
+
+  openfga:
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    image: openfga/openfga:latest
+    container_name: openfga
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=mysql
+      - OPENFGA_DATASTORE_URI=root:secret@tcp(mysql:3306)/openfga?parseTime=true
+      - OPENFGA_LOG_FORMAT=json
+    command: run
+    networks:
+      - openfga
+    ports:
+      # Needed for the http server
+      - "8080:8080"
+      # Needed for the grpc server (if used)
+      - "8081:8081"
+      # Needed for the playground (Do not enable in prod!)
+      - "3000:3000"
+```
+
+In a terminal, navigate to that directory and run:
+
+```bash
+docker-compose up
+```
+
+  </Tab>
+</Tabs>
+
+This will start the MySQL database, run `openfga migrate` to configure the database and finally start the OpenFGA server.
+
+## Using SQLite
+
+<Tabs>
+  <Tab title="Docker">
+
+We first make a network:
+
+```bash
+docker network create openfga
+```
+
+Then, create a volume to hold the openfga database:
+
+```bash
+docker volume create openfga
+```
+
+Next you have to migrate all the tables to be able to run OpenFGA. You can use the `migrate` command to create the tables. Using the OpenFGA container, this will look like:
+
+```bash
+docker run --rm --network=openfga \
+    -v openfga:/home/nonroot \
+    -u nonroot \
+    openfga/openfga migrate \
+    --datastore-engine sqlite \
+    --datastore-uri 'file:/home/nonroot/openfga.db'
+```
+
+Finally, start OpenFGA:
+
+```bash
+docker run --name openfga --network=openfga \
+    -p 3000:3000 -p 8080:8080 -p 8081:8081 \
+    -v openfga:/home/nonroot \
+    -u nonroot \
+    openfga/openfga run \
+    --datastore-engine sqlite \
+    --datastore-uri 'file:/home/nonroot/openfga.db'
+```
+
+  </Tab>
+  <Tab title="Docker Compose">
+
+Copy the below code block into a local file named: `docker-compose.yaml`
+
+```yaml
+networks:
+  openfga:
+
+volumes:
+  openfga:
+
+services:
+  migrate:
+    image: openfga/openfga:latest
+    container_name: migrate
+    command: migrate
+    user: nonroot
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=sqlite
+      - OPENFGA_DATASTORE_URI=file:/home/nonroot/openfga.db
+    networks:
+      - openfga
+    volumes:
+      - openfga:/home/nonroot
+
+  openfga:
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    image: openfga/openfga:latest
+    container_name: openfga
+    user: nonroot
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=sqlite
+      - OPENFGA_DATASTORE_URI=file:/home/nonroot/openfga.db
+      - OPENFGA_LOG_FORMAT=json
+    command: run
+    networks:
+      - openfga
+    volumes:
+      - openfga:/home/nonroot
+    ports:
+      # Needed for the http server
+      - "8080:8080"
+      # Needed for the grpc server (if used)
+      - "8081:8081"
+      # Needed for the playground (Do not enable in prod!)
+      - "3000:3000"
+```
+
+In a terminal, navigate to that directory and run:
+
+```bash
+docker-compose up
+```
+
+  </Tab>
+</Tabs>
+
+This will create a new `openfga` volume to store the SQLite database, run `openfga migrate` to configure the database and finally start the OpenFGA server.
+
+## Pre-shared key authentication
+
+To configure with pre-shared authentication and enabling TLS in http server with Docker.
+
+1. Copy the certificate and key files to your Docker container.
+2. Run with the following command:
+
+```bash
+docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
+    --authn-method=preshared \
+    --authn-preshared-keys="key1,key2" \
+    --http-tls-enabled=true \
+    --http-tls-cert="/Users/myuser/key/server.crt" \
+    --http-tls-key="/Users/myuser/key/server.key"
+```
+
+## OIDC authentication
+
+To configure with OIDC authentication and enabling TLS in http server with Docker.
+
+1. Copy the certificate and key files to your docker container.
+2. Run the following command:
+
+```bash
+docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
+    --authn-method=oidc \
+    --authn-oidc-issuer="oidc-issuer" \
+    --authn-oidc-audience="oidc-audience" \
+    --http-tls-enabled=true \
+    --http-tls-cert="/Users/myuser/key/server.crt" \
+    --http-tls-key="/Users/myuser/key/server.key"
+```
+
+## Enabling profiling
+
+If you are enabling profiling, make sure you enable the corresponding port in docker. The default port is `3001`, but if you need to serve the profiler on a different port, you can do so by specifying the `--profiler-addr` flag. For example:
+
+```bash
+docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3002:3002 openfga/openfga run --profiler-enabled --profiler-addr :3002
+```
+
+## Related sections
+
+<CardGroup>
+  <Card title="Running OpenFGA in Production" href="../../best-practices/running-in-production">
+    Learn the best practices of running OpenFGA in a production environment
+  </Card>
+</CardGroup>

@@ -1,0 +1,51 @@
+---
+title: RAG Authorization with OpenFGA
+description: Enforce per-user permissions on retrieval-augmented generation. Filter retrieved documents through OpenFGA before they reach the model.
+---
+
+# RAG Authorization
+
+Retrieval-augmented generation pipelines retrieve documents from a data set and hand them to the model as context. If the data set contains anything the asking user shouldn't see, the model will happily summarize it back to them. The fix is to **filter retrieval results by the user's permissions** before the model ever sees them.
+
+## The pattern
+
+1. The user asks the agent a question.
+2. The retriever pulls candidate documents (vector search, keyword, hybrid).
+3. **OpenFGA filters** the candidates: for each candidate `doc:X`, check whether `user:Y` has `can_view`. Or call [list-objects](/docs/interacting/relationship-queries) once to get the full set of documents this user can read, then intersect.
+4. Only the surviving documents are passed to the model as context.
+
+The same model and prompt now produce different — and correct — answers per user, because the context they see is scoped to what they're allowed to see.
+
+## Simplified model
+
+```dsl.openfga
+type user
+
+type folder
+  relations
+    define parent: [folder]
+    define viewer: [user]
+    define can_view: viewer or can_view from parent
+
+type document
+  relations
+    define parent: [folder]
+    define viewer: [user]
+    define can_view: viewer or can_view from parent
+```
+
+Folders nest arbitrarily deep — a viewer on a top-level folder inherits `can_view` on every descendant folder and document. Before retrieval reaches the model, call `list-objects(user:alice, can_view, document)` to get every document Alice can read, then intersect with the retriever's candidate set.
+
+## Why list-objects matters here
+
+For small set of documents, per-document checks are fine. For larger ones, `list-objects` is dramatically cheaper: one call returns the full set of documents the user can read, and you intersect that with the retriever's candidates. This is exactly the case OpenFGA's reverse queries are designed for.
+
+## Conditions and contextual data
+
+If access depends on document attributes (classification, region, time window) as well as relationships, use [conditions](/docs/modeling/conditions) and [contextual tuples](/docs/interacting/contextual-tuples). Both are evaluated at check time without round-tripping back to your application.
+
+## Related reading
+
+- [RAG authorization modeling guide](/docs/modeling/agents/rag-authorization)
+- [AI agent authorization](/docs/use-cases/ai-agent-authorization)
+- [List-objects API](/docs/interacting/relationship-queries)

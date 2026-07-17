@@ -1,0 +1,305 @@
+---
+title: "Perform a List Users call"
+description: "List all users that have a certain relation with a particular object"
+---
+
+import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
+
+# Perform a List Users call
+
+This section will illustrate how to perform a list users request. The List Users call allows you to retrieve a list of users that have a specific relationship with a given object. This can be used in scenarios such as retrieving users who have access to a resource or managing members in a group.
+
+## Before You Start
+
+<Tabs>
+  <Tab title="Node.js">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/getting-started/configure-model) and [updated the *relationship tuples*](/docs/getting-started/update-tuples).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="Go">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/getting-started/configure-model) and [updated the *relationship tuples*](/docs/getting-started/update-tuples).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title=".NET">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/getting-started/configure-model) and [updated the *relationship tuples*](/docs/getting-started/update-tuples).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="Python">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/getting-started/configure-model) and [updated the *relationship tuples*](/docs/getting-started/update-tuples).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="Java">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [installed the SDK](/docs/getting-started/install-sdk).
+    3. You have [configured the *authorization model*](/docs/getting-started/configure-model) and [updated the *relationship tuples*](/docs/getting-started/update-tuples).
+    4. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="CLI">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [configured the *authorization model*](/docs/getting-started/configure-model).
+    3. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+
+  <Tab title="curl">
+    1. Deploy an instance of the OpenFGA server, and have ready the values for your setup: FGA\_STORE\_ID, FGA\_API\_URL and, if needed, FGA\_API\_TOKEN.
+    2. You have [configured the *authorization model*](/docs/getting-started/configure-model) and [updated the *relationship tuples*](/docs/getting-started/update-tuples).
+    3. You have loaded `FGA_STORE_ID` and `FGA_API_URL` as environment variables.
+  </Tab>
+</Tabs>
+
+## Step by step
+
+Consider the following model which includes a `user` that can have a `reader` relationship with a `document`:
+
+```
+model
+  schema 1.1
+type user
+type document
+  relations
+    define reader: [user]
+```
+
+Assume that you want to list all users of type `user` that have a `reader` relationship with `document:planning`:
+
+### 01. Configure the OpenFGA API client
+
+Before calling the List Users API, you will need to configure the API client.
+
+<Tabs>
+  <Tab title="Node.js">
+    ```javascript
+    // import the SDK
+    const { OpenFgaClient } = require('@openfga/sdk');
+    // Initialize the SDK with no auth - see "How to setup SDK client" for more options
+    const fgaClient = new OpenFgaClient({
+      apiUrl: process.env.FGA_API_URL, // required, e.g. https://api.fga.example
+      storeId: process.env.FGA_STORE_ID,
+      authorizationModelId: process.env.FGA_MODEL_ID, // Optional, can be overridden per request
+    });
+    ```
+  </Tab>
+
+  <Tab title="Go">
+    ```go
+    import (
+        "os"
+        . "github.com/openfga/go-sdk"
+        . "github.com/openfga/go-sdk/client"
+    )
+    func main() {
+        // Initialize the SDK with no auth - see "How to setup SDK client" for more options
+        fgaClient, err := NewSdkClient(&ClientConfiguration{
+            ApiUrl:               os.Getenv("FGA_API_URL"), // required, e.g. https://api.fga.example
+            StoreId:              os.Getenv("FGA_STORE_ID"), // optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
+            AuthorizationModelId: os.Getenv("FGA_MODEL_ID"),  // Optional, can be overridden per request
+        })
+        if err != nil {
+        // .. Handle error
+        }
+    }
+    ```
+  </Tab>
+
+  <Tab title=".NET">
+    ```csharp
+    // import the SDK
+    using OpenFga.Sdk.Client;
+    using OpenFga.Sdk.Client.Model;
+    using OpenFga.Sdk.Model;
+    using Environment = System.Environment;
+    namespace Example;
+    class Example {
+        public static async Task Main() {
+            // Initialize the SDK with no auth - see "How to setup SDK client" for more options
+            var configuration = new ClientConfiguration() {
+              ApiUrl = Environment.GetEnvironmentVariable("FGA_API_URL"), ?? "http://localhost:8080", // required, e.g. https://api.fga.example
+              StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"), // optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
+              AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"), // Optional, can be overridden per request
+            };
+            var fgaClient = new OpenFgaClient(configuration);
+        }
+    }
+    ```
+  </Tab>
+
+  <Tab title="Python">
+    ```python
+    import asyncio
+    import os
+    import json
+    from openfga_sdk.client import ClientConfiguration, OpenFgaClient
+    async def main():
+        configuration = ClientConfiguration(
+            api_url = os.environ.get('FGA_API_URL'), # required, e.g. https://api.fga.example
+            store_id = os.environ.get('FGA_STORE_ID'), # optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
+            authorization_model_id = os.environ.get('FGA_MODEL_ID'), # Optional, can be overridden per request
+        )
+        # Enter a context with an instance of the OpenFgaClient
+        async with OpenFgaClient(configuration) as fga_client:
+            api_response = await fga_client.read_authorization_models()
+            await fga_client.close()
+    asyncio.run(main())
+    ```
+  </Tab>
+
+  <Tab title="Java">
+    ```java
+    import dev.openfga.sdk.api.client.OpenFgaClient;
+    import dev.openfga.sdk.api.configuration.ClientConfiguration;
+    public class Example {
+      public static void main(String[] args) throws Exception {
+          var config = new ClientConfiguration()
+                  .apiUrl(System.getenv("FGA_API_URL")) // If not specified, will default to "https://localhost:8080"
+                  .storeId(System.getenv("FGA_STORE_ID")) // Not required when calling createStore() or listStores()
+                  .authorizationModelId(System.getenv("FGA_AUTHORIZATION_MODEL_ID")); // Optional, can be overridden per request
+          var fgaClient = new OpenFgaClient(config);
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="CLI">
+    ```bash
+    Set FGA_API_URL according to the service you are using (e.g. https://api.fga.example)
+    ```
+  </Tab>
+
+  <Tab title="curl">
+    To obtain the [access token](https://auth0.com/docs/get-started/authentication-and-authorization-flow/call-your-api-using-the-client-credentials-flow):
+
+    ```bash
+    Set FGA_API_URL according to the service you are using (e.g. https://api.fga.example)
+    ```
+  </Tab>
+
+</Tabs>
+
+### 02. Calling List Users API
+
+To return all users of type `user` that have have the `reader` relationship with `document:planning`:
+
+<ListUsersRequestViewer
+  authorizationModelId="01HVMMBCMGZNT3SED4Z17ECXCA"
+  objectType="document"
+  objectId="planning"
+  relation="reader"
+  userFilterType="user"
+  expectedResults={{
+    users: [{ object: { type: 'user', id: 'anne' } }, { object: { type: 'user', id: 'beth' } }],
+  }}
+  skipSetup={true}
+/>
+
+The result `user:anne` and `user:beth` are the `user` objects that have the `reader` relationship with `document:planning`.
+
+<Warning>
+  The performance characteristics of the List Users endpoint vary drastically depending on the model complexity, number of tuples, and the relations it needs to evaluate. Relations with 'and' or 'but not' are particularly expensive to evaluate.
+</Warning>
+
+## Usersets
+
+In the above example, only specific subjects of the `user` type were returned. However, groups of users, known as [usersets](/docs/modeling/building-blocks/usersets), can also be returned from the List Users API. This is done by specifying a `relation` field in the `user_filters` request object. Usersets will only expand to the underlying subjects if that `type` is specified as the user filter object.
+
+Below is an example where usersets can be returned:
+
+```
+model
+  schema 1.1
+type user
+type group
+  relations
+    define member: [ user ]
+type document
+  relations
+    define viewer: [ group#member ]
+```
+
+With the tuples:
+
+| user                     | relation | object            |
+| ------------------------ | -------- | ----------------- |
+| group:engineering#member | viewer   | document:1        |
+| group:product#member     | viewer   | document:1        |
+| user:will                | member   | group:engineering |
+
+Then calling the List Users API for `document:1` with relation `viewer` of type `group#member` will yield the below response. Note that the `user:will` is not returned, despite being a member of `group:engineering#member` because the `user_filters` does not target the `user` type.
+
+<ListUsersRequestViewer
+  authorizationModelId="01HXHK5D1Z6SCG1SV7M3BVZVCV"
+  objectType="document"
+  objectId="1"
+  relation="viewer"
+  userFilterType="group"
+  userFilterRelation="member"
+  expectedResults={{
+    users: [
+      {
+        userset: {
+          id: 'engineering',
+          relation: 'member',
+          type: 'group',
+        },
+      },
+      {
+        userset: {
+          id: 'product',
+          relation: 'member',
+          type: 'group',
+        },
+      },
+    ],
+  }}
+  skipSetup={true}
+/>
+
+## Type-bound public access
+
+The List Users API supports tuples expressing public access via the wildcard syntax (e.g. `user:*`). Wildcard tuples that satisfy the query criteria will be returned with the `wildcard` root object property that will specify the type. A typed-bound public access result indicates that the object has a public relation but it doesn't necessarily indicate that all users of that type have that relation, it is possible that exclusions via the `but not` syntax exists. The API will not expand wildcard results further to any ID'd user object. Further, specific users that have been granted access will be returned in addition to any public access for that user's type.
+
+<Warning>
+  A List Users response with a type-bound public access result (e.g. `user:*`) doesn't necessarily indicate that all users of that type have access, it is possible that exclusions exist. It is recommended to [perform a Check](/docs/getting-started/perform-check) on specific users to ensure they have access to the target object.
+</Warning>
+
+Example response with type-bound public access:
+
+```json
+{
+  "users": [
+    {
+      "wildcard": {
+        "type": "user"
+      }
+    },
+    {
+      "object": {
+        "type": "user",
+        "id": "anne"
+      }
+    }
+  ]
+}
+```
+
+## Related Sections
+
+Take a look at the following section for more on how to perform list users in your system
+
+<CardGroup>
+  <Card title="OpenFGA List Users API" href="/api/service#Relationship%20Queries/ListUsers">
+    Read the List Users API documentation and see how it works.
+  </Card>
+</CardGroup>

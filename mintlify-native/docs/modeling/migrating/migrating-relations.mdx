@@ -1,0 +1,352 @@
+---
+description: Migrating relations
+---
+
+import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx';
+import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
+import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
+
+# Migrating Relations
+
+In the lifecycle of software development, you will need to make updates or changes to the authorization model. In this guide, you will learn best practices for changing your existing authorization model. With these recommendations, you will minimize downtime and ensure your relationship models stay up to date.
+
+## Before you start
+
+This guide assumes you are familiar with the following OpenFGA concepts:
+
+- A **Type**: a class of objects that have similar characteristics
+- A **User**: an entity in the system that can be related to an object
+- A **Relation**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An **Object**: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
+- A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
+- [Intersection Operator](/docs/configuration-language#the-intersection-operator): the intersection operator can be used to indicate a relationship exists if the user is in all the sets of users
+
+## Step by step
+
+The document below is an example of a relational authorization model. In this model, you can assign users to the `editor` relation. The `editor` relation has write privileges that regular users do not.
+
+In this scenario, you will migrate the following model:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          editor: {
+            this: {},
+          },
+          can_edit: {
+            computedUserset: {
+              object: '',
+              relation: 'editor',
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+      {
+        type: 'user',
+      },
+    ],
+  }}
+/>
+
+There are existing relationship tuples associated with editor relation.
+
+```json
+[
+  {
+    "user": "user:anne",
+    "relation": "editor",
+    "object": "document:roadmap"
+  },
+  {
+    "user": "user:charles",
+    "relation": "editor",
+    "object": "document:roadmap"
+  }
+]
+```
+
+This is the authorization model that you will want to migrate to:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          writer: {
+            this: {},
+          },
+          can_write: {
+            computedUserset: {
+              object: '',
+              relation: 'writer',
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            writer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+      {
+        type: 'user',
+      },
+    ],
+  }}
+/>
+
+---
+
+### 01. Create a backwards compatible model
+
+To avoid service disruption, you will create a backwards compatible model. The backwards compatible model ensures the existing relationship tuple will still work.
+
+In the example below, `user:Anne` still has write privileges to the `document:roadmap` resource.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          editor: {
+            this: {},
+          },
+          writer: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  computedUserset: {
+                    relation: 'editor',
+                  },
+                },
+              ],
+            },
+          },
+          can_write: {
+            computedUserset: {
+              object: '',
+              relation: 'writer',
+            },
+          },
+          can_edit: {
+            computedUserset: {
+              object: '',
+              relation: 'writer',
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{ type: 'user' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+      {
+        type: 'user',
+      },
+    ],
+  }}
+/>
+
+Test the `can_edit` definition. It should produce a value of `true`.
+
+<CheckRequestViewer user={'user:anne'} relation={'can_write'} object={'document:roadmap'} allowed={true} />
+<CheckRequestViewer user={'user:anne'} relation={'can_edit'} object={'document:roadmap'} allowed={true} />
+
+### 02. Create a new relationship tuple
+
+Now that you have a backwards compatible model, you can create new relationship tuples with a new relation.
+
+In this example, you will add Bethany to the `writer` relationship.
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: 'Bethany assigned writer instead of editor',
+      user: 'user:bethany',
+      relation: 'writer',
+      object: 'document:roadmap',
+    },
+  ]}
+/>
+
+Run a check in the API for Bethany to ensure correct access.
+
+<CheckRequestViewer user={'user:bethany'} relation={'can_write'} object={'document:roadmap'} allowed={true} />
+
+### 03. Migrate the existing relationship tuples
+
+Next, migrate the existing relationship tuples. The new relation makes this definition obsolete.
+
+Use the `read` API to look up all relationship tuples.
+
+<Tabs>
+  <Tab title="Node.js">
+    ```javascript
+    const response = await fgaClient.read({
+      tuple_key: { user: 'user:anne', relation: 'editor', object: 'document:planning' }
+    });
+    ```
+  </Tab>
+  <Tab title="Go">
+    ```go
+    body, err := fgaClient.Read(context.Background()).Body(client.ClientReadRequest{
+        User: client.PtrString("user:anne"),
+        Relation: client.PtrString("editor"),
+        Object: client.PtrString("document:planning"),
+    }).Execute()
+    ```
+  </Tab>
+  <Tab title=".NET">
+    ```csharp
+    var response = await fgaClient.Read(new ClientReadRequest {
+        User = "user:anne",
+        Relation = "editor",
+        Object = "document:planning"
+    });
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    response = await fga_client.read(ClientReadRequest(
+        user='user:anne',
+        relation='editor',
+        object='document:planning',
+    ))
+    ```
+  </Tab>
+  <Tab title="Java">
+    ```java
+    var body = new ClientReadRequest()
+        .user("user:anne")
+        .relation("editor")
+        .object("document:planning");
+    var response = fgaClient.read(body).get();
+    ```
+  </Tab>
+  <Tab title="CLI">
+    ```bash
+    fga tuple read --store-id=$FGA_STORE_ID --user user:anne --relation editor --object document:planning
+    ```
+  </Tab>
+  <Tab title="curl">
+    ```bash
+    curl -X POST "$FGA_API_URL/stores/$FGA_STORE_ID/read" \
+      -H "Authorization: Bearer $FGA_API_TOKEN" \
+      -H "content-type: application/json" \
+      -d '{"tuple_key":{"user":"user:anne","relation":"editor","object":"document:planning"}}'
+    ```
+  </Tab>
+</Tabs>
+
+Then filter out the tuples that do not match the object type or relation (in this case, `document` and `editor` respectively), and update the new tuples with the `write` relationship.
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'writer',
+      object: 'document:roadmap',
+    },
+    {
+      user: 'user:charles',
+      relation: 'writer',
+      object: 'document:roadmap',
+    },
+  ]}
+/>
+
+Finally, remove the old relationship tuples.
+
+<WriteRequestViewer
+  deleteRelationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'editor',
+      object: 'document:roadmap',
+    },
+    {
+      user: 'user:charles',
+      relation: 'editor',
+      object: 'document:roadmap',
+    },
+  ]}
+/>
+
+<Note>
+Perform a `write` operation before a `delete` operation to ensure Anne still has access.
+</Note>
+
+Confirm the tuples are correct by running a check on the user.
+
+<CheckRequestViewer user={'user:anne'} relation={'can_write'} object={'document:roadmap'} allowed={true} />
+
+The old relationship tuple no longer exists.
+
+<CheckRequestViewer user={'user:anne'} relation={'editor'} object={'document:roadmap'} allowed={false} />
+
+### 04. Remove obsolete relationship from the model
+
+After you remove the previous relationship tuples, update your authorization model to remove the obsolete relation.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'document',
+        relations: {
+          writer: {
+            this: {},
+          },
+          can_write: {
+            computedUserset: {
+              object: '',
+              relation: 'writer',
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            writer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+      {
+        type: 'user',
+      },
+    ],
+  }}
+/>
+
+Now, the `write` API will only accept the new relation name.
+
+## Related Sections
+
+Review the following sections for more information on managing relationship tuples.
+
+<CardGroup>
+  <Card title="Relationship Queries" href="/docs/interacting/relationship-queries">
+    Understand the differences between check, read, expand and list objects.
+  </Card>
+  <Card title="Production Best Practices" href="/docs/best-practices/running-in-production">
+    Learn the best practices of running OpenFGA in a production environment.
+  </Card>
+</CardGroup>

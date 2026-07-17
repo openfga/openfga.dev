@@ -1,0 +1,175 @@
+---
+title: "Snippet Viewer Tests"
+description: "Verifying native Mintlify ports of all viewer components"
+---
+
+import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
+import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx';
+import { ListObjectsRequestViewer } from '/snippets/ListObjectsRequestViewer.jsx';
+import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
+
+## Check: user:anne reader document:Z
+
+<CheckRequestViewer
+  user="user:anne"
+  relation="reader"
+  object="document:Z"
+  allowed={true}
+  skipSetup={true}
+/>
+
+## Check with contextual tuples
+
+<CheckRequestViewer
+  user="user:anne"
+  relation="reader"
+  object="document:Z"
+  allowed={true}
+  contextualTuples={[{user:"user:bob", relation:"owner", object:"document:Z"}]}
+  skipSetup={false}
+/>
+
+## AuthzModelSnippetViewer: DSL + JSON tabs
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: "1.1",
+    type_definitions: [
+      { type: "user" },
+      {
+        type: "document",
+        relations: {
+          reader: { this: {} },
+          writer: { this: {} },
+          owner: { this: {} }
+        },
+        metadata: {
+          relations: {
+            reader: { directly_related_user_types: [{ type: "user" }] },
+            writer: { directly_related_user_types: [{ type: "user" }] },
+            owner: { directly_related_user_types: [{ type: "user" }] }
+          }
+        }
+      }
+    ]
+  }}
+/>
+
+## ListObjectsRequestViewer
+
+<ListObjectsRequestViewer
+  user="user:anne"
+  relation="reader"
+  objectType="document"
+  expectedResults={["document:planning", "document:roadmap"]}
+  skipSetup={true}
+/>
+
+## ListObjectsRequestViewer with contextual tuples
+
+<ListObjectsRequestViewer
+  user="user:anne"
+  relation="reader"
+  objectType="document"
+  expectedResults={["document:planning"]}
+  contextualTuples={[{user:"user:anne", relation:"editor", object:"document:planning"}]}
+  skipSetup={false}
+/>
+
+## ListUsersRequestViewer
+
+<ListUsersRequestViewer
+  objectType="document"
+  objectId="planning"
+  relation="reader"
+  userFilterType="user"
+  expectedResults={{ users: [{ object: { type: "user", id: "anne" } }, { object: { type: "user", id: "bob" } }] }}
+  skipSetup={true}
+/>
+
+## ListUsersRequestViewer with userset filter
+
+<ListUsersRequestViewer
+  objectType="document"
+  objectId="planning"
+  relation="reader"
+  userFilterType="team"
+  userFilterRelation="member"
+  expectedResults={{ users: [{ object: { type: "team", id: "product" } }] }}
+  skipSetup={false}
+/>
+
+## BatchCheckRequestViewer
+
+import { BatchCheckRequestViewer } from '/snippets/BatchCheckRequestViewer.jsx';
+
+<BatchCheckRequestViewer
+  checks={[
+    {
+      user: "user:anne",
+      relation: "writer",
+      object: "document:Z",
+      correlation_id: "886224f6-04ae-4b13-bd8e-559c7d3754e1",
+      allowed: false
+    },
+    {
+      user: "user:anne",
+      relation: "reader",
+      object: "document:Z",
+      correlation_id: "da452239-a4e0-4791-b5d1-fb3d451ac078",
+      allowed: true
+    }
+  ]}
+  skipSetup={true}
+/>
+
+## WriteRequestViewer — write tuples
+
+import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
+
+<WriteRequestViewer
+  relationshipTuples={[
+    { user: "user:anne", relation: "reader", object: "document:planning" },
+    { user: "user:bob", relation: "writer", object: "document:planning", _description: "Bob is a writer" }
+  ]}
+  deleteRelationshipTuples={[]}
+  skipSetup={true}
+/>
+
+## WriteRequestViewer — delete tuples
+
+<WriteRequestViewer
+  relationshipTuples={[]}
+  deleteRelationshipTuples={[
+    { user: "user:carl", relation: "reader", object: "document:planning" }
+  ]}
+  skipSetup={true}
+/>
+
+## WriteRequestViewer — with condition
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: "user:anne",
+      relation: "viewer",
+      object: "document:planning",
+      condition: { name: "non_expired_grant", context: { grant_time: "2023-01-01T00:00:00Z", grant_duration: "1h" } }
+    }
+  ]}
+  deleteRelationshipTuples={[]}
+  skipSetup={true}
+/>
+
+## AuthzModelSnippetViewer: DSL only
+
+<AuthzModelSnippetViewer
+  syntaxesToShow={["dsl"]}
+  configuration={{
+    schema_version: "1.1",
+    type_definitions: [
+      { type: "user" },
+      { type: "document", relations: { viewer: { this: {} } }, metadata: { relations: { viewer: { directly_related_user_types: [{ type: "user" }] } } } }
+    ]
+  }}
+/>

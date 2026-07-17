@@ -1,0 +1,73 @@
+---
+title: Query Consistency Modes
+description: Query Consistency Modes
+---
+
+# Query Consistency Modes
+
+## Background
+
+When querying OpenFGA using Read or any of the query APIs like [Check, Expand, ListObjects and ListUsers](/docs/interacting/relationship-queries), you can specify a query consistency parameter that can have one of the following values:
+
+| Name                        | Description                                                                                      |
+|-----------------------------|--------------------------------------------------------------------------------------------------|
+| MINIMIZE_LATENCY (default)  | OpenFGA will serve queries from the cache when possible                                          |
+| HIGHER_CONSISTENCY          | OpenFGA will skip the cache and query the database directly                                      |
+
+If you write a tuple and you immediately make a Check on a relation affected by that tuple using `MINIMIZE_LATENCY`, the tuple change might not be taken in consideration if OpenFGA serves the result from the cache.
+
+## When to use higher consistency
+
+When specifying `HIGHER_CONSISTENCY` you are trading off consistency for latency and system performance. Always specifying `HIGHER_CONSISTENCY` will have a significant impact in performance.
+
+If you have a use case where higher consistency is needed, it's recommended that whenever possible, you decide in runtime the consistency level you need. If you are storing a timestamp indicating when a resource was last modified in your database, you can use that to decide the kind of request you do.
+
+For example, if you share `document:readme` with a `user:anne` and you update a `modified_date` field in the `document` table when that happens, you can write code like the below when calling `check("user:anne", "can_view", "document:readme")` to avoid paying the price of additional latency when calling the API.
+
+```javascript
+if (date_modified + cache_time_to_live_period > Date.now()) {
+    const { allowed } = await fgaClient.check(
+      { user: "user:anne", relation: "can_view", object: "document:roadmap"}
+    );
+} else {
+    const { allowed } = await fgaClient.check(
+        {  user: "user:anne", relation: "can_view", object: "document:roadmap"},
+        {  consistency: ConsistencyPreference.HigherConsistency }
+    );
+}
+```
+
+## Cache expiration
+
+OpenFGA caching is disabled by default. When caching is disabled, all queries will have strong consistency regardless of the consistency mode specified. When caching is enabled, the cache will be used for queries with `MINIMIZE_LATENCY` consistency mode.
+
+You can use the following command line parameters to configure OpenFGA's cache. To see the default value of each parameter, please run `openfga run --help`.
+
+| Name                             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+|----------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| check-cache-limit                | Configures the number of items that will be kept in the in-memory cache used to resolve Check queries                                                                                                                                                                                                                                                                                                                                          |
+| check-query-cache-enabled        | Enables in-memory caching of Check subproblems. For example, if you have a relation `define viewer: owner or editor`, and the query is `Check(user:anne, viewer, doc:1)`, we'll evaluate the `owner` relation and the `editor` relation and cache both results: `(user:anne, viewer, doc:1) -> allowed=true` and `(user:anne, owner, doc:1) -> allowed=true`.                                                                                  |
+| check-query-cache-ttl            | Specifies the time that items will be kept in the cache of Check subproblems                                                                                                                                                                                                                                                                                                                                                                   |
+| check-iterator-cache-enabled     | Enables in-memory caching of database iterators. Each iterator is the result of a database query, for example, usersets related to a specific object, or objects related to a specific user, up to a certain number of tuples per iterator                                                                                                                                                                                                     |
+| check-iterator-cache-max-results | Configures the number of tuples that will be stored for each database iterator                                                                                                                                                                                                                                                                                                                                                                 |
+| check-iterator-cache-ttl         | Specifies the time that items will be kept in the cache of database iterators                                                                                                                                                                                                                                                                                                                                                                  |
+| cache-controller-enabled         | When enabled, cache controller will verify whether check subproblem cache and check iterator cache needs to be invalidated when there is a check or list objects API request. The invalidation determination is based on whether there are recent write or deletes for the store. This feature allows a larger check-query-cache-ttl and check-iterator-cache-ttl at the expense of additional datastore queries for recent writes and deletes. |
+| cache-controller-ttl             | Specifies how frequently the cache controller checks for Writes occurring. While the cache controller result is cached, the server will not read the datastore to check whether subproblem cache and iterator cache needs to be invalidated.                                                                                                                                                                                                   |
+
+Learn how to [configure OpenFGA](/docs/getting-started/setup-openfga/configure-openfga).
+
+Currently, the cache is used by Check and partially in ListObjects. It will be implemented for other query endpoints in the future.
+
+## Future work
+
+The Zanzibar paper has a feature called `Zookies`, which is a consistency token that is returned from Write operation. You can store that token in your resource table, and specify it in subsequent calls to query APIs.
+
+OpenFGA is considering a similar feature in future releases.
+
+## Related Sections
+
+<CardGroup>
+  <Card title="Relationship Queries" href="/docs/interacting/relationship-queries">
+    Comparison Between Check, Read And Expand API Calls.
+  </Card>
+</CardGroup>

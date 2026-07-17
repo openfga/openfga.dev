@@ -1,0 +1,52 @@
+---
+title: Zuplo Case Study
+description: How API management platform Zuplo runs OpenFGA across multiple data centers with PostgreSQL global replication for edge authorization.
+---
+
+# Zuplo: Edge authorization across multiple data centers
+
+[Zuplo](https://zuplo.com) is a developer-first API management platform that helps teams build, deploy, and scale APIs globally. Zuplo uses OpenFGA to enforce fine-grained authorization at the edge across every region the platform runs in.
+
+## At a glance
+
+| | |
+| --- | --- |
+| **Industry** | API management |
+| **In production since** | 2024 |
+| **Scale** | Several hundred RPS, with spikes above 500 RPS |
+| **Version** | v1.8.x |
+| **Storage** | PostgreSQL with global replication |
+| **Deployment** | Multi-region edge |
+
+## Why OpenFGA
+
+As Zuplo's customer base shifted toward larger enterprises, simple project-membership rules were no longer enough. The team evaluated:
+
+- Axiomatics (AuthZEN-based)
+- Aserto (AuthZEN-based)
+- Auth0 FGA
+- Building a custom solution in-house
+
+They chose OpenFGA because it is **open source and self-hostable**, and because **PostgreSQL as a backend** let Zuplo replicate authorization data globally and run checks at the edge — exactly the topology API management requires.
+
+## Architecture
+
+- **One authorization model** governs the entire product, single-tenant.
+- The same model handles **user access and API key access** to product features.
+- OpenFGA is deployed in production across multiple data centers worldwide.
+- Performance work for major upgrades uses k6-based end-to-end load tests.
+
+## Outcomes
+
+- Updating and versioning the authorization model independently of the application code accelerated development cycles.
+- Roles and permissions can be tested and refined without code changes.
+- Authorization is centralized across teams while keeping concerns separate.
+- Caching introduced upstream replaced a homegrown cache layer Zuplo had built before OpenFGA shipped its own.
+
+## Outlook
+
+Zuplo continues to file feature requests upstream and has expressed interest in publicly sharing more details about how it implements authorization at the edge.
+
+## Source
+
+This case study is based on the public CNCF TOC adopter interview with Nate Totten, Co-founder & CTO of Zuplo, available in the [`cncf/toc` repository](https://github.com/cncf/toc/tree/main/projects/openfga).

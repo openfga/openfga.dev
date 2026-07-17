@@ -1,0 +1,228 @@
+---
+title: OpenFGA Configuration Options
+description: Configuring Options for the OpenFGA Server
+---
+
+# OpenFGA Configuration Options
+
+## Passing in the options
+
+You can configure the OpenFGA server in three ways:
+
+- Using a configuration file.
+- Using environment variables.
+- Using command line parameters.
+
+If the same option is configured in multiple ways the command line parameters will take precedence over environment variables, which will take precedence over the configuration file.
+
+<Tabs>
+<Tab title="Configuration File">
+
+You can configure the OpenFGA server with a `config.yaml` file, which can be specified in either:
+- `/etc/openfga`
+- `$HOME/.openfga`
+- `.` (i.e., the current working directory).
+
+The OpenFGA server will search for the configuration file in the above order.
+
+Here is a sample configuration to run OpenFGA with a Postgres database and using a preshared key for authentication:
+
+```yaml
+datastore:
+  engine: postgres
+  uri: postgres://user:password@localhost:5432/mydatabase
+authn:
+  method: preshared
+  preshared:
+    keys: ["key1", "key2"]
+playground:
+  enabled: false
+```
+
+</Tab>
+
+<Tab title="Environment Variables">
+
+The OpenFGA server supports **environment variables** for configuration, and they will take priority over your configuration file.
+Each variable must be prefixed with `OPENFGA_` and followed by your option in uppercase (`datastore.engine` becomes `OPENFGA_DATASTORE_ENGINE`), e.g.
+
+```bash
+# Running as a binary
+export OPENFGA_DATASTORE_ENGINE=postgres
+export OPENFGA_DATASTORE_URI='postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
+export OPENFGA_AUTHN_METHOD=preshared
+export OPENFGA_AUTHN_PRESHARED_KEYS='key1,key2'
+export OPENFGA_PLAYGROUND_ENABLED=false
+openfga run
+
+# Running in docker
+docker run docker.io/openfga/openfga:latest \ 
+  -e OPENFGA_DATASTORE_ENGINE=postgres \ 
+  -e OPENFGA_DATASTORE_URI='postgres://postgres:password@postgres:5432/postgres?sslmode=disable' \ 
+  -e OPENFGA_AUTHN_METHOD=preshared \ 
+  -e OPENFGA_AUTHN_PRESHARED_KEYS='key1,key2' \ 
+  -e OPENFGA_PLAYGROUND_ENABLED=false \ 
+  run
+```
+
+</Tab>
+
+<Tab title="Command Line Parameters (Flags)">
+
+Command line parameters take precedence over environment variables and options in the configuration file. They are prefixed with `--` (`OPENFGA_DATASTORE_ENGINE` becomes `--datastore-engine`), e.g.
+
+```bash
+# Running as a binary
+openfga run \ 
+  --datastore-engine postgres \ 
+  --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable' \ 
+  --authn-method=preshared \ 
+  --authn-preshared-keys='key1,key2' \ 
+  --playground-enabled=false
+
+# Running in docker
+docker run docker.io/openfga/openfga:latest run \ 
+  --datastore-engine postgres \ 
+  --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable' \ 
+  --authn-method=preshared \ 
+  --authn-preshared-keys='key1,key2' \ 
+  --playground-enabled=false
+```
+
+</Tab>
+</Tabs>
+
+## List of options
+
+The following table lists the configuration options for the OpenFGA server [v1.16.0](https://github.com/openfga/openfga/releases/tag/v1.16.0), based on the [config-schema.json](https://raw.githubusercontent.com/openfga/openfga/refs/tags/v1.16.0/.config-schema.json).
+
+| Config File | Env Var | Flag Name | Type | Description | Default Value |
+|-------------|---------|-----------|------|-------------|---------------|
+| `maxTuplesPerWrite` | `OPENFGA_MAX_TUPLES_PER_WRITE` | `max-tuples-per-write` | integer | The maximum allowed number of tuples per Write transaction. | `100` |
+| `maxTypesPerAuthorizationModel` | `OPENFGA_MAX_TYPES_PER_AUTHORIZATION_MODEL` | `max-types-per-authorization-model` | integer | The maximum allowed number of type definitions per authorization model. | `100` |
+| `maxAuthorizationModelSizeInBytes` | `OPENFGA_MAX_AUTHORIZATION_MODEL_SIZE_IN_BYTES` | `max-authorization-model-size-in-bytes` | integer | The maximum size in bytes allowed for persisting an Authorization Model (default is 256KB). | `262144` |
+| `maxConcurrentReadsForCheck` | `OPENFGA_MAX_CONCURRENT_READS_FOR_CHECK` | `max-concurrent-reads-for-check` | integer | The maximum allowed number of concurrent reads in a single Check query (default is MaxUint32). | `4294967295` |
+| `maxConcurrentReadsForListObjects` | `OPENFGA_MAX_CONCURRENT_READS_FOR_LIST_OBJECTS` | `max-concurrent-reads-for-list-objects` | integer | The maximum allowed number of concurrent reads in a single ListObjects query (default is MaxUint32). | `4294967295` |
+| `maxConcurrentReadsForListUsers` | `OPENFGA_MAX_CONCURRENT_READS_FOR_LIST_USERS` | `max-concurrent-reads-for-list-users` | integer | The maximum allowed number of concurrent reads in a single ListUsers query (default is MaxUint32). | `4294967295` |
+| `maxConcurrentChecksPerBatchCheck` | `OPENFGA_MAX_CONCURRENT_CHECKS_PER_BATCH_CHECK` | `max-concurrent-checks-per-batch-check` | integer | The maximum number of checks that can be processed concurrently in a batch check request. | `50` |
+| `maxChecksPerBatchCheck` | `OPENFGA_MAX_CHECKS_PER_BATCH_CHECK` | `max-checks-per-batch-check` | integer | The maximum number of tuples allowed in a BatchCheck request. | `50` |
+| `maxConditionEvaluationCost` | `OPENFGA_MAX_CONDITION_EVALUATION_COST` | `max-condition-evaluation-cost` | integer | The maximum cost for CEL condition evaluation before a request returns an error (default is 100). | `100` |
+| `changelogHorizonOffset` | `OPENFGA_CHANGELOG_HORIZON_OFFSET` | `changelog-horizon-offset` | integer | The offset (in minutes) from the current time. Changes that occur after this offset will not be included in the response of ReadChanges. |  |
+| `resolveNodeLimit` | `OPENFGA_RESOLVE_NODE_LIMIT` | `resolve-node-limit` | integer | Maximum resolution depth to attempt before throwing an error (defines how deeply nested an authorization model can be before a query errors out). | `25` |
+| `resolveNodeBreadthLimit` | `OPENFGA_RESOLVE_NODE_BREADTH_LIMIT` | `resolve-node-breadth-limit` | integer | Defines how many nodes on a given level can be evaluated concurrently in a Check resolution tree. | `10` |
+| `listObjectsDeadline` | `OPENFGA_LIST_OBJECTS_DEADLINE` | `list-objects-deadline` | string (duration) | The timeout deadline for serving ListObjects requests | `3s` |
+| `listObjectsMaxResults` | `OPENFGA_LIST_OBJECTS_MAX_RESULTS` | `list-objects-max-results` | integer | The maximum results to return in the non-streaming ListObjects API response. If 0, all results can be returned | `1000` |
+| `listObjectsPipelineEnabled` | `OPENFGA_LIST_OBJECTS_PIPELINE_ENABLED` | `list-objects-pipeline-enabled` | boolean | Enables the ListObjects pipeline optimization algorithm, which can significantly improve the latency of ListObjects requests. When enabled, the server will attempt to resolve intermediate nodes in the ListObjects resolution tree concurrently. This optimization is most effective for workloads with large and complex authorization models, but may not suit all cases. Can be disabled if it causes increased resource usage. | `true` |
+| `listUsersDeadline` | `OPENFGA_LIST_USERS_DEADLINE` | `list-users-deadline` | string (duration) | The timeout deadline for serving ListUsers requests. If 0s, there is no deadline | `3s` |
+| `listUsersMaxResults` | `OPENFGA_LIST_USERS_MAX_RESULTS` | `list-users-max-results` | integer | The maximum results to return in ListUsers API response. If 0, all results can be returned | `1000` |
+| `readChangesMaxPageSize` | `OPENFGA_READ_CHANGES_MAX_PAGE_SIZE` | `read-changes-max-page-size` | integer | The maximum page size allowed for ReadChanges API requests | `100` |
+| `requestDurationDatastoreQueryCountBuckets` | `OPENFGA_REQUEST_DURATION_DATASTORE_QUERY_COUNT_BUCKETS` | `request-duration-datastore-query-count-buckets` | \[]integer | Datastore query count buckets used to label the histogram metric for measuring request duration. | `50,200` |
+| `requestDurationDispatchCountBuckets` | `OPENFGA_REQUEST_DURATION_DISPATCH_COUNT_BUCKETS` | `request-duration-dispatch-count-buckets` | \[]integer | Dispatch count buckets used to label the histogram metric for measuring request duration. | `50,200` |
+| `contextPropagationToDatastore` | `OPENFGA_CONTEXT_PROPAGATION_TO_DATASTORE` | `context-propagation-to-datastore` | boolean | Propagate a requests context to the datastore implementation. Settings this parameter can result in connection pool draining on request aborts and timeouts. | `false` |
+| `experimentals` | `OPENFGA_EXPERIMENTALS` | `experimentals` | \[]string (enum=[`enable-check-optimizations`, `enable-list-objects-optimizations`, `enable-access-control`, `datastore_throttling`, `pipeline_list_objects`, `authzen`]) | a comma-separated list of experimental features to enable | `pipeline_list_objects` |
+| `authzen.baseURL` | `OPENFGA_AUTHZEN_BASE_URL` | `authzen-base-url` | string | The canonical absolute base URL published in AuthZEN discovery metadata. It may include an optional path prefix. |  |
+| `accessControl.enabled` | `OPENFGA_ACCESS_CONTROL_ENABLED` | `access-control-enabled` | boolean | Enable/disable the access control store. | `false` |
+| `accessControl.storeId` | `OPENFGA_ACCESS_CONTROL_STORE_ID` | `access-control-store-id` | string | The storeId to be used for the access control store. |  |
+| `accessControl.modelId` | `OPENFGA_ACCESS_CONTROL_MODEL_ID` | `access-control-model-id` | string | The modelId to be used for the access control store. |  |
+| `playground.enabled` | `OPENFGA_PLAYGROUND_ENABLED` | `playground-enabled` | boolean | Enable/disable the OpenFGA Playground. The Playground can only be run when the authentication method is set to 'none'. Note that the built-in Playground is intended for local development and testing purposes, and is not recommended for production use. It has been deprecated and will be removed in a subsequent release. | `false` |
+| `playground.port` | `OPENFGA_PLAYGROUND_PORT` | `playground-port` | integer | Deprecated: The port to serve the local OpenFGA Playground on. Use 'addr' instead. | `3000` |
+| `playground.addr` | `OPENFGA_PLAYGROUND_ADDR` | `playground-addr` | string | The host:port address to serve the local OpenFGA Playground on. |  |
+| `profiler.enabled` | `OPENFGA_PROFILER_ENABLED` | `profiler-enabled` | boolean | Enabled/disable pprof profiling. | `false` |
+| `profiler.addr` | `OPENFGA_PROFILER_ADDR` | `profiler-addr` | string | The host:port address to serve the pprof profiler server on. | `:3001` |
+| `datastore.engine` | `OPENFGA_DATASTORE_ENGINE` | `datastore-engine` | string (enum=[`memory`, `postgres`, `mysql`, `sqlite`]) | The datastore engine that will be used for persistence. | `memory` |
+| `datastore.uri` | `OPENFGA_DATASTORE_URI` | `datastore-uri` | string | The connection uri to use to connect to the datastore (for any engine other than 'memory'). |  |
+| `datastore.secondaryUri` | `OPENFGA_DATASTORE_SECONDARY_URI` | `datastore-secondary-uri` | string | The connection uri to use to connect to the secondary datastore (for postgres only). |  |
+| `datastore.username` | `OPENFGA_DATASTORE_USERNAME` | `datastore-username` | string | The connection username to connect to the datastore (overwrites any username provided in the connection uri). |  |
+| `datastore.secondaryUsername` | `OPENFGA_DATASTORE_SECONDARY_USERNAME` | `datastore-secondary-username` | string | The connection username to connect to the secondary datastore (overwrites any username provided in the connection uri). |  |
+| `datastore.password` | `OPENFGA_DATASTORE_PASSWORD` | `datastore-password` | string | The connection password to connect to the datastore (overwrites any password provided in the connection uri). |  |
+| `datastore.secondaryPassword` | `OPENFGA_DATASTORE_SECONDARY_PASSWORD` | `datastore-secondary-password` | string | The connection password to connect to the secondary datastore (overwrites any password provided in the connection uri). |  |
+| `datastore.maxCacheSize` | `OPENFGA_DATASTORE_MAX_CACHE_SIZE` | `datastore-max-cache-size` | integer | The maximum number of authorization models that will be cached in memory | `100000` |
+| `datastore.maxTypesystemCacheSize` | `OPENFGA_DATASTORE_MAX_TYPESYSTEM_CACHE_SIZE` | `datastore-max-typesystem-cache-size` | integer | The maximum number of type system models that will be cached in memory | `100000` |
+| `datastore.maxOpenConns` | `OPENFGA_DATASTORE_MAX_OPEN_CONNS` | `datastore-max-open-conns` | integer | The maximum number of open connections to the datastore. | `30` |
+| `datastore.minOpenConns` | `OPENFGA_DATASTORE_MIN_OPEN_CONNS` | `datastore-min-open-conns` | integer | The minimum number of open connections to the datastore. This is only available for PostgreSQL. | `0` |
+| `datastore.maxIdleConns` | `OPENFGA_DATASTORE_MAX_IDLE_CONNS` | `datastore-max-idle-conns` | integer | the maximum number of connections to the datastore in the idle connection pool. | `10` |
+| `datastore.minIdleConns` | `OPENFGA_DATASTORE_MIN_IDLE_CONNS` | `datastore-min-idle-conns` | integer | the minimum number of connections to the datastore in the idle connection pool. This is only available for PostgreSQL. | `0` |
+| `datastore.connMaxIdleTime` | `OPENFGA_DATASTORE_CONN_MAX_IDLE_TIME` | `datastore-conn-max-idle-time` | string (duration) | the maximum amount of time a connection to the datastore may be idle | `0s` |
+| `datastore.connMaxLifetime` | `OPENFGA_DATASTORE_CONN_MAX_LIFETIME` | `datastore-conn-max-lifetime` | string (duration) | the maximum amount of time a connection to the datastore may be reused | `0s` |
+| `datastore.metrics.enabled` | `OPENFGA_DATASTORE_METRICS_ENABLED` | `datastore-metrics-enabled` | boolean | enable/disable sql metrics for the datastore | `false` |
+| `authn.method` | `OPENFGA_AUTHN_METHOD` | `authn-method` | string (enum=[`none`, `preshared`, `oidc`]) | The authentication method to use. | `none` |
+| `authn.preshared.keys` | `OPENFGA_AUTHN_PRESHARED_KEYS` | `authn-preshared-keys` | \[]string | List of preshared keys used for authentication |  |
+| `authn.oidc.issuer` | `OPENFGA_AUTHN_OIDC_ISSUER` | `authn-oidc-issuer` | string | The OIDC issuer (authorization server) signing the tokens. |  |
+| `authn.oidc.audience` | `OPENFGA_AUTHN_OIDC_AUDIENCE` | `authn-oidc-audience` | string | The OIDC audience of the tokens being signed by the authorization server. |  |
+| `authn.oidc.issuerAliases` | `OPENFGA_AUTHN_OIDC_ISSUER_ALIASES` | `authn-oidc-issuer-aliases` | \[]string | the OIDC issuer DNS aliases that will be accepted as valid when verifying the `iss` field of the JWTs. |  |
+| `authn.oidc.subjects` | `OPENFGA_AUTHN_OIDC_SUBJECTS` | `authn-oidc-subjects` | \[]string | the OIDC subject names that will be accepted as valid when verifying the `sub` field of the JWTs. If empty, every `sub` will be allowed |  |
+| `authn.oidc.clientIdClaims` | `OPENFGA_AUTHN_OIDC_CLIENT_ID_CLAIMS` | `authn-oidc-client-id-claims` | \[]string | the OIDC client id claims that will be used to parse the clientID - configure in order of priority (first is highest). Defaults to [`azp`, `client_id`] |  |
+| `grpc.addr` | `OPENFGA_GRPC_ADDR` | `grpc-addr` | string | The host:port address to serve the grpc server on. | `0.0.0.0:8081` |
+| `grpc.maxRecvMsgBytes` | `OPENFGA_GRPC_MAX_RECV_MSG_BYTES` | `grpc-max-recv-msg-bytes` | integer | The maximum size, in bytes, of a received gRPC message. | `616448` |
+| `grpc.tls.enabled` | `OPENFGA_GRPC_TLS_ENABLED` | `grpc-tls-enabled` | boolean | Enables or disables transport layer security (TLS). | `false` |
+| `grpc.tls.cert` | `OPENFGA_GRPC_TLS_CERT` | `grpc-tls-cert` | string | The (absolute) file path of the certificate to use for the TLS connection. |  |
+| `grpc.tls.key` | `OPENFGA_GRPC_TLS_KEY` | `grpc-tls-key` | string | The (absolute) file path of the TLS key that should be used for the TLS connection. |  |
+| `http.enabled` | `OPENFGA_HTTP_ENABLED` | `http-enabled` | boolean | Enables or disables the OpenFGA HTTP server. If this is set to true then 'grpc.enabled' must be set to true. | `true` |
+| `http.addr` | `OPENFGA_HTTP_ADDR` | `http-addr` | string | The host:port address to serve the HTTP server on. | `0.0.0.0:8080` |
+| `http.tls.enabled` | `OPENFGA_HTTP_TLS_ENABLED` | `http-tls-enabled` | boolean | Enables or disables transport layer security (TLS). | `false` |
+| `http.tls.cert` | `OPENFGA_HTTP_TLS_CERT` | `http-tls-cert` | string | The (absolute) file path of the certificate to use for the TLS connection. |  |
+| `http.tls.key` | `OPENFGA_HTTP_TLS_KEY` | `http-tls-key` |  | The (absolute) file path of the TLS key that should be used for the TLS connection. |  |
+| `http.upstreamTimeout` | `OPENFGA_HTTP_UPSTREAM_TIMEOUT` | `http-upstream-timeout` | string | The timeout duration for proxying HTTP requests upstream to the grpc endpoint. | `3s` |
+| `http.corsAllowedOrigins` | `OPENFGA_HTTP_CORS_ALLOWED_ORIGINS` | `http-cors-allowed-origins` | \[]string | List of allowed origins for CORS requests | `*` |
+| `http.corsAllowedHeaders` | `OPENFGA_HTTP_CORS_ALLOWED_HEADERS` | `http-cors-allowed-headers` | \[]string | List of allowed headers for CORS requests | `*` |
+| `log.format` | `OPENFGA_LOG_FORMAT` | `log-format` | string (enum=[`text`, `json`]) | The log format to output logs in. For production we recommend 'json' format. | `text` |
+| `log.level` | `OPENFGA_LOG_LEVEL` | `log-level` | string (enum=[`none`, `debug`, `info`, `warn`, `error`, `panic`, `fatal`]) | The log level to set. For production we recommend 'info' format. | `info` |
+| `log.timestampFormat` | `OPENFGA_LOG_TIMESTAMP_FORMAT` | `log-timestamp-format` | string (enum=[`Unix`, `ISO8601`]) | The timestamp format to use for the log output. | `Unix` |
+| `trace.enabled` | `OPENFGA_TRACE_ENABLED` | `trace-enabled` | boolean | Enable tracing. | `false` |
+| `trace.otlp.endpoint` | `OPENFGA_TRACE_OTLP_ENDPOINT,OTEL_EXPORTER_OTLP_TRACES_ENDPOINT,OTEL_EXPORTER_OTLP_ENDPOINT` | `trace-otlp-endpoint,otel-exporter-otlp-traces-endpoint,otel-exporter-otlp-endpoint` | string | The grpc endpoint of the trace collector | `0.0.0.0:4317` |
+| `trace.otlp.tls.enabled` | `OPENFGA_TRACE_OTLP_TLS_ENABLED` | `trace-otlp-tls-enabled` | boolean | Whether to use TLS connection for the trace collector | `false` |
+| `trace.sampleRatio` | `OPENFGA_TRACE_SAMPLE_RATIO,OTEL_TRACES_SAMPLER_ARG` | `trace-sample-ratio,otel-traces-sampler-arg` | number | The fraction of traces to sample. 1 means all, 0 means none. | `0.2` |
+| `trace.serviceName` | `OPENFGA_TRACE_SERVICE_NAME,OTEL_SERVICE_NAME` | `trace-service-name,otel-service-name` | string | The service name included in sampled traces. | `openfga` |
+| `trace.resourceAttributes` | `OTEL_RESOURCE_ATTRIBUTES` | `otel-resource-attributes` | string | Key-value pairs to be used as resource attributes |  |
+| `metrics.enabled` | `OPENFGA_METRICS_ENABLED` | `metrics-enabled` | boolean | enable/disable prometheus metrics on the '/metrics' endpoint | `true` |
+| `metrics.addr` | `OPENFGA_METRICS_ADDR` | `metrics-addr` | string | the host:port address to serve the prometheus metrics server on | `0.0.0.0:2112` |
+| `metrics.enableRPCHistograms` | `OPENFGA_METRICS_ENABLE_RPC_HISTOGRAMS` | `metrics-enable-rpc-histograms` | boolean | enables prometheus histogram metrics for RPC latency distributions | `false` |
+| `checkCache.limit` | `OPENFGA_CHECK_CACHE_LIMIT` | `check-cache-limit` | integer | the size limit (in items) of the cache for Check (queries and iterators) | `10000` |
+| `checkIteratorCache.enabled` | `OPENFGA_CHECK_ITERATOR_CACHE_ENABLED` | `check-iterator-cache-enabled` | boolean | enable caching of datastore iterators. The key is a string representing a database query, and the value is a list of tuples. Each iterator is the result of a database query, for example usersets related to a specific object, or objects related to a specific user, up to a certain number of tuples per iterator. If the request's consistency is HIGHER_CONSISTENCY, this cache is not used. | `false` |
+| `checkIteratorCache.maxResults` | `OPENFGA_CHECK_ITERATOR_CACHE_MAX_RESULTS` | `check-iterator-cache-max-results` | integer | if caching of datastore iterators of Check requests is enabled, this is the limit of tuples to cache per key | `10000` |
+| `checkIteratorCache.ttl` | `OPENFGA_CHECK_ITERATOR_CACHE_TTL` | `check-iterator-cache-ttl` | string (duration) | if caching of datastore iterators of Check requests is enabled, this is the TTL of each value | `10s` |
+| `checkQueryCache.enabled` | `OPENFGA_CHECK_QUERY_CACHE_ENABLED` | `check-query-cache-enabled` | boolean | enable caching of Check requests. The key is a string representing a query, and the value is a boolean. For example, if you have a relation `define viewer: owner or editor`, and the query is Check(user:anne, viewer, doc:1), we'll evaluate the `owner` relation and the `editor` relation and cache both results: (user:anne, viewer, doc:1) -> allowed=true and (user:anne, owner, doc:1) -> allowed=true. The cache is stored in-memory; the cached values are overwritten on every change in the result, and cleared after the configured TTL. This flag improves latency, but turns Check and ListObjects into eventually consistent APIs. If the request's consistency is HIGHER_CONSISTENCY, this cache is not used. | `false` |
+| `checkQueryCache.limit` | `OPENFGA_CHECK_QUERY_CACHE_LIMIT` | `check-query-cache-limit` | integer | DEPRECATED use OPENFGA_CHECK_CACHE_LIMIT. If caching of Check and ListObjects calls is enabled, this is the size limit (in items) of the cache | `10000` |
+| `checkQueryCache.ttl` | `OPENFGA_CHECK_QUERY_CACHE_TTL` | `check-query-cache-ttl` | string (duration) | if caching of Check and ListObjects is enabled, this is the TTL of each value | `10s` |
+| `cacheController.enabled` | `OPENFGA_CACHE_CONTROLLER_ENABLED` | `cache-controller-enabled` | boolean | enable invalidation of check query cache and iterator cache based on recent tuple writes. Invalidation is triggered by Check and List Objects requests, which periodically check the datastore's changelog table for writes and invalidate cache entries earlier than recent writes. Invalidations from Check requests are rate-limited by cache-controller-ttl, whereas List Objects requests invalidate every time if list objects iterator cache is enabled. | `false` |
+| `cacheController.ttl` | `OPENFGA_CACHE_CONTROLLER_TTL` | `cache-controller-ttl` | string (duration) | if cache controller is enabled, this is the minimum time interval for Check requests to trigger cache invalidation. List Objects requests may trigger invalidation even sooner if list objects iterator cache is enabled. | `10s` |
+| `cacheTTLJitterPercentage` | `OPENFGA_CACHE_TTL_JITTER_PERCENTAGE` | `cache-ttl-jitter-percentage` | integer | A percentage (0-100) of the base TTL added as random jitter to each cache entry's TTL, spreading out expirations to prevent thundering herd effects. For example, a value of 10 with a base TTL of 10s means each entry gets a TTL between 10s and 11s. |  |
+| `checkDispatchThrottling.enabled` | `OPENFGA_CHECK_DISPATCH_THROTTLING_ENABLED` | `check-dispatch-throttling-enabled` | boolean | enable throttling when check request's number of dispatches is high | `false` |
+| `checkDispatchThrottling.frequency` | `OPENFGA_CHECK_DISPATCH_THROTTLING_FREQUENCY` | `check-dispatch-throttling-frequency` | string (duration) | the frequency period that the deprioritized throttling queue is evaluated for a check request. A higher value will result in more aggressive throttling | `10µs` |
+| `checkDispatchThrottling.threshold` | `OPENFGA_CHECK_DISPATCH_THROTTLING_THRESHOLD` | `check-dispatch-throttling-threshold` | integer | define the number of recursive operations to occur before getting throttled for a check request | `100` |
+| `checkDispatchThrottling.maxThreshold` | `OPENFGA_CHECK_DISPATCH_THROTTLING_MAX_THRESHOLD` | `check-dispatch-throttling-max-threshold` | integer | define the maximum dispatch threshold beyond above which requests will be throttled. 0 will use the 'dispatchThrottling.threshold' value as maximum | `0` |
+| `listObjectsIteratorCache.enabled` | `OPENFGA_LIST_OBJECTS_ITERATOR_CACHE_ENABLED` | `list-objects-iterator-cache-enabled` | boolean | enable caching of datastore iterators in ListObjects. The key is a string representing a database query, and the value is a list of tuples. Each iterator is the result of a database query, for example usersets related to a specific object, or objects related to a specific user, up to a certain number of tuples per iterator. If the request's consistency is HIGHER_CONSISTENCY, this cache is not used. | `false` |
+| `listObjectsIteratorCache.maxResults` | `OPENFGA_LIST_OBJECTS_ITERATOR_CACHE_MAX_RESULTS` | `list-objects-iterator-cache-max-results` | integer | if caching of datastore iterators of ListObjects requests is enabled, this is the limit of tuples to cache per key | `10000` |
+| `listObjectsIteratorCache.ttl` | `OPENFGA_LIST_OBJECTS_ITERATOR_CACHE_TTL` | `list-objects-iterator-cache-ttl` | string (duration) | if caching of datastore iterators of ListObjects requests is enabled, this is the TTL of each value | `10s` |
+| `listObjectsDispatchThrottling.enabled` | `OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_ENABLED` | `list-objects-dispatch-throttling-enabled` | boolean | enable throttling when ListObjects request's number of dispatches is high. Only applies when pipeline is disabled. | `false` |
+| `listObjectsDispatchThrottling.frequency` | `OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_FREQUENCY` | `list-objects-dispatch-throttling-frequency` | string (duration) | the frequency period that the deprioritized throttling queue is evaluated for a ListObjects request. A higher value will result in more aggressive throttling | `10µs` |
+| `listObjectsDispatchThrottling.threshold` | `OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_THRESHOLD` | `list-objects-dispatch-throttling-threshold` | integer | define the number of recursive operations to occur before getting throttled for a ListObjects request | `100` |
+| `listObjectsDispatchThrottling.maxThreshold` | `OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_MAX_THRESHOLD` | `list-objects-dispatch-throttling-max-threshold` | integer | define the maximum dispatch threshold beyond above which requests will be throttled for a ListObjects request. 0 will use the 'dispatchThrottling.threshold' value as maximum | `0` |
+| `listUsersDispatchThrottling.enabled` | `OPENFGA_LIST_USERS_DISPATCH_THROTTLING_ENABLED` | `list-users-dispatch-throttling-enabled` | boolean | enable throttling when list users request's number of dispatches is high | `false` |
+| `listUsersDispatchThrottling.frequency` | `OPENFGA_LIST_USERS_DISPATCH_THROTTLING_FREQUENCY` | `list-users-dispatch-throttling-frequency` | string (duration) | the frequency period that the deprioritized throttling queue is evaluated for a list users request. A higher value will result in more aggressive throttling | `10µs` |
+| `listUsersDispatchThrottling.threshold` | `OPENFGA_LIST_USERS_DISPATCH_THROTTLING_THRESHOLD` | `list-users-dispatch-throttling-threshold` | integer | define the number of recursive operations to occur before getting throttled for a list users request | `100` |
+| `listUsersDispatchThrottling.maxThreshold` | `OPENFGA_LIST_USERS_DISPATCH_THROTTLING_MAX_THRESHOLD` | `list-users-dispatch-throttling-max-threshold` | integer | define the maximum dispatch threshold beyond above which requests will be throttled for a list users request. 0 will use the 'dispatchThrottling.threshold' value as maximum | `0` |
+| `checkDatastoreThrottle.threshold` | `OPENFGA_CHECK_DATASTORE_THROTTLE_THRESHOLD` | `check-datastore-throttle-threshold` | integer | define the number of datastore requests allowed before being throttled. A value of 0 means throttling is disabled. |  |
+| `checkDatastoreThrottle.duration` | `OPENFGA_CHECK_DATASTORE_THROTTLE_DURATION` | `check-datastore-throttle-duration` | string (duration) | defines the time for which the datastore request will be suspended for being throttled. | `0s` |
+| `listObjectsDatastoreThrottle.threshold` | `OPENFGA_LIST_OBJECTS_DATASTORE_THROTTLE_THRESHOLD` | `list-objects-datastore-throttle-threshold` | integer | define the number of datastore requests allowed before being throttled. A value of 0 means throttling is disabled. |  |
+| `listObjectsDatastoreThrottle.duration` | `OPENFGA_LIST_OBJECTS_DATASTORE_THROTTLE_DURATION` | `list-objects-datastore-throttle-duration` | string (duration) | defines the time for which the datastore request will be suspended for being throttled. | `0s` |
+| `listUsersDatastoreThrottle.threshold` | `OPENFGA_LIST_USERS_DATASTORE_THROTTLE_THRESHOLD` | `list-users-datastore-throttle-threshold` | integer | define the number of datastore requests allowed before being throttled. A value of 0 means throttling is disabled. |  |
+| `listUsersDatastoreThrottle.duration` | `OPENFGA_LIST_USERS_DATASTORE_THROTTLE_DURATION` | `list-users-datastore-throttle-duration` | string (duration) | defines the time for which the datastore request will be suspended for being throttled. | `0s` |
+| `sharedIterator.enabled` | `OPENFGA_SHARED_ITERATOR_ENABLED` | `shared-iterator-enabled` | boolean | enabling sharing of datastore iterators with different consumers. Each iterator is the result of a database query, for example usersets related to a specific object, or objects related to a specific user, up to a certain number of tuples per iterator. | `false` |
+| `sharedIterator.limit` | `OPENFGA_SHARED_ITERATOR_LIMIT` | `shared-iterator-limit` | integer | if shared-iterator-enabled is enabled, this is the limit of the number of iterators that can be shared. | `1000000` |
+| `requestTimeout` | `OPENFGA_REQUEST_TIMEOUT` | `request-timeout` | string (duration) | The timeout duration for a request. | `3s` |
+| `shutdownTimeout` | `OPENFGA_SHUTDOWN_TIMEOUT` | `shutdown-timeout` | string (duration) | The timeout duration for a graceful shutdown. | `10s` |
+| `planner.initialGuess` | `OPENFGA_PLANNER_INITIAL_GUESS` | `planner-initial-guess` | string (duration) | The initial guess for the planners estimation. | `10ms` |
+| `planner.evictionThreshold` | `OPENFGA_PLANNER_EVICTION_THRESHOLD` | `planner-eviction-threshold` |  | How long a planner key can be unused before being evicted. | `0` |
+| `planner.cleanupInterval` | `OPENFGA_PLANNER_CLEANUP_INTERVAL` | `planner-cleanup-interval` | string (duration) | How often the planner checks for stale keys. | `0` |
+
+## Related Sections
+
+<CardGroup>
+  <Card title="Configuring OpenFGA" href="./configure-openfga">
+    Learn more about the different ways to configure OpenFGA
+  </Card>
+  <Card title="Running OpenFGA in Production" href="../../best-practices/running-in-production">
+    Learn the best practices of running OpenFGA in a production environment
+  </Card>
+</CardGroup>

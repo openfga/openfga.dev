@@ -1,0 +1,269 @@
+---
+title: Testing Models
+description: Testing Models
+---
+
+# Testing Models
+
+Every OpenFGA model should be tested before deployment to ensure your authorization model is correctly designed.
+
+The `.fga.yaml` contains tests for OpenFGA authorization models. If you are using Visual Studio Code as your IDE, install the [OpenFGA extension](https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode) to enable syntax coloring and validation.
+
+For complete details on the `.fga.yaml` store file format, see [Store File Format](/docs/modeling/store-file-format).
+
+
+## Define the model and tuples
+
+`.fga.yaml` files have the following top level items:
+
+| Object  | Description |
+| -------- | -------- |
+| `name` (optional)   | A descriptive name for the test file   |
+| `model` or `model_file`   | An OpenFGA model or a reference to an external model file in `fga`, `json` or `mod` format  |
+|`tuples` or `tuple_file` or multiple `tuple_files` (optional) | A set of tuples or a reference to an external tuple file in `json`, `yaml` or `csv` format. These are considered for all tests. |
+|`tests` | A set of tests that verify the return values of OpenFGA API calls |
+
+The example below defines a model and tuples:
+
+```yaml
+name: Model Tests # optional
+
+# model_file: ./model.fga # you can specify an external .fga file, or include it inline
+model: |
+  model
+    schema 1.1
+
+  type user
+
+  type organization
+     relations
+       define member : [user]
+       define admin : [user with non_expired_grant]
+
+   condition non_expired_grant(current_time: timestamp, grant_time: timestamp, grant_duration: duration) {
+     current_time < grant_time + grant_duration
+  }
+
+# You can provide relationship tuples in one of the following ways:
+# - As a single external file using 'tuple_file'
+# - As multiple external files using 'tuple_files'
+# - Inline directly using 'tuples'
+#
+# Examples:
+# tuple_file: ./tuples.yaml           # Single external file
+# tuple_files:                        # Multiple external files
+#   - ./tuples_2.yaml
+#   - ./tuples_3.yaml
+tuples:                                # Inline tuple definitions go here
+
+
+   # Anne is a member of the Acme organization
+  - user: user:anne
+    relation: member
+    object: organization:acme
+
+  # Peter has the admin role from February 2nd 2024 0AM to 1AM
+  - user: user:peter
+    relation: admin
+    object: organization:acme
+    condition: 
+      name: non_expired_grant
+      context: 
+        grant_time : "2024-02-01T00:00:00Z"
+        grant_duration : 1h
+```
+
+## Write tests
+
+Always write tests to verify that the calls your application will make return the results you expect. A good test covers scenarios that verify every relation.
+
+Tests have the following structure:
+
+| Object  | Description |
+| -------- | -------- |
+|`name` (optional) | A descriptive name for the test, like "Organization Membership"  |
+|`tuple_file` or `tuple_files` or `tuples` | A set of tuples that are only considered for the test |
+|`check` | A set of tests for Check calls, each with a user/object and a set of assertions |
+|`list_objects` | A set of tests for ListObjects calls, each one with a user/type and a set of assertions for any number of relations|
+|`list_users` | A set of tests for ListUsers calls, each one with an object and user filter and a set of assertions for the users for any number of relations |
+
+## Write Check tests
+
+Check tests verify the results of the [check API](/docs/getting-started/perform-check) calls to validate access requirements for a user. Each check verification has the following structure:
+
+| Object  | Description |
+| -------- | -------- |
+|`user` | The user type and user id you are checking for access |
+|`object` | The object type and object id related to the user |
+|`context` | A set of tests for contextual parameters used to evaluate [conditions](/docs/modeling/conditions)|
+|`assertions` | A list of `relation:expected-result` pairs |
+|`<relation>: <true or false>` | The name of the relation you want to verify and the expected result |
+
+The following example adds multiple check verifications in every test:
+
+```yaml
+tests:
+  - name: Test
+    check:
+      - user: user:anne
+        object: organization:acme
+        assertions:
+          member: true
+          admin: false
+
+      - user: user:peter
+        object: organization:acme
+        context: 
+          current_time : "2024-02-01T00:10:00Z"
+        assertions:
+          member: false
+          admin: true
+```
+
+## Write List Objects tests
+
+A good test covers scenarios that specify every relation for every object type that your application will need to call the [list-objects API](/docs/getting-started/perform-list-objects) for.
+
+The following verifies the expected results using the `list_objects` option in OpenFGA tests:
+
+```yaml
+    list_objects:
+      - user: user:anne
+        type: organization
+        assertions:
+            member: 
+                - organization:acme
+            admin: []
+              
+      - user: user:peter
+        type: organization
+        context: 
+          current_time : "2024-02-01T00:10:00Z"
+
+        assertions:
+            member: []
+            admin: 
+                - organization:acme
+```
+
+The example above checks that `user:anne` has access to the `organization:acme` as a member and is not an admin of any organization. It also checks that `user:peter`, given the current time is February 1st 2024, 0:10 AM, is not related to any organization as a member, but is related to `organization:acme` as an admin.
+
+## Write List Users tests
+
+List users tests verify the results of the [list-users API](/docs/getting-started/perform-list-users) to validate the users who or do not have access to an object.
+
+Each list users verification has the following structure:
+
+| Object  | Description |
+| -------- | -------- |
+|`object` | The object to list users for |
+|`user_filter` | Specifies the type or userset to filter with, this must only contain one entry |
+|`user_filter.type` | The specific type of results to return with response |
+|`user_filter.relation` | The specific relation of results to return with response. Specify to return usersets (optional) |
+|`context` | A set of tests for contextual parameters used to evaluate [conditions](/docs/modeling/conditions)|
+|`assertions` | A list of assertions to make |
+|`<relation>` | The name of the relation you want to verify |
+|`<relation>.users` | The users who should have the stated relation to the object |
+
+In order to simplify test writing, the following syntax is supported for the various object types included in `users` from the API response:
+
+* `<type>:<id>` to represent a userset that is a user
+* `<type>:<id>#<relation>` to represent a userset that is a relation on a type
+* `<type>:*` to represent a userset that is a type bound public access for a type
+
+The following is an example of using the `list_users` option in OpenFGA tests:
+
+```yaml
+    list_users:
+      - object: organization:acme
+        user_filter:
+          - type: user
+        context: 
+          current_time : "2024-02-02T00:10:00Z"
+        assertions:
+            member:
+              users:
+                - user:anne
+            admin: 
+              users: []
+```
+
+The example above checks that the `organization:acme`, given the current time is February 2nd 2024, it has `user:anne` as a `member`, nobody as an `admin`. If we tried with current time being February 1st 2024, then `user:peter` would be listed as an `admin`.
+
+## Testing with Modular Models
+
+If you are using [Modular Models](/docs/modeling/modular-models), you need to use the `fga.mod` as the `model_file`.
+
+You can define tests for each model in separate `.fga.yaml` files, all of which should reference the common `fga.mod` model. Shared relationship tuples can be placed in a separate file and included using the `tuple_file` option. If needed, you can split tuples across multiple shared files and include them with the `tuple_files` option. Additionally, each `.fga.yaml` file can include module-specific tuples inline.
+
+## Running tests
+
+Tests are run using the `model test` CLI command. For instructions on installing the OpenFGA CLI, visit the [OpenFGA CLI Github repository](https://github.com/openfga/cli).
+
+```shell
+fga model test --tests <filename>.fga.yaml
+```
+
+When all tests pass, a summary with the number of tests passed is displayed. When a test fails, a line for every test is displayed.
+
+```shell
+$ fga model test --tests docs.fga.yaml
+# Test Summary #
+Tests 2/2 passing
+Checks 4/4 passing
+ListObjects 4/4 passing
+
+$ fga model test --tests docs.fga.yaml
+(FAILING) : ListUsers(1/2 passing)
+ⅹ ListUsers(object={Type:organization Id:acme},relation=member,user_filter={Type:user Relation:<nil>}, context:&map[current_time:2024-02-02T00:10:00Z]): expected={Users:[user:ann]}, got={Users:[user:anne]}
+---
+# Test Summary #
+Tests 1/2 passing
+Checks 4/4 passing
+ListObjects 4/4 passing
+```
+
+## Running tests using GitHub Actions
+
+Use the [OpenFGA Model Testing Action](https://github.com/marketplace/actions/openfga-model-testing-action) to run tests from CI/CD flows in GitHub.
+
+Set the path to the `.fga.yaml` file as the `store-file-path` parameter when configuring the action:
+
+```yaml
+name: Test Action
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Run test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v4
+      - name: Run Test
+        uses: openfga/action-openfga-test@v0.1.0
+        with:
+          store-file-path: ./example/model.fga.yaml
+```
+
+## Related Sections
+
+<CardGroup>
+  <Card title="Use the FGA CLI" href="/docs/getting-started/cli">
+    Learn how to use the FGA CLI.
+  </Card>
+  <Card title="Super Admin Example" href="https://github.com/openfga/sample-stores/blob/main/stores/superadmin/store.fga.yaml">
+    Define a model and tests for modeling a super-admin role.
+  </Card>
+  <Card title="Banking Example" href="https://github.com/openfga/sample-stores/blob/main/stores/banking/store.fga.yaml">
+    Define a model and tests for banking application.
+  </Card>
+  <Card title="Entitlements Example" href="https://github.com/openfga/sample-stores/blob/main/stores/advanced-entitlements/store.fga.yaml">
+    Define a model and tests for B2B application entitlements.
+  </Card>
+</CardGroup>

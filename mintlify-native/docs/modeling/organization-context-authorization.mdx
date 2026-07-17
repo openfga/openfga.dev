@@ -1,0 +1,702 @@
+---
+description: Modeling authorization through organization context
+---
+
+import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx';
+import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
+import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
+
+# Authorization Through Organization Context
+
+This section tackles cases where a user may have access to a particular resource through their presence in a particular organization, and they should have that access only when logged in within the context of that organization.
+
+<Note>
+Contextual Tuples should be used when modeling cases where a user's access to an object depends on the context of their request. For example:
+
+- An employee's ability to access a document when they are connected to the organization VPN or the api call is originating from an internal IP address.
+- A support engineer is only able to access a user's account during office hours.
+- If a user belongs to multiple organizations, they are only able to access a resource if they set a specific organization in their current context.
+</Note>
+
+## Before You Start
+
+To follow this guide, you should be familiar with some OpenFGA concepts.
+
+### OpenFGA Concepts
+
+- A **Relation**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- A **Check Request**: is a call to the OpenFGA check endpoint that returns whether the user has a certain relationship with an object.
+- A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
+- A **Contextual Tuple**: a tuple that can be added to a check request, and only exist within the context of that particular request.
+
+You also need to be familiar with:
+
+- **Modeling Object-to-Object Relationships**: You need to know how to create relationships between objects and how that might affect a user's relationships to those objects. [Learn more →](/docs/modeling/building-blocks/object-to-object-relationships)
+- **Modeling Multiple Restrictions**: You need to know how to model requiring multiple authorizations before allowing users to perform certain actions. [Learn more →](/docs/modeling/multiple-restrictions)
+
+### Scenario
+
+For the scope of this guide, we are going to consider the following scenario.
+
+Consider you are building the authorization model for a multi-tenant project management system.
+
+In this particular system:
+
+- projects are owned and managed by companies
+- users can be members of multiple companies
+- project access is governed by the user's role in the organization that manages the project
+
+In order for a user to access a project:
+
+- The project needs to be managed by an organization the user is a member of
+- A project is owned by a single organization
+- A project can be shared with partner companies (that are able to view, edit but not perform admin actions, such as deletion, on the project)
+- The user should have a role that grants access to the project
+- The user should be logged in within the context of that organization
+
+We will start with the following authorization model:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'organization',
+        relations: {
+          member: {
+            this: {},
+          },
+          project_manager: {
+            this: {},
+          },
+          project_editor: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
+            project_manager: { directly_related_user_types: [{ type: 'user' }] },
+            project_editor: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+      {
+        type: 'project',
+        relations: {
+          owner: {
+            this: {},
+          },
+          partner: {
+            this: {},
+          },
+          manager: {
+            tupleToUserset: {
+              tupleset: {
+                object: '',
+                relation: 'owner',
+              },
+              computedUserset: {
+                object: '',
+                relation: 'project_manager',
+              },
+            },
+          },
+          editor: {
+            union: {
+              child: [
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'owner',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'project_editor',
+                    },
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'partner',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'project_editor',
+                    },
+                  },
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'manager',
+                  },
+                },
+              ],
+            },
+          },
+          can_delete: {
+            computedUserset: {
+              object: '',
+              relation: 'manager',
+            },
+          },
+          can_edit: {
+            computedUserset: {
+              object: '',
+              relation: 'editor',
+            },
+          },
+          can_view: {
+            computedUserset: {
+              object: '',
+              relation: 'editor',
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'organization' }] },
+            partner: { directly_related_user_types: [{ type: 'organization' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+<details>
+<summary>
+
+We are considering the case that:
+
+- Anne has a project manager role at organizations A, B and C
+- Beth has a project manager role at organization B
+- Carl has a project manager role at organization C
+- Project X is owned by organization A
+- Project X is shared with organization B
+
+</summary>
+
+The above state translates to the following relationship tuples:
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: 'Anne has a `project manager` role at organization A',
+      user: 'user:anne',
+      relation: 'project_manager',
+      object: 'organization:A',
+    },
+    {
+      _description: 'Anne has a `project manager` role at organization B',
+      user: 'user:anne',
+      relation: 'project_manager',
+      object: 'organization:B',
+    },
+    {
+      _description: 'Anne has a `project manager` role at organization C',
+      user: 'user:anne',
+      relation: 'project_manager',
+      object: 'organization:C',
+    },
+    {
+      _description: 'Beth has a `project manager` role at organization B',
+      user: 'user:beth',
+      relation: 'project_manager',
+      object: 'organization:B',
+    },
+    {
+      _description: 'Carl has a `project manager` role at organization C',
+      user: 'user:carl',
+      relation: 'project_manager',
+      object: 'organization:C',
+    },
+    {
+      _description: 'Organization A owns Project X',
+      user: 'organization:A',
+      relation: 'owner',
+      object: 'project:X',
+    },
+    {
+      _description: 'Project X is shared with Organization B',
+      user: 'organization:B',
+      relation: 'partner',
+      object: 'project:X',
+    },
+  ]}
+  skipSetup={true}
+/>
+
+</details>
+
+### Requirements
+
+- When logging in within the context of organization A, Anne should be able to view and delete project X.
+- When logging in within the context of organization B, Anne should be able to view, but not delete, project X.
+- When logging in within the context of organization C, Anne should not be able to view nor delete project X.
+- When logging in within the context of organization B, Beth should be able to view, but not delete, project X.
+- Carl should not be able to view nor delete project X.
+
+## Step By Step
+
+In order to solve for the requirements above, we will break the problem down into three steps:
+
+1. [Understand relationships without contextual tuples](#understand-relationships-without-contextual-data). For example, we need to ensure that Anne can view and delete "Project X".
+2. [Take organization context into consideration](#take-organization-context-into-consideration). This includes [extending the authorization model](#extend-the-authorization-model) and a temporary step of [adding the required tuples to mark that Anne is in an approved context](#add-the-required-tuples-to-mark-that-anne-is-in-an-approved-context).
+3. [Use contextual tuples for context related checks](#use-contextual-tuples-for-context-related-checks).
+
+### Understand Relationships Without Contextual Data
+
+With the authorization model and relationship tuples shown above, OpenFGA has all the information needed to ensure that Anne can view and delete "Project X".
+
+We can verify that using the following checks:
+
+- Anne can view Project X
+  <CheckRequestViewer user={'user:anne'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
+- Anne can delete Project X
+  <CheckRequestViewer user={'user:anne'} relation={'can_delete'} object={'project:X'} allowed={true} skipSetup={true} />
+
+<details>
+  <summary>More checks</summary>
+
+  - Beth can view Project X
+  <CheckRequestViewer user={'user:beth'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
+  - Beth cannot delete Project X
+  <CheckRequestViewer user={'user:beth'} relation={'can_delete'} object={'project:X'} allowed={false} skipSetup={true} />
+  - Carl cannot view Project X
+  <CheckRequestViewer user={'user:carl'} relation={'can_view'} object={'project:X'} allowed={false} skipSetup={true} />
+  - Carl cannot delete Project X
+  <CheckRequestViewer user={'user:carl'} relation={'can_delete'} object={'project:X'} allowed={false} skipSetup={true} />
+</details>
+
+Note that so far, we have not prevented Anne from viewing "Project X" even if Anne is viewing it from the context of Organization C.
+
+### Take Organization Context Into Consideration
+
+##### Extend The Authorization Model
+
+In order to add a restriction based on the current organization context, we will make use of OpenFGA configuration language's support for [intersection](/docs/configuration-language#the-intersection-operator) to specify that a user has to both have access _and_ be in the correct context in order to be authorized.
+
+We can do that by introducing some new relations and updating existing relation definitions:
+
+1. On the "organization" type
+
+- Add "user_in_context" relation to mark that a user's access is being evaluated within that particular context
+- Update the "project_manager" relation to require that the user be in the correct context (by adding `and user_in_context` to the relation definition)
+- Considering that OpenFGA does not yet support multiple logical operations within the same definition, we will split "project_editor" into two:
+  - "base_project_editor" editor which will contain the original relation definition (`[user] or project_manager`)
+  - "project_editor" which will require that a user has both the "base_project_editor" and the "user_in_context" relations
+
+The "organization" type definition then becomes:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type: 'organization',
+    relations: {
+      member: {
+        this: {},
+      },
+      project_manager: {
+        intersection: {
+          child: [
+            {
+              this: {},
+            },
+            {
+              computedUserset: {
+                object: '',
+                relation: 'user_in_context',
+              },
+            },
+          ],
+        },
+      },
+      base_project_editor: {
+        union: {
+          child: [
+            {
+              this: {},
+            },
+            {
+              computedUserset: {
+                object: '',
+                relation: 'project_manager',
+              },
+            },
+          ],
+        },
+      },
+      project_editor: {
+        intersection: {
+          child: [
+            {
+              computedUserset: {
+                object: '',
+                relation: 'base_project_editor',
+              },
+            },
+            {
+              computedUserset: {
+                object: '',
+                relation: 'user_in_context',
+              },
+            },
+          ],
+        },
+      },
+      user_in_context: {
+        this: {},
+      },
+    },
+    metadata: {
+      relations: {
+        member: { directly_related_user_types: [{ type: 'user' }] },
+        project_manager: { directly_related_user_types: [{ type: 'user' }] },
+        base_project_editor: { directly_related_user_types: [{ type: 'user' }] },
+        user_in_context: { directly_related_user_types: [{ type: 'user' }] },
+      },
+    },
+  }}
+  skipVersion={true}
+/>
+
+2. On the "project" type
+
+- Nothing will need to be done, as it will inherit the updated "project_manager" and "project_editor" relation definitions from "organization"
+
+##### Add The Required Tuples To Mark That Anne Is In An Approved Context
+
+Now that we have updated our authorization model to take the current user's organization context into consideration, you will notice that Anne has lost access because nothing indicates that Anne is authorizing from the context of an organization. You can verify that by issuing the following check:
+
+<CheckRequestViewer user={'user:anne'} relation={'can_view'} object={'project:X'} allowed={false} skipSetup={true} />
+
+In order for Anne to be authorized, a tuple indicating Anne's current organization context will need to be present:
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: 'Anne is authorizing from the context of organization:A',
+      user: 'user:anne',
+      relation: 'user_in_context',
+      object: 'organization:A',
+    },
+  ]}
+/>
+
+We can verify this by running a check request
+
+<CheckRequestViewer user={'user:anne'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
+
+### Use Contextual Tuples For Context Related Checks
+
+Now that we know we can authorize based on present state, we have a different problem to solve. We are storing the tuples in the state in order for OpenFGA to evaluate them, which fails in certain use-cases where Anne can be connected to two different contexts in different browser windows at the same time, as each has a different context at the same time, so if they are written to the state, which will OpenFGA use to compute Anne's access to the project?
+
+For Check calls, OpenFGA has a concept called "Contextual Tuples". Contextual Tuples are tuples that do **not** exist in the system state and are not written beforehand to OpenFGA. They are tuples that are sent alongside the Check request and will be treated as _if_ they already exist in the state for the context of that particular Check call. That means that Anne can be using two different sessions, each within a different organization context, and OpenFGA will correctly respond to each one with the correct authorization decision.
+
+First, we will undo the [temporary step](#add-the-required-tuples-to-mark-that-anne-is-in-an-approved-context) and remove the stored tuples for which Anne has a `user_in_context` relation with `organization:A`.
+
+<WriteRequestViewer
+  deleteRelationshipTuples={[
+    {
+      _description: 'Delete stored tuples where Anne is authorizing from the context of organization:A',
+      user: 'user:anne',
+      relation: 'user_in_context',
+      object: 'organization:A',
+    },
+  ]}
+/>
+
+Next, when Anne is connecting from the context of organization A, OpenFGA will return `{"allowed":true}`:
+
+<CheckRequestViewer
+  user={'user:anne'}
+  relation={'can_view'}
+  object={'project:X'}
+  allowed={true}
+  skipSetup={true}
+  contextualTuples={[
+    {
+      user: 'user:anne',
+      relation: 'user_in_context',
+      object: 'organization:A',
+    },
+  ]}
+/>
+
+When Anne is connecting from the context of organization C, OpenFGA will return `{"allowed":false}`:
+
+<CheckRequestViewer
+  user={'user:anne'}
+  relation={'can_view'}
+  object={'project:X'}
+  allowed={false}
+  skipSetup={true}
+  contextualTuples={[
+    {
+      user: 'user:anne',
+      relation: 'user_in_context',
+      object: 'organization:C',
+    },
+  ]}
+/>
+
+Using this, you can check that the following requirements are satisfied:
+
+| User | Organization Context | Action | Allowed |
+| ---- | -------------------- | ------ | ------- |
+| Anne | Organization A       | View   | Yes     |
+| Anne | Organization B       | View   | Yes     |
+| Anne | Organization C       | View   | No      |
+| Anne | Organization A       | Delete | Yes     |
+| Anne | Organization B       | Delete | No      |
+| Anne | Organization C       | Delete | No      |
+| Beth | Organization B       | View   | Yes     |
+| Beth | Organization B       | Delete | No      |
+| Carl | Organization C       | View   | No      |
+| Carl | Organization C       | Delete | No      |
+
+## Summary
+
+<details>
+<summary>
+  Final version of the Authorization Model and Relationship tuples
+</summary>
+
+<AuthzModelSnippetViewer configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'organization',
+        relations: {
+          member: {
+            this: {}
+          },
+          project_manager: {
+            intersection: {
+              child: [
+                {
+                  this: {}
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'user_in_context'
+                  }
+                }
+              ]
+            }
+          },
+          base_project_editor: {
+            union: {
+              child: [
+                {
+                  this: {}
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'project_manager'
+                  }
+                }
+              ]
+            }
+          },
+          project_editor: {
+            intersection: {
+              child: [
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'base_project_editor'
+                  }
+                },
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'user_in_context'
+                  }
+                }
+              ]
+            }
+          },
+          user_in_context: {
+            this: {}
+          }
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
+            project_manager: { directly_related_user_types: [{ type: 'user' }] },
+            base_project_editor: { directly_related_user_types: [{ type: 'user' }] },
+            user_in_context: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+      {
+        type: 'project',
+        relations: {
+          owner: {
+            this: {}
+          },
+          partner: {
+            this: {}
+          },
+          manager: {
+            tupleToUserset: {
+              tupleset: {
+                object: '',
+                relation: 'owner'
+              },
+              computedUserset: {
+                object: '',
+                relation: 'project_manager'
+              }
+            }
+          },
+          editor: {
+            union: {
+              child: [
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'manager'
+                  }
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'owner'
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'project_editor'
+                    }
+                  }
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'partner'
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'project_editor'
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          can_delete: {
+            computedUserset: {
+              object: '',
+              relation: 'manager'
+            }
+          },
+          can_edit: {
+            computedUserset: {
+              object: '',
+              relation: 'editor'
+            }
+          },
+          can_view: {
+            computedUserset: {
+              object: '',
+              relation: 'editor'
+            }
+          }
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'organization' }] },
+            partner: { directly_related_user_types: [{ type: 'organization' }] },
+          },
+        },
+      }
+    ]
+  }} />
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: 'Anne has a `project manager` role at organization A',
+      user: 'user:anne',
+      relation: 'project_manager',
+      object: 'organization:A',
+    },
+    {
+      _description: 'Anne has a `project manager` role at organization B',
+      user: 'user:anne',
+      relation: 'project_manager',
+      object: 'organization:B',
+    },
+    {
+      _description: 'Anne has a `project manager` role at organization C',
+      user: 'user:anne',
+      relation: 'project_manager',
+      object: 'organization:C',
+    },
+    {
+      _description: 'Beth has a `project manager` role at organization B',
+      user: 'user:beth',
+      relation: 'project_manager',
+      object: 'organization:B',
+    },
+    {
+      _description: 'Carl has a `project manager` role at organization C',
+      user: 'user:carl',
+      relation: 'project_manager',
+      object: 'organization:C',
+    },
+    {
+      _description: 'Organization A owns Project X',
+      user: 'organization:A',
+      relation: 'owner',
+      object: 'project:X',
+    },
+    {
+      _description: 'Project X is shared with Organization B',
+      user: 'organization:B',
+      relation: 'partner',
+      object: 'project:X',
+    },
+  ]}
+  skipSetup={true}
+/>
+
+</details>
+
+<Warning>
+Contextual tuples:
+
+- Are not persisted in the store.
+- Are only supported on the [Check API endpoint](/api/service#Relationship%20Queries/Check) and [ListObjects API endpoint](/api/service#Relationship%20Queries/ListObjects). They are not supported on read, expand and other endpoints.
+- If you are using the [Read Changes API endpoint](/api/service#Relationship%20Tuples/ReadChanges) to build a permission aware search index, note that it will not be trivial to take contextual tuples into account.
+</Warning>
+
+## Related Sections
+
+<CardGroup>
+  <Card title="Modeling with Multiple Restrictions" href="/docs/modeling/multiple-restrictions">
+    Learn how to model requiring multiple relationships before users are authorized to perform certain actions.
+  </Card>
+  <Card title="Contextual and Time-Based Authorization" href="/docs/modeling/contextual-time-based-authorization">
+    Learn how to authorize access that depends on dynamic or contextual criteria.
+  </Card>
+  <Card title="OpenFGA Check API" href="/api/service#Relationship%20Queries/Check">
+    Details on the Check API in the OpenFGA reference guide.
+  </Card>
+</CardGroup>

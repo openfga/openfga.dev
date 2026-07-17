@@ -1,0 +1,290 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "almond",
+  "name": "OpenFGA",
+  "logo": {
+    "light": "/images/img/openfga_logo.svg",
+    "dark": "/images/img/openfga_logo-white.svg",
+    "href": "/"
+  },
+  "colors": {
+    "primary": "#79ed83",
+    "light": "#d3ffd7",
+    "dark": "#558f69"
+  },
+  "appearance": {
+    "default": "dark",
+    "strict": true
+  },
+  "background": {
+    "color": {
+      "dark": "#272b33"
+    }
+  },
+  "favicon": "/images/img/openfga-icon.svg",
+  "seo": {
+    "metatags": {
+      "og:image": "https://openfga.dev/img/og-rich-embed.png"
+    }
+  },
+  "navbar": {
+    "links": [
+      {
+        "type": "github",
+        "href": "https://github.com/openfga/openfga"
+      },
+      {
+        "label": "Twitter",
+        "href": "https://twitter.com/openfga",
+        "icon": "twitter"
+      },
+      {
+        "label": "CNCF Slack",
+        "href": "https://openfga.dev/community",
+        "icon": "slack"
+      }
+    ]
+  },
+  "contextual": {
+    "options": ["assistant"]
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Home",
+        "icon": "house",
+        "pages": [
+          "index"
+        ]
+      },
+      {
+        "tab": "Docs",
+        "icon": "book-open",
+        "groups": [
+          {
+            "group": "Fga",
+            "pages": [
+              "docs/fga"
+            ]
+          },
+          {
+            "group": "Authorization Concepts",
+            "pages": [
+              "docs/authorization-concepts"
+            ]
+          },
+          {
+            "group": "Concepts",
+            "pages": [
+              "docs/concepts"
+            ]
+          },
+          {
+            "group": "Configuration Language",
+            "pages": [
+              "docs/configuration-language"
+            ]
+          },
+          {
+            "group": "Community",
+            "pages": [
+              "docs/community"
+            ]
+          },
+          {
+            "group": "Getting Started",
+            "pages": [
+              "docs/getting-started",
+              {
+                "group": "Setup OpenFGA",
+                "pages": [
+                  "docs/getting-started/setup-openfga/overview",
+                  "docs/getting-started/setup-openfga/configure-openfga",
+                  "docs/getting-started/setup-openfga/configuration",
+                  "docs/getting-started/setup-openfga/docker",
+                  "docs/getting-started/setup-openfga/kubernetes",
+                  "docs/getting-started/setup-openfga/access-control",
+                  "docs/getting-started/setup-openfga/playground",
+                  "docs/getting-started/setup-openfga/reporting-runtime-issues"
+                ]
+              },
+              "docs/getting-started/install-sdk",
+              "docs/getting-started/create-store",
+              "docs/getting-started/setup-sdk-client",
+              "docs/getting-started/configure-model",
+              "docs/getting-started/update-tuples",
+              "docs/getting-started/perform-check",
+              "docs/getting-started/perform-list-objects",
+              "docs/getting-started/perform-list-users",
+              "docs/getting-started/cli",
+              "docs/getting-started/framework",
+              "docs/getting-started/immutable-models",
+              "docs/getting-started/tuples-api-best-practices",
+              "docs/getting-started/configure-telemetry"
+            ]
+          },
+          {
+            "group": "Modeling",
+            "pages": [
+              "docs/modeling",
+              "docs/modeling/overview",
+              "docs/modeling/getting-started",
+              "docs/modeling/direct-access",
+              "docs/modeling/roles-and-permissions",
+              "docs/modeling/custom-roles",
+              "docs/modeling/user-groups",
+              "docs/modeling/public-access",
+              "docs/modeling/parent-child",
+              "docs/modeling/blocklists",
+              "docs/modeling/conditions",
+              "docs/modeling/contextual-time-based-authorization",
+              "docs/modeling/token-claims-contextual-tuples",
+              "docs/modeling/organization-context-authorization",
+              "docs/modeling/multiple-restrictions",
+              "docs/modeling/modular-models",
+              "docs/modeling/store-file-format",
+              "docs/modeling/testing-models",
+              {
+                "group": "Building Blocks",
+                "pages": [
+                  "docs/modeling/building-blocks/overview",
+                  "docs/modeling/building-blocks/direct-relationships",
+                  "docs/modeling/building-blocks/object-to-object-relationships",
+                  "docs/modeling/building-blocks/concentric-relationships",
+                  "docs/modeling/building-blocks/usersets"
+                ]
+              },
+              {
+                "group": "Advanced Patterns",
+                "pages": [
+                  "docs/modeling/advanced/overview",
+                  "docs/modeling/advanced/gdrive",
+                  "docs/modeling/advanced/github",
+                  "docs/modeling/advanced/slack",
+                  "docs/modeling/advanced/entitlements",
+                  "docs/modeling/advanced/iot"
+                ]
+              },
+              {
+                "group": "Migrating",
+                "pages": [
+                  "docs/modeling/migrating/overview",
+                  "docs/modeling/migrating/migrating-models",
+                  "docs/modeling/migrating/migrating-relations"
+                ]
+              },
+              {
+                "group": "Authorization for Agents",
+                "pages": [
+                  "docs/modeling/agents",
+                  "docs/modeling/agents/overview",
+                  "docs/modeling/agents/agents-as-principals",
+                  "docs/modeling/agents/rag-authorization",
+                  "docs/modeling/agents/mcp-authorization",
+                  "docs/modeling/agents/task-based-authorization"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Interacting",
+            "pages": [
+              "docs/interacting",
+              "docs/interacting/overview",
+              "docs/interacting/relationship-queries",
+              "docs/interacting/contextual-tuples",
+              "docs/interacting/consistency",
+              "docs/interacting/managing-user-access",
+              "docs/interacting/managing-group-access",
+              "docs/interacting/managing-group-membership",
+              "docs/interacting/managing-relationships-between-objects",
+              "docs/interacting/search-with-permissions",
+              "docs/interacting/read-tuple-changes",
+              "docs/interacting/authzen"
+            ]
+          },
+          {
+            "group": "Best Practices",
+            "pages": [
+              "docs/best-practices",
+              "docs/best-practices/overview",
+              "docs/best-practices/adoption-patterns",
+              "docs/best-practices/modeling-design-principles",
+              "docs/best-practices/modeling-roles",
+              "docs/best-practices/modeling-abac",
+              "docs/best-practices/running-in-production",
+              "docs/best-practices/source-of-truth"
+            ]
+          },
+          {
+            "group": "Industries",
+            "pages": [
+              "docs/industries",
+              "docs/industries/overview",
+              "docs/industries/healthcare",
+              "docs/industries/banking",
+              "docs/industries/ecommerce",
+              "docs/industries/human-resources",
+              "docs/industries/crm",
+              "docs/industries/lms",
+              "docs/industries/applicant-tracking-system"
+            ]
+          },
+          {
+            "group": "Use Cases",
+            "pages": [
+              "docs/use-cases",
+              "docs/use-cases/overview",
+              "docs/use-cases/multi-tenant-saas",
+              "docs/use-cases/microservices-authorization",
+              "docs/use-cases/ai-agent-authorization",
+              "docs/use-cases/rag-authorization",
+              "docs/use-cases/mcp-server-authorization"
+            ]
+          },
+          {
+            "group": "Adopters",
+            "pages": [
+              "docs/adopters",
+              "docs/adopters/overview",
+              "docs/adopters/grafana",
+              "docs/adopters/docker",
+              "docs/adopters/agicap",
+              "docs/adopters/headspace",
+              "docs/adopters/openlane",
+              "docs/adopters/read-ai",
+              "docs/adopters/vitrolife",
+              "docs/adopters/zuplo"
+            ]
+          },
+          {
+            "group": "Learn",
+            "pages": [
+              "docs/learn",
+              "docs/learn/overview",
+              "docs/learn/zanzibar",
+              "docs/learn/rebac",
+              "docs/learn/rbac-vs-rebac",
+              "docs/learn/abac-vs-rebac",
+              "docs/learn/fine-grained-authorization",
+              "docs/learn/policy-engine"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API",
+        "icon": "square-terminal",
+        "openapi": "/api/openfga-openapi3.json"
+      },
+      {
+        "tab": "Blog",
+        "icon": "newspaper",
+        "href": "https://openfga.dev/blog"
+      }
+    ]
+  },
+  "search": {
+    "prompt": "Ask about OpenFGA"
+  }
+}

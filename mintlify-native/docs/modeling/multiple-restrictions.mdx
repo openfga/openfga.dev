@@ -1,0 +1,268 @@
+---
+description: Modeling system that requires multiple authorizations before allowing users to perform actions on particular objects
+---
+
+import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx';
+import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
+
+# Multiple Restrictions
+
+In this guide we are going to model system that requires multiple authorizations before allowing users to perform actions on particular objects using OpenFGA.
+For example, _users_ are allowed to delete a `document` if both of these conditions are met:
+
+- they are a member of the organization that owns the document
+- they have writer permissions on the document
+
+In this way, we prevent other users from deleting such document.
+
+<Note>
+**When to use**
+
+This is useful when:
+
+- Limiting certain actions (such as deleting or reading sensitive document) to privileged users.
+- Adding restrictions and requiring multiple authorization paths before granting access.
+</Note>
+
+## Before You Start
+
+In order to understand this guide correctly you must be familiar with some OpenFGA concepts and know how to develop the things that we will list below.
+
+<details>
+<summary>
+
+You will start with the _authorization model_ below,
+it represents a `document` _type_ that can have users
+**related** as `writer` and `organizations` related as `owner`.
+Document's `can_write` relation is based on whether user is a writer to the document. The `organization` type can have users related as `member`.
+
+Let us also assume that we have:
+
+- A `document` called "planning" owned by the ABC `organization`.
+- Becky is a member of the ABC `organization`.
+- Carl is a member of the XYZ `organization`.
+- Becky and Carl both have `writer` access to the "planning" `document`.
+
+</summary>
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'document',
+        relations: {
+          owner: {
+            this: {},
+          },
+          writer: {
+            this: {},
+          },
+          can_write: {
+            computedUserset: {
+              object: '',
+              relation: 'writer',
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'organization' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+      {
+        type: 'organization',
+        relations: {
+          member: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+The current state of the system is represented by the following relationship tuples being in the system already:
+
+```json
+[
+  {
+    "user": "organization:ABC",
+    "relation": "owner",
+    "object": "document:planning"
+  },
+  {
+    "user": "user:becky",
+    "relation": "writer",
+    "object": "document:planning"
+  },
+  {
+    "user": "user:carl",
+    "relation": "writer",
+    "object": "document:planning"
+  },
+  {
+    "user": "user:becky",
+    "relation": "member",
+    "object": "organization:ABC"
+  },
+  {
+    "user": "user:carl",
+    "relation": "member",
+    "object": "organization:XYZ"
+  }
+]
+```
+
+<Note>
+Note that we assign the organization, not the organization's members, as owner to the planning document.
+</Note>
+
+---
+
+In addition, you will need to know the following:
+
+### Modeling Parent-Child Objects
+
+You need to know how to model access based on parent-child relationships, e.g.: folders and documents. [Learn more →](/docs/modeling/parent-child)
+
+### Modeling Roles And Permissions
+
+You need to know how to model roles for users at the object level and model permissions for those roles. [Learn more →](/docs/modeling/roles-and-permissions)
+
+### OpenFGA Concepts
+
+- A **Type**: a class of objects that have similar characteristics
+- A **User**: an entity in the system that can be related to an object
+- A **Relation**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An **Object**: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
+- A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
+- [Intersection Operator](/docs/configuration-language#the-intersection-operator): the intersection operator can be used to indicate a relationship exists if the user is in all the sets of users
+
+</details>
+
+## Step By Step
+
+With the above authorization model and relationship tuples, OpenFGA will correctly respond with `{"allowed":true}` when a check request is called to see if Carl and Becky can write this `document`.
+
+We can verify that by issuing two check requests:
+
+<CheckRequestViewer user={'user:becky'} relation={'can_write'} object={'document:planning'} allowed={true} />
+
+<CheckRequestViewer user={'user:carl'} relation={'can_write'} object={'document:planning'} allowed={true} />
+
+What we would like to do is offer a way so that a document can be written by Becky and Carl, but only writers who are also members of the organization that owns the document can remove it.
+
+To do this, we need to:
+
+1. [Add can_delete relation to only allow writers that are members of the ownership organization](#01-add-can_delete-relation-to-only-allow-writers-that-are-members-of-the-ownership-organization)
+2. [Verify that our solutions work](#02-verify-that-our-solutions-work)
+
+### 01. Add can_delete Relation To Only Allow Writers That Are Members Of The Ownership Organization
+
+The first step is to add the relation definition for `can_delete` so that it requires users to be both `writer` and `member` of the owner. This is accomplished via the keyword [`and`](/docs/configuration-language#the-intersection-operator).
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'document',
+        relations: {
+          owner: {
+            this: {},
+          },
+          writer: {
+            this: {},
+          },
+          can_write: {
+            computedUserset: {
+              object: '',
+              relation: 'writer',
+            },
+          },
+          can_delete: {
+            intersection: {
+              child: [
+                {
+                  computedUserset: {
+                    object: '',
+                    relation: 'writer',
+                  },
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      object: '',
+                      relation: 'owner',
+                    },
+                    computedUserset: {
+                      object: '',
+                      relation: 'member',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            owner: { directly_related_user_types: [{ type: 'organization' }] },
+            writer: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+      {
+        type: 'organization',
+        relations: {
+          member: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+### 02. Verify That Our Solutions Work
+
+To verify that our solutions work, we need to check that Becky can delete the planning document because she is a writer AND she is a member of organization:ABC that owns the planning document.
+
+<CheckRequestViewer user={'user:becky'} relation={'can_delete'} object={'document:planning'} allowed={true} />
+
+However, Carl cannot delete the planning document because although he is a writer, Carl is not a member of organization:ABC that owns the planning document.
+
+<CheckRequestViewer user={'user:carl'} relation={'can_delete'} object={'document:planning'} allowed={false} />
+
+## Related Sections
+
+<CardGroup>
+  <Card title="Modeling: User Groups" href="/docs/modeling/user-groups">
+    Learn about how to add group members.
+  </Card>
+  <Card title="Modeling: Blocklists" href="/docs/modeling/blocklists">
+    Learn about how to set block lists.
+  </Card>
+  <Card title="Modeling: Public Access" href="/docs/modeling/public-access">
+    Learn about model public access.
+  </Card>
+</CardGroup>

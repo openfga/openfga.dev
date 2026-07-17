@@ -1,0 +1,170 @@
+---
+title: "Install SDK Client"
+description: "Installing SDK client"
+---
+
+# Install SDK Client
+
+To get started, install the OpenFGA SDK packages.
+
+<Tabs>
+  <Tab title="Node.js">
+    You can find the Node.js package on npm at: [@openfga/sdk](https://www.npmjs.com/package/@openfga/sdk).
+
+    Using [npm](https://www.npmjs.com/):
+
+    ```bash
+    npm install @openfga/sdk
+    ```
+
+    Using [yarn](https://yarnpkg.com):
+
+    ```bash
+    yarn add @openfga/sdk
+    ```
+  </Tab>
+
+  <Tab title="Go">
+    You can find the Go package on GitHub at: [@openfga/go-sdk](https://github.com/openfga/go-sdk).
+
+    To install:
+
+    ```bash
+    go get -u github.com/openfga/go-sdk
+    ```
+
+    In your code, import the module and use it:
+
+    ```go
+    import (
+        openfga "github.com/openfga/go-sdk"
+    )
+
+    func main() {
+        configuration, err := openfga.NewConfiguration(openfga.Configuration{
+            ApiUrl: os.Getenv("FGA_API_URL"), // required, e.g. https://api.fga.example
+        })
+        if err != nil {
+            // .. Handle error
+        }
+    }
+    ```
+
+    Then run:
+
+    ```bash
+    go mod tidy
+    ```
+  </Tab>
+
+  <Tab title=".NET">
+    The OpenFGA .NET SDK is available on [NuGet](https://www.nuget.org/packages/OpenFga.Sdk).
+
+    Using the dotnet CLI:
+
+    ```bash
+    dotnet add package OpenFGA.Sdk
+    ```
+
+    Using the Package Manager Console inside Visual Studio:
+
+    ```powershell
+    Install-Package OpenFGA.Sdk
+    ```
+
+    You can also search for and install `OpenFGA.Sdk` in Visual Studio, Visual Studio for Mac, or IntelliJ Rider's package manager UI.
+  </Tab>
+
+  <Tab title="Python">
+    The OpenFGA Python SDK is available on [PyPI](https://pypi.org/project/openfga-sdk).
+
+    To install:
+
+    ```bash
+    pip3 install openfga_sdk
+    ```
+
+    In your code, import the module:
+
+    ```python
+    import openfga_sdk
+    ```
+  </Tab>
+
+  <Tab title="Java">
+    You can find the Java package on [Maven Central](https://central.sonatype.com/artifact/dev.openfga/openfga-sdk).
+
+    Using Maven:
+
+    ```xml
+    <dependency>
+        <groupId>dev.openfga</groupId>
+        <artifactId>openfga-sdk</artifactId>
+        <version>0.3.1</version>
+    </dependency>
+    ```
+
+    Using Gradle:
+
+    ```groovy
+    implementation 'dev.openfga:openfga-sdk:0.3.1'
+    ```
+  </Tab>
+
+  <Tab title="CLI">
+    The OpenFGA CLI is available on [GitHub](https://github.com/openfga/cli).
+
+    **Homebrew:**
+
+    ```bash
+    brew install openfga/tap/fga
+    ```
+
+    **Linux (deb, rpm, apk)** — download packages from the [releases page](https://github.com/openfga/cli/releases):
+
+    ```bash
+    # Debian
+    sudo apt install ./fga_<version>_linux_<arch>.deb
+
+    # Fedora
+    sudo dnf install ./fga_<version>_linux_<arch>.rpm
+
+    # Alpine
+    sudo apk add --allow-untrusted ./fga_<version>_linux_<arch>.apk
+    ```
+
+    **Docker:**
+
+    ```bash
+    docker pull openfga/cli && docker run -it openfga/cli
+    ```
+
+    **Go:**
+
+    ```bash
+    go install github.com/openfga/cli/cmd/fga@latest
+    ```
+
+    Or download pre-compiled binaries from the [releases page](https://github.com/openfga/cli/releases).
+  </Tab>
+</Tabs>
+
+## Related Sections
+
+<CardGroup>
+  <Card title="OpenFGA Node.js SDK" href="https://www.npmjs.com/package/@openfga/sdk">
+    Install our Node.js & JavaScript SDK to get started.
+  </Card>
+  <Card title="OpenFGA Go SDK" href="https://github.com/openfga/go-sdk">
+    Use our Go SDK to easily connect your Go application to the OpenFGA API.
+  </Card>
+  <Card title="OpenFGA .NET SDK" href="https://github.com/openfga/dotnet-sdk">
+    Connect your .NET service with OpenFGA using our .NET SDK.
+  </Card>
+  <Card title="OpenFGA Python SDK" href="https://github.com/openfga/python-sdk">
+    Connect your Python service with OpenFGA using our Python SDK.
+  </Card>
+  <Card title="OpenFGA Java SDK" href="https://github.com/openfga/java-sdk">
+    Connect your Java service with OpenFGA using our Java SDK.
+  </Card>
+</CardGroup>

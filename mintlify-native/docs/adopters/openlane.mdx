@@ -1,0 +1,42 @@
+---
+title: Openlane Case Study
+description: How compliance-automation startup OpenLane wires OpenFGA into ent at the data-access layer, with overfetch + BatchCheck replacing slow ListObjects.
+---
+
+# Openlane: Authorization at the data-access layer for compliance automation
+
+[Openlane](https://theopenlane.io) is an open-source compliance automation platform that helps teams achieve and maintain SOC 2, ISO 27001, and similar attestations. OpenFGA is wired into its data-access layer, so every GraphQL query and mutation is authorized without each resolver having to remember to ask.
+
+## At a glance
+
+| | |
+| --- | --- |
+| **Industry** | Compliance automation (GRC) |
+| **Stack** | Go, GraphQL (gqlgen), [ent](https://entgo.io/) ORM, PostgreSQL, Kubernetes |
+| **Deployment** | Self-hosted; separate Postgres databases for application data and OpenFGA |
+| **Key features used** | BatchCheck, contextual tuples, object-owned cascading permissions, FGA-driven feature flags |
+
+## Why OpenFGA
+
+Openlane builds the kind of platform whose customers will themselves be audited. Authorization had to be defensible end-to-end — every read, every write, every export — and could not live in a `if user.role == "admin"` switch sprinkled across resolvers. The team picked OpenFGA so authorization decisions were centralized, modeled as relationships, and could evolve without code changes in every service.
+
+A second motivation was packaging: Openlane sells modules, and the same engine that grants access to a record can grant access to a feature. OpenFGA is the source of truth for **both**.
+
+## Architecture
+
+- **Authorization as ent middleware.** Openlane uses [ent](https://entgo.io/) hooks to write tuples on every mutation and interceptors plus policies to evaluate every query. Resolvers do not call the OpenFGA SDK directly; the data-access layer does.
+- **Object-owned mixin.** A reusable ent mixin attaches `owner` and parent relations to any record type, so cascading permissions ("an editor of the parent program can edit each control") are declared once and applied uniformly.
+- **Overfetch + BatchCheck instead of ListObjects.** An early implementation used [ListObjects](/docs/getting-started/perform-list-objects) and saw ~8-second worst-case latency for large result sets. The team switched to overfetching candidates from Postgres (capped at 100 per page, up to 1,000 overfetched) and running [BatchCheck](/docs/getting-started/perform-check#03-calling-batch-check-api) to filter in a single round trip. Total counts are computed via a separate query that short-circuits when the user is an admin.
+- **In-house wrapper packages.** Three small Go packages — `FGAX` (typed helpers around the OpenFGA SDK), [`entfga`](https://github.com/theopenlane/iam/tree/main/entfga) (ent hooks that write tuples), and `access-map` (declarative relation registration) — keep callers honest and make adding a new entity type a few lines of mixin configuration.
+- **OpenFGA-as-feature-flags.** Module entitlements ("does this tenant have the policy module?") live in the same OpenFGA store as record-level permissions, so a check that returns `false` because the user is not an editor and a check that returns `false` because the tenant did not buy the module use the same call site.
+
+## Outcomes
+
+- **Authorization can't be forgotten.** Hooks and interceptors mean a new entity type inherits authorization automatically.
+- **List-style endpoints went from ~8 s worst case to comfortably under a second** at expected page sizes, without changing the public API.
+- **One store, two jobs.** Record permissions and feature entitlements live in OpenFGA, so packaging changes don't require a second policy system.
+- **Auditable end-to-end.** Tuple writes happen in the same transaction boundary as the underlying data mutation, so the access graph and the data it protects don't drift.
+
+## Source
+
+This case study is based on a [presentation in the OpenFGA community meeting by Sarah Funkhouser, co-founder and head of engineering at Openlane](https://www.youtube.com/watch?v=ZdlftEKQ0UA). The Openlane platform itself is open source — the integration patterns above are visible in the [theopenlane GitHub organization](https://github.com/theopenlane).

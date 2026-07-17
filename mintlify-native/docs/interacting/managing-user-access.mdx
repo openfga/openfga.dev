@@ -1,0 +1,126 @@
+---
+description: Granting a user access to a particular object
+---
+
+import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx';
+import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
+import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
+
+# Managing User Access
+
+In this guide you will learn how to grant a user access to a particular object.
+
+<Note>
+Granting access with a _relationship tuple_ is a core part of OpenFGA. Without any relationship tuples, any _check_ will fail. You should use:
+
+- _authorization model_ to represent what **relation**s are possible between the users and objects in your system
+- _relationship tuples_ to represent the facts about the relationships between users and objects in your system.
+</Note>
+
+## Before you start
+
+In order to understand this guide correctly you must be familiar with some OpenFGA concepts and know how to develop the things that we will list below.
+
+<details>
+<summary>
+
+Assume that you have the following authorization model.<br />
+You have a type called `tweet` that can have a `reader`.
+
+</summary>
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'tweet',
+        relations: {
+          reader: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            reader: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+<hr />
+
+In addition, you will need to know the following:
+
+### Direct access
+
+You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](/docs/modeling/direct-access)
+
+### OpenFGA concepts
+
+- A **Type**: a class of objects that have similar characteristics
+- A **User**: an entity in the system that can be related to an object
+- A **Relation**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An **Object**: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
+- A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
+
+</details>
+
+## Step by step
+
+### 01. Adding direct relationship
+
+For our application, we will give user Anne the `reader` relationship to a particular `tweet`. To do so we add a tuple as follows:
+
+```json
+[
+  {
+    "user": "user:anne",
+    "relation": "reader",
+    "object": "tweet:1"
+  }
+]
+```
+
+With the above, we have added a [**direct** relationship](/docs/modeling/building-blocks/direct-relationships) between Anne and `tweet:1`. When we call the Check API to see if Anne has a `reader` relationship, OpenFGA will say yes.
+
+<CheckRequestViewer user={'user:anne'} relation={'reader'} object={'tweet:1'} allowed={true} />
+
+### 02. Removing direct relationship
+
+Now let's change this so that Anne no longer has a `reader` relationship to `tweet:1` by deleting the tuple:
+
+<WriteRequestViewer
+  deleteRelationshipTuples={[
+    {
+      user: 'user:anne',
+      relation: 'reader',
+      object: 'tweet:1',
+    },
+  ]}
+/>
+
+With this, we have removed the [direct relationship](/docs/modeling/building-blocks/direct-relationships) between Anne and `tweet:1`. And because our type definition for `reader` does not include any other relations, a call to the Check API will now return a negative response.
+
+<CheckRequestViewer user={'user:anne'} relation={'reader'} object={'tweet:1'} allowed={false} />
+
+## Related Sections
+
+Check the following sections for more on how to manage user access.
+
+<CardGroup>
+  <Card title="Direct Access" href="/docs/modeling/direct-access">
+    Learn about how to model granting user access to an object.
+  </Card>
+  <Card title="Modeling Public Access" href="/docs/modeling/public-access">
+    Learn about how to model granting public access.
+  </Card>
+  <Card title="How to update relationship tuples" href="/docs/getting-started/update-tuples">
+    Learn about how to update relationship tuples in SDK.
+  </Card>
+</CardGroup>

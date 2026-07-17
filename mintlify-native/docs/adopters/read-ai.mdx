@@ -1,0 +1,46 @@
+---
+title: Read AI Case Study
+description: How Read AI runs OpenFGA at 5,200 requests per second with 20ms p99 latency over more than 5 billion relationship tuples.
+---
+
+# Read AI: 5 billion tuples, 20ms p99 latency
+
+[Read AI](https://www.read.ai) is the AI meeting notetaker and assistant trusted by more than 100,000 organizations and 75% of the Fortune 500, adding more than one million new customers every month. OpenFGA backs the authorization layer that lets Read AI safely share intelligence across meetings, messages, email, and documents.
+
+## At a glance
+
+| | |
+| --- | --- |
+| **Industry** | AI productivity / meeting intelligence |
+| **In production since** | April 28, 2023 |
+| **Peak load** | 5,200 RPS |
+| **Latency** | 20ms p99 / 1.8ms average |
+| **Tuple count** | 5,323,283,829 (and growing) |
+| **Version** | v1.8.16 |
+| **Storage** | PostgreSQL |
+
+## Why OpenFGA
+
+Read AI ran a proprietary, organically built authorization system that hit performance and scalability ceilings as the platform grew. The team evaluated alternatives such as Authzed before choosing OpenFGA, citing:
+
+- **Zanzibar foundations** that aligned with the sharing semantics the product needed.
+- **Documentation clarity**, especially the practical examples and modeling guides.
+- The ability to **self-host** with predictable cost.
+- Approachable, responsive maintainers.
+
+## Production at scale
+
+The self-hosted OpenFGA service handles peak load of **5,200 requests per second** with a **20ms p99 latency** and **1.8ms average latency**. The data store holds more than **5.3 billion tuples** and grows daily.
+
+OpenFGA upgrades are folded into a monthly cadence. The OpenFGA release pace is faster than Read AI's, but upgrades have been smooth with no significant backward-compatibility issues.
+
+## Outcomes
+
+- Confidence in secure data authorization across the entire product surface.
+- Adoption of ReBAC best practices improved internal design decisions.
+- Compute and hosting costs dropped versus the prior solution.
+- OpenFGA has not been the bottleneck even at peak.
+
+## Source
+
+This case study is based on the public CNCF TOC adopter interview with Andrew Powers, Software Engineering Manager at Read AI, available in the [`cncf/toc` repository](https://github.com/cncf/toc/tree/main/projects/openfga).

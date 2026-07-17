@@ -1,0 +1,19 @@
+---
+title: "OpenFGA Use Cases"
+description: "Production-ready OpenFGA patterns for AI agents, RAG, MCP servers, multi-tenant SaaS, and microservices authorization."
+---
+
+# OpenFGA Use Cases
+
+OpenFGA is a Zanzibar-style relationship engine. The patterns below are the ones that show up most often in production — each links to the modeling guide and, where available, an adopter reference that runs the pattern at scale.
+
+## AI and agent authorization
+
+* **[AI agent authorization](/docs/use-cases/ai-agent-authorization)** — modeling agents as principals, delegating user permissions, and bounding what an autonomous agent can do.
+* **[RAG authorization](/docs/use-cases/rag-authorization)** — filtering retrieved documents by the user's permissions before they reach the model.
+* **[MCP server authorization](/docs/use-cases/mcp-server-authorization)** — enforcing tool and resource access in a Model Context Protocol server.
+
+## Application authorization
+
+* **[Multi-tenant SaaS](/docs/use-cases/multi-tenant-saas)** — one OpenFGA store, many tenants, with strict isolation.
+* **[Microservices authorization](/docs/use-cases/microservices-authorization)** — a central authorization service that every microservice consults, instead of each service rolling its own roles table.

@@ -1,0 +1,119 @@
+---
+description: Granting a user access to an object
+---
+
+import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx';
+import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
+import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
+
+# Direct Access
+
+This article describes how to grant a user access to an object in OpenFGA.
+
+<Note>
+Granting access with relationship tuples is a core part of OpenFGA. Without relationship tuples, any checks will fail. You should use:
+
+- **authorization model** to represent what relations are possible between the users and objects in the system
+- **relationship tuples** to represent the facts about the relationships between users and objects in your system.
+</Note>
+
+## Before you start
+
+Familiarize yourself with OpenFGA Concepts to understand how to develop a relationship tuple and authorization model.
+
+<details>
+<summary>
+
+Assume that you have the following authorization model.<br />
+You have a type called `document` that can have a `viewer` and/or an `editor`.
+
+</summary>
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'document',
+        relations: {
+          viewer: {
+            this: {},
+          },
+          editor: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{ type: 'user' }] },
+            editor: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+<hr />
+
+In addition, you will need to know the following:
+
+### OpenFGA Concepts
+
+- A **Type**: a class of objects that have similar characteristics
+- A **User**: an entity in the system that can be related to an object
+- A **Relation**: a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An **Object**: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
+- A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
+
+</details>
+
+## Step By Step
+
+For an application to understand that **user x** has access to **document y**, it must provide OpenFGA that information with relationship tuples.
+Each relationship tuple has three basic parameters: a **user**, a **relation** and an **object**.
+
+### 01. Create A Relationship Tuple
+
+Below, you'll add a **relationship tuple** to indicate that `bob` is an `editor` of `document:meeting_notes.doc` by adding the following:
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'user:bob',
+      relation: 'editor',
+      object: 'document:meeting_notes.doc',
+    },
+  ]}
+/>
+
+### 02. Check That The Relationship Exists
+
+Once you add that relationship tuple to OpenFGA, you can check if the relationship is valid by asking if bob is an editor of document:meeting_notes.doc:
+
+<CheckRequestViewer user={'user:bob'} relation={'editor'} object={'document:meeting_notes.doc'} allowed={true} />
+
+Checking whether `bob` is a `viewer` of `document:meeting_notes.doc` returns **false** because that relationship tuple does not exist in OpenFGA yet.
+
+<CheckRequestViewer user={'user:bob'} relation={'viewer'} object={'document:meeting_notes.doc'} allowed={false} />
+
+<Warning>
+When creating relationship tuples for OpenFGA, use unique ids for each object and user within your application domain. We're using first names and simple ids as an easy-to-follow example.
+</Warning>
+
+## Related Sections
+
+<CardGroup>
+  <Card title="OpenFGA Concepts" href="/docs/concepts">
+    Learn about the OpenFGA Concepts.
+  </Card>
+  <Card title="Modeling: Getting Started" href="/docs/modeling/getting-started">
+    Learn about how to get started with modeling.
+  </Card>
+  <Card title="Configuration Language" href="/docs/configuration-language">
+    Learn about OpenFGA Configuration Language.
+  </Card>
+</CardGroup>

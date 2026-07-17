@@ -1,0 +1,151 @@
+---
+description: Granting public access to an object
+---
+
+import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx';
+import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
+import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
+
+# Public Access
+
+In this guide you will learn how to grant public access to an object, such as a certain document, using type bound public access.
+
+<Note>
+Public access allows your application to grant every user in the system access to an object. You would add a relationship tuple with type-bound public access when:
+
+- sharing a `document` publicly to indicate that everyone can `view` it
+- a public `poll` is created to indicate that anyone can `vote` on it
+- a blog `post` is published and anyone should be able to `read` it
+- a `video` is made public for anyone to `watch`
+</Note>
+
+## Before You Start
+
+In order to understand this guide correctly you must be familiar with some OpenFGA concepts and know how to develop the things that we will list below.
+
+<details>
+<summary>
+Assume that you have the following authorization model. You have a type called `document` that can have a `view` relation.
+</summary>
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'document',
+        relations: {
+          view: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            view: { directly_related_user_types: [{ type: 'user' }, {type: 'user', wildcard:{} }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+---
+
+In addition, you will need to know the following:
+
+### Direct Access
+
+You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](/docs/modeling/direct-access)
+
+### OpenFGA Concepts
+
+- A **Type**: a class of objects that have similar characteristics
+- A **User**: an entity in the system that can be related to an object
+- A **Relation**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An **Object**: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
+- A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
+- **Type Bound Public Access**: is a special OpenFGA concept (represented by `<type>:*`) can be used in relationship tuples to represent every object of that type
+
+</details>
+
+<Warning>
+Make sure to use unique ids for each object and user within your application domain when creating relationship tuples for OpenFGA. We are using first names and simple ids to just illustrate an easy-to-follow example.
+</Warning>
+
+## Step By Step
+
+In previous guides, we have shown how to indicate that objects are related to users or objects. In some cases, you might want to indicate that everyone is related to an object (for example when sharing a document publicly).
+
+### 01. Create A Relationship Tuple
+
+To do this we need to create a relationship tuple using the type bound public access. The type bound public access syntax is used to indicate that all users of a particular type have a relation to a specific object.
+
+Let us create a relationship tuple that states: **any user can view document:company-psa.doc**
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: 'user:* denotes every object of type user',
+      user: 'user:*',
+      relation: 'view',
+      object: 'document:company-psa.doc',
+    },
+  ]}
+/>
+
+<Warning title="Wildcard syntax usage">
+
+Please note that type-bound public access is not a wildcard or a regex expression.
+
+**You cannot use the `<type>:*` syntax in the tuple's object field.**
+
+The following syntax is invalid:
+
+```json
+{
+  "user": "user:bob",
+  "relation": "view",
+  "object": "document:*"
+}
+```
+
+</Warning>
+
+<Warning title="Wildcard syntax usage">
+
+**You cannot use `<type>:*` as part of a userset in the tuple's user field.**
+
+The following syntax is invalid:
+
+```json
+{
+  "user": "org:*#member",
+  "relation": "view",
+  "object": "document:company-psa.doc"
+}
+```
+
+</Warning>
+
+### 02. Check That The Relationship Exists
+
+Once the above _relationship tuple_ is added, we can check if **bob** can `view` `document:company-psa.doc`. OpenFGA will return `{ "allowed": true }` even though no relationship tuple linking **bob** to the document was added. That is because the relationship tuple with `user:*` as the user made it so every object of type user (such as `user:bob`) can `view` the document, making it public.
+
+<CheckRequestViewer user={'user:bob'} relation={'view'} object={'document:company-psa.doc'} allowed={true} />
+
+## Related Sections
+
+<CardGroup>
+  <Card title="Modeling: Getting Started" href="/docs/modeling/getting-started">
+    Learn about how to get started with modeling.
+  </Card>
+  <Card title="Configuration Language" href="/docs/configuration-language">
+    Learn about OpenFGA Configuration Language.
+  </Card>
+  <Card title="Modeling Blocklists" href="/docs/modeling/blocklists">
+    Learn about model block lists.
+  </Card>
+</CardGroup>

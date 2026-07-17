@@ -1,0 +1,307 @@
+---
+description: Modeling relationships between objects (e.g. folder parent of a document)
+---
+
+import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx';
+import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
+import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
+
+# Object to Object Relationships
+
+In this guide you'll learn how to model your application with objects that are not specifically tied to a user. For example, a `folder` is a `parent` of a `document`.
+
+<Note>
+This design pattern is helpful in the case where there are relationships between different objects. With OpenFGA, so long as both objects are in a type defined in the authorization model, relationship tuples can be added to indicate a relationship between them.
+
+For example:
+
+- `communities` can contain `channels`
+- `channels` can contain `posts`
+- `channels` can contain `threads`
+- `threads` can contain `posts`
+- `bookshelf` can have `books`
+- `trips` can have `bookings`
+- `account` can contain `transactions`
+- `buildings` can have `doors`
+</Note>
+
+## Before you start
+
+To better follow this guide, make sure you're familiar with some OpenFGA concepts and know how to develop the things listed below.
+
+<details>
+<summary>
+
+You will start with the _authorization model_ below, it represents a `document` _type_ that can have users **related** as `editor`, and `folder` type that can have users related as `viewer`.
+
+</summary>
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'document',
+        relations: {
+          editor: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{type: 'user'}] },
+          },
+        },
+      },
+      {
+        type: 'folder',
+        relations: {
+          viewer: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{type: 'user'}] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+<hr />
+
+In addition, you will need to know the following:
+
+### Modeling user groups
+
+You need to know how to add users to groups and grant groups access to resources. [Learn more →](/docs/modeling/user-groups)
+
+### OpenFGA concepts
+
+- A **Type**: a class of objects that have similar characteristics
+- A **User**: an entity in the system that can be related to an object
+- A **Relation**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An **Object**: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
+- A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
+
+</details>
+
+## Step by step
+
+### 01. Create parent relations in document
+
+To represent that a `folder` can be a `parent` of a `document`, we first need to modify our `document` type definition to allow a `parent` relation.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'document',
+        relations: {
+          parent: {
+            this: {},
+          },
+          editor: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            parent: { directly_related_user_types: [{type: 'folder'}] },
+            editor: { directly_related_user_types: [{type: 'user'}] },
+          },
+        },
+      },
+      {
+        type: 'folder',
+        relations: {
+          viewer: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            viewer: { directly_related_user_types: [{type: 'user'}] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+### 02. Add Parent Relationship Tuples
+
+Once the type definition is updated, we can now create the relationship between a `folder` as a `parent` of a `document`. To do this, we will create a new **relationship tuple** that describes: **folder:budgets** is a `parent` of **document:may_budget.doc**. In OpenFGA, users in the relationship tuples can not only be IDs, but also other objects in the form of `type:object_id`.
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: 'The user in this case is another object where the type is `folder` and the object_id is `budgets`',
+      user: 'folder:budgets',
+      relation: 'parent',
+      object: 'document:may_budget.doc',
+    },
+  ]}
+/>
+
+### 03. Check that parent folders have permissions
+
+Once that relationship tuple is added to OpenFGA, we can check if the relationship is valid by asking the following: **"is folder:budgets a parent of document:may_budget.doc?"**
+
+<CheckRequestViewer user={'folder:budgets'} relation={'parent'} object={'document:may_budget.doc'} allowed={true} />
+
+It is important to note that the current authorization model does not imply inheritance of permissions. Even though **folder:budgets** is a `parent` of **document:may_budget.doc**, **it does not inherit the `editor` relation from `parent` to `document`.** Meaning `editors` on **folder:budgets** are not `editors` on **document:may_budget.doc**. Further configuration changes are needed to indicate that and will be tackled in a later guide.
+
+<Warning>
+When creating relationship tuples for OpenFGA make sure to use unique ids for each object and user within your application domain. We are using first names and simple ids to just illustrate an easy-to-follow example.
+</Warning>
+
+## Advanced object to object relationships
+
+Object to object can be used for more advanced use case, such as [entitlements](/docs/modeling/advanced/entitlements). An example use case is to allow subscribers to be entitled to different plans.
+
+### 01. Create authorization model with object to object relationships
+
+To do this, the authorization model will have two types - feature and plan.
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'feature',
+        relations: {
+          associated_plan: {
+            this: {},
+          },
+          access: {
+            union: {
+              child: [
+                {
+                  this: {},
+                },
+                {
+                  tupleToUserset: {
+                    tupleset: {
+                      relation: 'associated_plan',
+                    },
+                    computedUserset: {
+                      relation: 'subscriber_member',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+        metadata: {
+          relations: {
+            associated_plan: { directly_related_user_types: [{type: 'plan'}] },
+            access: { directly_related_user_types: [{type: 'user'}] },
+          },
+        },
+      },
+      {
+        type: 'plan',
+        relations: {
+          subscriber_member: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            subscriber_member: { directly_related_user_types: [{type: 'user'}] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+Type `feature` has two relations, associated_plan and access. Relation `associated_plan` allows associating plans with features while `access` defines who can access the feature. In our case, the access can be achieved either from
+
+- direct relationship via [direct relationship type restrictions](/docs/configuration-language#direct-relationship-type-restrictions), or `this`
+- object to object relationship where a user can access because it is a subscriber_member of a particular plan AND that plan is associated with the feature.
+
+Here, we define `plan` as the user of object `feature` with relationship `associated_plan` rather than defining `feature` as the user of object `plan` with relationship `feature`. The reason we choose the former is that we want to describe our system in the following [plain language](/docs/modeling/getting-started#write-it-in-plain-language):
+
+> A user can access a feature in a plan if they are a subscriber member of a plan that is the associated plan of a feature.
+
+This will give us a flow of user->organization->plan->feature and allows us to answer the question of whether user can access a feature rather than whether user is subscriber of a plan.
+
+### 02. Adding relationship tuples
+
+To realize the relationship, we will need to add the following relationship tuples.
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: 'make anne as subscriber_member for plan:advanced',
+      user: 'user:anne',
+      relation: 'subscriber_member',
+      object: 'plan:advanced',
+    },
+    {
+      _description: 'The advanced plan is associated with the data preview feature',
+      user: 'plan:advanced',
+      relation: 'associated_plan',
+      object: 'feature:data_preview',
+    },
+  ]}
+/>
+
+### 03. Check to see if access is allowed without direct relationship
+
+To validate that the authorization model and relationship tuples are correct, we can ask the question:
+
+<CheckRequestViewer user={'user:anne'} relation={'access'} object={'feature:data_preview'} allowed={true} />
+
+We see that `anne` is allowed to `access` `feature:data_preview` without requiring direct relationship.
+
+### 04. Disassociating plan from feature
+
+At any point in time, `plan:advanced` may be disassociated from `feature:data_preview`.
+
+<WriteRequestViewer
+  deleteRelationshipTuples={[
+    {
+      _description: 'Remove advanced plan from data preview feature',
+      user: 'plan:advanced',
+      relation: 'associated_plan',
+      object: 'feature:data_preview',
+    },
+  ]}
+/>
+
+When this is the case, `anne` will no longer have `access` to `feature:data_preview` even though she is still a `subscriber_member` of `plan:advanced`.
+
+<CheckRequestViewer user={'user:anne'} relation={'access'} object={'feature:data_preview'} allowed={false} />
+<CheckRequestViewer user={'user:anne'} relation={'subscriber_member'} object={'plan:advanced'} allowed={true} />
+
+## Related Sections
+
+Check the following sections for more on how object-to-object relationships can be used.
+
+<CardGroup>
+  <Card title="Advanced Modeling Patterns: Entitlements" href="/docs/modeling/advanced/entitlements">
+    Learn how to model entitlement access patterns.
+  </Card>
+  <Card title="Modeling Parent-Child Relationships" href="/docs/modeling/parent-child">
+    Learn how to model parent and child relationships.
+  </Card>
+  <Card title="Modeling User Groups" href="/docs/modeling/user-groups">
+    Learn how to model user groups.
+  </Card>
+</CardGroup>
