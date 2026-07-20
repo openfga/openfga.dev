@@ -3,8 +3,8 @@
   "theme": "almond",
   "name": "OpenFGA",
   "logo": {
-    "light": "https://raw.githubusercontent.com/openfga/openfga.dev/main/static/img/openfga_logo.svg",
-    "dark": "https://raw.githubusercontent.com/openfga/openfga.dev/main/static/img/openfga_logo-white.svg",
+    "light": "/images/img/openfga_logo.svg",
+    "dark": "/images/img/openfga_logo-white.svg",
     "href": "/"
   },
   "colors": {
@@ -21,7 +21,7 @@
       "dark": "#272b33"
     }
   },
-  "favicon": "https://raw.githubusercontent.com/openfga/openfga.dev/main/static/img/openfga-icon.svg",
+  "favicon": "/images/img/openfga-icon.svg",
   "seo": {
     "metatags": {
       "og:image": "https://openfga.dev/img/og-rich-embed.png"
