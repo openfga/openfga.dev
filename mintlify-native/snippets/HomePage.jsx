@@ -153,13 +153,47 @@ docker run -p 8080:8080 -p 8081:8081 \\
   const [copied, setCopied] = useState(false);
   const [headingEl, setHeadingEl] = useState(null);
 
-  // Load home.css (keyframe animations and class-based layout can't be inlined).
+  // Inject home.css as an inline <style> element. Mintlify's deployed CDN does
+  // not serve raw CSS files from the content directory, so we embed the styles
+  // directly rather than loading /home.css as an external stylesheet.
   useEffect(() => {
-    if (document.querySelector('link[href="/home.css"]')) return;
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = '/home.css';
-    document.head.appendChild(link);
+    if (document.getElementById('openfga-home-css')) return;
+    const style = document.createElement('style');
+    style.id = 'openfga-home-css';
+    style.textContent = `
+#navbar { background-color: #272b33 !important; }
+#sidebar-content { background-color: #272b33 !important; }
+.almond-layout { background-color: #272b33 !important; border-radius: 0 !important; }
+.hero-container { display: flex; justify-content: space-between; align-items: center; padding: 4rem 2rem; max-width: 1200px; margin: 0 auto; gap: 2rem; }
+.hero-content { max-width: 100%; width: auto; }
+.hero-pattern-video { display: none; }
+@media screen and (min-width: 996px) {
+  .hero-container { padding: 6rem 2rem; }
+  .hero-content { max-width: calc(50% + 50px); padding-right: 32px; }
+  .hero-pattern-video { display: block; height: auto; max-width: calc(50% - 50px); width: 100%; padding-left: 32px; border-radius: 12px; }
+}
+.adopters-carousel { overflow: hidden; position: relative; width: 100%; }
+.adopters-carousel::before, .adopters-carousel::after { content: ''; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 1; pointer-events: none; }
+.adopters-carousel::before { left: 0; background: linear-gradient(to right, #131519, transparent); }
+.adopters-carousel::after { right: 0; background: linear-gradient(to left, #131519, transparent); }
+.adopters-track { display: flex; gap: 48px; animation: scroll-logos 30s linear infinite; width: max-content; }
+.adopters-track:hover { animation-play-state: paused; }
+.adopter-logo { display: flex; align-items: center; flex-shrink: 0; }
+@keyframes scroll-logos { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.features-grid { display: grid; grid-template-columns: 1fr; grid-gap: 3rem; }
+@media (min-width: 1200px) { .features-grid { grid-template-columns: 1fr 1fr; grid-gap: 5rem 6.25rem; } }
+.feature-card { display: grid; grid-template-rows: auto auto 1fr; grid-gap: 1.5rem; padding: 0 2rem; }
+.feature-icon-box { height: 3rem; width: 3rem; background-color: #3a3d44; border-radius: 8px; display: flex; justify-content: center; align-items: center; color: #20f1f5; }
+.home-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 12px; font-size: 0.95rem; font-weight: 600; text-decoration: none; transition: all 0.2s ease; }
+.home-btn:hover { text-decoration: none; }
+.home-btn--primary { background-color: #79ed83; color: #131519 !important; }
+.home-btn--primary:hover { color: #79ed83 !important; }
+.home-btn--secondary { background-color: #3a3d44; color: #d3d8df !important; }
+.home-btn--secondary:hover { background-color: #131519; color: #d3d8df !important; }
+@media (max-width: 768px) { #quick-start > div > div { grid-template-columns: 1fr !important; } }
+#resources a:hover { text-decoration: underline; }
+    `;
+    document.head.appendChild(style);
   }, []);
 
   // Navbar logo hide/show on scroll — uses ref-callback-in-state to avoid useRef.
