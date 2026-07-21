@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://openfga.dev/pr-preview/pr-1259/blog</id>
     <title>OpenFGA Blog</title>
-    <updated>2026-07-14T00:00:00.000Z</updated>
+    <updated>2026-07-21T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://openfga.dev/pr-preview/pr-1259/blog"/>
     <subtitle>OpenFGA Blog</subtitle>
@@ -11,14 +11,14 @@
         <title type="html"><![CDATA[OpenFGA's Move to Weighted Graph Resolution: What's Changing]]></title>
         <id>https://openfga.dev/pr-preview/pr-1259/blog/weighted-graph-upcoming-changes</id>
         <link href="https://openfga.dev/pr-preview/pr-1259/blog/weighted-graph-upcoming-changes"/>
-        <updated>2026-07-14T00:00:00.000Z</updated>
+        <updated>2026-07-21T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[OpenFGA is transitioning to a weighted graph-based resolution algorithm. Learn what's changing, why, and how to migrate your models.]]></summary>
         <content type="html"><![CDATA[<p>OpenFGA is continuing to roll out a <strong>weighted graph-based resolution algorithm</strong> across its core query endpoints — Check, BatchCheck, ListObjects, Expand, and ListUsers. ListObjects already runs on this updated algorithm, and Check is next. As a precaution, all core query endpoints currently fall back to the legacy algorithm for models that are incompatible with the weighted graph, but <strong>that fallback option will be removed soon</strong>. A date for the final changeover has not been set at this time.</p>
 <p>This post explains which modeling and check patterns are incompatible with the weighted graph algorithm, and how to migrate before the fallback is removed.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="why-a-weighted-graph">Why a Weighted Graph?<a href="https://openfga.dev/pr-preview/pr-1259/blog/weighted-graph-upcoming-changes#why-a-weighted-graph" class="hash-link" aria-label="Direct link to Why a Weighted Graph?" title="Direct link to Why a Weighted Graph?" translate="no">​</a></h2>
 <p>The legacy Check algorithm resolves authorization queries by recursively traversing relation definitions at <em>request time</em>. While functional, this approach has limitations:</p>
 <ul>
-<li class=""><strong>Unpredictable resource usage</strong>: A shallow recursive graph can be more resource-intensive than a deep linear one, but the old algorithm used a fixed depth limit of 26 as its only complexity guard.</li>
+<li class=""><strong>Unpredictable resource usage</strong>: A shallow recursive graph can be more resource-intensive than a deep linear one, but the old algorithm used a fixed depth limit of 25 as its only complexity guard.</li>
 <li class=""><strong>Non-deterministic error handling</strong>: Errors in one branch of a union could halt evaluation of other valid branches.</li>
 </ul>
 <p>The new approach shifts some resolution work earlier to <em>build time</em>: when a model is saved, the weighted graph is built and sub-graph weights are calculated for every relation. These weights reflect the relative complexity of traversing each part of the graph. At request time, the algorithm uses those pre-calculated weights to traverse the graph more efficiently, prioritizing lower-cost paths and managing load without arbitrary depth limits.</p>
@@ -26,7 +26,7 @@
 <p>The benefits, however, are:</p>
 <ol>
 <li class=""><strong>Better performance</strong> — resolution paths are informed by pre-calculated weights rather than discovered through live traversal.</li>
-<li class=""><strong>Dynamic load management</strong> — datastore throttling, graph flattening, and context cancellation replace the fixed depth limit of 26.</li>
+<li class=""><strong>Dynamic load management</strong> — datastore throttling, graph flattening, and context cancellation replace the fixed depth limit of 25.</li>
 <li class=""><strong>Consistent short-circuit evaluation</strong> — failing fast on intersection/exclusion errors while being resilient to errors in union branches.</li>
 <li class=""><strong>Determinism by construction</strong> — patterns that cannot be reliably resolved are rejected when the model is saved, not when a user makes a request.</li>
 </ol>
