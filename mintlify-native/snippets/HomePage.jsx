@@ -263,11 +263,9 @@ docker run -p 8080:8080 -p 8081:8081 \\
         <video
           autoPlay muted loop playsInline
           poster="/pattern.png"
+          src="/videos/pattern.mp4"
           className="hero-pattern-video"
-        >
-          <source src="/pattern.mp4" type="video/mp4" />
-          <source src="/pattern.webm" type="video/webm" />
-        </video>
+        />
       </header>
 
       {/* ── QUICK START ──────────────────────────────────────────────────── */}
@@ -317,11 +315,9 @@ docker run -p 8080:8080 -p 8081:8081 \\
             <video
               autoPlay muted loop playsInline
               poster="/terminal.png"
+              src="/videos/terminal.mp4"
               style={{ width: '100%', borderRadius: '10px', boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}
-            >
-              <source src="/terminal.webm" type="video/webm" />
-              <source src="/terminal.mp4" type="video/mp4" />
-            </video>
+            />
           </div>
         </div>
 
