@@ -2,7 +2,8 @@
 title: "OpenFGA's Move to Weighted Graph Resolution: What's Changing"
 description: "OpenFGA is transitioning to a weighted graph-based resolution algorithm. Learn what's changing, why, and how to migrate your models."
 slug: weighted-graph-upcoming-changes
-date: 2026-07-14
+date: 2026-07-21
+last_update: { date: '2026-07-21' }
 authors: tylernix
 tags: [announcement, check, migration]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -21,7 +22,7 @@ This post explains which modeling and check patterns are incompatible with the w
 
 The legacy Check algorithm resolves authorization queries by recursively traversing relation definitions at *request time*. While functional, this approach has limitations:
 
-- **Unpredictable resource usage**: A shallow recursive graph can be more resource-intensive than a deep linear one, but the old algorithm used a fixed depth limit of 26 as its only complexity guard.
+- **Unpredictable resource usage**: A shallow recursive graph can be more resource-intensive than a deep linear one, but the old algorithm used a fixed depth limit of 25 as its only complexity guard.
 - **Non-deterministic error handling**: Errors in one branch of a union could halt evaluation of other valid branches.
 
 The new approach shifts some resolution work earlier to *build time*: when a model is saved, the weighted graph is built and sub-graph weights are calculated for every relation. These weights reflect the relative complexity of traversing each part of the graph. At request time, the algorithm uses those pre-calculated weights to traverse the graph more efficiently, prioritizing lower-cost paths and managing load without arbitrary depth limits.
@@ -31,7 +32,7 @@ A key consequence of this shift is that **if a model cannot be resolved, it will
 The benefits, however, are:
 
 1. **Better performance** — resolution paths are informed by pre-calculated weights rather than discovered through live traversal.
-2. **Dynamic load management** — datastore throttling, graph flattening, and context cancellation replace the fixed depth limit of 26.
+2. **Dynamic load management** — datastore throttling, graph flattening, and context cancellation replace the fixed depth limit of 25.
 3. **Consistent short-circuit evaluation** — failing fast on intersection/exclusion errors while being resilient to errors in union branches.
 4. **Determinism by construction** — patterns that cannot be reliably resolved are rejected when the model is saved, not when a user makes a request.
 
