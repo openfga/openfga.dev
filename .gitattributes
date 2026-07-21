@@ -1,13 +1,4 @@
 *.svg filter=lfs diff=lfs merge=lfs -text
-# mintlify-native/ stores assets as regular git objects (not LFS) so Mintlify
-# can serve them directly — Mintlify's deployment does not resolve LFS objects.
-mintlify-native/**/*.svg -filter -diff -merge text=auto
-mintlify-native/**/*.png -filter -diff -merge text=auto
-mintlify-native/**/*.mp4 -filter -diff -merge
-mintlify-native/**/*.webm -filter -diff -merge
-mintlify-native/**/*.jpg -filter -diff -merge text=auto
-mintlify-native/**/*.jpeg -filter -diff -merge text=auto
-mintlify-native/**/*.gif -filter -diff -merge text=auto
 *.webm filter=lfs diff=lfs merge=lfs -text
 *.mp4 filter=lfs diff=lfs merge=lfs -text
 *.jpg filter=lfs diff=lfs merge=lfs -text
@@ -16,3 +7,16 @@ mintlify-native/**/*.gif -filter -diff -merge text=auto
 *.jpeg filter=lfs diff=lfs merge=lfs -text
 *jpeg filter=lfs diff=lfs merge=lfs -text
 *jpg filter=lfs diff=lfs merge=lfs -text
+# mintlify-native/ overrides — must appear AFTER global LFS rules so they win.
+# Mintlify's deployment does not resolve LFS objects; assets must be regular blobs.
+mintlify-native/*.svg -filter -diff -merge text=auto
+mintlify-native/*.png -filter -diff -merge text=auto
+mintlify-native/*.mp4 -filter -diff -merge
+mintlify-native/*.webm -filter -diff -merge
+mintlify-native/**/*.svg -filter -diff -merge text=auto
+mintlify-native/**/*.png -filter -diff -merge text=auto
+mintlify-native/**/*.mp4 -filter -diff -merge
+mintlify-native/**/*.webm -filter -diff -merge
+mintlify-native/**/*.jpg -filter -diff -merge text=auto
+mintlify-native/**/*.jpeg -filter -diff -merge text=auto
+mintlify-native/**/*.gif -filter -diff -merge text=auto
