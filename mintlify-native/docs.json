@@ -16,6 +16,9 @@
     "default": "dark",
     "strict": true
   },
+  "styling": {
+    "codeblocks": "dark"
+  },
   "background": {
     "color": {
       "dark": "#272b33"
