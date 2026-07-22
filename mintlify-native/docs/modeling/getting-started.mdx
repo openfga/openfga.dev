@@ -86,7 +86,7 @@ Roles don't "disappear" in ReBAC systems like OpenFGA. Your users might [have ro
 
 Your feature description should include the [objects](/docs/concepts#what-is-an-object), [users](/docs/concepts#what-is-a-user) and [groups of users](/docs/concepts#what-is-a-user) participating in the system. Sentences should look like this:
 
-> A user {user} can perform action {action} to/on/in {object types} ... IF {conditions}
+> A user \{user\} can perform action \{action\} to/on/in \{object types\} ... IF \{conditions\}
 
 Let's look at an example of a simplified Google Drive like system. We'll focus on the feature allowing users to create, read, update, delete, and share documents with other users.
 
@@ -139,7 +139,7 @@ Next make a list of the [types](/docs/concepts#what-is-a-type) of objects in you
 
 Find all the objects in the previous step using this template:
 
-> A user {user} can perform action {action} to/on/in {object type} ... IF {conditions}
+> A user \{user\} can perform action \{action\} to/on/in \{object type\} ... IF \{conditions\}
 
 These are all the object types from the previous step (in order of appearance) based on that template:
 
@@ -147,9 +147,9 @@ These are all the object types from the previous step (in order of appearance) b
 - **Folder**
 - **Organization**
 
-However, the list of object types is not finished. To complete the list of object types you must also add all the second nouns that appear in conditions as part of expressions of this format: **"{first noun} of a/the {second noun}"**.
+However, the list of object types is not finished. To complete the list of object types you must also add all the second nouns that appear in conditions as part of expressions of this format: **"\{first noun\} of a/the \{second noun\}"**.
 
-> ... IF {first noun} of a/the {second noun}
+> ... IF \{first noun\} of a/the \{second noun\}
 
 The only second noun we didn't have in our object type list is "Drive", so we'll add it to the list. We will also need to add "User" to the list as it establishes the type of user who can establish relations.
 
