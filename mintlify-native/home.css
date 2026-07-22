@@ -190,3 +190,17 @@
 #resources a:hover {
   text-decoration: underline;
 }
+
+/* ── Shiki dual-theme: activate dark variables when Mintlify is in dark mode ──
+   Shiki embeds both themes via inline style + CSS custom properties
+   (--shiki-dark-bg, --shiki-dark). The inline style locks the light values,
+   so we use !important to override them with the dark variables when the
+   root .dark class is active. Fixes API playground description code blocks. */
+.dark .shiki,
+.dark .shiki span {
+  background-color: var(--shiki-dark-bg) !important;
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
