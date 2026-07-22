@@ -129,7 +129,6 @@
           {
             "group": "Modeling",
             "pages": [
-              "docs/modeling",
               "docs/modeling/overview",
               "docs/modeling/getting-started",
               "docs/modeling/direct-access",
@@ -179,7 +178,6 @@
               {
                 "group": "Authorization for Agents",
                 "pages": [
-                  "docs/modeling/agents",
                   "docs/modeling/agents/overview",
                   "docs/modeling/agents/agents-as-principals",
                   "docs/modeling/agents/rag-authorization",
@@ -192,7 +190,6 @@
           {
             "group": "Interacting",
             "pages": [
-              "docs/interacting",
               "docs/interacting/overview",
               "docs/interacting/relationship-queries",
               "docs/interacting/contextual-tuples",
@@ -209,7 +206,6 @@
           {
             "group": "Best Practices",
             "pages": [
-              "docs/best-practices",
               "docs/best-practices/overview",
               "docs/best-practices/adoption-patterns",
               "docs/best-practices/modeling-design-principles",
@@ -222,7 +218,6 @@
           {
             "group": "Industries",
             "pages": [
-              "docs/industries",
               "docs/industries/overview",
               "docs/industries/healthcare",
               "docs/industries/banking",
@@ -236,7 +231,6 @@
           {
             "group": "Use Cases",
             "pages": [
-              "docs/use-cases",
               "docs/use-cases/overview",
               "docs/use-cases/multi-tenant-saas",
               "docs/use-cases/microservices-authorization",
@@ -248,7 +242,6 @@
           {
             "group": "Adopters",
             "pages": [
-              "docs/adopters",
               "docs/adopters/overview",
               "docs/adopters/grafana",
               "docs/adopters/docker",
@@ -263,7 +256,6 @@
           {
             "group": "Learn",
             "pages": [
-              "docs/learn",
               "docs/learn/overview",
               "docs/learn/zanzibar",
               "docs/learn/rebac",
