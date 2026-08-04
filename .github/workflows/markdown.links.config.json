@@ -58,9 +58,6 @@
       "pattern": "https://github.com/bytefish/gitclub-dotnet"
     },
     {
-      "pattern": "^https://virv\\.ai(?:/|$)"
-    },
-    {
       "pattern": "^/"
     },
     {
