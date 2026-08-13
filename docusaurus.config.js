@@ -7,8 +7,9 @@ import cleanAgentMarkdown from './scripts/clean-agent-markdown.mjs';
 
 const isDev = process.env.NODE_ENV === 'development';
 
-const baseUrl = process.env.BASE_URL ?? '/';
-const basePath = baseUrl === '/' ? '' : `/${baseUrl.replace(/^\/+|\/+$/g, '')}`;
+const configuredBasePath = (process.env.BASE_URL ?? '/').replace(/^\/+|\/+$/g, '');
+const baseUrl = configuredBasePath ? `/${configuredBasePath}/` : '/';
+const basePath = baseUrl === '/' ? '' : baseUrl.slice(0, -1);
 /** @param {string} route */
 const agentRoute = (route) => `${basePath}${route}`;
 
@@ -18,7 +19,7 @@ const config = {
   title: 'OpenFGA',
   tagline: 'Relationship-based access control made fast, scalable, and easy to use.',
   url: 'https://openfga.dev',
-  baseUrl: baseUrl,
+  baseUrl,
   trailingSlash: false,
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
