@@ -13,7 +13,7 @@ This website is built using [Docusaurus](https://docusaurus.io/), a modern stati
 
 ### Agent-readable documentation
 
-Production builds publish an AI-agent discovery index at `/llms.txt`, a single-file documentation bundle at `/llms-full.txt`, and a clean Markdown representation beside each documentation and blog URL (for example, `/docs/fga.md`). The HTML pages advertise these resources with `rel="alternate"` and `rel="describedby"` links.
+Production builds publish a curated AI-agent entry point at `/llms.txt`, exhaustive indexes at `/docs/llms.txt` and `/blog/llms.txt`, an optional single-file bundle at `/llms-full.txt`, and a clean Markdown representation beside each current documentation and blog URL (for example, `/docs/fga.md`). The HTML pages advertise these resources with `rel="alternate"` and `rel="describedby"` links.
 
 `npm run build` validates that the generated indexes, Markdown pages, FAQ content, and discovery links stay in sync.
 

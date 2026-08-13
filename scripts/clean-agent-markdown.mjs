@@ -13,6 +13,22 @@ function isHeadingPermalink(node, parent) {
   return classNames.includes('hash-link') || (typeof ariaLabel === 'string' && ariaLabel.startsWith('Direct link'));
 }
 
+function makeCardTitleSemantic(node) {
+  if (node.type !== 'element') {
+    return;
+  }
+
+  const classNames = Array.isArray(node.properties?.className) ? node.properties.className : [];
+  if (
+    classNames.some(
+      (className) => typeof className === 'string' && className.startsWith('documentation-card-box-title_'),
+    )
+  ) {
+    node.tagName = 'strong';
+    node.properties = {};
+  }
+}
+
 function cleanChildren(parent) {
   if (!Array.isArray(parent.children)) {
     return;
@@ -20,7 +36,10 @@ function cleanChildren(parent) {
 
   parent.children = parent.children.filter((node) => node.type !== 'comment' && !isHeadingPermalink(node, parent));
 
-  parent.children.forEach(cleanChildren);
+  parent.children.forEach((node) => {
+    makeCardTitleSemantic(node);
+    cleanChildren(node);
+  });
 }
 
 export default function cleanAgentMarkdown() {
