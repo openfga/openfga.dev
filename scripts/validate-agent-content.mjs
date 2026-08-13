@@ -4,6 +4,8 @@ import path from 'node:path';
 
 const BUILD_DIR = path.resolve('build');
 const MINIMUM_MARKDOWN_PAGES = 100;
+const OPENAPI_URL =
+  process.env.API_DOCS_PATH || 'https://raw.githubusercontent.com/openfga/api/main/docs/openapiv2/apidocs.swagger.json';
 const BASE_URL = process.env.BASE_URL ?? '/';
 const NORMALIZED_BASE_URL = BASE_URL === '/' ? '' : BASE_URL.replace(/^\//, '').replace(/\/$/, '');
 const INDEX_FILES = ['llms.txt', 'docs/llms.txt', 'blog/llms.txt'];
@@ -53,6 +55,13 @@ function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+function readHtmlAttribute(tag, attribute) {
+  return tag
+    .match(new RegExp(`\\b${attribute}="([^"]*)"`, 'i'))?.[1]
+    .replaceAll('&quot;', '"')
+    .replaceAll('&amp;', '&');
+}
+
 const [rootIndex, docsIndex, blogIndex, llmsFullTxt, faqMarkdown, apiPageHtml, buildFiles] = await Promise.all([
   readBuildFile('llms.txt'),
   readBuildFile('docs/llms.txt'),
@@ -78,6 +87,10 @@ assert.match(rootIndex, /^## Start Here$/m, 'llms.txt must provide a curated sta
 assert.match(rootIndex, /^## FAQs and Concepts$/m, 'llms.txt must provide a FAQ and concepts section');
 assert.match(rootIndex, /^## API$/m, 'llms.txt must provide a first-class API section');
 assert.match(rootIndex, /OpenFGA API specification/, 'llms.txt must link to the machine-readable API specification');
+assert.ok(
+  rootIndex.includes(`](${OPENAPI_URL})`),
+  `llms.txt must link to the configured API specification: ${OPENAPI_URL}`,
+);
 assert.match(rootIndex, /\/docs\/llms\.txt/, 'llms.txt must link to the complete documentation index');
 assert.match(rootIndex, /\/blog\/llms\.txt/, 'llms.txt must link to the blog index');
 assert.match(rootIndex, /\/llms-full\.txt/, 'llms.txt must advertise the optional full bundle');
@@ -171,10 +184,19 @@ assertSameSet(
   'HTML alternate links must cover every generated Markdown page exactly',
 );
 
-assert.match(
-  apiPageHtml,
-  /<link\b[^>]*\brel="service-desc"[^>]*\btype="application\/json"[^>]*\bhref="https:\/\/raw\.githubusercontent\.com\/openfga\/api\/main\/docs\/openapiv2\/apidocs\.swagger\.json"/,
-  'the API page must advertise its machine-readable service description',
+const serviceDescriptionLink = (apiPageHtml.match(/<link\b[^>]*>/gi) ?? []).find(
+  (tag) => readHtmlAttribute(tag, 'rel') === 'service-desc',
+);
+assert.ok(serviceDescriptionLink, 'the API page must advertise its machine-readable service description');
+assert.equal(
+  readHtmlAttribute(serviceDescriptionLink, 'type'),
+  'application/json',
+  'the API service description must identify its media type',
+);
+assert.equal(
+  readHtmlAttribute(serviceDescriptionLink, 'href'),
+  OPENAPI_URL,
+  'the API page must advertise the configured machine-readable service description',
 );
 
 console.log(

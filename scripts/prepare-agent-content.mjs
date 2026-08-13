@@ -4,7 +4,8 @@ import path from 'node:path';
 
 const BUILD_DIR = path.resolve('build');
 const SITE_ORIGIN = 'https://openfga.dev';
-const OPENAPI_URL = 'https://raw.githubusercontent.com/openfga/api/main/docs/openapiv2/apidocs.swagger.json';
+const OPENAPI_URL =
+  process.env.API_DOCS_PATH || 'https://raw.githubusercontent.com/openfga/api/main/docs/openapiv2/apidocs.swagger.json';
 const BASE_URL = process.env.BASE_URL ?? '/';
 const BASE_PATH = BASE_URL === '/' ? '' : `/${BASE_URL.replace(/^\/+|\/+$/g, '')}`;
 const SITE_URL = `${SITE_ORIGIN}${BASE_PATH}`;
