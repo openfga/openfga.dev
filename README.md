@@ -11,6 +11,11 @@
 
 This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
 
+### Agent-readable documentation
+
+Production builds publish an AI-agent discovery index at `/llms.txt`, a single-file documentation bundle at `/llms-full.txt`, and a clean Markdown representation beside each documentation and blog URL (for example, `/docs/fga.md`). The HTML pages advertise these resources with `rel="alternate"` and `rel="describedby"` links.
+
+`npm run build` validates that the generated indexes, Markdown pages, FAQ content, and discovery links stay in sync.
 
 ## Getting Started
 

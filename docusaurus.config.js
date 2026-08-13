@@ -3,10 +3,14 @@
 
 import { themes } from "prism-react-renderer";
 import * as path from "path";
+import cleanAgentMarkdown from './scripts/clean-agent-markdown.mjs';
 
 const isDev = process.env.NODE_ENV === 'development';
 
 const baseUrl = process.env.BASE_URL ?? '/';
+const basePath = baseUrl === '/' ? '' : `/${baseUrl.replace(/^\/+|\/+$/g, '')}`;
+/** @param {string} route */
+const agentRoute = (route) => `${basePath}${route}`;
 
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').Config} */
@@ -144,6 +148,69 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
   ],
   plugins: [
     require.resolve('./webpack-overrides.docusaurus-plugin'),
+    [
+      '@signalwire/docusaurus-plugin-llms-txt',
+      {
+        siteTitle: 'OpenFGA Documentation',
+        siteDescription:
+          'OpenFGA is a CNCF open source authorization system for fine-grained, relationship-based access control.',
+        depth: 1,
+        enableDescriptions: true,
+        includeOrder: [agentRoute('/docs/**'), agentRoute('/blog/**')],
+        optionalLinks: [
+          {
+            title: 'OpenFGA API specification',
+            url: 'https://raw.githubusercontent.com/openfga/api/main/docs/openapiv2/apidocs.swagger.json',
+            description: 'Machine-readable OpenAPI specification for the OpenFGA HTTP API.',
+          },
+          {
+            title: 'OpenFGA source repository',
+            url: 'https://github.com/openfga/openfga',
+            description: 'Server source, releases, deployment guidance, and issue tracker.',
+          },
+          {
+            title: 'OpenFGA SDKs',
+            url: 'https://github.com/orgs/openfga/repositories?q=topic%3Asdk',
+            description: 'Official client SDK repositories for supported programming languages.',
+          },
+        ],
+        content: {
+          enableMarkdownFiles: true,
+          enableLlmsFullTxt: true,
+          relativePaths: false,
+          includeBlog: true,
+          includePages: true,
+          includeDocs: true,
+          includeVersionedDocs: false,
+          includeGeneratedIndex: false,
+          excludeRoutes: [
+            agentRoute('/404.html'),
+            agentRoute('/api/**'),
+            agentRoute('/blog'),
+            agentRoute('/blog/archive'),
+            agentRoute('/blog/authors/**'),
+            agentRoute('/blog/page/**'),
+            agentRoute('/blog/tags/**'),
+            agentRoute('/search'),
+          ],
+          routeRules: [
+            { route: agentRoute('/docs'), categoryName: 'Documentation' },
+            { route: agentRoute('/blog'), categoryName: 'Blog' },
+          ],
+          remarkStringify: {
+            bullet: '-',
+            emphasis: '_',
+            fences: true,
+            listItemIndent: 'one',
+          },
+          remarkGfm: true,
+          rehypeProcessTables: true,
+          beforeDefaultRehypePlugins: [cleanAgentMarkdown],
+        },
+        onRouteError: 'throw',
+        logLevel: 1,
+      },
+    ],
     [
       '@docusaurus/plugin-client-redirects',
       /** @type {import('@docusaurus/plugin-client-redirects').Options} */
