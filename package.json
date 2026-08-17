@@ -20,6 +20,7 @@
     "docker:build": "docker build . -t openfga-docs-ui",
     "docker:run": "docker run -p ${PORT:-3000}:3000 openfga-docs-ui",
     "typecheck": "tsc",
+    "test": "node --test scripts/*.test.mjs",
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "format:check": "prettier --check src/**",
