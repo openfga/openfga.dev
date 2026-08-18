@@ -15,6 +15,8 @@ After a long hiatus, we are back with Fine Grained News! The best way to keep up
 
 First of all, we want to thank the OpenFGA community for helping the [OpenFGA Repository](https://github.com/openfga/) get beyond 4k stars!
 
+<!-- truncate -->
+
 ## What have we been up to
 
 ### OpenFGA Performance
@@ -116,4 +118,3 @@ OpenFGA will also have a kiosk at the KubeCon Project Pavilion. [Tyler Nix](http
 ## **See you soon!**
 
 Fine Grained News used to be published every month, and we plan to go back to our monthly cadence! :) If you have any feedback, want to share your OpenFGA story, or have a noteworthy update, please let us know on any of our [community channels](https://openfga.dev/community) or at [community@openfga.dev](mailto:community@openfga.dev).
-

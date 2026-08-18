@@ -19,6 +19,8 @@ import {
 
 We've added two new optional parameters to the Write API endpoint to improve the experience of writing data to FGA. You can now gracefully ["ignore" duplicate writes and missing deletes](https://openfga.dev/docs/getting-started/update-tuples#05-ignoring-duplicate-or-missing-tuples).
 
+<!-- truncate -->
+
 ## The Problem
 
 When you're writing tuples to OpenFGA, it's almost inevitable that you'll try to write a relationship tuple that already exists (e.g., `user:anne` is already a `viewer` of `document:123`) or try to delete one that's already gone. In the past, OpenFGA would reject the entire Write request containing that single duplicate operation.

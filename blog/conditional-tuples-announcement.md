@@ -19,6 +19,8 @@ Although ReBAC offers a highly flexible method for structuring permissions, it e
 
 In our ongoing efforts to expand OpenFGA’s capacity for articulating a broader range of authorization policies, we are introducing **Conditional Relationship Tuples**. These allow for the specification of conditions under which a particular tuple is relevant when evaluating an authorization query.
 
+<!-- truncate -->
+
 Consider the following example, where we utilize Conditional Tuples to grant access for a user over a specified time duration. We stipulate that a user may be granted either unconditional access or access constrained to a certain time period:
 
 ```dsl.openfga
@@ -129,4 +131,3 @@ This won’t scale to a large number of documents, but would be useful in some s
 We want to learn how you use this feature and how we can improve it! 
 
 Please reach out through our [community channels](https://openfga.dev/community) with any questions or feedback.
-

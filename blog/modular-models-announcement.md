@@ -18,6 +18,8 @@ Modular models aims to improve the model authoring experience when multiple team
 
 With modular models, a single model can be separated across multiple files allow grouping of types and conditions into modules. This means that a model can be organized more easily in terms of team or organizational structure. Used in conjunction with features such as [GitHub](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners), [GitLab](https://docs.gitlab.com/ee/user/project/codeowners/) or [Gitea's](https://docs.gitea.com/usage/repository/code-owners) code owners, it should become easier to ensure the owners of a portion of your model are correctly assigned to review it.
 
+<!-- truncate -->
+
 ## How to use it?
 
 Modular models is available in the latest version of OpenFGA. To use it you need to:

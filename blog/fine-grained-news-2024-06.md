@@ -15,6 +15,8 @@ Welcome to Fine-Grained News, June 2024 edition!
 
 This is where we share what has been going on in the OpenFGA community during the last 30 days :).
 
+<!-- truncate -->
+
 ## What are we working on?
 
 - We started adding [OpenTelemetry instrumentation](https://github.com/openfga/roadmap/issues/41) to our SDKs. We just shipped metrics support for Python and Javascript. We'll continue with tracing and logging, and we'll be adding support for Java, Go and .NET next.

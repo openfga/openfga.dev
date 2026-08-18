@@ -13,6 +13,8 @@ hide_table_of_contents: false
 
 Welcome to the second Fine-Grained News edition of 2025! 
 
+<!-- truncate -->
+
 ## Just Shipped!
 
 - We shipped 3 minor versions of OpenFGA which include:
@@ -74,5 +76,4 @@ OpenFGA will be present in two high-profile events in London:
 ## **See You Next Month:**
 
 Fine-Grained News is published every month. If you have any feedback, want to share your OpenFGA story, or have a noteworthy update, please let us know on any of our [community channels](https://openfga.dev/community) or at [community@openfga.dev](mailto:community@openfga.dev).
-
 

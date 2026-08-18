@@ -13,6 +13,8 @@ hide_table_of_contents: false
 
 Welcome to Fine-Grained News, May edition!
 
+<!-- truncate -->
+
 ## New Releases!
 
 - We shipped the [a ListUsers API](https://openfga.dev/blog/list-users-announcement). ListUsers allows you to retrieve all the users that have a specific relation with a resource (e.g. all users that can view a document).

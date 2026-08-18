@@ -13,6 +13,8 @@ hide_table_of_contents: false
 
 Welcome to the November edition of Fine-Grained News! As we enter the final stretch of 2024, there are exciting developments in the OpenFGA to share.
 
+<!-- truncate -->
+
 🌟 **We hit 3,000 stars on the OpenFGA repo!:** 🌟 Because of this great community, we've just this incredible milestone! Thank you so much for all the support you've shown this project. Let's keep the momentum going! If you haven't yet, we'd greatly appreciate you [starring the repo](https://github.com/openfga/openfga) to help push us toward 4,000 stars and grow our amazing community! 
 
 ![Celebrating OpenFGA reaching 3,000 GitHub stars](../static/img/blog/fgn-2024-11-stars.png)
