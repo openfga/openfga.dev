@@ -10,6 +10,9 @@ const BASE_URL = process.env.BASE_URL ?? '/';
 const BASE_PATH = BASE_URL === '/' ? '' : `/${BASE_URL.replace(/^\/+|\/+$/g, '')}`;
 const SITE_URL = `${SITE_ORIGIN}${BASE_PATH}`;
 
+// These lists curate the focused sections in the root llms.txt. New pages are
+// added to the complete docs index automatically; update these paths when a
+// curated page is renamed or removed.
 const START_HERE_PATHS = [
   '/docs/fga.md',
   '/docs/getting-started.md',
@@ -167,10 +170,13 @@ function entryUrl(entry) {
   return entry.match(/^- \[[^\]]+\]\(([^)]+)\)/)?.[1];
 }
 
-function entryForPath(entries, routePath) {
+function entryForPath(entries, routePath, listName) {
   const target = `${SITE_URL}${routePath}`;
   const entry = entries.find((line) => line.includes(`](${target})`));
-  assert.ok(entry, `generated llms.txt is missing ${target}`);
+  assert.ok(
+    entry,
+    `${listName} references missing generated page ${target}; update ${listName} in scripts/prepare-agent-content.mjs after renaming or removing a curated page`,
+  );
   return entry;
 }
 
@@ -193,12 +199,12 @@ async function buildIndexes() {
 
   const startHereEntries = [
     `- [OpenFGA documentation home](${SITE_URL}/index.md): Product overview, benefits, and feature summary.`,
-    ...START_HERE_PATHS.map((routePath) => entryForPath(documentationEntries, routePath)),
+    ...START_HERE_PATHS.map((routePath) => entryForPath(documentationEntries, routePath, 'START_HERE_PATHS')),
   ];
-  const faqEntries = FAQ_PATHS.map((routePath) => entryForPath(documentationEntries, routePath));
+  const faqEntries = FAQ_PATHS.map((routePath) => entryForPath(documentationEntries, routePath, 'FAQ_PATHS'));
   const apiEntries = [
     `- [OpenFGA API specification](${OPENAPI_URL}): Machine-readable OpenAPI specification for the OpenFGA HTTP API.`,
-    ...API_PATHS.map((routePath) => entryForPath(documentationEntries, routePath)),
+    ...API_PATHS.map((routePath) => entryForPath(documentationEntries, routePath, 'API_PATHS')),
   ];
   const indexEntries = [
     `- [Complete documentation index](${SITE_URL}/docs/llms.txt): All current product documentation in Markdown.`,
