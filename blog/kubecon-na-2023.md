@@ -12,10 +12,9 @@ hide_table_of_contents: false
 # Join the OpenFGA team at KubeCon NA 2023!
 
 As you'd expect, the OpenFGA team will be at KubeCon NA 2023 in Chicago, IL!
+<!-- truncate -->
 
 We'll have a packed agenda for the week:
-
-<!-- truncate -->
 
 - [Jonathan Whitaker](https://www.linkedin.com/in/jonathan-whitaker-5a8b2484/) and [Lucas Käldström](https://www.linkedin.com/in/luxas/) will be presenting in [Could_Native Rejects](https://cloud-native.rejekts.io/) on how to use OpenFGA to manage and extend authorization in Kubernetes. Learn more [here](https://cfp.cloud-native.rejekts.io/cloud-native-rejekts-na-chicago-2023/speaker/XB7EUR/).
 
