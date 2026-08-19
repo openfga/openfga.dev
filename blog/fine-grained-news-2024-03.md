@@ -13,6 +13,8 @@ hide_table_of_contents: false
 
 Welcome to Fine-Grained News, KubeCon Edition!
 
+<!-- truncate -->
+
 ## KubeCon Europe 2024 was super-busy!
 
 You can now watch online:

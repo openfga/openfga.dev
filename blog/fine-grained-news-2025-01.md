@@ -14,6 +14,8 @@ hide_table_of_contents: false
 
 Welcome to the first Fine-Grained News edition of 2025! January is always a good month to look back at what the OpenFGA community accomplished over the past year.
 
+<!-- truncate -->
+
 ## Major features
 
 Below is a list of the major features that were shipped in 2024:
@@ -74,4 +76,3 @@ We are very grateful with the OpenFGA community, who helped shipping **126** rel
 ## **See You Next Month:**
 
 Fine-Grained News is published every month. If you have any feedback, want to share your OpenFGA story, or have a noteworthy update, please let us know on any of our [community channels](https://openfga.dev/community) or at [community@openfga.dev](mailto:community@openfga.dev).
-

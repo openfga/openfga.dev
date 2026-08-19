@@ -17,6 +17,8 @@ We've been publishing a monthly internal newsletter we called **Fine-Grained New
 
 You can expect to find here a summary of what we've been up to, what we are planning to do, and some other random stuff we think you might find interesting.
 
+<!-- truncate -->
+
 ## Team News
 
 We always start our Monthly Community Meetings presenting the team. If you attended the last one, you've seen that the size of the team has grown quite a bit! We are pretty excited about the impact it will have in OpenFGA and the authorization space in general. 

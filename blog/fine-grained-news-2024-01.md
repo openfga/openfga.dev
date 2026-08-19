@@ -13,6 +13,8 @@ hide_table_of_contents: false
 
 Welcome to the 2nd edition of Fine-Grained News! 
 
+<!-- truncate -->
+
 ## Team News
 
 The OpenFGA team got bigger, and we met in person in Toronto for the first time! We got to know each other better, helped new team members to get familiar with the project, hacked some code, had some fun with ax throwing, and loved Toronto's weather!
