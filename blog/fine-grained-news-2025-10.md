@@ -13,6 +13,8 @@ hide_table_of_contents: false
 
 Welcome to OpenFGA's Fine-Grained News, October edition!
 
+<!-- truncate -->
+
 ## 🎉 OpenFGA to CNCF Incubation!
 
 The CNCF completed the Due Diligence process to approve moving OpenFGA to the CNCF Incubation stage, and it's now [open for comments](https://github.com/cncf/toc/pull/1923). Support emojis are appreciated! 🚀 ❤️!
@@ -71,4 +73,3 @@ The OpenFGA community submitted six proposals to present at KubeCon Europe! A gr
 ## **See you soon!**
 
 Fine-Grained News is published monthly. If you have any feedback, want to share your OpenFGA story, or have a noteworthy update, please let us know on any of our [community channels](https://openfga.dev/community) or at [community@openfga.dev](mailto:community@openfga.dev).
-

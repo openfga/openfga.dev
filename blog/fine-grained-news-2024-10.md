@@ -15,6 +15,8 @@ Welcome to the October edition of Fine-Grained News! As we approach the end of t
 
 As always, if you’re finding the OpenFGA project to be a valuable resource, we would greatly appreciate if you would [star our repo](https://github.com/openfga/openfga) on GitHub to show your support!⭐
 
+<!-- truncate -->
+
 ## Just Shipped
 
 * **OpenFGA v1.7.0:** In our latest release, we’ve introduced Access Control. This experimental feature allows you to control access to your OpenFGA server, and of course, we built it using OpenFGA! We’ve updated our Docs to show you [how to enable this feature](https://openfga.dev/docs/getting-started/setup-openfga/access-control); please share your feedback in the [GitHub Discussions](https://github.com/orgs/openfga/discussions/382)! 

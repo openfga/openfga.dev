@@ -13,6 +13,8 @@ hide_table_of_contents: false
 
 Welcome to the 3rd edition of Fine-Grained News! 
 
+<!-- truncate -->
+
 ## KubeCon Europe 2024 is getting closer!
 
 We'll be pretty busy during [KubeCon Europe 2024](https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/):
