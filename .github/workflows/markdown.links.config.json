@@ -61,6 +61,9 @@
       "pattern": "^https://virv\\.ai(?:/|$)"
     },
     {
+      "pattern": "^https://openfga\\.mcp\\.kapa\\.ai/?$"
+    },
+    {
       "pattern": "^/"
     },
     {
