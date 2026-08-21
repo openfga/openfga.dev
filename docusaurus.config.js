@@ -315,6 +315,7 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
             label: 'Docs',
           },
           { to: '/api/service', label: 'API', position: 'left' },
+          { to: '/project', label: 'Project', position: 'left' },
           { to: '/blog', label: 'Blog', position: 'left' },
           {
             to: 'https://github.com/openfga/openfga',

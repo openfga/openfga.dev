@@ -1,0 +1,60 @@
+---
+title: OpenFGA Project
+description: Learn why OpenFGA exists, where project work happens, how to contribute or give feedback, and how to report security issues.
+---
+
+# OpenFGA Project
+
+OpenFGA is an open source, [CNCF Incubating project](https://www.cncf.io/projects/openfga/) for building fine-grained authorization systems.
+
+## Why OpenFGA exists
+
+Modern applications need permissions that can express relationships between users and resources, adapt as products evolve, and remain consistent across services. OpenFGA provides a centralized authorization system with an easy-to-read modeling language and consistent APIs, so application teams do not have to build and maintain a separate permissions system for every product.
+
+OpenFGA was inspired by [Google's Zanzibar paper](https://research.google/pubs/zanzibar-googles-consistent-global-authorization-system/). It was originally developed by Auth0/Okta, open sourced in June 2022, and donated to the Cloud Native Computing Foundation. OpenFGA joined CNCF as a Sandbox project in 2022 and moved to the Incubating maturity level on October 28, 2025. Read more about the project's history in the [Incubation announcement](/blog/incubation-announcement).
+
+## Where project work happens
+
+| Area                      | Repository or resource                                               | What you will find there                                                                |
+| ------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Server                    | [`openfga/openfga`](https://github.com/openfga/openfga)              | The OpenFGA server, release artifacts, runtime issues, and feature development.         |
+| API                       | [`openfga/api`](https://github.com/openfga/api)                      | The API definition shared by the server, SDKs, and other tooling.                       |
+| Website and documentation | [`openfga/openfga.dev`](https://github.com/openfga/openfga.dev)      | This website, guides, modeling examples, and API documentation.                         |
+| Design proposals          | [`openfga/rfcs`](https://github.com/openfga/rfcs)                    | Requests for Comments for significant changes to OpenFGA.                               |
+| Community and governance  | [`openfga/community`](https://github.com/openfga/community)          | Governance, maintainers, adopters, community projects, and meeting information.         |
+| Roadmap                   | [OpenFGA roadmap](https://github.com/orgs/openfga/projects/1)        | Planned and in-progress project work.                                                   |
+| SDKs and tools            | [OpenFGA repositories](https://github.com/orgs/openfga/repositories) | Official SDKs, the CLI, IDE extensions, the Terraform provider, and other integrations. |
+| Example models            | [`openfga/sample-stores`](https://github.com/openfga/sample-stores)  | Sample authorization models and a list of models used by open source projects.          |
+
+## Get OpenFGA
+
+Follow the [OpenFGA setup guide](/docs/getting-started/setup-openfga/overview) to run the server with Docker, Docker Compose, or Kubernetes. You can also download a binary from the [OpenFGA releases](https://github.com/openfga/openfga/releases) page.
+
+## Ask questions and give feedback
+
+Use the kapa.ai-powered **Ask AI** widget in the site navigation to ask questions about OpenFGA. For AI-assisted implementation, install the [OpenFGA Best Practices Skill](https://github.com/openfga/agent-skills) or connect an MCP-compatible client to the [OpenFGA kapa.ai MCP server](https://openfga.mcp.kapa.ai). AI-generated answers may be inaccurate, so verify them against the project documentation and code.
+
+- Ask usage questions and suggest product ideas in [GitHub Discussions](https://github.com/orgs/openfga/discussions).
+- Join the [`#openfga` channel in CNCF Slack](/docs/community) to talk with users and maintainers or attend a community meeting.
+- Report server bugs in the [`openfga/openfga` issue tracker](https://github.com/openfga/openfga/issues), and report website or documentation problems in the [`openfga/openfga.dev` issue tracker](https://github.com/openfga/openfga.dev/issues).
+
+When reporting a problem, include a minimal example or [FGA Playground](https://play.fga.dev/) link, the result you expected, the result you observed, and the steps you already tried.
+
+## Contribute
+
+Contributions of code, documentation, issue triage, RFC feedback, examples, and community support are all welcome.
+
+1. Read the [contribution guide](https://github.com/openfga/.github/blob/main/CONTRIBUTING.md) and [Code of Conduct](https://github.com/openfga/.github/blob/main/CODE_OF_CONDUCT.md).
+2. Look for an issue in the relevant repository, including issues labeled [`good first issue`](https://github.com/search?q=org%3Aopenfga+is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22&type=issues).
+3. For a substantial design change, start a discussion with the maintainers and review the [RFC process](https://github.com/openfga/rfcs).
+4. Fork the affected repository, make and test the change, and open a pull request.
+
+## Report a security vulnerability
+
+Do not disclose security vulnerabilities in a public issue or discussion. Email [security@openfga.dev](mailto:security@openfga.dev) and review the [OpenFGA security policy](https://github.com/openfga/.github/blob/main/SECURITY.md) for scope and reporting guidance. The project strives to reply within five business days.
+
+## Thank you
+
+OpenFGA was created by the Auth0 FGA team with support from Auth0 Labs and Auth0's Office of the CTO, and its development continued at Okta before the project was donated to CNCF. We are grateful to the people who shaped the project there, to the CNCF community, and to every maintainer, contributor, early design partner, and adopter who has shared code and feedback.
+
+The [Incubation announcement](/blog/incubation-announcement#thank-you) recognizes many of the people and organizations that helped OpenFGA reach this milestone. The community repository maintains the broader list of [OpenFGA adopters](https://github.com/openfga/community/blob/main/ADOPTERS.md).
