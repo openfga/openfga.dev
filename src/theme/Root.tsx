@@ -173,7 +173,11 @@ export default function Root({ children }: RootProps): JSX.Element {
   // index/RSS but noindex them so they don't compete with evergreen pages in search results.
   const noindex = /^\/blog\/fine-grained-news-/.test(normalizedRoutePath);
   const hasMarkdownAlternate =
-    !noindex && (normalizedRoutePath === '/' || normalizedRoutePath.startsWith('/docs/') || isBlogArticle);
+    !noindex &&
+    (normalizedRoutePath === '/' ||
+      normalizedRoutePath === '/project' ||
+      normalizedRoutePath.startsWith('/docs/') ||
+      isBlogArticle);
   const markdownPath = normalizedRoutePath === '/' ? '/index.md' : `${normalizedRoutePath}.md`;
   const markdownHref = `${basePath}${markdownPath}`;
   const llmsTxtPath = normalizedRoutePath.startsWith('/docs/')

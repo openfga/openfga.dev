@@ -192,6 +192,15 @@ async function buildIndexes() {
   const generatedEntries = generatedIndex.split('\n').filter((line) => line.startsWith('- ['));
   const documentationEntries = generatedEntries.filter((entry) => entryUrl(entry)?.startsWith(`${SITE_URL}/docs/`));
   const blogEntries = generatedEntries.filter((entry) => entryUrl(entry)?.startsWith(`${SITE_URL}/blog/`));
+  const sitePageEntries = generatedEntries.filter((entry) => {
+    const url = entryUrl(entry);
+    return (
+      url?.startsWith(`${SITE_URL}/`) &&
+      url !== `${SITE_URL}/index.md` &&
+      !url.startsWith(`${SITE_URL}/docs/`) &&
+      !url.startsWith(`${SITE_URL}/blog/`)
+    );
+  });
   const optionalEntries = sectionEntries(generatedIndex, 'Optional');
 
   assert.ok(documentationEntries.length > 0, 'generated llms.txt has no documentation entries');
@@ -230,6 +239,7 @@ async function buildIndexes() {
     '',
     renderSection('API', apiEntries),
     '',
+    ...(sitePageEntries.length > 0 ? [renderSection('Site Pages', sitePageEntries), ''] : []),
     renderSection('Complete Indexes', indexEntries),
     '',
     renderSection('Optional', finalOptionalEntries),
