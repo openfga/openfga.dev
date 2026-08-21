@@ -252,6 +252,7 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
           },
           { to: '/api/service', label: 'API', position: 'left' },
           { to: '/blog', label: 'Blog', position: 'left' },
+          { to: '/project', label: 'Project', position: 'left' },
           {
             to: 'https://github.com/openfga/openfga',
             position: 'right',
