@@ -8,7 +8,7 @@ const OPENAPI_URL =
   process.env.API_DOCS_PATH || 'https://raw.githubusercontent.com/openfga/api/main/docs/openapiv2/apidocs.swagger.json';
 const BASE_URL = process.env.BASE_URL ?? '/';
 const NORMALIZED_BASE_URL = BASE_URL === '/' ? '' : BASE_URL.replace(/^\//, '').replace(/\/$/, '');
-const INDEX_FILES = ['llms.txt', 'docs/llms.txt', 'blog/llms.txt'];
+const INDEX_FILES = ['llms.txt', 'docs/llms.txt'];
 const FAQ_QUESTIONS = [
   'What is Fine-Grained Authorization?',
   'What is Role-Based Access Control?',
@@ -62,10 +62,9 @@ function readHtmlAttribute(tag, attribute) {
     .replaceAll('&amp;', '&');
 }
 
-const [rootIndex, docsIndex, blogIndex, llmsFullTxt, faqMarkdown, apiPageHtml, buildFiles] = await Promise.all([
+const [rootIndex, docsIndex, llmsFullTxt, faqMarkdown, apiPageHtml, buildFiles] = await Promise.all([
   readBuildFile('llms.txt'),
   readBuildFile('docs/llms.txt'),
-  readBuildFile('blog/llms.txt'),
   readBuildFile('llms-full.txt'),
   readBuildFile('docs/authorization-concepts.md'),
   readBuildFile('api/service.html'),
@@ -75,7 +74,6 @@ const [rootIndex, docsIndex, blogIndex, llmsFullTxt, faqMarkdown, apiPageHtml, b
 const indexes = new Map([
   ['llms.txt', rootIndex],
   ['docs/llms.txt', docsIndex],
-  ['blog/llms.txt', blogIndex],
 ]);
 const relativeBuildFiles = buildFiles.map((file) => path.relative(BUILD_DIR, file).split(path.sep).join('/'));
 const buildFileSet = new Set(relativeBuildFiles);
@@ -92,15 +90,8 @@ assert.ok(
   `llms.txt must link to the configured API specification: ${OPENAPI_URL}`,
 );
 assert.match(rootIndex, /\/docs\/llms\.txt/, 'llms.txt must link to the complete documentation index');
-assert.match(rootIndex, /\/blog\/llms\.txt/, 'llms.txt must link to the blog index');
 assert.match(rootIndex, /\/llms-full\.txt/, 'llms.txt must advertise the optional full bundle');
-assert.match(
-  rootIndex,
-  /Blog posts are historical announcements and may describe older releases/,
-  'llms.txt must tell agents how to treat historical blog content',
-);
 assert.match(docsIndex, /^# OpenFGA Documentation Index$/m, 'docs/llms.txt must identify the documentation index');
-assert.match(blogIndex, /^# OpenFGA Blog Index$/m, 'blog/llms.txt must identify the blog index');
 assert.match(
   llmsFullTxt,
   /^# Full Documentation Content$/m,
@@ -111,10 +102,9 @@ assert.ok(
   markdownPages.length >= MINIMUM_MARKDOWN_PAGES,
   `expected at least ${MINIMUM_MARKDOWN_PAGES} Markdown pages, found ${markdownPages.length}`,
 );
-assert.doesNotMatch(
-  `${rootIndex}\n${docsIndex}\n${blogIndex}`,
-  /\/blog\/(?:fine-grained-news-|tags\/|page\/)/,
-  'agent indexes must omit noindexed newsletters and generated blog navigation',
+assert.ok(
+  markdownPages.every((file) => file.startsWith('docs/')),
+  'agent-readable Markdown must include documentation pages only',
 );
 
 const indexedMarkdownPageSet = new Set();

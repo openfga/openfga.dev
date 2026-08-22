@@ -166,25 +166,14 @@ export default function Root({ children }: RootProps): JSX.Element {
   const basePath = siteConfig.baseUrl === '/' ? '' : siteConfig.baseUrl.replace(/\/$/, '');
   const routePath = basePath && pathname.startsWith(basePath) ? pathname.slice(basePath.length) || '/' : pathname;
   const normalizedRoutePath = routePath.length > 1 ? routePath.replace(/\/$/, '') : routePath;
-  const isBlogArticle =
-    normalizedRoutePath.startsWith('/blog/') &&
-    !/^\/blog\/(?:archive|authors(?:\/|$)|page(?:\/|$)|tags(?:\/|$))/.test(normalizedRoutePath);
   // Fine-Grained News digests are time-sensitive newsletters — keep them visible in the blog
   // index/RSS but noindex them so they don't compete with evergreen pages in search results.
   const noindex = /^\/blog\/fine-grained-news-/.test(normalizedRoutePath);
-  const hasMarkdownAlternate =
-    !noindex &&
-    (normalizedRoutePath === '/' ||
-      normalizedRoutePath === '/project' ||
-      normalizedRoutePath.startsWith('/docs/') ||
-      isBlogArticle);
-  const markdownPath = normalizedRoutePath === '/' ? '/index.md' : `${normalizedRoutePath}.md`;
+  const isDocumentationRoute = normalizedRoutePath === '/docs' || normalizedRoutePath.startsWith('/docs/');
+  const hasMarkdownAlternate = normalizedRoutePath.startsWith('/docs/');
+  const markdownPath = `${normalizedRoutePath}.md`;
   const markdownHref = `${basePath}${markdownPath}`;
-  const llmsTxtPath = normalizedRoutePath.startsWith('/docs/')
-    ? '/docs/llms.txt'
-    : normalizedRoutePath.startsWith('/blog/')
-      ? '/blog/llms.txt'
-      : '/llms.txt';
+  const llmsTxtPath = isDocumentationRoute ? '/docs/llms.txt' : '/llms.txt';
   const llmsTxtHref = `${basePath}${llmsTxtPath}`;
   const isApiPage = normalizedRoutePath.startsWith('/api');
   const breadcrumbJsonLd = normalizedRoutePath.startsWith('/docs/')

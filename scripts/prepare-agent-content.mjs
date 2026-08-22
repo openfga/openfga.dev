@@ -191,25 +191,13 @@ async function buildIndexes() {
   ]);
   const generatedEntries = generatedIndex.split('\n').filter((line) => line.startsWith('- ['));
   const documentationEntries = generatedEntries.filter((entry) => entryUrl(entry)?.startsWith(`${SITE_URL}/docs/`));
-  const blogEntries = generatedEntries.filter((entry) => entryUrl(entry)?.startsWith(`${SITE_URL}/blog/`));
-  const sitePageEntries = generatedEntries.filter((entry) => {
-    const url = entryUrl(entry);
-    return (
-      url?.startsWith(`${SITE_URL}/`) &&
-      url !== `${SITE_URL}/index.md` &&
-      !url.startsWith(`${SITE_URL}/docs/`) &&
-      !url.startsWith(`${SITE_URL}/blog/`)
-    );
-  });
   const optionalEntries = sectionEntries(generatedIndex, 'Optional');
 
   assert.ok(documentationEntries.length > 0, 'generated llms.txt has no documentation entries');
-  assert.ok(blogEntries.length > 0, 'generated llms.txt has no blog entries');
 
-  const startHereEntries = [
-    `- [OpenFGA documentation home](${SITE_URL}/index.md): Product overview, benefits, and feature summary.`,
-    ...START_HERE_PATHS.map((routePath) => entryForPath(documentationEntries, routePath, 'START_HERE_PATHS')),
-  ];
+  const startHereEntries = START_HERE_PATHS.map((routePath) =>
+    entryForPath(documentationEntries, routePath, 'START_HERE_PATHS'),
+  );
   const faqEntries = FAQ_PATHS.map((routePath) => entryForPath(documentationEntries, routePath, 'FAQ_PATHS'));
   const apiEntries = [
     `- [OpenFGA API specification](${OPENAPI_URL}): Machine-readable OpenAPI specification for the OpenFGA HTTP API.`,
@@ -217,7 +205,6 @@ async function buildIndexes() {
   ];
   const indexEntries = [
     `- [Complete documentation index](${SITE_URL}/docs/llms.txt): All current product documentation in Markdown.`,
-    `- [Blog index](${SITE_URL}/blog/llms.txt): Product announcements and historical project updates.`,
   ];
   const finalOptionalEntries = [
     `- [Complete documentation bundle](${SITE_URL}/llms-full.txt): Large single-file bundle; prefer the focused indexes and page links when context is limited.`,
@@ -225,7 +212,7 @@ async function buildIndexes() {
   ];
 
   const guidance =
-    'Use the documentation for current product behavior and the API specification for exact request and response shapes. Blog posts are historical announcements and may describe older releases.';
+    'Use the documentation for current product behavior and the API specification for exact request and response shapes.';
   const rootIndex = [
     '# OpenFGA Documentation',
     '',
@@ -239,7 +226,6 @@ async function buildIndexes() {
     '',
     renderSection('API', apiEntries),
     '',
-    ...(sitePageEntries.length > 0 ? [renderSection('Site Pages', sitePageEntries), ''] : []),
     renderSection('Complete Indexes', indexEntries),
     '',
     renderSection('Optional', finalOptionalEntries),
@@ -257,17 +243,6 @@ async function buildIndexes() {
     '',
   ].join('\n');
 
-  const blogIndex = [
-    '# OpenFGA Blog Index',
-    '',
-    '> OpenFGA product announcements and project updates.',
-    '',
-    'Blog posts are historical context and may describe older releases. Prefer the product documentation for current behavior.',
-    '',
-    renderSection('Blog', blogEntries),
-    '',
-  ].join('\n');
-
   const fullContentMarker = '# Full Documentation Content';
   const fullContentStart = generatedFull.indexOf(fullContentMarker);
   assert.notEqual(fullContentStart, -1, 'generated llms-full.txt is missing its content marker');
@@ -276,14 +251,13 @@ async function buildIndexes() {
   await Promise.all([
     fs.writeFile(path.join(BUILD_DIR, 'llms.txt'), rootIndex),
     fs.writeFile(path.join(BUILD_DIR, 'docs/llms.txt'), docsIndex),
-    fs.writeFile(path.join(BUILD_DIR, 'blog/llms.txt'), blogIndex),
     fs.writeFile(path.join(BUILD_DIR, 'llms-full.txt'), fullIndex),
   ]);
 
-  return { documentationEntries: documentationEntries.length, blogEntries: blogEntries.length };
+  return { documentationEntries: documentationEntries.length };
 }
 
 const [markdownPageCount, indexes] = await Promise.all([addPageMetadata(), buildIndexes()]);
 console.log(
-  `Prepared ${markdownPageCount} Markdown pages, ${indexes.documentationEntries} documentation links, and ${indexes.blogEntries} blog links for agents.`,
+  `Prepared ${markdownPageCount} Markdown pages and ${indexes.documentationEntries} documentation links for agents.`,
 );
