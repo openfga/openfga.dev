@@ -1,0 +1,119 @@
+# OpenFGA Documentation Index
+
+> Complete index of current OpenFGA product documentation.
+
+Use these pages for current behavior. The OpenAPI specification linked from the root llms.txt is authoritative for HTTP request and response shapes.
+
+## Documentation
+
+- [OpenFGA in production](https://openfga.dev/docs/adopters.md): Production OpenFGA case studies from Agicap, Docker, Grafana Labs, Headspace, OpenLane, Read AI, Vitrolife, Zuplo and other adopters running fine-grained authorization at scale.
+- [Agicap: Fine-grained authorization for a European fintech platform](https://openfga.dev/docs/adopters/agicap.md): How European fintech Agicap runs OpenFGA in production for 8,000+ customers at 250 RPS with conditional ReBAC across every backend service.
+- [Docker: Centralizing permissions with ReBAC](https://openfga.dev/docs/adopters/docker.md): How Docker migrated to OpenFGA with a parallel-run strategy and now uses ReBAC to centralize permissions across products.
+- [Grafana Labs: From single-tenant engine to multi-tenant ReBAC](https://openfga.dev/docs/adopters/grafana.md): Why Grafana Labs replaced its single-tenant access control engine with OpenFGA to power multi-tenant Grafana Cloud and embedded OSS deployments.
+- [Headspace: Authorizing an empathetic AI companion at consumer scale](https://openfga.dev/docs/adopters/headspace.md): How Headspace authorizes Ebb, its empathetic AI companion, with OpenFGA — driving end-to-end checks down from 10-15 seconds to 10-15 milliseconds.
+- [Openlane: Authorization at the data-access layer for compliance automation](https://openfga.dev/docs/adopters/openlane.md): How compliance-automation startup OpenLane wires OpenFGA into ent at the data-access layer, with overfetch + BatchCheck replacing slow ListObjects.
+- [Read AI: 5 billion tuples, 20ms p99 latency](https://openfga.dev/docs/adopters/read-ai.md): How Read AI runs OpenFGA at 5,200 requests per second with 20ms p99 latency over more than 5 billion relationship tuples.
+- [Vitrolife Group: Hybrid Entra + OpenFGA authorization for a .NET healthcare platform](https://openfga.dev/docs/adopters/vitrolife.md): How Vitrolife combines Microsoft Entra ID app roles with OpenFGA fine-grained ReBAC for a .NET 10 metadata platform serving IVF clinics worldwide.
+- [Zuplo: Edge authorization across multiple data centers](https://openfga.dev/docs/adopters/zuplo.md): How API management platform Zuplo runs OpenFGA across multiple data centers with PostgreSQL global replication for edge authorization.
+- [Authorization Concepts](https://openfga.dev/docs/authorization-concepts.md): Learn fine-grained authorization concepts: ReBAC, RBAC, ABAC, PBAC, and Google Zanzibar. Understand how OpenFGA models permissions for modern apps.
+- [OpenFGA Best Practices](https://openfga.dev/docs/best-practices.md): Overview of best practices when adopting OpenFGA
+- [OpenFGA Adoption Patterns](https://openfga.dev/docs/best-practices/adoption-patterns.md): Describe different ways FGA can be adopted in an organization
+- [Modeling ABAC with OpenFGA](https://openfga.dev/docs/best-practices/modeling-abac.md): Learn how to model Attribute-Based Access Control (ABAC) patterns using stored and dynamic attributes in OpenFGA.
+- [Authorization Model Design Principles](https://openfga.dev/docs/best-practices/modeling-design-principles.md): Best practices for creating clear, performant, and maintainable authorization models.
+- [Modeling Roles](https://openfga.dev/docs/best-practices/modeling-roles.md): Various ways of modeling static and dynamic roles in FGA - both coarse and fine-grained.
+- [Running OpenFGA in Production](https://openfga.dev/docs/best-practices/running-in-production.md): Best Practices of Running OpenFGA in a Production Environment
+- [When to use OpenFGA as the 'source of truth' for authorization data](https://openfga.dev/docs/best-practices/source-of-truth.md): Deciding where to store the "source of truth" for authorization data
+- [OpenFGA Community](https://openfga.dev/docs/community.md): Learn how to engage with the OpenFGA Community
+- [Concepts](https://openfga.dev/docs/concepts.md): Learning about FGA concepts
+- [Configuration Language](https://openfga.dev/docs/configuration-language.md): Learning about the FGA configuration language and using it to build a representation of a system's authorization model
+- [Introduction to OpenFGA](https://openfga.dev/docs/fga.md): Build relationship-based, role-based, and attribute-based access control at scale.
+- [Getting Started](https://openfga.dev/docs/getting-started.md): OpenFGA tutorial and quickstart: install the server, configure an authorization model, write tuples, and run your first permission checks in minutes.
+- [Use the FGA CLI](https://openfga.dev/docs/getting-started/cli.md): Use the FGA CLI
+- [Configure Authorization Model for a Store](https://openfga.dev/docs/getting-started/configure-model.md): Configuring authorization model for a store
+- [Configure SDK Client Telemetry](https://openfga.dev/docs/getting-started/configure-telemetry.md): How to configure your SDK Client to collect telemetry using OpenTelemetry.
+- [Create a Store](https://openfga.dev/docs/getting-started/create-store.md): Creating a store
+- [Integrate Within a Framework](https://openfga.dev/docs/getting-started/framework.md): Integrating FGA within a framework, such as Fastify or Fiber
+- [Immutable Authorization Models](https://openfga.dev/docs/getting-started/immutable-models.md): Learn how to take advantage of the immutable properties of Authorization Models
+- [Install SDK Client](https://openfga.dev/docs/getting-started/install-sdk.md): Installing SDK client
+- [Perform a Check](https://openfga.dev/docs/getting-started/perform-check.md): Checking if a user is authorized to perform an action on a resource
+- [Perform a list objects call](https://openfga.dev/docs/getting-started/perform-list-objects.md): List all objects a user is authorized to perform a specified action for a given resource type
+- [Perform a List Users call](https://openfga.dev/docs/getting-started/perform-list-users.md): List all users that have a certain relation with a particular object
+- [🛡️Setup Access Control](https://openfga.dev/docs/getting-started/setup-openfga/access-control.md): How to enable and setup the built-in access control OpenFGA server (experimental)
+- [OpenFGA Configuration Options](https://openfga.dev/docs/getting-started/setup-openfga/configuration.md): Configuring Options for the OpenFGA Server
+- [Configuring OpenFGA](https://openfga.dev/docs/getting-started/setup-openfga/configure-openfga.md): Configuring an OpenFGA Server
+- [🐳 Setup OpenFGA with Docker](https://openfga.dev/docs/getting-started/setup-openfga/docker.md): Setting up an OpenFGA server with Docker
+- [☸️ Setup OpenFGA with Kubernetes](https://openfga.dev/docs/getting-started/setup-openfga/kubernetes.md): Setting up an OpenFGA server with Kubernetes
+- [Setup OpenFGA](https://openfga.dev/docs/getting-started/setup-openfga/overview.md): Learn how to set up an OpenFGA server with Docker, Kubernetes, or as a Go library. Covers configuration, datastores (Postgres, MySQL, SQLite), and telemetry.
+- [Using the OpenFGA Playground](https://openfga.dev/docs/getting-started/setup-openfga/playground.md): Setting up an OpenFGA server
+- [Reporting Runtime Issues](https://openfga.dev/docs/getting-started/setup-openfga/reporting-runtime-issues.md): Information to gather when reporting OpenFGA runtime issues
+- [Setup SDK Client for Store](https://openfga.dev/docs/getting-started/setup-sdk-client.md): Setting up an OpenFGA SDK client
+- [Best Practices of Managing Tuples and Invoking APIs](https://openfga.dev/docs/getting-started/tuples-api-best-practices.md): Best Practices of Managing Tuples and Invoking APIs
+- [Update Relationship Tuples](https://openfga.dev/docs/getting-started/update-tuples.md): Introduction to adding and deleting relationship tuples
+- [OpenFGA by Industry](https://openfga.dev/docs/industries.md): How healthcare, banking, e-commerce, HR, CRM, and LMS teams model fine-grained authorization with FGA.
+- [ATS Authorization with OpenFGA](https://openfga.dev/docs/industries/applicant-tracking-system.md): Model jobs, candidates, applications, interviews, scorecards, and offer workflows in FGA for Greenhouse-style and Lever-style applicant tracking systems.
+- [Banking Authorization with OpenFGA](https://openfga.dev/docs/industries/banking.md): Model account managers, account owners, per-transaction limits, and delegation in FGA for banking, fintech, and PCI-DSS-regulated applications.
+- [CRM Authorization with OpenFGA](https://openfga.dev/docs/industries/crm.md): Model accounts, contacts, leads, opportunities, and territory-based access in FGA for Salesforce-style and HubSpot-style CRM platforms.
+- [E-commerce Authorization with OpenFGA](https://openfga.dev/docs/industries/ecommerce.md): Model multi-store organizations, staff roles, products, orders, and refunds in FGA for Shopify-style and BigCommerce-style e-commerce platforms.
+- [Healthcare Authorization with OpenFGA](https://openfga.dev/docs/industries/healthcare.md): Model patients, providers, encounters, and HIPAA-regulated PHI access in OpenFGA. Care teams, facility hierarchy, and sensitive-field permissions for EHR.
+- [HR & HRIS Authorization with OpenFGA](https://openfga.dev/docs/industries/human-resources.md): Model employee records, manager hierarchies, payroll, benefits, and PII isolation in FGA for Workday-style HRIS, HR, and directory systems.
+- [LMS Authorization with OpenFGA](https://openfga.dev/docs/industries/lms.md): Model courses, classes, enrollments, content authorship, and grading workflows in FGA for Canvas-style and Moodle-style learning management systems.
+- [Interacting with the API](https://openfga.dev/docs/interacting.md): Programmatically writing authorization related data and interact with the API
+- [AuthZEN API (Experimental)](https://openfga.dev/docs/interacting/authzen.md): Using the AuthZEN interoperability API with OpenFGA
+- [Query Consistency Modes](https://openfga.dev/docs/interacting/consistency.md): Query Consistency Modes
+- [Contextual Tuples](https://openfga.dev/docs/interacting/contextual-tuples.md): Understanding and using contextual tuples
+- [Managing Group Access](https://openfga.dev/docs/interacting/managing-group-access.md): Granting a group of users access to a particular object
+- [Managing Group Membership](https://openfga.dev/docs/interacting/managing-group-membership.md): Updating a user's membership to a group by adding and removing them from it
+- [Managing Relationships Between Objects](https://openfga.dev/docs/interacting/managing-relationships-between-objects.md): Granting a user access to a particular object through a relationship with another object
+- [Managing User Access](https://openfga.dev/docs/interacting/managing-user-access.md): Granting a user access to a particular object
+- [How to get tuple changes](https://openfga.dev/docs/interacting/read-tuple-changes.md): Getting tuple changes
+- [Relationship Queries: Check, Read, Expand, ListObjects and ListUsers](https://openfga.dev/docs/interacting/relationship-queries.md): An overview of how to use the Check, Read, Expand, and ListObject APIs
+- [Search With Permissions](https://openfga.dev/docs/interacting/search-with-permissions.md): Integrating FGA into your search
+- [Learn Authorization](https://openfga.dev/docs/learn.md): Authorization concepts explained — Zanzibar, ReBAC, RBAC, ABAC, fine-grained authorization, and policy engines — with FGA examples.
+- [ABAC vs. ReBAC](https://openfga.dev/docs/learn/abac-vs-rebac.md): ABAC decides on attributes; ReBAC decides on relationships. Learn which fits which problem — and how OpenFGA covers both via conditions.
+- [What is Fine-Grained Authorization?](https://openfga.dev/docs/learn/fine-grained-authorization.md): Fine-grained authorization decides access at the resource and action level. Learn what FGA is, what it buys you, and how OpenFGA implements it.
+- [Policy Engines vs. Relationship Engines](https://openfga.dev/docs/learn/policy-engine.md): Policy engines like OPA and Cedar evaluate rules over data. Relationship engines like OpenFGA store and query the graph. Here's when to use which.
+- [RBAC vs. ReBAC](https://openfga.dev/docs/learn/rbac-vs-rebac.md): RBAC assigns roles to users; ReBAC models relationships between users and resources. Learn when roles run out and ReBAC takes over.
+- [What is ReBAC?](https://openfga.dev/docs/learn/rebac.md): ReBAC models permissions as relationships between users and resources. Learn what ReBAC is, when to use it, and how OpenFGA implements it.
+- [What is Google Zanzibar?](https://openfga.dev/docs/learn/zanzibar.md): Google Zanzibar is the paper behind Google's global authorization system. Learn what Zanzibar is, what it solved, and how OpenFGA implements it.
+- [Modeling Guides](https://openfga.dev/docs/modeling.md): This section has guides, concepts and examples that help you define an authorization model.
+- [Advanced Use-Cases](https://openfga.dev/docs/modeling/advanced.md): Advanced use cases and patterns for authorization modeling
+- [Modeling Entitlements for a System with OpenFGA](https://openfga.dev/docs/modeling/advanced/entitlements.md): Modeling entitlements for a system
+- [Modeling Google Drive permissions with OpenFGA](https://openfga.dev/docs/modeling/advanced/gdrive.md): Modeling Google Drive permissions
+- [Modeling GitHub permissions with OpenFGA](https://openfga.dev/docs/modeling/advanced/github.md): Modeling GitHub permissions
+- [Modeling Authorization for an IoT Security System with OpenFGA](https://openfga.dev/docs/modeling/advanced/iot.md): Modeling fine-grained authorization for an IoT security camera system
+- [Modeling Authorization for Slack with OpenFGA](https://openfga.dev/docs/modeling/advanced/slack.md): Modeling authorization for Slack
+- [Authorization for Agents](https://openfga.dev/docs/modeling/agents.md): Authorization patterns for AI agents and automated processes: model agents as principals, secure RAG pipelines, and control MCP server tool access.
+- [Modeling Agents as Principals](https://openfga.dev/docs/modeling/agents/agents-as-principals.md): Model agents as first-class principals in your authorization model so they inherit access through the same permission hierarchy as users
+- [Authorization for MCP Servers](https://openfga.dev/docs/modeling/agents/mcp-authorization.md): Authorize MCP server tools with OpenFGA: control which tools each user can invoke based on roles, group membership, and time-limited temporal grants.
+- [RAG Authorization](https://openfga.dev/docs/modeling/agents/rag-authorization.md): Secure your RAG pipeline with OpenFGA: enforce document-level permissions so AI agents only retrieve content each user is authorized to access.
+- [Modeling Task-Based Authorization for Agents](https://openfga.dev/docs/modeling/agents/task-based-authorization.md): Modeling task-based authorization for agents
+- [Blocklists](https://openfga.dev/docs/modeling/blocklists.md): Preventing certain users from accessing objects
+- [Authorization Model Building Blocks](https://openfga.dev/docs/modeling/building-blocks.md): This section has guides that on the building blocks of authorization model.
+- [Concentric Relationships](https://openfga.dev/docs/modeling/building-blocks/concentric-relationships.md): Modeling Concepts: Concentric Relationships
+- [Direct Relationships](https://openfga.dev/docs/modeling/building-blocks/direct-relationships.md): Modeling Concepts: Direct Relationships
+- [Object to Object Relationships](https://openfga.dev/docs/modeling/building-blocks/object-to-object-relationships.md): Modeling relationships between objects (e.g. folder parent of a document)
+- [Usersets](https://openfga.dev/docs/modeling/building-blocks/usersets.md): Modeling with userset
+- [Conditions](https://openfga.dev/docs/modeling/conditions.md): Modeling relationships with Conditions
+- [Contextual and Time-Based Authorization](https://openfga.dev/docs/modeling/contextual-time-based-authorization.md): Checking relations that depends on certain dynamic or contextual data (such as time, location, ip address, weather) that have not been written
+- [Custom Roles](https://openfga.dev/docs/modeling/custom-roles.md): Modeling custom and dynamically changing roles in your system
+- [Direct Access](https://openfga.dev/docs/modeling/direct-access.md): Granting a user access to an object
+- [Get Started with Modeling](https://openfga.dev/docs/modeling/getting-started.md): An introduction to modeling
+- [Model Migrations](https://openfga.dev/docs/modeling/migrating.md): This section has guides that focus on migrating models and relations.
+- [Model Migrations](https://openfga.dev/docs/modeling/migrating/migrating-models.md): You can think of model migrations for  in the same way as you think about relational database migrations. You can perform migrations with or without downtime for both, and for some changes, doing them without downtime is harder.
+- [Migrating Relations](https://openfga.dev/docs/modeling/migrating/migrating-relations.md): Migrating relations
+- [Modular Models](https://openfga.dev/docs/modeling/modular-models.md): Modular Models
+- [Multiple Restrictions](https://openfga.dev/docs/modeling/multiple-restrictions.md): Modeling system that requires multiple authorizations before allowing users to perform actions on particular objects
+- [Authorization Through Organization Context](https://openfga.dev/docs/modeling/organization-context-authorization.md): Modeling authorization through organization context
+- [Parent-Child Objects](https://openfga.dev/docs/modeling/parent-child.md): Indicate relationships between objects, and how users' relationships to one object can affect their relationship with another
+- [Public Access](https://openfga.dev/docs/modeling/public-access.md): Granting public access to an object
+- [Roles and Permissions](https://openfga.dev/docs/modeling/roles-and-permissions.md): Modeling basic roles and permissions
+- [Store File Format](https://openfga.dev/docs/modeling/store-file-format.md): Store File Format (.fga.yaml)
+- [Testing Models](https://openfga.dev/docs/modeling/testing.md): Testing Models
+- [Use Token Claims As Contextual Tuples](https://openfga.dev/docs/modeling/token-claims-contextual-tuples.md): Using identity token claims to define contextual relations
+- [User Groups](https://openfga.dev/docs/modeling/user-groups.md): Adding users to groups and granting group members access to an object
+- [OpenFGA Use Cases](https://openfga.dev/docs/use-cases.md): Production-ready OpenFGA patterns for AI agents, RAG, MCP servers, multi-tenant SaaS, and microservices authorization.
+- [AI Agent Authorization](https://openfga.dev/docs/use-cases/ai-agent-authorization.md): Authorize AI agents with OpenFGA. Model agents as principals, delegate user permissions, and enforce least privilege for autonomous and copilot agents.
+- [MCP Server Authorization](https://openfga.dev/docs/use-cases/mcp-server-authorization.md): Authorize Model Context Protocol (MCP) servers with OpenFGA. Per-tool, per-resource permission checks on every MCP request.
+- [Microservices Authorization](https://openfga.dev/docs/use-cases/microservices-authorization.md): Centralize authorization across microservices with OpenFGA. One model, one store, one set of decisions — instead of a roles table per service.
+- [Multi-Tenant SaaS Authorization](https://openfga.dev/docs/use-cases/multi-tenant-saas.md): Authorize multi-tenant SaaS applications with OpenFGA. Strict tenant isolation, shared infrastructure, and cross-tenant sharing where you want it.
+- [RAG Authorization](https://openfga.dev/docs/use-cases/rag-authorization.md): Enforce per-user permissions on retrieval-augmented generation. Filter retrieved documents through OpenFGA before they reach the model.
