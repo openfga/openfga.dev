@@ -3,10 +3,15 @@
 
 import { themes } from "prism-react-renderer";
 import * as path from "path";
+import cleanAgentMarkdown from './scripts/clean-agent-markdown.mjs';
 
 const isDev = process.env.NODE_ENV === 'development';
 
-const baseUrl = process.env.BASE_URL ?? '/';
+const configuredBasePath = (process.env.BASE_URL ?? '/').replace(/^\/+|\/+$/g, '');
+const baseUrl = configuredBasePath ? `/${configuredBasePath}/` : '/';
+const basePath = baseUrl === '/' ? '' : baseUrl.slice(0, -1);
+/** @param {string} route */
+const agentRoute = (route) => `${basePath}${route}`;
 
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').Config} */
@@ -14,7 +19,7 @@ const config = {
   title: 'OpenFGA',
   tagline: 'Relationship-based access control made fast, scalable, and easy to use.',
   url: 'https://openfga.dev',
-  baseUrl: baseUrl,
+  baseUrl,
   trailingSlash: false,
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -144,6 +149,51 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
   ],
   plugins: [
     require.resolve('./webpack-overrides.docusaurus-plugin'),
+    [
+      '@signalwire/docusaurus-plugin-llms-txt',
+      {
+        siteTitle: 'OpenFGA Documentation',
+        siteDescription:
+          'OpenFGA is a CNCF open source authorization system for fine-grained, relationship-based access control.',
+        depth: 1,
+        enableDescriptions: true,
+        includeOrder: [agentRoute('/docs/**')],
+        optionalLinks: [
+          {
+            title: 'OpenFGA source repository',
+            url: 'https://github.com/openfga/openfga',
+            description: 'Server source, releases, deployment guidance, and issue tracker.',
+          },
+          {
+            title: 'OpenFGA SDKs',
+            url: 'https://github.com/orgs/openfga/repositories?q=topic%3Asdk',
+            description: 'Official client SDK repositories for supported programming languages.',
+          },
+        ],
+        content: {
+          enableMarkdownFiles: true,
+          enableLlmsFullTxt: true,
+          relativePaths: false,
+          includeBlog: false,
+          includePages: false,
+          includeDocs: true,
+          includeVersionedDocs: false,
+          includeGeneratedIndex: false,
+          excludeRoutes: [agentRoute('/search')],
+          remarkStringify: {
+            bullet: '-',
+            emphasis: '_',
+            fences: true,
+            listItemIndent: 'one',
+          },
+          remarkGfm: true,
+          rehypeProcessTables: true,
+          beforeDefaultRehypePlugins: [cleanAgentMarkdown],
+        },
+        onRouteError: 'throw',
+        logLevel: 1,
+      },
+    ],
     [
       '@docusaurus/plugin-client-redirects',
       /** @type {import('@docusaurus/plugin-client-redirects').Options} */
