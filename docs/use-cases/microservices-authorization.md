@@ -3,7 +3,7 @@ title: "Microservices Authorization with OpenFGA"
 description: "Centralize authorization across microservices with OpenFGA. One model, one store, one set of decisions — instead of a roles table per service."
 canonical: "https://openfga.dev/docs/use-cases/microservices-authorization"
 content_type: "documentation"
-last_updated: "2026-08-22T02:14:15.000Z"
+last_updated: "2026-08-24T10:26:12.000Z"
 ---
 
 # Microservices Authorization

@@ -3,7 +3,7 @@ title: "Roles and Permissions"
 description: "Modeling basic roles and permissions"
 canonical: "https://openfga.dev/docs/modeling/roles-and-permissions"
 content_type: "documentation"
-last_updated: "2026-08-22T02:14:15.000Z"
+last_updated: "2026-08-24T10:26:12.000Z"
 ---
 
 # Roles and Permissions

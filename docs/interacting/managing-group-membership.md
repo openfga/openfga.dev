@@ -3,7 +3,7 @@ title: "Managing Group Membership"
 description: "Updating a user's membership to a group by adding and removing them from it"
 canonical: "https://openfga.dev/docs/interacting/managing-group-membership"
 content_type: "documentation"
-last_updated: "2026-08-22T02:14:15.000Z"
+last_updated: "2026-08-24T10:26:12.000Z"
 ---
 
 # Managing Group Membership

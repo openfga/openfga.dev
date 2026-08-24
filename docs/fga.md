@@ -3,7 +3,7 @@ title: "What is FGA? Fine-Grained Authorization Explained"
 description: "Build relationship-based, role-based, and attribute-based access control at scale."
 canonical: "https://openfga.dev/docs/fga"
 content_type: "documentation"
-last_updated: "2026-08-22T02:14:15.000Z"
+last_updated: "2026-08-24T10:26:12.000Z"
 ---
 
 # Introduction to OpenFGA

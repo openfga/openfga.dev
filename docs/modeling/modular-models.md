@@ -3,7 +3,7 @@ title: "Modular Models"
 description: "Modular Models"
 canonical: "https://openfga.dev/docs/modeling/modular-models"
 content_type: "documentation"
-last_updated: "2026-08-22T02:14:15.000Z"
+last_updated: "2026-08-24T10:26:12.000Z"
 ---
 
 # Modular Models

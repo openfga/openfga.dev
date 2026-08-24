@@ -3,7 +3,7 @@ title: "Managing Group Access"
 description: "Granting a group of users access to a particular object"
 canonical: "https://openfga.dev/docs/interacting/managing-group-access"
 content_type: "documentation"
-last_updated: "2026-08-22T02:14:15.000Z"
+last_updated: "2026-08-24T10:26:12.000Z"
 ---
 
 # Managing Group Access

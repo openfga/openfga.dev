@@ -3,7 +3,7 @@ title: "Multi-Tenant SaaS Authorization with OpenFGA"
 description: "Authorize multi-tenant SaaS applications with OpenFGA. Strict tenant isolation, shared infrastructure, and cross-tenant sharing where you want it."
 canonical: "https://openfga.dev/docs/use-cases/multi-tenant-saas"
 content_type: "documentation"
-last_updated: "2026-08-22T02:14:15.000Z"
+last_updated: "2026-08-24T10:26:12.000Z"
 ---
 
 # Multi-Tenant SaaS Authorization
