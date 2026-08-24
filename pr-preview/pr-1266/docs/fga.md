@@ -1,0 +1,78 @@
+---
+title: "What is FGA? Fine-Grained Authorization Explained"
+description: "Build relationship-based, role-based, and attribute-based access control at scale."
+canonical: "https://openfga.dev/pr-preview/pr-1266/docs/fga"
+content_type: "documentation"
+last_updated: "2026-08-24T11:05:33.000Z"
+---
+
+# Introduction to OpenFGA
+
+OpenFGA is a scalable open source authorization system for developers that allows implementing authorization for any kind of application and smoothly evolve as complexity increases over time. It is owned by the [Cloud Native Computing Foundation](https://cncf.io).
+
+Inspired by [Google’s Zanzibar](https://zanzibar.academy), Google’s internal authorization system, OpenFGA relies on Relationship-Based Access Control, which allows developers to easily implement Role-Based Access Control and provides additional capabilities to implement Attribute-Based Access Control. You can learn more about different authorization concepts [here](https://openfga.dev/pr-preview/pr-1266/pr-preview/pr-1266/docs/authorization-concepts.md).
+
+## Benefits
+
+OpenFGA provides developers the following benefits:
+
+- Move authorization logic outside of application code, making it easier to write, change and audit.
+- Increase velocity by standardizing on a single authorization solution.
+- Centralize authorization decisions and audit logs making it simpler to comply with security and compliance requirements.
+- Help their products to move faster because it is simpler to evolve authorization policies.
+
+## Features
+
+OpenFGA helps developers achieve those benefits with features as:
+
+- Support for multiple [stores](https://openfga.dev/pr-preview/pr-1266/pr-preview/pr-1266/docs/concepts.md#what-is-a-store) that allow authorization management in different environments (prod/testing/dev) and use cases (internal apps, external apps, infrastructure).
+- Support for some ABAC scenarios with [Contextual Tuples](https://openfga.dev/pr-preview/pr-1266/pr-preview/pr-1266/docs/modeling/token-claims-contextual-tuples.md) and [Conditional Relationship Tuples](https://openfga.dev/pr-preview/pr-1266/pr-preview/pr-1266/docs/modeling/conditions.md).
+- SDKs for [Java](https://github.com/openfga/java-sdk), [.NET](https://github.com/openfga/dotnet-sdk), [Javascript](https://github.com/openfga/js-sdk), [Go](https://github.com/openfga/go-sdk), and [Python](https://github.com/openfga/python-sdk).
+- [HTTP](https://docs.fga.dev/api/service) and [gRPC](https://buf.build/openfga/api) APIs.
+- Support for being run as a library, from with a Go based service.
+- Support for using Postgres, MySQL or SQLite as the production datastore, as well as an in-memory datastore for non-production usage.
+- [A Command Line Interface tool](https://openfga.dev/pr-preview/pr-1266/pr-preview/pr-1266/docs/getting-started/cli.md) for managing OpenFGA stores, test models, import/export models, and data.
+- Github Actions for [testing](https://github.com/marketplace/actions/openfga-model-testing-action) and [deploying](https://github.com/marketplace/actions/openfga-model-deploy-action) models.
+- A [Visual Studio Code Extension](https://marketplace.visualstudio.com/items?itemName=openfga.openfga-vscode) with syntax highlighting and validation of FGA models and tests.
+- [Helm Charts](https://github.com/openfga/helm-charts) to easily deploy to Kubernetes.
+- [OpenTelemetry](https://openfga.dev/docs/getting-started/setup-openfga/configure-openfga#telemetry) support to integrate it with your monitoring infrastructure.
+
+## Related Sections
+
+Check the following sections to learn more about OpenFGA.
+
+**Authorization Concepts**
+
+Learn about Authorization.
+
+- [More](https://openfga.dev/pr-preview/pr-1266/pr-preview/pr-1266/docs/authorization-concepts.md)
+
+**Product Concepts**
+
+Learn about OpenFGA.
+
+- [More](https://openfga.dev/pr-preview/pr-1266/pr-preview/pr-1266/docs/concepts.md)
+
+**Modeling: Getting Started**
+
+Learn about how to get started with modeling your permission system in OpenFGA.
+
+- [More](https://openfga.dev/pr-preview/pr-1266/pr-preview/pr-1266/docs/modeling/getting-started.md)
+
+**Use Cases**
+
+Patterns for AI agents, RAG, MCP servers, multi-tenant SaaS, and microservices.
+
+- [More](https://openfga.dev/pr-preview/pr-1266/pr-preview/pr-1266/docs/use-cases.md)
+
+**Industries**
+
+Sample models for healthcare, banking, e-commerce, HR, CRM, and LMS.
+
+- [More](https://openfga.dev/pr-preview/pr-1266/pr-preview/pr-1266/docs/industries.md)
+
+**Learn Authorization**
+
+Zanzibar, ReBAC vs RBAC, ABAC vs ReBAC, and fine-grained authorization explained.
+
+- [More](https://openfga.dev/pr-preview/pr-1266/pr-preview/pr-1266/docs/learn.md)
