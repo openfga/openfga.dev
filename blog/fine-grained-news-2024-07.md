@@ -3,6 +3,7 @@ title: Fine-Grained News - July 2024
 description: Fine-Grained News
 slug: fine-grained-news-2024-07
 date: 2024-07-31
+last_update: { date: '2024-07-31' }
 authors: hello-caleb
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -15,6 +16,8 @@ Welcome to the July 2024 edition of Fine-Grained News! We are thrilled to bring 
 
 
 We value your feedback and invite you to participate in our [2024 OpenFGA Community Survey](https://www.surveymonkey.com/r/OPENFGA2024). Your insights help us understand your needs better and improve our offerings. Please take a few minutes to complete the survey and let your voice be heard.
+
+<!-- truncate -->
 
 
 ## Improvements
@@ -101,4 +104,3 @@ As a reminder, we transitioned out from Discord for OpenFGA and are now using th
 
 
 Fine-Grained News is published every month. If you have any feedback, want to share your OpenFGA story, or have a noteworthy update, please let us know on any of our [community channels](https://openfga.dev/community) or at [community@openfga.dev](mailto:community@openfga.dev).
-

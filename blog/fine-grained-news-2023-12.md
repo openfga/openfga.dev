@@ -3,6 +3,7 @@ title: Fine-Grained News - December 2023
 description: Fine-Grained News
 slug: fine-grained-news-2023-12
 date: 2023-12-18
+last_update: { date: '2023-12-18' }
 authors: aaguiar
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -15,6 +16,8 @@ Hi Everyone!
 We've been publishing a monthly internal newsletter we called **Fine-Grained News** since the beginning on 2023, and we just thought it would be a good idea to share it with the community. Yeah, we are slow thinkers!
 
 You can expect to find here a summary of what we've been up to, what we are planning to do, and some other random stuff we think you might find interesting.
+
+<!-- truncate -->
 
 ## Team News
 

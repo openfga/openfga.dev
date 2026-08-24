@@ -3,6 +3,7 @@ title: Fine-Grained News - March 2024
 description: Fine-Grained News
 slug: fine-grained-news-2024-03
 date: 2024-03-28
+last_update: { date: '2024-03-28' }
 authors: aaguiar
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -11,6 +12,8 @@ hide_table_of_contents: false
 # Fine-Grained News
 
 Welcome to Fine-Grained News, KubeCon Edition!
+
+<!-- truncate -->
 
 ## KubeCon Europe 2024 was super-busy!
 
@@ -51,8 +54,7 @@ If you are using OpenFGA in production, please consider adding your company/proj
 
 - [Philipp Wagner](https://github.com/bytefish) is working on a [.NET example](https://github.com/bytefish/gitclub-dotnet) inspired by the Github model.
 
-- [Pauline Jamin](https://github.com/paulinejamin) and [Geoffroy Braun](https://github.com/geoffroybraun) will present about [Infuser du métier dans les autorisations avec ReBAC](
-https://www.devoxx.fr/schedule/talk/?id=42356) at [Devoxx France 2024](https://www.devoxx.fr/) in April 17th.
+- [Pauline Jamin](https://github.com/paulinejamin) and [Geoffroy Braun](https://github.com/geoffroybraun) will present about Infuser du métier dans les autorisations avec ReBAC at [Devoxx France 2024](https://www.devoxx.fr/) in April 17th.
 
 ## New Releases
 

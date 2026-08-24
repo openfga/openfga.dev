@@ -59,8 +59,8 @@ const features = [
     icon: <CommunityAnimatedIcon />,
     title: 'Get Involved',
     content: [
-      "Join OpenFGA's active <a href='https://openfga.dev/community' target='_blank'>Slack and GitHub community</a>, check out existing <a href='https://github.com/openfga/rfcs' target='_blank'>RFCs</a> to understand where the project is headed, and learn more about how to take part by reading our <a href='https://github.com/openfga/.github/blob/main/CONTRIBUTING.md' target='_blank'>CONTRIBUTING.md</a>.",
-      '<a target="_blank" href="https://github.com/openfga/.github/blob/main/CONTRIBUTING.md#contribution-process" >Learn how to get involved → </a>',
+      "Join OpenFGA's active <a href='https://openfga.dev/community' target='_blank' rel='noopener noreferrer'>Slack and GitHub community</a>, check out existing <a href='https://github.com/openfga/rfcs' target='_blank' rel='noopener noreferrer'>RFCs</a> to understand where the project is headed, and learn more about how to take part by reading our <a href='https://github.com/openfga/.github/blob/main/CONTRIBUTING.md' target='_blank' rel='noopener noreferrer'>CONTRIBUTING.md</a>.",
+      '<a target="_blank" rel="noopener noreferrer" href="https://github.com/openfga/.github/blob/main/CONTRIBUTING.md#contribution-process" >Learn how to get involved → </a>',
     ],
   },
 ];

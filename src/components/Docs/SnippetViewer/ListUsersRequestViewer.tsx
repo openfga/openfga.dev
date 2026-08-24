@@ -12,10 +12,10 @@ interface ListUsersRequestViewerOpts {
   userFilterRelation?: string;
   contextualTuples?: TupleKey[];
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
   expectedResults: ListUsersResponse;
   skipSetup?: boolean;
+  pseudoCodeMode?: boolean;
   allowedLanguages?: SupportedLanguage[];
 }
 
@@ -263,8 +263,7 @@ var response = await fgaClient.ListUsers(body, options);
       return `listUsers(
   user_filter=[ "${userFilterType}" ], // list users of type \`${userFilterType}\`
   "${relation}", // that have the \`${relation}\` relation
-  "${objectType}:${objectId}", // for the object \`${objectType}:${objectId}\`
-  authorization_model_id = "${modelId}", // for this particular authorization model id ${
+  "${objectType}:${objectId}", // for the object \`${objectType}:${objectId}\` ${
     contextualTuples
       ? `
   contextual_tuples = [ // Assuming the following is true

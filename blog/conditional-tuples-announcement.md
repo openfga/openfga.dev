@@ -3,6 +3,7 @@ title: Conditional Relationship Tuples for OpenFGA
 description: Conditional Relationship Tuples for OpenFGA
 slug: conditional-tuples-announcement
 date: 2023-11-06
+last_update: { date: '2023-11-06' }
 authors: aaguiar
 tags: [openfga, features]
 image: https://openfga.dev/img/openfga_logo.svg
@@ -17,6 +18,8 @@ The way tuples are considered when making authorization decisions in OpenFGA is 
 Although ReBAC offers a highly flexible method for structuring permissions, it encounters difficulties with defining permissions based on attributes that are not easily represented as relationships. Attributes such as “parent folder,” “department,” “region,” and “country” can be conceptualized as relationships between two entities. However, attributes like “IP address,” “time of day,” “team size limit,” or “maximum amount for a bank transfer” cannot be easily handled.
 
 In our ongoing efforts to expand OpenFGA’s capacity for articulating a broader range of authorization policies, we are introducing **Conditional Relationship Tuples**. These allow for the specification of conditions under which a particular tuple is relevant when evaluating an authorization query.
+
+<!-- truncate -->
 
 Consider the following example, where we utilize Conditional Tuples to grant access for a user over a specified time duration. We stipulate that a user may be granted either unconditional access or access constrained to a certain time period:
 
@@ -128,4 +131,3 @@ This won’t scale to a large number of documents, but would be useful in some s
 We want to learn how you use this feature and how we can improve it! 
 
 Please reach out through our [community channels](https://openfga.dev/community) with any questions or feedback.
-

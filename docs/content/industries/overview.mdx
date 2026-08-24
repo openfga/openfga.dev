@@ -1,0 +1,28 @@
+---
+title: Fine-Grained Authorization by Industry
+description: How healthcare, banking, e-commerce, HR, CRM, and LMS teams model fine-grained authorization with FGA.
+sidebar_position: 1
+slug: /industries
+---
+
+import { ProductName, ProductNameFormat } from '@components/Docs';
+
+# <ProductName format={ProductNameFormat.ShortForm}/> by Industry
+
+<ProductName format={ProductNameFormat.ShortForm}/>'s [modeling language](/docs/configuration-language) is general-purpose, but the *shape* of an authorization model differs by industry. Healthcare worries about who can see PHI on a given encounter; banking worries about per-transaction limits and delegation; e-commerce worries about which staff member can refund an order in which store. The pages below walk through how each domain is typically modeled, with links to working samples in [openfga/sample-stores](https://github.com/openfga/sample-stores#industry-examples).
+
+## Industries
+
+- **[Healthcare](/docs/industries/healthcare)** — patients, providers, encounters, and PHI access. Care-team membership, facility hierarchy, and a separate permission for sensitive fields (allergies, blood type, DOB).
+- **[Banking](/docs/industries/banking)** — account managers, account owners, and per-transaction limits. Delegation between owners and staff, with conditions on transaction amount.
+- **[E-commerce](/docs/industries/ecommerce)** — multi-store organizations with org-level and store-level roles. Shoppers manage their own orders; staff fulfill them; managers refund; admins delete.
+- **[Human Resources](/docs/industries/human-resources)** — employee records, manager hierarchies, and per-field sensitivity (compensation, performance reviews) gated by HRBP role and reporting line.
+- **[CRM](/docs/industries/crm)** — accounts, opportunities, and territories with owner / team / read-only-collaborator relations and per-field visibility for pipeline and forecast data.
+- **[Learning Management](/docs/industries/lms)** — courses, cohorts, and enrollments with instructor / TA / learner roles and assignment-level grading permissions.
+- **[Applicant Tracking](/docs/industries/applicant-tracking-system)** — jobs, candidates, applications, interviews, and offer approvals with per-job hiring teams and interviewer scoping.
+
+## Why industry-specific models matter
+
+The <ProductName format={ProductNameFormat.ShortForm}/> team has published [23+ sample stores](https://github.com/openfga/sample-stores#industry-examples) covering accounting, ads, applicant tracking, calendars, call centers, chat, CRM, developer portals, expenses, file storage, hospitality, HR, issue tracking, knowledge bases, KMS, LMS, manufacturing, payments, and real estate. The pages above are the industries where <ProductName format={ProductNameFormat.ShortForm}/> adopters most often ask "is this how others do it?" — and the answer is meaningful enough to be worth writing down.
+
+If your industry isn't here, the pattern pages under [Use Cases](/docs/use-cases) (multi-tenant SaaS, microservices, AI agents, RAG, MCP) are domain-neutral and apply across verticals.

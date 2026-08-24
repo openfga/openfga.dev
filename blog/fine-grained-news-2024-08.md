@@ -3,6 +3,7 @@ title: Fine-Grained News - August 2024
 description: Fine-Grained News
 slug: fine-grained-news-2024-08
 date: 2024-08-30
+last_update: { date: '2024-08-30' }
 authors: hello-caleb
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -11,6 +12,8 @@ hide_table_of_contents: false
 # Fine-Grained News
 
 Welcome to the August 2024 edition of Fine-Grained News! We are excited to bring you the latest updates, features, and community highlights from OpenFGA. 
+
+<!-- truncate -->
 
 ## Just Shipped!
 

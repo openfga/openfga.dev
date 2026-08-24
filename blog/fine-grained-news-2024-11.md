@@ -3,6 +3,7 @@ title: Fine-Grained News - November 2024
 description: Fine-Grained News
 slug: fine-grained-news-2024-11
 date: 2024-11-30
+last_update: { date: '2024-11-30' }
 authors: hello-caleb
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -11,6 +12,8 @@ hide_table_of_contents: false
 # Fine-Grained News - November 2024
 
 Welcome to the November edition of Fine-Grained News! As we enter the final stretch of 2024, there are exciting developments in the OpenFGA to share.
+
+<!-- truncate -->
 
 🌟 **We hit 3,000 stars on the OpenFGA repo!:** 🌟 Because of this great community, we've just this incredible milestone! Thank you so much for all the support you've shown this project. Let's keep the momentum going! If you haven't yet, we'd greatly appreciate you [starring the repo](https://github.com/openfga/openfga) to help push us toward 4,000 stars and grow our amazing community! 
 

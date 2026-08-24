@@ -3,6 +3,7 @@ title: Fine-Grained News - April 2024
 description: Fine-Grained News
 slug: fine-grained-news-2024-04
 date: 2024-04-30
+last_update: { date: '2024-04-30' }
 authors: aaguiar
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -11,6 +12,8 @@ hide_table_of_contents: false
 # Fine-Grained News
 
 Welcome to Fine-Grained News, April edition!
+
+<!-- truncate -->
 
 ## New Releases!
 

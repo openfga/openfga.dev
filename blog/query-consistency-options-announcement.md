@@ -3,6 +3,7 @@ title: Query Consistency Options in OpenFGA
 description: Query Consistency Options in OpenFGA
 slug: query-consistency-options-announcement
 date: 2024-07-30
+last_update: { date: '2024-07-30' }
 authors: aaguiar
 tags: [openfga,features]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -13,6 +14,8 @@ hide_table_of_contents: false
 OpenFGA query APIs now allow specifying the desired consistency of query results. By default, OpenFGA does not use a cache. However, when caching is enabled, it applies to all requests. This means that any changes in permissions won't be reflected in authorization checks during the cache TTL period.
 
 The community expressed the need for flexibility in using the cache on a per-request basis. In response, starting with [OpenFGA v1.5.7](https://github.com/openfga/openfga/releases/tag/v1.5.7), all query APIs can accept a consistency parameter with the following values:
+
+<!-- truncate -->
 
 | Name                        | Description                                                                                                   |  
 |-----------------------------|---------------------------------------------------------------------------------------------------------------|

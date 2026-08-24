@@ -3,6 +3,7 @@ title: Fine-Grained News - October 2024
 description: Fine-Grained News
 slug: fine-grained-news-2024-10
 date: 2024-10-30
+last_update: { date: '2024-10-30' }
 authors: hello-caleb
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -13,6 +14,8 @@ hide_table_of_contents: false
 Welcome to the October edition of Fine-Grained News! As we approach the end of the year, we're excited to bring you the latest updates, improvements, and community contributions shaping the future of OpenFGA.
 
 As always, if you’re finding the OpenFGA project to be a valuable resource, we would greatly appreciate if you would [star our repo](https://github.com/openfga/openfga) on GitHub to show your support!⭐
+
+<!-- truncate -->
 
 ## Just Shipped
 

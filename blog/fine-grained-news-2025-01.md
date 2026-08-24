@@ -3,6 +3,7 @@ title: Fine-Grained News - January 2025
 description: Fine-Grained News
 slug: fine-grained-news-2025-01
 date: 2025-01-29
+last_update: { date: '2025-01-29' }
 authors: aaguiar
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -12,6 +13,8 @@ hide_table_of_contents: false
 # Fine-Grained News - January 2025
 
 Welcome to the first Fine-Grained News edition of 2025! January is always a good month to look back at what the OpenFGA community accomplished over the past year.
+
+<!-- truncate -->
 
 ## Major features
 
@@ -73,4 +76,3 @@ We are very grateful with the OpenFGA community, who helped shipping **126** rel
 ## **See You Next Month:**
 
 Fine-Grained News is published every month. If you have any feedback, want to share your OpenFGA story, or have a noteworthy update, please let us know on any of our [community channels](https://openfga.dev/community) or at [community@openfga.dev](mailto:community@openfga.dev).
-

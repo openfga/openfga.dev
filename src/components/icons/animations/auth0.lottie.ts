@@ -1,5 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const auth0Lottie: any = {
+import type { LottieAnimationData } from './types';
+
+export const auth0Lottie: LottieAnimationData = {
   v: '5.7.4',
   fr: 60,
   ip: 0,

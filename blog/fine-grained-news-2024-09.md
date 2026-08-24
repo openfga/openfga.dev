@@ -3,6 +3,7 @@ title: Fine-Grained News - September 2024
 description: Fine-Grained News
 slug: fine-grained-news-2024-09
 date: 2024-09-30
+last_update: { date: '2024-09-30' }
 authors: hello-caleb
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -10,6 +11,8 @@ hide_table_of_contents: false
 ---
 # Fine-Grained News
 Welcome to the September edition of Fine-Grained News! As we transition into the fall season, we’re excited to bring you the latest updates on the progress of OpenFGA.
+
+<!-- truncate -->
 
 ## **Just Shipped**
 

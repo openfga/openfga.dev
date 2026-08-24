@@ -3,6 +3,7 @@ title: Ignore Duplicate Tuples On Write
 description: OpenFGA now supports ignoring duplicate writes and missing deletes, making data imports much easier and more efficient.
 slug: ignore-duplicate-writes-announcement
 date: 2025-10-31
+last_update: { date: '2025-10-31' }
 authors: tylernix
 tags: [openfga,features,api]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -17,6 +18,8 @@ import {
 # Announcing "Ignore Duplicate Writes" in OpenFGA
 
 We've added two new optional parameters to the Write API endpoint to improve the experience of writing data to FGA. You can now gracefully ["ignore" duplicate writes and missing deletes](https://openfga.dev/docs/getting-started/update-tuples#05-ignoring-duplicate-or-missing-tuples).
+
+<!-- truncate -->
 
 ## The Problem
 

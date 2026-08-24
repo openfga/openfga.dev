@@ -3,6 +3,7 @@ title: Fine-Grained News - February 2024
 description: Fine-Grained News
 slug: fine-grained-news-2024-02
 date: 2024-02-27
+last_update: { date: '2024-02-27' }
 authors: aaguiar
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -11,6 +12,8 @@ hide_table_of_contents: false
 # Fine-Grained News
 
 Welcome to the 3rd edition of Fine-Grained News! 
+
+<!-- truncate -->
 
 ## KubeCon Europe 2024 is getting closer!
 

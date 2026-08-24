@@ -3,6 +3,7 @@ title: Fine-Grained News - October 2025
 description: Fine-Grained News
 slug: fine-grained-news-2025-10
 date: 2025-10-23
+last_update: { date: '2025-10-23' }
 authors: aaguiar
 tags: [newsletter]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -11,6 +12,8 @@ hide_table_of_contents: false
 # Fine-Grained News - October 2025
 
 Welcome to OpenFGA's Fine-Grained News, October edition!
+
+<!-- truncate -->
 
 ## 🎉 OpenFGA to CNCF Incubation!
 
@@ -70,4 +73,3 @@ The OpenFGA community submitted six proposals to present at KubeCon Europe! A gr
 ## **See you soon!**
 
 Fine-Grained News is published monthly. If you have any feedback, want to share your OpenFGA story, or have a noteworthy update, please let us know on any of our [community channels](https://openfga.dev/community) or at [community@openfga.dev](mailto:community@openfga.dev).
-

@@ -56,6 +56,18 @@
     },
     {
       "pattern": "https://github.com/bytefish/gitclub-dotnet"
+    },
+    {
+      "pattern": "^https://virv\\.ai(?:/|$)"
+    },
+    {
+      "pattern": "^https://openfga\\.mcp\\.kapa\\.ai/?$"
+    },
+    {
+      "pattern": "^/"
+    },
+    {
+      "pattern": "^\\.{1,2}/"
     }
   ],
   "httpHeaders": [

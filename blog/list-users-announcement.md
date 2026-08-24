@@ -3,6 +3,7 @@ title: List Users API
 description: List Users API 
 slug: list-users-announcement
 date: 2024-05-30
+last_update: { date: '2024-05-30' }
 authors: miparnisari
 tags: [openfga,features]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -15,6 +16,8 @@ Today we are launching a new API for OpenFGA: ListUsers.
 This API will answer the question "what users have relation X with object Y?". This will be useful, for example, in UIs that want to display the list of users that a resource has been shared with, e.g. the "share" dialog in Google Docs.
 
 You can read more about it in the [API docs](https://openfga.dev/api/service#/Relationship%20Queries/ListUsers) and the [product documentation](https://openfga.dev/docs/getting-started/perform-list-users).
+
+<!-- truncate -->
 
 ## How to use it?
 

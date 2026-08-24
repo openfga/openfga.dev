@@ -1,0 +1,54 @@
+---
+title: Fine-Grained Authorization for HR & HRIS with FGA
+description: Model employee records, manager hierarchies, payroll, benefits, and PII isolation in FGA for Workday-style HRIS, HR, and directory systems.
+sidebar_position: 5
+slug: /industries/human-resources
+---
+
+import { ProductName, ProductNameFormat } from '@components/Docs';
+
+# HR & HRIS Authorization with <ProductName format={ProductNameFormat.ShortForm}/>
+
+HRIS platforms — Workday, BambooHR, Rippling, plus internal directory systems — have to answer authorization questions that role-only systems struggle with: *the employee* always sees their own record, *direct managers* see their reports but not all employees, *HR* sees everything, and *PII* (SSN, date of birth, home address) is gated separately from the rest of the profile.
+
+The full sample model is in [openfga/sample-stores/stores/human-resources](https://github.com/openfga/sample-stores/tree/main/stores/human-resources).
+
+## Core resources and relations
+
+- **organization** — the tenant (employer). Roles: `admin`, `hr_manager`, `member`.
+- **employee** — has a direct `self` relation to the user, a `manager` relation, and `can_view_sensitive` gated to the employee themself plus HR.
+- **team** — nests recursively via a `parent_team` relation; a team `lead` inherits from parent teams.
+- **payroll** and **benefits** — admin/HR-manager only.
+- **time_off_request** — initiated by an `employee`, approved by their `manager`.
+
+## What the model gets right
+
+**Employee self-service.** The employee is the direct subject on their own record, so the same `Check` API serves the employee portal *and* the HR admin console — no separate query path.
+
+**Manager hierarchy without inheritance to PII.** A manager can see direct reports' non-sensitive profile data, but `can_view_sensitive` does *not* flow through the manager chain. Skip-level managers see organizational data but not SSNs.
+
+**PII as a distinct relation.** `can_view_record` and `can_view_sensitive` are separate, so you can grant a recruiter or a contractor partial profile access without exposing identifiers covered by GDPR, CCPA, or local equivalents.
+
+**Time-off approvals routed by relationship.** The approver is whoever the `manager` relation points at on the day of the request — no separate "approval routing" table.
+
+## Where this maps to <ProductName format={ProductNameFormat.ShortForm}/> features
+
+| HR requirement | <ProductName format={ProductNameFormat.ShortForm}/> feature |
+| --- | --- |
+| Employee self-service on own record | direct `self` relation on `employee` |
+| Manager-of-direct-reports view | `manager` relation, evaluated per-employee |
+| Skip-level org chart visibility | recursive `parent_team` on `team` |
+| PII vs. non-PII separation | two relations: `can_view_record`, `can_view_sensitive` |
+| Payroll / benefits restricted to HR | direct relations on `payroll` / `benefits` |
+| Time-off approval routing | `approver` resolves through `manager` |
+| Multi-tenant HRIS SaaS | tenant-scoped types, see [multi-tenant SaaS](/docs/use-cases/multi-tenant-saas) |
+
+## Common extensions
+
+- **Compensation reviews.** A `compensation_review` object with `reviewer` (manager), `approver` (HR), and `subject` (employee) — three relations, three views into the same object.
+- **Org redesigns.** Re-parenting a team is one tuple write; everyone above and below sees the new hierarchy on the next `Check`.
+- **Contractors and contingent workers.** Add a `contractor` type with a subset of `employee` relations rather than overloading employee with a type flag.
+
+## Working sample
+
+Schema, sample tuples, and assertions are in [openfga/sample-stores/stores/human-resources](https://github.com/openfga/sample-stores/tree/main/stores/human-resources). For the broader pattern of "role at the org, scoped relationships per record", see [Modeling Roles](/docs/best-practices/modeling-roles).

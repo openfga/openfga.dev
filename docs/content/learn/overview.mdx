@@ -1,0 +1,19 @@
+---
+title: Learn Authorization
+description: Authorization concepts explained — Zanzibar, ReBAC, RBAC, ABAC, fine-grained authorization, and policy engines — with FGA examples.
+sidebar_position: 1
+slug: /learn
+---
+
+import { ProductName, ProductNameFormat } from '@components/Docs';
+
+# Learn Authorization
+
+A short reference for the concepts behind <ProductName format={ProductNameFormat.ShortForm}/>. Each page is a focused explainer with an <ProductName format={ProductNameFormat.ShortForm}/> example so you can map the theory to the model language.
+
+- **[Google Zanzibar](/docs/learn/zanzibar)** — the paper that started the ReBAC wave.
+- **[ReBAC: Relationship-Based Access Control](/docs/learn/rebac)** — what it is, when to use it.
+- **[RBAC vs. ReBAC](/docs/learn/rbac-vs-rebac)** — when roles run out.
+- **[ABAC vs. ReBAC](/docs/learn/abac-vs-rebac)** — attributes versus relationships.
+- **[Fine-Grained Authorization](/docs/learn/fine-grained-authorization)** — what "fine-grained" actually buys you.
+- **[Policy Engines vs. Relationship Engines](/docs/learn/policy-engine)** — Rego, Cedar, OPL, and where <ProductName format={ProductNameFormat.ShortForm}/> fits.

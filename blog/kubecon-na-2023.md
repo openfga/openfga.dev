@@ -3,6 +3,7 @@ title: Join the OpenFGA team at KubeCon NA 2023
 description: OpenFGA at KubeCon
 slug: kubecon-na-2023
 date: 2023-10-12
+last_update: { date: '2023-10-12' }
 authors: aaguiar
 tags: [conferences, kubecon]
 image: https://openfga.dev/img/openfga_logo.svg
@@ -11,6 +12,7 @@ hide_table_of_contents: false
 # Join the OpenFGA team at KubeCon NA 2023!
 
 As you'd expect, the OpenFGA team will be at KubeCon NA 2023 in Chicago, IL!
+<!-- truncate -->
 
 We'll have a packed agenda for the week:
 
@@ -28,4 +30,3 @@ We'll have a packed agenda for the week:
 If you want to meet with the team outside of these events, please pick any spot that works for you in our [calendar](https://calendar.app.google/GonEwLboKvPkG8pL6).
 
 See you in Chicago!
-

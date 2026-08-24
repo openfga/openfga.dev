@@ -226,7 +226,7 @@ The above state translates to the following relationship tuples:
     },
     {
       _description: 'Beth has a `project manager` role at organization B',
-      user: 'user:anne',
+      user: 'user:beth',
       relation: 'project_manager',
       object: 'organization:B',
     },
@@ -459,7 +459,7 @@ When Anne is connecting from the context of organization C, <ProductName format=
   skipSetup={true}
   contextualTuples={[
     {
-      _description: 'Anne is authorizing from the context of organization:A',
+      _description: 'Anne is authorizing from the context of organization:C',
       user: 'user:anne',
       relation: 'user_in_context',
       object: 'organization:C',
@@ -473,7 +473,7 @@ Using this, you can check that the following requirements are satisfied:
 | ---- | -------------------- | ------ | ------- |
 | Anne | Organization A       | View   | Yes     |
 | Anne | Organization B       | View   | Yes     |
-| Anne | Organization C       | View   | Yes     |
+| Anne | Organization C       | View   | No      |
 | Anne | Organization A       | Delete | Yes     |
 | Anne | Organization B       | Delete | No      |
 | Anne | Organization C       | Delete | No      |

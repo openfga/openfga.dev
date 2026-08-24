@@ -3,6 +3,8 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 import styles from './AdoptersCarousel.module.css';
 
+const getAdopterLogoAlt = (name: string) => `${name} logo - OpenFGA Adopter`;
+
 type AdopterLogo = {
   name: string;
   src: string;
@@ -30,7 +32,15 @@ const adopterLogos: AdopterLogo[] = [
 
 const AdopterImage: React.FC<{ logo: AdopterLogo; isDuplicate: boolean }> = ({ logo, isDuplicate }) => {
   const src = useBaseUrl(logo.src);
-  return <img src={src} alt={isDuplicate ? '' : logo.name} loading="lazy" decoding="async" />;
+  return (
+    <img
+      src={src}
+      alt={isDuplicate ? '' : getAdopterLogoAlt(logo.name)}
+      aria-hidden={isDuplicate || undefined}
+      loading="lazy"
+      decoding="async"
+    />
+  );
 };
 
 const AdoptersCarousel = () => {

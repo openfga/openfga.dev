@@ -48,6 +48,29 @@ experimentals:
   - authzen
 ```
 
+If you want to use the Get Configuration discovery endpoint, you must also configure the canonical base URL that OpenFGA should publish in discovery metadata:
+
+```shell
+openfga run --experimentals=authzen --authzen-base-url=https://api.example.com
+```
+
+Or via environment variable:
+
+```shell
+OPENFGA_EXPERIMENTALS=authzen OPENFGA_AUTHZEN_BASE_URL=https://api.example.com openfga run
+```
+
+Or in a configuration file:
+
+```yaml
+experimentals:
+  - authzen
+authzen:
+  baseURL: https://api.example.com
+```
+
+`authzen.baseURL` must be an absolute `http` or `https` URL and may include a path prefix, for example `https://api.example.com/openfga`.
+
 All AuthZEN endpoints return an `Unimplemented` error if the experimental flag is not enabled.
 
 ## Endpoints
@@ -337,6 +360,8 @@ The Get Configuration endpoint returns PDP discovery information per [AuthZEN sp
 
 Each store has its own discovery endpoint.
 
+The returned absolute URLs are built from the configured `authzen.baseURL` value, not from the incoming request's `Host`, `X-Forwarded-Host`, or similar headers. This ensures discovery metadata stays bound to the canonical origin you configured.
+
 **Request:**
 
 ```
@@ -355,6 +380,8 @@ GET /.well-known/authzen-configuration/{store_id}
   "search_action_endpoint": "https://example.com/stores/01G5JAVJ41T49E9TT3SKVS7X1J/access/v1/search/action"
 }
 ```
+
+If `authzen.baseURL` is not configured, the discovery endpoint returns an error instead of inferring a base URL from request headers.
 
 ## Mapping AuthZEN to OpenFGA Concepts
 
