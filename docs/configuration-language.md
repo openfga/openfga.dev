@@ -3,7 +3,7 @@ title: "Configuration Language"
 description: "Learning about the FGA configuration language and using it to build a representation of a system's authorization model"
 canonical: "https://openfga.dev/docs/configuration-language"
 content_type: "documentation"
-last_updated: "2026-08-24T10:26:12.000Z"
+last_updated: "2026-08-31T13:15:17.000Z"
 ---
 
 # Configuration Language

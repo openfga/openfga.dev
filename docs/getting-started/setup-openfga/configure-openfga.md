@@ -3,7 +3,7 @@ title: "Configuring OpenFGA"
 description: "Configuring an OpenFGA Server"
 canonical: "https://openfga.dev/docs/getting-started/setup-openfga/configure-openfga"
 content_type: "documentation"
-last_updated: "2026-08-24T10:26:12.000Z"
+last_updated: "2026-08-31T13:15:17.000Z"
 ---
 
 # Configuring OpenFGA

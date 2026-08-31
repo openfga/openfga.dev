@@ -3,7 +3,7 @@ title: "Best Practices"
 description: "Overview of best practices when adopting OpenFGA"
 canonical: "https://openfga.dev/docs/best-practices"
 content_type: "documentation"
-last_updated: "2026-08-24T10:26:12.000Z"
+last_updated: "2026-08-31T13:15:17.000Z"
 ---
 
 # OpenFGA Best Practices

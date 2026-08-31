@@ -3,7 +3,7 @@ title: "Perform a List Users call"
 description: "List all users that have a certain relation with a particular object"
 canonical: "https://openfga.dev/docs/getting-started/perform-list-users"
 content_type: "documentation"
-last_updated: "2026-08-24T10:26:12.000Z"
+last_updated: "2026-08-31T13:15:17.000Z"
 ---
 
 # Perform a List Users call

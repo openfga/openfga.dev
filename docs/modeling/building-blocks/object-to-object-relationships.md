@@ -3,7 +3,7 @@ title: "Object to Object Relationships"
 description: "Modeling relationships between objects (e.g. folder parent of a document)"
 canonical: "https://openfga.dev/docs/modeling/building-blocks/object-to-object-relationships"
 content_type: "documentation"
-last_updated: "2026-08-24T10:26:12.000Z"
+last_updated: "2026-08-31T13:15:17.000Z"
 ---
 
 # Object to Object Relationships

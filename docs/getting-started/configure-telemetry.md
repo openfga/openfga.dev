@@ -3,7 +3,7 @@ title: "Configure SDK Client Telemetry"
 description: "How to configure your SDK Client to collect telemetry using OpenTelemetry."
 canonical: "https://openfga.dev/docs/getting-started/configure-telemetry"
 content_type: "documentation"
-last_updated: "2026-08-24T10:26:12.000Z"
+last_updated: "2026-08-31T13:15:17.000Z"
 ---
 
 # Configure SDK Client Telemetry

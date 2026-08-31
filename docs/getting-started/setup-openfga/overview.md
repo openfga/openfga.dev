@@ -3,7 +3,7 @@ title: "Setup OpenFGA"
 description: "Learn how to set up an OpenFGA server with Docker, Kubernetes, or as a Go library. Covers configuration, datastores (Postgres, MySQL, SQLite), and telemetry."
 canonical: "https://openfga.dev/docs/getting-started/setup-openfga/overview"
 content_type: "documentation"
-last_updated: "2026-08-24T10:26:12.000Z"
+last_updated: "2026-08-31T13:15:17.000Z"
 ---
 
 # Setup OpenFGA

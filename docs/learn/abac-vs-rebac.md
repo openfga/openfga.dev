@@ -3,7 +3,7 @@ title: "ABAC vs ReBAC"
 description: "ABAC decides on attributes; ReBAC decides on relationships. Learn which fits which problem — and how OpenFGA covers both via conditions."
 canonical: "https://openfga.dev/docs/learn/abac-vs-rebac"
 content_type: "documentation"
-last_updated: "2026-08-24T10:26:12.000Z"
+last_updated: "2026-08-31T13:15:17.000Z"
 ---
 
 # ABAC vs. ReBAC
