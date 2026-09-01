@@ -42,19 +42,28 @@ jobs:
       - name: Check types
         run: npm run typecheck
 
+      - name: Run script tests
+        run: npm test
+
       - name: Check for circular dependencies
         run: npx madge --circular . --extensions ts,js,jsx,tsx
 
       - name: Build with npm
         run: npm run build
 
-  # Checking to ensure markdown link is not broken
+  # Checking to ensure markdown link is not broken.
+  #
+  # `blog/` is deliberately excluded here and handled by `markdown-link-check-new-blog-posts`
+  # below: published posts are point-in-time announcements whose external links rot on their own
+  # schedule, and checking the whole archive turns that rot into a failure on unrelated pull
+  # requests.
   markdown-link-check-md:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: tcort/github-action-markdown-link-check@e047c5b37f24ab722bbef1a27b6fab7f96bc4068 # v1.1.3
         with:
+          folder-path: 'docs'
           file-extension: '.md'
           use-quiet-mode: 'yes'
           config-file: '.github/workflows/markdown.links.config.json'
@@ -65,6 +74,45 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: tcort/github-action-markdown-link-check@e047c5b37f24ab722bbef1a27b6fab7f96bc4068 # v1.1.3
         with:
+          folder-path: 'docs'
           file-extension: '.mdx'
           use-quiet-mode: 'yes'
           config-file: '.github/workflows/markdown.links.config.json'
+
+  # The root README, which `folder-path: docs` above no longer reaches.
+  markdown-link-check-root:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: tcort/github-action-markdown-link-check@e047c5b37f24ab722bbef1a27b6fab7f96bc4068 # v1.1.3
+        with:
+          max-depth: 1
+          file-extension: '.md'
+          use-quiet-mode: 'yes'
+          config-file: '.github/workflows/markdown.links.config.json'
+
+  # Blog posts the pull request ADDS still have to pass. Existing posts are left alone, so
+  # editing one does not put its historical links on trial.
+  markdown-link-check-new-blog-posts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # `newBlogPosts` diffs against the merge base, which needs both branches' history.
+          fetch-depth: 0
+
+      - name: Set up node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+
+      - name: Find newly added blog posts
+        id: new-posts
+        run: node scripts/new-blog-posts.mjs --base "origin/${{ github.base_ref }}" --github-output
+
+      - name: Check links in newly added blog posts
+        if: steps.new-posts.outputs.files != ''
+        run: |
+          npm ci
+          echo "${{ steps.new-posts.outputs.files }}" | tr ',' '\n' | xargs \
+            npx markdown-link-check --quiet --config .github/workflows/markdown.links.config.json
