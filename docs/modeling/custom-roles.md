@@ -3,7 +3,7 @@ title: "Custom Roles"
 description: "Modeling custom and dynamically changing roles in your system"
 canonical: "https://openfga.dev/docs/modeling/custom-roles"
 content_type: "documentation"
-last_updated: "2026-08-31T13:15:17.000Z"
+last_updated: "2026-09-03T05:49:03.000Z"
 ---
 
 # Custom Roles

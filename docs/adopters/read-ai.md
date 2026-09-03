@@ -3,7 +3,7 @@ title: "Read AI Case Study"
 description: "How Read AI runs OpenFGA at 5,200 requests per second with 20ms p99 latency over more than 5 billion relationship tuples."
 canonical: "https://openfga.dev/docs/adopters/read-ai"
 content_type: "documentation"
-last_updated: "2026-08-31T13:15:17.000Z"
+last_updated: "2026-09-03T05:49:03.000Z"
 ---
 
 # Read AI: 5 billion tuples, 20ms p99 latency

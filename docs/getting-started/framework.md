@@ -3,7 +3,7 @@ title: "Integrate Within a Framework"
 description: "Integrating FGA within a framework, such as Fastify or Fiber"
 canonical: "https://openfga.dev/docs/getting-started/framework"
 content_type: "documentation"
-last_updated: "2026-08-31T13:15:17.000Z"
+last_updated: "2026-09-03T05:49:03.000Z"
 ---
 
 # Integrate Within a Framework
