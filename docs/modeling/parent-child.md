@@ -3,7 +3,7 @@ title: "Parent-Child Objects"
 description: "Indicate relationships between objects, and how users' relationships to one object can affect their relationship with another"
 canonical: "https://openfga.dev/docs/modeling/parent-child"
 content_type: "documentation"
-last_updated: "2026-09-03T05:49:03.000Z"
+last_updated: "2026-09-03T05:50:49.000Z"
 ---
 
 # Parent-Child Objects

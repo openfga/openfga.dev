@@ -3,7 +3,7 @@ title: "Use Token Claims As Contextual Tuples"
 description: "Using identity token claims to define contextual relations"
 canonical: "https://openfga.dev/docs/modeling/token-claims-contextual-tuples"
 content_type: "documentation"
-last_updated: "2026-09-03T05:49:03.000Z"
+last_updated: "2026-09-03T05:50:49.000Z"
 ---
 
 # Use Token Claims As Contextual Tuples

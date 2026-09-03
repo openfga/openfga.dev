@@ -3,7 +3,7 @@ title: "What is ReBAC (Relationship-Based Access Control)?"
 description: "ReBAC models permissions as relationships between users and resources. Learn what ReBAC is, when to use it, and how OpenFGA implements it."
 canonical: "https://openfga.dev/docs/learn/rebac"
 content_type: "documentation"
-last_updated: "2026-09-03T05:49:03.000Z"
+last_updated: "2026-09-03T05:50:49.000Z"
 ---
 
 # What is ReBAC?
