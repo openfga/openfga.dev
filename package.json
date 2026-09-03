@@ -7,6 +7,7 @@
     "dev": "docusaurus start --port=${PORT:-3000}",
     "docusaurus": "docusaurus",
     "start": "npm run serve --port=${PORT:-3000}",
+    "prebuild": "npm run validate:mintlify-api-navigation",
     "build": "npm run build:config-page; npm run build:llms-txt; npm run build:docusaurus",
     "build:docusaurus": "docusaurus build",
     "build:config-page": "node scripts/update-config-page.mjs",
@@ -23,7 +24,8 @@
     "lint": "eslint . --ext .ts  --ext .tsx",
     "lint:fix": "npm run lint -- --fix",
     "format:check": "prettier --check src/**",
-    "format:fix": "prettier --write src/**"
+    "format:fix": "prettier --write src/**",
+    "validate:mintlify-api-navigation": "node mintlify-native/scripts/validate-api-navigation.mjs"
   },
   "dependencies": {
     "@docusaurus/core": "3.10.1",
