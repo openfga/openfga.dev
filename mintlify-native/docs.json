@@ -270,7 +270,64 @@
       {
         "tab": "API",
         "icon": "square-terminal",
-        "openapi": "/api/openfga-openapi3.json"
+        "openapi": "/api/openfga-openapi3.json",
+        "groups": [
+          {
+            "group": "Stores",
+            "pages": [
+              "GET /stores",
+              "POST /stores",
+              "GET /stores/{store_id}",
+              "DELETE /stores/{store_id}"
+            ]
+          },
+          {
+            "group": "Authorization Models",
+            "pages": [
+              "GET /stores/{store_id}/authorization-models",
+              "POST /stores/{store_id}/authorization-models",
+              "GET /stores/{store_id}/authorization-models/{id}"
+            ]
+          },
+          {
+            "group": "Relationship Tuples",
+            "pages": [
+              "GET /stores/{store_id}/changes",
+              "POST /stores/{store_id}/read",
+              "POST /stores/{store_id}/write"
+            ]
+          },
+          {
+            "group": "Relationship Queries",
+            "pages": [
+              "POST /stores/{store_id}/batch-check",
+              "POST /stores/{store_id}/check",
+              "POST /stores/{store_id}/expand",
+              "POST /stores/{store_id}/list-objects",
+              "POST /stores/{store_id}/list-users",
+              "POST /stores/{store_id}/streamed-list-objects"
+            ]
+          },
+          {
+            "group": "Assertions",
+            "pages": [
+              "GET /stores/{store_id}/assertions/{authorization_model_id}",
+              "PUT /stores/{store_id}/assertions/{authorization_model_id}"
+            ]
+          },
+          {
+            "group": "AuthZenService",
+            "tag": "Experimental",
+            "pages": [
+              "GET /.well-known/authzen-configuration/{store_id}",
+              "POST /stores/{store_id}/access/v1/evaluation",
+              "POST /stores/{store_id}/access/v1/evaluations",
+              "POST /stores/{store_id}/access/v1/search/action",
+              "POST /stores/{store_id}/access/v1/search/resource",
+              "POST /stores/{store_id}/access/v1/search/subject"
+            ]
+          }
+        ]
       },
       {
         "tab": "Blog",
