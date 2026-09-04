@@ -3,7 +3,7 @@ title: "Adoption Patterns"
 description: "Describe different ways FGA can be adopted in an organization"
 canonical: "https://openfga.dev/docs/best-practices/adoption-patterns"
 content_type: "documentation"
-last_updated: "2026-09-03T05:50:49.000Z"
+last_updated: "2026-09-04T10:33:45.000Z"
 ---
 
 # OpenFGA Adoption Patterns

@@ -3,7 +3,7 @@ title: "Vitrolife Group Case Study"
 description: "How Vitrolife combines Microsoft Entra ID app roles with OpenFGA fine-grained ReBAC for a .NET 10 metadata platform serving IVF clinics worldwide."
 canonical: "https://openfga.dev/docs/adopters/vitrolife"
 content_type: "documentation"
-last_updated: "2026-09-03T05:50:49.000Z"
+last_updated: "2026-09-04T10:33:45.000Z"
 ---
 
 # Vitrolife Group: Hybrid Entra + OpenFGA authorization for a .NET healthcare platform

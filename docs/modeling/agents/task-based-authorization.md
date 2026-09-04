@@ -3,7 +3,7 @@ title: "Task-Based Authorization"
 description: "Modeling task-based authorization for agents"
 canonical: "https://openfga.dev/docs/modeling/agents/task-based-authorization"
 content_type: "documentation"
-last_updated: "2026-09-03T05:50:49.000Z"
+last_updated: "2026-09-04T10:33:45.000Z"
 ---
 
 # Modeling Task-Based Authorization for Agents

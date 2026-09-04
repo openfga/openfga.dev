@@ -3,7 +3,7 @@ title: "Update Relationship Tuples"
 description: "Introduction to adding and deleting relationship tuples"
 canonical: "https://openfga.dev/docs/getting-started/update-tuples"
 content_type: "documentation"
-last_updated: "2026-09-03T05:50:49.000Z"
+last_updated: "2026-09-04T10:33:45.000Z"
 ---
 
 # Update Relationship Tuples

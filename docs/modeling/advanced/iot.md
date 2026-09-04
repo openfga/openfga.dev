@@ -3,7 +3,7 @@ title: "IoT"
 description: "Modeling fine-grained authorization for an IoT security camera system"
 canonical: "https://openfga.dev/docs/modeling/advanced/iot"
 content_type: "documentation"
-last_updated: "2026-09-03T05:50:49.000Z"
+last_updated: "2026-09-04T10:33:45.000Z"
 ---
 
 # Modeling Authorization for an IoT Security System with OpenFGA

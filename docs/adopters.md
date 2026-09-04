@@ -3,7 +3,7 @@ title: "OpenFGA Adopters and Case Studies"
 description: "Production OpenFGA case studies from Agicap, Docker, Grafana Labs, Headspace, OpenLane, Read AI, Vitrolife, Zuplo and other adopters running fine-grained authorization at scale."
 canonical: "https://openfga.dev/docs/adopters"
 content_type: "documentation"
-last_updated: "2026-09-03T05:50:49.000Z"
+last_updated: "2026-09-04T10:33:45.000Z"
 ---
 
 # OpenFGA in production
