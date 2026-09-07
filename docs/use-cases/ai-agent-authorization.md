@@ -3,7 +3,7 @@ title: "AI Agent Authorization with OpenFGA"
 description: "Authorize AI agents with OpenFGA. Model agents as principals, delegate user permissions, and enforce least privilege for autonomous and copilot agents."
 canonical: "https://openfga.dev/docs/use-cases/ai-agent-authorization"
 content_type: "documentation"
-last_updated: "2026-09-04T10:33:45.000Z"
+last_updated: "2026-09-07T11:16:10.000Z"
 ---
 
 # AI Agent Authorization

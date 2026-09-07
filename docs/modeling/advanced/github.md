@@ -3,7 +3,7 @@ title: "GitHub"
 description: "Modeling GitHub permissions"
 canonical: "https://openfga.dev/docs/modeling/advanced/github"
 content_type: "documentation"
-last_updated: "2026-09-04T10:33:45.000Z"
+last_updated: "2026-09-07T11:16:10.000Z"
 ---
 
 # Modeling GitHub permissions with OpenFGA
