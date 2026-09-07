@@ -264,7 +264,7 @@ The `folder` and `document` type definitions each have five relations: `parent_f
 
 ### Direct Relationship Type Restrictions
 
-When used at the beginning of a <ProductConcept section="what-is-a-relation-definition" linkName="relation definition" />, `[<string>, <string>, ...]` allows <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationships" /> by the objects of these specified types. The strings can be in one of three formats:
+When used at the beginning of a <ProductConcept section="what-is-a-relation-definition" linkName="relation definition" />, `[<string>, <string>, ...]` allows <ProductConcept section="what-are-direct-and-implied-relationships" linkName="direct relationships" /> by the objects of these specified types, for example, `[user, user:*, team#member]`. The strings can be in one of three formats:
 - `<type>`: indicates that tuples relating objects of those types as users can be written. For example, `group:marketing` can be related if `group` is in the type restrictions.
 - `<type:*>`: indicates that a tuple relating all objects of that type can be written. For example, `user:*` can be added if `user:*` is in the type restrictions.
 - `<type>#<relation>`: indicates tuples with sets of users related to an object of that type by that particular relation. For example, `group:marketing#member` can be added if `group#member` is in the type restrictions.
