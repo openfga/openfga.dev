@@ -60,22 +60,39 @@ export const HomePage = () => {
   );
 
   const CNCFIcon = () => (
-    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <polygon points="20,4 36,30 4,30" stroke="currentColor" strokeWidth="2" fill="none" strokeLinejoin="round"/>
-      <text x="20" y="26" textAnchor="middle" fontSize="9" fill="currentColor" fontWeight="bold">CNCF</text>
-    </svg>
+    <img src="/images/img/cncf-icon-white.svg" alt="" aria-hidden="true" width="40" height="40" />
   );
 
   const CommunityIcon = () => (
-    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <circle cx="20" cy="14" r="6" stroke="currentColor" strokeWidth="2"/>
-      <circle cx="8" cy="28" r="4" stroke="currentColor" strokeWidth="2"/>
-      <circle cx="32" cy="28" r="4" stroke="currentColor" strokeWidth="2"/>
-      <path d="M14 22 Q8 22 8 28" stroke="currentColor" strokeWidth="2" fill="none"/>
-      <path d="M26 22 Q32 22 32 28" stroke="currentColor" strokeWidth="2" fill="none"/>
-      <path d="M14 22 Q20 20 26 22" stroke="currentColor" strokeWidth="2" fill="none"/>
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M12 .7a11.3 11.3 0 0 0-3.57 22c.57.1.78-.25.78-.55v-2.17c-3.18.69-3.85-1.35-3.85-1.35-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.68 1.24 3.34.95.1-.74.4-1.24.73-1.53-2.54-.29-5.21-1.27-5.21-5.58 0-1.23.44-2.24 1.16-3.03-.12-.29-.5-1.45.11-3.02 0 0 .95-.3 3.11 1.16a10.8 10.8 0 0 1 5.67 0c2.16-1.47 3.1-1.16 3.1-1.16.62 1.57.23 2.73.12 3.02.72.79 1.16 1.8 1.16 3.03 0 4.32-2.68 5.28-5.23 5.57.41.36.78 1.06.78 2.13v3.17c0 .3.2.66.79.55A11.3 11.3 0 0 0 12 .7Z"/>
     </svg>
   );
+
+  const ResourceIcon = ({ type }) => {
+    if (type === 'zanzibar') {
+      return (
+        <svg viewBox="0 0 21 20" fill="currentColor" aria-hidden="true">
+          <path fillRule="evenodd" clipRule="evenodd" d="M3.994 0A3 3 0 0 0 .994 3v14a3 3 0 0 0 3 3H17.05a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3H3.994Zm-.003 5.353V2.728h13.093v2.36l-8.881 9.53h9.125v2.655H3.717v-2.39l8.85-9.53H3.99Z"/>
+        </svg>
+      );
+    }
+    if (type === 'playground') {
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+          <rect x="3" y="3" width="8" height="8" rx="1.5"/>
+          <rect x="13" y="13" width="8" height="8" rx="1.5"/>
+          <path d="M11 7h4a2 2 0 0 1 2 2v4M7 11v4a2 2 0 0 0 2 2h4"/>
+        </svg>
+      );
+    }
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <rect x="9" y="2" width="6" height="13" rx="3"/>
+        <path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8"/>
+      </svg>
+    );
+  };
 
   // ─── DATA ──────────────────────────────────────────────────────────────────
 
@@ -134,14 +151,25 @@ export const HomePage = () => {
       id: 'contribute',
       Icon: CommunityIcon,
       title: 'Get Involved',
-      html: "Join OpenFGA's active <a href='https://openfga.dev/community' target='_blank' rel='noopener noreferrer'>Slack and GitHub community</a>, check out existing <a href='https://github.com/openfga/rfcs' target='_blank' rel='noopener noreferrer'>RFCs</a>, and read our <a href='https://github.com/openfga/.github/blob/main/CONTRIBUTING.md' target='_blank' rel='noopener noreferrer'>CONTRIBUTING.md</a>. <a href='https://github.com/openfga/.github/blob/main/CONTRIBUTING.md#contribution-process' target='_blank' rel='noopener noreferrer'>Learn how to get involved →</a>",
+      html: "Join OpenFGA's active <a href='https://openfga.dev/community' target='_blank' rel='noopener noreferrer'>Slack and GitHub community</a>, check out existing <a href='https://github.com/openfga/rfcs' target='_blank' rel='noopener noreferrer'>RFCs</a> to understand where the project is headed, and learn more about how to take part by reading our <a href='https://github.com/openfga/.github/blob/main/CONTRIBUTING.md' target='_blank' rel='noopener noreferrer'>CONTRIBUTING.md</a>.",
+      cta: {
+        text: 'Learn how to get involved →',
+        href: 'https://github.com/openfga/.github/blob/main/CONTRIBUTING.md#contribution-process',
+      },
     },
   ];
 
   const RESOURCES = [
-    { text: 'Zanzibar Academy', href: 'https://zanzibar.academy/' },
-    { text: 'Auth0 FGA Playground', href: 'https://play.fga.dev/' },
-    { text: 'Podcast — Authorization in Software', href: 'https://podcastindex.org/podcast/4368675' },
+    { type: 'zanzibar', text: 'Zanzibar Academy →', href: 'https://zanzibar.academy/' },
+    { type: 'playground', text: 'Auth0 FGA Playground →', href: 'https://play.fga.dev/' },
+    { type: 'podcast', text: 'Podcast - Authorization in Software →', href: 'https://podcastindex.org/podcast/4368675' },
+  ];
+
+  const FOOTER_LINKS = [
+    { text: 'Twitter', href: 'https://twitter.com/OpenFGA' },
+    { text: 'CNCF Slack', href: 'https://openfga.dev/community' },
+    { text: 'GitHub', href: 'https://github.com/openfga' },
+    { text: 'Mastodon', href: 'https://mastodon.social/@openfga' },
   ];
 
   const DOCKER_COMMAND = `docker pull openfga/openfga && \\
@@ -244,7 +272,7 @@ docker run -p 8080:8080 -p 8081:8081 \\
               <pre style={{ margin: 0, color: '#e2e8f0', fontSize: '0.9rem', fontFamily: 'monospace', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{DOCKER_COMMAND}</pre>
               <button
                 onClick={copyDockerCommand}
-                aria-label="Copy Docker command to clipboard"
+                aria-label={copied ? 'Docker command copied' : 'Copy Docker command to clipboard'}
                 style={{ position: 'absolute', top: '12px', right: '12px', background: 'none', border: 'none', cursor: 'pointer', color: copied ? '#79ed83' : '#ffffff', padding: '4px' }}
               >
                 {copied ? (
@@ -261,12 +289,12 @@ docker run -p 8080:8080 -p 8081:8081 \\
             </div>
 
             <p style={{ color: '#a0aec0', fontSize: '0.95rem', marginBottom: '8px' }}>
-              OpenFGA will be running at localhost:8080. Learn more in the{' '}
+              OpenFGA will be running at localhost:8080 on your machine. Learn about other options and next steps in the project{' '}
               <a href="https://github.com/openfga/openfga" target="_blank" rel="noopener noreferrer" style={{ color: '#79ed83' }}>README.md</a>{' '}
               or <a href="/docs/getting-started" style={{ color: '#79ed83' }}>Getting Started</a> guides.
             </p>
             <p style={{ color: '#a0aec0', fontSize: '0.95rem' }}>
-              Learn how to use sample authorization models with the project&rsquo;s{' '}
+              Learn how to use sample authorization models and create your own with the project&rsquo;s extensive{' '}
               <a href="/docs/modeling" style={{ color: '#79ed83' }}>documentation</a>.
             </p>
           </div>
@@ -286,7 +314,7 @@ docker run -p 8080:8080 -p 8081:8081 \\
           <p style={{ textAlign: 'center', color: '#718096', marginBottom: '24px', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
             Adopted by teams at
           </p>
-          <div className="adopters-carousel" aria-label="OpenFGA adopters">
+          <div className="adopters-carousel" role="region" aria-label="OpenFGA adopters">
             <div className="adopters-track">
               {carouselLogos.map((logo, i) => (
                 <div key={`${logo.name}-${i}`} className="adopter-logo" aria-hidden={i >= ADOPTER_LOGOS.length ? 'true' : undefined}>
@@ -310,7 +338,7 @@ docker run -p 8080:8080 -p 8081:8081 \\
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
           <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '48px', textAlign: 'left', paddingLeft: '2rem' }}>Features</h2>
           <div className="features-grid">
-            {FEATURES.map(({ id, Icon, title, content, html }) => (
+            {FEATURES.map(({ id, Icon, title, content, html, cta }) => (
               <div key={id} className="feature-card">
                 <div className="feature-icon-box">
                   <Icon />
@@ -320,6 +348,11 @@ docker run -p 8080:8080 -p 8081:8081 \\
                   ? <p style={{ color: '#bdc4cf', fontSize: '1rem', lineHeight: 1.7, margin: 0 }} dangerouslySetInnerHTML={{ __html: html }} />
                   : <p style={{ color: '#bdc4cf', fontSize: '1rem', lineHeight: 1.7, margin: 0 }}>{content}</p>
                 }
+                {cta && (
+                  <a className="feature-cta" href={cta.href} target="_blank" rel="noopener noreferrer">
+                    {cta.text}
+                  </a>
+                )}
               </div>
             ))}
           </div>
@@ -327,25 +360,21 @@ docker run -p 8080:8080 -p 8081:8081 \\
       </section>
 
       {/* ── RESOURCES ────────────────────────────────────────────────────── */}
-      <section id="resources" style={{ padding: '80px 24px' }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '32px', color: '#e2e8f0' }}>
+      <section id="resources" className="resources-section">
+        <div className="resources-panel">
+          <h2>
             Since you&rsquo;re here, you might be interested in some ReBAC resources:
           </h2>
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {RESOURCES.map(({ text, href }) => (
+          <ul className="resources-list">
+            {RESOURCES.map(({ type, text, href }) => (
               <li key={href}>
                 <a
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ color: '#79ed83', fontSize: '1.05rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}
+                  className="resource-link"
                 >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path d="M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                    <path d="M9 2h5v5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    <line x1="14" y1="2" x2="7" y2="9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                  </svg>
+                  <span className="resource-icon"><ResourceIcon type={type} /></span>
                   {text}
                 </a>
               </li>
@@ -353,6 +382,28 @@ docker run -p 8080:8080 -p 8081:8081 \\
           </ul>
         </div>
       </section>
+
+      <footer className="home-footer">
+        <div className="home-footer-inner">
+          <div className="home-footer-legal">
+            <a href="https://www.linuxfoundation.org/trademark-usage" target="_blank" rel="noopener noreferrer" aria-label="Linux Foundation trademark usage">
+              <img src="/images/img/cncf-icon-white.svg" alt="CNCF" width="24" height="24" />
+            </a>
+            <p>
+              © {new Date().getFullYear()}{' '}
+              <a href="https://www.linuxfoundation.org/" target="_blank" rel="noopener noreferrer">The Linux Foundation</a>®. All rights reserved. For a list of trademarks of The Linux Foundation, see our{' '}
+              <a href="https://www.linuxfoundation.org/trademark-usage" target="_blank" rel="noopener noreferrer">Trademark Usage page</a>.
+            </p>
+          </div>
+          <nav className="home-footer-socials" aria-label="OpenFGA social links">
+            {FOOTER_LINKS.map(({ text, href }) => (
+              <a key={text} href={href} target="_blank" rel="me noopener noreferrer">
+                {text}
+              </a>
+            ))}
+          </nav>
+        </div>
+      </footer>
 
     </div>
   );
