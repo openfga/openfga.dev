@@ -5,6 +5,22 @@ import { fileURLToPath } from "node:url";
 const mintlifyDirectory = join(dirname(fileURLToPath(import.meta.url)), "..");
 const docs = JSON.parse(readFileSync(join(mintlifyDirectory, "docs.json"), "utf8"));
 
+async function loadOpenApi(source) {
+  if (/^https?:\/\//.test(source)) {
+    const response = await fetch(source, {
+      headers: { accept: "application/json" },
+      signal: AbortSignal.timeout(30_000),
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to load OpenAPI specification from ${source}: HTTP ${response.status}`);
+    }
+    return response.json();
+  }
+
+  const openapiPath = join(mintlifyDirectory, source.replace(/^\/+/, ""));
+  return JSON.parse(readFileSync(openapiPath, "utf8"));
+}
+
 const apiTab = docs.navigation?.tabs?.find(({ tab }) => tab === "API");
 if (!apiTab) {
   throw new Error('docs.json must contain an "API" navigation tab');
@@ -14,8 +30,7 @@ if (typeof apiTab.openapi !== "string") {
   throw new Error('The "API" tab must define one OpenAPI specification');
 }
 
-const openapiPath = join(mintlifyDirectory, apiTab.openapi.replace(/^\/+/, ""));
-const openapi = JSON.parse(readFileSync(openapiPath, "utf8"));
+const openapi = await loadOpenApi(apiTab.openapi);
 const httpMethods = new Set([
   "get",
   "post",

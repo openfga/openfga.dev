@@ -36,8 +36,6 @@ mintlify-native/
 ├── global.css             # Shared docs/API theme fixes
 ├── openfga-dsl-highlight.js   # Standalone DSL syntax highlighter (window global)
 ├── fga-codegen.js         # Pre-bundled @openfga/syntax-transformer (window global)
-├── api/
-│   └── openfga-openapi3.json  # OAS3 spec (converted from upstream Swagger 2.0)
 ├── docs/                  # 111 public docs pages plus the hidden test harness
 ├── images/                # Mintlify logo assets
 ├── snippets/              # 8 interactive React components (see below)
@@ -46,6 +44,14 @@ mintlify-native/
 └── scripts/
     └── build-fga-codegen.sh   # Reproducible build for fga-codegen.js
 ```
+
+The API tab consumes the canonical OpenAPI 3.0.3 document generated in
+[`openfga/api`](https://github.com/openfga/api/tree/main/docs/openapiv3), pinned to
+the immutable merge commit for
+[`openfga/api#259`](https://github.com/openfga/api/pull/259). Update that revision
+through a reviewed change when adopting a newer API artifact. The navigation
+validator supports both local and HTTPS specifications and fails the build if the
+canonical operation set drifts.
 
 ### docs/test-viewer.mdx
 
@@ -167,9 +173,9 @@ Configure edge rules in this order:
    `/api-reference`.
 2. Serve `/docs/llms.txt` from Docusaurus because the root Docusaurus
    `/llms.txt` links to that complete index.
-3. Proxy `/docs`, `/docs/**`, `/api-reference`, `/api-reference/**`, the exact
-   `/api/openfga-openapi3.json` asset, `/_mintlify/**`, `/mintlify-assets/**`,
-   `/_next/**`, `/images/**`, `/fga-codegen.js`, and
+3. Proxy `/docs`, `/docs/**`, `/api-reference`, `/api-reference/**`,
+   `/_mintlify/**`, `/mintlify-assets/**`, `/_next/**`, `/images/**`,
+   `/fga-codegen.js`, and
    `/openfga-dsl-highlight.js` to the Mintlify origin.
 4. Send all remaining paths to Docusaurus.
 

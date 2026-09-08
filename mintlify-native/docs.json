@@ -264,7 +264,7 @@
       {
         "tab": "API",
         "icon": "square-terminal",
-        "openapi": "/api/openfga-openapi3.json",
+        "openapi": "https://raw.githubusercontent.com/openfga/api/7a79d2abab5b9ccc962ae995a1aab70c0a1cf19d/docs/openapiv3/apidocs.openapi.json",
         "groups": [
           {
             "group": "Stores",
