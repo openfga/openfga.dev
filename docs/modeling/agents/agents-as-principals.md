@@ -3,7 +3,7 @@ title: "Modeling Agents as Principals"
 description: "Model agents as first-class principals in your authorization model so they inherit access through the same permission hierarchy as users"
 canonical: "https://openfga.dev/docs/modeling/agents/agents-as-principals"
 content_type: "documentation"
-last_updated: "2026-09-07T11:16:10.000Z"
+last_updated: "2026-09-08T01:10:04.000Z"
 ---
 
 # Modeling Agents as Principals

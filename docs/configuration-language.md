@@ -3,7 +3,7 @@ title: "Configuration Language"
 description: "Learning about the FGA configuration language and using it to build a representation of a system's authorization model"
 canonical: "https://openfga.dev/docs/configuration-language"
 content_type: "documentation"
-last_updated: "2026-09-07T11:16:10.000Z"
+last_updated: "2026-09-08T01:10:04.000Z"
 ---
 
 # Configuration Language
@@ -669,7 +669,7 @@ The `folder` and `document` type definitions each have five relations: `parent_f
 
 ### Direct Relationship Type Restrictions
 
-When used at the beginning of a [relation definition](https://openfga.dev/docs/concepts.md#what-is-a-relation-definition), `[<string, <string>, ...]` allows [direct relationships](https://openfga.dev/docs/concepts.md#what-are-direct-and-implied-relationships) by the objects of these specified types. The strings can be in one of three formats:
+When used at the beginning of a [relation definition](https://openfga.dev/docs/concepts.md#what-is-a-relation-definition), `[<string>, <string>, ...]` allows [direct relationships](https://openfga.dev/docs/concepts.md#what-are-direct-and-implied-relationships) by the objects of these specified types, for example, `[user, user:*, team#member]`. The strings can be in one of three formats:
 
 - `<type>`: indicates that tuples relating objects of those types as users can be written. For example, `group:marketing` can be related if `group` is in the type restrictions.
 - `<type:*>`: indicates that a tuple relating all objects of that type can be written. For example, `user:*` can be added if `user:*` is in the type restrictions.

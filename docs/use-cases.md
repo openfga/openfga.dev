@@ -3,7 +3,7 @@ title: "OpenFGA Use Cases"
 description: "Production-ready OpenFGA patterns for AI agents, RAG, MCP servers, multi-tenant SaaS, and microservices authorization."
 canonical: "https://openfga.dev/docs/use-cases"
 content_type: "documentation"
-last_updated: "2026-09-07T11:16:10.000Z"
+last_updated: "2026-09-08T01:10:04.000Z"
 ---
 
 # OpenFGA Use Cases

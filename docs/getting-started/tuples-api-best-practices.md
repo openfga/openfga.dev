@@ -3,7 +3,7 @@ title: "Managing Tuples and Invoking API Best Practices"
 description: "Best Practices of Managing Tuples and Invoking APIs"
 canonical: "https://openfga.dev/docs/getting-started/tuples-api-best-practices"
 content_type: "documentation"
-last_updated: "2026-09-07T11:16:10.000Z"
+last_updated: "2026-09-08T01:10:04.000Z"
 ---
 
 # Best Practices of Managing Tuples and Invoking APIs

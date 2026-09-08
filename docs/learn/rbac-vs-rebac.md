@@ -3,7 +3,7 @@ title: "RBAC vs ReBAC"
 description: "RBAC assigns roles to users; ReBAC models relationships between users and resources. Learn when roles run out and ReBAC takes over."
 canonical: "https://openfga.dev/docs/learn/rbac-vs-rebac"
 content_type: "documentation"
-last_updated: "2026-09-07T11:16:10.000Z"
+last_updated: "2026-09-08T01:10:04.000Z"
 ---
 
 # RBAC vs. ReBAC

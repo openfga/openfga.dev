@@ -3,7 +3,7 @@ title: "AuthZEN API (Experimental)"
 description: "Using the AuthZEN interoperability API with OpenFGA"
 canonical: "https://openfga.dev/docs/interacting/authzen"
 content_type: "documentation"
-last_updated: "2026-09-07T11:16:10.000Z"
+last_updated: "2026-09-08T01:10:04.000Z"
 ---
 
 # AuthZEN API (Experimental)
