@@ -4,7 +4,7 @@
 // The codegen logic is inlined from mintlify-native/lib/codegen/check.js.
 //
 // All constants and helpers live INSIDE the exported function — top-level
-// consts are not in scope at Mintlify render time (same constraint as HomePage).
+// Top-level sibling consts are not in scope at Mintlify render time.
 
 export const CheckRequestViewer = ({
   user,

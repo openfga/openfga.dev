@@ -1,7 +1,9 @@
 # OpenFGA Docs — Mintlify Port (POC)
 
-This directory contains a complete port of [openfga.dev](https://openfga.dev) from
-Docusaurus to [Mintlify](https://mintlify.com). It is a proof-of-concept on the
+This directory contains the documentation and API-reference portion of
+[openfga.dev](https://openfga.dev) ported from Docusaurus to
+[Mintlify](https://mintlify.com). The homepage, Project page, Community page, and
+blog remain on Docusaurus. It is a proof-of-concept on the
 `poc/mintlify-native` branch of the `openfga/openfga.dev` repo.
 
 The migration proposal is in [`MINTLIFY-MIGRATION-PROPOSAL.md`](../MINTLIFY-MIGRATION-PROPOSAL.md)
@@ -16,7 +18,10 @@ cd mintlify-native/
 npx mint dev --port 3333
 ```
 
-Then open `http://localhost:3333`.
+Then open `http://localhost:3333/docs` or `http://localhost:3333/api-reference`.
+The logo links to the Docusaurus homepage, while the Project and Blog tabs link to
+their Docusaurus routes. Mintlify's native search remains available in the docs
+header.
 
 If startup fails with `Error: Client not built`, delete `~/.mintlify/mint/` and rerun —
 the CLI will re-download a fresh pre-built copy.
@@ -28,26 +33,23 @@ the CLI will re-download a fresh pre-built copy.
 ```
 mintlify-native/
 ├── docs.json              # Mintlify nav and theme config
-├── index.mdx              # Home page (mode: "custom")
-├── home.css               # CSS for home page (keyframes, media queries)
+├── global.css             # Shared docs/API theme fixes
 ├── openfga-dsl-highlight.js   # Standalone DSL syntax highlighter (window global)
 ├── fga-codegen.js         # Pre-bundled @openfga/syntax-transformer (window global)
 ├── api/
 │   └── openfga-openapi3.json  # OAS3 spec (converted from upstream Swagger 2.0)
-├── docs/                  # 120 MDX pages, full OpenFGA docs corpus
-├── images/                # SVG logos and icons
-├── snippets/              # 9 interactive React components (see below)
+├── docs/                  # 111 public docs pages plus the hidden test harness
+├── images/                # Mintlify logo assets
+├── snippets/              # 8 interactive React components (see below)
 ├── lib/codegen/
 │   └── check-reference.js.txt  # Reference file — see note below
-├── scripts/
-│   └── build-fga-codegen.sh   # Reproducible build for fga-codegen.js
-└── pattern.mp4/.webm/.png     # Hero section videos
-    terminal.mp4/.webm/.png    # Quick start section videos
+└── scripts/
+    └── build-fga-codegen.sh   # Reproducible build for fga-codegen.js
 ```
 
 ### docs/test-viewer.mdx
 
-A component validation page (not in the sidebar nav) that renders all 9 interactive
+A component validation page (not in the sidebar nav) that renders all 8 interactive
 viewers with test data. Useful for quickly verifying components work after changes.
 Access at `/docs/test-viewer` on a running dev server.
 
@@ -122,7 +124,7 @@ bash mintlify-native/scripts/build-fga-codegen.sh
 
 ## Interactive viewer components
 
-All 9 components accept the same props as their Docusaurus equivalents.
+All 8 components accept the same props as their Docusaurus equivalents.
 Call sites in MDX do not change between platforms.
 
 | Component | Langs | Description |
@@ -135,54 +137,58 @@ Call sites in MDX do not change between platforms.
 | `AuthzModelSnippetViewer` | — | DSL/JSON tab toggle with syntax highlighting |
 | `OpenFGACodeBlock` | — | DSL code block with openfga-dark syntax highlighting |
 | `CreateStoreViewer` | 7 | Create store code; takes `storeName` prop |
-| `HomePage` | — | Landing page (hero, adopters carousel, features, resources) |
-
 ---
 
-## Deploying to Mintlify
+## Split-site deployment
 
-Mintlify supports deploying from a subdirectory via **monorepo mode**:
+The public site uses path-based ownership:
 
-1. In the Mintlify dashboard → Git Settings → enable **"docs.json is in a subdirectory"**
-2. Set the path to `/mintlify-native` (no trailing slash)
-3. Connect to GitHub — deploys on push; the live URL has no subdirectory component
+| Public route | Origin |
+|---|---|
+| `/`, `/project`, `/community`, `/blog/**` | Docusaurus |
+| `/docs`, `/docs/**` | Mintlify |
+| `/api-reference`, `/api-reference/**` | Mintlify |
+| `/api`, `/api/service` | Permanent redirect to `/api-reference` |
 
-No `docs.json` changes are needed.
+Docusaurus also owns `/search`, `/robots.txt`, `/sitemap.xml`,
+`/search-index.json`, `/llms.txt`, `/llms-full.txt`, `/docs/llms.txt`,
+`/assets/**`, `/img/**`, `/css/**`, and `/icons/**`. Every route not explicitly
+assigned to Mintlify or an edge redirect falls back to Docusaurus.
 
----
+Configure Mintlify monorepo mode with `/mintlify-native` as the docs directory.
+Register `openfga.dev` as Mintlify's custom domain so canonical and discovery
+metadata use the public host, but keep the generated `*.mintlify.site` hostname as
+the proxy target. Do not add a Mintlify base path: the content paths already
+include `docs/`, while generated API pages use `api-reference/`.
 
-## Known limitations / production TODO
+Configure edge rules in this order:
 
-### Blog not migrated
+1. Permanently redirect the exact `/api` and `/api/service` paths to
+   `/api-reference`.
+2. Serve `/docs/llms.txt` from Docusaurus because the root Docusaurus
+   `/llms.txt` links to that complete index.
+3. Proxy `/docs`, `/docs/**`, `/api-reference`, `/api-reference/**`, the exact
+   `/api/openfga-openapi3.json` asset, `/_mintlify/**`, `/mintlify-assets/**`,
+   `/_next/**`, `/images/**`, `/fga-codegen.js`, and
+   `/openfga-dsl-highlight.js` to the Mintlify origin.
+4. Send all remaining paths to Docusaurus.
 
-The 23-post blog at `openfga.dev/blog` is not part of this port. Two options:
+Forward all HTTP methods, preserve `X-Forwarded-For`, `X-Forwarded-Proto`,
+`X-Real-IP`, `X-Forwarded-Host`, and `User-Agent`, set `Origin` and the upstream
+`Host` to the Mintlify subdomain, and do not forward `openfga.dev` as the upstream
+`Host`. Route both `/.well-known/vercel/**` and
+`/.well-known/acme-challenge/**` to Mintlify while configuring and verifying the
+custom domain.
 
-- **Keep blog on Docusaurus**: Route `/blog/*` to a Docusaurus-only deployment via CDN
-  rules; route everything else to Mintlify. Zero content migration, all existing URLs
-  preserved.
-- **Move to Ghost**: Serve at `blog.openfga.dev` with 301 redirects from
-  `openfga.dev/blog/*`. Better long-term authoring experience.
+Root `/llms.txt`, `/llms-full.txt`, and `/docs/llms.txt` remain
+Docusaurus-owned. Mintlify's per-page `/docs/*.md` exports are covered by the
+`/docs/**` proxy rule. Docusaurus continues to build its legacy API page because
+the agent-content validator consumes that artifact, but the edge redirect prevents
+the public `/api/service` route from serving it.
 
-### Video files committed to git
+The public `/sitemap.xml` must be a composite of the Docusaurus and Mintlify
+sitemaps. Docusaurus excludes `/api/service`; the composite must include all
+Mintlify `/api-reference/**` routes without duplicating shared `/docs/**` URLs.
 
-`pattern.mp4/.webm` and `terminal.mp4/.webm` are committed (< 1MB each). The current
-Docusaurus site also commits these videos and serves them from GitHub Pages static
-hosting — no CDN is in use today on either platform.
-
-Mintlify automatically delivers committed static files via its CDN, so this is
-actually an improvement over the current setup. However, Mintlify's own guidance
-recommends embedding videos via YouTube or Loom instead of committing binary files,
-for page load performance. For a production launch, replacing these with embedded
-video players would be the right call.
-
-### GitHub live star count
-
-The navbar's `type: "github"` link shows a static config, not a live count. The
-current Docusaurus site fetches the GitHub API client-side to show a live count;
-replicating this in Mintlify requires a custom snippet that calls the GitHub API.
-
-### Lottie animations replaced with static SVGs
-
-The original landing page uses Lottie-animated icons for four of the six feature
-cards. Mintlify snippets can't import the Lottie npm package, so these are replaced
-with simple inline SVGs. The feature cards work correctly; the icons don't animate.
+The repository does not contain the production edge configuration, so that routing
+must be provisioned in the hosting/CDN platform before cutover.

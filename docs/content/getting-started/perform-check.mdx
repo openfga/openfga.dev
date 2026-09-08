@@ -172,7 +172,7 @@ If the relation is *not defined* in your model, the API will return a `400 Bad R
 
 ### 03. Calling Batch Check API
 
-If you want to check multiple user-object-relationship combinations in a single request, you can use the [Batch Check](/api/service#Relationship%20Queries/BatchCheck) API endpoint. Batching authorization checks together in a single request significantly reduces overall network latency.    
+If you want to check multiple user-object-relationship combinations in a single request, you can use the [Batch Check](https://openfga.dev/api-reference/relationship-queries/send-a-list-of-%60check%60-operations-in-a-single-request) API endpoint. Batching authorization checks together in a single request significantly reduces overall network latency.
 
 The BatchCheck endpoint requires a `correlation_id` parameter for each check. The `correlation_id` is used to "correlate" the check responses with the checks sent in the request, since `tuple_keys` and `contextual_tuples` are not returned in the response on purpose to reduce data transfer to improve network latency. A `correlation_id` can be composed of any string of alphanumeric characters or dashes between 1-36 characters in length.
 This means you can use:
@@ -233,12 +233,12 @@ BatchCheck has two available configuration options:
     {
       title: '{ProductName} Check API',
       description: 'Read the Check API documentation and see how it works.',
-      link: '/api/service#Relationship%20Queries/Check',
+      link: 'https://openfga.dev/api-reference/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object',
     },
     {
       title: '{ProductName} Batch Check API',
       description: 'Read the Batch Check API documentation and see how it works.',
-      link: '/api/service#Relationship%20Queries/BatchCheck',
+      link: 'https://openfga.dev/api-reference/relationship-queries/send-a-list-of-%60check%60-operations-in-a-single-request',
     },
   ]}
 />

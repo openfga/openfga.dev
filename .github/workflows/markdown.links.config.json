@@ -4,7 +4,7 @@
       "pattern": "^https://twitter.com/"
     },
     {
-      "pattern": "^/api/service#"
+      "pattern": "^https://openfga\\.dev/api-reference(?:/|$)"
     },
     {
       "pattern": "^http://localhost:3000"

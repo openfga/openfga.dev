@@ -6,6 +6,18 @@ The FGA product docs are moving to Mintlify. This raises a question for the Open
 
 This document describes both options, compares them, and presents findings from a spike that was run to validate the migration path.
 
+## Current Direction — Split Site
+
+The implementation now keeps the marketing homepage, Project page, Community
+page, and blog on Docusaurus while serving `/docs/**` and `/api-reference/**`
+from Mintlify. The legacy `/api` and `/api/service` routes redirect to
+`/api-reference`.
+
+This retains Docusaurus for the surfaces it handles well while using Mintlify for
+documentation navigation, search, Markdown exports, and the native OpenAPI
+playground. A path-aware reverse proxy is required because DNS cannot route
+individual paths to separate origins.
+
 ---
 
 ## The Two Options
@@ -49,14 +61,15 @@ A spike was run on this option — see below.
 
 ## About the Spike
 
-To validate Option 2, a spike was run on the `poc/mintlify-native` branch of `github.com/openfga/openfga.dev`. The full site was ported to Mintlify and all technical unknowns were resolved.
+To validate Option 2, a spike was run on the `poc/mintlify-native` branch of `github.com/openfga/openfga.dev`. The full site was initially ported to Mintlify before the implementation was narrowed to the documentation and API surfaces.
 
 **What the spike proved:**
-- The complete docs corpus (120 pages) can be ported accurately from Docusaurus source
-- All 9 interactive viewer components can be re-implemented under Mintlify's constraints
+- The complete current docs corpus (111 pages) can be ported accurately from Docusaurus source
+- All 8 documentation viewer components can be re-implemented under Mintlify's constraints
 - DSL syntax highlighting works and can be kept in sync with the upstream Prism grammar (see below)
 - The API playground works natively from the existing spec file
-- The landing page can be ported using Mintlify's `mode: "custom"` page type
+- A landing page can be ported using Mintlify's `mode: "custom"` page type,
+  although the selected split deployment keeps it on Docusaurus
 - Deployment works from a subdirectory via Mintlify's monorepo mode
 
 The rest of this document covers the findings in detail.
@@ -95,13 +108,13 @@ Keeping both repos on the same platform means no context switching for engineers
 
 ## What Makes This Migration Non-Trivial — and How We Solved It
 
-The OpenFGA docs are not a typical docs site. They have nine custom interactive components that generate multi-language SDK code samples from props. A spike was run to validate the full migration approach.
+The OpenFGA docs are not a typical docs site. They have eight custom interactive documentation components that generate multi-language SDK code samples from props. A spike was run to validate the migration approach.
 
 ### Interactive viewer components
 
 Mintlify uses a "snippets" system: JSX files in a `snippets/` directory that are available site-wide, with the constraint that they cannot import npm packages or local files — all logic must be self-contained.
 
-**All nine components have been ported and are working in the spike:**
+**All eight documentation components have been ported and are working in the spike:**
 
 | Component | What it does |
 |---|---|
@@ -113,7 +126,6 @@ Mintlify uses a "snippets" system: JSX files in a `snippets/` directory that are
 | `AuthzModelSnippetViewer` | DSL/JSON model display with syntax highlighting |
 | `OpenFGACodeBlock` | DSL code blocks with syntax highlighting |
 | `CreateStoreViewer` | Multi-language create store code (7 languages) |
-| `HomePage` | Landing page (hero, adopters carousel, features, resources) |
 
 The ported components accept the same props as the Docusaurus originals. Call sites in MDX do not change.
 
@@ -134,7 +146,7 @@ Docusaurus MDX uses platform-specific syntax that maps cleanly to Mintlify:
 | `<RelatedSection>` component | `<CardGroup>/<Card>` |
 | `{ProductName}` template variable | literal "OpenFGA" |
 
-These are all mechanical conversions applied across all 120 pages in the spike.
+These are all mechanical conversions applied across all 111 current documentation pages.
 
 ### Static asset handling — Git LFS
 
@@ -145,13 +157,7 @@ This is a significant gotcha for any repo that uses Git LFS, confirmed through d
 1. **Override rules must appear *after* global LFS rules** in `.gitattributes` — later rules win, so any override placed before the global `*.mp4 filter=lfs` line will be overridden back.
 2. **Git LFS hooks intercept `git add`** even when the filter attribute is unset. You must bypass them explicitly: `git -c filter.lfs.clean=cat add <files>`.
 
-**Videos** must be committed as regular git blobs, placed in a `videos/` subdirectory, and referenced using the `src` attribute directly on the `<video>` element — not via `<source>` children. Confirmed with Mintlify support:
-
-```html
-<video autoPlay muted loop playsInline src="/videos/pattern.mp4" />
-```
-
-**CSS and JS files are auto-included** by Mintlify on every page — place any `.css` or `.js` file in the content directory and it's automatically injected site-wide, no `docs.json` entry needed. Note: these files are injected at deploy time and are not URL-addressable (a browser fetch of `/home.css` returns 404). Do not try to load them manually via `<link>` or `<script>` tags.
+**CSS and JS files are auto-included** by Mintlify on every page — place any `.css` or `.js` file in the content directory and it's automatically injected site-wide, no `docs.json` entry needed. Note: these files are injected at deploy time and are not URL-addressable (a browser fetch of `/global.css` returns 404). Do not try to load them manually via `<link>` or `<script>` tags.
 
 ### Code block theming
 
@@ -171,25 +177,25 @@ Curly braces `{}` in MDX are parsed as JavaScript expressions. Text like `{objec
 A working Mintlify site exists on the `poc/mintlify-native` branch of `github.com/openfga/openfga.dev`. Run `npx mint dev` from the `mintlify-native/` directory to see it locally.
 
 **What is done:**
-- 120 pages — the complete OpenFGA docs corpus, ported from source MDX
-- All 9 interactive viewer components implemented and wired up
+- 111 pages — the complete current OpenFGA docs corpus, ported from source MDX
+- All 8 documentation viewer components implemented and wired up
 - DSL syntax highlighting working and visually verified
 - Native OpenAPI playground (24 endpoints, 6 tag groups)
-- Landing page ported with video, carousel, and features grid
 - All content audited against Docusaurus source for accuracy
-- URL structure deliberately preserved — no redirects required
+- Docs URL structure preserved; the API moves from `/api/service` to `/api-reference`
+- The logo, Project, and Blog links return to Docusaurus; Mintlify native search
+  remains in the docs header
 
 **What remains:**
-- Blog (see below)
-- Production deployment and DNS configuration
-- GitHub live star count in navbar (minor: one custom snippet)
+- Production Mintlify project and path-aware reverse-proxy configuration
 - Regenerate tokenizer from `@openfga/frontend-utils` package exports (currently hand-ported; straightforward build script change)
 
 ---
 
-## Migration Approach (if Option 2 is chosen)
+## Split Deployment Approach
 
-The hard work is done. What remains is deployment configuration and a blog decision.
+The content and component migration is complete. Production activation requires
+deploying the Mintlify origin and routing only the documentation surfaces to it.
 
 ### Phase 1 — Content freeze and final review
 - Diff the ported content against the live Docusaurus site to catch any changes made since the spike
@@ -197,60 +203,43 @@ The hard work is done. What remains is deployment configuration and a blog decis
 
 ### Phase 2 — Production setup
 - Create a Mintlify project, connect the repo
-- Configure the custom domain (`openfga.dev`) in Mintlify's dashboard
 - Enable monorepo mode, set root directory to `/mintlify-native`
-- URL paths were kept identical to Docusaurus slugs — no redirects needed
-
-### Phase 3 — Blog decision and cutover
-- Resolve the blog question (see below)
-- DNS cutover: point `openfga.dev` at Mintlify
+- Register `openfga.dev` as Mintlify's custom domain so generated canonical URLs use
+  the public host, while keeping the `*.mintlify.site` hostname as the proxy target
+- Put a path-aware edge proxy in front of the Docusaurus and Mintlify origins
+- Route `/docs`, `/docs/**`, `/api-reference`, and `/api-reference/**` to Mintlify
+- Route `/`, `/project`, `/community`, `/blog/**`, search/SEO files, agent indexes,
+  and Docusaurus static asset roots to Docusaurus
+- Keep `/docs/llms.txt` on Docusaurus, and proxy Mintlify's exact OpenAPI asset plus
+  runtime/static asset paths
+- Forward all HTTP methods and Mintlify's required proxy headers without forwarding
+  the public `Host` header
+- Route Mintlify's Vercel and ACME verification paths during custom-domain setup
+- Publish a composite sitemap containing Docusaurus routes and Mintlify's
+  `/api-reference/**` routes, excluding the legacy `/api/service` page
+- Redirect `/api` and `/api/service` permanently to `/api-reference`
 
 ### Ongoing
 - New docs pages: write MDX, add to `docs.json` nav — same workflow as today
 - New viewer component calls: same props and component names as before
-- Docusaurus repo archived after a deprecation window
+- Keep Docusaurus and Mintlify navigation links aligned across the site boundary
 
 ---
 
-## The Blog Question
+## Blog Decision
 
-The current blog at `openfga.dev/blog` (23 posts: monthly "Fine-Grained News" newsletters + technical feature announcements) is not covered by Mintlify's docs feature set. Three options:
-
-### Option 1 — Keep blog on Docusaurus (recommended to unblock migration)
-
-Route `/blog/*` to a Docusaurus-only deployment (blog-only build) via CDN rules. Route everything else to Mintlify.
-
-- Zero migration work — no content changes, no URL changes
-- All existing RSS subscribers, SEO, and external links preserved
-- Requires a routing layer to stitch two deployments under `openfga.dev`
-- Blog can be migrated separately at any future point
-
-### Option 2 — GitHub Pages with Jekyll
-
-Replace Docusaurus with Jekyll on GitHub Pages. Jekyll is GitHub's native static site generator — no npm build pipeline, just Markdown files and a `_config.yml`.
-
-- Free; stays entirely within the GitHub ecosystem
-- RSS, author attribution, and tags supported via standard Jekyll plugins
-- Content migration is straightforward (posts are already plain Markdown)
-- Less polished authoring experience than Ghost/Hashnode
-- Less overhead than maintaining a Docusaurus install just for a blog
-
-### Option 3 — Ghost at `blog.openfga.dev`
-
-Move the blog to Ghost, served at `blog.openfga.dev`. Set up 301 redirects from `openfga.dev/blog/*`.
-
-- RSS, author profiles, tag pages, newsletter subscriptions: all built-in
-- Clean separation: docs platform handles docs, blog platform handles blog
-- Ghost Pro: ~$25/month, or self-hosted
-
-**Not recommended:** Mintlify's Changelog feature has no author attribution and is designed for release notes, not long-form technical content.
+The current blog at `openfga.dev/blog` remains on Docusaurus together with the
+homepage, Project page, and Community page. This preserves existing URLs, RSS,
+author attribution, and tags without forcing long-form content into Mintlify's
+changelog model. The blog can still move to another platform later without
+blocking the documentation migration.
 
 ---
 
 ## Summary
 
-Option 1 is more complex than it first appears: the Mintlify component work (viewer components, bundled JS, tokenizer) is required regardless, and the additional cost is building and maintaining a content sync pipeline indefinitely.
+The split deployment keeps the proven Mintlify documentation and API experience
+without duplicating the homepage, Project page, Community page, or blog.
 
-Option 2 does that component work once, benefits both sites, and eliminates the pipeline. The spike has validated the full migration path: the interactive components work, DSL highlighting works and can be kept automatically in sync with the upstream grammar, the full content corpus is ported, and the reader experience is meaningfully better.
-
-The blog is orthogonal to the docs migration decision and can be resolved independently.
+The remaining dependency is operational: provision and verify edge routing between
+the existing Docusaurus origin and the Mintlify origin.

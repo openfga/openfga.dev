@@ -114,7 +114,7 @@ Write the model to the FGA store:
 />
 
 ## Writing conditional relationship tuples
-Using the model above, when we [Write](https://openfga.dev/api/service#/Relationship%20Tuples/Write) relationship tuples to the OpenFGA store, then any `document#viewer` relationship with `user` objects must be accompanied by the condition `non_expired_grant` because the type restriction requires it.
+Using the model above, when we [Write](https://openfga.dev/api-reference/relationship-tuples/add-or-delete-tuples-from-the-store) relationship tuples to the OpenFGA store, then any `document#viewer` relationship with `user` objects must be accompanied by the condition `non_expired_grant` because the type restriction requires it.
 
 For example, we can give `user:anne` viewer access to `document:1` for 10 minutes by writing the following relationship tuple:
 
@@ -146,7 +146,7 @@ For example, we can give `user:anne` viewer access to `document:1` for 10 minute
 />
 
 ## Queries with condition context
-Now that we have written a [Conditional Relationship Tuple](../concepts.mdx#what-is-a-conditional-relationship-tuple), we can query OpenFGA using the [Check API](https://openfga.dev/api/service#/Relationship%20Queries/Check) to see if `user:anne` has viewer access to `document:1` under certain conditions/context. That is, `user:anne` should only have access if the current timestamp is less than the grant timestamp (e.g. the time which the tuple was written) plus the duration of the grant (10 minutes). If the current timestamp is less than, then you'll get a permissive decision. For example,
+Now that we have written a [Conditional Relationship Tuple](../concepts.mdx#what-is-a-conditional-relationship-tuple), we can query OpenFGA using the [Check API](https://openfga.dev/api-reference/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object) to see if `user:anne` has viewer access to `document:1` under certain conditions/context. That is, `user:anne` should only have access if the current timestamp is less than the grant timestamp (e.g. the time which the tuple was written) plus the duration of the grant (10 minutes). If the current timestamp is less than, then you'll get a permissive decision. For example,
 
 <CheckRequestViewer
   user={'user:anne'}
@@ -186,7 +186,7 @@ but if the current time is outside the grant window then you get a deny decision
   ]}
 />
 
-Similarly, we can use the [ListObjects API](https://openfga.dev/api/service#/Relationship%20Queries/ListObjects) to return all of the documents that `user:anne` has viewer access given the current time. For example,
+Similarly, we can use the [ListObjects API](https://openfga.dev/api-reference/relationship-queries/list-all-objects-of-the-given-type-that-the-user-has-a-relation-with) to return all of the documents that `user:anne` has viewer access given the current time. For example,
 
 <ListObjectsRequestViewer
   objectType="document"

@@ -203,14 +203,6 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
         createRedirects: (path) => { },
         redirects: [
           {
-            to: '/api/service',
-            from: ['/api'],
-          },
-          {
-            to: '/docs/community',
-            from: '/community',
-          },
-          {
             to: '/docs/fga',
             from: '/docs',
           }
@@ -253,6 +245,9 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
         theme: {
           customCss: [path.resolve('static/css/openfga.css'), path.resolve('src/css/custom.css')],
         },
+        sitemap: {
+          ignorePatterns: ['/api/service'],
+        },
       }),
     ],
   ],
@@ -294,13 +289,8 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
             to: '/',
             label: 'Home',
           },
-          {
-            type: 'docSidebar',
-            sidebarId: 'docs',
-            position: 'left',
-            label: 'Docs',
-          },
-          { to: '/api/service', label: 'API', position: 'left' },
+          { href: 'https://openfga.dev/docs/fga', label: 'Docs', position: 'left' },
+          { href: 'https://openfga.dev/api-reference', label: 'API', position: 'left' },
           { to: '/project', label: 'Project', position: 'left' },
           { to: '/blog', label: 'Blog', position: 'left' },
           {

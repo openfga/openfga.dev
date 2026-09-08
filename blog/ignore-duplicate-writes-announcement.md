@@ -93,7 +93,7 @@ And deletes:
 
 This is supported in the latest versions of the OpenFGA API, SDKs and CLI. Try it out and let us know what you think!
 
-- [API Docs](https://openfga.dev/api/service#/Relationship%20Tuples/Write)
+- [API Docs](https://openfga.dev/api-reference/relationship-tuples/add-or-delete-tuples-from-the-store)
 - [JavaScript SDK](https://github.com/openfga/js-sdk?tab=readme-ov-file#conflict-options-for-write-operations)
 - [Go SDK](https://github.com/openfga/go-sdk?tab=readme-ov-file#conflict-options-for-write-operations)
 - [.NET SDK](https://github.com/openfga/dotnet-sdk?tab=readme-ov-file#conflict-options-for-write-operations)
@@ -106,4 +106,4 @@ Learn more about [Writing Tuples in OpenFGA](https://openfga.dev/docs/getting-st
 
 ## We want your feedback!
 
-Please reach out through our [community channels](https://openfga.dev/docs/community) with any questions or feedback.
+Please reach out through our [community channels](https://openfga.dev/community) with any questions or feedback.

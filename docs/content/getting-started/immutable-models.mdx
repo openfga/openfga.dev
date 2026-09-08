@@ -19,11 +19,11 @@ Authorization Models in <ProductName format={ProductNameFormat.ShortForm}/> are 
 
 ## Viewing all the authorization models
 
-You can list all the authorization models for a store using the [ReadAuthorizationModels](/api/service#/Authorization%20Models/ReadAuthorizationModels) API. This endpoint returns the results sorted in reverse chronological order, as in the first model in the list is the latest model. By default, only the last 50 models are returned, but you can paginate across by passing in the appropriate `continuation_token`.
+You can list all the authorization models for a store using the [ReadAuthorizationModels](https://openfga.dev/api-reference/authorization-models/return-all-the-authorization-models-for-a-particular-store) API. This endpoint returns the results sorted in reverse chronological order, as in the first model in the list is the latest model. By default, only the last 50 models are returned, but you can paginate across by passing in the appropriate `continuation_token`.
 
 ## How to target a particular model
 
-Some endpoints relating to tuples ([Check](/api/service#/Relationship%20Queries/Check), [ListObjects](/api/service#/Relationship%20Queries/ListObjects), [ListUsers](/api/service#/Relationship%20Queries/ListUsers), [Expand](/api/service#/Relationship%20Queries/Expand), [Write](/api/service#/Relationship%20Tuples/Write)) accept an `authorization_model_id`, which we strongly recommend passing, especially in production.
+Some endpoints relating to tuples ([Check](https://openfga.dev/api-reference/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object), [ListObjects](https://openfga.dev/api-reference/relationship-queries/list-all-objects-of-the-given-type-that-the-user-has-a-relation-with), [ListUsers](https://openfga.dev/api-reference/relationship-queries/list-the-users-matching-the-provided-filter-who-have-a-certain-relation-to-a-particular-type), [Expand](https://openfga.dev/api-reference/relationship-queries/expand-all-relationships-in-userset-tree-format-and-following-userset-rewrite-rules-useful-to-reason-about-and-debug-a-certain-relationship), [Write](https://openfga.dev/api-reference/relationship-tuples/add-or-delete-tuples-from-the-store)) accept an `authorization_model_id`, which we strongly recommend passing, especially in production.
 
 In practice, you would pin the authorization model ID alongside the store ID in your configuration management system. Your services would read this value and use it in their requests to FGA. This helps you ensure that your services are using the same consistent ID across all your applications, and that rollouts can be seamless.
 

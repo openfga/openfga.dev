@@ -13,7 +13,7 @@ Contextual tuples are special relationship tuples that exist temporarily within 
 
 ## How Contextual Tuples Work
 
-When making requests to [Check](/api/service#/Relationship%20Queries/Check), [BatchCheck](/api/service#/Relationship%20Queries/BatchCheck), [ListObjects](/api/service#/Relationship%20Queries/ListObjects), [ListUsers](/api/service#/Relationship%20Queries/ListUsers) and [Expand](/api/service#/Relationship%20Queries/Expand) you can include contextual tuples in the request. These tuples are treated as if they were actual stored tuples during the evaluation of that request but are not persisted to the database and will not affect other requests.
+When making requests to [Check](https://openfga.dev/api-reference/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object), [BatchCheck](https://openfga.dev/api-reference/relationship-queries/send-a-list-of-%60check%60-operations-in-a-single-request), [ListObjects](https://openfga.dev/api-reference/relationship-queries/list-all-objects-of-the-given-type-that-the-user-has-a-relation-with), [ListUsers](https://openfga.dev/api-reference/relationship-queries/list-the-users-matching-the-provided-filter-who-have-a-certain-relation-to-a-particular-type) and [Expand](https://openfga.dev/api-reference/relationship-queries/expand-all-relationships-in-userset-tree-format-and-following-userset-rewrite-rules-useful-to-reason-about-and-debug-a-certain-relationship) you can include contextual tuples in the request. These tuples are treated as if they were actual stored tuples during the evaluation of that request but are not persisted to the database and will not affect other requests.
 
 ## Common Use Cases
 
