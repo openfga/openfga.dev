@@ -59,43 +59,22 @@
         "icon": "book-open",
         "groups": [
           {
-            "group": "FGA",
+            "group": "Overview",
             "pages": [
-              "docs/fga"
-            ]
-          },
-          {
-            "group": "Authorization Concepts",
-            "pages": [
-              "docs/authorization-concepts"
-            ]
-          },
-          {
-            "group": "Concepts",
-            "pages": [
-              "docs/concepts"
-            ]
-          },
-          {
-            "group": "Configuration Language",
-            "pages": [
+              "docs/fga",
+              "docs/authorization-concepts",
+              "docs/concepts",
               "docs/configuration-language"
             ]
           },
           {
-            "group": "Community",
-            "pages": [
-              "docs/community"
-            ]
-          },
-          {
             "group": "Getting Started",
+            "root": "docs/getting-started",
             "pages": [
-              "docs/getting-started",
               {
                 "group": "Setup OpenFGA",
+                "root": "docs/getting-started/setup-openfga/overview",
                 "pages": [
-                  "docs/getting-started/setup-openfga/overview",
                   "docs/getting-started/setup-openfga/configure-openfga",
                   "docs/getting-started/setup-openfga/configuration",
                   "docs/getting-started/setup-openfga/docker",
@@ -121,98 +100,98 @@
             ]
           },
           {
-            "group": "Modeling",
+            "group": "Modeling Guides",
+            "root": "docs/modeling/overview",
             "pages": [
-              "docs/modeling/overview",
               "docs/modeling/getting-started",
               "docs/modeling/direct-access",
-              "docs/modeling/roles-and-permissions",
-              "docs/modeling/custom-roles",
               "docs/modeling/user-groups",
-              "docs/modeling/public-access",
+              "docs/modeling/roles-and-permissions",
               "docs/modeling/parent-child",
               "docs/modeling/blocklists",
-              "docs/modeling/conditions",
-              "docs/modeling/contextual-time-based-authorization",
-              "docs/modeling/token-claims-contextual-tuples",
-              "docs/modeling/organization-context-authorization",
+              "docs/modeling/public-access",
               "docs/modeling/multiple-restrictions",
-              "docs/modeling/modular-models",
-              "docs/modeling/store-file-format",
+              "docs/modeling/custom-roles",
+              "docs/modeling/conditions",
+              "docs/modeling/token-claims-contextual-tuples",
+              "docs/modeling/contextual-time-based-authorization",
+              "docs/modeling/organization-context-authorization",
               "docs/modeling/testing",
+              "docs/modeling/store-file-format",
+              "docs/modeling/modular-models",
               {
                 "group": "Building Blocks",
+                "root": "docs/modeling/building-blocks/overview",
                 "pages": [
-                  "docs/modeling/building-blocks/overview",
                   "docs/modeling/building-blocks/direct-relationships",
-                  "docs/modeling/building-blocks/object-to-object-relationships",
                   "docs/modeling/building-blocks/concentric-relationships",
+                  "docs/modeling/building-blocks/object-to-object-relationships",
                   "docs/modeling/building-blocks/usersets"
                 ]
               },
               {
-                "group": "Advanced Patterns",
+                "group": "Advanced Use-Cases",
+                "root": "docs/modeling/advanced/overview",
                 "pages": [
-                  "docs/modeling/advanced/overview",
                   "docs/modeling/advanced/gdrive",
                   "docs/modeling/advanced/github",
                   "docs/modeling/advanced/slack",
-                  "docs/modeling/advanced/entitlements",
-                  "docs/modeling/advanced/iot"
+                  "docs/modeling/advanced/iot",
+                  "docs/modeling/advanced/entitlements"
                 ]
               },
               {
-                "group": "Migrating",
+                "group": "Migrations",
+                "root": "docs/modeling/migrating/overview",
                 "pages": [
-                  "docs/modeling/migrating/overview",
-                  "docs/modeling/migrating/migrating-models",
-                  "docs/modeling/migrating/migrating-relations"
-                ]
-              },
-              {
-                "group": "Authorization for Agents",
-                "pages": [
-                  "docs/modeling/agents/overview",
-                  "docs/modeling/agents/agents-as-principals",
-                  "docs/modeling/agents/rag-authorization",
-                  "docs/modeling/agents/mcp-authorization",
-                  "docs/modeling/agents/task-based-authorization"
+                  "docs/modeling/migrating/migrating-relations",
+                  "docs/modeling/migrating/migrating-models"
                 ]
               }
             ]
           },
           {
-            "group": "Interacting",
+            "group": "Authorization for Agents",
+            "root": "docs/modeling/agents/overview",
             "pages": [
-              "docs/interacting/overview",
-              "docs/interacting/relationship-queries",
-              "docs/interacting/contextual-tuples",
-              "docs/interacting/consistency",
+              "docs/modeling/agents/agents-as-principals",
+              "docs/modeling/agents/rag-authorization",
+              "docs/modeling/agents/mcp-authorization",
+              "docs/modeling/agents/task-based-authorization"
+            ]
+          },
+          {
+            "group": "Interacting with the API",
+            "root": "docs/interacting/overview",
+            "pages": [
               "docs/interacting/managing-user-access",
               "docs/interacting/managing-group-access",
               "docs/interacting/managing-group-membership",
               "docs/interacting/managing-relationships-between-objects",
-              "docs/interacting/search-with-permissions",
+              "docs/interacting/contextual-tuples",
+              "docs/interacting/consistency",
+              "docs/interacting/relationship-queries",
               "docs/interacting/read-tuple-changes",
+              "docs/interacting/search-with-permissions",
               "docs/interacting/authzen"
             ]
           },
           {
             "group": "Best Practices",
+            "root": "docs/best-practices/overview",
             "pages": [
-              "docs/best-practices/overview",
               "docs/best-practices/adoption-patterns",
               "docs/best-practices/modeling-design-principles",
-              "docs/best-practices/modeling-roles",
               "docs/best-practices/modeling-abac",
-              "docs/best-practices/running-in-production",
-              "docs/best-practices/source-of-truth"
+              "docs/best-practices/modeling-roles",
+              "docs/best-practices/source-of-truth",
+              "docs/best-practices/running-in-production"
             ]
           },
           {
             "group": "Industries",
+            "root": "docs/industries/overview",
             "pages": [
-              "docs/industries/overview",
               "docs/industries/healthcare",
               "docs/industries/banking",
               "docs/industries/ecommerce",
@@ -224,33 +203,33 @@
           },
           {
             "group": "Use Cases",
+            "root": "docs/use-cases/overview",
             "pages": [
-              "docs/use-cases/overview",
-              "docs/use-cases/multi-tenant-saas",
-              "docs/use-cases/microservices-authorization",
               "docs/use-cases/ai-agent-authorization",
               "docs/use-cases/rag-authorization",
-              "docs/use-cases/mcp-server-authorization"
+              "docs/use-cases/mcp-server-authorization",
+              "docs/use-cases/multi-tenant-saas",
+              "docs/use-cases/microservices-authorization"
             ]
           },
           {
             "group": "Adopters",
+            "root": "docs/adopters/overview",
             "pages": [
-              "docs/adopters/overview",
-              "docs/adopters/grafana",
-              "docs/adopters/docker",
               "docs/adopters/agicap",
-              "docs/adopters/headspace",
-              "docs/adopters/openlane",
+              "docs/adopters/docker",
+              "docs/adopters/grafana",
               "docs/adopters/read-ai",
-              "docs/adopters/vitrolife",
-              "docs/adopters/zuplo"
+              "docs/adopters/headspace",
+              "docs/adopters/zuplo",
+              "docs/adopters/openlane",
+              "docs/adopters/vitrolife"
             ]
           },
           {
             "group": "Learn",
+            "root": "docs/learn/overview",
             "pages": [
-              "docs/learn/overview",
               "docs/learn/zanzibar",
               "docs/learn/rebac",
               "docs/learn/rbac-vs-rebac",
