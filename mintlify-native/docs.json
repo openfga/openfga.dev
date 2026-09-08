@@ -52,6 +52,11 @@
   "contextual": {
     "options": ["assistant"]
   },
+  "api": {
+    "playground": {
+      "display": "simple"
+    }
+  },
   "navigation": {
     "tabs": [
       {
