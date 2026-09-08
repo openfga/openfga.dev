@@ -855,8 +855,8 @@ When Anne is connecting from a denied ip address range or timeslot, OpenFGA will
 Contextual tuples:
 
 - Are not persisted in the store.
-- Are only supported on the [Check API endpoint](/api/service#Relationship%20Queries/Check) and [ListObjects API endpoint](/api/service#Relationship%20Queries/ListObjects). They are not supported on read, expand and other endpoints.
-- If you are using the [Read Changes API endpoint](/api/service#Relationship%20Tuples/ReadChanges) to build a permission aware search index, note that it will not be trivial to take contextual tuples into account.
+- Are only supported on the [Check API endpoint](/api-reference/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object) and [ListObjects API endpoint](/api-reference/relationship-queries/list-all-objects-of-the-given-type-that-the-user-has-a-relation-with). They are not supported on read, expand and other endpoints.
+- If you are using the [Read Changes API endpoint](/api-reference/relationship-tuples/return-a-list-of-all-the-tuple-changes) to build a permission aware search index, note that it will not be trivial to take contextual tuples into account.
 </Warning>
 
 ### Taking it a step further: Banks as a service authorization
@@ -1081,7 +1081,7 @@ In that case, we can extend the model like so:
   <Card title="Modeling with Multiple Restrictions" href="/docs/modeling/multiple-restrictions">
     Learn how to model requiring multiple relationships before users are authorized to perform certain actions.
   </Card>
-  <Card title="OpenFGA API" href="/api/service#Relationship%20Queries/Check">
+  <Card title="OpenFGA API" href="/api-reference/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object">
     Details on the Check API in the OpenFGA reference guide.
   </Card>
 </CardGroup>

@@ -440,19 +440,19 @@ import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
 <Accordion title="What Is A Check Request?">
   ## **check request**OpenFGA
 
-  Check requests use the `check` methods in the OpenFGA SDKs ([JavaScript SDK](https://www.npmjs.com/package/@openfga/sdk)/[Go SDK](https://github.com/openfga/go-sdk)/[.NET SDK](https://www.nuget.org/packages/OpenFga.Sdk)) by manually calling the [check endpoint](/api/service#Relationship%20Queries/Check) using curl or in your code. The check endpoint responds with `{ "allowed": true }` if a relationship exists, and with `{ "allowed": false }` if the relationship does not.
+  Check requests use the `check` methods in the OpenFGA SDKs ([JavaScript SDK](https://www.npmjs.com/package/@openfga/sdk)/[Go SDK](https://github.com/openfga/go-sdk)/[.NET SDK](https://www.nuget.org/packages/OpenFga.Sdk)) by manually calling the [check endpoint](/api-reference/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object) using curl or in your code. The check endpoint responds with `{ "allowed": true }` if a relationship exists, and with `{ "allowed": false }` if the relationship does not.
 
   For example, the following will check whether `anne` of type user has a `viewer` relation to `document:new-roadmap`:
 
   <CheckRequestViewer user={'user:anne'} relation={'viewer'} object={'document:new-roadmap'} allowed={true} />
 
-  For more information, see the [Relationship Queries page](/docs/interacting/relationship-queries) and the official [Check API Reference](/api/service#Relationship%20Queries/Check).
+  For more information, see the [Relationship Queries page](/docs/interacting/relationship-queries) and the official [Check API Reference](/api-reference/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object).
 </Accordion>
 
 <Accordion title="What Is A List Objects Request?">
   ## **list objects request**OpenFGA
 
-  List objects requests are completed using the `listobjects` methods in the OpenFGA SDKs ([JavaScript SDK](https://www.npmjs.com/package/@openfga/sdk)/[Go SDK](https://github.com/openfga/go-sdk)/[.NET SDK](https://www.nuget.org/packages/OpenFga.Sdk)) by manually calling the [list objects endpoint](/api/service#Relationship%20Queries/ListObjects) using curl or in your code.
+  List objects requests are completed using the `listobjects` methods in the OpenFGA SDKs ([JavaScript SDK](https://www.npmjs.com/package/@openfga/sdk)/[Go SDK](https://github.com/openfga/go-sdk)/[.NET SDK](https://www.nuget.org/packages/OpenFga.Sdk)) by manually calling the [list objects endpoint](/api-reference/relationship-queries/list-all-objects-of-the-given-type-that-the-user-has-a-relation-with) using curl or in your code.
 
   The list objects endpoint responds with a list of objects for a given type that the user has the specified relationship with.
 
@@ -466,13 +466,13 @@ import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
     expectedResults={["document:otherdoc", "document:planning"]}
   />
 
-  For more information, see the [Relationship Queries page](/docs/interacting/relationship-queries) and the [List Objects API Reference](/api/service#Relationship%20Queries/ListObjects).
+  For more information, see the [Relationship Queries page](/docs/interacting/relationship-queries) and the [List Objects API Reference](/api-reference/relationship-queries/list-all-objects-of-the-given-type-that-the-user-has-a-relation-with).
 </Accordion>
 
 <Accordion title="What Is A List Users Request?">
   ## **list users request**OpenFGA
 
-  List users requests are completed using the relevant `ListUsers` method in SDKs, the `fga query list-users` command in the CLI, or by manually calling the [ListUsers endpoint](/api/service#Relationship%20Queries/ListUsers) using curl or in your code.
+  List users requests are completed using the relevant `ListUsers` method in SDKs, the `fga query list-users` command in the CLI, or by manually calling the [ListUsers endpoint](/api-reference/relationship-queries/list-the-users-matching-the-provided-filter-who-have-a-certain-relation-to-a-particular-type) using curl or in your code.
 
   The list users endpoint responds with a list of users for a given type that have the specificed relationship with an object.
 
@@ -487,13 +487,13 @@ import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
     expectedResults={{ users: [{ object: { type: "user", id: "anne" } }, { object: { type: "user", id: "beth" } }] }}
   />
 
-  For more information, see the [ListUsers API Reference](/api/service#Relationship%20Queries/ListUsers).
+  For more information, see the [ListUsers API Reference](/api-reference/relationship-queries/list-the-users-matching-the-provided-filter-who-have-a-certain-relation-to-a-particular-type).
 </Accordion>
 
 <Accordion title="What Are Contextual Tuples?">
   Similar to [relationship tuples](#what-is-a-relationship-tuple), contextual tuples are composed of a user, relation and object. Unlike relationship tuples, they are not written to the store. However, if contextual tuples are sent alongside a check request in the context of a particular check request, they are treated if they had been written in the store.
 
-  For more information, see [Contextual and Time-Based Authorization](/docs/modeling/contextual-time-based-authorization), [Authorization Through Organization Context](/docs/modeling/organization-context-authorization) and [Check API Request Documentation](/api/service#Relationship%20Queries/Check).
+  For more information, see [Contextual and Time-Based Authorization](/docs/modeling/contextual-time-based-authorization), [Authorization Through Organization Context](/docs/modeling/organization-context-authorization) and [Check API Request Documentation](/api-reference/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object).
 </Accordion>
 
 <Accordion title="What Is Type Bound Public Access?">

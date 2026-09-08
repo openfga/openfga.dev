@@ -293,7 +293,7 @@ We are going to go over each type and each of its relations and create a definit
 
 We recommend starting from objects that represent groups/containers of users. For features in most systems these are easy to define and help reason about the other types. Examples of type names for these are "team", "group", "organization", etc.
 
-##### Relation: Member
+#### Relation: Member
 
 The member relation is used to tell OpenFGA about the members of an organization.
 
@@ -387,7 +387,7 @@ After defining your "group" like types, continue with the most important type fo
 
 Defining relations for the main type lets you focus on your core use case, and will likely make other type definitions easier.
 
-##### Relation: Owner
+#### Relation: Owner
 
 The owner relation is used to tell OpenFGA which users are owners of the document.
 
@@ -425,7 +425,7 @@ Why? This [relation definition](/docs/concepts#what-is-a-relation) states that:
 - owners of a document are assignable by creating a tuple of the format
   `{ user: "{user_id}", relation: "owner", object: "document:{id}" }` for individual users
 
-##### Relation: Editor
+#### Relation: Editor
 
 The editor relation is used to tell OpenFGA which users are editors of the document.
 
@@ -473,7 +473,7 @@ This also supports making all members in an organization editors of the document
 
 You can learn more about this in [Modeling User Groups](/docs/modeling/user-groups).
 
-##### Relation: Viewer
+#### Relation: Viewer
 
 The viewer relation is similar to the document's [editor relation](#relation-editor). It will be defined like this:
 
@@ -497,7 +497,7 @@ The viewer relation is similar to the document's [editor relation](#relation-edi
   skipVersion={true}
 />
 
-##### Relation: Parent
+#### Relation: Parent
 
 The parent relation is used to tell OpenFGA which folder or drive is the parent of the document.
 
@@ -537,7 +537,7 @@ We can use [direct type restriction](/docs/configuration-language#direct-relatio
 You might have noticed that the "user" in the tuple is an object. This is a special syntax OpenFGA accepts in the "user" parameter to write [object to object relationships](/docs/modeling/building-blocks/object-to-object-relationships). You can read more about writing data to manage object to object relationships in [Managing Relationships Between Objects](/docs/interacting/managing-relationships-between-objects).
 </Note>
 
-##### Relation: can_share
+#### Relation: can_share
 
 We need to express the following in the [relation definition](/docs/concepts#what-is-a-relation):
 
@@ -594,7 +594,7 @@ There are a few key things here:
 
 You can read more about the aforementioned items in [Modeling Roles and Permissions](/docs/modeling/roles-and-permissions).
 
-##### Relation: can_view
+#### Relation: can_view
 
 We need to express the following in the [relation definition](/docs/concepts#what-is-a-relation):
 
@@ -659,7 +659,7 @@ Similar to the [can_share relation](#relation-can_share), we can achieve that wi
   }}
 />
 
-##### Relation: can_write
+#### Relation: can_write
 
 We need to express the following in the [relation definition](/docs/concepts#what-is-a-relation):
 
@@ -706,7 +706,7 @@ Similar to the [can_share relation](#relation-can_share), we can achieve that wi
   }}
 />
 
-##### Relation: can_change_owner
+#### Relation: can_change_owner
 
 We need to express the following in the [relation definition](/docs/concepts#what-is-a-relation):
 

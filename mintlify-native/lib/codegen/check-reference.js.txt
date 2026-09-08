@@ -1,4 +1,4 @@
-// REFERENCE FILE — not imported or executed at runtime.
+// REFERENCE SOURCE — not imported or executed at runtime.
 //
 // This is a maintenance/reference extraction of the CheckRequestViewer codegen logic,
 // ported directly from src/components/Docs/SnippetViewer/CheckRequestViewer.tsx.

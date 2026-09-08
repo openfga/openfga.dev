@@ -38,7 +38,7 @@ Pre-filter, then call OpenFGA Batch Check endpoint.
 
 Consume the `GET /changes` endpoint to create a local index you can use to do an intersection on the two sets of results.
 
-1. Call the [OpenFGA changes API](/api/service#Relationship%20Tuples/ReadChanges).
+1. Call the [OpenFGA changes API](/api-reference/relationship-tuples/return-a-list-of-all-the-tuple-changes).
 1. For the particular authorization model version(s) you are using in production, flatten/expand the changes (e.g. `user:anne, writer, doc:planning` becomes two tuples: `user:anne, writer, doc:planning` and `user:anne, reader, doc:planning`).
 1. Build the intersection between the objects in your database and the flattened/expanded state you created.
 1. You can then call `/check` on each resource in the resulting set before returning the response to filter out any resource with permissions revoked but whose authorization data has not made it into your index yet.
@@ -47,7 +47,7 @@ Consume the `GET /changes` endpoint to create a local index you can use to do an
 
 Call the `GET /list-objects` API to get a list of object IDs the user has access to, then run the filter restricting by the object IDs returned.
 
-1. Call the [OpenFGA List Objects API](/api/service#Relationship%20Queries/ListObjects) to get the list of all resources a user can access.
+1. Call the [OpenFGA List Objects API](/api-reference/relationship-queries/list-all-objects-of-the-given-type-that-the-user-has-a-relation-with) to get the list of all resources a user can access.
 1. Pass in the set of object IDs to the database query to limit the search.
 1. Return the filtered result to the user.
 

@@ -141,7 +141,7 @@ export const HomePage = () => {
   const RESOURCES = [
     { text: 'Zanzibar Academy', href: 'https://zanzibar.academy/' },
     { text: 'Auth0 FGA Playground', href: 'https://play.fga.dev/' },
-    { text: 'Podcast — Authorization in Software', href: 'https://authorizationinsoftware.auth0.com/' },
+    { text: 'Podcast — Authorization in Software', href: 'https://podcastindex.org/podcast/4368675' },
   ];
 
   const DOCKER_COMMAND = `docker pull openfga/openfga && \\

@@ -38,7 +38,7 @@ mintlify-native/
 ├── images/                # SVG logos and icons
 ├── snippets/              # 9 interactive React components (see below)
 ├── lib/codegen/
-│   └── check.js           # Reference file — see note below
+│   └── check-reference.js.txt  # Reference file — see note below
 ├── scripts/
 │   └── build-fga-codegen.sh   # Reproducible build for fga-codegen.js
 └── pattern.mp4/.webm/.png     # Hero section videos
@@ -51,10 +51,11 @@ A component validation page (not in the sidebar nav) that renders all 9 interact
 viewers with test data. Useful for quickly verifying components work after changes.
 Access at `/docs/test-viewer` on a running dev server.
 
-### lib/codegen/check.js
+### lib/codegen/check-reference.js.txt
 
 **Not a runtime file.** A readable reference extraction of the `CheckRequestViewer`
-codegen logic (ported from the Docusaurus source). When the upstream
+codegen logic (ported from the Docusaurus source). The `.txt` suffix prevents
+Mintlify from executing this non-runtime reference as a browser script. When the upstream
 `src/components/Docs/SnippetViewer/CheckRequestViewer.tsx` changes, diff against
 this file to understand what needs updating in `snippets/CheckRequestViewer.jsx`.
 
@@ -106,7 +107,7 @@ standalone tokenizer. Colors match the current Docusaurus output exactly.
 
 ### fga-codegen.js
 
-A 474KB pre-bundled IIFE of `@openfga/syntax-transformer@0.2.1`, produced by esbuild.
+A pre-bundled IIFE of `@openfga/syntax-transformer@0.2.2`, produced by esbuild.
 The size is inherent to the library's dependencies (ANTLR4 113KB, AJV 206KB, yaml 273KB).
 `@openfga/sdk` is only 3KB in the bundle; the crypto shim maps `require("crypto")`
 to `globalThis.crypto` (Web Crypto API).

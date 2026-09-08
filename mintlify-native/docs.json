@@ -2,13 +2,14 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "almond",
   "name": "OpenFGA",
+  "description": "OpenFGA is a CNCF open source authorization system for fine-grained, relationship-based access control.",
   "logo": {
     "light": "/images/img/openfga_logo.svg",
     "dark": "/images/img/openfga_logo-white.svg",
     "href": "/"
   },
   "colors": {
-    "primary": "#79ed83",
+    "primary": "#2c7a3f",
     "light": "#d3ffd7",
     "dark": "#558f69"
   },
@@ -327,6 +328,13 @@
               "POST /stores/{store_id}/access/v1/search/subject"
             ]
           }
+        ]
+      },
+      {
+        "tab": "Project",
+        "icon": "landmark",
+        "pages": [
+          "project"
         ]
       },
       {

@@ -242,7 +242,7 @@ Below is a sample authorization model. The next sections discuss the basics of t
 
 ### Direct Relationship Type Restrictions
 
-When used at the beginning of a [relation definition](/docs/concepts#what-is-a-relation-definition), `[<string, <string>, ...]` allows [direct relationships](/docs/concepts#what-are-direct-and-implied-relationships) by the objects of these specified types. The strings can be in one of three formats:
+When used at the beginning of a [relation definition](/docs/concepts#what-is-a-relation-definition), `[<string>, <string>, ...]` allows [direct relationships](/docs/concepts#what-are-direct-and-implied-relationships) by the objects of these specified types, for example, `[user, user:*, team#member]`. The strings can be in one of three formats:
 
 * `<type>`: indicates that tuples relating objects of those types as users can be written. For example, `group:marketing` can be related if `group` is in the type restrictions.
 * `<type:*>`: indicates that a tuple relating all objects of that type can be written. For example, `user:*` can be added if `user:*` is in the type restrictions.

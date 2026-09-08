@@ -2,7 +2,7 @@
 # Rebuilds mintlify-native/fga-codegen.js — the pre-bundled browser global that
 # exposes window.fgaCodegen = { transformer } for use by AuthzModelSnippetViewer.jsx.
 #
-# Built from: @openfga/syntax-transformer@0.2.1
+# Built from: @openfga/syntax-transformer@0.2.2
 # Run from:   repo root (openfga.dev/)
 #
 # Why committed: Mintlify snippets cannot import npm packages at runtime.
@@ -35,9 +35,9 @@ module.exports = {
 };
 EOF
 
-echo "Building fga-codegen.js from @openfga/syntax-transformer@0.2.1 ..."
+echo "Building fga-codegen.js from @openfga/syntax-transformer@0.2.2 ..."
 
-npx esbuild /tmp/fga-codegen-entry.js \
+NODE_PATH="$REPO_ROOT/node_modules" npx esbuild /tmp/fga-codegen-entry.js \
   --bundle \
   --format=iife \
   --platform=browser \

@@ -48,10 +48,10 @@ export default [
     },
   },
   {
-    ignores: ['.docusaurus/**/*'],
+    ignores: ['.docusaurus/**/*', 'build/**/*', 'mintlify-native/fga-codegen.js'],
   },
   {
-    files: ['scripts/**/*.mjs'],
+    files: ['scripts/**/*.mjs', 'mintlify-native/scripts/**/*.mjs'],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -61,6 +61,21 @@ export default [
     },
     rules: {
       'no-useless-escape': 'off',
+    },
+  },
+  {
+    files: ['mintlify-native/snippets/**/*.jsx'],
+    languageOptions: {
+      globals: {
+        Accordion: 'readonly',
+        CodeGroup: 'readonly',
+        useEffect: 'readonly',
+        useState: 'readonly',
+      },
+    },
+    rules: {
+      'react/jsx-no-undef': 'off',
+      'react/prop-types': 'off',
     },
   },
   {

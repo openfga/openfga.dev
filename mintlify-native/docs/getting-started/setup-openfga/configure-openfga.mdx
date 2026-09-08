@@ -136,7 +136,7 @@ This is a simplified example. For production setups, refer to the [PostgreSQL do
 When using asynchronous replication, be aware that read replicas might have slightly outdated data due to replication lag. Use the `HIGHER_CONSISTENCY` preference for operations that require the most recent data.
 </Warning>
 
-To learn how to run in Docker, check our [Docker documentation](./docker-setup#using-postgres).
+To learn how to run in Docker, check our [Docker documentation](./docker#using-postgres).
 
 ### MySQL
 
@@ -158,7 +158,7 @@ openfga run \
     --datastore-uri 'root:secret@tcp(mysql:3306)/openfga?parseTime=true'
 ```
 
-To learn how to run in Docker, check our [Docker documentation](./docker-setup#using-mysql).
+To learn how to run in Docker, check our [Docker documentation](./docker#using-mysql).
 
 ### SQLite
 
@@ -172,7 +172,7 @@ openfga run
     --datastore-uri 'file:/path/to/openfga.db'
 ```
 
-To learn how to run in Docker, check our [Docker documentation](./docker-setup#using-sqlite).
+To learn how to run in Docker, check our [Docker documentation](./docker#using-sqlite).
 
 ## Configuring authentication
 
@@ -219,7 +219,7 @@ http:
   </Tab>
 </Tabs>
 
-To learn how to run in Docker, check our [Docker documentation](./docker-setup#pre-shared-key-authentication).
+To learn how to run in Docker, check our [Docker documentation](./docker#pre-shared-key-authentication).
 
 ### OIDC
 
@@ -265,7 +265,7 @@ http:
   </Tab>
 </Tabs>
 
-To learn how to run in Docker, check our [Docker documentation](./docker-setup#oidc-authentication).
+To learn how to run in Docker, check our [Docker documentation](./docker#oidc-authentication).
 
 ## Profiler (pprof)
 
@@ -324,7 +324,7 @@ grpcurl -plaintext $FGA_API_URL grpc.health.v1.Health/Check
 
 ## Experimental features
 
-Various releases of OpenFGA may have experimental features that can be enabled by providing the [`--experimentals`](./configuration#OPENFGA_EXPERIMENTALS) flag or the `experimentals` config.
+Various releases of OpenFGA may have experimental features that can be enabled by providing the [`--experimentals`](./configuration) flag or the `experimentals` config.
 
 ```bash
 openfga run --experimentals="feature1, feature2"
