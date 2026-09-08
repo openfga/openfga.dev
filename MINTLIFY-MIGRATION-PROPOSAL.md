@@ -212,10 +212,15 @@ deploying the Mintlify origin and routing only the documentation surfaces to it.
   the public host, while keeping the `*.mintlify.site` hostname as the proxy target
 - Put a path-aware edge proxy in front of the Docusaurus and Mintlify origins
 - Route `/docs`, `/docs/**`, `/api-reference`, and `/api-reference/**` to Mintlify
+- Map `/docs/llms.txt` and `/docs/llms-full.txt` to Mintlify's generated root
+  resources before the general `/docs/**` rule, keeping Docusaurus's root agent
+  indexes unchanged
+- Route Mintlify's `/_llms/**` support paths to Mintlify when generated indexes
+  reference chunked resources
 - Route `/`, `/project`, `/community`, `/blog/**`, search/SEO files, agent indexes,
   and Docusaurus static asset roots to Docusaurus
-- Keep `/docs/llms.txt` on Docusaurus, and proxy Mintlify's exact OpenAPI asset plus
-  runtime/static asset paths
+- Keep the root Docusaurus agent indexes in place, and proxy Mintlify's exact
+  OpenAPI asset plus runtime/static asset paths
 - Forward all HTTP methods and Mintlify's required proxy headers without forwarding
   the public `Host` header
 - Route Mintlify's Vercel and ACME verification paths during custom-domain setup

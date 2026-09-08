@@ -4,8 +4,8 @@
   "name": "OpenFGA",
   "description": "OpenFGA is a CNCF open source authorization system for fine-grained, relationship-based access control.",
   "logo": {
-    "light": "/images/img/openfga_logo.svg",
-    "dark": "/images/img/openfga_logo-white.svg",
+    "light": "https://raw.githubusercontent.com/openfga/community/22a5668e729b2d5453c6520e6f00c44a99fcd4fc/brand-assets/horizontal/color/black/openfga-horizontal-color_black.svg",
+    "dark": "https://raw.githubusercontent.com/openfga/community/22a5668e729b2d5453c6520e6f00c44a99fcd4fc/brand-assets/horizontal/color/white/openfga-horizontal-color_white.svg",
     "href": "https://openfga.dev/"
   },
   "colors": {
@@ -14,11 +14,11 @@
     "dark": "#558f69"
   },
   "appearance": {
-    "default": "dark",
-    "strict": true
+    "default": "system",
+    "strict": false
   },
   "styling": {
-    "codeblocks": "dark"
+    "codeblocks": "system"
   },
   "background": {
     "color": {
@@ -38,16 +38,37 @@
         "href": "https://github.com/openfga/openfga"
       },
       {
-        "label": "Twitter",
-        "href": "https://twitter.com/openfga",
-        "icon": "twitter"
-      },
-      {
-        "label": "Community",
-        "href": "https://openfga.dev/community",
-        "icon": "slack"
+        "label": "OpenFGA on X",
+        "href": "https://x.com/openfga",
+        "icon": {
+          "name": "x-twitter",
+          "style": "brands"
+        }
       }
     ]
+  },
+  "footer": {
+    "links": [
+      {
+        "header": "LLM?",
+        "items": [
+          {
+            "label": "LLM? Read llms.txt",
+            "href": "https://openfga.dev/docs/llms.txt"
+          },
+          {
+            "label": "Read llms-full.txt",
+            "href": "https://openfga.dev/docs/llms-full.txt"
+          }
+        ]
+      }
+    ],
+    "socials": {
+      "x": "https://x.com/openfga",
+      "github": "https://github.com/openfga",
+      "linkedin": "https://www.linkedin.com/company/openfga/",
+      "youtube": "https://www.youtube.com/@OpenFGA"
+    }
   },
   "contextual": {
     "options": ["assistant"]
@@ -58,28 +79,33 @@
     }
   },
   "navigation": {
-    "tabs": [
+    "anchors": [
       {
-        "tab": "Docs",
+        "anchor": "Documentation",
         "icon": "book-open",
         "groups": [
           {
             "group": "Overview",
-            "pages": [
-              "docs/fga",
-              "docs/authorization-concepts",
-              "docs/concepts",
-              "docs/configuration-language"
-            ]
+            "icon": "circle-info",
+            "pages": ["docs/fga", "docs/authorization-concepts", "docs/concepts", "docs/configuration-language"]
           },
           {
-            "group": "Getting Started",
-            "root": "docs/getting-started",
+            "group": "Get Started",
+            "icon": "rocket",
             "pages": [
+              "docs/getting-started",
+              "docs/getting-started/install-sdk",
+              "docs/getting-started/create-store",
+              "docs/getting-started/setup-sdk-client",
+              "docs/getting-started/configure-model",
+              "docs/getting-started/update-tuples",
+              "docs/getting-started/perform-check",
+              "docs/getting-started/perform-list-objects",
+              "docs/getting-started/perform-list-users",
               {
                 "group": "Setup OpenFGA",
-                "root": "docs/getting-started/setup-openfga/overview",
                 "pages": [
+                  "docs/getting-started/setup-openfga/overview",
                   "docs/getting-started/setup-openfga/configure-openfga",
                   "docs/getting-started/setup-openfga/configuration",
                   "docs/getting-started/setup-openfga/docker",
@@ -89,45 +115,32 @@
                   "docs/getting-started/setup-openfga/reporting-runtime-issues"
                 ]
               },
-              "docs/getting-started/install-sdk",
-              "docs/getting-started/create-store",
-              "docs/getting-started/setup-sdk-client",
-              "docs/getting-started/configure-model",
-              "docs/getting-started/update-tuples",
-              "docs/getting-started/perform-check",
-              "docs/getting-started/perform-list-objects",
-              "docs/getting-started/perform-list-users",
-              "docs/getting-started/cli",
-              "docs/getting-started/framework",
-              "docs/getting-started/immutable-models",
-              "docs/getting-started/tuples-api-best-practices",
-              "docs/getting-started/configure-telemetry"
+              {
+                "group": "Integrations & Practices",
+                "pages": [
+                  "docs/getting-started/cli",
+                  "docs/getting-started/framework",
+                  "docs/getting-started/immutable-models",
+                  "docs/getting-started/tuples-api-best-practices",
+                  "docs/getting-started/configure-telemetry"
+                ]
+              }
             ]
           },
           {
-            "group": "Modeling Guides",
-            "root": "docs/modeling/overview",
+            "group": "Model Authorization",
+            "icon": "diagram-project",
             "pages": [
+              "docs/modeling/overview",
               "docs/modeling/getting-started",
               "docs/modeling/direct-access",
               "docs/modeling/user-groups",
               "docs/modeling/roles-and-permissions",
               "docs/modeling/parent-child",
-              "docs/modeling/blocklists",
-              "docs/modeling/public-access",
-              "docs/modeling/multiple-restrictions",
-              "docs/modeling/custom-roles",
-              "docs/modeling/conditions",
-              "docs/modeling/token-claims-contextual-tuples",
-              "docs/modeling/contextual-time-based-authorization",
-              "docs/modeling/organization-context-authorization",
-              "docs/modeling/testing",
-              "docs/modeling/store-file-format",
-              "docs/modeling/modular-models",
               {
                 "group": "Building Blocks",
-                "root": "docs/modeling/building-blocks/overview",
                 "pages": [
+                  "docs/modeling/building-blocks/overview",
                   "docs/modeling/building-blocks/direct-relationships",
                   "docs/modeling/building-blocks/concentric-relationships",
                   "docs/modeling/building-blocks/object-to-object-relationships",
@@ -135,9 +148,20 @@
                 ]
               },
               {
-                "group": "Advanced Use-Cases",
-                "root": "docs/modeling/advanced/overview",
+                "group": "Advanced Patterns",
                 "pages": [
+                  "docs/modeling/blocklists",
+                  "docs/modeling/public-access",
+                  "docs/modeling/multiple-restrictions",
+                  "docs/modeling/custom-roles",
+                  "docs/modeling/conditions",
+                  "docs/modeling/token-claims-contextual-tuples",
+                  "docs/modeling/contextual-time-based-authorization",
+                  "docs/modeling/organization-context-authorization",
+                  "docs/modeling/testing",
+                  "docs/modeling/store-file-format",
+                  "docs/modeling/modular-models",
+                  "docs/modeling/advanced/overview",
                   "docs/modeling/advanced/gdrive",
                   "docs/modeling/advanced/github",
                   "docs/modeling/advanced/slack",
@@ -147,28 +171,29 @@
               },
               {
                 "group": "Migrations",
-                "root": "docs/modeling/migrating/overview",
                 "pages": [
+                  "docs/modeling/migrating/overview",
                   "docs/modeling/migrating/migrating-relations",
                   "docs/modeling/migrating/migrating-models"
+                ]
+              },
+              {
+                "group": "Authorization for Agents",
+                "pages": [
+                  "docs/modeling/agents/overview",
+                  "docs/modeling/agents/agents-as-principals",
+                  "docs/modeling/agents/rag-authorization",
+                  "docs/modeling/agents/mcp-authorization",
+                  "docs/modeling/agents/task-based-authorization"
                 ]
               }
             ]
           },
           {
-            "group": "Authorization for Agents",
-            "root": "docs/modeling/agents/overview",
+            "group": "Use the API",
+            "icon": "code",
             "pages": [
-              "docs/modeling/agents/agents-as-principals",
-              "docs/modeling/agents/rag-authorization",
-              "docs/modeling/agents/mcp-authorization",
-              "docs/modeling/agents/task-based-authorization"
-            ]
-          },
-          {
-            "group": "Interacting with the API",
-            "root": "docs/interacting/overview",
-            "pages": [
+              "docs/interacting/overview",
               "docs/interacting/managing-user-access",
               "docs/interacting/managing-group-access",
               "docs/interacting/managing-group-membership",
@@ -182,9 +207,10 @@
             ]
           },
           {
-            "group": "Best Practices",
-            "root": "docs/best-practices/overview",
+            "group": "Operate & Scale",
+            "icon": "server",
             "pages": [
+              "docs/best-practices/overview",
               "docs/best-practices/adoption-patterns",
               "docs/best-practices/modeling-design-principles",
               "docs/best-practices/modeling-abac",
@@ -194,33 +220,40 @@
             ]
           },
           {
-            "group": "Industries",
-            "root": "docs/industries/overview",
+            "group": "Solutions",
+            "icon": "lightbulb",
             "pages": [
-              "docs/industries/healthcare",
-              "docs/industries/banking",
-              "docs/industries/ecommerce",
-              "docs/industries/human-resources",
-              "docs/industries/crm",
-              "docs/industries/lms",
-              "docs/industries/applicant-tracking-system"
-            ]
-          },
-          {
-            "group": "Use Cases",
-            "root": "docs/use-cases/overview",
-            "pages": [
-              "docs/use-cases/ai-agent-authorization",
-              "docs/use-cases/rag-authorization",
-              "docs/use-cases/mcp-server-authorization",
-              "docs/use-cases/multi-tenant-saas",
-              "docs/use-cases/microservices-authorization"
+              {
+                "group": "Use Cases",
+                "pages": [
+                  "docs/use-cases/overview",
+                  "docs/use-cases/ai-agent-authorization",
+                  "docs/use-cases/rag-authorization",
+                  "docs/use-cases/mcp-server-authorization",
+                  "docs/use-cases/multi-tenant-saas",
+                  "docs/use-cases/microservices-authorization"
+                ]
+              },
+              {
+                "group": "Industries",
+                "pages": [
+                  "docs/industries/overview",
+                  "docs/industries/healthcare",
+                  "docs/industries/banking",
+                  "docs/industries/ecommerce",
+                  "docs/industries/human-resources",
+                  "docs/industries/crm",
+                  "docs/industries/lms",
+                  "docs/industries/applicant-tracking-system"
+                ]
+              }
             ]
           },
           {
             "group": "Adopters",
-            "root": "docs/adopters/overview",
+            "icon": "handshake",
             "pages": [
+              "docs/adopters/overview",
               "docs/adopters/agicap",
               "docs/adopters/docker",
               "docs/adopters/grafana",
@@ -233,8 +266,9 @@
           },
           {
             "group": "Learn",
-            "root": "docs/learn/overview",
+            "icon": "graduation-cap",
             "pages": [
+              "docs/learn/overview",
               "docs/learn/zanzibar",
               "docs/learn/rebac",
               "docs/learn/rbac-vs-rebac",
@@ -246,18 +280,13 @@
         ]
       },
       {
-        "tab": "API",
+        "anchor": "API Reference",
         "icon": "square-terminal",
         "openapi": "https://raw.githubusercontent.com/openfga/api/7a79d2abab5b9ccc962ae995a1aab70c0a1cf19d/docs/openapiv3/apidocs.openapi.json",
         "groups": [
           {
             "group": "Stores",
-            "pages": [
-              "GET /stores",
-              "POST /stores",
-              "GET /stores/{store_id}",
-              "DELETE /stores/{store_id}"
-            ]
+            "pages": ["GET /stores", "POST /stores", "GET /stores/{store_id}", "DELETE /stores/{store_id}"]
           },
           {
             "group": "Authorization Models",
@@ -269,11 +298,7 @@
           },
           {
             "group": "Relationship Tuples",
-            "pages": [
-              "GET /stores/{store_id}/changes",
-              "POST /stores/{store_id}/read",
-              "POST /stores/{store_id}/write"
-            ]
+            "pages": ["GET /stores/{store_id}/changes", "POST /stores/{store_id}/read", "POST /stores/{store_id}/write"]
           },
           {
             "group": "Relationship Queries",
@@ -308,12 +333,17 @@
         ]
       },
       {
-        "tab": "Project",
+        "anchor": "Project",
         "icon": "landmark",
         "href": "https://openfga.dev/project"
       },
       {
-        "tab": "Blog",
+        "anchor": "Community",
+        "icon": "users",
+        "href": "https://openfga.dev/community"
+      },
+      {
+        "anchor": "Blog",
         "icon": "newspaper",
         "href": "https://openfga.dev/blog"
       }

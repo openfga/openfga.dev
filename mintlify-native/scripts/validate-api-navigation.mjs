@@ -1,14 +1,14 @@
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const mintlifyDirectory = join(dirname(fileURLToPath(import.meta.url)), "..");
-const docs = JSON.parse(readFileSync(join(mintlifyDirectory, "docs.json"), "utf8"));
+const mintlifyDirectory = join(dirname(fileURLToPath(import.meta.url)), '..');
+const docs = JSON.parse(readFileSync(join(mintlifyDirectory, 'docs.json'), 'utf8'));
 
 async function loadOpenApi(source) {
   if (/^https?:\/\//.test(source)) {
     const response = await fetch(source, {
-      headers: { accept: "application/json" },
+      headers: { accept: 'application/json' },
       signal: AbortSignal.timeout(30_000),
     });
     if (!response.ok) {
@@ -17,49 +17,42 @@ async function loadOpenApi(source) {
     return response.json();
   }
 
-  const openapiPath = join(mintlifyDirectory, source.replace(/^\/+/, ""));
-  return JSON.parse(readFileSync(openapiPath, "utf8"));
+  const openapiPath = join(mintlifyDirectory, source.replace(/^\/+/, ''));
+  return JSON.parse(readFileSync(openapiPath, 'utf8'));
 }
 
-const apiTab = docs.navigation?.tabs?.find(({ tab }) => tab === "API");
-if (!apiTab) {
-  throw new Error('docs.json must contain an "API" navigation tab');
+const apiAnchor = docs.navigation?.anchors?.find(({ anchor }) => anchor === 'API Reference');
+if (!apiAnchor) {
+  throw new Error('docs.json must contain an "API Reference" navigation anchor');
 }
 
-if (typeof apiTab.openapi !== "string") {
-  throw new Error('The "API" tab must define one OpenAPI specification');
+if (typeof apiAnchor.openapi !== 'string') {
+  throw new Error('The "API Reference" anchor must define one OpenAPI specification');
 }
 
-const openapi = await loadOpenApi(apiTab.openapi);
-const httpMethods = new Set([
-  "get",
-  "post",
-  "put",
-  "patch",
-  "delete",
-  "options",
-  "head",
-  "trace",
-]);
+if (!/^https:\/\/raw\.githubusercontent\.com\/openfga\/api\/[a-f0-9]{40}\//.test(apiAnchor.openapi)) {
+  throw new Error('The OpenAPI specification URL must be pinned to an immutable commit SHA');
+}
+
+const openapi = await loadOpenApi(apiAnchor.openapi);
+const httpMethods = new Set(['get', 'post', 'put', 'patch', 'delete', 'options', 'head', 'trace']);
 const expectedGroups = [
-  "Stores",
-  "Authorization Models",
-  "Relationship Tuples",
-  "Relationship Queries",
-  "Assertions",
-  "AuthZenService",
+  'Stores',
+  'Authorization Models',
+  'Relationship Tuples',
+  'Relationship Queries',
+  'Assertions',
+  'AuthZenService',
 ];
 
-const groups = apiTab.groups ?? [];
+const groups = apiAnchor.groups ?? [];
 const groupNames = groups.map(({ group }) => group);
 if (JSON.stringify(groupNames) !== JSON.stringify(expectedGroups)) {
-  throw new Error(
-    `API groups must be ordered as: ${expectedGroups.join(", ")}; found: ${groupNames.join(", ")}`,
-  );
+  throw new Error(`API groups must be ordered as: ${expectedGroups.join(', ')}; found: ${groupNames.join(', ')}`);
 }
 
 const authZenGroup = groups.at(-1);
-if (authZenGroup.tag !== "Experimental") {
+if (authZenGroup.tag !== 'Experimental') {
   throw new Error('The AuthZenService group must have the tag "Experimental"');
 }
 
@@ -81,7 +74,7 @@ for (const [path, pathItem] of Object.entries(openapi.paths ?? {})) {
 const navigationReferences = [];
 for (const { group, pages = [] } of groups) {
   for (const reference of pages) {
-    if (typeof reference !== "string" || !/^[A-Z]+ \//.test(reference)) {
+    if (typeof reference !== 'string' || !/^[A-Z]+ \//.test(reference)) {
       throw new Error(`API group "${group}" contains an invalid operation reference`);
     }
     navigationReferences.push(reference);
@@ -91,28 +84,20 @@ for (const { group, pages = [] } of groups) {
       throw new Error(`${reference} does not match an OpenAPI operation`);
     }
     if (canonicalTag !== group) {
-      throw new Error(
-        `${reference} is in "${group}" but its canonical OpenAPI tag is "${canonicalTag}"`,
-      );
+      throw new Error(`${reference} is in "${group}" but its canonical OpenAPI tag is "${canonicalTag}"`);
     }
   }
 }
 
-const duplicates = navigationReferences.filter(
-  (reference, index) => navigationReferences.indexOf(reference) !== index,
-);
+const duplicates = navigationReferences.filter((reference, index) => navigationReferences.indexOf(reference) !== index);
 if (duplicates.length > 0) {
-  throw new Error(`Duplicate API operations in navigation: ${[...new Set(duplicates)].join(", ")}`);
+  throw new Error(`Duplicate API operations in navigation: ${[...new Set(duplicates)].join(', ')}`);
 }
 
-const missing = [...operations.keys()].filter(
-  (reference) => !navigationReferences.includes(reference),
-);
+const missing = [...operations.keys()].filter((reference) => !navigationReferences.includes(reference));
 if (missing.length > 0) {
-  throw new Error(`OpenAPI operations missing from navigation: ${missing.join(", ")}`);
+  throw new Error(`OpenAPI operations missing from navigation: ${missing.join(', ')}`);
 }
 
-const counts = groups.map(
-  ({ group, pages = [] }) => `${group}: ${pages.length}`,
-);
-console.log(`Validated ${navigationReferences.length} API operations (${counts.join(", ")})`);
+const counts = groups.map(({ group, pages = [] }) => `${group}: ${pages.length}`);
+console.log(`Validated ${navigationReferences.length} API operations (${counts.join(', ')})`);

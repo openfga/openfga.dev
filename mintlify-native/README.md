@@ -19,9 +19,9 @@ npx mint dev --port 3333
 ```
 
 Then open `http://localhost:3333/docs` or `http://localhost:3333/api-reference`.
-The logo links to the Docusaurus homepage, while the Project and Blog tabs link to
-their Docusaurus routes. Mintlify's native search remains available in the docs
-header.
+The logo links to the Docusaurus homepage. Native sidebar anchors keep the API
+reference in Mintlify and link Project, Community, and Blog to their Docusaurus
+routes. Mintlify's native search remains available in the docs header.
 
 If startup fails with `Error: Client not built`, delete `~/.mintlify/mint/` and rerun —
 the CLI will re-download a fresh pre-built copy.
@@ -152,27 +152,30 @@ The public site uses path-based ownership:
 | Public route | Origin |
 |---|---|
 | `/`, `/project`, `/community`, `/blog/**` | Docusaurus |
-| `/docs`, `/docs/**` | Mintlify |
+| `/docs`, `/docs/**` | Mintlify, including `/docs/llms.txt` and `/docs/llms-full.txt` |
 | `/api-reference`, `/api-reference/**` | Mintlify |
 | `/api`, `/api/service` | Permanent redirect to `/api-reference` |
 
 Docusaurus also owns `/search`, `/robots.txt`, `/sitemap.xml`,
-`/search-index.json`, `/llms.txt`, `/llms-full.txt`, `/docs/llms.txt`,
-`/assets/**`, `/img/**`, `/css/**`, and `/icons/**`. Every route not explicitly
-assigned to Mintlify or an edge redirect falls back to Docusaurus.
+`/search-index.json`, `/llms.txt`, `/llms-full.txt`, `/assets/**`, `/img/**`,
+`/css/**`, and `/icons/**`. Every route not explicitly assigned to Mintlify or
+an edge redirect falls back to Docusaurus.
 
 Configure Mintlify monorepo mode with `/mintlify-native` as the docs directory.
 Register `openfga.dev` as Mintlify's custom domain so canonical and discovery
 metadata use the public host, but keep the generated `*.mintlify.site` hostname as
 the proxy target. Do not add a Mintlify base path: the content paths already
-include `docs/`, while generated API pages use `api-reference/`.
+include `docs/`, while generated API pages use `api-reference/`. The footer uses
+canonical `openfga.dev/docs/*` URLs because local preview does not emulate the
+split-site edge rewrites.
 
 Configure edge rules in this order:
 
 1. Permanently redirect the exact `/api` and `/api/service` paths to
    `/api-reference`.
-2. Serve `/docs/llms.txt` from Docusaurus because the root Docusaurus
-   `/llms.txt` links to that complete index.
+2. Proxy `/docs/llms.txt` and `/docs/llms-full.txt` to Mintlify's generated
+   `/llms.txt` and `/llms-full.txt` resources respectively. Proxy Mintlify's
+   `/_llms/**` paths as well if generated indexes link to chunked resources.
 3. Proxy `/docs`, `/docs/**`, `/api-reference`, `/api-reference/**`,
    `/_mintlify/**`, `/mintlify-assets/**`, `/_next/**`, `/images/**`,
    `/fga-codegen.js`, and
@@ -186,11 +189,11 @@ Forward all HTTP methods, preserve `X-Forwarded-For`, `X-Forwarded-Proto`,
 `/.well-known/acme-challenge/**` to Mintlify while configuring and verifying the
 custom domain.
 
-Root `/llms.txt`, `/llms-full.txt`, and `/docs/llms.txt` remain
-Docusaurus-owned. Mintlify's per-page `/docs/*.md` exports are covered by the
-`/docs/**` proxy rule. Docusaurus continues to build its legacy API page because
-the agent-content validator consumes that artifact, but the edge redirect prevents
-the public `/api/service` route from serving it.
+Root `/llms.txt` and `/llms-full.txt` remain Docusaurus-owned.
+`/docs/llms.txt`, `/docs/llms-full.txt`, and Mintlify's per-page `/docs/*.md`
+exports are covered by the `/docs/**` proxy rule. Docusaurus continues to build
+its legacy API page because the agent-content validator consumes that artifact,
+but the edge redirect prevents the public `/api/service` route from serving it.
 
 The public `/sitemap.xml` must be a composite of the Docusaurus and Mintlify
 sitemaps. Docusaurus excludes `/api/service`; the composite must include all

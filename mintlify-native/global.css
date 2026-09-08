@@ -8,7 +8,52 @@
   }
 }
 
-/* Activate Shiki's dark variables when strict dark mode is enabled. */
+/* Keep the canonical light and dark wordmarks at identical header dimensions. */
+#navbar a[href='https://openfga.dev/'] img {
+  width: 6.3125rem;
+  height: 1.5rem;
+  object-fit: contain;
+}
+
+/* Preserve intentional sentence case in top-level section labels. */
+.sidebar-group-header {
+  text-transform: none;
+}
+
+/* Keep the repository name available to assistive technology without displaying it. */
+a[href='https://github.com/openfga/openfga'] > span:first-of-type {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* The full social label remains accessible while header controls display the X wordmark. */
+#navbar a[href='https://x.com/openfga'] > span,
+nav[aria-label='Mobile menu'] a[href='https://x.com/openfga'] > span {
+  display: inline-block;
+  width: 0.75em;
+  overflow: hidden;
+  direction: rtl;
+  white-space: nowrap;
+}
+
+footer a[href='https://openfga.dev/docs/llms.txt'],
+footer a[href='https://openfga.dev/docs/llms-full.txt'] {
+  color: #4b5563;
+}
+
+.dark footer a[href='https://openfga.dev/docs/llms.txt'],
+.dark footer a[href='https://openfga.dev/docs/llms-full.txt'] {
+  color: #d1d5db;
+}
+
+/* Activate Shiki's dark variables whenever the site is in dark mode. */
 .dark .shiki,
 .dark .shiki span {
   background-color: var(--shiki-dark-bg) !important;
