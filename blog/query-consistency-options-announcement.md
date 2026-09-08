@@ -15,6 +15,8 @@ OpenFGA query APIs now allow specifying the desired consistency of query results
 
 The community expressed the need for flexibility in using the cache on a per-request basis. In response, starting with [OpenFGA v1.5.7](https://github.com/openfga/openfga/releases/tag/v1.5.7), all query APIs can accept a consistency parameter with the following values:
 
+<!-- truncate -->
+
 | Name                        | Description                                                                                                   |  
 |-----------------------------|---------------------------------------------------------------------------------------------------------------|
 | MINIMIZE_LATENCY (default)  | OpenFGA will try to minimize latency (e.g. by making use of the cache)  | 

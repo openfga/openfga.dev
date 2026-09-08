@@ -10,8 +10,7 @@ interface Check {
   correlation_id: string;
   allowed: boolean;
   contextualTuples?: TupleKey[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
 }
 interface BatchCheckRequestViewerOpts extends DefaultTabbedViewerOpts {
   authorizationModelId?: string;

@@ -13,6 +13,8 @@ hide_table_of_contents: false
 
 Welcome to Fine-Grained News, KubeCon Edition!
 
+<!-- truncate -->
+
 ## KubeCon Europe 2024 was super-busy!
 
 You can now watch online:
@@ -52,8 +54,7 @@ If you are using OpenFGA in production, please consider adding your company/proj
 
 - [Philipp Wagner](https://github.com/bytefish) is working on a [.NET example](https://github.com/bytefish/gitclub-dotnet) inspired by the Github model.
 
-- [Pauline Jamin](https://github.com/paulinejamin) and [Geoffroy Braun](https://github.com/geoffroybraun) will present about [Infuser du métier dans les autorisations avec ReBAC](
-https://www.devoxx.fr/schedule/talk/?id=42356) at [Devoxx France 2024](https://www.devoxx.fr/) in April 17th.
+- [Pauline Jamin](https://github.com/paulinejamin) and [Geoffroy Braun](https://github.com/geoffroybraun) will present about Infuser du métier dans les autorisations avec ReBAC at [Devoxx France 2024](https://www.devoxx.fr/) in April 17th.
 
 ## New Releases
 

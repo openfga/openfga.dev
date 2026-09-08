@@ -13,6 +13,8 @@ hide_table_of_contents: false
 
 OpenFGA has been accepted as a CNCF **Incubation** project! The Cloud Native Computing Foundation (CNCF) Technical Oversight Committee (TOC) [voted to advance OpenFGA](https://github.com/cncf/toc/issues/1287#issuecomment-3458442973) from Sandbox to Incubation status, recognizing years of community work and real-world adoption. This places OpenFGA on the same maturity path as other CNCF projects like OpenTelemetry, Keycloak, Artifact Hub, and Backstage. Learn more at the CNCF joint announcement: [OpenFGA becomes a CNCF Incubating Project](https://www.cncf.io/blog/2025/11/11/openfga-becomes-a-cncf-incubating-project/).
 
+<!-- truncate -->
+
 ## Why Incubation Matters
 
 Incubation signals that OpenFGA is production-ready with a healthy, diverse contributor base and real-world adoption at scale. For organizations evaluating OpenFGA, this milestone validates the project's maturity, governance, and long-term sustainability. The CNCF due diligence process assessed our security posture, documentation, community health, and adoption metrics—all meeting the standards required for broad enterprise use.
@@ -93,5 +95,4 @@ This achievement belongs to every contributor, user, and community member who ha
 - [Star the repo](https://github.com/openfga/openfga) and follow development
 - Share your adoption story—add your organization to our [ADOPTERS.md](https://github.com/openfga/community/blob/main/ADOPTERS.md)
 - Check out the [roadmap](https://github.com/orgs/openfga/projects/1) and contribute to upcoming features
-
 

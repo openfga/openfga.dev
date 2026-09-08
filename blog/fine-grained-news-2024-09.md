@@ -12,6 +12,8 @@ hide_table_of_contents: false
 # Fine-Grained News
 Welcome to the September edition of Fine-Grained News! As we transition into the fall season, we’re excited to bring you the latest updates on the progress of OpenFGA.
 
+<!-- truncate -->
+
 ## **Just Shipped**
 
 * We shipped [OpenFGA v1.6.1](https://github.com/openfga/openfga/releases/tag/v1.6.1) with performance fixes, bug fixes, and a new SQLite storage adapter contributed by [Grafana](https://grafana.com/). Thanks [@DanCech](https://github.com/DanCech)! 

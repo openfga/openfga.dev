@@ -13,6 +13,8 @@ hide_table_of_contents: false
 
 Welcome to the August 2024 edition of Fine-Grained News! We are excited to bring you the latest updates, features, and community highlights from OpenFGA. 
 
+<!-- truncate -->
+
 ## Just Shipped!
 
 * **OpenFGA v1.6.0:** The [latest OpenFGA release](https://github.com/openfga/openfga/releases/tag/v1.6.0) enables support for [query consistency options](https://openfga.dev/docs/interacting/consistency) and includes additional performance enhancements.

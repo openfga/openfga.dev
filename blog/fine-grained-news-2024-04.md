@@ -13,6 +13,8 @@ hide_table_of_contents: false
 
 Welcome to Fine-Grained News, April edition!
 
+<!-- truncate -->
+
 ## New Releases!
 
 - [Modular Models](https://openfga.dev/blog/modular-models-announcement) is now part of the OpenFGA core, making it easy for multiple teams to collaborate on a single OpenFGA model. Check it out, we love the feature! :)

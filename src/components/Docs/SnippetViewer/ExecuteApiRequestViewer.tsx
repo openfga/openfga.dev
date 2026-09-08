@@ -6,8 +6,9 @@ import assertNever from 'assert-never/index';
 // Helpers – value serialisation per language
 // ---------------------------------------------------------------------------
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function jsValue(val: any, indent: number): string {
+type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+
+function jsValue(val: JsonValue, indent: number): string {
   if (typeof val === 'string') return `"${val}"`;
   if (typeof val === 'number' || typeof val === 'boolean') return String(val);
   if (Array.isArray(val)) {
@@ -23,8 +24,7 @@ function jsValue(val: any, indent: number): string {
   return String(val);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function pyValue(val: any, indent: number): string {
+function pyValue(val: JsonValue, indent: number): string {
   if (typeof val === 'string') return `"${val}"`;
   if (typeof val === 'number') return String(val);
   if (typeof val === 'boolean') return val ? 'True' : 'False';
@@ -41,8 +41,7 @@ function pyValue(val: any, indent: number): string {
   return String(val);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function goValue(val: any, indent: number): string {
+function goValue(val: JsonValue, indent: number): string {
   if (typeof val === 'string') return `"${val}"`;
   if (typeof val === 'number' || typeof val === 'boolean') return String(val);
   if (typeof val === 'object' && val !== null) {
@@ -54,8 +53,7 @@ function goValue(val: any, indent: number): string {
   return String(val);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function javaValue(val: any, indent: number): string {
+function javaValue(val: JsonValue, indent: number): string {
   if (typeof val === 'string') return `"${val}"`;
   if (typeof val === 'number' || typeof val === 'boolean') return String(val);
   if (typeof val === 'object' && val !== null) {
@@ -67,8 +65,7 @@ function javaValue(val: any, indent: number): string {
   return String(val);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function csharpValue(val: any, indent: number): string {
+function csharpValue(val: JsonValue, indent: number): string {
   if (typeof val === 'string') return `"${val}"`;
   if (typeof val === 'number' || typeof val === 'boolean') return String(val).toLowerCase();
   if (typeof val === 'object' && val !== null) {
@@ -118,8 +115,7 @@ function buildCurlSnippet(opts: {
   path: string;
   pathParams?: Record<string, string>;
   queryParams?: Record<string, string>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body?: Record<string, any>;
+  body?: Record<string, JsonValue>;
   streaming?: boolean;
 }): string {
   const { method, path, pathParams, queryParams, body, streaming } = opts;
@@ -158,8 +154,7 @@ interface ExecuteApiRequestViewerOpts {
   /** Path parameter substitutions. */
   pathParams?: Record<string, string>;
   /** Request body (omit for GET). */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body?: Record<string, any>;
+  body?: Record<string, JsonValue>;
   /** Query parameter key-value pairs. */
   queryParams?: Record<string, string>;
   /** Optional example response shown in a trailing comment. */

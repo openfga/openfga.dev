@@ -17,6 +17,8 @@ This API will answer the question "what users have relation X with object Y?". T
 
 You can read more about it in the [API docs](https://openfga.dev/api/service#/Relationship%20Queries/ListUsers) and the [product documentation](https://openfga.dev/docs/getting-started/perform-list-users).
 
+<!-- truncate -->
+
 ## How to use it?
 
 ListUsers is available in OpenFGA starting with [v1.5.4](https://github.com/openfga/openfga/releases/tag/v1.5.4).

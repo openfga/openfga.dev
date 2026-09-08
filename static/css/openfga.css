@@ -257,7 +257,7 @@ a:visited {
 @media screen and (min-width: 576px) {
   .navbar .navbar__search-input {
     background: transparent;
-    padding: 0 5rem 0 1rem;
+    padding: 0 5rem 0 2.25rem;
     width: unset;
   }
   .navbar__search-input::placeholder {

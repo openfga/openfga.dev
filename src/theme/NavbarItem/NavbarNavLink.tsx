@@ -13,6 +13,19 @@ interface GithubStarsSessionStorage {
   retrievedTime: number;
 }
 
+function readCachedGithubStars(): GithubStarsSessionStorage | null {
+  try {
+    const raw = sessionStorage.getItem(GITHUB_STARS_SESSION_STORAGE_NAME);
+    if (!raw) {
+      return null;
+    }
+    const parsed = JSON.parse(raw);
+    return typeof parsed?.count === 'number' && typeof parsed?.retrievedTime === 'number' ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function NavbarNavLink({
   activeBasePath,
   activeBaseRegex,
@@ -35,9 +48,7 @@ export default function NavbarNavLink({
 
   useEffect(() => {
     const getData = async () => {
-      const cachedGithubStars = JSON.parse(
-        sessionStorage.getItem(GITHUB_STARS_SESSION_STORAGE_NAME),
-      ) as unknown as GithubStarsSessionStorage;
+      const cachedGithubStars = readCachedGithubStars();
       try {
         if (cachedGithubStars) {
           const cacheExpiryTime = new Date(cachedGithubStars.retrievedTime);

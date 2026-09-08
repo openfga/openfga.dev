@@ -1,14 +1,20 @@
 {
-  "extends": "@tsconfig/docusaurus/tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "lib": ["dom"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
     "paths": {
-      "@components/*": ["src/components/*"],
-      "@features/*": ["src/features/*"],
-      "@static/*": ["static/*"]
+      "@site/*": ["./*"],
+      "@components/*": ["./src/components/*"],
+      "@features/*": ["./src/features/*"],
+      "@static/*": ["./static/*"]
     },
-    "module": "Node16",
-    "moduleResolution": "Node16",
-    "jsx": "react"
+    "jsx": "react-jsx",
+    "skipLibCheck": true,
+    "types": ["node", "@docusaurus/module-type-aliases", "@docusaurus/theme-classic"],
+    "strict": false
   }
 }

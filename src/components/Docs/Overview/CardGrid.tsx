@@ -14,11 +14,11 @@ export interface CardGridProps {
   bottom?: CardGridBox[];
 }
 
-function getLinks(to: CardGridLink) {
+function getLinks(to: CardGridLink, title?: string) {
   if (typeof to === 'string') {
     return [
       {
-        label: 'Click to navigate',
+        label: title ?? 'Open page',
         to,
       },
     ];
@@ -35,15 +35,15 @@ export function CardGrid({ top, middle, bottom }: CardGridProps) {
     <CardBox
       {...card}
       appearance={i % 2 === 0 ? 'gradient' : 'filled'}
-      links={getLinks(card.to)}
+      links={getLinks(card.to, card.title)}
       key={`card-grid-overview-top-${i}`}
     />
   ));
   const middleCards = middle?.map((card, i) => (
-    <CardBox {...card} links={getLinks(card.to)} key={`card-grid-overview-middle-${i}`} />
+    <CardBox {...card} links={getLinks(card.to, card.title)} key={`card-grid-overview-middle-${i}`} />
   ));
   const bottomCards = bottom?.map((card, i) => (
-    <CardBox {...card} links={getLinks(card.to)} key={`card-grid-overview-bottom-${i}`} />
+    <CardBox {...card} links={getLinks(card.to, card.title)} key={`card-grid-overview-bottom-${i}`} />
   ));
 
   return (
