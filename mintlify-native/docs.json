@@ -139,7 +139,7 @@
               "docs/modeling/multiple-restrictions",
               "docs/modeling/modular-models",
               "docs/modeling/store-file-format",
-              "docs/modeling/testing-models",
+              "docs/modeling/testing",
               {
                 "group": "Building Blocks",
                 "pages": [
