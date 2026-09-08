@@ -36,14 +36,6 @@
       {
         "type": "github",
         "href": "https://github.com/openfga/openfga"
-      },
-      {
-        "label": "OpenFGA on X",
-        "href": "https://x.com/openfga",
-        "icon": {
-          "name": "x-twitter",
-          "style": "brands"
-        }
       }
     ]
   },

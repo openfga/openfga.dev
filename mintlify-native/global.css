@@ -33,16 +33,6 @@ a[href='https://github.com/openfga/openfga'] > span:first-of-type {
   border: 0;
 }
 
-/* The full social label remains accessible while header controls display the X wordmark. */
-#navbar a[href='https://x.com/openfga'] > span,
-nav[aria-label='Mobile menu'] a[href='https://x.com/openfga'] > span {
-  display: inline-block;
-  width: 0.75em;
-  overflow: hidden;
-  direction: rtl;
-  white-space: nowrap;
-}
-
 footer a[href='https://openfga.dev/docs/llms.txt'],
 footer a[href='https://openfga.dev/docs/llms-full.txt'] {
   color: #4b5563;
