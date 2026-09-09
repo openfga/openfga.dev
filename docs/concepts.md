@@ -3,7 +3,7 @@ title: "Concepts"
 description: "Learning about FGA concepts"
 canonical: "https://openfga.dev/docs/concepts"
 content_type: "documentation"
-last_updated: "2026-09-09T07:21:51.000Z"
+last_updated: "2026-09-09T07:21:48.000Z"
 ---
 
 # Concepts

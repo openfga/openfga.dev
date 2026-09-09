@@ -3,7 +3,7 @@ title: "Immutable Authorization Models"
 description: "Learn how to take advantage of the immutable properties of Authorization Models"
 canonical: "https://openfga.dev/docs/getting-started/immutable-models"
 content_type: "documentation"
-last_updated: "2026-09-09T07:21:51.000Z"
+last_updated: "2026-09-09T07:21:48.000Z"
 ---
 
 # Immutable Authorization Models

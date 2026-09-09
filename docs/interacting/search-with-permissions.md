@@ -3,7 +3,7 @@ title: "Search With Permissions"
 description: "Integrating FGA into your search"
 canonical: "https://openfga.dev/docs/interacting/search-with-permissions"
 content_type: "documentation"
-last_updated: "2026-09-09T07:21:51.000Z"
+last_updated: "2026-09-09T07:21:48.000Z"
 ---
 
 # Search With Permissions
