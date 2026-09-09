@@ -1,3 +1,21 @@
+#!/usr/bin/env bash
+# Generates or checks both committed standalone Mintlify browser artifacts.
+# - fga-codegen.js bundles the installed @openfga/syntax-transformer and exposes
+#   window.fgaCodegen for AuthzModelSnippetViewer.
+# - openfga-dsl-highlight.js is generated from the installed
+#   @openfga/frontend-utils Prism grammar/theme and exposes window.openfgaDsl
+#   for AuthzModelSnippetViewer and OpenFGACodeBlock.
+#
+# These files are committed because Mintlify snippets cannot import npm packages
+# at runtime; Mintlify serves the standalone artifacts to the browser snippets.
+# Source versions come from the lockfile-installed packages, not this script.
+#
+# From the repository root:
+#   npm ci
+#   npm run generate:mintlify-codegen
+# Verify with npm run check:mintlify-codegen or this script's --check option.
+# See mintlify-native/README.md for architecture and maintenance details.
+
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
