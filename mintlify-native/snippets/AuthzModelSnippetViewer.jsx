@@ -78,8 +78,9 @@ export const AuthzModelSnippetViewer = ({
     color: '#718096', borderBottom: '2px solid transparent',
     fontSize: '0.85rem', fontWeight: 400,
   };
+  const DSL_COLORS = dslReady && window.openfgaDsl ? window.openfgaDsl.colors : {};
   const CODE_STYLE = {
-    background: '#141517', color: '#FFFFFF', padding: '1rem', margin: 0,
+    background: DSL_COLORS.background || '#141517', color: DSL_COLORS.default || '#FFFFFF', padding: '1rem', margin: 0,
     overflowX: 'auto', fontSize: '0.875rem', lineHeight: 1.6,
     whiteSpace: 'pre', fontFamily: 'var(--font-mono, ui-monospace, monospace)',
   };

@@ -1,52 +1,72 @@
-#!/usr/bin/env bash
-# Rebuilds mintlify-native/fga-codegen.js — the pre-bundled browser global that
-# exposes window.fgaCodegen = { transformer } for use by AuthzModelSnippetViewer.jsx.
-#
-# Built from: @openfga/syntax-transformer@0.2.2
-# Run from:   repo root (openfga.dev/)
-#
-# Why committed: Mintlify snippets cannot import npm packages at runtime.
-# The transformer bundle is served as a static file and loaded via a self-injecting
-# <script> tag in AuthzModelSnippetViewer.jsx. See mintlify-native/README.md for
-# the full architecture explanation.
-#
-# To rebuild after upgrading @openfga/syntax-transformer:
-#   1. npm install (or yarn) to pick up the new version
-#   2. Run this script
-#   3. Commit the updated fga-codegen.js with the new version in this comment
-
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$REPO_ROOT"
 
-# Entry point: import the transformer and expose it as a window global
-cat > /tmp/fga-codegen-entry.js << 'EOF'
+if [[ "${1:-}" != "" && "${1:-}" != "--check" ]]; then
+  echo "Usage: $0 [--check]" >&2
+  exit 2
+fi
+
+CHECK_ONLY=false
+if [[ "${1:-}" == "--check" ]]; then
+  CHECK_ONLY=true
+fi
+
+if [[ ! -x node_modules/.bin/esbuild ]]; then
+  echo "Missing local esbuild. Run npm ci before generating Mintlify codegen artifacts." >&2
+  exit 1
+fi
+
+TMP_DIR="$(mktemp -d "$REPO_ROOT/mintlify-native/.codegen.XXXXXX")"
+trap 'rm -rf "$TMP_DIR"' EXIT
+
+SYNTAX_TRANSFORMER_VERSION="$(node -p "require('@openfga/syntax-transformer/package.json').version")"
+
+cat > "$TMP_DIR/fga-codegen-entry.js" << 'EOF'
 import { transformer } from '@openfga/syntax-transformer';
 window.fgaCodegen = { transformer };
 EOF
 
-# Crypto shim: @openfga/sdk (a transitive dep) calls require("crypto") which
-# doesn't exist in browsers. Map it to the Web Crypto API.
-cat > /tmp/crypto-browser-shim.cjs << 'EOF'
+cat > "$TMP_DIR/crypto-browser-shim.cjs" << 'EOF'
 module.exports = {
   randomUUID: function() { return globalThis.crypto.randomUUID(); },
   getRandomValues: function(buf) { return globalThis.crypto.getRandomValues(buf); },
 };
 EOF
 
-echo "Building fga-codegen.js from @openfga/syntax-transformer@0.2.2 ..."
-
-NODE_PATH="$REPO_ROOT/node_modules" npx esbuild /tmp/fga-codegen-entry.js \
+echo "Building fga-codegen.js from @openfga/syntax-transformer@$SYNTAX_TRANSFORMER_VERSION ..."
+NODE_PATH="$REPO_ROOT/node_modules" node_modules/.bin/esbuild "$TMP_DIR/fga-codegen-entry.js" \
   --bundle \
   --format=iife \
   --platform=browser \
   --minify \
-  --alias:crypto=/tmp/crypto-browser-shim.cjs \
-  --outfile=mintlify-native/fga-codegen.js
+  --alias:crypto="$TMP_DIR/crypto-browser-shim.cjs" \
+  "--banner:js=// GENERATED FILE - DO NOT EDIT. Source: @openfga/syntax-transformer@$SYNTAX_TRANSFORMER_VERSION. Regenerate: npm run generate:mintlify-codegen" \
+  --outfile="$TMP_DIR/fga-codegen.js"
 
-rm /tmp/fga-codegen-entry.js /tmp/crypto-browser-shim.cjs
+node mintlify-native/scripts/generate-openfga-dsl-highlight.mjs \
+  --output "$TMP_DIR/openfga-dsl-highlight.js"
 
-SIZE=$(wc -c < mintlify-native/fga-codegen.js)
-echo "Done. fga-codegen.js: $(( SIZE / 1024 ))KB"
-echo "Commit the updated file with the new @openfga/syntax-transformer version noted above."
+if [[ "$CHECK_ONLY" == true ]]; then
+  STALE=0
+  for artifact in fga-codegen.js openfga-dsl-highlight.js; do
+    if ! cmp -s "$TMP_DIR/$artifact" "mintlify-native/$artifact"; then
+      echo "mintlify-native/$artifact is stale; run npm run generate:mintlify-codegen" >&2
+      STALE=1
+    fi
+  done
+  if [[ "$STALE" -ne 0 ]]; then
+    exit 1
+  fi
+  echo "Mintlify codegen artifacts are current."
+  exit 0
+fi
+
+mv "$TMP_DIR/fga-codegen.js" mintlify-native/fga-codegen.js
+mv "$TMP_DIR/openfga-dsl-highlight.js" mintlify-native/openfga-dsl-highlight.js
+
+FGA_SIZE="$(wc -c < mintlify-native/fga-codegen.js)"
+HIGHLIGHT_SIZE="$(wc -c < mintlify-native/openfga-dsl-highlight.js)"
+echo "Generated mintlify-native/fga-codegen.js: $(( FGA_SIZE / 1024 ))KB"
+echo "Generated mintlify-native/openfga-dsl-highlight.js: $(( HIGHLIGHT_SIZE / 1024 ))KB"

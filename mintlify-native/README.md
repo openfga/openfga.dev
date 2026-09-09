@@ -35,15 +35,17 @@ mintlify-native/
 ├── docs.json              # Mintlify nav and theme config
 ├── global.css             # Shared docs/API theme fixes
 ├── github-star-cache.js   # Cache-only fallback for Mintlify's native GitHub star count
-├── openfga-dsl-highlight.js   # Standalone DSL syntax highlighter (window global)
-├── fga-codegen.js         # Pre-bundled @openfga/syntax-transformer (window global)
+├── openfga-dsl-highlight.js   # Generated standalone DSL tokenizer (window global)
+├── fga-codegen.js         # Generated @openfga/syntax-transformer bundle (window global)
 ├── docs/                  # 111 public docs pages plus the hidden test harness
 ├── images/                # Mintlify logo assets
 ├── snippets/              # 8 interactive React components (see below)
 ├── lib/codegen/
 │   └── check-reference.js.txt  # Reference file — see note below
 └── scripts/
-    └── build-fga-codegen.sh   # Reproducible build for fga-codegen.js
+    ├── build-fga-codegen.sh   # Reproducible build for both browser artifacts
+    ├── generate-openfga-dsl-highlight.mjs
+    └── openfga-dsl-highlight.test.mjs
 ```
 
 The API tab consumes the canonical OpenAPI 3.0.3 document generated in
@@ -92,6 +94,7 @@ shape all the code in this directory:
    must be defined inside the exported function body.
 
 These constraints explain patterns you'll see in every snippet file:
+
 - No `import` statements
 - All constants defined inside `export const MyComponent = (...) => { const X = ... }`
 - Codegen logic (the SDK code-sample strings) is inlined verbatim
@@ -100,10 +103,10 @@ These constraints explain patterns you'll see in every snippet file:
 
 Two features require large JavaScript libraries that can't be npm-imported at runtime:
 
-| Global | Library | Set by |
-|---|---|---|
-| `window.fgaCodegen` | `@openfga/syntax-transformer` (DSL ↔ JSON conversion) | `/fga-codegen.js` |
-| `window.openfgaDsl` | Custom tokenizer | `/openfga-dsl-highlight.js` |
+| Global              | Library                                               | Set by                      |
+| ------------------- | ----------------------------------------------------- | --------------------------- |
+| `window.fgaCodegen` | `@openfga/syntax-transformer` (DSL ↔ JSON conversion) | `/fga-codegen.js`           |
+| `window.openfgaDsl` | Generated OpenFGA Prism tokenizer                     | `/openfga-dsl-highlight.js` |
 
 Both files are served as static assets by Mintlify. The snippets that need them
 self-inject a `<script>` tag via `useEffect` on mount and then poll for the global
@@ -118,22 +121,32 @@ is to drop a `.js` file in the content tree and have snippets load it on demand.
 OpenFGA DSL uses a custom Prism grammar registered via `@openfga/frontend-utils`.
 Mintlify uses Shiki and has no mechanism for registering custom grammars.
 
-`openfga-dsl-highlight.js` (~100 lines, zero dependencies) ports the ~10 regex rules
-from the Prism grammar and the color values from the `openfga-dark` theme into a
-standalone tokenizer. Colors match the current Docusaurus output exactly.
+`openfga-dsl-highlight.js` is generated from the Prism grammar and `openfga-dark`
+theme exported by the lockfile-pinned `@openfga/frontend-utils` package. The
+generated runtime is standalone: it contains normalized regex data and a small
+tokenizer, but no npm imports or dynamic code evaluation. Generation fails if the
+package adds a Prism feature the standalone tokenizer does not support, so grammar
+changes cannot be silently omitted.
 
-### fga-codegen.js
+### Generated browser artifacts
 
-A pre-bundled IIFE of `@openfga/syntax-transformer@0.2.2`, produced by esbuild.
-The size is inherent to the library's dependencies (ANTLR4 113KB, AJV 206KB, yaml 273KB).
-`@openfga/sdk` is only 3KB in the bundle; the crypto shim maps `require("crypto")`
-to `globalThis.crypto` (Web Crypto API).
+`fga-codegen.js` is a pre-bundled IIFE of the installed
+`@openfga/syntax-transformer`, produced by the exact esbuild version in
+`package-lock.json`. The size is inherent to the library's dependencies (ANTLR4,
+AJV, and yaml). Its crypto shim maps `require("crypto")` to `globalThis.crypto`
+(Web Crypto API).
 
-To rebuild after upgrading `@openfga/syntax-transformer`:
+Install the root dependencies and regenerate both committed artifacts after
+upgrading either source package:
 
 ```bash
-bash mintlify-native/scripts/build-fga-codegen.sh
+npm ci
+npm run generate:mintlify-codegen
 ```
+
+`npm run check:mintlify-codegen` rebuilds into a temporary directory, fails when
+either committed artifact is stale, and runs tokenizer parity and mutation tests.
+The root build invokes this freshness check in `prebuild`.
 
 ---
 
@@ -142,28 +155,29 @@ bash mintlify-native/scripts/build-fga-codegen.sh
 All 8 components accept the same props as their Docusaurus equivalents.
 Call sites in MDX do not change between platforms.
 
-| Component | Langs | Description |
-|---|---|---|
-| `CheckRequestViewer` | 9 | Multi-language check request with optional setup accordion |
-| `BatchCheckRequestViewer` | 7 | Batch check (no CLI/Playground — not supported upstream) |
-| `WriteRequestViewer` | 8 | Write/delete tuples; supports conditions and conflictOptions |
-| `ListObjectsRequestViewer` | 8 | List objects with optional contextual tuples |
-| `ListUsersRequestViewer` | 8 | List users; supports userFilterRelation for userset filters |
-| `AuthzModelSnippetViewer` | — | DSL/JSON tab toggle with syntax highlighting |
-| `OpenFGACodeBlock` | — | DSL code block with openfga-dark syntax highlighting |
-| `CreateStoreViewer` | 7 | Create store code; takes `storeName` prop |
+| Component                  | Langs | Description                                                  |
+| -------------------------- | ----- | ------------------------------------------------------------ |
+| `CheckRequestViewer`       | 9     | Multi-language check request with optional setup accordion   |
+| `BatchCheckRequestViewer`  | 7     | Batch check (no CLI/Playground — not supported upstream)     |
+| `WriteRequestViewer`       | 8     | Write/delete tuples; supports conditions and conflictOptions |
+| `ListObjectsRequestViewer` | 8     | List objects with optional contextual tuples                 |
+| `ListUsersRequestViewer`   | 8     | List users; supports userFilterRelation for userset filters  |
+| `AuthzModelSnippetViewer`  | —     | DSL/JSON tab toggle with syntax highlighting                 |
+| `OpenFGACodeBlock`         | —     | DSL code block with openfga-dark syntax highlighting         |
+| `CreateStoreViewer`        | 7     | Create store code; takes `storeName` prop                    |
+
 ---
 
 ## Split-site deployment
 
 The public site uses path-based ownership:
 
-| Public route | Origin |
-|---|---|
-| `/`, `/project`, `/community`, `/blog/**` | Docusaurus |
-| `/docs`, `/docs/**` | Mintlify, including `/docs/llms.txt` and `/docs/llms-full.txt` |
-| `/api-reference`, `/api-reference/**` | Mintlify |
-| `/api`, `/api/service` | Permanent redirect to `/api-reference` |
+| Public route                              | Origin                                                         |
+| ----------------------------------------- | -------------------------------------------------------------- |
+| `/`, `/project`, `/community`, `/blog/**` | Docusaurus                                                     |
+| `/docs`, `/docs/**`                       | Mintlify, including `/docs/llms.txt` and `/docs/llms-full.txt` |
+| `/api-reference`, `/api-reference/**`     | Mintlify                                                       |
+| `/api`, `/api/service`                    | Permanent redirect to `/api-reference`                         |
 
 Docusaurus also owns `/search`, `/robots.txt`, `/sitemap.xml`,
 `/search-index.json`, `/llms.txt`, `/llms-full.txt`, `/assets/**`, `/img/**`,

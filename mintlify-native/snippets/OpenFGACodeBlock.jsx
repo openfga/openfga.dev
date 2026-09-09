@@ -29,10 +29,11 @@ export const OpenFGACodeBlock = ({ code, title }) => {
   }, []);
   const trimmed = code.replace(/^\n/, '').replace(/\n$/, '');
   const tokens = ready && window.openfgaDsl ? window.openfgaDsl.tokenize(trimmed) : [{ text: trimmed }];
+  const colors = ready && window.openfgaDsl ? window.openfgaDsl.colors : {};
   return (
     <div style={{ borderRadius: '8px', overflow: 'hidden', border: '1px solid #3a3d44' }}>
       {title && (<div style={{ padding: '0.5rem 1rem', background: '#1c1e22', color: '#bdc4cf', fontSize: '0.8rem', borderBottom: '1px solid #3a3d44' }}>{title}</div>)}
-      <div style={{ background: '#141517', color: '#FFFFFF', padding: '1rem', margin: 0, overflowX: 'auto', fontSize: '0.875rem', lineHeight: 1.6, whiteSpace: 'pre', fontFamily: 'var(--font-mono, ui-monospace, monospace)' }}>
+      <div style={{ background: colors.background || '#141517', color: colors.default || '#FFFFFF', padding: '1rem', margin: 0, overflowX: 'auto', fontSize: '0.875rem', lineHeight: 1.6, whiteSpace: 'pre', fontFamily: 'var(--font-mono, ui-monospace, monospace)' }}>
         {tokens.map((t, i) => (t.color ? <span key={i} style={{ color: t.color }}>{t.text}</span> : t.text))}
       </div>
     </div>
