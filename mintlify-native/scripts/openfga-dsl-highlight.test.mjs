@@ -1,23 +1,25 @@
 import assert from 'node:assert/strict';
-import { readFile, mkdtemp, rm } from 'node:fs/promises';
-import os from 'node:os';
+import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { createRequire } from 'node:module';
+import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import test from 'node:test';
 import vm from 'node:vm';
 
 import { Prism } from 'prism-react-renderer';
-import { theming, tools } from '@openfga/frontend-utils';
 
-import {
-  loadSourceConfiguration,
-  normalizeGrammar,
-  renderArtifact,
-  writeArtifact,
-} from './generate-openfga-dsl-highlight.mjs';
-
+const require = createRequire(import.meta.url);
 const REPO_ROOT = path.resolve(import.meta.dirname, '../..');
 const ARTIFACT_PATH = path.join(REPO_ROOT, 'mintlify-native/openfga-dsl-highlight.js');
-const THEME = theming.supportedThemes['openfga-dark'];
+const CODEGEN_PATH = path.join(REPO_ROOT, 'mintlify-native/fga-codegen.js');
+const BUILD_SCRIPT = path.join(REPO_ROOT, 'mintlify-native/scripts/build-fga-codegen.sh');
+const FRONTEND_UTILS_PACKAGE = require('@openfga/frontend-utils');
+const FRONTEND_UTILS_VERSION = require('@openfga/frontend-utils/package.json').version;
+const PRISM_VERSION = require('prismjs/package.json').version;
+const { languageDefinition } = require('@openfga/frontend-utils/dist/tools/prism/language-definition.js');
+const { openfgaDark } = require('@openfga/frontend-utils/dist/theme/supported-themes/openfga-dark.js');
+const { transformer } = require('@openfga/syntax-transformer');
 
 const FIXTURES = {
   complete: `model
@@ -58,62 +60,255 @@ condition allowed(name: string {
 `,
 };
 
-function loadGeneratedTokenizer(source) {
-  const context = { window: {} };
-  vm.runInNewContext(source, context, { filename: 'openfga-dsl-highlight.js' });
-  return context.window.openfgaDsl;
+function plain(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function describe(value, seen = new WeakSet()) {
+  if (value instanceof RegExp) return { source: value.source, flags: value.flags };
+  if (Array.isArray(value)) return value.map((item) => describe(item, seen));
+  if (!value || typeof value !== 'object') return value;
+  if (seen.has(value)) return '[recursive]';
+  seen.add(value);
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, describe(item, seen)]));
 }
 
 function flattenPrism(nodes, inheritedType = null, output = []) {
   for (const node of Array.isArray(nodes) ? nodes : [nodes]) {
     if (typeof node === 'string') {
       if (!node) continue;
-      const color = inheritedType ? THEME.colors[inheritedType] : undefined;
+      const color = inheritedType ? openfgaDark.colors[inheritedType] : undefined;
       output.push(color ? { text: node, color } : { text: node });
       continue;
     }
 
-    const tokenType = THEME.colors[node.type] ? node.type : inheritedType;
+    const aliases = Array.isArray(node.alias) ? node.alias : node.alias ? [node.alias] : [];
+    const tokenType =
+      aliases.find((alias) => openfgaDark.colors[alias]) ?? (openfgaDark.colors[node.type] ? node.type : inheritedType);
     flattenPrism(node.content, tokenType, output);
   }
   return output;
 }
 
-function plain(value) {
-  return JSON.parse(JSON.stringify(value));
+function loadArtifact(source, existingPrism) {
+  const activity = [];
+  const window = {
+    document: {
+      readyState: 'complete',
+      addEventListener: (...args) => activity.push(['document.addEventListener', ...args]),
+    },
+    addEventListener: (...args) => activity.push(['window.addEventListener', ...args]),
+    requestAnimationFrame: (...args) => activity.push(['requestAnimationFrame', ...args]),
+    setTimeout: (...args) => activity.push(['setTimeout', ...args]),
+  };
+  if (existingPrism !== undefined) window.Prism = existingPrism;
+
+  const context = vm.createContext({ window });
+  new vm.Script(source, { filename: 'openfga-dsl-highlight.js' }).runInContext(context);
+  return { activity, context, window };
 }
 
-test('committed artifact is deterministic and carries package provenance', async () => {
-  const expected = renderArtifact();
-  const actual = await readFile(ARTIFACT_PATH, 'utf8');
-  assert.equal(actual, expected);
-  assert.match(actual, /@openfga\/frontend-utils@0\.2\.0-beta\.11/);
-  assert.match(actual, /Regenerate: npm run generate:mintlify-codegen/);
-  assert.doesNotMatch(actual, /\beval\s*\(|new Function\b/);
-
-  const temporaryDirectory = await mkdtemp(path.join(os.tmpdir(), 'openfga-dsl-highlight-test-'));
-  try {
-    const first = path.join(temporaryDirectory, 'first.js');
-    const second = path.join(temporaryDirectory, 'second.js');
-    await writeArtifact(first);
-    await writeArtifact(second);
-    assert.equal(await readFile(first, 'utf8'), await readFile(second, 'utf8'));
-  } finally {
-    await rm(temporaryDirectory, { recursive: true, force: true });
+async function walk(directory) {
+  const files = [];
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    const fullPath = path.join(directory, entry.name);
+    if (entry.isDirectory()) files.push(...(await walk(fullPath)));
+    else if (entry.name.endsWith('.mdx')) files.push(fullPath);
   }
+  return files;
+}
+
+function extractBalancedObject(source, start) {
+  let depth = 0;
+  let quote = null;
+  let lineComment = false;
+  let blockComment = false;
+  let escaped = false;
+
+  for (let index = start; index < source.length; index += 1) {
+    const character = source[index];
+    const next = source[index + 1];
+    if (lineComment) {
+      if (character === '\n') lineComment = false;
+      continue;
+    }
+    if (blockComment) {
+      if (character === '*' && next === '/') {
+        blockComment = false;
+        index += 1;
+      }
+      continue;
+    }
+    if (quote) {
+      if (escaped) escaped = false;
+      else if (character === '\\') escaped = true;
+      else if (character === quote) quote = null;
+      continue;
+    }
+    if (character === '/' && next === '/') {
+      lineComment = true;
+      index += 1;
+      continue;
+    }
+    if (character === '/' && next === '*') {
+      blockComment = true;
+      index += 1;
+      continue;
+    }
+    if (character === '"' || character === "'" || character === '`') {
+      quote = character;
+      continue;
+    }
+    if (character === '{') depth += 1;
+    else if (character === '}') {
+      depth -= 1;
+      if (depth === 0) return { end: index + 1, expression: source.slice(start, index + 1) };
+    }
+  }
+  throw new Error(`Unterminated configuration object at offset ${start}`);
+}
+
+async function collectMigratedCorpus() {
+  const corpus = [];
+  const counts = { authorizationModels: 0, dslFences: 0, openFgaCodeBlocks: 0 };
+  const files = await walk(path.join(REPO_ROOT, 'mintlify-native/docs'));
+
+  for (const file of files) {
+    const content = await readFile(file, 'utf8');
+    const relativePath = path.relative(REPO_ROOT, file);
+    const marker = 'configuration={';
+    let searchFrom = 0;
+
+    while (true) {
+      const markerIndex = content.indexOf(marker, searchFrom);
+      if (markerIndex === -1) break;
+      const objectStart = markerIndex + marker.length;
+      if (content[objectStart] !== '{') {
+        searchFrom = objectStart;
+        continue;
+      }
+
+      const { end, expression } = extractBalancedObject(content, objectStart);
+      const configuration = vm.runInNewContext(`(${expression})`, {}, { filename: relativePath });
+      counts.authorizationModels += 1;
+      corpus.push({
+        name: `${relativePath}:authorization-model:${counts.authorizationModels}`,
+        source: transformer.transformJSONToDSL(configuration),
+      });
+      searchFrom = end;
+    }
+
+    for (const match of content.matchAll(/<OpenFGACodeBlock\s+code=\{`([\s\S]*?)`\}\s*\/>/g)) {
+      counts.openFgaCodeBlocks += 1;
+      corpus.push({
+        name: `${relativePath}:openfga-code-block:${counts.openFgaCodeBlocks}`,
+        source: match[1],
+      });
+    }
+
+    for (const match of content.matchAll(/```dsl\.openfga[^\n]*\n([\s\S]*?)```/g)) {
+      counts.dslFences += 1;
+      corpus.push({
+        name: `${relativePath}:dsl-fence:${counts.dslFences}`,
+        source: match[1],
+      });
+    }
+  }
+
+  return { corpus, counts };
+}
+
+function digest(source) {
+  return createHash('sha256').update(source).digest('hex');
+}
+
+test('deep grammar and theme modules match the package root exports', () => {
+  assert.deepEqual(
+    describe(languageDefinition),
+    describe(FRONTEND_UTILS_PACKAGE.tools.PrismExtensions.languageDefinition),
+  );
+  assert.deepEqual(openfgaDark, FRONTEND_UTILS_PACKAGE.theming.supportedThemes['openfga-dark']);
 });
 
-test('generated tokenizer matches the exported Prism grammar and theme', () => {
-  const generated = loadGeneratedTokenizer(renderArtifact());
-
-  for (const [name, source] of Object.entries(FIXTURES)) {
-    const expected = flattenPrism(Prism.tokenize(source, tools.PrismExtensions.languageDefinition));
-    const actual = plain(generated.tokenize(source));
-    assert.deepEqual(actual, expected, name);
-    assert.equal(actual.map((token) => token.text).join(''), source, `${name} reconstruction`);
+test('theme remains compatible with the color-only browser API', () => {
+  assert.equal(openfgaDark.name, 'openfga-dark');
+  assert.equal(openfgaDark.baseTheme, 'vs-dark');
+  assert.equal(typeof openfgaDark.colors.default, 'string');
+  assert.equal(typeof openfgaDark.background.color, 'string');
+  for (const property of ['styles', 'rawColorOverrides', 'rawStylesOverrides']) {
+    assert.equal(Object.keys(openfgaDark[property] ?? {}).length, 0, property);
   }
 
-  assert.deepEqual(plain(generated.colors), {
+  const visited = new WeakSet();
+  function visit(grammar) {
+    if (!grammar || visited.has(grammar)) return;
+    visited.add(grammar);
+    for (const [name, rawDefinition] of Object.entries(grammar)) {
+      if (name === 'rest') {
+        visit(rawDefinition);
+        continue;
+      }
+      for (const definition of Array.isArray(rawDefinition) ? rawDefinition : [rawDefinition]) {
+        const rule = definition instanceof RegExp ? { pattern: definition } : definition;
+        const aliases = Array.isArray(rule.alias) ? rule.alias : rule.alias ? [rule.alias] : [];
+        if (!rule.inside) {
+          assert.ok(
+            typeof openfgaDark.colors[name] === 'string' ||
+              aliases.some((alias) => typeof openfgaDark.colors[alias] === 'string'),
+            `${name} has no theme color`,
+          );
+        }
+        if (rule.inside) visit(rule.inside);
+      }
+    }
+  }
+  visit(languageDefinition);
+});
+
+test('generated artifact has provenance and no dynamic code loading', async () => {
+  const source = await readFile(ARTIFACT_PATH, 'utf8');
+  assert.match(source, new RegExp(`prismjs@${PRISM_VERSION.replaceAll('.', '\\.')}`));
+  assert.match(source, new RegExp(`@openfga/frontend-utils@${FRONTEND_UTILS_VERSION.replaceAll('.', '\\.')}`));
+  assert.match(source, /Regenerate: npm run generate:mintlify-codegen/);
+  assert.match(source, /Prism: Lightweight, robust, elegant syntax highlighting/);
+  for (const pattern of [
+    /\beval\s*\(/,
+    /new Function\b/,
+    /\bimport\s*\(/,
+    /\bfetch\s*\(/,
+    /\bXMLHttpRequest\b/,
+    /\bWebSocket\b/,
+    /\brequire\s*\(/,
+  ]) {
+    assert.doesNotMatch(source, pattern);
+  }
+  assert.doesNotMatch(source, /react(?:-dom)?\.production/i);
+});
+
+test('browser initialization is isolated and preserves existing globals', async () => {
+  const source = await readFile(ARTIFACT_PATH, 'utf8');
+
+  const withoutPrism = loadArtifact(source);
+  assert.equal(Object.hasOwn(withoutPrism.window, 'Prism'), false);
+  assert.equal(withoutPrism.window.React, undefined);
+  assert.equal(withoutPrism.context.Prism, undefined);
+  assert.deepEqual(withoutPrism.activity, []);
+
+  const sentinel = { sentinel: true };
+  const withPrism = loadArtifact(source, sentinel);
+  assert.equal(withPrism.window.Prism, sentinel);
+  assert.equal(withPrism.window.React, undefined);
+  assert.equal(withPrism.context.Prism, undefined);
+  assert.deepEqual(withPrism.activity, []);
+});
+
+test('public API and representative output match independent Prism', async () => {
+  const source = await readFile(ARTIFACT_PATH, 'utf8');
+  const { window } = loadArtifact(source);
+  const api = window.openfgaDsl;
+
+  assert.deepEqual(plain(Object.keys(api)), ['tokenize', 'colors']);
+  assert.deepEqual(plain(api.colors), {
     green: '#79ED83',
     cyan: '#20F1F5',
     lightGreen: '#CEEC93',
@@ -122,17 +317,44 @@ test('generated tokenizer matches the exported Prism grammar and theme', () => {
     default: '#FFFFFF',
     background: '#141517',
   });
+  assert.throws(() => api.tokenize(null), /expects a string/);
+
+  for (const [name, fixture] of Object.entries(FIXTURES)) {
+    const expected = flattenPrism(Prism.tokenize(fixture, languageDefinition));
+    const actual = plain(api.tokenize(fixture));
+    assert.deepEqual(actual, expected, name);
+    assert.equal(actual.map((token) => token.text).join(''), fixture, `${name} reconstruction`);
+  }
 });
 
-test('generated tokenizer preserves legacy output for the common DSL path', () => {
-  const generated = loadGeneratedTokenizer(renderArtifact());
+test('migrated model and DSL corpus matches independent Prism exactly', async () => {
+  const source = await readFile(ARTIFACT_PATH, 'utf8');
+  const api = loadArtifact(source).window.openfgaDsl;
+  const { corpus, counts } = await collectMigratedCorpus();
+
+  assert.deepEqual(counts, {
+    authorizationModels: 121,
+    dslFences: 31,
+    openFgaCodeBlocks: 1,
+  });
+  assert.equal(corpus.length, 153);
+
+  for (const input of corpus) {
+    const expected = flattenPrism(Prism.tokenize(input.source, languageDefinition));
+    const actual = plain(api.tokenize(input.source));
+    assert.deepEqual(actual, expected, input.name);
+    assert.equal(actual.map((token) => token.text).join(''), input.source, `${input.name} reconstruction`);
+  }
+});
+
+test('common DSL path preserves the legacy token stream', async () => {
   const source = `model
   schema 1.1
 type user
   relations
     define viewer: [user] or editor from parent but not blocked
 `;
-  const legacyGolden = [
+  const expected = [
     { text: 'model', color: '#AAAAAA' },
     { text: '\n  ' },
     { text: 'schema', color: '#AAAAAA' },
@@ -156,141 +378,29 @@ type user
     { text: 'but not', color: '#AAAAAA' },
     { text: ' blocked\n' },
   ];
-
-  assert.deepEqual(plain(generated.tokenize(source)), legacyGolden);
+  const artifact = await readFile(ARTIFACT_PATH, 'utf8');
+  assert.deepEqual(plain(loadArtifact(artifact).window.openfgaDsl.tokenize(source)), expected);
 });
 
-test('source grammar fixes legacy userset and nested-condition boundary errors', () => {
-  const generated = loadGeneratedTokenizer(renderArtifact());
-  const source = 'define viewer: [user, team#member]\ncondition ok(name: string) { true }\n';
-  const tokens = plain(generated.tokenize(source));
+test('freshness check is deterministic and leaves both artifacts unchanged', async () => {
+  const before = {
+    codegen: digest(await readFile(CODEGEN_PATH)),
+    tokenizer: digest(await readFile(ARTIFACT_PATH)),
+  };
 
-  assert.ok(tokens.some((token) => token.text === '[user, team#member]' && token.color === '#CEEC93'));
-  assert.ok(tokens.some((token) => token.text === 'name:' && token.color === '#20F1F5'));
-  assert.equal(tokens.map((token) => token.text).join(''), source);
-});
-
-test('normalization rejects Prism features the standalone runtime cannot preserve', async (t) => {
-  const unsupported = [
-    ['aliases', { token: { pattern: /x/, alias: 'other' } }, /unsupported Prism property "alias"/],
-    ['greedy matching', { token: { pattern: /x/, greedy: true } }, /unsupported Prism property "greedy"/],
-    ['rule arrays', { token: [/x/, /y/] }, /unsupported rule arrays/],
-    ['sticky expressions', { token: /x/y }, /unsupported sticky regex flag "y"/],
-  ];
-
-  for (const [name, grammar, message] of unsupported) {
-    await t.test(name, () => assert.throws(() => normalizeGrammar(grammar), message));
+  for (let iteration = 0; iteration < 2; iteration += 1) {
+    execFileSync('bash', [BUILD_SCRIPT, '--check'], {
+      cwd: REPO_ROOT,
+      encoding: 'utf8',
+      stdio: 'pipe',
+    });
   }
-
-  const recursive = {};
-  recursive.token = { pattern: /x/, inside: recursive };
-  assert.throws(() => normalizeGrammar(recursive), /recursive or shared grammar reference/);
-});
-
-test('anchored rules are reapplied to each residual string like Prism', () => {
-  const configuration = loadSourceConfiguration();
-  configuration.grammar = normalizeGrammar({ anchored: /^a/ });
-  configuration.theme = {
-    ...configuration.theme,
-    colors: { ...configuration.theme.colors, anchored: '#123456' },
-  };
-  const generated = loadGeneratedTokenizer(renderArtifact(configuration));
-
-  assert.deepEqual(plain(generated.tokenize('aa')), [
-    { text: 'a', color: '#123456' },
-    { text: 'a', color: '#123456' },
-  ]);
-  assert.equal(Prism.tokenize('aa', { anchored: /^a/ }).length, 2);
-});
-
-test('zero-width rules preserve text without stalling or crashing', () => {
-  const cases = [
-    ['anchored', { token: /^/ }, 'a'],
-    ['lookahead', { token: /(?=a)/ }, 'ba'],
-    ['empty lookbehind result', { token: { pattern: /^(a)/, lookbehind: true } }, 'aa'],
-  ];
-
-  for (const [name, sourceGrammar, source] of cases) {
-    const configuration = loadSourceConfiguration();
-    configuration.grammar = normalizeGrammar(sourceGrammar);
-    configuration.theme = {
-      ...configuration.theme,
-      colors: { ...configuration.theme.colors, token: '#123456' },
-    };
-    const generated = loadGeneratedTokenizer(renderArtifact(configuration));
-    const expected = flattenPrism(Prism.tokenize(source, sourceGrammar));
-
-    assert.deepEqual(plain(generated.tokenize(source)), expected, name);
-  }
-});
-
-test('zero-width token boundaries prevent later rules exactly like Prism', () => {
-  const sourceGrammar = { boundary: /\b/, letter: /a/ };
-  const configuration = loadSourceConfiguration();
-  configuration.grammar = normalizeGrammar(sourceGrammar);
-  configuration.theme = {
-    ...configuration.theme,
-    colors: {
-      ...configuration.theme.colors,
-      boundary: '#123456',
-      letter: '#654321',
-    },
-  };
-  const generated = loadGeneratedTokenizer(renderArtifact(configuration));
-  const expected = flattenPrism(Prism.tokenize('a', sourceGrammar));
-
-  assert.deepEqual(plain(generated.tokenize('a')), expected);
-  assert.deepEqual(plain(generated.tokenize('a')), [{ text: 'a' }]);
-});
-
-test('unsupported theme styling fails instead of silently changing output', () => {
-  const configuration = loadSourceConfiguration();
-  configuration.theme = {
-    ...configuration.theme,
-    styles: { keyword: 'bold' },
-  };
-
-  assert.throws(() => renderArtifact(configuration), /styles/);
-
-  configuration.theme = {
-    ...loadSourceConfiguration().theme,
-    baseTheme: 'hc-light',
-  };
-  assert.throws(() => renderArtifact(configuration), /baseTheme/);
-
-  configuration.theme = {
-    ...loadSourceConfiguration().theme,
-    background: { color: '#141517', image: 'gradient' },
-  };
-  assert.throws(() => renderArtifact(configuration), /background uses unsupported property "image"/);
-});
-
-test('every current grammar leaf has a generated theme color', () => {
-  const { grammar, theme } = loadSourceConfiguration();
-  const leafNames = [];
-
-  function visit(rules) {
-    for (const rule of rules) {
-      if (rule.inside) visit(rule.inside);
-      else leafNames.push(rule.name);
-    }
-  }
-  visit(grammar);
 
   assert.deepEqual(
-    leafNames.sort(),
-    [
-      'comment',
-      'condition',
-      'condition-param',
-      'condition-param-type',
-      'directly-assignable',
-      'extend',
-      'keyword',
-      'module',
-      'relation',
-      'type',
-    ].sort(),
+    {
+      codegen: digest(await readFile(CODEGEN_PATH)),
+      tokenizer: digest(await readFile(ARTIFACT_PATH)),
+    },
+    before,
   );
-  for (const name of leafNames) assert.equal(typeof theme.colors[name], 'string', name);
 });

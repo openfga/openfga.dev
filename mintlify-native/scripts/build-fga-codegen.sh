@@ -2,9 +2,9 @@
 # Generates or checks both committed standalone Mintlify browser artifacts.
 # - fga-codegen.js bundles the installed @openfga/syntax-transformer and exposes
 #   window.fgaCodegen for AuthzModelSnippetViewer.
-# - openfga-dsl-highlight.js is generated from the installed
-#   @openfga/frontend-utils Prism grammar/theme and exposes window.openfgaDsl
-#   for AuthzModelSnippetViewer and OpenFGACodeBlock.
+# - openfga-dsl-highlight.js bundles installed official Prism core with the
+#   @openfga/frontend-utils grammar/theme and exposes window.openfgaDsl for
+#   AuthzModelSnippetViewer and OpenFGACodeBlock.
 #
 # These files are committed because Mintlify snippets cannot import npm packages
 # at runtime; Mintlify serves the standalone artifacts to the browser snippets.
@@ -40,6 +40,10 @@ TMP_DIR="$(mktemp -d "$REPO_ROOT/mintlify-native/.codegen.XXXXXX")"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
 SYNTAX_TRANSFORMER_VERSION="$(node -p "require('@openfga/syntax-transformer/package.json').version")"
+FRONTEND_UTILS_VERSION="$(node -p "require('@openfga/frontend-utils/package.json').version")"
+PRISM_VERSION="$(node -p "require('prismjs/package.json').version")"
+HIGHLIGHT_BANNER="// GENERATED FILE - DO NOT EDIT. Sources: prismjs@$PRISM_VERSION and @openfga/frontend-utils@$FRONTEND_UTILS_VERSION. Regenerate: npm run generate:mintlify-codegen"
+HIGHLIGHT_BANNER+=$'\n/* eslint-disable */'
 
 cat > "$TMP_DIR/fga-codegen-entry.js" << 'EOF'
 import { transformer } from '@openfga/syntax-transformer';
@@ -63,8 +67,19 @@ NODE_PATH="$REPO_ROOT/node_modules" node_modules/.bin/esbuild "$TMP_DIR/fga-code
   "--banner:js=// GENERATED FILE - DO NOT EDIT. Source: @openfga/syntax-transformer@$SYNTAX_TRANSFORMER_VERSION. Regenerate: npm run generate:mintlify-codegen" \
   --outfile="$TMP_DIR/fga-codegen.js"
 
-node mintlify-native/scripts/generate-openfga-dsl-highlight.mjs \
-  --output "$TMP_DIR/openfga-dsl-highlight.js"
+echo "Building openfga-dsl-highlight.js from prismjs@$PRISM_VERSION and @openfga/frontend-utils@$FRONTEND_UTILS_VERSION ..."
+NODE_PATH="$REPO_ROOT/node_modules" node_modules/.bin/esbuild \
+  mintlify-native/scripts/openfga-dsl-highlight.entry.cjs \
+  --bundle \
+  --format=iife \
+  --platform=browser \
+  --target=es2020 \
+  --minify \
+  --define:document=undefined \
+  --define:global=undefined \
+  --legal-comments=eof \
+  "--banner:js=$HIGHLIGHT_BANNER" \
+  --outfile="$TMP_DIR/openfga-dsl-highlight.js"
 
 if [[ "$CHECK_ONLY" == true ]]; then
   STALE=0

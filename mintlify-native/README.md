@@ -44,7 +44,7 @@ mintlify-native/
 │   └── check-reference.js.txt  # Reference file — see note below
 └── scripts/
     ├── build-fga-codegen.sh   # Reproducible build for both browser artifacts
-    ├── generate-openfga-dsl-highlight.mjs
+    ├── openfga-dsl-highlight.entry.cjs
     └── openfga-dsl-highlight.test.mjs
 ```
 
@@ -122,11 +122,11 @@ OpenFGA DSL uses a custom Prism grammar registered via `@openfga/frontend-utils`
 Mintlify uses Shiki and has no mechanism for registering custom grammars.
 
 `openfga-dsl-highlight.js` is generated from the Prism grammar and `openfga-dark`
-theme exported by the lockfile-pinned `@openfga/frontend-utils` package. The
-generated runtime is standalone: it contains normalized regex data and a small
-tokenizer, but no npm imports or dynamic code evaluation. Generation fails if the
-package adds a Prism feature the standalone tokenizer does not support, so grammar
-changes cannot be silently omitted.
+theme exported by the lockfile-pinned `@openfga/frontend-utils` package. It
+bundles official Prism core so grammar features retain Prism's behavior without a
+project-specific tokenizer implementation. The generated runtime is standalone,
+keeps Prism in manual mode, restores any existing Prism global, and has no runtime
+npm imports or dynamic code evaluation.
 
 ### Generated browser artifacts
 
@@ -137,7 +137,7 @@ AJV, and yaml). Its crypto shim maps `require("crypto")` to `globalThis.crypto`
 (Web Crypto API).
 
 Install the root dependencies and regenerate both committed artifacts after
-upgrading either source package:
+upgrading either source package or Prism:
 
 ```bash
 npm ci
@@ -145,8 +145,9 @@ npm run generate:mintlify-codegen
 ```
 
 `npm run check:mintlify-codegen` rebuilds into a temporary directory, fails when
-either committed artifact is stale, and runs tokenizer parity and mutation tests.
-The root build invokes this freshness check in `prebuild`.
+either committed artifact is stale, and runs tokenizer parity, source consistency,
+runtime isolation, and migrated-corpus tests. The root build invokes this freshness
+check in `prebuild`.
 
 ---
 
