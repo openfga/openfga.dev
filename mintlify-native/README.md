@@ -34,6 +34,7 @@ the CLI will re-download a fresh pre-built copy.
 mintlify-native/
 ├── docs.json              # Mintlify nav and theme config
 ├── global.css             # Shared docs/API theme fixes
+├── github-star-cache.js   # Cache-only fallback for Mintlify's native GitHub star count
 ├── openfga-dsl-highlight.js   # Standalone DSL syntax highlighter (window global)
 ├── fga-codegen.js         # Pre-bundled @openfga/syntax-transformer (window global)
 ├── docs/                  # 111 public docs pages plus the hidden test harness
@@ -70,6 +71,14 @@ this file to understand what needs updating in `snippets/CheckRequestViewer.jsx`
 ---
 
 ## Architecture
+
+### GitHub star-count fallback
+
+Mintlify fetches the repository's exact GitHub star count for its native navbar
+control. `github-star-cache.js` stores successful native values for seven days
+and restores the last exact count if Mintlify's request is rate-limited. It never
+makes its own GitHub API request; first-time visitors without a valid cached value
+retain the native icon-only state when that request fails.
 
 ### Why Mintlify snippets look the way they do
 
