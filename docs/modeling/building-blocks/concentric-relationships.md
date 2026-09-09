@@ -3,7 +3,7 @@ title: "Concentric Relationships"
 description: "Modeling Concepts: Concentric Relationships"
 canonical: "https://openfga.dev/docs/modeling/building-blocks/concentric-relationships"
 content_type: "documentation"
-last_updated: "2026-09-08T01:10:04.000Z"
+last_updated: "2026-09-09T07:17:15.000Z"
 ---
 
 # Concentric Relationships

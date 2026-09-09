@@ -3,7 +3,7 @@ title: "How to get tuple changes"
 description: "Getting tuple changes"
 canonical: "https://openfga.dev/docs/interacting/read-tuple-changes"
 content_type: "documentation"
-last_updated: "2026-09-08T01:10:04.000Z"
+last_updated: "2026-09-09T07:17:15.000Z"
 ---
 
 # How to get tuple changes

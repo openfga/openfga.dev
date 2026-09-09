@@ -3,7 +3,7 @@ title: "Building Blocks"
 description: "This section has guides that on the building blocks of authorization model."
 canonical: "https://openfga.dev/docs/modeling/building-blocks"
 content_type: "documentation"
-last_updated: "2026-09-08T01:10:04.000Z"
+last_updated: "2026-09-09T07:17:15.000Z"
 ---
 
 This section has guides that on the building blocks of authorization model.

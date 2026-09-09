@@ -3,7 +3,7 @@ title: "RAG Authorization"
 description: "Secure your RAG pipeline with OpenFGA: enforce document-level permissions so AI agents only retrieve content each user is authorized to access."
 canonical: "https://openfga.dev/docs/modeling/agents/rag-authorization"
 content_type: "documentation"
-last_updated: "2026-09-08T01:10:04.000Z"
+last_updated: "2026-09-09T07:17:15.000Z"
 ---
 
 # RAG Authorization
