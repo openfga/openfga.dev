@@ -3,7 +3,7 @@ title: "Multiple Restrictions"
 description: "Modeling system that requires multiple authorizations before allowing users to perform actions on particular objects"
 canonical: "https://openfga.dev/docs/modeling/multiple-restrictions"
 content_type: "documentation"
-last_updated: "2026-09-09T07:17:15.000Z"
+last_updated: "2026-09-09T07:21:51.000Z"
 ---
 
 # Multiple Restrictions
