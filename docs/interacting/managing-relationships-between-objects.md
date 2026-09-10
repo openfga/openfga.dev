@@ -3,7 +3,7 @@ title: "Managing Relationships Between Objects"
 description: "Granting a user access to a particular object through a relationship with another object"
 canonical: "https://openfga.dev/docs/interacting/managing-relationships-between-objects"
 content_type: "documentation"
-last_updated: "2026-09-09T07:21:48.000Z"
+last_updated: "2026-09-09T07:21:51.000Z"
 ---
 
 # Managing Relationships Between Objects

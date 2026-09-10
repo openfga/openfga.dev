@@ -3,7 +3,7 @@ title: "Fine-Grained Authorization for Healthcare — HIPAA, PHI, EHR"
 description: "Model patients, providers, encounters, and HIPAA-regulated PHI access in OpenFGA. Care teams, facility hierarchy, and sensitive-field permissions for EHR."
 canonical: "https://openfga.dev/docs/industries/healthcare"
 content_type: "documentation"
-last_updated: "2026-09-09T07:21:48.000Z"
+last_updated: "2026-09-09T07:21:51.000Z"
 ---
 
 # Healthcare Authorization with OpenFGA

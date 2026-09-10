@@ -3,7 +3,7 @@ title: "Fine-Grained Authorization for Banking & Fintech with FGA"
 description: "Model account managers, account owners, per-transaction limits, and delegation in FGA for banking, fintech, and PCI-DSS-regulated applications."
 canonical: "https://openfga.dev/docs/industries/banking"
 content_type: "documentation"
-last_updated: "2026-09-09T07:21:48.000Z"
+last_updated: "2026-09-09T07:21:51.000Z"
 ---
 
 # Banking Authorization with OpenFGA
