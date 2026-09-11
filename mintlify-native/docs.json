@@ -14,7 +14,7 @@
     "dark": "#558f69"
   },
   "appearance": {
-    "default": "system",
+    "default": "dark",
     "strict": false
   },
   "styling": {
