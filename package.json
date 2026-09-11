@@ -7,7 +7,7 @@
     "dev": "docusaurus start --port=${PORT:-3000}",
     "docusaurus": "docusaurus",
     "start": "npm run serve --port=${PORT:-3000}",
-    "prebuild": "npm run validate:mintlify-navigation",
+    "prebuild": "npm run check:mintlify-codegen && npm run validate:mintlify-navigation",
     "build": "npm run build:config-page && npm run build:docusaurus && npm run build:agent-content && npm run check:agent-content",
     "build:agent-content": "node scripts/prepare-agent-content.mjs",
     "build:docusaurus": "docusaurus build",
@@ -26,6 +26,9 @@
     "lint:fix": "npm run lint -- --fix",
     "format:check": "prettier --check src/**",
     "format:fix": "prettier --write src/**",
+    "generate:mintlify-codegen": "bash mintlify-native/scripts/build-fga-codegen.sh",
+    "check:mintlify-codegen": "bash mintlify-native/scripts/build-fga-codegen.sh --check && npm run test:mintlify-codegen",
+    "test:mintlify-codegen": "node --test mintlify-native/scripts/openfga-dsl-highlight.test.mjs",
     "validate:mintlify-navigation": "npm run validate:mintlify-doc-navigation && npm run validate:mintlify-api-navigation",
     "validate:mintlify-doc-navigation": "node mintlify-native/scripts/validate-doc-navigation.mjs",
     "validate:mintlify-api-navigation": "node mintlify-native/scripts/validate-api-navigation.mjs"
@@ -52,14 +55,15 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.10.2",
     "@signalwire/docusaurus-plugin-llms-txt": "1.2.2",
-    "@typescript/native": "npm:typescript@7.0.2",
     "@types/prismjs": "1.26.6",
     "@types/react": "18.3.9",
     "@types/react-router-dom": "5.3.3",
     "@types/sanitize-html": "2.16.1",
     "@typescript-eslint/eslint-plugin": "8.69.0",
     "@typescript-eslint/parser": "8.69.0",
+    "@typescript/native": "npm:typescript@7.0.2",
     "docusaurus-plugin-module-alias": "0.0.2",
+    "esbuild": "0.25.12",
     "eslint": "9.29.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-react": "7.37.5",
@@ -67,6 +71,7 @@
     "husky": "9.1.7",
     "markdown-link-check": "^3.15.0",
     "prettier": "3.9.6",
+    "prismjs": "1.30.0",
     "typescript": "npm:@typescript/typescript6@6.0.2"
   },
   "overrides": {

@@ -46,7 +46,9 @@ export const AuthzModelSnippetViewer = ({
     return () => clearInterval(id);
   }, []);
 
-  if (!codegenReady) return <div style={{ color: '#718096', padding: '1rem' }}>Loading model viewer...</div>;
+  if (!codegenReady) {
+    return <div className="openfga-code-viewer__status" role="status">Loading model viewer...</div>;
+  }
 
   const { transformer } = window.fgaCodegen;
 
@@ -68,43 +70,44 @@ export const AuthzModelSnippetViewer = ({
 
   const showTabs = syntaxesToShow.length > 1;
 
-  const TAB_STYLE_ACTIVE = {
-    padding: '0.4rem 1rem', background: 'none', border: 'none', cursor: 'pointer',
-    color: '#fff', borderBottom: '2px solid #79ed83',
-    fontSize: '0.85rem', fontWeight: 600,
-  };
-  const TAB_STYLE_INACTIVE = {
-    padding: '0.4rem 1rem', background: 'none', border: 'none', cursor: 'pointer',
-    color: '#718096', borderBottom: '2px solid transparent',
-    fontSize: '0.85rem', fontWeight: 400,
-  };
-  const CODE_STYLE = {
-    background: '#141517', color: '#FFFFFF', padding: '1rem', margin: 0,
-    overflowX: 'auto', fontSize: '0.875rem', lineHeight: 1.6,
-    whiteSpace: 'pre', fontFamily: 'var(--font-mono, ui-monospace, monospace)',
+  const DSL_COLORS = dslReady && window.openfgaDsl ? window.openfgaDsl.colors : {};
+  const THEME_STYLE = {
+    '--openfga-dark-background': DSL_COLORS.background,
+    '--openfga-dark-default': DSL_COLORS.default,
+    '--openfga-dark-accent': DSL_COLORS.green,
   };
 
   const renderDsl = () => {
     const code = getDsl().replace(/^\n/, '').replace(/\n$/, '');
-    const tokens = dslReady && window.openfgaDsl
-      ? window.openfgaDsl.tokenize(code)
-      : [{ text: code }];
+    const hasError = code.startsWith('// error converting to DSL:');
+    const tokens = hasError
+      ? [{ text: code, type: 'error' }]
+      : dslReady && window.openfgaDsl
+        ? window.openfgaDsl.tokenize(code)
+        : [{ text: code, type: 'default' }];
     return (
-      <div style={CODE_STYLE}>
-        {tokens.map((t, i) => (t.color ? <span key={i} style={{ color: t.color }}>{t.text}</span> : t.text))}
+      <div
+        className="openfga-code-viewer__code"
+        data-language="dsl"
+        data-state={hasError ? 'error' : undefined}
+        role={hasError ? 'alert' : undefined}
+      >
+        {tokens.map((t, i) => (
+          <span
+            className="openfga-code-token"
+            data-token={t.type || 'default'}
+            key={i}
+            style={{ '--openfga-dark-token-color': t.color || DSL_COLORS.default }}
+          >
+            {t.text}
+          </span>
+        ))}
       </div>
     );
   };
 
-  // Inline JSON tokenizer — same claim-based approach as openfga-dsl-highlight.js.
-  // Distinguishes keys from values by checking whether a string is followed by ':'.
+  // Inline JSON tokenizer distinguishes keys from values by whether a string is followed by ':'.
   const tokenizeJson = (text) => {
-    const KEY   = '#9CDCFE'; // light blue  — object keys
-    const STR   = '#CE9178'; // salmon      — string values
-    const NUM   = '#B5CEA8'; // light green — numbers
-    const KW    = '#569CD6'; // blue        — true / false / null
-    const PUNC  = '#D4D4D4'; // light grey  — { } [ ] : ,
-
     const strRanges = [];
     const claims = [];
     let m;
@@ -115,7 +118,7 @@ export const AuthzModelSnippetViewer = ({
       const s = m.index, e = s + m[0].length;
       strRanges.push({ s, e });
       const isKey = /^\s*:/.test(text.slice(e));
-      claims.push({ s, e, color: isKey ? KEY : STR });
+      claims.push({ s, e, type: isKey ? 'json-key' : 'json-string' });
     }
 
     const inStr = (s, e) => strRanges.some(r => s >= r.s && e <= r.e);
@@ -124,21 +127,21 @@ export const AuthzModelSnippetViewer = ({
     const numRe = /-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/g;
     while ((m = numRe.exec(text))) {
       const s = m.index, e = s + m[0].length;
-      if (!inStr(s, e)) claims.push({ s, e, color: NUM });
+      if (!inStr(s, e)) claims.push({ s, e, type: 'json-number' });
     }
 
     // Literals
     const kwRe = /\b(true|false|null)\b/g;
     while ((m = kwRe.exec(text))) {
       const s = m.index, e = s + m[0].length;
-      if (!inStr(s, e)) claims.push({ s, e, color: KW });
+      if (!inStr(s, e)) claims.push({ s, e, type: 'json-keyword' });
     }
 
     // Punctuation
     const puncRe = /[{}\[\]:,]/g;
     while ((m = puncRe.exec(text))) {
       const s = m.index;
-      if (!inStr(s, s + 1)) claims.push({ s, e: s + 1, color: PUNC });
+      if (!inStr(s, s + 1)) claims.push({ s, e: s + 1, type: 'json-punctuation' });
     }
 
     claims.sort((a, b) => a.s - b.s);
@@ -146,11 +149,11 @@ export const AuthzModelSnippetViewer = ({
     const tokens = [];
     let cursor = 0;
     for (const c of claims) {
-      if (c.s > cursor) tokens.push({ text: text.slice(cursor, c.s) });
-      tokens.push({ text: text.slice(c.s, c.e), color: c.color });
+      if (c.s > cursor) tokens.push({ text: text.slice(cursor, c.s), type: 'default' });
+      tokens.push({ text: text.slice(c.s, c.e), type: c.type });
       cursor = c.e;
     }
-    if (cursor < text.length) tokens.push({ text: text.slice(cursor) });
+    if (cursor < text.length) tokens.push({ text: text.slice(cursor), type: 'default' });
     return tokens;
   };
 
@@ -158,21 +161,25 @@ export const AuthzModelSnippetViewer = ({
     const code = getJson();
     const tokens = tokenizeJson(code);
     return (
-      <div style={CODE_STYLE}>
-        {tokens.map((t, i) => (t.color ? <span key={i} style={{ color: t.color }}>{t.text}</span> : t.text))}
+      <div className="openfga-code-viewer__code" data-language="json">
+        {tokens.map((t, i) => (
+          <span className="openfga-code-token" data-token={t.type} key={i}>{t.text}</span>
+        ))}
       </div>
     );
   };
 
   return (
-    <div style={{ borderRadius: '8px', overflow: 'hidden', border: '1px solid #3a3d44' }}>
+    <div className="openfga-code-viewer" style={THEME_STYLE}>
       {showTabs && (
-        <div style={{ display: 'flex', background: '#1c1e22', borderBottom: '1px solid #3a3d44' }}>
+        <div className="openfga-code-viewer__tabs">
           {syntaxesToShow.map(fmt => (
             <button
+              aria-pressed={activeTab === fmt}
+              className="openfga-code-viewer__tab"
+              data-state={activeTab === fmt ? 'active' : 'inactive'}
               key={fmt}
               onClick={() => setActiveTab(fmt)}
-              style={activeTab === fmt ? TAB_STYLE_ACTIVE : TAB_STYLE_INACTIVE}
             >
               {fmt.toUpperCase()}
             </button>
