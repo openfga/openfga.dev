@@ -3,6 +3,8 @@ title: RAG Authorization with OpenFGA
 description: Enforce per-user permissions on retrieval-augmented generation. Filter retrieved documents through OpenFGA before they reach the model.
 ---
 
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
+
 # RAG Authorization
 
 Retrieval-augmented generation pipelines retrieve documents from a data set and hand them to the model as context. If the data set contains anything the asking user shouldn't see, the model will happily summarize it back to them. The fix is to **filter retrieval results by the user's permissions** before the model ever sees them.
@@ -18,21 +20,19 @@ The same model and prompt now produce different — and correct — answers per 
 
 ## Simplified model
 
-```dsl.openfga
-type user
+<OpenFGACodeBlock code={`type user
 
 type folder
-  relations
-    define parent: [folder]
-    define viewer: [user]
-    define can_view: viewer or can_view from parent
+\x20 relations
+\x20   define parent: [folder]
+\x20   define viewer: [user]
+\x20   define can_view: viewer or can_view from parent
 
 type document
-  relations
-    define parent: [folder]
-    define viewer: [user]
-    define can_view: viewer or can_view from parent
-```
+\x20 relations
+\x20   define parent: [folder]
+\x20   define viewer: [user]
+\x20   define can_view: viewer or can_view from parent`} />
 
 Folders nest arbitrarily deep — a viewer on a top-level folder inherits `can_view` on every descendant folder and document. Before retrieval reaches the model, call `list-objects(user:alice, can_view, document)` to get every document Alice can read, then intersect with the retriever's candidate set.
 

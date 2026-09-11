@@ -3,6 +3,8 @@ title: MCP Server Authorization with OpenFGA
 description: Authorize Model Context Protocol (MCP) servers with OpenFGA. Per-tool, per-resource permission checks on every MCP request.
 ---
 
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
+
 # MCP Server Authorization
 
 A Model Context Protocol server exposes tools to a client. That makes it an authorization surface: every tool call should be checked against the calling user.
@@ -25,24 +27,22 @@ For listing tools to the client, use [list-objects](/docs/interacting/relationsh
 
 ## Simplified model
 
-```dsl.openfga
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 
 type user
 
 type group
-  relations
-    define member: [user]
+\x20 relations
+\x20   define member: [user]
 
 type role
-  relations
-    define assignee: [user, group#member]
+\x20 relations
+\x20   define assignee: [user, group#member]
 
 type tool
-  relations
-    define can_call: [user:*, user, role#assignee]
-```
+\x20 relations
+\x20   define can_call: [user:*, user, role#assignee]`} />
 
 `can_call` accepts a public grant (`user:*`), a direct user, or any user assigned to a role — including users who are role assignees by way of group membership. The MCP server checks `tool:search#can_call` on every request, with the calling user as the subject.
 

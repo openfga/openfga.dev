@@ -4,6 +4,8 @@ sidebarTitle: Design Principles
 description: Best practices for creating clear, performant, and maintainable authorization models.
 ---
 
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
+
 # Authorization Model Design Principles
 
 A well-designed authorization model is easier to understand, debug, and maintain. It also performs better and scales more gracefully as your application grows. This guide covers key principles for modeling authorization in OpenFGA.
@@ -22,30 +24,28 @@ For example: built-in roles like "admin" or "billing_manager" should be relation
 
 Define types and relations that mirror your application's domain. If your app has organizations, projects, and documents, model exactly that with explicit relationships:
 
-```dsl.openfga
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 
 type user
 
 type organization
-  relations
-    define admin: [user]
-    define member: [user]
+\x20 relations
+\x20   define admin: [user]
+\x20   define member: [user]
 
 type project
-  relations
-    define org: [organization]
-    define lead: [user]
-    define member: [user] or member from org
+\x20 relations
+\x20   define org: [organization]
+\x20   define lead: [user]
+\x20   define member: [user] or member from org
 
 type document
-  relations
-    define project: [project]
-    define owner: [user]
-    define editor: [user] or owner or lead from project
-    define viewer: [user] or editor or member from project
-```
+\x20 relations
+\x20   define project: [project]
+\x20   define owner: [user]
+\x20   define editor: [user] or owner or lead from project
+\x20   define viewer: [user] or editor or member from project`} />
 
 Notice how this model has a clear hierarchy (organization → project → document) where each type and relationship directly reflects the application's domain. Permission inheritance follows a well-defined path that's easy to understand and audit.
 
@@ -64,29 +64,27 @@ This approach has several advantages:
 
 The model below can technically represent any organization hierarchy, any resource hierarchy, and any role hierarchy:
 
-```dsl.openfga
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 
 type user
 
 type role
-  relations
-    define assignee: [user, role#assignee]
+\x20 relations
+\x20   define assignee: [user, role#assignee]
 
 type entity
-  relations
-    define parent: [entity]
-    define editor: [role#assignee] or editor from parent
-    define viewer: [role#assignee] or editor or viewer from parent
+\x20 relations
+\x20   define parent: [entity]
+\x20   define editor: [role#assignee] or editor from parent
+\x20   define viewer: [role#assignee] or editor or viewer from parent
 
 type resource
-  relations
-    define entity: [entity]
-    define parent: [resource]
-    define editor: [role#assignee] or editor from entity or editor from parent
-    define viewer: [role#assignee] or editor or viewer from parent
-```
+\x20 relations
+\x20   define entity: [entity]
+\x20   define parent: [resource]
+\x20   define editor: [role#assignee] or editor from entity or editor from parent
+\x20   define viewer: [role#assignee] or editor or viewer from parent`} />
 
 While flexible, this approach creates problems:
 - The model doesn't communicate what your application actually does
@@ -105,22 +103,20 @@ Most applications have roles. The key question is: are they built-in or user-def
 
 For roles that come with your application (admin, member, viewer, etc.), define them directly as relations:
 
-```dsl.openfga
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 
 type user
 
 type organization
-  relations
-    define admin: [user]
-    define member: [user]
-    define billing_manager: [user]
+\x20 relations
+\x20   define admin: [user]
+\x20   define member: [user]
+\x20   define billing_manager: [user]
 
-    define can_manage_billing: admin or billing_manager
-    define can_manage_users: admin
-    define can_view_dashboard: admin or member
-```
+\x20   define can_manage_billing: admin or billing_manager
+\x20   define can_manage_users: admin
+\x20   define can_view_dashboard: admin or member`} />
 
 Adding new built-in roles is straightforward: add a relation to the model. This happens infrequently and doesn't require data migration.
 
@@ -128,26 +124,24 @@ Adding new built-in roles is straightforward: add a relation to the model. This 
 
 Some applications let end-users create their own roles. In this case, combine static roles with a dynamic `role` type:
 
-```dsl.openfga
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 
 type user
 
 type role
-  relations
-    define assignee: [user]
+\x20 relations
+\x20   define assignee: [user]
 
 type organization
-  relations
-    # Built-in roles
-    define admin: [user]
-    define billing_manager: [user]
+\x20 relations
+\x20   # Built-in roles
+\x20   define admin: [user]
+\x20   define billing_manager: [user]
 
-    # Permissions combine built-in and custom roles
-    define can_manage_billing: [role#assignee] or admin or billing_manager
-    define can_manage_users: [role#assignee] or admin
-```
+\x20   # Permissions combine built-in and custom roles
+\x20   define can_manage_billing: [role#assignee] or admin or billing_manager
+\x20   define can_manage_users: [role#assignee] or admin`} />
 
 This hybrid approach gives you the clarity of static roles for common cases while supporting custom roles when needed.
 
@@ -164,22 +158,20 @@ B2B SaaS applications often have two distinct organizational requirements:
 
 For internal support and admin access, use a dedicated `system` type rather than making organizations recursive:
 
-```dsl.openfga
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 
 type user
 
 type system
-  relations
-    define admin: [user]
+\x20 relations
+\x20   define admin: [user]
 
 type organization
-  relations
-    define system: [system]
-    define admin: [user] or admin from system
-    define member: [user]
-```
+\x20 relations
+\x20   define system: [system]
+\x20   define admin: [user] or admin from system
+\x20   define member: [user]`} />
 
 This approach:
 - Clearly separates your internal access from customer access
@@ -192,50 +184,46 @@ See a complete [super-admin example](https://github.com/openfga/sample-stores/bl
 
 If customers need hierarchical organizations, prefer explicit types for each level when the structure is well-defined:
 
-```dsl.openfga
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 
 type user
 
 type system
-  relations
-    define admin: [user]
+\x20 relations
+\x20   define admin: [user]
 
 type organization
-  relations
-    define system: [system]
-    define admin: [user] or admin from system
-    define member: [user]
+\x20 relations
+\x20   define system: [system]
+\x20   define admin: [user] or admin from system
+\x20   define member: [user]
 
 type department
-  relations
-    define org: [organization]
-    define manager: [user]
-    define member: [user] or member from org
-```
+\x20 relations
+\x20   define org: [organization]
+\x20   define manager: [user]
+\x20   define member: [user] or member from org`} />
 
 This makes the hierarchy explicit: organizations contain departments, and department members inherit from the organization.
 
 If the hierarchy depth is truly dynamic (customers can nest arbitrarily), then add recursion only where needed:
 
-```dsl.openfga
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 
 type user
 
 type system
-  relations
-    define admin: [user]
+\x20 relations
+\x20   define admin: [user]
 
 type organization
-  relations
-    define system: [system]
-    define parent: [organization]
-    define admin: [user] or admin from system or admin from parent
-    define member: [user] or member from parent
-```
+\x20 relations
+\x20   define system: [system]
+\x20   define parent: [organization]
+\x20   define admin: [user] or admin from system or admin from parent
+\x20   define member: [user] or member from parent`} />
 
 Now you have two distinct hierarchies:
 - **System hierarchy**: Non-recursive, for your internal super-admin access
@@ -251,28 +239,26 @@ Applications have different kinds of resources: documents, folders, projects, ti
 
 Define a type for each kind of resource in your application:
 
-```dsl.openfga
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 
 type user
 
 type folder
-  relations
-    define parent: [folder]
-    define owner: [user]
-    define editor: [user] or owner or editor from parent
-    define viewer: [user] or editor or viewer from parent
+\x20 relations
+\x20   define parent: [folder]
+\x20   define owner: [user]
+\x20   define editor: [user] or owner or editor from parent
+\x20   define viewer: [user] or editor or viewer from parent
 
 type document
-  relations
-    define parent: [folder]
-    define owner: [user]
-    define editor: [user] or owner or editor from parent
-    define viewer: [user] or editor or viewer from parent
-    define can_print: [user] or owner
-    define can_share: owner
-```
+\x20 relations
+\x20   define parent: [folder]
+\x20   define owner: [user]
+\x20   define editor: [user] or owner or editor from parent
+\x20   define viewer: [user] or editor or viewer from parent
+\x20   define can_print: [user] or owner
+\x20   define can_share: owner`} />
 
 Benefits of specific types:
 
@@ -284,14 +270,12 @@ Benefits of specific types:
 <details>
 <summary>What to avoid: The generic resource type</summary>
 
-```dsl.openfga
-type resource
-  relations
-    define entity: [entity]
-    define parent: [resource]
-    define editor: [role#assignee] or editor from entity or editor from parent
-    define viewer: [role#assignee] or editor or viewer from parent
-```
+<OpenFGACodeBlock code={`type resource
+\x20 relations
+\x20   define entity: [entity]
+\x20   define parent: [resource]
+\x20   define editor: [role#assignee] or editor from entity or editor from parent
+\x20   define viewer: [role#assignee] or editor or viewer from parent`} />
 
 Problems with this approach:
 - ListObjects returns mixed results (folders, documents, and everything else)

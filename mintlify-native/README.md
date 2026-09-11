@@ -45,7 +45,8 @@ mintlify-native/
 └── scripts/
     ├── build-fga-codegen.sh   # Reproducible build for both browser artifacts
     ├── openfga-dsl-highlight.entry.cjs
-    └── openfga-dsl-highlight.test.mjs
+    ├── openfga-dsl-highlight.test.mjs
+    └── validate-openfga-code-blocks.mjs
 ```
 
 The API tab consumes the canonical OpenAPI 3.0.3 document generated in
@@ -129,6 +130,34 @@ keeps Prism in manual mode, restores any existing Prism global, and has no runti
 npm imports or dynamic code evaluation. Custom DSL viewers use the exact exported
 colors in dark mode and a centralized WCAG AA light palette from `global.css`;
 theme changes apply through CSS without re-tokenizing the model.
+
+#### Authoring DSL code blocks
+
+OpenFGA DSL examples must use `OpenFGACodeBlock`; do not use fenced blocks with
+the `dsl.openfga` language. Mintlify's native Shiki highlighter does not know the
+custom OpenFGA grammar, while the component uses the generated official Prism
+tokenizer:
+
+```mdx
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
+
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
+
+type user`} />
+```
+
+Mintlify strips literal indentation at the start of lines inside JSX template
+literals. Escape the first leading space as `\x20`, as shown above, so the
+rendered model retains its indentation. Escape any literal backticks, `${`
+sequences, and backslashes as JavaScript template-literal content.
+
+`npm run validate:mintlify-code-blocks` parses every Mintlify page as MDX,
+rejects actual `dsl.openfga` code nodes, verifies that component imports appear
+exactly once where needed, and requires each `code` prop to use canonical,
+non-lossy template-literal escaping. Literal examples inside larger code fences,
+inline code, and JSX comments are ignored. The root prebuild runs this guard
+through `validate:mintlify-navigation`.
 
 ### Generated browser artifacts
 

@@ -4,6 +4,7 @@ description: An introduction to modeling
 ---
 
 import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx'
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx'
 
 # Get Started with Modeling
 
@@ -243,37 +244,35 @@ In OpenFGA, relations can only have alphanumeric characters, underscores and hyp
 
 Using the [OpenFGA Configuration Language](/docs/configuration-language) we can enumerate the relations for each type:
 
-```dsl.openfga
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 type user
 type document
-  relations
-    define parent:
-    define owner:
-    define editor:
-    define viewer:
-    define can_share:
-    define can_view:
-    define can_write:
-    define can_change_owner:
+\x20 relations
+\x20   define parent:
+\x20   define owner:
+\x20   define editor:
+\x20   define viewer:
+\x20   define can_share:
+\x20   define can_view:
+\x20   define can_write:
+\x20   define can_change_owner:
 type folder
-  relations
-    define owner:
-    define parent:
-    define viewer:
-    define can_create_folder:
-    define can_create_document:
-    define can_view:
+\x20 relations
+\x20   define owner:
+\x20   define parent:
+\x20   define viewer:
+\x20   define can_create_folder:
+\x20   define can_create_document:
+\x20   define can_view:
 type organization
-  relations
-    define member:
+\x20 relations
+\x20   define member:
 type drive
-  relations
-    define owner:
-    define can_create_document:
-    define can_create_folder:
-```
+\x20 relations
+\x20   define owner:
+\x20   define can_create_document:
+\x20   define can_create_folder:`} />
 
 <Note>
 You're now in the process of building a version you can use. The model above is not yet a valid authorization model accepted by OpenFGA.

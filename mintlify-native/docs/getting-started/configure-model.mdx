@@ -56,13 +56,13 @@ import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
 Assume that you want to configure your store with the following model.
 
 <OpenFGACodeBlock code={`model
-  schema 1.1
+\x20 schema 1.1
 type user
 type document
-  relations
-    define reader: [user]
-    define writer: [user]
-    define owner: [user]`} />
+\x20 relations
+\x20   define reader: [user]
+\x20   define writer: [user]
+\x20   define owner: [user]`} />
 
 To configure authorization model, we can invoke the [write authorization models API](/api-reference/authorization-models/create-a-new-authorization-model).
 

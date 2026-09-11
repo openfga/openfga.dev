@@ -3,6 +3,8 @@ title: Modeling roles
 description: Various ways of modeling static and dynamic roles in FGA - both coarse and fine-grained.
 ---
 
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
+
 # Modeling Roles
 
 Roles are a common way to group users and assign permissions to those groups. They can be used to simplify permission management, especially in larger systems where many users have similar access needs.
@@ -27,18 +29,16 @@ The simplest way to implement roles is to use directly assignable relations. The
 
 In the model below, we define an `admin` role at the organization level. Admins can edit billing details and create projects.
 
-```dsl.openfga
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 
 type user
 
 type organization
-  relations
-    define admin: [user]
-    define can_create_project: admin
-    define can_edit_billing_details: admin
-```
+\x20 relations
+\x20   define admin: [user]
+\x20   define can_create_project: admin
+\x20   define can_edit_billing_details: admin`} />
 
 ### Adding Users to Roles
 
@@ -54,25 +54,23 @@ To add users to the admin role, create a tuple like:
 
 If later you need to add a `project_admin` role with permissions to view/edit projects, the model evolves to:
 
-```dsl.openfga
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 
 type user
 
 type organization
-  relations
-    define admin: [user]
-    define project_admin: [user]  # new role
+\x20 relations
+\x20   define admin: [user]
+\x20   define project_admin: [user]  # new role
 
-    # existing permissions
-    define can_edit_billing_details: admin 
-    define can_create_project: admin or project_admin
+\x20   # existing permissions
+\x20   define can_edit_billing_details: admin\x20
+\x20   define can_create_project: admin or project_admin
 
-    # new permissions for project admins
-    define can_edit_project: admin or project_admin
-    define can_view_project: admin or project_admin
-```
+\x20   # new permissions for project admins
+\x20   define can_edit_project: admin or project_admin
+\x20   define can_view_project: admin or project_admin`} />
 
 ### Pros and Cons
 
@@ -97,24 +95,22 @@ Many applications require the flexibility for end-users to define their own cust
 
 With the following model, your application can support both static roles and user-defined roles:
 
-```dsl.openfga
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 
 type user
 
 type role
-  relations
-    define assignee: [user]
+\x20 relations
+\x20   define assignee: [user]
 
 type organization
-  relations
-    define admin: [user]  # static role
+\x20 relations
+\x20   define admin: [user]  # static role
 
-    # permissions can be assigned to custom roles or static roles
-    define can_create_project: [role#assignee] or admin 
-    define can_edit_project: [role#assignee] or admin 
-```
+\x20   # permissions can be assigned to custom roles or static roles
+\x20   define can_create_project: [role#assignee] or admin\x20
+\x20   define can_edit_project: [role#assignee] or admin\x20`} />
 
 ### Setting Up Custom Roles
 
@@ -142,23 +138,21 @@ type organization
 
 When you add new permissions to your model, existing roles don't automatically receive them:
 
-```dsl.openfga
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 
 type user
 
 type role
-  relations
-    define assignee: [user]
+\x20 relations
+\x20   define assignee: [user]
 
 type organization
-  relations
-    define admin: [user]
-    define can_create_project: [role#assignee] or admin 
-    define can_edit_project: [role#assignee] or admin 
-    define can_delete_project: [role#assignee] or admin  # new permission
-```
+\x20 relations
+\x20   define admin: [user]
+\x20   define can_create_project: [role#assignee] or admin\x20
+\x20   define can_edit_project: [role#assignee] or admin\x20
+\x20   define can_delete_project: [role#assignee] or admin  # new permission`} />
 
 To grant the new permission to existing roles, create additional tuples:
 
@@ -195,15 +189,13 @@ Let's say you want a "Project Admin" role where each project can have different 
 
 Define a `role` type where you list all the permissions that any role can have:
 
-```dsl.openfga
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 
 type role
-  relations
-    define can_view_project: [user:*]
-    define can_edit_project: [user:*]
-```
+\x20 relations
+\x20   define can_view_project: [user:*]
+\x20   define can_edit_project: [user:*]`} />
 
 A "Project Admin" role can have `can_view_project` and `can_edit_project`:
 
@@ -222,34 +214,30 @@ A "Project Admin" role can have `can_view_project` and `can_edit_project`:
 
 Add a `role_assignment` type to assign users to the role:
 
-```dsl.openfga
-type role_assignment
-  relations
-    define assignee: [user]
-    define role: [role]
+<OpenFGACodeBlock code={`type role_assignment
+\x20 relations
+\x20   define assignee: [user]
+\x20   define role: [role]
 
-    define can_view_project: assignee and can_view_project from role
-    define can_edit_project: assignee and can_edit_project from role
-```
+\x20   define can_view_project: assignee and can_view_project from role
+\x20   define can_edit_project: assignee and can_edit_project from role`} />
 
 ### Step 3: Connect to Your Objects
 
 Define an `organization` type with an `admin` role. Then, define a `project` type that links to an `organization` and a `role_assignment`. Note that we are combining a static `admin` role with custom role assignments. We recommend to always use static roles when they are known in advance.
 
-```dsl.openfga
-type organization 
-  relations
-    define admin: [user]
+<OpenFGACodeBlock code={`type organization\x20
+\x20 relations
+\x20   define admin: [user]
 
 type project
-  relations
-    define organization: [organization]
-    define role_assignment: [role_assignment]
-    
-    # combine role assignments and static roles
-    define can_edit_project: can_edit_project from role_assignment or admin from organization
-    define can_view_project: can_view_project from role_assignment or admin from organization
-```
+\x20 relations
+\x20   define organization: [organization]
+\x20   define role_assignment: [role_assignment]
+\x20\x20\x20\x20
+\x20   # combine role assignments and static roles
+\x20   define can_edit_project: can_edit_project from role_assignment or admin from organization
+\x20   define can_view_project: can_view_project from role_assignment or admin from organization`} />
 
 ### Setting Up Role Assignments
 

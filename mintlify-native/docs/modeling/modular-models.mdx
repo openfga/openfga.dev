@@ -5,6 +5,7 @@ description: Modular Models
 
 import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx'
 import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx'
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx'
 
 # Modular Models
 
@@ -54,69 +55,61 @@ The following example shows how an authorization model for a SaaS company with i
 
 If there is a core set of types owned by a team that manages the overall identity for the company, the following provides the basics: users, organizations and groups that can be used by each product area.
 
-```dsl.openfga
-module core
+<OpenFGACodeBlock code={`module core
 
 type user
 
 type organization
-  relations
-    define member: [user]
-    define admin: [user]
+\x20 relations
+\x20   define member: [user]
+\x20   define admin: [user]
 
 type group
-  relations
-    define member: [user]
-```
+\x20 relations
+\x20   define member: [user]`} />
 
 ### Issue tracking
 
 The issue tracking software separates out the project- and issue-related types into separate files. Below, we also extend the `organization` type to add a relation specific to the issue tracking feature: the ability to authorize who can create a project.
 
-```dsl.openfga
-module issue-tracker
+<OpenFGACodeBlock code={`module issue-tracker
 
 extend type organization
-  relations
-    define can_create_project: admin
+\x20 relations
+\x20   define can_create_project: admin
 
 type project
-  relations
-    define organization: [organization]
-    define viewer: member from organization
-```
+\x20 relations
+\x20   define organization: [organization]
+\x20   define viewer: member from organization`} />
 
-```dsl.openfga
-module issue-tracker
+<OpenFGACodeBlock code={`module issue-tracker
 
 type ticket
-  relations
-    define project: [project]
-    define owner: [user]
-```
+\x20 relations
+\x20   define project: [project]
+\x20   define owner: [user]`} />
 
 ### Wiki
 
 The wiki model is managed in one file until it grows. We can also extend the `organization` type again to add a relation tracking who can create a space.
 
-```dsl.openfga
-module wiki
+<OpenFGACodeBlock code={`module wiki
 
 extend type organization
-  relations
-    define can_create_space: admin
+\x20 relations
+\x20   define can_create_space: admin
 
 
 type space
-  relations
-    define organization: [organization]
-    define can_view_pages: member from organization
+\x20 relations
+\x20   define organization: [organization]
+\x20   define can_view_pages: member from organization
 
 type page
-  relations
-    define space: [space]
-    define owner: [user]
-```
+\x20 relations
+\x20   define space: [space]
+\x20   define owner: [user]`} />
 
 ### `fga.mod`
 
@@ -171,11 +164,9 @@ When using the CLI to view the combined model DSL with `fga model get --store-id
 
 For example, the `organization` type shows that the type is defined in the `core.fga` file as part of the `core` module, the `can_create_project` relation is defined in `issue-tracker/projects.fga` as part of the `issue-tracker` module, and the `can_create_space` relation is defined in the `wiki.fga` file as part of the `wiki` module.
 
-```dsl.openfga
-type organization # module: core, file: core.fga
-  relations
-    define admin: [user]
-    define member: [user] or admin
-    define can_create_project: admin # extended by: module: issue-tracker, file: issue-tracker/projects.fga
-    define can_create_space: admin # extended by: module: wiki, file: wiki.fga
-```
+<OpenFGACodeBlock code={`type organization # module: core, file: core.fga
+\x20 relations
+\x20   define admin: [user]
+\x20   define member: [user] or admin
+\x20   define can_create_project: admin # extended by: module: issue-tracker, file: issue-tracker/projects.fga
+\x20   define can_create_space: admin # extended by: module: wiki, file: wiki.fga`} />

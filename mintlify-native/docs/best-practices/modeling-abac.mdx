@@ -4,6 +4,8 @@ sidebarTitle: Modeling ABAC
 description: Learn how to model Attribute-Based Access Control (ABAC) patterns using stored and dynamic attributes in OpenFGA.
 ---
 
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
+
 # Modeling ABAC with OpenFGA
 
 Attribute-Based Access Control (ABAC) extends traditional relationship-based access control by incorporating attributes into authorization decisions. While Role-Based Access Control (RBAC) answers "does this user have this role?", ABAC answers questions like "does this user have this role AND is their email verified?" or "can this user access this resource given their current session context?".
@@ -32,34 +34,32 @@ The simplest approach for boolean attributes is using the [Public Access](/docs/
 - The attribute applies uniformly to all users in a context
 - You want minimal tuple overhead
 
-```dsl.openfga
-model: |
-  model
-    schema 1.1
+<OpenFGACodeBlock code={`model: |
+\x20 model
+\x20   schema 1.1
 
-  type user
-  
-  type organization
-    relations
-      define member : [user]
-      define sso_enabled : [user:*]
-      define can_use_sso : sso_enabled and member
+\x20 type user
+\x20\x20
+\x20 type organization
+\x20   relations
+\x20     define member : [user]
+\x20     define sso_enabled : [user:*]
+\x20     define can_use_sso : sso_enabled and member
 
 tuples:
-  - user: user:*
-    relation: sso_enabled
-    object: organization:acme
-  - user: user:anne
-    relation: member
-    object: organization:acme
+\x20 - user: user:*
+\x20   relation: sso_enabled
+\x20   object: organization:acme
+\x20 - user: user:anne
+\x20   relation: member
+\x20   object: organization:acme
 
 tests:
-  - check:
-    - user: user:anne
-      object: organization:acme
-      assertions:
-        can_use_sso: true
-```
+\x20 - check:
+\x20   - user: user:anne
+\x20     object: organization:acme
+\x20     assertions:
+\x20       can_use_sso: true`} />
 
 #### Using Self-Relations
 
@@ -70,35 +70,33 @@ An alternative approach is to use a self-referential relation, where an object p
 - The attribute is a property of the object itself rather than a universal grant
 - You prefer explicit object references over wildcards
 
-```dsl.openfga
-model: |
-  model
-    schema 1.1
+<OpenFGACodeBlock code={`model: |
+\x20 model
+\x20   schema 1.1
 
-  type user
+\x20 type user
 
-  type organization
-    relations
-      define member : [user]
-      define sso_enabled : [organization]
-      define can_use_sso : member from sso_enabled
+\x20 type organization
+\x20   relations
+\x20     define member : [user]
+\x20     define sso_enabled : [organization]
+\x20     define can_use_sso : member from sso_enabled
 
 tuples:
-  - user: organization:acme
-    relation: sso_enabled
-    object: organization:acme
+\x20 - user: organization:acme
+\x20   relation: sso_enabled
+\x20   object: organization:acme
 
-  - user: user:anne
-    relation: member
-    object: organization:acme
+\x20 - user: user:anne
+\x20   relation: member
+\x20   object: organization:acme
 
 tests:
-  - check:
-    - user: user:anne
-      object: organization:acme
-      assertions:
-        can_use_sso: true
-```
+\x20 - check:
+\x20   - user: user:anne
+\x20     object: organization:acme
+\x20     assertions:
+\x20       can_use_sso: true`} />
 
 ### Storing Attributes in Conditional Tuple Context
 
@@ -109,43 +107,41 @@ For attributes that require typed values beyond simple booleans, you can store t
 - The attribute is tightly coupled to a specific relationship
 - You want to avoid additional tuples for attribute storage
 
-```dsl.openfga
-model: |
-  model
-    schema 1.1
-    
-  type user
-  
-  type organization
-    relations
-      define member : [user]
-      define sso_enabled : [organization#member with sso_enabled]
-      define can_use_sso : sso_enabled
+<OpenFGACodeBlock code={`model: |
+\x20 model
+\x20   schema 1.1
+\x20\x20\x20\x20
+\x20 type user
+\x20\x20
+\x20 type organization
+\x20   relations
+\x20     define member : [user]
+\x20     define sso_enabled : [organization#member with sso_enabled]
+\x20     define can_use_sso : sso_enabled
 
-  condition sso_enabled(sso_enabled: bool) {
-    sso_enabled
-  }
+\x20 condition sso_enabled(sso_enabled: bool) {
+\x20   sso_enabled
+\x20 }
 
 tuples:
-  - user: organization:acme#member
-    relation: sso_enabled
-    object: organization:acme
-    condition:
-      name: sso_enabled
-      context:
-        sso_enabled : true
+\x20 - user: organization:acme#member
+\x20   relation: sso_enabled
+\x20   object: organization:acme
+\x20   condition:
+\x20     name: sso_enabled
+\x20     context:
+\x20       sso_enabled : true
 
-  - user: user:anne
-    relation: member
-    object: organization:acme
+\x20 - user: user:anne
+\x20   relation: member
+\x20   object: organization:acme
 
 tests:
-  - check:
-    - user: user:anne
-      object: organization:acme
-      assertions:
-        can_use_sso: true
-```
+\x20 - check:
+\x20   - user: user:anne
+\x20     object: organization:acme
+\x20     assertions:
+\x20       can_use_sso: true`} />
 
 ## Request-Time Attribute Data
 
@@ -168,74 +164,72 @@ With this approach, you add a relation (e.g., `user_in_context`) that is not sto
 - You want to keep stored tuples simple and context-free
 - The context applies across multiple relation checks
 
-```dsl.openfga
-model: |
-  model
-    schema 1.1
+<OpenFGACodeBlock code={`model: |
+\x20 model
+\x20   schema 1.1
 
-  type user
+\x20 type user
 
-  type organization
-    relations
-      define user_in_context: [user]
-      define project_editor: [user] and user_in_context
-      define project_viewer: [user] and user_in_context
+\x20 type organization
+\x20   relations
+\x20     define user_in_context: [user]
+\x20     define project_editor: [user] and user_in_context
+\x20     define project_viewer: [user] and user_in_context
 
-  type project
-    relations
-      define organization: [organization]
-      define editor: project_editor from organization
-      define viewer: project_viewer from organization
+\x20 type project
+\x20   relations
+\x20     define organization: [organization]
+\x20     define editor: project_editor from organization
+\x20     define viewer: project_viewer from organization
 
 tuples:
-  - user: user:anne
-    relation: project_editor
-    object: organization:acme
+\x20 - user: user:anne
+\x20   relation: project_editor
+\x20   object: organization:acme
 
-  - user: organization:acme
-    relation: organization
-    object: project:acme-website
+\x20 - user: organization:acme
+\x20   relation: organization
+\x20   object: project:acme-website
 
-  - user: user:anne
-    relation: project_editor
-    object: organization:contoso
+\x20 - user: user:anne
+\x20   relation: project_editor
+\x20   object: organization:contoso
 
-  - user: organization:contoso
-    relation: organization
-    object: project:contoso-website
+\x20 - user: organization:contoso
+\x20   relation: organization
+\x20   object: project:contoso-website
 
 tests:
-  - name: Anne can access the acme-website when she's in context of the acme organization
-    tuples:
-      # This contextual tuple represents Anne's current session
-      - user: user:anne
-        relation: user_in_context
-        object: organization:acme
-    check:
-      - user: user:anne
-        object: project:acme-website
-        assertions:
-            editor: true
-      - user: user:anne
-        object: project:contoso-website
-        assertions:
-            editor: false
-  - name: Anne can access the contoso-website when she's in context of the contoso organization
-    tuples:
-      # This contextual tuple represents Anne's current session
-      - user: user:anne
-        relation: user_in_context
-        object: organization:contoso
-    check:
-      - user: user:anne
-        object: project:acme-website
-        assertions:
-            editor: false
-      - user: user:anne
-        object: project:contoso-website
-        assertions:
-            editor: true
-```
+\x20 - name: Anne can access the acme-website when she's in context of the acme organization
+\x20   tuples:
+\x20     # This contextual tuple represents Anne's current session
+\x20     - user: user:anne
+\x20       relation: user_in_context
+\x20       object: organization:acme
+\x20   check:
+\x20     - user: user:anne
+\x20       object: project:acme-website
+\x20       assertions:
+\x20           editor: true
+\x20     - user: user:anne
+\x20       object: project:contoso-website
+\x20       assertions:
+\x20           editor: false
+\x20 - name: Anne can access the contoso-website when she's in context of the contoso organization
+\x20   tuples:
+\x20     # This contextual tuple represents Anne's current session
+\x20     - user: user:anne
+\x20       relation: user_in_context
+\x20       object: organization:contoso
+\x20   check:
+\x20     - user: user:anne
+\x20       object: project:acme-website
+\x20       assertions:
+\x20           editor: false
+\x20     - user: user:anne
+\x20       object: project:contoso-website
+\x20       assertions:
+\x20           editor: true`} />
 
 #### Using Conditional Relationship Tuples
 
@@ -246,83 +240,81 @@ Instead of adding contextual tuples, you can attach conditions to your stored re
 - The condition logic involves comparing stored and request-time values
 - You prefer conditions over additional relations in your model
 
-```dsl.openfga
-model: |
-  model
-    schema 1.1
+<OpenFGACodeBlock code={`model: |
+\x20 model
+\x20   schema 1.1
 
-  type user
+\x20 type user
 
-  type organization
-    relations
-      define project_editor: [user with in_context]
-      define project_viewer: [user with in_context]
+\x20 type organization
+\x20   relations
+\x20     define project_editor: [user with in_context]
+\x20     define project_viewer: [user with in_context]
 
-  type project
-    relations
-      define organization: [organization]
-      define editor: project_editor from organization
-      define viewer: project_viewer from organization
+\x20 type project
+\x20   relations
+\x20     define organization: [organization]
+\x20     define editor: project_editor from organization
+\x20     define viewer: project_viewer from organization
 
-  condition in_context(project_org: string, user_org: string) {
-      project_org == user_org
-  }
+\x20 condition in_context(project_org: string, user_org: string) {
+\x20     project_org == user_org
+\x20 }
 
 tuples:
-  - user: user:anne
-    relation: project_editor
-    object: organization:acme
-    condition:
-      name: in_context
-      context:
-        project_org: "acme"
+\x20 - user: user:anne
+\x20   relation: project_editor
+\x20   object: organization:acme
+\x20   condition:
+\x20     name: in_context
+\x20     context:
+\x20       project_org: "acme"
 
-  - user: user:anne
-    relation: project_editor
-    object: organization:contoso
-    condition:
-      name: in_context
-      context:
-        project_org: "contoso"
+\x20 - user: user:anne
+\x20   relation: project_editor
+\x20   object: organization:contoso
+\x20   condition:
+\x20     name: in_context
+\x20     context:
+\x20       project_org: "contoso"
 
-  - user: organization:acme
-    relation: organization
-    object: project:acme-website
+\x20 - user: organization:acme
+\x20   relation: organization
+\x20   object: project:acme-website
 
-  - user: organization:contoso
-    relation: organization
-    object: project:contoso-website
+\x20 - user: organization:contoso
+\x20   relation: organization
+\x20   object: project:contoso-website
 
 tests:
-  - name: Anne can access the acme-website when she's in context of the acme organization
-    check:
-      - user: user:anne
-        object: project:acme-website
-        context:
-          user_org: "acme"
-        assertions:
-            editor: true
-      - user: user:anne
-        object: project:contoso-website
-        context:
-          user_org: "acme"
-        assertions:
-            editor: false
-  - name: Anne can access the contoso-website when she's in context of the contoso organization
-    check:
-      - user: user:anne
-        object: project:acme-website
-        context:
-          user_org: "contoso"
-        assertions:
-            editor: false
-      - user: user:anne
-        object: project:contoso-website
-        context:
-          user_org: "contoso"
-        assertions:
-            editor: true
-```
+\x20 - name: Anne can access the acme-website when she's in context of the acme organization
+\x20   check:
+\x20     - user: user:anne
+\x20       object: project:acme-website
+\x20       context:
+\x20         user_org: "acme"
+\x20       assertions:
+\x20           editor: true
+\x20     - user: user:anne
+\x20       object: project:contoso-website
+\x20       context:
+\x20         user_org: "acme"
+\x20       assertions:
+\x20           editor: false
+\x20 - name: Anne can access the contoso-website when she's in context of the contoso organization
+\x20   check:
+\x20     - user: user:anne
+\x20       object: project:acme-website
+\x20       context:
+\x20         user_org: "contoso"
+\x20       assertions:
+\x20           editor: false
+\x20     - user: user:anne
+\x20       object: project:contoso-website
+\x20       context:
+\x20         user_org: "contoso"
+\x20       assertions:
+\x20           editor: true`} />
 
 ## Choosing the Right Approach
 

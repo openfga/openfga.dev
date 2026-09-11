@@ -8,6 +8,7 @@ import test from 'node:test';
 import vm from 'node:vm';
 
 import { Prism } from 'prism-react-renderer';
+import { analyzeMdx, encodeOpenFgaCode, extractOpenFgaCodeBlocks } from './validate-openfga-code-blocks.mjs';
 
 const require = createRequire(import.meta.url);
 const REPO_ROOT = path.resolve(import.meta.dirname, '../..');
@@ -209,19 +210,20 @@ async function collectMigratedCorpus() {
       searchFrom = end;
     }
 
-    for (const match of content.matchAll(/<OpenFGACodeBlock\s+code=\{`([\s\S]*?)`\}\s*\/>/g)) {
+    const analysis = analyzeMdx(content, relativePath);
+    for (const block of analysis.blocks) {
       counts.openFgaCodeBlocks += 1;
       corpus.push({
         name: `${relativePath}:openfga-code-block:${counts.openFgaCodeBlocks}`,
-        source: match[1],
+        source: block.code,
       });
     }
 
-    for (const match of content.matchAll(/```dsl\.openfga[^\n]*\n([\s\S]*?)```/g)) {
+    for (const fence of analysis.fences) {
       counts.dslFences += 1;
       corpus.push({
         name: `${relativePath}:dsl-fence:${counts.dslFences}`,
-        source: match[1],
+        source: fence.code,
       });
     }
   }
@@ -249,6 +251,23 @@ function contrastRatio(foreground, background) {
     (Math.min(foregroundLuminance, backgroundLuminance) + 0.05)
   );
 }
+
+test('OpenFGACodeBlock source parsing preserves template-sensitive text', () => {
+  const expected = 'model\n  schema 1.1\n\n# `literal`, ${value}, C:\\models\\auth.fga\n  ';
+  const component = `<OpenFGACodeBlock code={\`${encodeOpenFgaCode(expected)}\`} />`;
+
+  assert.match(component, /\n\\x20 schema/);
+  assert.match(component, /\\`literal\\`/);
+  assert.match(component, /\\\$\{value\}/);
+  assert.deepEqual(
+    extractOpenFgaCodeBlocks(component, 'fixture.mdx').map(({ code }) => code),
+    [expected],
+  );
+  assert.throws(
+    () => extractOpenFgaCodeBlocks('<OpenFGACodeBlock code={`model\n${danger}`} />', 'fixture.mdx'),
+    /interpolation/,
+  );
+});
 
 test('deep grammar and theme modules match the package root exports', () => {
   assert.deepEqual(
@@ -366,8 +385,8 @@ test('migrated model and DSL corpus matches independent Prism exactly', async ()
 
   assert.deepEqual(counts, {
     authorizationModels: 121,
-    dslFences: 31,
-    openFgaCodeBlocks: 1,
+    dslFences: 0,
+    openFgaCodeBlocks: 32,
   });
   assert.equal(corpus.length, 153);
 

@@ -6,6 +6,7 @@ description: Modeling relationships with Conditions
 import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
 import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
 import { ListObjectsRequestViewer } from '/snippets/ListObjectsRequestViewer.jsx';
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
 
 # Conditions
 
@@ -26,20 +27,18 @@ For more information and background context on why we added this feature, please
 
 For this example we'll use the following authorization model to demonstrate a temporal based access policy. Namely, a user can view a document if and only if they have been granted the viewer relationship AND their non-expired grant policy is met.
 
-```dsl.openfga
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 
 type user
 
 type document
-  relations
-    define viewer: [user with non_expired_grant]
+\x20 relations
+\x20   define viewer: [user with non_expired_grant]
 
 condition non_expired_grant(current_time: timestamp, grant_time: timestamp, grant_duration: duration) {
-  current_time < grant_time + grant_duration
-}
-```
+\x20 current_time < grant_time + grant_duration
+}`} />
 
 <Note>
 The type restriction for `document#viewer` requires that any user of type `user` that is written in the relationship tuple must be accompanied by the `non_expired_grant` condition. This is denoted by the `user with non_expired_grant` specification.

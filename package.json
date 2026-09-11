@@ -28,8 +28,9 @@
     "format:fix": "prettier --write src/**",
     "generate:mintlify-codegen": "bash mintlify-native/scripts/build-fga-codegen.sh",
     "check:mintlify-codegen": "bash mintlify-native/scripts/build-fga-codegen.sh --check && npm run test:mintlify-codegen",
-    "test:mintlify-codegen": "node --test mintlify-native/scripts/openfga-dsl-highlight.test.mjs",
-    "validate:mintlify-navigation": "npm run validate:mintlify-doc-navigation && npm run validate:mintlify-api-navigation",
+    "test:mintlify-codegen": "node --test mintlify-native/scripts/openfga-dsl-highlight.test.mjs mintlify-native/scripts/validate-openfga-code-blocks.test.mjs",
+    "validate:mintlify-navigation": "npm run validate:mintlify-code-blocks && npm run validate:mintlify-doc-navigation && npm run validate:mintlify-api-navigation",
+    "validate:mintlify-code-blocks": "node mintlify-native/scripts/validate-openfga-code-blocks.mjs",
     "validate:mintlify-doc-navigation": "node mintlify-native/scripts/validate-doc-navigation.mjs",
     "validate:mintlify-api-navigation": "node mintlify-native/scripts/validate-api-navigation.mjs"
   },
@@ -54,6 +55,7 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.10.2",
+    "@mdx-js/mdx": "3.1.0",
     "@signalwire/docusaurus-plugin-llms-txt": "1.2.2",
     "@types/prismjs": "1.26.6",
     "@types/react": "18.3.9",

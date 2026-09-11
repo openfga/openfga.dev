@@ -3,6 +3,8 @@ title: Microservices Authorization with OpenFGA
 description: Centralize authorization across microservices with OpenFGA. One model, one store, one set of decisions — instead of a roles table per service.
 ---
 
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
+
 # Microservices Authorization
 
 Microservices repeat the same pattern: each service ends up with its own roles table, its own permission checks, and its own subtle drift. OpenFGA centralizes that into a single authorization service that every microservice consults.
@@ -21,25 +23,23 @@ Microservices repeat the same pattern: each service ends up with its own roles t
 
 ## Simplified model
 
-```dsl.openfga
-type user
+<OpenFGACodeBlock code={`type user
 
 type team
-  relations
-    define member: [user]
+\x20 relations
+\x20   define member: [user]
 
 type project
-  relations
-    define team: [team]
-    define can_view: member from team
-    define can_edit: member from team
+\x20 relations
+\x20   define team: [team]
+\x20   define can_view: member from team
+\x20   define can_edit: member from team
 
 type document
-  relations
-    define project: [project]
-    define can_view: can_view from project
-    define can_edit: can_edit from project
-```
+\x20 relations
+\x20   define project: [project]
+\x20   define can_view: can_view from project
+\x20   define can_edit: can_edit from project`} />
 
 The membership service writes `team#member` tuples; the project service writes `project#team`; the document service writes `document#project`. Any service — including ones that only read documents — answers permission questions with a single `check` against the same OpenFGA store, instead of reimplementing team/project/document role logic locally.
 
