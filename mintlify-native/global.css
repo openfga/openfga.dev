@@ -69,3 +69,204 @@ footer a[href='https://openfga.dev/docs/llms-full.txt'] {
   font-weight: var(--shiki-dark-font-weight) !important;
   text-decoration: var(--shiki-dark-text-decoration) !important;
 }
+
+/* Theme-aware surfaces shared by the custom OpenFGA DSL and JSON viewers. */
+:root {
+  --openfga-tabs-surface: #ffffff;
+  --openfga-tabs-border: #d0d7de;
+  --openfga-tabs-active: #1f2328;
+  --openfga-tabs-inactive: #59636e;
+  --openfga-tabs-accent: #1a7f37;
+}
+
+.dark {
+  --openfga-tabs-surface: #1c1e22;
+  --openfga-tabs-border: #3a3d44;
+  --openfga-tabs-active: #ffffff;
+  --openfga-tabs-inactive: #a7b0bc;
+  --openfga-tabs-accent: #79ed83;
+}
+
+.openfga-code-viewer {
+  --openfga-code-surface: #f6f8fa;
+  --openfga-code-header: var(--openfga-tabs-surface);
+  --openfga-code-border: var(--openfga-tabs-border);
+  --openfga-code-default: #1f2328;
+  --openfga-code-muted: #59636e;
+  --openfga-code-keyword: #57606a;
+  --openfga-code-type: #1a7f37;
+  --openfga-code-relation: #0969da;
+  --openfga-code-directly-assignable: #8250df;
+  --openfga-code-error: #cf222e;
+  --openfga-code-accent: #1a7f37;
+  --openfga-json-key: #0969da;
+  --openfga-json-string: #953800;
+  --openfga-json-number: #0550ae;
+  --openfga-json-keyword: #8250df;
+  --openfga-json-punctuation: #57606a;
+
+  overflow: hidden;
+  color: var(--openfga-code-default);
+  background: var(--openfga-code-surface);
+  border: 1px solid var(--openfga-code-border);
+  border-radius: 0.5rem;
+}
+
+.dark .openfga-code-viewer {
+  --openfga-code-surface: var(--openfga-dark-background, #0b0c0e);
+  --openfga-code-default: var(--openfga-dark-default, #ffffff);
+  --openfga-code-muted: var(--openfga-tabs-inactive);
+  --openfga-code-error: #ff7b72;
+  --openfga-code-accent: var(--openfga-dark-accent, var(--openfga-tabs-accent));
+  --openfga-json-key: #9cdcfe;
+  --openfga-json-string: #ce9178;
+  --openfga-json-number: #b5cea8;
+  --openfga-json-keyword: #569cd6;
+  --openfga-json-punctuation: #d4d4d4;
+}
+
+.openfga-code-viewer__tabs {
+  display: flex;
+  background: var(--openfga-code-header);
+  border-bottom: 1px solid var(--openfga-code-border);
+}
+
+.openfga-code-viewer__tab {
+  padding: 0.4rem 1rem;
+  color: var(--openfga-code-muted);
+  font-size: 0.85rem;
+  font-weight: 400;
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+}
+
+.openfga-code-viewer__tab[data-state='active'] {
+  color: var(--openfga-code-default);
+  font-weight: 600;
+  border-bottom-color: var(--openfga-code-accent);
+}
+
+.openfga-code-viewer__tab:focus-visible {
+  outline: 2px solid var(--openfga-code-accent);
+  outline-offset: -3px;
+}
+
+.openfga-code-viewer__title {
+  padding: 0.5rem 1rem;
+  color: var(--openfga-code-muted);
+  font-size: 0.8rem;
+  background: var(--openfga-code-header);
+  border-bottom: 1px solid var(--openfga-code-border);
+}
+
+.openfga-code-viewer__status {
+  padding: 1rem;
+  color: #59636e;
+  background: transparent;
+  border: 0;
+}
+
+.dark .openfga-code-viewer__status {
+  color: #a7b0bc;
+  background: transparent;
+}
+
+.openfga-code-viewer__code {
+  padding: 1rem;
+  margin: 0;
+  overflow-x: auto;
+  color: var(--openfga-code-default);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  white-space: pre;
+  background: var(--openfga-code-surface);
+}
+
+.openfga-code-token[data-token='comment'] {
+  color: var(--openfga-code-muted);
+}
+
+.openfga-code-token[data-token='keyword'],
+.openfga-code-token[data-token='condition-param-type'] {
+  color: var(--openfga-code-keyword);
+}
+
+.openfga-code-token[data-token='module'],
+.openfga-code-token[data-token='extend'],
+.openfga-code-token[data-token='type'],
+.openfga-code-token[data-token='condition'] {
+  color: var(--openfga-code-type);
+}
+
+.openfga-code-token[data-token='relation'],
+.openfga-code-token[data-token='condition-param'] {
+  color: var(--openfga-code-relation);
+}
+
+.openfga-code-token[data-token='directly-assignable'] {
+  color: var(--openfga-code-directly-assignable);
+}
+
+.openfga-code-token[data-token='error'] {
+  color: var(--openfga-code-error);
+}
+
+.openfga-code-token[data-token='json-key'] {
+  color: var(--openfga-json-key);
+}
+
+.openfga-code-token[data-token='json-string'] {
+  color: var(--openfga-json-string);
+}
+
+.openfga-code-token[data-token='json-number'] {
+  color: var(--openfga-json-number);
+}
+
+.openfga-code-token[data-token='json-keyword'] {
+  color: var(--openfga-json-keyword);
+}
+
+.openfga-code-token[data-token='json-punctuation'] {
+  color: var(--openfga-json-punctuation);
+}
+
+.dark .openfga-code-viewer__code[data-language='dsl'] .openfga-code-token:not([data-token='error']) {
+  color: var(--openfga-dark-token-color, var(--openfga-code-default, #ffffff));
+}
+
+/* Shared language tabs for custom request viewers that wrap native CodeGroup blocks. */
+.openfga-language-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0.25rem 0.25rem 0;
+  background: var(--openfga-tabs-surface);
+  border-bottom: 1px solid var(--openfga-tabs-border);
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.openfga-language-tab {
+  padding: 0.4rem 0.75rem;
+  color: var(--openfga-tabs-inactive);
+  font-size: 0.82rem;
+  font-weight: 400;
+  white-space: nowrap;
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+}
+
+.openfga-language-tab[data-state='active'] {
+  color: var(--openfga-tabs-active);
+  font-weight: 600;
+  border-bottom-color: var(--openfga-tabs-accent);
+}
+
+.openfga-language-tab:focus-visible {
+  outline: 2px solid var(--openfga-tabs-accent);
+  outline-offset: -3px;
+}

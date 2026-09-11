@@ -321,23 +321,14 @@ var response = fgaClient.write(body, options).get();`;
 
   const [activeLang, setActiveLang] = useState(langs[0]);
 
-  const TAB_ACTIVE = {
-    padding: '0.4rem 0.75rem', background: 'none', border: 'none', cursor: 'pointer',
-    color: '#fff', borderBottom: '2px solid #79ed83', fontSize: '0.82rem', fontWeight: 600,
-  };
-  const TAB_INACTIVE = {
-    padding: '0.4rem 0.75rem', background: 'none', border: 'none', cursor: 'pointer',
-    color: '#718096', borderBottom: '2px solid transparent', fontSize: '0.82rem', fontWeight: 400,
-  };
-
   return (
     <>
       {!skipSetup && (
         <Accordion title="Initialize the SDK">
           <div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', background: '#1c1e22', borderRadius: '8px 8px 0 0', borderBottom: '1px solid #3a3d44', padding: '4px 4px 0' }}>
+            <div className="openfga-language-tabs">
               {langs.filter(l => l !== LANG.RPC).map(lang => (
-                <button key={lang} onClick={() => setActiveLang(lang)} style={activeLang === lang ? TAB_ACTIVE : TAB_INACTIVE}>
+                <button aria-pressed={activeLang === lang} className="openfga-language-tab" data-state={activeLang === lang ? 'active' : 'inactive'} key={lang} onClick={() => setActiveLang(lang)}>
                   {LANG_LABEL[lang]}
                 </button>
               ))}
@@ -351,9 +342,9 @@ var response = fgaClient.write(body, options).get();`;
         </Accordion>
       )}
       <div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', background: '#1c1e22', borderRadius: '8px 8px 0 0', borderBottom: '1px solid #3a3d44', padding: '4px 4px 0' }}>
+        <div className="openfga-language-tabs">
           {langs.map(lang => (
-            <button key={lang} onClick={() => setActiveLang(lang)} style={activeLang === lang ? TAB_ACTIVE : TAB_INACTIVE}>
+            <button aria-pressed={activeLang === lang} className="openfga-language-tab" data-state={activeLang === lang ? 'active' : 'inactive'} key={lang} onClick={() => setActiveLang(lang)}>
               {LANG_LABEL[lang]}
             </button>
           ))}

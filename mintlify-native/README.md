@@ -126,7 +126,9 @@ theme exported by the lockfile-pinned `@openfga/frontend-utils` package. It
 bundles official Prism core so grammar features retain Prism's behavior without a
 project-specific tokenizer implementation. The generated runtime is standalone,
 keeps Prism in manual mode, restores any existing Prism global, and has no runtime
-npm imports or dynamic code evaluation.
+npm imports or dynamic code evaluation. Custom DSL viewers use the exact exported
+colors in dark mode and a centralized WCAG AA light palette from `global.css`;
+theme changes apply through CSS without re-tokenizing the model.
 
 ### Generated browser artifacts
 

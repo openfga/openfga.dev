@@ -14,6 +14,16 @@ const REPO_ROOT = path.resolve(import.meta.dirname, '../..');
 const ARTIFACT_PATH = path.join(REPO_ROOT, 'mintlify-native/openfga-dsl-highlight.js');
 const CODEGEN_PATH = path.join(REPO_ROOT, 'mintlify-native/fga-codegen.js');
 const BUILD_SCRIPT = path.join(REPO_ROOT, 'mintlify-native/scripts/build-fga-codegen.sh');
+const GLOBAL_CSS_PATH = path.join(REPO_ROOT, 'mintlify-native/global.css');
+const AUTHZ_VIEWER_PATH = path.join(REPO_ROOT, 'mintlify-native/snippets/AuthzModelSnippetViewer.jsx');
+const CODE_BLOCK_PATH = path.join(REPO_ROOT, 'mintlify-native/snippets/OpenFGACodeBlock.jsx');
+const LANGUAGE_TAB_VIEWER_PATHS = [
+  'CreateStoreViewer.jsx',
+  'BatchCheckRequestViewer.jsx',
+  'ListObjectsRequestViewer.jsx',
+  'ListUsersRequestViewer.jsx',
+  'WriteRequestViewer.jsx',
+].map((fileName) => path.join(REPO_ROOT, 'mintlify-native/snippets', fileName));
 const FRONTEND_UTILS_PACKAGE = require('@openfga/frontend-utils');
 const FRONTEND_UTILS_VERSION = require('@openfga/frontend-utils/package.json').version;
 const PRISM_VERSION = require('prismjs/package.json').version;
@@ -78,7 +88,8 @@ function flattenPrism(nodes, inheritedType = null, output = []) {
     if (typeof node === 'string') {
       if (!node) continue;
       const color = inheritedType ? openfgaDark.colors[inheritedType] : undefined;
-      output.push(color ? { text: node, color } : { text: node });
+      const type = inheritedType || 'default';
+      output.push(color ? { text: node, color, type } : { text: node, type });
       continue;
     }
 
@@ -222,6 +233,23 @@ function digest(source) {
   return createHash('sha256').update(source).digest('hex');
 }
 
+function relativeLuminance(hex) {
+  const channels = [1, 3, 5].map((offset) => Number.parseInt(hex.slice(offset, offset + 2), 16) / 255);
+  const [red, green, blue] = channels.map((channel) =>
+    channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4,
+  );
+  return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+}
+
+function contrastRatio(foreground, background) {
+  const foregroundLuminance = relativeLuminance(foreground);
+  const backgroundLuminance = relativeLuminance(background);
+  return (
+    (Math.max(foregroundLuminance, backgroundLuminance) + 0.05) /
+    (Math.min(foregroundLuminance, backgroundLuminance) + 0.05)
+  );
+}
+
 test('deep grammar and theme modules match the package root exports', () => {
   assert.deepEqual(
     describe(languageDefinition),
@@ -323,6 +351,10 @@ test('public API and representative output match independent Prism', async () =>
     const expected = flattenPrism(Prism.tokenize(fixture, languageDefinition));
     const actual = plain(api.tokenize(fixture));
     assert.deepEqual(actual, expected, name);
+    assert.ok(
+      actual.every((token) => typeof token.type === 'string'),
+      `${name} semantic token types`,
+    );
     assert.equal(actual.map((token) => token.text).join(''), fixture, `${name} reconstruction`);
   }
 });
@@ -339,12 +371,29 @@ test('migrated model and DSL corpus matches independent Prism exactly', async ()
   });
   assert.equal(corpus.length, 153);
 
+  const emittedTypes = new Set();
   for (const input of corpus) {
     const expected = flattenPrism(Prism.tokenize(input.source, languageDefinition));
     const actual = plain(api.tokenize(input.source));
     assert.deepEqual(actual, expected, input.name);
+    actual.forEach((token) => emittedTypes.add(token.type));
     assert.equal(actual.map((token) => token.text).join(''), input.source, `${input.name} reconstruction`);
   }
+  Object.values(FIXTURES).forEach((fixture) =>
+    plain(api.tokenize(fixture)).forEach((token) => emittedTypes.add(token.type)),
+  );
+  assert.deepEqual([...emittedTypes].sort(), [
+    'comment',
+    'condition',
+    'condition-param',
+    'condition-param-type',
+    'default',
+    'directly-assignable',
+    'keyword',
+    'module',
+    'relation',
+    'type',
+  ]);
 });
 
 test('common DSL path preserves the legacy token stream', async () => {
@@ -355,31 +404,142 @@ type user
     define viewer: [user] or editor from parent but not blocked
 `;
   const expected = [
-    { text: 'model', color: '#AAAAAA' },
-    { text: '\n  ' },
-    { text: 'schema', color: '#AAAAAA' },
-    { text: ' 1.1\n' },
-    { text: 'type', color: '#AAAAAA' },
-    { text: ' ' },
-    { text: 'user', color: '#79ED83' },
-    { text: '\n  ' },
-    { text: 'relations', color: '#AAAAAA' },
-    { text: '\n    ' },
-    { text: 'define', color: '#AAAAAA' },
-    { text: ' ' },
-    { text: 'viewer', color: '#20F1F5' },
-    { text: ': ' },
-    { text: '[user]', color: '#CEEC93' },
-    { text: ' ' },
-    { text: 'or', color: '#AAAAAA' },
-    { text: ' editor ' },
-    { text: 'from', color: '#AAAAAA' },
-    { text: ' parent ' },
-    { text: 'but not', color: '#AAAAAA' },
-    { text: ' blocked\n' },
+    { text: 'model', color: '#AAAAAA', type: 'keyword' },
+    { text: '\n  ', type: 'default' },
+    { text: 'schema', color: '#AAAAAA', type: 'keyword' },
+    { text: ' 1.1\n', type: 'default' },
+    { text: 'type', color: '#AAAAAA', type: 'keyword' },
+    { text: ' ', type: 'default' },
+    { text: 'user', color: '#79ED83', type: 'type' },
+    { text: '\n  ', type: 'default' },
+    { text: 'relations', color: '#AAAAAA', type: 'keyword' },
+    { text: '\n    ', type: 'default' },
+    { text: 'define', color: '#AAAAAA', type: 'keyword' },
+    { text: ' ', type: 'default' },
+    { text: 'viewer', color: '#20F1F5', type: 'relation' },
+    { text: ': ', type: 'default' },
+    { text: '[user]', color: '#CEEC93', type: 'directly-assignable' },
+    { text: ' ', type: 'default' },
+    { text: 'or', color: '#AAAAAA', type: 'keyword' },
+    { text: ' editor ', type: 'default' },
+    { text: 'from', color: '#AAAAAA', type: 'keyword' },
+    { text: ' parent ', type: 'default' },
+    { text: 'but not', color: '#AAAAAA', type: 'keyword' },
+    { text: ' blocked\n', type: 'default' },
   ];
   const artifact = await readFile(ARTIFACT_PATH, 'utf8');
   assert.deepEqual(plain(loadArtifact(artifact).window.openfgaDsl.tokenize(source)), expected);
+});
+
+test('viewer semantic classes and centralized palettes cover DSL and JSON states', async () => {
+  const [css, authzViewer, codeBlock] = await Promise.all([
+    readFile(GLOBAL_CSS_PATH, 'utf8'),
+    readFile(AUTHZ_VIEWER_PATH, 'utf8'),
+    readFile(CODE_BLOCK_PATH, 'utf8'),
+  ]);
+  const dslTypes = [
+    'comment',
+    'keyword',
+    'condition-param-type',
+    'module',
+    'extend',
+    'type',
+    'condition',
+    'relation',
+    'condition-param',
+    'directly-assignable',
+    'error',
+  ];
+  const jsonTypes = ['json-key', 'json-string', 'json-number', 'json-keyword', 'json-punctuation'];
+
+  for (const type of [...dslTypes, ...jsonTypes]) {
+    assert.match(css, new RegExp(`data-token=['\"]${type}['\"]`), `${type} CSS selector`);
+  }
+  for (const type of jsonTypes) {
+    assert.match(authzViewer, new RegExp(`['\"]${type}['\"]`), `${type} emitted by JSON tokenizer`);
+  }
+  for (const source of [authzViewer, codeBlock]) {
+    assert.match(source, /className="openfga-code-viewer"/);
+    assert.match(source, /--openfga-dark-token-color/);
+    assert.doesNotMatch(source, /background:\s*['"]#141517/);
+  }
+  assert.match(authzViewer, /className="openfga-code-viewer__status"/);
+  assert.match(authzViewer, /data-state=\{hasError \? 'error'/);
+  assert.match(authzViewer, /role=\{hasError \? 'alert'/);
+  assert.match(css, /\.dark \.openfga-code-viewer/);
+  assert.match(css, /var\(--openfga-dark-token-color, var\(--openfga-code-default, #ffffff\)\)/);
+  assert.match(css, /--openfga-code-surface:\s*var\(--openfga-dark-background, #0b0c0e\)/);
+  assert.match(css, /\.openfga-code-viewer__tab:focus-visible[\s\S]*var\(--openfga-code-accent\)/);
+});
+
+test('reviewed light palette meets WCAG AA for code and tab text', async () => {
+  const css = await readFile(GLOBAL_CSS_PATH, 'utf8');
+  const expectedPalette = {
+    '--openfga-code-surface': '#f6f8fa',
+    '--openfga-code-default': '#1f2328',
+    '--openfga-code-muted': '#59636e',
+    '--openfga-code-keyword': '#57606a',
+    '--openfga-code-type': '#1a7f37',
+    '--openfga-code-relation': '#0969da',
+    '--openfga-code-directly-assignable': '#8250df',
+    '--openfga-code-error': '#cf222e',
+    '--openfga-json-key': '#0969da',
+    '--openfga-json-string': '#953800',
+    '--openfga-json-number': '#0550ae',
+    '--openfga-json-keyword': '#8250df',
+    '--openfga-json-punctuation': '#57606a',
+    '--openfga-tabs-surface': '#ffffff',
+    '--openfga-tabs-active': '#1f2328',
+    '--openfga-tabs-inactive': '#59636e',
+  };
+  for (const [variable, value] of Object.entries(expectedPalette)) {
+    assert.match(css, new RegExp(`${variable}:\\s*${value}`, 'i'), variable);
+  }
+
+  const surface = expectedPalette['--openfga-code-surface'];
+  const header = expectedPalette['--openfga-tabs-surface'];
+  for (const variable of [
+    '--openfga-code-default',
+    '--openfga-code-muted',
+    '--openfga-code-keyword',
+    '--openfga-code-type',
+    '--openfga-code-relation',
+    '--openfga-code-directly-assignable',
+    '--openfga-code-error',
+    '--openfga-json-key',
+    '--openfga-json-string',
+    '--openfga-json-number',
+    '--openfga-json-keyword',
+    '--openfga-json-punctuation',
+  ]) {
+    assert.ok(contrastRatio(expectedPalette[variable], surface) >= 4.5, `${variable} contrast`);
+  }
+  assert.ok(contrastRatio(expectedPalette['--openfga-tabs-inactive'], header) >= 4.5, 'inactive tab contrast');
+  assert.ok(contrastRatio(expectedPalette['--openfga-tabs-active'], header) >= 4.5, 'active tab contrast');
+});
+
+test('custom request viewers share theme-aware language tabs', async () => {
+  const [css, ...viewers] = await Promise.all([
+    readFile(GLOBAL_CSS_PATH, 'utf8'),
+    ...LANGUAGE_TAB_VIEWER_PATHS.map((filePath) => readFile(filePath, 'utf8')),
+  ]);
+  for (const viewer of viewers) {
+    assert.match(viewer, /className="openfga-language-tabs"/);
+    assert.match(viewer, /className="openfga-language-tab"/);
+    assert.match(viewer, /aria-pressed=\{activeLang === lang\}/);
+    for (const darkOnlyColor of ['#1c1e22', '#3a3d44', '#718096', '#79ed83']) {
+      assert.doesNotMatch(viewer, new RegExp(darkOnlyColor, 'i'));
+    }
+  }
+  assert.match(css, /\.openfga-language-tabs/);
+  assert.match(css, /\.dark[\s\S]*--openfga-tabs-surface:\s*#1c1e22/);
+  assert.match(css, /\.openfga-language-tabs[\s\S]*var\(--openfga-tabs-surface\)/);
+  assert.match(css, /\.openfga-language-tab:focus-visible/);
+  assert.match(css, /\.openfga-language-tab:focus-visible[\s\S]*var\(--openfga-tabs-accent\)/);
+  assert.ok(contrastRatio('#59636e', '#ffffff') >= 4.5, 'light inactive language tab contrast');
+  assert.ok(contrastRatio('#1f2328', '#ffffff') >= 4.5, 'light active language tab contrast');
+  assert.ok(contrastRatio('#a7b0bc', '#1c1e22') >= 4.5, 'dark inactive language tab contrast');
+  assert.ok(contrastRatio('#ffffff', '#1c1e22') >= 4.5, 'dark active language tab contrast');
 });
 
 test('freshness check is deterministic and leaves both artifacts unchanged', async () => {

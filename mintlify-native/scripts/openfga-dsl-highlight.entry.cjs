@@ -31,7 +31,8 @@ function flatten(nodes, inheritedType, output) {
     if (typeof node === 'string') {
       if (!node) continue;
       const color = inheritedType ? openfgaDark.colors[inheritedType] : undefined;
-      output.push(color ? { text: node, color } : { text: node });
+      const type = inheritedType || 'default';
+      output.push(color ? { text: node, color, type } : { text: node, type });
       continue;
     }
 
