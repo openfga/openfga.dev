@@ -1,5 +1,8 @@
 import { LANG, languages, defaultAuthorizationModelId, selectLanguages } from './viewer-contract.mjs';
 import { buildOperationCode, operationComponents } from './operation-codegen.mjs';
+import { apiOperation, validateApiInputs } from './api-operation-contract.mjs';
+import { buildApiOperationCode } from './api-operation-codegen.mjs';
+import { apiSdkSupport } from './api-sdk-support.mjs';
 
 export { LANG, defaultAuthorizationModelId, selectLanguages };
 export { buildOperationCode, buildOperationRequest, buildRequestCode } from './operation-codegen.mjs';
@@ -17,12 +20,21 @@ const pythonModels = {
 
 export function buildSdkSetup(language, component) {
   selectLanguages(component, [language]);
+  return sdkSetup(language, component);
+}
+
+function sdkSetup(language, component, scope = component === 'CreateStoreViewer' ? 'api' : 'model', imports) {
   const createStore = component === 'CreateStoreViewer';
   const write = component === 'WriteRequestViewer';
+  const store = scope !== 'api';
+  const model = scope === 'model';
+  const modelNote = component
+    ? 'Optional; requests can override this.'
+    : 'Set to the authorization model ID for this request.';
   switch (language) {
     case LANG.CLI:
     case LANG.CURL:
-      return `# Set FGA_API_URL to the URL of your OpenFGA server.${createStore ? '' : '\n# Set FGA_STORE_ID to your store ID.'}
+      return `# Set FGA_API_URL to the URL of your OpenFGA server.${store ? '\n# Set FGA_STORE_ID to your store ID.' : ''}${model && !component ? '\n# Set FGA_MODEL_ID to your authorization model ID.' : ''}
 # These examples use a server with authentication disabled.
 # For authenticated servers, see /docs/getting-started/setup-sdk-client.`;
     case LANG.JS_SDK:
@@ -30,28 +42,36 @@ export function buildSdkSetup(language, component) {
 
 const fgaClient = new OpenFgaClient({
   apiUrl: process.env.FGA_API_URL,${
-    createStore
+    !store
       ? ''
       : `
-  storeId: process.env.FGA_STORE_ID,
-  authorizationModelId: process.env.FGA_MODEL_ID, // Optional; requests can override this.`
+  storeId: process.env.FGA_STORE_ID,${
+    model
+      ? `
+  authorizationModelId: process.env.FGA_MODEL_ID, // ${modelNote}`
+      : ''
+  }`
   }
 });`;
     case LANG.GO_SDK:
       return `import (
     "context"
     "os"
-${createStore ? '' : '\n    openfga "github.com/openfga/go-sdk"'}
+${imports ? imports.map((value) => `    ${value}`).join('\n') : createStore ? '' : '\n    openfga "github.com/openfga/go-sdk"'}
     . "github.com/openfga/go-sdk/client"
 )
 
 fgaClient, err := NewSdkClient(&ClientConfiguration{
     ApiUrl: os.Getenv("FGA_API_URL"),${
-      createStore
+      !store
         ? ''
         : `
-    StoreId: os.Getenv("FGA_STORE_ID"),
-    AuthorizationModelId: os.Getenv("FGA_MODEL_ID"), // Optional; requests can override this.`
+    StoreId: os.Getenv("FGA_STORE_ID"),${
+      model
+        ? `
+    AuthorizationModelId: os.Getenv("FGA_MODEL_ID"), // ${modelNote}`
+        : ''
+    }`
     }
 })
 if err != nil {
@@ -62,15 +82,19 @@ if err != nil {
 using OpenFga.Sdk.Client;
 using OpenFga.Sdk.Client.Model;
 using OpenFga.Sdk.Model;
-using Environment = System.Environment;
+using Environment = System.Environment;${imports?.length ? `\n${imports.join('\n')}` : ''}
 
 var fgaClient = new OpenFgaClient(new ClientConfiguration() {
   ApiUrl = Environment.GetEnvironmentVariable("FGA_API_URL"),${
-    createStore
+    !store
       ? ''
       : `
-  StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"),
-  AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"), // Optional; requests can override this.`
+  StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"),${
+    model
+      ? `
+  AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"), // ${modelNote}`
+      : ''
+  }`
   }
 });`;
     case LANG.PYTHON_SDK:
@@ -78,9 +102,11 @@ var fgaClient = new OpenFgaClient(new ClientConfiguration() {
 import os
 from openfga_sdk.client import OpenFgaClient, ClientConfiguration
 ${
-  createStore
-    ? 'from openfga_sdk.models import CreateStoreRequest'
-    : `from openfga_sdk.client.models import ${pythonModels[component]}${component === 'ListUsersRequestViewer' ? '\nfrom openfga_sdk.client.models.list_users_request import ClientListUsersRequest' : ''}
+  imports
+    ? imports.join('\n')
+    : createStore
+      ? 'from openfga_sdk.models import CreateStoreRequest'
+      : `from openfga_sdk.client.models import ${pythonModels[component]}${component === 'ListUsersRequestViewer' ? '\nfrom openfga_sdk.client.models.list_users_request import ClientListUsersRequest' : ''}
 from openfga_sdk.models import RelationshipCondition${component === 'ListUsersRequestViewer' ? ', FgaObject, UserTypeFilter' : ''}`
 }${
         write
@@ -91,11 +117,15 @@ from openfga_sdk.client.models import ConflictOptions, ClientWriteRequestOnDupli
 
 configuration = ClientConfiguration(
     api_url=os.environ.get("FGA_API_URL"),${
-      createStore
+      !store
         ? ''
         : `
-    store_id=os.environ.get("FGA_STORE_ID"),
-    authorization_model_id=os.environ.get("FGA_MODEL_ID"), # Optional; requests can override this.`
+    store_id=os.environ.get("FGA_STORE_ID"),${
+      model
+        ? `
+    authorization_model_id=os.environ.get("FGA_MODEL_ID"), # ${modelNote}`
+        : ''
+    }`
     }
 )
 fga_client = OpenFgaClient(configuration)`;
@@ -107,15 +137,19 @@ import dev.openfga.sdk.api.client.model.*;
 import dev.openfga.sdk.api.model.*;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
+import java.util.ArrayList;${imports?.length ? `\n${imports.join('\n')}` : ''}
 
 var config = new ClientConfiguration()
     .apiUrl(System.getenv("FGA_API_URL"))${
-      createStore
+      !store
         ? ';'
         : `
-    .storeId(System.getenv("FGA_STORE_ID"))
-    .authorizationModelId(System.getenv("FGA_MODEL_ID")); // Optional; requests can override this.`
+    .storeId(System.getenv("FGA_STORE_ID"))${
+      model
+        ? `
+    .authorizationModelId(System.getenv("FGA_MODEL_ID")); // ${modelNote}`
+        : ';'
+    }`
     }
 var fgaClient = new OpenFgaClient(config);`;
     default:
@@ -144,6 +178,10 @@ export function buildSdkExample(language, component, props = {}) {
     { ...props, authorizationModelId: props.authorizationModelId ?? '' },
     { environmentModelId: true },
   );
+  return composeSdkExample(language, setup, request);
+}
+
+function composeSdkExample(language, setup, request) {
   if (language === LANG.JS_SDK) {
     return `${setup}\n\nasync function main() {\n${indent(request)}\n}\n\nmain().catch((error) => {\n    console.error(error);\n    process.exitCode = 1;\n});`;
   }
@@ -163,4 +201,18 @@ export function buildSdkExample(language, component, props = {}) {
     return `${setup.slice(0, boundary)}public class Example {\n    public static void main(String[] args) throws Exception {\n${indent(`${setup.slice(boundary)}\n\n${request}`, 8)}\n    }\n}`;
   }
   return `${setup}\n\n${request}`;
+}
+
+export function buildApiExample(language, operationId, props = {}) {
+  const { viewer, scope } = apiOperation(operationId);
+  validateApiInputs(operationId, props);
+  if (language !== LANG.CURL && !apiSdkSupport[operationId]?.[language]?.method) {
+    throw new Error(`No named SDK operation for ${operationId}/${language} in the audited version`);
+  }
+  if (viewer) return buildSdkExample(language, viewer, props);
+  const { code, imports } = buildApiOperationCode(operationId, language, props);
+  const httpOnly =
+    language === LANG.CURL && Object.values(apiSdkSupport[operationId]).every(({ method }) => method === null);
+  const setup = `${httpOnly ? '# HTTP only: no named client or generated low-level operation in the audited SDK versions.\n' : ''}${sdkSetup(language, undefined, scope, imports)}`;
+  return composeSdkExample(language, setup, code);
 }

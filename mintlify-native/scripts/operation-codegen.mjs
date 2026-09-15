@@ -343,9 +343,11 @@ function optionFields(language, operation, body, props) {
         ? `openfga.CONSISTENCYPREFERENCE_${body.consistency}.Ptr()`
         : language === LANG.JAVA_SDK
           ? `ConsistencyPreference.${body.consistency}`
-          : language === LANG.PYTHON_SDK
-            ? quote(body.consistency)
-            : `ConsistencyPreference.${enumName}`;
+          : language === LANG.DOTNET_SDK
+            ? `ConsistencyPreference.${body.consistency.replaceAll('_', '')}`
+            : language === LANG.PYTHON_SDK
+              ? quote(body.consistency)
+              : `ConsistencyPreference.${enumName}`;
   }
   if (defined(props.headers)) {
     if (language === LANG.GO_SDK) {

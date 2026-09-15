@@ -59,6 +59,158 @@
       "path": "/stores",
       "component": "CreateStoreViewer",
       "props": { "storeName": "FGA Demo Store" }
+    },
+    {
+      "operationId": "ListStores",
+      "method": "get",
+      "path": "/stores",
+      "props": { "pageSize": 20 }
+    },
+    {
+      "operationId": "GetStore",
+      "method": "get",
+      "path": "/stores/{store_id}",
+      "props": {}
+    },
+    {
+      "operationId": "DeleteStore",
+      "method": "delete",
+      "path": "/stores/{store_id}",
+      "props": {}
+    },
+    {
+      "operationId": "ReadAuthorizationModels",
+      "method": "get",
+      "path": "/stores/{store_id}/authorization-models",
+      "props": { "pageSize": 20 }
+    },
+    {
+      "operationId": "ReadAuthorizationModel",
+      "method": "get",
+      "path": "/stores/{store_id}/authorization-models/{id}",
+      "props": {}
+    },
+    {
+      "operationId": "WriteAuthorizationModel",
+      "method": "post",
+      "path": "/stores/{store_id}/authorization-models",
+      "props": {
+        "model": {
+          "schema_version": "1.1",
+          "type_definitions": [
+            { "type": "user" },
+            {
+              "type": "document",
+              "relations": { "reader": { "this": {} } },
+              "metadata": { "relations": { "reader": { "directly_related_user_types": [{ "type": "user" }] } } }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operationId": "Read",
+      "method": "post",
+      "path": "/stores/{store_id}/read",
+      "props": { "user": "user:anne", "relation": "reader", "object": "document:budget", "pageSize": 20 }
+    },
+    {
+      "operationId": "ReadChanges",
+      "method": "get",
+      "path": "/stores/{store_id}/changes",
+      "props": { "objectType": "document", "pageSize": 20 }
+    },
+    {
+      "operationId": "Expand",
+      "method": "post",
+      "path": "/stores/{store_id}/expand",
+      "props": { "relation": "reader", "object": "document:budget" }
+    },
+    {
+      "operationId": "ReadAssertions",
+      "method": "get",
+      "path": "/stores/{store_id}/assertions/{authorization_model_id}",
+      "props": {}
+    },
+    {
+      "operationId": "WriteAssertions",
+      "method": "put",
+      "path": "/stores/{store_id}/assertions/{authorization_model_id}",
+      "props": {
+        "assertions": [{ "user": "user:anne", "relation": "reader", "object": "document:budget", "expectation": true }]
+      }
+    },
+    {
+      "operationId": "StreamedListObjects",
+      "method": "post",
+      "path": "/stores/{store_id}/streamed-list-objects",
+      "props": { "user": "user:anne", "relation": "reader", "objectType": "document" }
+    },
+    {
+      "operationId": "GetConfiguration",
+      "method": "get",
+      "path": "/.well-known/authzen-configuration/{store_id}",
+      "props": {}
+    },
+    {
+      "operationId": "Evaluation",
+      "method": "post",
+      "path": "/stores/{store_id}/access/v1/evaluation",
+      "props": {
+        "body": {
+          "subject": { "type": "user", "id": "anne" },
+          "action": { "name": "reader" },
+          "resource": { "type": "document", "id": "budget" }
+        }
+      }
+    },
+    {
+      "operationId": "Evaluations",
+      "method": "post",
+      "path": "/stores/{store_id}/access/v1/evaluations",
+      "props": {
+        "body": {
+          "evaluations": [
+            {
+              "subject": { "type": "user", "id": "anne" },
+              "action": { "name": "reader" },
+              "resource": { "type": "document", "id": "budget" }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operationId": "ActionSearch",
+      "method": "post",
+      "path": "/stores/{store_id}/access/v1/search/action",
+      "props": {
+        "body": { "subject": { "type": "user", "id": "anne" }, "resource": { "type": "document", "id": "budget" } }
+      }
+    },
+    {
+      "operationId": "ResourceSearch",
+      "method": "post",
+      "path": "/stores/{store_id}/access/v1/search/resource",
+      "props": {
+        "body": {
+          "subject": { "type": "user", "id": "anne" },
+          "action": { "name": "reader" },
+          "resource": { "type": "document" }
+        }
+      }
+    },
+    {
+      "operationId": "SubjectSearch",
+      "method": "post",
+      "path": "/stores/{store_id}/access/v1/search/subject",
+      "props": {
+        "body": {
+          "subject": { "type": "user" },
+          "action": { "name": "reader" },
+          "resource": { "type": "document", "id": "budget" }
+        }
+      }
     }
   ]
 }

@@ -20,7 +20,9 @@ import TabItem from '@theme/TabItem';
 
 <DocumentationNotice />
 
-To get started, install the <ProductName format={ProductNameFormat.ShortForm}/> SDK packages.
+To get started, install the <ProductName format={ProductNameFormat.ShortForm}/> SDK packages. These commands select the exact versions used by the API reference samples.
+
+The API reference provides SDK programs for 18 standard operations and cURL for all 24 operations. The six experimental AuthZen endpoints are **HTTP-only** in these SDK versions: `GetConfiguration`, `Evaluation`, `Evaluations`, `ActionSearch`, `ResourceSearch`, and `SubjectSearch`. Use their cURL samples; no named SDK methods are available for these endpoints.
 
 <Tabs groupId="languages">
 <TabItem value={SupportedLanguage.JS_SDK} label={languageLabelMap.get(SupportedLanguage.JS_SDK)}>
@@ -32,24 +34,25 @@ Using [npm](https://www.npmjs.com/):
 <!-- markdown-link-check-disable -->
 
 ```shell
-npm install @openfga/sdk
+npm install @openfga/sdk@0.9.7
 ```
 
 Using [yarn](https://yarnpkg.com):
 
 ```shell
-yarn add @openfga/sdk
+yarn add @openfga/sdk@0.9.7
 ```
 
 </TabItem>
 <TabItem value={SupportedLanguage.GO_SDK} label={languageLabelMap.get(SupportedLanguage.GO_SDK)}>
 
 You can find the Go package on GitHub at: [@openfga/go-sdk](https://github.com/openfga/go-sdk).
+This SDK version requires Go 1.25 or newer.
 
 To install:
 
 ```
-go get -u github.com/openfga/go-sdk
+go get github.com/openfga/go-sdk@v0.8.2
 ```
 
 In your code, import the module and use it:
@@ -84,19 +87,20 @@ to update `go.mod` and `go.sum` if you are using them.
 <!-- markdown-link-check-enable -->
 
 The <ProductName format={ProductNameFormat.ShortForm}/> .NET SDK is available on [NuGet](https://www.nuget.org/packages/OpenFga.Sdk).
+The API reference programs use top-level statements and async streams; use a .NET 8 or newer application.
 
 You can install it using:
 
 - The [dotnet CLI](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-dotnet-cli):
 
 ```powershell
-dotnet add package OpenFGA.Sdk
+dotnet add package OpenFGA.Sdk --version 0.10.4
 ```
 
 - The [Package Manager Console](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-powershell) inside Visual Studio:
 
 ```powershell
-Install-Package OpenFGA.Sdk
+Install-Package OpenFGA.Sdk -Version 0.10.4
 ```
 
 - [Visual Studio](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio), [Visual Studio for Mac](https://docs.microsoft.com/en-us/visualstudio/mac/nuget-walkthrough) and [IntelliJ Rider](https://www.jetbrains.com/help/rider/Using_NuGet.html): Search for and install `OpenFGA.Sdk` in each of their respective package manager UIs.
@@ -109,7 +113,7 @@ The <ProductName format={ProductNameFormat.ShortForm}/> Python SDK is available 
 To install:
 
 ```
-pip3 install openfga_sdk
+pip3 install openfga_sdk==0.10.4
 ```
 
 In your code, import the module and use it:
@@ -122,6 +126,7 @@ import openfga_sdk
 <TabItem value={SupportedLanguage.JAVA_SDK} label={languageLabelMap.get(SupportedLanguage.JAVA_SDK)}>
 
 You can find the Java package on [Maven Central](https://central.sonatype.com/artifact/dev.openfga/openfga-sdk).
+This SDK version requires Java 17 or newer.
 
 Using [Maven](https://maven.apache.org/):
 
@@ -129,14 +134,14 @@ Using [Maven](https://maven.apache.org/):
 <dependency>
     <groupId>dev.openfga</groupId>
     <artifactId>openfga-sdk</artifactId>
-    <version>0.3.1</version>
+    <version>0.10.0</version>
 </dependency>
 ```
 
 Using [Gradle](https://gradle.org/):
 
 ```groovy
-implementation 'dev.openfga:openfga-sdk:0.3.1'
+implementation 'dev.openfga:openfga-sdk:0.10.0'
 ```
 
 </TabItem>

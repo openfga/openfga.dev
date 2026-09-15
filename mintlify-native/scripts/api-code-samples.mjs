@@ -4,28 +4,14 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { getUniqueOpenApiNavigationEntry } from './navigation-structure.mjs';
 import { LANG, languages } from './viewer-contract.mjs';
+import { apiOperations, validateApiInputs } from './api-operation-contract.mjs';
+import { validateSampleRequests } from './api-request-validation.mjs';
+import { apiSdkSupport, validateSdkCoverage } from './api-sdk-support.mjs';
 
 export const metadataUrl = new URL('../api-samples.json', import.meta.url);
 export const overlayPath = 'openapi/sdk-samples.overlay.json';
 export const overlayUrl = new URL(`../${overlayPath}`, import.meta.url);
 export const httpMethods = new Set(['get', 'post', 'put', 'patch', 'delete', 'options', 'head', 'trace']);
-
-const supportedOperations = {
-  Check: ['/stores/{store_id}/check', 'CheckRequestViewer'],
-  BatchCheck: ['/stores/{store_id}/batch-check', 'BatchCheckRequestViewer'],
-  Write: ['/stores/{store_id}/write', 'WriteRequestViewer'],
-  ListObjects: ['/stores/{store_id}/list-objects', 'ListObjectsRequestViewer'],
-  ListUsers: ['/stores/{store_id}/list-users', 'ListUsersRequestViewer'],
-  CreateStore: ['/stores', 'CreateStoreViewer'],
-};
-const sampleInputKeys = {
-  Check: ['user', 'relation', 'object'],
-  BatchCheck: ['checks'],
-  Write: ['relationshipTuples'],
-  ListObjects: ['user', 'relation', 'objectType'],
-  ListUsers: ['objectType', 'objectId', 'relation', 'userFilterType'],
-  CreateStore: ['storeName'],
-};
 
 // Native API language aliases differ from the viewers' syntax-highlighting grammars.
 const nativeLanguages = {
@@ -49,27 +35,14 @@ function keys(value, expected, name) {
   deepStrictEqual(Object.keys(value).sort(), [...expected].sort(), `${name} has unexpected or missing fields`);
 }
 
-function validateInputs({ operationId, props }) {
-  keys(props, sampleInputKeys[operationId], `${operationId} sample inputs`);
-  const records =
-    operationId === 'BatchCheck' ? props.checks : operationId === 'Write' ? props.relationshipTuples : [props];
-  if (!Array.isArray(records) || records.length === 0) throw new Error(`${operationId} sample inputs must be nonempty`);
-  const correlationIds = new Set();
-  for (const record of records) {
-    if (operationId === 'BatchCheck') {
-      keys(record, ['user', 'relation', 'object', 'correlation_id'], 'BatchCheck item');
-      if (correlationIds.has(record.correlation_id)) throw new Error('Duplicate BatchCheck correlation_id');
-      correlationIds.add(record.correlation_id);
-    }
-    if (operationId === 'Write') keys(record, ['user', 'relation', 'object'], 'Write tuple');
-    for (const [key, value] of Object.entries(record)) {
-      if (typeof value !== 'string' || !value.trim())
-        throw new Error(`${operationId}.${key} must be a nonempty string`);
-    }
-  }
+export function languagesForOperation(operationId) {
+  if (!Object.hasOwn(apiSdkSupport, operationId)) throw new Error(`Missing SDK support inventory for ${operationId}`);
+  const support = apiSdkSupport[operationId];
+  return sampleLanguages.filter(({ id }) => id === LANG.CURL || support[id]?.method);
 }
 
 export function validateMetadata(metadata) {
+  validateSdkCoverage();
   deepStrictEqual(
     sampleLanguages.map(({ id }) => id),
     Object.keys(nativeLanguages),
@@ -98,13 +71,13 @@ export function validateMetadata(metadata) {
   if (!Array.isArray(operations)) throw new Error('Sample operations must be an array');
   deepStrictEqual(
     operations.map((entry) => entry?.operationId),
-    Object.keys(supportedOperations),
-    'Sample coverage must contain exactly the six supported operations, once each, in the reviewed order',
+    Object.keys(apiOperations),
+    'Sample coverage must account for all 24 operations, once each, in the reviewed order',
   );
   for (const entry of operations) {
-    keys(entry, ['operationId', 'method', 'path', 'component', 'props'], 'Sample operation');
-    const [path, component] = supportedOperations[entry.operationId];
-    if (entry.path !== path || entry.method !== 'post' || entry.component !== component) {
+    const { path, method, viewer } = apiOperations[entry.operationId];
+    keys(entry, ['operationId', 'method', 'path', 'props', ...(viewer ? ['component'] : [])], 'Sample operation');
+    if (entry.path !== path || entry.method !== method || entry.component !== viewer) {
       throw new Error(`Incorrect operation identity or generator for ${entry.operationId}`);
     }
     object(entry.props, `${entry.operationId} props`);
@@ -115,7 +88,7 @@ export function validateMetadata(metadata) {
     ) {
       throw new Error(`${entry.operationId} samples must use environment setup and must not invent responses`);
     }
-    validateInputs(entry);
+    validateApiInputs(entry.operationId, entry.props);
   }
 }
 
@@ -151,6 +124,7 @@ export function validateCanonical(spec, metadata) {
       throw new Error(`${operationId} already has canonical code samples; review rather than overwrite or append`);
     }
   }
+  validateSampleRequests(spec, metadata);
   return operations;
 }
 
@@ -179,8 +153,9 @@ const overlayInfo = {
 };
 
 function validateSamples(samples, operationId) {
-  if (!Array.isArray(samples) || samples.length !== sampleLanguages.length) {
-    throw new Error(`${operationId} must have all six language samples`);
+  const expectedLanguages = languagesForOperation(operationId);
+  if (!Array.isArray(samples) || samples.length !== expectedLanguages.length) {
+    throw new Error(`${operationId} must have every supported SDK sample plus curl, and no unsupported SDK labels`);
   }
   const labels = new Set();
   const langs = new Set();
@@ -190,7 +165,7 @@ function validateSamples(samples, operationId) {
       throw new Error(`${operationId} has duplicate sample labels/languages`);
     labels.add(sample.label);
     langs.add(sample.lang);
-    const expected = sampleLanguages[index];
+    const expected = expectedLanguages[index];
     if (sample.lang !== expected.lang || sample.label !== expected.label) {
       throw new Error(`${operationId} sample ${index} must be ${expected.label} (${expected.lang})`);
     }
@@ -199,9 +174,9 @@ function validateSamples(samples, operationId) {
   }
 }
 
-export function buildOverlay(spec, metadata, buildSdkExample) {
+export function buildOverlay(spec, metadata, buildApiExample) {
   validateCanonical(spec, metadata);
-  if (typeof buildSdkExample !== 'function') throw new Error('The shared buildSdkExample generator is required');
+  if (typeof buildApiExample !== 'function') throw new Error('The shared buildApiExample generator is required');
   const overlay = {
     overlay: '1.0.0',
     info: { ...overlayInfo },
@@ -209,10 +184,10 @@ export function buildOverlay(spec, metadata, buildSdkExample) {
     actions: metadata.operations.map((entry) => ({
       target: targetFor(entry),
       update: {
-        'x-codeSamples': sampleLanguages.map(({ id, label, lang }) => ({
+        'x-codeSamples': languagesForOperation(entry.operationId).map(({ id, label, lang }) => ({
           lang,
           label,
-          source: buildSdkExample(id, entry.component, structuredClone(entry.props)),
+          source: buildApiExample(id, entry.operationId, structuredClone(entry.props)),
         })),
       },
     })),
@@ -229,7 +204,7 @@ export function applySampleOverlay(spec, metadata, overlay) {
     throw new Error('SDK overlay provenance mismatch');
   deepStrictEqual(overlay.info, overlayInfo, 'SDK overlay generator metadata mismatch');
   if (!Array.isArray(overlay.actions) || overlay.actions.length !== metadata.operations.length) {
-    throw new Error('SDK overlay must contain exactly six actions');
+    throw new Error('SDK overlay must contain exactly 24 reviewed actions');
   }
   const derived = structuredClone(spec);
   for (const [index, action] of overlay.actions.entries()) {
@@ -276,8 +251,8 @@ export async function checkApiSamples(docs) {
   const metadata = JSON.parse(await readFile(metadataUrl, 'utf8'));
   validateSampleNavigation(docs, metadata);
   const canonical = await loadCanonical(metadata);
-  const { buildSdkExample } = await import('./viewer-runtime.mjs');
-  const overlay = buildOverlay(canonical, metadata, buildSdkExample);
+  const { buildApiExample } = await import('./viewer-runtime.mjs');
+  const overlay = buildOverlay(canonical, metadata, buildApiExample);
   await checkOverlayArtifact(overlay);
   return { canonical, overlay };
 }
@@ -290,15 +265,15 @@ async function main() {
   const docs = JSON.parse(await readFile(new URL('../docs.json', import.meta.url), 'utf8'));
   validateSampleNavigation(docs, metadata);
   const canonical = await loadCanonical(metadata);
-  const { buildSdkExample } = await import('./viewer-runtime.mjs');
-  const overlay = buildOverlay(canonical, metadata, buildSdkExample);
+  const { buildApiExample } = await import('./viewer-runtime.mjs');
+  const overlay = buildOverlay(canonical, metadata, buildApiExample);
   if (args[0] === '--check') await checkOverlayArtifact(overlay);
   else {
     await mkdir(new URL('../openapi/', import.meta.url), { recursive: true });
     await writeFile(overlayUrl, serializeOverlay(overlay));
   }
   console.log(
-    `${args[0] === '--check' ? 'Checked' : 'Generated'} SDK samples: 6 operations x 6 languages; canonical 20 paths / 24 operations unchanged`,
+    `${args[0] === '--check' ? 'Checked' : 'Generated'} API samples: ${overlay.actions.reduce((count, action) => count + action.update['x-codeSamples'].length, 0)} programs across 24 operations; canonical 20 paths / 24 operations unchanged`,
   );
 }
 

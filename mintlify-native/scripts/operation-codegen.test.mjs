@@ -131,8 +131,11 @@ test('every generated language retains typed contexts, conditions, false results
         assert.match(code, /false|False/);
       }
       if (operation === 'listUsers') assert.match(code, /member/);
-      if (props.consistency && language !== 'playground')
-        assert.match(code, /HIGHER_CONSISTENCY|HigherConsistency|MINIMIZE_LATENCY|MinimizeLatency/);
+      if (props.consistency && language !== 'playground') {
+        if (language === LANG.DOTNET_SDK)
+          assert.ok(code.includes(`ConsistencyPreference.${props.consistency.replaceAll('_', '')}`));
+        else assert.match(code, /HIGHER_CONSISTENCY|HigherConsistency|MINIMIZE_LATENCY|MinimizeLatency/);
+      }
       if (language === 'js-sdk') transformSync(code, { loader: 'js' });
     }
   }
@@ -150,6 +153,25 @@ test('every generated language retains typed contexts, conditions, false results
     assert.match(
       buildOperationCode('check', language, rich.check),
       language === 'cli' || language === 'playground' ? /not supported/ : /X-Request-ID/,
+    );
+  }
+});
+
+test('.NET consistency uses the exact 0.10.4 enum members, while Node keeps its distinct names', () => {
+  for (const [wire, dotnet, node] of [
+    ['UNSPECIFIED', 'UNSPECIFIED', 'Unspecified'],
+    ['MINIMIZE_LATENCY', 'MINIMIZELATENCY', 'MinimizeLatency'],
+    ['HIGHER_CONSISTENCY', 'HIGHERCONSISTENCY', 'HigherConsistency'],
+  ]) {
+    assert.ok(
+      buildOperationCode('check', LANG.DOTNET_SDK, { ...tuple, consistency: wire }).includes(
+        `ConsistencyPreference.${dotnet}`,
+      ),
+    );
+    assert.ok(
+      buildOperationCode('check', LANG.JS_SDK, { ...tuple, consistency: wire }).includes(
+        `ConsistencyPreference.${node}`,
+      ),
     );
   }
 });

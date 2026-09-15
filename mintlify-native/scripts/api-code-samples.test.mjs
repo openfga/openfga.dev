@@ -11,6 +11,7 @@ import {
   buildOverlay,
   checkOverlayArtifact,
   loadCanonical,
+  languagesForOperation,
   metadataUrl,
   overlayPath,
   sampleLanguages,
@@ -19,6 +20,7 @@ import {
   validateMetadata,
   validateSampleNavigation,
 } from './api-code-samples.mjs';
+import { validateSampleRequests } from './api-request-validation.mjs';
 
 const metadata = JSON.parse(await readFile(metadataUrl, 'utf8'));
 const fixtureGenerator = (language, component, props) =>
@@ -26,38 +28,27 @@ const fixtureGenerator = (language, component, props) =>
 
 function fixture() {
   const paths = {};
-  const otherOperations = [
-    ['/stores', 'get', 'ListStores'],
-    ['/stores/{store_id}', 'get', 'GetStore'],
-    ['/stores/{store_id}', 'delete', 'DeleteStore'],
-    ['/stores/{store_id}/authorization-models', 'get', 'ReadAuthorizationModels'],
-    ['/stores/{store_id}/authorization-models', 'post', 'WriteAuthorizationModel'],
-    ['/stores/{store_id}/authorization-models/{id}', 'get', 'ReadAuthorizationModel'],
-    ['/stores/{store_id}/changes', 'get', 'ReadChanges'],
-    ['/stores/{store_id}/read', 'post', 'Read'],
-    ['/stores/{store_id}/expand', 'post', 'Expand'],
-    ['/stores/{store_id}/streamed-list-objects', 'post', 'StreamedListObjects'],
-    ['/stores/{store_id}/assertions/{authorization_model_id}', 'get', 'ReadAssertions'],
-    ['/stores/{store_id}/assertions/{authorization_model_id}', 'put', 'WriteAssertions'],
-    ['/.well-known/authzen-configuration/{store_id}', 'get', 'GetConfiguration'],
-    ['/stores/{store_id}/access/v1/evaluation', 'post', 'Evaluation'],
-    ['/stores/{store_id}/access/v1/evaluations', 'post', 'Evaluations'],
-    ['/stores/{store_id}/access/v1/search/action', 'post', 'ActionSearch'],
-    ['/stores/{store_id}/access/v1/search/resource', 'post', 'ResourceSearch'],
-    ['/stores/{store_id}/access/v1/search/subject', 'post', 'SubjectSearch'],
-  ];
-  for (const [path, method, operationId] of [
-    ...metadata.operations.map(({ path, method, operationId }) => [path, method, operationId]),
-    ...otherOperations,
-  ]) {
+  for (const { path, method, operationId } of metadata.operations) {
     paths[path] ??= {};
-    paths[path][method] = { operationId, tags: ['Fixture'], responses: { 200: { description: 'Fixture response' } } };
+    paths[path][method] = {
+      operationId,
+      tags: ['Fixture'],
+      responses: { 200: { description: 'Fixture response' } },
+      ...(['post', 'put'].includes(method)
+        ? { requestBody: { required: true, content: { 'application/json': { schema: { type: 'object' } } } } }
+        : {}),
+      parameters: ['page_size', 'continuation_token', 'name', 'type', 'start_time'].map((name) => ({
+        name,
+        in: 'query',
+        schema: { type: name === 'page_size' ? 'integer' : 'string' },
+      })),
+    };
   }
-  paths['/stores'].get['x-codeSamples'] = [{ lang: 'ruby', source: '# Existing unrelated sample' }];
+  paths['/stores']['x-documentation'] = { source: 'Existing unrelated metadata' };
   return { openapi: '3.0.3', info: { title: 'Test fixture', version: '1' }, paths, components: { schemas: {} } };
 }
 
-test('fixture generator covers exactly six operations by six languages, with stable native labels', () => {
+test('fixture generator covers every audited SDK operation and all 24 curl samples with stable native labels', () => {
   const spec = fixture();
   const before = structuredClone(spec);
   const calls = [];
@@ -65,7 +56,10 @@ test('fixture generator covers exactly six operations by six languages, with sta
     calls.push(args);
     return fixtureGenerator(...args);
   });
-  assert.equal(calls.length, 36);
+  assert.equal(
+    calls.length,
+    metadata.operations.reduce((count, { operationId }) => count + languagesForOperation(operationId).length, 0),
+  );
   assert.deepEqual(
     sampleLanguages.map(({ label, lang }) => [label, lang]),
     [
@@ -80,17 +74,18 @@ test('fixture generator covers exactly six operations by six languages, with sta
   const derived = applySampleOverlay(spec, metadata, overlay);
   for (const entry of metadata.operations) {
     const samples = derived.paths[entry.path][entry.method]['x-codeSamples'];
-    assert.equal(samples.length, 6);
-    for (const [index, language] of sampleLanguages.entries()) {
-      assert.equal(samples[index].source, fixtureGenerator(language.id, entry.component, entry.props));
+    const expectedLanguages = languagesForOperation(entry.operationId);
+    assert.equal(samples.length, expectedLanguages.length);
+    for (const [index, language] of expectedLanguages.entries()) {
+      assert.equal(samples[index].source, fixtureGenerator(language.id, entry.operationId, entry.props));
     }
   }
   assert.deepEqual(spec, before, 'source is never mutated');
   assertCanonicalEquality(spec, derived, metadata);
   assert.deepEqual(
-    derived.paths['/stores'].get,
-    spec.paths['/stores'].get,
-    'uncovered operation examples remain intact',
+    derived.paths['/stores']['x-documentation'],
+    spec.paths['/stores']['x-documentation'],
+    'unrelated documentation metadata remains intact',
   );
   assert.equal(serializeOverlay(overlay), serializeOverlay(buildOverlay(spec, metadata, fixtureGenerator)));
 });
@@ -105,6 +100,49 @@ test('each generator receives isolated props; mutations cannot leak between lang
   assert.deepEqual(metadata, before);
 });
 
+test('request validation follows canonical references and rejects missing, unknown and mistyped nested fields', () => {
+  const spec = fixture();
+  spec.components.schemas.Subject = {
+    type: 'object',
+    required: ['type', 'id'],
+    properties: { type: { type: 'string' }, id: { type: 'string' } },
+  };
+  const schema = {
+    type: 'object',
+    required: ['subject', 'action', 'resource'],
+    properties: {
+      subject: { $ref: '#/components/schemas/Subject' },
+      action: { type: 'object', required: ['name'], properties: { name: { type: 'string' } } },
+      resource: { allOf: [{ $ref: '#/components/schemas/Subject' }, { type: 'object' }] },
+    },
+  };
+  spec.paths['/stores/{store_id}/access/v1/evaluation'].post.requestBody.content['application/json'].schema = schema;
+  validateSampleRequests(spec, metadata);
+  for (const mutate of [
+    (body) => {
+      delete body.subject;
+    },
+    (body) => {
+      body.subject.id = 123;
+    },
+    (body) => {
+      body.subject.unknown = 'ignored';
+    },
+    (body) => {
+      body.action = [];
+    },
+    (body) => {
+      delete body.resource.id;
+    },
+  ]) {
+    const changed = structuredClone(metadata);
+    mutate(changed.operations.find(({ operationId }) => operationId === 'Evaluation').props.body);
+    assert.throws(() => validateSampleRequests(spec, changed));
+  }
+  delete spec.components.schemas.Subject;
+  assert.throws(() => validateSampleRequests(spec, metadata), /Missing schema/);
+});
+
 for (const [name, mutate] of [
   ['missing operation', (m) => m.operations.pop()],
   [
@@ -116,7 +154,7 @@ for (const [name, mutate] of [
   [
     'unknown operation',
     (m) => {
-      m.operations[0].operationId = 'Read';
+      m.operations[0].operationId = 'Unknown';
     },
   ],
   [
@@ -225,6 +263,26 @@ for (const [name, mutate] of [
   test(`rejects metadata: ${name}`, () => {
     const changed = structuredClone(metadata);
     mutate(changed);
+    assert.throws(() => validateMetadata(changed));
+  });
+}
+
+for (const [id, key, invalid] of [
+  ['ListStores', 'pageSize', '20'],
+  ['ListStores', 'pageSize', 0],
+  ['ListStores', 'pageSize', 101],
+  ['ListStores', 'pageSize', 1.5],
+  ['ListStores', 'continuationToken', 123],
+  ['ListStores', 'name', ''],
+  ['ReadChanges', 'startTime', 'not-a-date'],
+  ['ReadChanges', 'startTime', '2026-02-30T00:00:00Z'],
+  ['WriteAssertions', 'assertions', [{ ...metadata.operations[0].props, expectation: 'true' }]],
+  ['WriteAuthorizationModel', 'model', []],
+  ['Evaluation', 'body', null],
+]) {
+  test(`rejects invalid ${id}.${key}: ${JSON.stringify(invalid)}`, () => {
+    const changed = structuredClone(metadata);
+    changed.operations.find(({ operationId }) => operationId === id).props[key] = invalid;
     assert.throws(() => validateMetadata(changed));
   });
 }
@@ -350,6 +408,18 @@ for (const [name, mutate] of [
       delete o.actions[0].update['x-codeSamples'][0].source;
     },
   ],
+  [
+    'unsupported SDK label',
+    (o) => {
+      o.actions
+        .find(({ target }) => target.includes('/access/v1/evaluation'))
+        .update['x-codeSamples'].push({
+          lang: 'node',
+          label: 'Node.js',
+          source: 'await fgaClient.evaluation({});',
+        });
+    },
+  ],
 ]) {
   test(`rejects overlay: ${name}`, () => {
     const spec = fixture();
@@ -373,7 +443,7 @@ test('strip-only-added-metadata comparison rejects changes elsewhere, including 
       s.paths['/stores'].get.operationId = 'Different';
     },
     (s) => {
-      s.paths['/stores'].get['x-codeSamples'][0].source = '# changed';
+      s.paths['/stores']['x-documentation'].source = '# changed';
     },
     (s) => {
       s.components.schemas.Invented = { type: 'string' };
@@ -386,7 +456,7 @@ test('strip-only-added-metadata comparison rejects changes elsewhere, including 
 });
 
 test('missing shared generator or missing generated code fails rather than producing an empty panel', () => {
-  assert.throws(() => buildOverlay(fixture(), metadata), /shared buildSdkExample/);
+  assert.throws(() => buildOverlay(fixture(), metadata), /shared buildApiExample/);
   assert.throws(() => buildOverlay(fixture(), metadata, () => undefined), /empty code sample/);
 });
 

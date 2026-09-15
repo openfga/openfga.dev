@@ -79,37 +79,96 @@ and [`x-codeSamples`](https://www.mintlify.com/docs/api-playground/adding-sdk-ex
 The canonical API schema is not copied, forked, or edited here:
 
 1. `api-samples.json` records the immutable source URL, its SHA-256 digest,
-   exact operation identities, shared viewer components, and request inputs.
+   all 24 exact operation identities and request inputs.
+   `scripts/api-operation-contract.mjs` defines operation identities and setup
+   scopes independently of UI components; `scripts/api-sdk-support.mjs` records
+   the audited SDK versions, public source evidence, named methods, and explicit
+   unsupported cases.
 2. `scripts/api-code-samples.mjs` fetches and verifies that canonical source,
-   then calls `buildSdkExample(language, component, props)` from
-   `scripts/viewer-runtime.mjs`. Setup and request generation are shared with
-   the documentation viewers, not reimplemented in the overlay pipeline.
+   validates sample inputs against its request schemas, then calls
+   `buildApiExample(language, operationId, props)` from `scripts/viewer-runtime.mjs`.
+   Existing viewer operations reuse `buildSdkExample`; API-only operations use
+   the shared `api-operation-*.mjs` generators and the same complete-program
+   composer. There are no artificial viewer components or duplicate SDK strings
+   in the overlay pipeline.
 3. `openapi/sdk-samples.overlay.json` is generated, committed output.
    `docs.json` explicitly applies it to the canonical URL. Mintlify renders the
    resulting samples in its native right-hand request-code panel (inline on
    smaller screens).
 
-| Supported operation | Node.js | Go | .NET | Python | Java | curl |
+| Operation | Node.js 0.9.7 | Go 0.8.2 | .NET 0.10.4 | Python 0.10.4 | Java 0.10.0 | curl |
 | --- | --- | --- | --- | --- | --- | --- |
-| Check | Yes | Yes | Yes | Yes | Yes | Yes |
-| BatchCheck | Yes | Yes | Yes | Yes | Yes | Yes |
-| Write relationships | Yes | Yes | Yes | Yes | Yes | Yes |
-| ListObjects | Yes | Yes | Yes | Yes | Yes | Yes |
-| ListUsers | Yes | Yes | Yes | Yes | Yes | Yes |
-| CreateStore | Yes | Yes | Yes | Yes | Yes | Yes |
+| Check | `check` | `Check` | `Check` | `check` | `check` | Yes |
+| BatchCheck | `batchCheck` | `BatchCheck` | `BatchCheck` | `batch_check` | `batchCheck` | Yes |
+| Write | `write` | `Write` | `Write` | `write` | `write` | Yes |
+| ListObjects | `listObjects` | `ListObjects` | `ListObjects` | `list_objects` | `listObjects` | Yes |
+| ListUsers | `listUsers` | `ListUsers` | `ListUsers` | `list_users` | `listUsers` | Yes |
+| CreateStore | `createStore` | `CreateStore` | `CreateStore` | `create_store` | `createStore` | Yes |
+| ListStores | `listStores` | `ListStores` | `ListStores` | `list_stores` | `listStores` | Yes |
+| GetStore | `getStore` | `GetStore` | `GetStore` | `get_store` | `getStore` | Yes |
+| DeleteStore | `deleteStore` | `DeleteStore` | `DeleteStore` | `delete_store` | `deleteStore` | Yes |
+| ReadAuthorizationModels | `readAuthorizationModels` | `ReadAuthorizationModels` | `ReadAuthorizationModels` | `read_authorization_models` | `readAuthorizationModels` | Yes |
+| ReadAuthorizationModel | `readAuthorizationModel` | `ReadAuthorizationModel` | `ReadAuthorizationModel` | `read_authorization_model` | `readAuthorizationModel` | Yes |
+| WriteAuthorizationModel | `writeAuthorizationModel` | `WriteAuthorizationModel` | `WriteAuthorizationModel` | `write_authorization_model` | `writeAuthorizationModel` | Yes |
+| Read | `read` | `Read` | `Read` | `read` | `read` | Yes |
+| ReadChanges | `readChanges` | `ReadChanges` | `ReadChanges` | `read_changes` | `readChanges` | Yes |
+| Expand | `expand` | `Expand` | `Expand` | `expand` | `expand` | Yes |
+| ReadAssertions | `readAssertions` | `ReadAssertions` | `ReadAssertions` | `read_assertions` | `readAssertions` | Yes |
+| WriteAssertions | `writeAssertions` | `WriteAssertions` | `WriteAssertions` | `write_assertions` | `writeAssertions` | Yes |
+| StreamedListObjects | `streamedListObjects` | `StreamedListObjects` | `StreamedListObjects` | `streamed_list_objects` | `streamedListObjects` | Yes |
+| GetConfiguration | No | No | No | No | No | Yes |
+| Evaluation | No | No | No | No | No | Yes |
+| Evaluations | No | No | No | No | No | Yes |
+| ActionSearch | No | No | No | No | No | Yes |
+| ResourceSearch | No | No | No | No | No | Yes |
+| SubjectSearch | No | No | No | No | No | Yes |
 
-This is **six operations**, not SDK sample coverage for all 24. The other 18
-operations retain their existing Mintlify-generated HTTP-client examples.
+These are **90 genuine SDK programs across 18 operations, plus curl for all
+24 operations: 114 samples total**, not 24-by-five SDK coverage.
+Each method above is a named high-level SDK client method, verified against
+immutable public sources:
+[Node.js](https://github.com/openfga/js-sdk/blob/ff0a9f54631700f98349662746e0d6b3cae52993/client.ts),
+[Go](https://github.com/openfga/go-sdk/blob/76d209a9753a5284db64df848eea41fea2506c6f/client/client.go),
+[.NET](https://github.com/openfga/dotnet-sdk/blob/ec8ee04761b41e2400693b911a17463877e500c3/src/OpenFga.Sdk/Client/Client.cs),
+[Python](https://github.com/openfga/python-sdk/blob/60a0a73a8481867dd25dadf7e6516fb4aca82a14/openfga_sdk/client/client.py),
+[Java](https://github.com/openfga/java-sdk/blob/0c5c5c77c1a25e6d0b0ce684833981a6a74db510/src/main/java/dev/openfga/sdk/api/client/OpenFgaClient.java).
+The support registry also records generated low-level API sources, checked for
+methods absent from the high-level clients. The six AuthZen endpoints have no
+named client **or** generated low-level operation in these versions. Their native
+panels explicitly show **HTTP-only curl**, not SDK-labelled generic HTTP clients.
+Generic SDK request executors are not counted as operation support.
+
+Streaming uses actual SDK streaming interfaces: a Node async generator, Go
+result/error channels, Python async iteration, Java item consumers and a
+completion future, and .NET async enumeration. Java uses the client's dedicated
+streaming implementation, not the generated API's single-response method.
 The reference remains in `simple` read-only mode; no Try it/Send controls,
 server URLs, or authentication schemes are added. The samples use
 `FGA_API_URL`, `FGA_STORE_ID`, and `FGA_MODEL_ID` as applicable for a self-hosted
-server with authentication disabled. CreateStore only needs `FGA_API_URL`.
+server with authentication disabled. ListStores and CreateStore need only
+`FGA_API_URL`. Store administration, model listing/writing, tuple reads and
+change reads need a store but no model ID. Model reads, assertions and
+relationship queries use the configured model ID.
 Install the corresponding SDK using the
 [installation guide](./docs/getting-started/install-sdk.mdx); authenticated
 client setup remains in the
 [SDK setup guide](./docs/getting-started/setup-sdk-client.mdx).
 The request values are illustrative; use a store/model and relationship data
 appropriate to the request. Samples do not assert an invented response.
+Paginated examples request the first page. To request another page, supply the
+actual returned token as the string `continuationToken`; `pageSize` is an integer
+from 1 to 100. ListStores also accepts `name`; ReadChanges accepts `startTime`
+as a UTC RFC 3339 string. A ReadChanges token can remain unchanged when there
+are no new changes, so these examples do not invent an until-empty polling loop.
+
+The model-write fixture deliberately uses a small schema 1.1 direct-relation
+model. Generator input guards cover reviewed example shapes, not every SDK
+feature. Conditional assertions require low-level methods in several SDKs,
+and Java contextual Expand requires its low-level request model; those optional
+features are not claimed by these basic examples. The .NET 0.10.4 assertion
+serializer omits a false-valued `expectation` member; the sample uses an explicit
+true expectation, and .NET false-assertion wire/server semantics have not been
+execution-tested.
 
 Each native sample has `lang`, `label`, and `source`. The viewer language labels
 are reused; native API aliases are `node`, `go`, `dotnet`, `python`, `java`,
@@ -130,17 +189,23 @@ canonical document with a 30-second timeout and verify its digest and shape.
 Fetch/HTTP/timeout/parse failures, missing or mismatched operations, existing
 canonical samples on a covered operation, invalid overlay targets/fields,
 duplicate labels, missing languages, and stale/missing output fail explicitly.
-The generated overlay may only add `x-codeSamples` at the six exact operation
+The generated overlay may only add `x-codeSamples` at the 24 exact operation
 targets. Stripping just those additions must recover the entire canonical
 document, including all 20 paths and 24 operations, unchanged.
 The API navigation guard runs this check and the regression tests in the existing
 prebuild chain. Unit tests use an explicit fixture generator and fixture schema.
-Integration tests compare all 36 committed samples with the shared generator and
-execute the six Node.js SDK and six curl programs against a loopback-only HTTP
-fixture, checking exact request bodies, paths, and absence of authentication.
+Integration tests compare every committed sample with the shared generator and
+execute every emitted Node.js SDK and curl program against a loopback-only HTTP
+fixture, checking exact methods, bodies, paths, query parameters, streaming
+consumption, and absence of authentication.
 These tests are network-independent; they do not contact an OpenFGA deployment
 or prove authorization behavior against a real model. They do not execute the
-Go, .NET, Python, or Java SDKs.
+Go, .NET, Python, or Java SDKs. Separate cached-toolchain checks compiled all 18
+exact Go programs against 0.8.2 and ran all 18 Python 0.10.4 programs through
+real constructors/configuration and async entrypoints with SDK requests mocked
+and networking forbidden. Java 0.10.0 and .NET 0.10.4 signatures and model types
+were checked against public source; JVM/.NET compilation and execution were
+not available. Output equality alone is not an executed SDK test.
 
 To update samples, edit their inputs or the shared SDK generators and regenerate;
 never hand-edit the generated overlay. The metadata admits only the reviewed

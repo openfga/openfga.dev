@@ -5,7 +5,9 @@ description: "Installing SDK client"
 
 # Install SDK Client
 
-To get started, install the OpenFGA SDK packages.
+To get started, install the OpenFGA SDK packages. These commands select the exact versions used by the API reference samples.
+
+The API reference provides SDK programs for 18 standard operations and cURL for all 24 operations. The six experimental AuthZen endpoints are **HTTP-only** in these SDK versions: `GetConfiguration`, `Evaluation`, `Evaluations`, `ActionSearch`, `ResourceSearch`, and `SubjectSearch`. Use their cURL samples; no named SDK methods are available for these endpoints.
 
 <Tabs>
   <Tab title="Node.js">
@@ -14,23 +16,24 @@ To get started, install the OpenFGA SDK packages.
     Using [npm](https://www.npmjs.com/):
 
     ```bash
-    npm install @openfga/sdk
+    npm install @openfga/sdk@0.9.7
     ```
 
     Using [yarn](https://yarnpkg.com):
 
     ```bash
-    yarn add @openfga/sdk
+    yarn add @openfga/sdk@0.9.7
     ```
   </Tab>
 
   <Tab title="Go">
     You can find the Go package on GitHub at: [@openfga/go-sdk](https://github.com/openfga/go-sdk).
+    This SDK version requires Go 1.25 or newer.
 
     To install:
 
     ```bash
-    go get -u github.com/openfga/go-sdk
+    go get github.com/openfga/go-sdk@v0.8.2
     ```
 
     In your code, import the module and use it:
@@ -59,17 +62,18 @@ To get started, install the OpenFGA SDK packages.
 
   <Tab title=".NET">
     The OpenFGA .NET SDK is available on [NuGet](https://www.nuget.org/packages/OpenFga.Sdk).
+    The API reference programs use top-level statements and async streams; use a .NET 8 or newer application.
 
     Using the dotnet CLI:
 
     ```bash
-    dotnet add package OpenFGA.Sdk
+    dotnet add package OpenFGA.Sdk --version 0.10.4
     ```
 
     Using the Package Manager Console inside Visual Studio:
 
     ```powershell
-    Install-Package OpenFGA.Sdk
+    Install-Package OpenFGA.Sdk -Version 0.10.4
     ```
 
     You can also search for and install `OpenFGA.Sdk` in Visual Studio, Visual Studio for Mac, or IntelliJ Rider's package manager UI.
@@ -81,7 +85,7 @@ To get started, install the OpenFGA SDK packages.
     To install:
 
     ```bash
-    pip3 install openfga_sdk
+    pip3 install openfga_sdk==0.10.4
     ```
 
     In your code, import the module:
@@ -93,6 +97,7 @@ To get started, install the OpenFGA SDK packages.
 
   <Tab title="Java">
     You can find the Java package on [Maven Central](https://central.sonatype.com/artifact/dev.openfga/openfga-sdk).
+    This SDK version requires Java 17 or newer.
 
     Using Maven:
 
@@ -100,14 +105,14 @@ To get started, install the OpenFGA SDK packages.
     <dependency>
         <groupId>dev.openfga</groupId>
         <artifactId>openfga-sdk</artifactId>
-        <version>0.3.1</version>
+        <version>0.10.0</version>
     </dependency>
     ```
 
     Using Gradle:
 
     ```groovy
-    implementation 'dev.openfga:openfga-sdk:0.3.1'
+    implementation 'dev.openfga:openfga-sdk:0.10.0'
     ```
   </Tab>
 
