@@ -28,12 +28,10 @@
   background: transparent !important;
   border: 0 !important;
   border-radius: 0.25rem !important;
-  text-decoration: underline;
-  text-decoration-color: transparent;
-  text-underline-offset: 0.25rem;
+  text-decoration: none !important;
   transition:
     color 150ms ease,
-    text-decoration-color 150ms ease;
+    background-color 150ms ease;
 }
 
 #navbar
@@ -42,8 +40,21 @@
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
-  ):hover {
-  text-decoration-color: currentColor;
+  ):is(:hover, :focus-visible) {
+  color: #1f2328 !important;
+  background-color: rgb(0 0 0 / 5%) !important;
+}
+
+.dark
+  #navbar
+  :is(
+    a[href='/api-reference'],
+    a[href='https://openfga.dev/project'],
+    a[href='https://openfga.dev/community'],
+    a[href='https://openfga.dev/blog']
+  ):is(:hover, :focus-visible) {
+  color: #f0f6fc !important;
+  background-color: rgb(255 255 255 / 8%) !important;
 }
 
 #navbar
@@ -60,11 +71,12 @@
 body:has(#api-playground-2-operation-page) #navbar a[href='/api-reference'] {
   color: rgb(var(--primary)) !important;
   font-weight: 600;
-  text-decoration-color: currentColor;
+  background-color: rgb(var(--primary) / 10%) !important;
 }
 
 .dark body:has(#api-playground-2-operation-page) #navbar a[href='/api-reference'] {
   color: rgb(var(--primary-light)) !important;
+  background-color: rgb(var(--primary-light) / 12%) !important;
 }
 
 /* Preserve intentional sentence case in top-level section labels. */
