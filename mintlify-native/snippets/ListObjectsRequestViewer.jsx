@@ -13,7 +13,10 @@ export const ListObjectsRequestViewer = ({
   const [loadError, setLoadError] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useState(null);
   useEffect(() => {
-    if (window.openfgaViewer) { setRuntime(window.openfgaViewer); return; }
+    if (window.openfgaViewer) {
+      setRuntime(window.openfgaViewer);
+      return;
+    }
     let script = document.querySelector('script[src="/openfga-viewer.js"]');
     const loaded = () => {
       if (window.openfgaViewer) setRuntime(window.openfgaViewer);
@@ -37,8 +40,18 @@ export const ListObjectsRequestViewer = ({
     };
   }, []);
 
-  if (loadError) return <div className="openfga-code-viewer__status" role="alert">{loadError}</div>;
-  if (!runtime) return <div className="openfga-code-viewer__status" role="status">Loading examples...</div>;
+  if (loadError)
+    return (
+      <div className="openfga-code-viewer__status" role="alert">
+        {loadError}
+      </div>
+    );
+  if (!runtime)
+    return (
+      <div className="openfga-code-viewer__status" role="status">
+        Loading examples...
+      </div>
+    );
 
   const { LANG, languageLabels: LANG_LABEL, languageGrammars: LANG_CODE } = runtime;
   const DEFAULT_MODEL_ID = runtime.defaultAuthorizationModelId;
@@ -203,8 +216,13 @@ var response = fgaClient.listObjects(body, options).get();
             Go snippets run inside main; Python requests run inside an async function and the client must be closed afterward.
           </p>
           <CodeGroup key={setupLangs.join(',')} onChange={(index) => setSelectedLanguage(setupLangs[index])}>
-            {setupLangs.map(lang => (
-              <code key={lang} className={`language-${LANG_CODE[lang]}`} language={LANG_CODE[lang]} filename={LANG_LABEL[lang]}>
+            {setupLangs.map((lang) => (
+              <code
+                key={lang}
+                className={`language-${LANG_CODE[lang]}`}
+                language={LANG_CODE[lang]}
+                filename={LANG_LABEL[lang]}
+              >
                 {buildSetupCode(lang)}
               </code>
             ))}
@@ -212,8 +230,13 @@ var response = fgaClient.listObjects(body, options).get();
         </Accordion>
       )}
       <CodeGroup key={langs.join(',')} onChange={(index) => setSelectedLanguage(langs[index])}>
-        {langs.map(lang => (
-          <code key={lang} className={`language-${LANG_CODE[lang]}`} language={LANG_CODE[lang]} filename={LANG_LABEL[lang]}>
+        {langs.map((lang) => (
+          <code
+            key={lang}
+            className={`language-${LANG_CODE[lang]}`}
+            language={LANG_CODE[lang]}
+            filename={LANG_LABEL[lang]}
+          >
             {buildCode(lang)}
           </code>
         ))}

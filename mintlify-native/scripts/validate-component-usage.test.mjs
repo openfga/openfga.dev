@@ -17,13 +17,20 @@ const minimal = {
   WriteRequestViewer: { relationshipTuples: [tuple] },
   ListObjectsRequestViewer: { user: 'user:anne', relation: 'reader', objectType: 'document', expectedResults: [] },
   ListUsersRequestViewer: {
-    objectType: 'document', objectId: 'planning', relation: 'reader', userFilterType: 'user', expectedResults: { users: [] },
+    objectType: 'document',
+    objectId: 'planning',
+    relation: 'reader',
+    userFilterType: 'user',
+    expectedResults: { users: [] },
   },
   CreateStoreViewer: {},
 };
 const names = Object.keys(minimal);
 const importFor = (name) => `import { ${name} } from '/snippets/${name}.jsx';`;
-const attributes = (props) => Object.entries(props).map(([key, value]) => `${key}={${JSON.stringify(value)}}`).join(' ');
+const attributes = (props) =>
+  Object.entries(props)
+    .map(([key, value]) => `${key}={${JSON.stringify(value)}}`)
+    .join(' ');
 const element = (name, props = minimal[name]) => `<${name} ${attributes(props)} />`;
 const documentFor = (name, props = minimal[name]) => `${importFor(name)}\n\n${element(name, props)}`;
 const check = (name, props) => validateMdxSource(documentFor(name, props), 'fixture.mdx');
@@ -47,13 +54,13 @@ function assertError(result, pattern) {
 }
 
 test('all eight exact named imports accept their minimal real prop contracts', () => {
-  const source = [
-    ...names.map(importFor),
-    '',
-    ...names.map((name) => element(name)),
-  ].join('\n\n');
+  const source = [...names.map(importFor), '', ...names.map((name) => element(name))].join('\n\n');
   assertChecked(validateMdxSource(source), 8);
-  assertChecked(validateMdxSource('import {\n  /* formatting is not a contract */ CreateStoreViewer\n} from "/snippets/CreateStoreViewer.jsx"\n\n<CreateStoreViewer />'));
+  assertChecked(
+    validateMdxSource(
+      'import {\n  /* formatting is not a contract */ CreateStoreViewer\n} from "/snippets/CreateStoreViewer.jsx"\n\n<CreateStoreViewer />',
+    ),
+  );
 });
 
 test('invalid custom imports are rejected even when unused', async (t) => {
@@ -92,9 +99,15 @@ test('custom usages need canonical imports and cannot use namespaces or aliases'
   assertError(validateMdxSource('<UnknownSnippet />'), /Unknown custom component/);
   assertError(validateMdxSource('<WriteAuthzModelViewer />'), /Unknown custom component/);
   assertError(validateMdxSource("import * as View from './ui';\n\n<View.CheckRequestViewer />"), /namespace member/);
-  assertError(validateMdxSource("import { CheckRequestViewer as Check } from '/snippets/CheckRequestViewer.jsx';\n\n<Check />"), /invalid custom component import/);
-  assertError(validateMdxSource("export const CreateStoreViewer = () => null;\n\n<CreateStoreViewer />"), /reserved/);
-  assertError(validateMdxSource("export function CreateStoreViewer() { return null; }\n\n<CreateStoreViewer />"), /reserved/);
+  assertError(
+    validateMdxSource("import { CheckRequestViewer as Check } from '/snippets/CheckRequestViewer.jsx';\n\n<Check />"),
+    /invalid custom component import/,
+  );
+  assertError(validateMdxSource('export const CreateStoreViewer = () => null;\n\n<CreateStoreViewer />'), /reserved/);
+  assertError(
+    validateMdxSource('export function CreateStoreViewer() { return null; }\n\n<CreateStoreViewer />'),
+    /reserved/,
+  );
 });
 
 test('native components and ordinary imports retain arbitrary props, content and expressions', () => {
@@ -144,10 +157,29 @@ test('only actual MDX/ESTree elements and imports are inspected, not fences, com
 
 test('additional components registered by the installed Mintlify renderer are not restricted', () => {
   for (const name of [
-    'Badge', 'Column', 'CustomCode', 'CustomComponent', 'DynamicCustomComponent', 'FileTree',
-    'GitHub', 'Github', 'Heading', 'MDX', 'Mermaid', 'OptimizedFrame', 'OptimizedImage',
-    'OptimizedVideo', 'Popup', 'PopupContent', 'PopupTrigger', 'SnippetGroup', 'Table',
-    'Tile', 'Variation', 'Visibility', 'ZoomImage',
+    'Badge',
+    'Column',
+    'CustomCode',
+    'CustomComponent',
+    'DynamicCustomComponent',
+    'FileTree',
+    'GitHub',
+    'Github',
+    'Heading',
+    'MDX',
+    'Mermaid',
+    'OptimizedFrame',
+    'OptimizedImage',
+    'OptimizedVideo',
+    'Popup',
+    'PopupContent',
+    'PopupTrigger',
+    'SnippetGroup',
+    'Table',
+    'Tile',
+    'Variation',
+    'Visibility',
+    'ZoomImage',
   ]) {
     assertChecked(validateMdxSource(`<${name} arbitrary={getProps()} {...props}>Content</${name}>`), 0);
   }
@@ -164,7 +196,10 @@ test('every required top-level prop is enforced', async (t) => {
       await t.test(`${name}.${key}`, () => {
         const missing = { ...props };
         delete missing[key];
-        assertError(check(name, missing), name === 'WriteRequestViewer' ? /at least one/ : new RegExp(`missing required property "${key}"`));
+        assertError(
+          check(name, missing),
+          name === 'WriteRequestViewer' ? /at least one/ : new RegExp(`missing required property "${key}"`),
+        );
       });
     }
   }
@@ -172,12 +207,27 @@ test('every required top-level prop is enforced', async (t) => {
 
 test('unknown props, duplicate props, children and retired source props are not silently ignored', async (t) => {
   for (const name of names) {
-    await t.test(`${name} unknown prop`, () => assertError(check(name, { ...minimal[name], surprise: true }), /unsupported property "surprise"/));
-    await t.test(`${name} showWrite`, () => assertError(check(name, { ...minimal[name], showWrite: false }), /showWrite is explicitly unsupported/));
-    await t.test(`${name} pseudoCodeMode`, () => assertError(check(name, { ...minimal[name], pseudoCodeMode: 'curl' }), /pseudoCodeMode is explicitly unsupported/));
+    await t.test(`${name} unknown prop`, () =>
+      assertError(check(name, { ...minimal[name], surprise: true }), /unsupported property "surprise"/),
+    );
+    await t.test(`${name} showWrite`, () =>
+      assertError(check(name, { ...minimal[name], showWrite: false }), /showWrite is explicitly unsupported/),
+    );
+    await t.test(`${name} pseudoCodeMode`, () =>
+      assertError(
+        check(name, { ...minimal[name], pseudoCodeMode: 'curl' }),
+        /pseudoCodeMode is explicitly unsupported/,
+      ),
+    );
   }
-  assertError(validateMdxSource(`${importFor('CreateStoreViewer')}\n\n<CreateStoreViewer storeName="one" storeName="two" />`), /duplicate prop "storeName"/);
-  assertError(validateMdxSource(`${importFor('CreateStoreViewer')}\n\n<CreateStoreViewer><Note>extra</Note></CreateStoreViewer>`), /unsupported children/);
+  assertError(
+    validateMdxSource(`${importFor('CreateStoreViewer')}\n\n<CreateStoreViewer storeName="one" storeName="two" />`),
+    /duplicate prop "storeName"/,
+  );
+  assertError(
+    validateMdxSource(`${importFor('CreateStoreViewer')}\n\n<CreateStoreViewer><Note>extra</Note></CreateStoreViewer>`),
+    /unsupported children/,
+  );
   assertError(check('CreateStoreViewer', { children: 'hidden prop' }), /unsupported property "children"/);
 });
 
@@ -201,7 +251,10 @@ test('Check allowed is optional for API-error examples, but boolean when supplie
   for (const allowed of ['false', 0, null]) {
     assertError(check('CheckRequestViewer', { ...tuple, allowed }), /allowed: expected boolean/);
   }
-  assertError(check('BatchCheckRequestViewer', { checks: [{ ...tuple, correlation_id: 'batch-check' }] }), /missing required property "allowed"/);
+  assertError(
+    check('BatchCheckRequestViewer', { checks: [{ ...tuple, correlation_id: 'batch-check' }] }),
+    /missing required property "allowed"/,
+  );
 });
 
 test('CreateStore defaults its omitted name but requires a nonempty supplied string', () => {
@@ -226,10 +279,20 @@ test('known scalar mismatches fail, including string booleans and boolean shorth
     ['AuthzModelSnippetViewer', 'skipVersion', 1, 'boolean'],
     ['ListUsersRequestViewer', 'userFilterRelation', 1, 'string'],
   ]) {
-    await t.test(`${name}.${key}`, () => assertError(check(name, { ...minimal[name], [key]: value }), new RegExp(`expected ${expected}`)));
+    await t.test(`${name}.${key}`, () =>
+      assertError(check(name, { ...minimal[name], [key]: value }), new RegExp(`expected ${expected}`)),
+    );
   }
-  assertError(validateMdxSource(`${importFor('OpenFGACodeBlock')}\n\n<OpenFGACodeBlock code />`), /expected string, received boolean/);
-  assertError(validateMdxSource(`${importFor('CheckRequestViewer')}\n\n<CheckRequestViewer user={undefined} relation="r" object="o" allowed />`), /received undefined/);
+  assertError(
+    validateMdxSource(`${importFor('OpenFGACodeBlock')}\n\n<OpenFGACodeBlock code />`),
+    /expected string, received boolean/,
+  );
+  assertError(
+    validateMdxSource(
+      `${importFor('CheckRequestViewer')}\n\n<CheckRequestViewer user={undefined} relation="r" object="o" allowed />`,
+    ),
+    /received undefined/,
+  );
 });
 
 test('all supported language selections match the shared per-viewer contract', () => {
@@ -250,13 +313,27 @@ test('language selections reject unknown, unsupported, duplicate, empty and wron
       [null, /expected array/],
       ['curl', /expected array/],
     ]) {
-      await t.test(`${name}: ${JSON.stringify(selection)}`, () => assertError(check(name, { ...minimal[name], allowedLanguages: selection }), expected));
+      await t.test(`${name}: ${JSON.stringify(selection)}`, () =>
+        assertError(check(name, { ...minimal[name], allowedLanguages: selection }), expected),
+      );
     }
   }
-  assertError(check('BatchCheckRequestViewer', { ...minimal.BatchCheckRequestViewer, allowedLanguages: ['cli'] }), /does not support language "cli"/);
+  assertError(
+    check('BatchCheckRequestViewer', { ...minimal.BatchCheckRequestViewer, allowedLanguages: ['cli'] }),
+    /does not support language "cli"/,
+  );
   assertError(check('CreateStoreViewer', { allowedLanguages: ['rpc'] }), /does not support language "rpc"/);
-  for (const name of ['BatchCheckRequestViewer', 'WriteRequestViewer', 'ListObjectsRequestViewer', 'ListUsersRequestViewer', 'CreateStoreViewer']) {
-    assertError(check(name, { ...minimal[name], allowedLanguages: ['playground'] }), /does not support language "playground"/);
+  for (const name of [
+    'BatchCheckRequestViewer',
+    'WriteRequestViewer',
+    'ListObjectsRequestViewer',
+    'ListUsersRequestViewer',
+    'CreateStoreViewer',
+  ]) {
+    assertError(
+      check(name, { ...minimal[name], allowedLanguages: ['playground'] }),
+      /does not support language "playground"/,
+    );
   }
 });
 
@@ -264,28 +341,54 @@ test('syntax selections are a nonempty unique subset of dsl and json', () => {
   for (const syntaxesToShow of [['dsl'], ['json'], ['json', 'dsl']]) {
     assertChecked(check('AuthzModelSnippetViewer', { ...minimal.AuthzModelSnippetViewer, syntaxesToShow }));
   }
-  for (const [syntaxesToShow, pattern] of [[[], /nonempty/], [['dsl', 'dsl'], /duplicate/], [['yaml'], /expected one of/], ['dsl', /expected array/]]) {
+  for (const [syntaxesToShow, pattern] of [
+    [[], /nonempty/],
+    [['dsl', 'dsl'], /duplicate/],
+    [['yaml'], /expected one of/],
+    ['dsl', /expected array/],
+  ]) {
     assertError(check('AuthzModelSnippetViewer', { ...minimal.AuthzModelSnippetViewer, syntaxesToShow }), pattern);
   }
 });
 
 test('contexts are arbitrary JSON records, headers are string records and descriptions are supported', () => {
   const context = { nested: { list: [null, true, false, 1.5, -4, { any: 'value' }] }, empty: {}, tags: [] };
-  assertChecked(check('CheckRequestViewer', { ...minimal.CheckRequestViewer, context, contextualTuples: [tuple], headers: { 'X-Trace': 'abc' } }));
-  assertChecked(check('BatchCheckRequestViewer', { checks: [{ ...minimal.BatchCheckRequestViewer.checks[0], context, contextualTuples: [tuple] }] }));
-  assertChecked(check('ListObjectsRequestViewer', { ...minimal.ListObjectsRequestViewer, context, contextualTuples: [tuple] }));
-  assertChecked(check('ListUsersRequestViewer', { ...minimal.ListUsersRequestViewer, context, contextualTuples: [tuple] }));
-  assertChecked(check('WriteRequestViewer', {
-    relationshipTuples: [{ ...tuple, _description: 'Keep description', condition: { name: 'time_window', context } }],
-    deleteRelationshipTuples: [{ ...tuple, _description: 'Clean up' }],
-    conflictOptions: { onDuplicateWrites: 'ignore', onMissingDeletes: 'error' },
-    skipSetup: false,
-    authorizationModelId: 'a-model',
-  }));
+  assertChecked(
+    check('CheckRequestViewer', {
+      ...minimal.CheckRequestViewer,
+      context,
+      contextualTuples: [tuple],
+      headers: { 'X-Trace': 'abc' },
+    }),
+  );
+  assertChecked(
+    check('BatchCheckRequestViewer', {
+      checks: [{ ...minimal.BatchCheckRequestViewer.checks[0], context, contextualTuples: [tuple] }],
+    }),
+  );
+  assertChecked(
+    check('ListObjectsRequestViewer', { ...minimal.ListObjectsRequestViewer, context, contextualTuples: [tuple] }),
+  );
+  assertChecked(
+    check('ListUsersRequestViewer', { ...minimal.ListUsersRequestViewer, context, contextualTuples: [tuple] }),
+  );
+  assertChecked(
+    check('WriteRequestViewer', {
+      relationshipTuples: [{ ...tuple, _description: 'Keep description', condition: { name: 'time_window', context } }],
+      deleteRelationshipTuples: [{ ...tuple, _description: 'Clean up' }],
+      conflictOptions: { onDuplicateWrites: 'ignore', onMissingDeletes: 'error' },
+      skipSetup: false,
+      authorizationModelId: 'a-model',
+    }),
+  );
   assertChecked(check('WriteRequestViewer', { relationshipTuples: [], deleteRelationshipTuples: [tuple] }));
-  assertChecked(check('WriteRequestViewer', {
-    relationshipTuples: [{ ...tuple, _description: 'Condition uses request context', condition: { name: 'in_window' } }],
-  }));
+  assertChecked(
+    check('WriteRequestViewer', {
+      relationshipTuples: [
+        { ...tuple, _description: 'Condition uses request context', condition: { name: 'in_window' } },
+      ],
+    }),
+  );
 });
 
 test('tuple, batch, context, headers, writes and result nested shapes are checked', async (t) => {
@@ -293,21 +396,53 @@ test('tuple, batch, context, headers, writes and result nested shapes are checke
     ['CheckRequestViewer', { contextualTuples: {} }, /contextualTuples: expected array/],
     ['CheckRequestViewer', { contextualTuples: [{ user: 'u', object: 'o' }] }, /missing required property "relation"/],
     ['CheckRequestViewer', { contextualTuples: [{ ...tuple, relation: 4 }] }, /relation: expected string/],
-    ['CheckRequestViewer', { contextualTuples: [{ ...tuple, condition: { name: 'x' } }] }, /unsupported property "condition"/],
+    [
+      'CheckRequestViewer',
+      { contextualTuples: [{ ...tuple, condition: { name: 'x' } }] },
+      /unsupported property "condition"/,
+    ],
     ['CheckRequestViewer', { headers: { 'X-Test': 1 } }, /headers.X-Test: expected string/],
     ['CheckRequestViewer', { context: [] }, /context: expected object/],
     ['CheckRequestViewer', { context: null }, /context: expected object/],
     ['BatchCheckRequestViewer', { checks: [] }, /checks: must be a nonempty array/],
-    ['BatchCheckRequestViewer', { checks: [{ ...tuple, allowed: false }] }, /missing required property "correlation_id"/],
-    ['BatchCheckRequestViewer', { checks: [{ ...tuple, correlation_id: 'id', allowed: 'false' }] }, /allowed: expected boolean/],
-    ['BatchCheckRequestViewer', { checks: [{ ...minimal.BatchCheckRequestViewer.checks[0], contextualTuples: [false] }] }, /expected object/],
-    ['BatchCheckRequestViewer', { checks: [{ ...minimal.BatchCheckRequestViewer.checks[0], context: 'no' }] }, /context: expected object/],
-    ['BatchCheckRequestViewer', { checks: [{ ...minimal.BatchCheckRequestViewer.checks[0], headers: {} }] }, /unsupported property "headers"/],
+    [
+      'BatchCheckRequestViewer',
+      { checks: [{ ...tuple, allowed: false }] },
+      /missing required property "correlation_id"/,
+    ],
+    [
+      'BatchCheckRequestViewer',
+      { checks: [{ ...tuple, correlation_id: 'id', allowed: 'false' }] },
+      /allowed: expected boolean/,
+    ],
+    [
+      'BatchCheckRequestViewer',
+      { checks: [{ ...minimal.BatchCheckRequestViewer.checks[0], contextualTuples: [false] }] },
+      /expected object/,
+    ],
+    [
+      'BatchCheckRequestViewer',
+      { checks: [{ ...minimal.BatchCheckRequestViewer.checks[0], context: 'no' }] },
+      /context: expected object/,
+    ],
+    [
+      'BatchCheckRequestViewer',
+      { checks: [{ ...minimal.BatchCheckRequestViewer.checks[0], headers: {} }] },
+      /unsupported property "headers"/,
+    ],
     ['WriteRequestViewer', { relationshipTuples: [], deleteRelationshipTuples: [] }, /at least one/],
     ['WriteRequestViewer', { relationshipTuples: [{ ...tuple, _description: 1 }] }, /_description: expected string/],
     ['WriteRequestViewer', { relationshipTuples: [{ ...tuple, condition: {} }] }, /missing required property "name"/],
-    ['WriteRequestViewer', { relationshipTuples: [{ ...tuple, condition: { name: 'x', context: [] } }] }, /context: expected object/],
-    ['WriteRequestViewer', { deleteRelationshipTuples: [{ ...tuple, condition: { name: 'x' } }] }, /unsupported property "condition"/],
+    [
+      'WriteRequestViewer',
+      { relationshipTuples: [{ ...tuple, condition: { name: 'x', context: [] } }] },
+      /context: expected object/,
+    ],
+    [
+      'WriteRequestViewer',
+      { deleteRelationshipTuples: [{ ...tuple, condition: { name: 'x' } }] },
+      /unsupported property "condition"/,
+    ],
     ['WriteRequestViewer', { conflictOptions: { onDuplicateWrites: 'overwrite' } }, /expected one of/],
     ['WriteRequestViewer', { conflictOptions: { onMissingDeletes: false } }, /expected string/],
     ['WriteRequestViewer', { conflictOptions: { unknown: 'ignore' } }, /unsupported property "unknown"/],
@@ -315,77 +450,120 @@ test('tuple, batch, context, headers, writes and result nested shapes are checke
     ['ListUsersRequestViewer', { expectedResults: [] }, /expectedResults: expected object/],
     ['ListUsersRequestViewer', { expectedResults: {} }, /missing required property "users"/],
     ['ListUsersRequestViewer', { expectedResults: { users: [{}] } }, /exactly one of/],
-    ['ListUsersRequestViewer', { expectedResults: { users: [{ object: { type: 'user' } }] } }, /missing required property "id"/],
+    [
+      'ListUsersRequestViewer',
+      { expectedResults: { users: [{ object: { type: 'user' } }] } },
+      /missing required property "id"/,
+    ],
     ['ListUsersRequestViewer', { expectedResults: { users: [{ wildcard: { type: 1 } }] } }, /type: expected string/],
-    ['ListUsersRequestViewer', { expectedResults: { users: [{ userset: { type: 'team', id: 'devs' } }] } }, /missing required property "relation"/],
-    ['ListUsersRequestViewer', { expectedResults: { users: [{ wildcard: { type: 'user' }, object: { type: 'user', id: 'anne' } }] } }, /exactly one of/],
+    [
+      'ListUsersRequestViewer',
+      { expectedResults: { users: [{ userset: { type: 'team', id: 'devs' } }] } },
+      /missing required property "relation"/,
+    ],
+    [
+      'ListUsersRequestViewer',
+      { expectedResults: { users: [{ wildcard: { type: 'user' }, object: { type: 'user', id: 'anne' } }] } },
+      /exactly one of/,
+    ],
   ];
   for (const [name, props, expected] of cases) {
-    await t.test(`${name}: ${JSON.stringify(props)}`, () => assertError(check(name, { ...minimal[name], ...props }), expected));
+    await t.test(`${name}: ${JSON.stringify(props)}`, () =>
+      assertError(check(name, { ...minimal[name], ...props }), expected),
+    );
   }
 });
 
 test('ListUsers supports objects, wildcards and usersets', () => {
-  assertChecked(check('ListUsersRequestViewer', {
-    ...minimal.ListUsersRequestViewer,
-    userFilterType: 'team',
-    userFilterRelation: 'member',
-    expectedResults: { users: [
-      { object: { type: 'user', id: 'anne' } },
-      { wildcard: { type: 'user' } },
-      { userset: { type: 'team', id: 'devs', relation: 'member' } },
-    ] },
-  }));
+  assertChecked(
+    check('ListUsersRequestViewer', {
+      ...minimal.ListUsersRequestViewer,
+      userFilterType: 'team',
+      userFilterRelation: 'member',
+      expectedResults: {
+        users: [
+          { object: { type: 'user', id: 'anne' } },
+          { wildcard: { type: 'user' } },
+          { userset: { type: 'team', id: 'devs', relation: 'member' } },
+        ],
+      },
+    }),
+  );
 });
 
 const richType = {
   type: 'document',
   relations: {
-    viewer: { union: { child: [
-      { this: {} },
-      { computedUserset: { relation: 'editor', object: '' } },
-      { intersection: { child: [
-        { tupleToUserset: { tupleset: { relation: 'parent' }, computedUserset: { relation: 'viewer' } } },
-        { difference: { base: { this: {} }, subtract: { computedUserset: { relation: 'blocked' } } } },
-      ] } },
-    ] } },
+    viewer: {
+      union: {
+        child: [
+          { this: {} },
+          { computedUserset: { relation: 'editor', object: '' } },
+          {
+            intersection: {
+              child: [
+                { tupleToUserset: { tupleset: { relation: 'parent' }, computedUserset: { relation: 'viewer' } } },
+                { difference: { base: { this: {} }, subtract: { computedUserset: { relation: 'blocked' } } } },
+              ],
+            },
+          },
+        ],
+      },
+    },
   },
   metadata: {
     module: 'documents',
     source_info: { file: 'documents.fga', line: 1 },
-    relations: { viewer: {
-      module: 'documents', source_info: { file: 'documents.fga' },
-      directly_related_user_types: [
-        { type: 'user' }, { type: 'user', wildcard: {} },
-        { type: 'team', relation: 'member' }, { type: 'user', condition: 'in_window' },
-      ],
-    } },
+    relations: {
+      viewer: {
+        module: 'documents',
+        source_info: { file: 'documents.fga' },
+        directly_related_user_types: [
+          { type: 'user' },
+          { type: 'user', wildcard: {} },
+          { type: 'team', relation: 'member' },
+          { type: 'user', condition: 'in_window' },
+        ],
+      },
+    },
   },
 };
 
 test('rich model JSON supports recursive rewrites, metadata/modules, conditions and parameter generics', () => {
-  assertChecked(check('AuthzModelSnippetViewer', { configuration: {
-    id: 'model-id',
-    schema_version: '1.2',
-    type_definitions: [{ type: 'user', relations: {}, metadata: null }, richType],
-    conditions: { in_window: {
-      name: 'in_window',
-      expression: 'current_time < expires_at',
-      parameters: {
-        current_time: { type_name: 'TYPE_NAME_TIMESTAMP' },
-        extras: { type_name: 'TYPE_NAME_MAP', generic_types: [
-          { type_name: 'TYPE_NAME_STRING' }, { type_name: 'TYPE_NAME_LIST', generic_types: [{ type_name: 'TYPE_NAME_STRING' }] },
-        ] },
+  assertChecked(
+    check('AuthzModelSnippetViewer', {
+      configuration: {
+        id: 'model-id',
+        schema_version: '1.2',
+        type_definitions: [{ type: 'user', relations: {}, metadata: null }, richType],
+        conditions: {
+          in_window: {
+            name: 'in_window',
+            expression: 'current_time < expires_at',
+            parameters: {
+              current_time: { type_name: 'TYPE_NAME_TIMESTAMP' },
+              extras: {
+                type_name: 'TYPE_NAME_MAP',
+                generic_types: [
+                  { type_name: 'TYPE_NAME_STRING' },
+                  { type_name: 'TYPE_NAME_LIST', generic_types: [{ type_name: 'TYPE_NAME_STRING' }] },
+                ],
+              },
+            },
+            metadata: { module: 'documents', source_info: { file: 'conditions.fga' } },
+          },
+        },
+        modules: [{ name: 'documents', source: { file: 'documents.fga' } }],
       },
-      metadata: { module: 'documents', source_info: { file: 'conditions.fga' } },
-    } },
-    modules: [{ name: 'documents', source: { file: 'documents.fga' } }],
-  } }));
+    }),
+  );
 });
 
 test('existing viewer examples can be type-definition fragments and omit a model version', () => {
   assertChecked(check('AuthzModelSnippetViewer', { configuration: richType, skipVersion: true }));
-  assertChecked(check('AuthzModelSnippetViewer', { configuration: { ...richType, schema_version: '1.1' }, skipVersion: true }));
+  assertChecked(
+    check('AuthzModelSnippetViewer', { configuration: { ...richType, schema_version: '1.1' }, skipVersion: true }),
+  );
   assertChecked(check('AuthzModelSnippetViewer', { configuration: { type_definitions: [richType] } }));
 });
 
@@ -400,21 +578,46 @@ test('known model and condition nested-shape mismatches fail without restricting
     [{ type_definitions: [{ type: 1 }] }, /type: expected string/],
     [{ type: 'document', relations: [] }, /relations: expected object/],
     [{ type: 'document', metadata: { module: 1 } }, /module: expected string/],
-    [{ type: 'document', metadata: { relations: { viewer: { directly_related_user_types: [{}] } } } }, /missing required property "type"/],
+    [
+      { type: 'document', metadata: { relations: { viewer: { directly_related_user_types: [{}] } } } },
+      /missing required property "type"/,
+    ],
     [{ type: 'document', relations: { viewer: {} } }, /exactly one of/],
     [{ type: 'document', relations: { viewer: { union: [] } } }, /union: expected object/],
     [{ type: 'document', relations: { viewer: { union: { child: [] } } } }, /child: must be a nonempty array/],
     [{ type: 'document', relations: { viewer: { computedUserset: { relation: 1 } } } }, /relation: expected string/],
-    [{ type: 'document', relations: { viewer: { tupleToUserset: { tupleset: {} } } } }, /missing required property "computedUserset"/],
-    [{ type: 'document', relations: { viewer: { difference: { base: { this: {} } } } } }, /missing required property "subtract"/],
+    [
+      { type: 'document', relations: { viewer: { tupleToUserset: { tupleset: {} } } } },
+      /missing required property "computedUserset"/,
+    ],
+    [
+      { type: 'document', relations: { viewer: { difference: { base: { this: {} } } } } },
+      /missing required property "subtract"/,
+    ],
     [{ type: 'document', relations: { viewer: { this: {}, union: { child: [{ this: {} }] } } } }, /exactly one of/],
     [{ type_definitions: [], conditions: [] }, /conditions: expected object/],
     [{ type_definitions: [], conditions: { x: { name: 'x', expression: false } } }, /expression: expected string/],
-    [{ type_definitions: [], conditions: { x: { name: 'x', expression: 'true', parameters: { x: { type_name: [] } } } } }, /type_name: expected string/],
-    [{ type_definitions: [], conditions: { x: { name: 'x', expression: 'true', parameters: { x: { type_name: 'TYPE_NAME_LIST', generic_types: [1] } } } } }, /generic_types\[0\]: expected object/],
+    [
+      {
+        type_definitions: [],
+        conditions: { x: { name: 'x', expression: 'true', parameters: { x: { type_name: [] } } } },
+      },
+      /type_name: expected string/,
+    ],
+    [
+      {
+        type_definitions: [],
+        conditions: {
+          x: { name: 'x', expression: 'true', parameters: { x: { type_name: 'TYPE_NAME_LIST', generic_types: [1] } } },
+        },
+      },
+      /generic_types\[0\]: expected object/,
+    ],
   ];
   for (const [configuration, expected] of invalidModels) {
-    await t.test(JSON.stringify(configuration), () => assertError(check('AuthzModelSnippetViewer', { configuration }), expected));
+    await t.test(JSON.stringify(configuration), () =>
+      assertError(check('AuthzModelSnippetViewer', { configuration }), expected),
+    );
   }
 });
 
@@ -443,7 +646,9 @@ test('exported const data and literal template interpolations are safely resolve
 
 test('unresolved expressions are deferred, never executed or claimed fully checked', async (t) => {
   globalThis.componentValidatorExecuted = false;
-  t.after(() => { delete globalThis.componentValidatorExecuted; });
+  t.after(() => {
+    delete globalThis.componentValidatorExecuted;
+  });
   for (const expression of [
     'getAllowed()',
     'settings.allowed',
@@ -452,7 +657,9 @@ test('unresolved expressions are deferred, never executed or claimed fully check
     '(globalThis.componentValidatorExecuted = true)',
     'JSON.parse("true")',
   ]) {
-    const result = validateMdxSource(`${importFor('CheckRequestViewer')}\n\n<CheckRequestViewer user="u" relation="r" object="o" allowed={${expression}} />`);
+    const result = validateMdxSource(
+      `${importFor('CheckRequestViewer')}\n\n<CheckRequestViewer user="u" relation="r" object="o" allowed={${expression}} />`,
+    );
     assert.deepEqual(result.errors, []);
     assert.equal(result.counts.checked, 0);
     assert.equal(result.counts.deferred, 1);
@@ -463,9 +670,13 @@ test('unresolved expressions are deferred, never executed or claimed fully check
 });
 
 test('cyclic exported data and accessors are deferred without executing', () => {
-  const cycles = validateMdxSource(`${importFor('CheckRequestViewer')}\n\nexport const first = second;\nexport const second = first;\n\n<CheckRequestViewer user="u" relation="r" object="o" allowed={first} />`);
+  const cycles = validateMdxSource(
+    `${importFor('CheckRequestViewer')}\n\nexport const first = second;\nexport const second = first;\n\n<CheckRequestViewer user="u" relation="r" object="o" allowed={first} />`,
+  );
   assert.equal(cycles.counts.deferred, 1);
-  const accessors = validateMdxSource(`${importFor('CheckRequestViewer')}\n\n<CheckRequestViewer user="u" relation="r" object="o" allowed context={{ get nested() { throw new Error("must not execute"); } }} />`);
+  const accessors = validateMdxSource(
+    `${importFor('CheckRequestViewer')}\n\n<CheckRequestViewer user="u" relation="r" object="o" allowed context={{ get nested() { throw new Error("must not execute"); } }} />`,
+  );
   assert.deepEqual(accessors.errors, []);
   assert.match(accessors.warnings[0].message, /accessor/);
 });
@@ -485,12 +696,19 @@ test('local bindings cannot be mistaken for exported constant data or snippet im
   assert.deepEqual(result.errors, []);
   assert.equal(result.counts.checked, 0);
   assert.equal(result.counts.deferred, 3);
-  assertError(validateMdxSource(`${importFor('CheckRequestViewer')}\n\n{items.map(CheckRequestViewer => <CheckRequestViewer user="u" relation="r" object="o" allowed />)}`), /shadows the required custom snippet/);
+  assertError(
+    validateMdxSource(
+      `${importFor('CheckRequestViewer')}\n\n{items.map(CheckRequestViewer => <CheckRequestViewer user="u" relation="r" object="o" allowed />)}`,
+    ),
+    /shadows the required custom snippet/,
+  );
   assertChecked(validateMdxSource('{items.map(Renderer => <Renderer arbitrary={compute()} {...props} />)}'), 0);
 });
 
 test('partial arrays and objects still reject known invalid sibling values', () => {
-  const result = validateMdxSource(`${importFor('BatchCheckRequestViewer')}\n\n<BatchCheckRequestViewer checks={[{ user: getUser(), relation: 1, object: "o", allowed: false, correlation_id: "id", context: { now: clock.now } }, ...moreChecks]} />`);
+  const result = validateMdxSource(
+    `${importFor('BatchCheckRequestViewer')}\n\n<BatchCheckRequestViewer checks={[{ user: getUser(), relation: 1, object: "o", allowed: false, correlation_id: "id", context: { now: clock.now } }, ...moreChecks]} />`,
+  );
   assertError(result, /relation: expected string/);
   assert.equal(result.counts.checked, 0);
   assert.equal(result.counts.invalid, 1);
@@ -510,42 +728,71 @@ test('spreads and computed properties remain deferred, with explicit props still
     assert.equal(result.counts.deferred, 1);
     assert.equal(result.counts.checked, 0);
   }
-  assertError(validateMdxSource(`${importFor('CheckRequestViewer')}\n\n<CheckRequestViewer {...props} allowed="no" />`), /allowed: expected boolean/);
-  const writes = validateMdxSource(`${importFor('WriteRequestViewer')}\n\n<WriteRequestViewer relationshipTuples={[...tuples]} />`);
+  assertError(
+    validateMdxSource(`${importFor('CheckRequestViewer')}\n\n<CheckRequestViewer {...props} allowed="no" />`),
+    /allowed: expected boolean/,
+  );
+  const writes = validateMdxSource(
+    `${importFor('WriteRequestViewer')}\n\n<WriteRequestViewer relationshipTuples={[...tuples]} />`,
+  );
   assert.deepEqual(writes.errors, []);
   assert.equal(writes.counts.deferred, 1);
 });
 
 test('unresolved templates have a known string type, while functions, regexes and non-JSON values fail', () => {
-  assertError(validateMdxSource(`${importFor('CheckRequestViewer')}\n\n<CheckRequestViewer user="u" relation="r" object="o" allowed={\`value: \${other}\`} />`), /expected boolean, received string/);
-  const unresolvedCode = validateMdxSource(`${importFor('OpenFGACodeBlock')}\n\n<OpenFGACodeBlock code={\`type \${getName()}\`} />`);
+  assertError(
+    validateMdxSource(
+      `${importFor('CheckRequestViewer')}\n\n<CheckRequestViewer user="u" relation="r" object="o" allowed={\`value: \${other}\`} />`,
+    ),
+    /expected boolean, received string/,
+  );
+  const unresolvedCode = validateMdxSource(
+    `${importFor('OpenFGACodeBlock')}\n\n<OpenFGACodeBlock code={\`type \${getName()}\`} />`,
+  );
   assert.deepEqual(unresolvedCode.errors, []);
   assert.equal(unresolvedCode.counts.deferred, 1);
   for (const expression of ['() => true', '/regex/', '12n', 'undefined', '1e999']) {
-    const result = validateMdxSource(`${importFor('CheckRequestViewer')}\n\n<CheckRequestViewer user="u" relation="r" object="o" allowed context={{ value: ${expression} }} />`);
+    const result = validateMdxSource(
+      `${importFor('CheckRequestViewer')}\n\n<CheckRequestViewer user="u" relation="r" object="o" allowed context={{ value: ${expression} }} />`,
+    );
     assertError(result, /expected JSON value/);
   }
-  assertError(validateMdxSource(`${importFor('CheckRequestViewer')}\n\n<CheckRequestViewer user="u" relation="r" object="o" allowed context={{ method() { return true; } }} />`), /expected JSON value/);
+  assertError(
+    validateMdxSource(
+      `${importFor('CheckRequestViewer')}\n\n<CheckRequestViewer user="u" relation="r" object="o" allowed context={{ method() { return true; } }} />`,
+    ),
+    /expected JSON value/,
+  );
 });
 
 test('components inside MDX JavaScript expressions and native props are also checked', () => {
-  const result = validateMdxSource([
-    importFor('CheckRequestViewer'),
-    importFor('CreateStoreViewer'),
-    '',
-    '{condition && <CheckRequestViewer user="u" relation="r" object="o" allowed={false} />}',
-    '',
-    '<Card title={<CreateStoreViewer storeName="Example" />} />',
-    '',
-    '{/* <Unknown /> */}',
-  ].join('\n'));
+  const result = validateMdxSource(
+    [
+      importFor('CheckRequestViewer'),
+      importFor('CreateStoreViewer'),
+      '',
+      '{condition && <CheckRequestViewer user="u" relation="r" object="o" allowed={false} />}',
+      '',
+      '<Card title={<CreateStoreViewer storeName="Example" />} />',
+      '',
+      '{/* <Unknown /> */}',
+    ].join('\n'),
+  );
   assertChecked(result, 2);
-  assertError(validateMdxSource(`${importFor('CheckRequestViewer')}\n\n{items.map(item => <CheckRequestViewer user={item.user} relation="r" object="o" allowed="bad" />)}`), /allowed: expected boolean/);
+  assertError(
+    validateMdxSource(
+      `${importFor('CheckRequestViewer')}\n\n{items.map(item => <CheckRequestViewer user={item.user} relation="r" object="o" allowed="bad" />)}`,
+    ),
+    /allowed: expected boolean/,
+  );
   assertError(validateMdxSource('{condition && <UnknownCustom />}'), /Unknown custom component/);
 });
 
 test('actionable file:line:column diagnostics and parse failures are returned rather than thrown', () => {
-  const result = analyzeMdx(`${importFor('CheckRequestViewer')}\n\n<CheckRequestViewer\n user="u"\n relation="r"\n object="o"\n allowed="wrong"\n/>`, 'docs/example.mdx');
+  const result = analyzeMdx(
+    `${importFor('CheckRequestViewer')}\n\n<CheckRequestViewer\n user="u"\n relation="r"\n object="o"\n allowed="wrong"\n/>`,
+    'docs/example.mdx',
+  );
   assert.equal(result.errors.length, 1);
   assert.equal(result.errors[0].file, 'docs/example.mdx');
   assert.equal(result.errors[0].line, 7);

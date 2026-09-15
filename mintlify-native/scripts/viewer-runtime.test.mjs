@@ -34,8 +34,19 @@ const fixtures = {
   CheckRequestViewer: { ...tuple, allowed: true },
   BatchCheckRequestViewer: { checks: [{ ...tuple, correlation_id: 'example-check', allowed: false }] },
   WriteRequestViewer: { relationshipTuples: [tuple] },
-  ListObjectsRequestViewer: { user: tuple.user, relation: tuple.relation, objectType: 'document', expectedResults: ['document:planning'] },
-  ListUsersRequestViewer: { objectType: 'document', objectId: 'planning', relation: 'reader', userFilterType: 'user', expectedResults: { users: [{ object: { type: 'user', id: 'anne' } }] } },
+  ListObjectsRequestViewer: {
+    user: tuple.user,
+    relation: tuple.relation,
+    objectType: 'document',
+    expectedResults: ['document:planning'],
+  },
+  ListUsersRequestViewer: {
+    objectType: 'document',
+    objectId: 'planning',
+    relation: 'reader',
+    userFilterType: 'user',
+    expectedResults: { users: [{ object: { type: 'user', id: 'anne' } }] },
+  },
   CreateStoreViewer: {},
 };
 
@@ -51,7 +62,10 @@ test('the shared contract preserves caller order and rejects unsupported languag
   assert.throws(() => runtime.selectLanguages('BatchCheckRequestViewer', ['cli']));
   assert.throws(() => runtime.buildSdkSetup('rpc', 'CheckRequestViewer'));
   assert.equal(runtime.languageGrammars['dotnet-sdk'], 'csharp');
-  assert.deepEqual(languages.map(({ id }) => id), defaultLanguages.CheckRequestViewer);
+  assert.deepEqual(
+    languages.map(({ id }) => id),
+    defaultLanguages.CheckRequestViewer,
+  );
 });
 
 test('every SDK setup uses canonical environment variables and self-hosted no-auth configuration', () => {
@@ -67,7 +81,10 @@ test('every SDK setup uses canonical environment variables and self-hosted no-au
   }
   assert.match(runtime.buildSdkSetup('go-sdk', 'CheckRequestViewer'), /openfga "github.com\/openfga\/go-sdk"/);
   assert.match(runtime.buildSdkSetup('java-sdk', 'CheckRequestViewer'), /api.configuration.ClientConfiguration/);
-  assert.match(runtime.buildSdkSetup('python-sdk', 'ListUsersRequestViewer'), /models.list_users_request import ClientListUsersRequest/);
+  assert.match(
+    runtime.buildSdkSetup('python-sdk', 'ListUsersRequestViewer'),
+    /models.list_users_request import ClientListUsersRequest/,
+  );
   assert.match(runtime.buildSdkSetup('js-sdk', 'WriteRequestViewer'), /OnDuplicateWrites, OnMissingDeletes/);
 });
 
@@ -79,13 +96,18 @@ test('all request viewers give native code groups every ordered language and sam
       const hasSetup = name !== 'CreateStoreViewer' && runtime.hasSetup(language);
       assert.equal(groups.length, hasSetup ? 2 : 1, `${name}/${language}`);
       for (const [index, group] of groups.entries()) {
-        const expected = hasSetup && index === 0
-          ? defaultLanguages[name].filter(runtime.hasSetup)
-          : defaultLanguages[name];
+        const expected =
+          hasSetup && index === 0 ? defaultLanguages[name].filter(runtime.hasSetup) : defaultLanguages[name];
         assert.equal(group.props.key, expected.join(','), 'selection does not remount the native group');
         const blocks = nodes(group, 'code');
-        assert.deepEqual(blocks.map(({ props }) => props.key), expected);
-        for (const { props, children: [code] } of blocks) {
+        assert.deepEqual(
+          blocks.map(({ props }) => props.key),
+          expected,
+        );
+        for (const {
+          props,
+          children: [code],
+        } of blocks) {
           assert.equal(props.className, `language-${runtime.languageGrammars[props.key]}`);
           assert.equal(props.language, runtime.languageGrammars[props.key]);
           assert.equal(props.filename, runtime.languageLabels[props.key]);
@@ -105,7 +127,11 @@ test('all request viewers give native code groups every ordered language and sam
 
 test('request-only checks omit an invented response and custom headers survive', () => {
   for (const language of defaultLanguages.CheckRequestViewer) {
-    const tree = renderSnippet('CheckRequestViewer', { ...tuple, headers: { 'X-Request-ID': 'example' } }, { language });
+    const tree = renderSnippet(
+      'CheckRequestViewer',
+      { ...tuple, headers: { 'X-Request-ID': 'example' } },
+      { language },
+    );
     const code = requestCode(tree, language);
     assert.doesNotMatch(code, /undefined|Response:|Reply:|allowed =|Allowed =|allowed =|getAllowed\(\) =/);
     if (language === 'curl') assert.match(code, /X-Request-ID: example/);
@@ -113,21 +139,35 @@ test('request-only checks omit an invented response and custom headers survive',
 });
 
 test('restricted native groups retain caller order and omit unavailable languages', () => {
-  const tree = renderSnippet('CheckRequestViewer', { ...tuple, allowedLanguages: ['curl', 'dotnet-sdk'] }, { language: 'java-sdk' });
+  const tree = renderSnippet(
+    'CheckRequestViewer',
+    { ...tuple, allowedLanguages: ['curl', 'dotnet-sdk'] },
+    { language: 'java-sdk' },
+  );
   for (const group of nodes(tree, 'CodeGroup')) {
-    assert.deepEqual(nodes(group, 'code').map(({ props }) => props.filename), ['curl', '.NET']);
+    assert.deepEqual(
+      nodes(group, 'code').map(({ props }) => props.filename),
+      ['curl', '.NET'],
+    );
   }
 });
 
 test('native selection callbacks map each setup and request index to its own language list', () => {
   for (const [name, props] of Object.entries(fixtures).filter(([name]) => name !== 'CreateStoreViewer')) {
     const selected = [];
-    const tree = renderSnippet(name, {
-      ...props,
-      allowedLanguages: ['rpc', 'curl', 'dotnet-sdk'],
-    }, { language: 'dotnet-sdk', onSelection: language => selected.push(language) });
+    const tree = renderSnippet(
+      name,
+      {
+        ...props,
+        allowedLanguages: ['rpc', 'curl', 'dotnet-sdk'],
+      },
+      { language: 'dotnet-sdk', onSelection: (language) => selected.push(language) },
+    );
     const [setup, request] = nodes(tree, 'CodeGroup');
-    assert.deepEqual(nodes(setup, 'code').map(({ props }) => props.key), ['curl', 'dotnet-sdk']);
+    assert.deepEqual(
+      nodes(setup, 'code').map(({ props }) => props.key),
+      ['curl', 'dotnet-sdk'],
+    );
     setup.props.onChange(0);
     setup.props.onChange(1);
     request.props.onChange(0);
@@ -159,10 +199,14 @@ test('create-store string and shell escaping preserve authored names', () => {
 
 test('write conditions without a stored context render in every supported language', () => {
   for (const language of defaultLanguages.WriteRequestViewer) {
-    const tree = renderSnippet('WriteRequestViewer', {
-      relationshipTuples: [{ ...tuple, condition: { name: 'non_expired_grant' } }],
-      conflictOptions: { onDuplicateWrites: 'ignore' },
-    }, { language });
+    const tree = renderSnippet(
+      'WriteRequestViewer',
+      {
+        relationshipTuples: [{ ...tuple, condition: { name: 'non_expired_grant' } }],
+        conflictOptions: { onDuplicateWrites: 'ignore' },
+      },
+      { language },
+    );
     const code = requestCode(tree, language);
     assert.doesNotMatch(code, /undefined/);
     if (language !== 'rpc') assert.match(code, /non_expired_grant/);

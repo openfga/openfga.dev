@@ -2,7 +2,10 @@ export const CreateStoreViewer = ({ storeName = 'FGA Demo Store', allowedLanguag
   const [runtime, setRuntime] = useState(null);
   const [loadError, setLoadError] = useState(null);
   useEffect(() => {
-    if (window.openfgaViewer) { setRuntime(window.openfgaViewer); return; }
+    if (window.openfgaViewer) {
+      setRuntime(window.openfgaViewer);
+      return;
+    }
     let script = document.querySelector('script[src="/openfga-viewer.js"]');
     const loaded = () => {
       if (window.openfgaViewer) setRuntime(window.openfgaViewer);
@@ -26,8 +29,18 @@ export const CreateStoreViewer = ({ storeName = 'FGA Demo Store', allowedLanguag
     };
   }, []);
 
-  if (loadError) return <div className="openfga-code-viewer__status" role="alert">{loadError}</div>;
-  if (!runtime) return <div className="openfga-code-viewer__status" role="status">Loading examples...</div>;
+  if (loadError)
+    return (
+      <div className="openfga-code-viewer__status" role="alert">
+        {loadError}
+      </div>
+    );
+  if (!runtime)
+    return (
+      <div className="openfga-code-viewer__status" role="status">
+        Loading examples...
+      </div>
+    );
 
   const { languageLabels: LANG_LABEL, languageGrammars: LANG_CODE } = runtime;
 
@@ -36,8 +49,13 @@ export const CreateStoreViewer = ({ storeName = 'FGA Demo Store', allowedLanguag
   return (
     <div data-openfga-viewer="CreateStoreViewer">
       <CodeGroup key={langs.join(',')}>
-        {langs.map(lang => (
-          <code key={lang} className={`language-${LANG_CODE[lang]}`} language={LANG_CODE[lang]} filename={LANG_LABEL[lang]}>
+        {langs.map((lang) => (
+          <code
+            key={lang}
+            className={`language-${LANG_CODE[lang]}`}
+            language={LANG_CODE[lang]}
+            filename={LANG_LABEL[lang]}
+          >
             {runtime.buildCreateStoreCode(lang, storeName)}
           </code>
         ))}
