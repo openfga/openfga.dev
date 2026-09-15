@@ -38,7 +38,7 @@ mintlify-native/
 ├── github-star-cache.js   # Cache-only fallback for Mintlify's native GitHub star count
 ├── openfga-dsl-highlight.js   # Generated standalone DSL tokenizer (window global)
 ├── fga-codegen.js         # Generated @openfga/syntax-transformer bundle (window global)
-├── docs/                  # 111 public docs pages plus the hidden test harness
+├── docs/                  # 110 owned pages, retained Community copy, and test harness
 ├── images/                # Mintlify logo assets
 ├── snippets/              # 8 interactive React components (see below)
 ├── lib/codegen/
@@ -79,6 +79,64 @@ this file to understand what needs updating in `snippets/CheckRequestViewer.jsx`
 ---
 
 ## Architecture
+
+### Source page coverage
+
+[`source-pages.json`](./source-pages.json) is the reviewed page inventory, not a
+content migration engine. `sources` lists every exact path relative to
+`docs/content/`; its default destination is `mintlify-native/docs/<source>`.
+The five `overrides` preserve the routes for `intro` -> `fga`,
+`getting-started/overview` -> `getting-started`, `docker-setup` -> `docker`,
+`kubernetes-setup` -> `kubernetes`, and `modeling/testing-models` -> `modeling/testing`.
+Destination paths are relative to `mintlify-native/` and include `.mdx`.
+
+```bash
+npm run validate:mintlify-source-parity
+npm run test:mintlify-source-parity
+git fetch origin main
+npm run validate:mintlify-source-parity -- --compare-ref origin/main
+```
+
+The navigation validator invokes source coverage, and the navigation chain runs
+its mutation tests; both therefore run in the root prebuild. Counts come from
+the manifest and filesystem, not a hardcoded page total. The initial inventory is
+111 source pages: 110 Mintlify-owned pages and one Docusaurus-owned Community
+page. The 112 Mintlify MDX files also include the retained Community copy and the
+fixture-only `docs/test-viewer.mdx`.
+
+When adding a source page, add its exact path to `sources`, author its Mintlify
+counterpart, and add the destination route to visible docs navigation. Add an
+override only for a different destination path. For deliberate removal or
+renaming, reconcile the source, manifest, destination, and navigation together;
+never regenerate the inventory just to silence a failure. A mapping removed
+while its source remains, a source removed while its entry remains, and a stale
+destination all fail validation. A comparison against a fetched reference also
+detects coordinated source/manifest deletions or additions relative to that ref.
+
+Exclusions apply to one exact source and require a reason. An assignment to
+Docusaurus additionally records its `owner`, public `route`, and existing
+`ownerPage` under `src/pages/`. `retainedPage` explicitly accounts for an optional
+non-navigation migration copy. Fixtures likewise require an exact destination
+and reason and must exist. Community remains owned at `/community`; retain the
+test viewer during component work. Neither excluded copies nor fixtures may
+appear anywhere in docs navigation, including hidden/searchable groups. Hidden
+OpenAPI operation references are checked separately by the API validator, not
+mistaken for documentation MDX.
+
+The guard rejects missing or unlisted sources, stale/missing/unassigned
+destinations (including MDX outside `docs/`), duplicate mappings/navigation,
+conflicting ownership, malformed paths, globs, traversal, and symlinks. Paths
+use lowercase letters, digits, hyphens, underscores, and `/` separators.
+
+**Coverage is not semantic content parity.** The optional `--compare-ref` fails
+on a source inventory mismatch and reports byte-level source differences
+informationally, without fetching or changing either branch. It does not compare
+source prose or components to their Mintlify equivalents, record a "reviewed"
+hash, or certify freshness. At introduction, comparison against main commit
+`7002ddae8df201ada3d32e3073a82c41ac459b16` found the same 111 source paths but
+16 locally changed source files containing API-reference link rewrites. Matching
+paths do not establish that migrated prose, examples, or component behavior are
+up to date; those need separate review.
 
 ### GitHub star-count fallback
 

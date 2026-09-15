@@ -1,40 +1,11 @@
-import { readFileSync, readdirSync } from 'node:fs';
-import { dirname, join, relative } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import { validateSourceCoverage } from './validate-source-coverage.mjs';
 
 const mintlifyDirectory = join(dirname(fileURLToPath(import.meta.url)), '..');
 const docs = JSON.parse(readFileSync(join(mintlifyDirectory, 'docs.json'), 'utf8'));
-
-function listMdxFiles(directory) {
-  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
-    const path = join(directory, entry.name);
-    return entry.isDirectory() ? listMdxFiles(path) : path.endsWith('.mdx') ? [path] : [];
-  });
-}
-
-function collectPageReferences(value, references = []) {
-  if (typeof value === 'string') {
-    if (value.startsWith('docs/')) {
-      references.push(value);
-    }
-    return references;
-  }
-
-  if (Array.isArray(value)) {
-    for (const item of value) {
-      collectPageReferences(item, references);
-    }
-    return references;
-  }
-
-  if (value && typeof value === 'object') {
-    for (const child of Object.values(value)) {
-      collectPageReferences(child, references);
-    }
-  }
-
-  return references;
-}
 
 if (docs.navigation?.tabs) {
   throw new Error('Top navigation tabs must not be configured');
@@ -134,41 +105,6 @@ for (const group of groups) {
   }
 }
 
-const navigationReferences = collectPageReferences(groups);
-const counts = new Map();
-for (const reference of navigationReferences) {
-  counts.set(reference, (counts.get(reference) ?? 0) + 1);
-}
+const { ownedPages } = validateSourceCoverage();
 
-const excludedPages = new Set(['docs/community', 'docs/test-viewer']);
-const ownedPages = listMdxFiles(join(mintlifyDirectory, 'docs'))
-  .map((path) =>
-    relative(mintlifyDirectory, path)
-      .replaceAll('\\', '/')
-      .replace(/\.mdx$/, ''),
-  )
-  .filter((path) => !excludedPages.has(path))
-  .sort();
-
-if (ownedPages.length !== 110) {
-  throw new Error(`Expected 110 Mintlify-owned documentation pages; found ${ownedPages.length}`);
-}
-
-const duplicates = [...counts].filter(([, count]) => count > 1).map(([reference]) => reference);
-if (duplicates.length > 0) {
-  throw new Error(`Duplicate documentation pages in navigation: ${duplicates.join(', ')}`);
-}
-
-const missing = ownedPages.filter((page) => !counts.has(page));
-if (missing.length > 0) {
-  throw new Error(`Documentation pages missing from navigation: ${missing.join(', ')}`);
-}
-
-const unexpected = navigationReferences.filter((page) => !ownedPages.includes(page));
-if (unexpected.length > 0) {
-  throw new Error(`Unexpected documentation pages in navigation: ${unexpected.join(', ')}`);
-}
-
-console.log(
-  `Validated ${navigationReferences.length} unique documentation pages across ${groups.length} top-level groups`,
-);
+console.log(`Validated ${ownedPages.length} unique documentation pages across ${groups.length} top-level groups`);
