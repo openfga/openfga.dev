@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Generates or checks both committed standalone Mintlify browser artifacts.
+# Generates or checks the committed standalone Mintlify browser artifacts.
 # - fga-codegen.js bundles the installed @openfga/syntax-transformer and exposes
 #   window.fgaCodegen for AuthzModelSnippetViewer.
 # - openfga-dsl-highlight.js bundles installed official Prism core with the
@@ -81,9 +81,19 @@ NODE_PATH="$REPO_ROOT/node_modules" node_modules/.bin/esbuild \
   "--banner:js=$HIGHLIGHT_BANNER" \
   --outfile="$TMP_DIR/openfga-dsl-highlight.js"
 
+echo "Building openfga-viewer.js from shared language and SDK setup helpers ..."
+node_modules/.bin/esbuild mintlify-native/scripts/viewer-runtime.entry.mjs \
+  --bundle \
+  --format=iife \
+  --platform=browser \
+  --target=es2020 \
+  --minify \
+  $'--banner:js=// GENERATED FILE - DO NOT EDIT. Source: scripts/viewer-runtime.entry.mjs. Regenerate: npm run generate:mintlify-codegen\n/* eslint-disable */' \
+  --outfile="$TMP_DIR/openfga-viewer.js"
+
 if [[ "$CHECK_ONLY" == true ]]; then
   STALE=0
-  for artifact in fga-codegen.js openfga-dsl-highlight.js; do
+  for artifact in fga-codegen.js openfga-dsl-highlight.js openfga-viewer.js; do
     if ! cmp -s "$TMP_DIR/$artifact" "mintlify-native/$artifact"; then
       echo "mintlify-native/$artifact is stale; run npm run generate:mintlify-codegen" >&2
       STALE=1
@@ -98,6 +108,7 @@ fi
 
 mv "$TMP_DIR/fga-codegen.js" mintlify-native/fga-codegen.js
 mv "$TMP_DIR/openfga-dsl-highlight.js" mintlify-native/openfga-dsl-highlight.js
+mv "$TMP_DIR/openfga-viewer.js" mintlify-native/openfga-viewer.js
 
 FGA_SIZE="$(wc -c < mintlify-native/fga-codegen.js)"
 HIGHLIGHT_SIZE="$(wc -c < mintlify-native/openfga-dsl-highlight.js)"

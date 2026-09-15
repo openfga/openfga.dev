@@ -38,16 +38,20 @@ mintlify-native/
 ├── github-star-cache.js   # Cache-only fallback for Mintlify's native GitHub star count
 ├── openfga-dsl-highlight.js   # Generated standalone DSL tokenizer (window global)
 ├── fga-codegen.js         # Generated @openfga/syntax-transformer bundle (window global)
+├── openfga-viewer.js      # Generated shared language and SDK setup helpers
 ├── docs/                  # 110 owned pages, retained Community copy, and test harness
 ├── images/                # Mintlify logo assets
 ├── snippets/              # 8 interactive React components (see below)
 ├── lib/codegen/
 │   └── check-reference.js.txt  # Reference file — see note below
 └── scripts/
-    ├── build-fga-codegen.sh   # Reproducible build for both browser artifacts
+    ├── build-fga-codegen.sh   # Reproducible build for all browser artifacts
     ├── openfga-dsl-highlight.entry.cjs
     ├── openfga-dsl-highlight.test.mjs
-    └── validate-openfga-code-blocks.mjs
+    ├── validate-openfga-code-blocks.mjs
+    ├── viewer-contract.mjs   # Language identifiers, labels, grammars and order
+    ├── viewer-runtime.mjs    # Shared SDK initialization and create-store code
+    └── validate-component-usage.mjs
 ```
 
 The hidden, searchable API navigation group consumes the canonical OpenAPI 3.0.3 document generated in
@@ -161,21 +165,26 @@ These constraints explain patterns you'll see in every snippet file:
 
 - No `import` statements
 - All constants defined inside `export const MyComponent = (...) => { const X = ... }`
-- Codegen logic (the SDK code-sample strings) is inlined verbatim
+- Operation-specific request generators stay inside each exported function.
+- Reused language metadata and SDK initialization live in a generated standalone
+  browser helper, not cross-snippet or runtime npm imports.
 
 ### The window-global pattern
 
-Two features require large JavaScript libraries that can't be npm-imported at runtime:
+The standalone helpers expose these browser contracts:
 
 | Global              | Library                                               | Set by                      |
 | ------------------- | ----------------------------------------------------- | --------------------------- |
 | `window.fgaCodegen` | `@openfga/syntax-transformer` (DSL ↔ JSON conversion) | `/fga-codegen.js`           |
 | `window.openfgaDsl` | Generated OpenFGA Prism tokenizer                     | `/openfga-dsl-highlight.js` |
+| `window.openfgaViewer` | Shared language metadata, SDK setup, create-store generator | `/openfga-viewer.js` |
 
-Both files are served as static assets by Mintlify. The snippets that need them
-self-inject a `<script>` tag via `useEffect` on mount and then poll for the global
-with `setInterval` until it's available. This mirrors a pattern already in use in the
-Auth0 docs.
+These files are served as static assets by Mintlify. Snippets check for the
+global on mount, then load the asset if needed. The request viewers listen for
+load/error events, display an explicit loading state, and report a failed or
+timed-out helper load as an alert. Model/DSL viewers retain their existing polling
+loaders. Mintlify may also load root JavaScript files automatically; consumers
+must work both with a preloaded global and with on-demand loading.
 
 Mintlify does not support a `docs.json` field for custom scripts — the only mechanism
 is to drop a `.js` file in the content tree and have snippets load it on demand.
@@ -269,7 +278,7 @@ fails explicitly.
 AJV, and yaml). Its crypto shim maps `require("crypto")` to `globalThis.crypto`
 (Web Crypto API).
 
-Install the root dependencies and regenerate both committed artifacts after
+Install the root dependencies and regenerate the committed artifacts after
 upgrading either source package or Prism:
 
 ```bash
@@ -278,27 +287,187 @@ npm run generate:mintlify-codegen
 ```
 
 `npm run check:mintlify-codegen` rebuilds into a temporary directory, fails when
-either committed artifact is stale, and runs tokenizer parity, source consistency,
-runtime isolation, and migrated-corpus tests. The root build invokes this freshness
+any committed artifact is stale, and runs tokenizer parity, source consistency,
+runtime isolation, shared SDK setup, and migrated-corpus tests. The root build invokes this freshness
 check in `prebuild`.
 
 ---
 
 ## Interactive viewer components
 
-All 8 components accept the same props as their Docusaurus equivalents.
-Call sites in MDX do not change between platforms.
+### Import and prop contract
 
-| Component                  | Langs | Description                                                  |
-| -------------------------- | ----- | ------------------------------------------------------------ |
-| `CheckRequestViewer`       | 9     | Multi-language check request with optional setup accordion   |
-| `BatchCheckRequestViewer`  | 7     | Batch check (no CLI/Playground — not supported upstream)     |
-| `WriteRequestViewer`       | 8     | Write/delete tuples; supports conditions and conflictOptions |
-| `ListObjectsRequestViewer` | 8     | List objects with optional contextual tuples                 |
-| `ListUsersRequestViewer`   | 8     | List users; supports userFilterRelation for userset filters  |
-| `AuthzModelSnippetViewer`  | —     | DSL/JSON tab toggle with syntax highlighting                 |
-| `OpenFGACodeBlock`         | —     | DSL code block with openfga-dark syntax highlighting         |
-| `CreateStoreViewer`        | 7     | Create store code; takes `storeName` prop                    |
+Use exactly one unaliased named import for each component used on a page:
+
+```mdx
+import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
+
+<CheckRequestViewer
+  user="user:anne"
+  relation="reader"
+  object="document:planning"
+  allowed={true}
+  allowedLanguages={['js-sdk', 'dotnet-sdk', 'curl']}
+/>
+```
+
+The eight supported paths are `/snippets/AuthzModelSnippetViewer.jsx`,
+`/snippets/OpenFGACodeBlock.jsx`, `/snippets/CheckRequestViewer.jsx`,
+`/snippets/BatchCheckRequestViewer.jsx`, `/snippets/CreateStoreViewer.jsx`,
+`/snippets/WriteRequestViewer.jsx`, `/snippets/ListObjectsRequestViewer.jsx`, and
+`/snippets/ListUsersRequestViewer.jsx`. The exported name matches the filename.
+Do not use default/namespace imports, aliases, Docusaurus `@components` imports,
+or import other snippets from inside a snippet.
+
+| Component | Required props | Optional props and defaults |
+| --- | --- | --- |
+| `OpenFGACodeBlock` | `code`: string, canonically escaped template literal (see above) | `title`: string |
+| `AuthzModelSnippetViewer` | `configuration`: model JSON or a single type-definition fragment | `syntaxesToShow`: nonempty unique array of `dsl`/`json`, default `['dsl', 'json']`; `skipVersion`: boolean, default false |
+| `CheckRequestViewer` | `user`, `relation`, `object`: strings | `allowed`: boolean; omit for request-only examples (no response annotation); `contextualTuples`, `context`, `headers`: string record for curl; common request props below |
+| `BatchCheckRequestViewer` | `checks`: nonempty array of `{user, relation, object, correlation_id, allowed, contextualTuples?, context?}` | Common request props below |
+| `WriteRequestViewer` | At least one nonempty `relationshipTuples` or `deleteRelationshipTuples` array | Omitted tuple arrays default to `[]`; `conflictOptions`: `{onDuplicateWrites?: 'error' \| 'ignore', onMissingDeletes?: 'error' \| 'ignore'}`; common request props below |
+| `ListObjectsRequestViewer` | `user`, `relation`, `objectType`: strings; `expectedResults`: string array | `contextualTuples`, `context`; common request props below |
+| `ListUsersRequestViewer` | `objectType`, `objectId`, `relation`, `userFilterType`: strings; `expectedResults`: `{users: [...]}` | `userFilterRelation`: string; `contextualTuples`, `context`; common request props below |
+| `CreateStoreViewer` | None | `storeName`: nonempty string, default `"FGA Demo Store"`; `allowedLanguages` |
+
+Common request props are `authorizationModelId` (string, default example ID
+`01HVMMBCMGZNT3SED4Z17ECXCA`), `skipSetup` (boolean, default false), and
+`allowedLanguages` (nonempty, duplicate-free array of supported identifiers).
+The example model ID must be replaced with the ID returned when writing your
+model; it is not a configured production model. The existing Check generator
+uses a nullish default; other request generators use the default for empty
+model-ID strings too.
+
+Tuples contain string `user`, `relation`, and `object` fields. Write tuples also
+accept `_description` (a comment, not payload data) and `condition` with `name`
+and optional JSON-object `context`. Delete tuples cannot contain a condition.
+Request contexts are JSON objects, including nested values, arrays, booleans,
+and numbers. Each ListUsers result has exactly one of
+`object: {type, id}`, `wildcard: {type}`, or `userset: {type, id, relation}`.
+Model inputs support `schema_version`, `type_definitions`, relations, metadata,
+and conditions; a `{type, relations?, metadata?}` fragment is normalized to a
+single-type model for DSL conversion without displaying the schema header.
+
+These are **Mintlify authoring props, not a claim of Docusaurus parity**.
+`showWrite`, `pseudoCodeMode`, and other source-only options are not supported;
+the validator reports them instead of letting React silently ignore them.
+Operation-specific generators have not been replaced in this task. In
+particular, some language branches still omit context/condition/filter options
+or serialize context values differently; accepting a prop is not proof that
+every SDK branch has equivalent output. Review generated requests when adding
+an example with new option combinations.
+
+### Languages and selection
+
+`scripts/viewer-contract.mjs` is the authoritative metadata source, used by the
+browser helper and the component validator.
+
+| Identifier | Label | Native syntax grammar |
+| --- | --- | --- |
+| `js-sdk` | Node.js | `javascript` |
+| `go-sdk` | Go | `go` |
+| `dotnet-sdk` | .NET | `csharp` |
+| `python-sdk` | Python | `python` |
+| `java-sdk` | Java | `java` |
+| `cli` | CLI | `shell` |
+| `curl` | curl | `shell` |
+| `rpc` | Pseudocode | `text` (intentionally unhighlighted) |
+| `playground` | Playground | `text` (intentionally unhighlighted) |
+
+Default tabs follow that order. Check supports all nine; BatchCheck omits CLI
+and Playground; Write/ListObjects/ListUsers omit Playground; CreateStore omits
+Pseudocode and Playground. `allowedLanguages` preserves the author's order and
+selects its first entry initially, as in the source filtering helper. Short
+aliases such as `js`, `go`, and `dotnet` are not authoring identifiers.
+Use `csharp`, not `dotnet`, for native .NET fences.
+
+Each request viewer keeps its own selected language. Setup always matches the
+selected request language; Pseudocode/Playground have no setup accordion.
+Changing theme or opening setup does not reset selection. Native CodeGroup
+rendering/copy controls remain in use and are keyed by language to refresh both
+the code and the registered grammar when switching. This does not implement
+Docusaurus's cross-viewer `groupId="languages"` preference synchronization.
+
+### SDK prerequisites
+
+Install the SDK or CLI using `/docs/getting-started/install-sdk`, deploy your
+OpenFGA server, and set `FGA_API_URL` to that server's URL. Request examples also
+need `FGA_STORE_ID`; `FGA_MODEL_ID` configures an optional client-level model ID
+that a per-request `authorizationModelId` overrides. All SDK setup tabs now use
+the same environment-variable names, including Java.
+
+CreateStore does not need a store or model ID. Initialization is shared with
+request viewers, but excludes those fields. These snippets intentionally use
+**no authentication**, appropriate to a self-hosted server with authentication
+disabled. For pre-shared keys or client credentials, follow
+`/docs/getting-started/setup-sdk-client`; do not invent a hosted API URL or paste
+credentials into docs. The setup page retains its separate authentication-mode
+examples and is not generated from these no-auth helpers.
+
+Request code is a fragment: keep imports at file scope, Go statements inside
+`main`, Java statements inside a method that handles exceptions, and Python
+requests in an async function with the client closed afterward (prefer
+`async with OpenFgaClient(configuration)`). CreateStore includes Go/Python entry
+points. Install compatible SDK versions before using newer optional features
+such as batch check and conflict options.
+
+### Validating authoring changes
+
+```bash
+npm run test:mintlify-components
+npm run validate:mintlify-components
+npm run check:mintlify-codegen
+npm run validate:mintlify-navigation
+```
+
+The component validator uses `@mdx-js/mdx`'s MDX/ESTree ASTs, not regular
+expressions or evaluation of document JavaScript. It checks imports, actual JSX
+uses, props and known data shapes, language subsets, and model/result structure.
+Native Mintlify components, fenced examples, and comments are not constrained
+by the custom-component contract. Expressions that cannot be inspected safely
+are reported as deferred checks, not silently claimed as validated. Prefer
+literal data for custom viewer props so the validator can check the whole
+example. This command is separate from general MDX/prose validation.
+
+After changing the runtime, run `npm run generate:mintlify-codegen` and commit
+the generated helper with its source. Use `/docs/test-viewer` plus representative
+real docs to verify first load, on-demand loading, switching languages, setup,
+copy, and desktop/mobile Light/Dark/System themes. Node tests alone cannot prove
+Mintlify's sandbox behavior or syntax grammar registration.
+
+### Source component inventory and remaining conversions
+
+Source paths below are relative to `src/components/Docs`. A static conversion
+is not reusable component parity. All 111 source MDX files have counterparts;
+the navigation guard separately checks the 110 sidebar source routes. The
+hidden viewer harness is additional and remains available.
+
+| Source exports | Mintlify disposition |
+| --- | --- |
+| `AuthorizationModel/AuthzModelSnippetViewer` | Custom snippet; DSL/JSON and single-type fragments supported. Source `showWrite` and source-default DSL-only presentation are not equivalent. |
+| `AuthorizationModel/AuthzModelCodeBlock`, `SyntaxTransformer`, `Dsl` | Converted through the model snippet, `OpenFGACodeBlock`, and existing official syntax-transformer/Prism artifacts; no runtime source-component import. |
+| `SnippetViewer/CheckRequestViewer`, `BatchCheckRequestViewer`, `WriteRequestViewer`, `ListObjectsRequestViewer`, `ListUsersRequestViewer` | Five custom snippets with shared language/setup infrastructure; operation-specific option/codegen parity remains incomplete. |
+| `SnippetViewer/DefaultTabbedViewer`, `SupportedLanguage`, `SdkSetup` | Converted to the canonical language contract, per-viewer controls, native CodeGroup and shared no-auth initialization. Pseudocode toggle and cross-viewer preference sync are not ported. |
+| Create-store examples (no dedicated source Docs component) | Custom `CreateStoreViewer`, with shared initialization and canonical language IDs. |
+| `SdkSetup/SdkSetupPrerequisite` | Converted to prose: all 43 source occurrences retain deployment, URL/store ID and optional API-token prerequisites. |
+| `SnippetViewer/ExecuteApiRequestViewer`, `ExecuteApiRequestStreamingViewer` | Missing reusable viewers; no current source MDX callers. |
+| `SnippetViewer/ExpandRequestViewer` | Lossy JSON conversion in `docs/interacting/relationship-queries`: SDK/CLI/curl/pseudocode and initialization are absent; surrounding response trees remain. |
+| `SnippetViewer/ReadRequestViewer` | Mixed static conversion. Relationship queries lose executable examples/timestamps. In `docs/modeling/migrating/migrating-relations`, a source read-all example incorrectly became an Anne-only query and lost other results. |
+| `SnippetViewer/ReadChangesRequestViewer` | Four static native-tab examples retain seven languages, page size, type filter and continuation-token combinations; reusable viewer missing. |
+| `SnippetViewer/StreamedListObjectsRequestViewer` | Static native tabs retain the source caller's five SDK languages and streamed results; reusable viewer missing. |
+| `SnippetViewer/WriteAuthzModelViewer` | Static seven-language tabs. Configure-model retains payload/returned-ID examples; conditions has returned-ID drift and an unexplained CLI `model.fga` input. |
+| `SnippetViewer/TupleViewer` | Task-based authorization retains tuple/condition values as prose, but loses two-column structure and combined YAML copy output. |
+| `RelationshipTuples/RelationshipTuplesViewer`, `RelationshipCondition` | Static JSON/fences; some `_description` annotations and JSON language designations are lost. |
+| `Column/ColumnLayout`, `CardBox`, `LinkBulletType`, internal `Link` | Tables/Markdown replace layout/link wrappers. Visual props are not ported; some instructional content is abridged. Internal Link has no direct MDX callers. |
+| `Overview/CardGrid`, `IntroCard`, `RelatedSection` | Native CardGroup/Card/Note or Markdown; some grouping, titles and outer descriptions are lost. |
+| `ProductName`, `ProductNameFormat`, `ProductConcept`, `IntroductionSection`, `UpdateProductNameInLinks` | Literal text/Markdown links; some source links became unlinked text. |
+| `Banner`, `Playground`, `DocumentationNotice`, `FeedbackCallout` | No equivalent custom snippets. Banner/feedback have no direct MDX callers; playground/notice rendering is dormant under the current source configuration. |
+
+The next parity work should address read-all semantics, missing Read/Expand
+instructions, model-writing outputs, tuple structure/copy, and omitted
+instructional content/links. The static SDK setup page retains 18 examples
+(three authentication modes across six languages); that is content coverage,
+not proof of synchronized tabs or SDK execution.
 
 ---
 
@@ -336,7 +505,7 @@ Configure edge rules in this order:
 3. Proxy `/docs`, `/docs/**`, `/api-reference`, `/api-reference/**`,
    `/_mintlify/**`, `/mintlify-assets/**`, `/_next/**`, `/images/**`,
    `/fga-codegen.js`, and
-   `/openfga-dsl-highlight.js` to the Mintlify origin.
+   `/openfga-dsl-highlight.js`, and `/openfga-viewer.js` to the Mintlify origin.
 4. Send all remaining paths to Docusaurus.
 
 Forward all HTTP methods, preserve `X-Forwarded-For`, `X-Forwarded-Proto`,

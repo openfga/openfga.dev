@@ -76,6 +76,8 @@ export default [
     rules: {
       'react/jsx-no-undef': 'off',
       'react/prop-types': 'off',
+      // Mintlify consumes filename on CodeGroup children as the accessible tab label.
+      'react/no-unknown-property': ['error', { ignore: ['filename'] }],
     },
   },
   {

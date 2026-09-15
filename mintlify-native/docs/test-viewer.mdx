@@ -7,6 +7,31 @@ import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
 import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx';
 import { ListObjectsRequestViewer } from '/snippets/ListObjectsRequestViewer.jsx';
 import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
+import { CreateStoreViewer } from '/snippets/CreateStoreViewer.jsx';
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
+import { BatchCheckRequestViewer } from '/snippets/BatchCheckRequestViewer.jsx';
+import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
+
+## Create store
+
+<CreateStoreViewer storeName="FGA Demo Store" />
+
+## DSL block
+
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
+
+type user`} />
+
+## Request-only check, with caller-ordered languages
+
+<CheckRequestViewer
+  user="user:anne"
+  relation="reader"
+  object="document:Z"
+  allowedLanguages={['dotnet-sdk', 'cli', 'curl']}
+  headers={{ 'X-Request-ID': 'example-request' }}
+/>
 
 ## Check: user:anne reader document:Z
 
@@ -101,8 +126,6 @@ import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
 
 ## BatchCheckRequestViewer
 
-import { BatchCheckRequestViewer } from '/snippets/BatchCheckRequestViewer.jsx';
-
 <BatchCheckRequestViewer
   checks={[
     {
@@ -124,8 +147,6 @@ import { BatchCheckRequestViewer } from '/snippets/BatchCheckRequestViewer.jsx';
 />
 
 ## WriteRequestViewer — write tuples
-
-import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -158,7 +179,8 @@ import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
     }
   ]}
   deleteRelationshipTuples={[]}
-  skipSetup={true}
+  conflictOptions={{ onDuplicateWrites: 'ignore' }}
+  skipSetup={false}
 />
 
 ## AuthzModelSnippetViewer: DSL only

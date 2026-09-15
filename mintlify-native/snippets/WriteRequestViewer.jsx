@@ -1,18 +1,3 @@
-// Native Mintlify port of WriteRequestViewer.
-//
-// Props:
-//   relationshipTuples: {user, relation, object, condition?, _description?}[]
-//   deleteRelationshipTuples: {user, relation, object, _description?}[]
-//   authorizationModelId?: string
-//   skipSetup?: boolean
-//   conflictOptions?: { onDuplicateWrites?: 'error'|'ignore', onMissingDeletes?: 'error'|'ignore' }
-//   allowedLanguages?: string[]   subset of LANG keys (e.g. ['js-sdk','go-sdk'])
-//
-// condition shape: { name: string, context: Record<string,any> }
-// _description fields are used as code comments, never in API payloads.
-//
-// All constants are inside the exported function (Mintlify snippet scoping rule).
-
 export const WriteRequestViewer = ({
   relationshipTuples,
   deleteRelationshipTuples,
@@ -21,42 +6,42 @@ export const WriteRequestViewer = ({
   conflictOptions,
   allowedLanguages,
 }) => {
-  // ─── CONSTANTS ─────────────────────────────────────────────────────────────
+  const [runtime, setRuntime] = useState(null);
+  const [loadError, setLoadError] = useState(null);
+  const [selectedLanguage, setSelectedLanguage] = useState(null);
+  useEffect(() => {
+    if (window.openfgaViewer) { setRuntime(window.openfgaViewer); return; }
+    let script = document.querySelector('script[src="/openfga-viewer.js"]');
+    const loaded = () => {
+      if (window.openfgaViewer) setRuntime(window.openfgaViewer);
+      else setLoadError('The OpenFGA example helper did not initialize. Reload this page to retry.');
+    };
+    const failed = () => setLoadError('Unable to load OpenFGA examples. Reload this page to retry.');
+    if (!script) {
+      script = document.createElement('script');
+      script.src = '/openfga-viewer.js';
+    }
+    script.addEventListener('load', loaded);
+    script.addEventListener('error', failed);
+    if (!script.isConnected) document.head.appendChild(script);
+    const timeout = setTimeout(() => {
+      if (!window.openfgaViewer) failed();
+    }, 10000);
+    return () => {
+      clearTimeout(timeout);
+      script.removeEventListener('load', loaded);
+      script.removeEventListener('error', failed);
+    };
+  }, []);
 
-  const DEFAULT_MODEL_ID = '01HVMMBCMGZNT3SED4Z17ECXCA';
+  if (loadError) return <div className="openfga-code-viewer__status" role="alert">{loadError}</div>;
+  if (!runtime) return <div className="openfga-code-viewer__status" role="status">Loading examples...</div>;
 
-  const LANG = {
-    JS_SDK: 'js-sdk', GO_SDK: 'go-sdk', DOTNET_SDK: 'dotnet-sdk',
-    PYTHON_SDK: 'python-sdk', JAVA_SDK: 'java-sdk',
-    CLI: 'cli', CURL: 'curl', RPC: 'rpc',
-  };
-
-  const LANG_LABEL = {
-    [LANG.JS_SDK]: 'Node.js', [LANG.GO_SDK]: 'Go', [LANG.DOTNET_SDK]: '.NET',
-    [LANG.PYTHON_SDK]: 'Python', [LANG.JAVA_SDK]: 'Java',
-    [LANG.CLI]: 'CLI', [LANG.CURL]: 'curl', [LANG.RPC]: 'Pseudocode',
-  };
-
-  const LANG_CODE = {
-    [LANG.JS_SDK]: 'javascript', [LANG.GO_SDK]: 'go', [LANG.DOTNET_SDK]: 'dotnet',
-    [LANG.PYTHON_SDK]: 'python', [LANG.JAVA_SDK]: 'java',
-    [LANG.CLI]: 'shell', [LANG.CURL]: 'shell', [LANG.RPC]: 'shell',
-  };
-
-  const LANG_MAPPINGS = {
-    js: { importStatement: `const { OpenFgaClient } = require('@openfga/sdk');`, apiName: 'OpenFgaClient' },
-    go: { importStatement: `fga "github.com/openfga/go-sdk/client"`, apiName: 'NewSdkClient' },
-    dotnet: { importStatement: `using OpenFga.Sdk.Client;`, apiName: 'OpenFgaClient' },
-    python: { importStatement: `import asyncio\nimport os\nfrom openfga_sdk.client import OpenFgaClient, ClientConfiguration\nfrom openfga_sdk.client.models import ClientWriteRequest, ClientTuple`, apiName: 'OpenFgaClient' },
-    java: { importStatement: `import dev.openfga.sdk.api.client.OpenFgaClient;\nimport dev.openfga.sdk.api.client.ClientConfiguration;\nimport dev.openfga.sdk.api.client.model.ClientWriteRequest;\nimport dev.openfga.sdk.api.client.model.ClientWriteOptions;\nimport dev.openfga.sdk.api.model.ClientTupleKey;`, apiName: 'OpenFgaClient' },
-  };
-
-  const DEFAULT_LANGS = [
-    LANG.JS_SDK, LANG.GO_SDK, LANG.DOTNET_SDK, LANG.PYTHON_SDK,
-    LANG.JAVA_SDK, LANG.CURL, LANG.CLI, LANG.RPC,
-  ];
-
-  // ─── HELPERS ───────────────────────────────────────────────────────────────
+  const { LANG, languageLabels: LANG_LABEL, languageGrammars: LANG_CODE } = runtime;
+  const DEFAULT_MODEL_ID = runtime.defaultAuthorizationModelId;
+  const langs = runtime.selectLanguages('WriteRequestViewer', allowedLanguages);
+  const activeLang = langs.includes(selectedLanguage) ? selectedLanguage : langs[0];
+  const buildSetupCode = (lang) => runtime.buildSdkSetup(lang, 'WriteRequestViewer');
 
   const modelId = authorizationModelId || DEFAULT_MODEL_ID;
   const wt = relationshipTuples || [];
@@ -78,7 +63,7 @@ export const WriteRequestViewer = ({
     if (lang === LANG.CLI) {
       const writes = wt.map(t =>
         `fga tuple write --store-id=\${FGA_STORE_ID} --model-id=${modelId} ${t.user} ${t.relation} ${t.object}${
-          t.condition ? ` --condition-name ${t.condition.name} --condition-context '${JSON.stringify(t.condition.context)}'` : ''
+          t.condition ? ` --condition-name ${t.condition.name} --condition-context '${JSON.stringify(t.condition.context ?? {})}'` : ''
         }${co.onDuplicateWrites ? ` --on-duplicate ${co.onDuplicateWrites}` : ''}`
       ).join('\n');
       const deletes = dt.map(t =>
@@ -101,7 +86,6 @@ export const WriteRequestViewer = ({
       }
       body.authorization_model_id = modelId;
       return `curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/write \\
-  -H "Authorization: Bearer $FGA_API_TOKEN" \\ # Not needed if service does not require authorization
   -H "content-type: application/json" \\
   -d '${JSON.stringify(body, null, 2)}'`;
     }
@@ -134,9 +118,9 @@ await fgaClient.write({
              User: "${t.user}",
              Relation: "${t.relation}",
              Object: "${t.object}",${t.condition ? `
-             Condition: &RelationshipCondition{
+             Condition: &openfga.RelationshipCondition{
                  Name: "${t.condition.name}",
-                 Context: &map[string]interface{}${JSON.stringify(t.condition.context)},
+                 Context: &map[string]interface{}${JSON.stringify(t.condition.context ?? {})},
              },` : ''}
         }, `
       ).join('');
@@ -185,7 +169,7 @@ _ = data // use the response`;
                   Object = "${t.object}"${t.condition ? `,
                   Condition = new RelationshipCondition(){
                     Name = "${t.condition.name}",
-                    Context = new { ${Object.entries(t.condition.context).map(([k, v]) => `${k}="${v}"`).join(',')} }
+                    Context = new { ${Object.entries(t.condition.context ?? {}).map(([k, v]) => `${k}="${v}"`).join(',')} }
                   }` : ''}
               }`
       ).join(',\n');
@@ -214,7 +198,7 @@ var response = await fgaClient.Write(body, options);`;
                     object="${t.object}",${t.condition ? `
                     condition=RelationshipCondition(
                         name='${t.condition.name}',
-                        context=dict(${Object.entries(t.condition.context).map(([k, v]) => `${k}="${v}"`).join(', ')})
+                        context=dict(${Object.entries(t.condition.context ?? {}).map(([k, v]) => `${k}="${v}"`).join(', ')})
                     )` : ''}
                 ),`
       ).join('');
@@ -271,7 +255,7 @@ ${dt.length ? `delete([${deletes}\n])` : ''}`.trim();
                         ._object("${t.object}")${t.condition ? `
                         .condition(new ClientRelationshipCondition()
                                 .name("${t.condition.name}")
-                                .context(Map.of(${Object.entries(t.condition.context).map(([k, v]) => `"${k}", "${v}"`).join(',')})))` : ''}`
+                                .context(Map.of(${Object.entries(t.condition.context ?? {}).map(([k, v]) => `"${k}", "${v}"`).join(',')})))` : ''}`
       ).join(',');
       const deletes = dt.map(t =>
         `\n    ${t._description ? `            // ${t._description}\n    ` : ''}            new ClientTupleKey()
@@ -293,68 +277,39 @@ var body = new ClientWriteRequest()${wt.length ? `
 var response = fgaClient.write(body, options).get();`;
     }
 
-    return `// unsupported language: ${lang}`;
+    throw new Error(`Unsupported language: ${lang}`);
   };
 
-  const buildSetupCode = (lang) => {
-    const m = LANG_MAPPINGS;
-    if (lang === LANG.CLI || lang === LANG.CURL)
-      return `Set FGA_API_URL according to the service you are using (e.g. https://api.fga.example)`;
-    if (lang === LANG.JS_SDK)
-      return `// import the SDK\n${m.js.importStatement}\n\nconst fgaClient = new ${m.js.apiName}({\n  apiUrl: process.env.FGA_API_URL,\n  storeId: process.env.FGA_STORE_ID,\n  authorizationModelId: process.env.FGA_MODEL_ID,\n});`;
-    if (lang === LANG.GO_SDK)
-      return `import (\n    "os"\n    ${m.go.importStatement}\n)\n\nfgaClient, err := NewSdkClient(&ClientConfiguration{\n    ApiUrl: os.Getenv("FGA_API_URL"),\n    StoreId: os.Getenv("FGA_STORE_ID"),\n    AuthorizationModelId: os.Getenv("FGA_MODEL_ID"),\n})`;
-    if (lang === LANG.DOTNET_SDK)
-      return `${m.dotnet.importStatement}\n\nvar fgaClient = new ${m.dotnet.apiName}(new ClientConfiguration() {\n  ApiUrl = Environment.GetEnvironmentVariable("FGA_API_URL"),\n  StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"),\n  AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"),\n});`;
-    if (lang === LANG.PYTHON_SDK)
-      return `${m.python.importStatement}\n\nconfiguration = ClientConfiguration(\n    api_url=os.environ.get('FGA_API_URL'),\n    store_id=os.environ.get('FGA_STORE_ID'),\n    authorization_model_id=os.environ.get('FGA_MODEL_ID'),\n)\nfga_client = OpenFgaClient(configuration)`;
-    if (lang === LANG.JAVA_SDK)
-      return `${m.java.importStatement}\n\nvar config = new ClientConfiguration()\n    .apiUrl(System.getenv("FGA_API_URL"))\n    .storeId(System.getenv("FGA_STORE_ID"))\n    .authorizationModelId(System.getenv("FGA_AUTHORIZATION_MODEL_ID"));\nvar fgaClient = new OpenFgaClient(config);`;
-    return null;
-  };
-
-  // ─── RENDER ────────────────────────────────────────────────────────────────
-
-  const langs = allowedLanguages
-    ? DEFAULT_LANGS.filter(l => allowedLanguages.includes(l))
-    : DEFAULT_LANGS;
-
-  const [activeLang, setActiveLang] = useState(langs[0]);
 
   return (
-    <>
-      {!skipSetup && (
+    <div data-openfga-viewer="WriteRequestViewer">
+      {!skipSetup && runtime.hasSetup(activeLang) && (
         <Accordion title="Initialize the SDK">
-          <div>
-            <div className="openfga-language-tabs">
-              {langs.filter(l => l !== LANG.RPC).map(lang => (
-                <button aria-pressed={activeLang === lang} className="openfga-language-tab" data-state={activeLang === lang ? 'active' : 'inactive'} key={lang} onClick={() => setActiveLang(lang)}>
-                  {LANG_LABEL[lang]}
-                </button>
-              ))}
-            </div>
-            <CodeGroup>
-              <code className={`language-${LANG_CODE[activeLang]}`} title={LANG_LABEL[activeLang]}>
-                {buildSetupCode(activeLang) || ''}
-              </code>
-            </CodeGroup>
-          </div>
+          <p>
+            Install the <a href="/docs/getting-started/install-sdk">SDK or CLI</a> and deploy an OpenFGA server.
+            Set FGA_API_URL, FGA_STORE_ID, and optionally FGA_MODEL_ID.
+            These examples use no authentication; see <a href="/docs/getting-started/setup-sdk-client">client setup</a> for authentication and runtime prerequisites.
+            Go snippets run inside main; Python requests run inside an async function and the client must be closed afterward.
+          </p>
+          <CodeGroup key={activeLang}>
+            <code className={`language-${LANG_CODE[activeLang]}`} language={LANG_CODE[activeLang]} filename={LANG_LABEL[activeLang]}>
+              {buildSetupCode(activeLang)}
+            </code>
+          </CodeGroup>
         </Accordion>
       )}
-      <div>
-        <div className="openfga-language-tabs">
-          {langs.map(lang => (
-            <button aria-pressed={activeLang === lang} className="openfga-language-tab" data-state={activeLang === lang ? 'active' : 'inactive'} key={lang} onClick={() => setActiveLang(lang)}>
-              {LANG_LABEL[lang]}
-            </button>
-          ))}
-        </div>
-        <CodeGroup>
-          <code className={`language-${LANG_CODE[activeLang]}`} title={LANG_LABEL[activeLang]}>
-            {buildCode(activeLang)}
-          </code>
-        </CodeGroup>
+      <div className="openfga-language-tabs" role="group" aria-label="Example language">
+        {langs.map(lang => (
+          <button type="button" aria-pressed={activeLang === lang} className="openfga-language-tab" data-state={activeLang === lang ? 'active' : 'inactive'} key={lang} onClick={() => setSelectedLanguage(lang)}>
+            {LANG_LABEL[lang]}
+          </button>
+        ))}
       </div>
-    </>
+      <CodeGroup key={activeLang}>
+        <code className={`language-${LANG_CODE[activeLang]}`} language={LANG_CODE[activeLang]} filename={LANG_LABEL[activeLang]}>
+          {buildCode(activeLang)}
+        </code>
+      </CodeGroup>
+    </div>
   );
 };

@@ -54,8 +54,12 @@ export const AuthzModelSnippetViewer = ({
 
   const getDsl = () => {
     try {
-      const dsl = transformer.transformJSONToDSL(configuration);
-      return skipVersion ? dsl.replace('model\n  schema 1.1\n', '') : dsl;
+      const isTypeDefinition = !configuration.type_definitions && Boolean(configuration.type);
+      const model = isTypeDefinition
+        ? { schema_version: '1.1', type_definitions: [configuration] }
+        : configuration;
+      const dsl = transformer.transformJSONToDSL(model);
+      return skipVersion || isTypeDefinition ? dsl.replace('model\n  schema 1.1\n', '') : dsl;
     } catch (e) {
       return `// error converting to DSL: ${e.message}`;
     }
