@@ -2,38 +2,13 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { expectedDocsGroups, validateRouteScopedNavigation } from './navigation-structure.mjs';
 import { validateSourceCoverage } from './validate-source-coverage.mjs';
 
 const mintlifyDirectory = join(dirname(fileURLToPath(import.meta.url)), '..');
 const docs = JSON.parse(readFileSync(join(mintlifyDirectory, 'docs.json'), 'utf8'));
 
-if (docs.navigation?.tabs) {
-  throw new Error('Top navigation tabs must not be configured');
-}
-
-const visibleDocumentationAnchor = docs.navigation?.anchors?.find(
-  ({ anchor, hidden }) => anchor === 'Documentation' && hidden !== true,
-);
-if (visibleDocumentationAnchor) {
-  throw new Error('The "Documentation" navigation anchor must not be visible');
-}
-
-const expectedHeaderLinks = [
-  ['API Reference', '/api-reference'],
-  ['Project', 'https://openfga.dev/project'],
-  ['Community', 'https://openfga.dev/community'],
-  ['Blog', 'https://openfga.dev/blog'],
-];
-const headerLinks = docs.navbar?.links ?? [];
-const actualHeaderLinks = headerLinks.slice(0, expectedHeaderLinks.length).map(({ label, href }) => [label, href]);
-if (JSON.stringify(actualHeaderLinks) !== JSON.stringify(expectedHeaderLinks)) {
-  throw new Error(`Navbar links must be ordered as: ${expectedHeaderLinks.map(([label]) => label).join(', ')}`);
-}
-
-const githubLink = headerLinks.at(expectedHeaderLinks.length);
-if (githubLink?.type !== 'github' || githubLink.href !== 'https://github.com/openfga/openfga') {
-  throw new Error('The native GitHub link must immediately follow the four header navigation links');
-}
+const { docsAnchor } = validateRouteScopedNavigation(docs);
 
 const expectedFooterLinks = [
   ['LLM? Read llms.txt', 'https://openfga.dev/docs/llms.txt'],
@@ -67,21 +42,11 @@ if (docs.favicon !== '/images/img/openfga-icon.svg') {
   throw new Error('The favicon must remain the local icon-only OpenFGA asset');
 }
 
-const groups = (docs.navigation?.groups ?? []).filter(({ hidden }) => hidden !== true);
-const expectedGroups = [
-  'Overview',
-  'Get Started',
-  'Model Authorization',
-  'Use the API',
-  'Operate & Scale',
-  'Solutions',
-  'Adopters',
-  'Learn',
-];
+const groups = docsAnchor.groups;
 const groupNames = groups.map(({ group }) => group);
-if (JSON.stringify(groupNames) !== JSON.stringify(expectedGroups)) {
+if (JSON.stringify(groupNames) !== JSON.stringify(expectedDocsGroups)) {
   throw new Error(
-    `Documentation groups must be ordered as: ${expectedGroups.join(', ')}; found: ${groupNames.join(', ')}`,
+    `Documentation groups must be ordered as: ${expectedDocsGroups.join(', ')}; found: ${groupNames.join(', ')}`,
   );
 }
 

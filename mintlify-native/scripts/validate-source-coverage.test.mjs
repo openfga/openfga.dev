@@ -92,6 +92,24 @@ test('inventory and overrides cover every source without counting hidden API ope
   assert.equal(cli(root).status, 0);
 });
 
+test('hidden route-section anchors keep their nested sidebar pages visible', (t) => {
+  const { root, docs, save } = fixture(t);
+  const [docsGroup, apiGroup] = docs.navigation.groups;
+  docs.navigation = {
+    anchors: [
+      { anchor: 'Docs', hidden: true, groups: [docsGroup] },
+      {
+        anchor: 'API Reference',
+        hidden: true,
+        openapi: apiGroup.openapi,
+        groups: apiGroup.pages,
+      },
+    ],
+  };
+  save();
+  assert.equal(cli(root).status, 0);
+});
+
 mutation(
   'new source requires a manifest entry',
   ({ put }) => put('docs/content/new.mdx'),

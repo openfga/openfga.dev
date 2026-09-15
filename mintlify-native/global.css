@@ -15,68 +15,141 @@
   object-fit: contain;
 }
 
-/* Keep ordinary navbar destinations compact while preserving accessible hit areas. */
+/* Match native control proportions without shrinking the navbar link hit areas. */
 #navbar
   :is(
+    a[href='/docs'],
     a[href='/api-reference'],
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
   ) {
+  position: relative;
+  isolation: isolate;
   min-height: 2.75rem;
-  padding-inline: 0.5rem !important;
+  padding-inline: 0.75rem !important;
   background: transparent !important;
   border: 0 !important;
-  border-radius: 0.25rem !important;
+  border-radius: 9999px !important;
   text-decoration: none !important;
-  transition:
-    color 150ms ease,
-    background-color 150ms ease;
 }
 
 #navbar
   :is(
+    a[href='/docs'],
+    a[href='/api-reference'],
+    a[href='https://openfga.dev/project'],
+    a[href='https://openfga.dev/community'],
+    a[href='https://openfga.dev/blog']
+  )::before {
+  position: absolute;
+  inset: 0.25rem 0;
+  z-index: -1;
+  content: '';
+  background-color: transparent;
+  border-radius: 9999px;
+  transition: background-color 150ms ease;
+}
+
+#navbar
+  :is(
+    a[href='/docs'],
+    a[href='/api-reference'],
+    a[href='https://openfga.dev/project'],
+    a[href='https://openfga.dev/community'],
+    a[href='https://openfga.dev/blog']
+  ):is(:hover, :focus-visible)::before {
+  background-color: rgb(0 0 0 / 5%);
+}
+
+#navbar
+  :is(
+    a[href='/docs'],
     a[href='/api-reference'],
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
   ):is(:hover, :focus-visible) {
   color: #1f2328 !important;
-  background-color: rgb(0 0 0 / 5%) !important;
 }
 
 .dark
   #navbar
   :is(
+    a[href='/docs'],
+    a[href='/api-reference'],
+    a[href='https://openfga.dev/project'],
+    a[href='https://openfga.dev/community'],
+    a[href='https://openfga.dev/blog']
+  ):is(:hover, :focus-visible)::before {
+  background-color: rgb(255 255 255 / 8%);
+}
+
+#navbar
+  :is(
+    a[href='/docs'],
+    a[href='/api-reference'],
+    a[href='https://openfga.dev/project'],
+    a[href='https://openfga.dev/community'],
+    a[href='https://openfga.dev/blog']
+  ):focus-visible {
+  outline: 0;
+}
+
+#navbar
+  :is(
+    a[href='/docs'],
+    a[href='/api-reference'],
+    a[href='https://openfga.dev/project'],
+    a[href='https://openfga.dev/community'],
+    a[href='https://openfga.dev/blog']
+  ):focus-visible::before {
+  box-shadow: 0 0 0 2px rgb(var(--primary));
+}
+
+.dark
+  #navbar
+  :is(
+    a[href='/docs'],
+    a[href='/api-reference'],
+    a[href='https://openfga.dev/project'],
+    a[href='https://openfga.dev/community'],
+    a[href='https://openfga.dev/blog']
+  ):focus-visible::before {
+  box-shadow: 0 0 0 2px rgb(var(--primary-light));
+}
+
+.dark
+  #navbar
+  :is(
+    a[href='/docs'],
     a[href='/api-reference'],
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
   ):is(:hover, :focus-visible) {
   color: #f0f6fc !important;
-  background-color: rgb(255 255 255 / 8%) !important;
 }
 
-#navbar
-  :is(
-    a[href='/api-reference'],
-    a[href='https://openfga.dev/project'],
-    a[href='https://openfga.dev/community'],
-    a[href='https://openfga.dev/blog']
-  ):focus-visible {
-  outline: 2px solid rgb(var(--primary));
-  outline-offset: 2px;
-}
-
+body:not(:has(#api-playground-2-operation-page)) #navbar a[href='/docs'],
 body:has(#api-playground-2-operation-page) #navbar a[href='/api-reference'] {
   color: rgb(var(--primary)) !important;
   font-weight: 600;
-  background-color: rgb(var(--primary) / 10%) !important;
 }
 
+body:not(:has(#api-playground-2-operation-page)) #navbar a[href='/docs']::before,
+body:has(#api-playground-2-operation-page) #navbar a[href='/api-reference']::before {
+  background-color: rgb(var(--primary) / 10%);
+}
+
+.dark body:not(:has(#api-playground-2-operation-page)) #navbar a[href='/docs'],
 .dark body:has(#api-playground-2-operation-page) #navbar a[href='/api-reference'] {
   color: rgb(var(--primary-light)) !important;
-  background-color: rgb(var(--primary-light) / 12%) !important;
+}
+
+.dark body:not(:has(#api-playground-2-operation-page)) #navbar a[href='/docs']::before,
+.dark body:has(#api-playground-2-operation-page) #navbar a[href='/api-reference']::before {
+  background-color: rgb(var(--primary-light) / 12%);
 }
 
 /* Preserve intentional sentence case in top-level section labels. */

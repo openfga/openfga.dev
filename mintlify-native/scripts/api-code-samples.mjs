@@ -2,6 +2,7 @@ import { deepStrictEqual } from 'node:assert';
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import { getUniqueOpenApiNavigationEntry } from './navigation-structure.mjs';
 import { LANG, languages } from './viewer-contract.mjs';
 
 export const metadataUrl = new URL('../api-samples.json', import.meta.url);
@@ -259,9 +260,9 @@ export async function checkOverlayArtifact(expected, artifactUrl = overlayUrl) {
 }
 
 export function validateSampleNavigation(docs, metadata) {
-  const group = docs.navigation?.groups?.find(({ group }) => group === 'API Reference');
+  const apiNavigation = getUniqueOpenApiNavigationEntry(docs.navigation);
   deepStrictEqual(
-    group?.openapi,
+    apiNavigation.openapi,
     { source: metadata.canonical.url, overlays: [overlayPath] },
     'API navigation must explicitly apply the generated SDK overlay to the pinned canonical source',
   );

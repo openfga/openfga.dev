@@ -2,26 +2,15 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { checkApiSamples, httpMethods } from './api-code-samples.mjs';
+import { validateRouteScopedNavigation } from './navigation-structure.mjs';
 
 const mintlifyDirectory = join(dirname(fileURLToPath(import.meta.url)), '..');
 const docs = JSON.parse(readFileSync(join(mintlifyDirectory, 'docs.json'), 'utf8'));
 
-const apiGroup = docs.navigation?.groups?.find(({ group }) => group === 'API Reference');
-if (!apiGroup) {
-  throw new Error('docs.json must contain an "API Reference" navigation group');
-}
-
-if (apiGroup.hidden !== true || apiGroup.searchable !== true) {
-  throw new Error('The "API Reference" navigation group must remain hidden and searchable');
-}
+const { apiAnchor } = validateRouteScopedNavigation(docs);
 
 if (docs.api?.playground?.display !== 'simple') {
   throw new Error('The API playground must remain in simple read-only mode');
-}
-
-const apiEntryRedirect = docs.redirects?.find(({ source }) => source === '/api-reference');
-if (apiEntryRedirect?.destination !== '/api-reference/stores/list-all-stores' || apiEntryRedirect.permanent !== false) {
-  throw new Error('The stable "/api-reference" entry must redirect temporarily to the first generated operation');
 }
 
 const { canonical: openapi } = await checkApiSamples(docs);
@@ -34,7 +23,7 @@ const expectedGroups = [
   'AuthZenService',
 ];
 
-const groups = apiGroup.pages ?? [];
+const groups = apiAnchor.groups;
 const groupNames = groups.map(({ group }) => group);
 if (JSON.stringify(groupNames) !== JSON.stringify(expectedGroups)) {
   throw new Error(`API groups must be ordered as: ${expectedGroups.join(', ')}; found: ${groupNames.join(', ')}`);

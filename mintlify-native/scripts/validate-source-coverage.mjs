@@ -164,7 +164,7 @@ function navigationReferences(navigation) {
   const references = [];
   function visit(value, location, hidden = false, pageEntry = false) {
     if (typeof value === 'string') {
-      // API operation references are not MDX pages, even in hidden searchable groups.
+      // API operation references are not MDX pages, even in hidden route sections.
       if (!pageEntry || /^(?:GET|POST|PUT|PATCH|DELETE|OPTIONS|HEAD|TRACE) \//.test(value)) return;
       let route = value;
       if (/^(?:https?:)?\/\//i.test(value)) {
@@ -192,8 +192,10 @@ function navigationReferences(navigation) {
     if (Array.isArray(value)) {
       value.forEach((child, index) => visit(child, `${location}[${index}]`, hidden, pageEntry));
     } else if (value && typeof value === 'object') {
+      const hidesDescendantPages =
+        value.hidden === true && !Object.hasOwn(value, 'anchor') && !Object.hasOwn(value, 'tab');
       for (const [key, child] of Object.entries(value)) {
-        visit(child, `${location}.${key}`, hidden || value.hidden === true, ['pages', 'root', 'href'].includes(key));
+        visit(child, `${location}.${key}`, hidden || hidesDescendantPages, ['pages', 'root', 'href'].includes(key));
       }
     }
   }

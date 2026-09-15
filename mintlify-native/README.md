@@ -19,10 +19,11 @@ npx mint dev --port 3333
 ```
 
 Then open `http://localhost:3333/docs` or `http://localhost:3333/api-reference`.
-The logo links to the Docusaurus homepage. The native header links to the Mintlify
-API reference and the Docusaurus-owned Project, Community, and Blog routes, while
-the sidebar starts directly with documentation groups. Mintlify's native search
-remains available in the docs header.
+The logo links to the Docusaurus homepage. The native header links to Docs, the
+Mintlify API reference, and the Docusaurus-owned Project, Community, and Blog
+routes. Docs routes show only the eight documentation groups; API routes show
+only the six endpoint groups. Mintlify's native search remains available in the
+header.
 
 If startup fails with `Error: Client not built`, delete `~/.mintlify/mint/` and rerun —
 the CLI will re-download a fresh pre-built copy.
@@ -54,17 +55,21 @@ mintlify-native/
     └── validate-component-usage.mjs
 ```
 
-The hidden, searchable API navigation group consumes the canonical OpenAPI 3.0.3 document generated in
+Two hidden root anchors partition the native navigation by route without adding
+an anchor switcher to the interface. The Docs anchor owns the documentation
+groups, and the API Reference anchor owns the endpoint groups. Hiding an anchor
+hides only its section selector; its active route sidebar and pages remain
+navigable and searchable.
+
+The API anchor consumes the canonical OpenAPI 3.0.3 document generated in
 [`openfga/api`](https://github.com/openfga/api/tree/main/docs/openapiv3), pinned to
 the immutable merge commit for
 [`openfga/api#259`](https://github.com/openfga/api/pull/259). Update that revision
 through a reviewed change when adopting a newer API artifact. The navigation
 validator verifies the pinned source and additive SDK sample overlay and fails
-the build if either drifts. Mintlify's native `hidden` and `searchable`
-properties keep the generated API pages out of the docs sidebar while retaining
-direct routes, search, sitemap, assistant, and LLM index coverage. A native
-temporary redirect keeps `/api-reference` as the stable public entry and sends it
-to the first generated operation.
+the build if either drifts. Native temporary redirects keep `/docs` and
+`/api-reference` as stable public entries and send them to each section's first
+page.
 
 ### Native API SDK samples
 

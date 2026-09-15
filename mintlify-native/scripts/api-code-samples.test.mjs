@@ -450,20 +450,28 @@ test('stale, corrupt and missing generated artifacts fail explicitly', async () 
 test('navigation explicitly uses the pinned source and overlay without disabling other HTTP examples', () => {
   const docs = {
     navigation: {
-      groups: [{ group: 'API Reference', openapi: { source: metadata.canonical.url, overlays: [overlayPath] } }],
+      anchors: [
+        {
+          anchor: 'API Reference',
+          openapi: { source: metadata.canonical.url, overlays: [overlayPath] },
+        },
+      ],
     },
     api: { playground: { display: 'simple' } },
   };
   validateSampleNavigation(docs, metadata);
   for (const mutate of [
     (d) => {
-      d.navigation.groups[0].openapi = metadata.canonical.url;
+      d.navigation.anchors[0].openapi = metadata.canonical.url;
     },
     (d) => {
-      d.navigation.groups[0].openapi.overlays = [];
+      d.navigation.anchors[0].openapi.overlays = [];
     },
     (d) => {
-      d.navigation.groups[0].openapi.overlays.push('another.json');
+      d.navigation.anchors[0].openapi.overlays.push('another.json');
+    },
+    (d) => {
+      d.navigation.anchors.push(structuredClone(d.navigation.anchors[0]));
     },
     (d) => {
       d.api.playground.display = 'interactive';
