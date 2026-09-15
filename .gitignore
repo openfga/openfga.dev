@@ -27,3 +27,7 @@ yarn-error.log*
 .vscode/
 *.sublime-*
 *.orig
+
+# lychee link checker
+.lycheecache
+/lychee/

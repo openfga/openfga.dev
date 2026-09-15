@@ -1,0 +1,60 @@
+# Configuration for the lychee link checker (see .github/workflows/checks.yaml).
+#
+# Links are checked against the *built* site (the ./build output produced by
+# `npm run build`). Internal links (e.g. /docs/…, ./foo, ../bar) resolve to the
+# generated pages on disk via --root-dir + fallback_extensions, so a link to a
+# page added in the same PR is validated rather than skipped — nothing here
+# excludes internal links. External links are checked over the network.
+#
+# The `exclude` list below is EXTERNAL hosts only: placeholders used in docs,
+# endpoints that aren't browsable pages, and sites that reject automated
+# requests (403/406/503) despite being reachable in a browser.
+
+# Treat these HTTP statuses as success (some hosts answer bots with 403).
+accept = [200, 206, 403]
+
+# Retry transient/rate-limited responses before failing.
+max_retries = 3
+retry_wait_time = 8
+
+# `trailingSlash: false` means the route /docs/x is written to disk as
+# build/docs/x.html — let lychee find it by trying the .html extension.
+fallback_extensions = ["html"]
+
+# A browser-like UA reduces spurious bot blocks.
+user_agent = "Mozilla/5.0 (compatible; lychee link checker; +https://github.com/lycheeverse/lychee)"
+
+exclude = [
+  # Placeholders / local-only URLs that appear in docs and code samples.
+  "^https?://localhost",
+  "^https://api\\.openfga\\.example",
+
+  # Self-references to the production site: the internal equivalents are already
+  # validated against ./build, and checking production would fail for pages that
+  # only exist in the current PR (not yet deployed).
+  "^https://openfga\\.dev",
+
+  # Machine endpoints (not browsable HTML pages) — return 406 to normal clients.
+  "^https://mcp\\.openfga\\.dev",
+  "^https://openfga\\.mcp\\.kapa\\.ai",
+
+  # Sites that block automated requests (verified: 403/406/503 to bots).
+  "^https?://(twitter|x)\\.com/",
+  "^https?://(www\\.)?linkedin\\.com",
+  "^https://(www\\.)?godaddy\\.com",
+  "^https://(www\\.)?instill\\.tech",
+  "^https://(www\\.)?headspace\\.com",
+  "^https://virv\\.ai",
+  "^https://app\\.fossa\\.com",
+  "^https://gradle\\.org/",
+  "^https://maven\\.apache\\.org/",
+  "^https://calendar\\.google\\.com",
+  "^https://auth0\\.com",
+
+  # Package registries / repos that rate-limit or 403 automated checks.
+  "^https://www\\.nuget\\.org/packages/OpenFga\\.Sdk",
+  "^https://www\\.npmjs\\.com/package/@openfga/sdk",
+  "^https://pypi\\.org/project/openfga-sdk",
+  "^https://github\\.com/openfga/(go|dotnet|python|java)-sdk",
+  "^https://github\\.com/bytefish/gitclub-dotnet",
+]
