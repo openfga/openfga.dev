@@ -51,6 +51,16 @@ exclude = [
   "^https://calendar\\.google\\.com",
   "^https://auth0\\.com",
 
+  # Docusaurus auto-generates an "Edit this page" link on every page pointing
+  # back to the source file in this repo. These are UI chrome, not content
+  # links, and github.com rate-limits them heavily in CI (429). No value
+  # checking them: if the repo moves, the Docusaurus config changes, not the
+  # docs.
+  "^https://github\\.com/openfga/openfga\\.dev/edit/",
+
+  # GitHub search pages 429 on any automated client. Not a content link.
+  "^https://github\\.com/search",
+
   # Package registries / repos that rate-limit or 403 automated checks.
   "^https://www\\.nuget\\.org/packages/OpenFga\\.Sdk",
   "^https://www\\.npmjs\\.com/package/@openfga/sdk",
