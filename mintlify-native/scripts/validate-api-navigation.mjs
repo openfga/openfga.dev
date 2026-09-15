@@ -1,25 +1,10 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { checkApiSamples, httpMethods } from './api-code-samples.mjs';
 
 const mintlifyDirectory = join(dirname(fileURLToPath(import.meta.url)), '..');
 const docs = JSON.parse(readFileSync(join(mintlifyDirectory, 'docs.json'), 'utf8'));
-
-async function loadOpenApi(source) {
-  if (/^https?:\/\//.test(source)) {
-    const response = await fetch(source, {
-      headers: { accept: 'application/json' },
-      signal: AbortSignal.timeout(30_000),
-    });
-    if (!response.ok) {
-      throw new Error(`Failed to load OpenAPI specification from ${source}: HTTP ${response.status}`);
-    }
-    return response.json();
-  }
-
-  const openapiPath = join(mintlifyDirectory, source.replace(/^\/+/, ''));
-  return JSON.parse(readFileSync(openapiPath, 'utf8'));
-}
 
 const apiGroup = docs.navigation?.groups?.find(({ group }) => group === 'API Reference');
 if (!apiGroup) {
@@ -28,14 +13,6 @@ if (!apiGroup) {
 
 if (apiGroup.hidden !== true || apiGroup.searchable !== true) {
   throw new Error('The "API Reference" navigation group must remain hidden and searchable');
-}
-
-if (typeof apiGroup.openapi !== 'string') {
-  throw new Error('The "API Reference" group must define one OpenAPI specification');
-}
-
-if (!/^https:\/\/raw\.githubusercontent\.com\/openfga\/api\/[a-f0-9]{40}\//.test(apiGroup.openapi)) {
-  throw new Error('The OpenAPI specification URL must be pinned to an immutable commit SHA');
 }
 
 if (docs.api?.playground?.display !== 'simple') {
@@ -47,8 +24,7 @@ if (apiEntryRedirect?.destination !== '/api-reference/stores/list-all-stores' ||
   throw new Error('The stable "/api-reference" entry must redirect temporarily to the first generated operation');
 }
 
-const openapi = await loadOpenApi(apiGroup.openapi);
-const httpMethods = new Set(['get', 'post', 'put', 'patch', 'delete', 'options', 'head', 'trace']);
+const { canonical: openapi } = await checkApiSamples(docs);
 const expectedGroups = [
   'Stores',
   'Authorization Models',

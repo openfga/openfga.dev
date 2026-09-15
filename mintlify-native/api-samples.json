@@ -1,0 +1,64 @@
+{
+  "canonical": {
+    "url": "https://raw.githubusercontent.com/openfga/api/7a79d2abab5b9ccc962ae995a1aab70c0a1cf19d/docs/openapiv3/apidocs.openapi.json",
+    "sha256": "dbf0d4d2248cb7f844aaf05110a684b63c31c015092e682f57fecbd65a8088b0",
+    "openapi": "3.0.3",
+    "pathCount": 20,
+    "operationCount": 24
+  },
+  "operations": [
+    {
+      "operationId": "Check",
+      "method": "post",
+      "path": "/stores/{store_id}/check",
+      "component": "CheckRequestViewer",
+      "props": { "user": "user:anne", "relation": "reader", "object": "document:budget" }
+    },
+    {
+      "operationId": "BatchCheck",
+      "method": "post",
+      "path": "/stores/{store_id}/batch-check",
+      "component": "BatchCheckRequestViewer",
+      "props": {
+        "checks": [
+          {
+            "user": "user:anne",
+            "relation": "reader",
+            "object": "document:budget",
+            "correlation_id": "budget-reader"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "Write",
+      "method": "post",
+      "path": "/stores/{store_id}/write",
+      "component": "WriteRequestViewer",
+      "props": {
+        "relationshipTuples": [{ "user": "user:anne", "relation": "reader", "object": "document:budget" }]
+      }
+    },
+    {
+      "operationId": "ListObjects",
+      "method": "post",
+      "path": "/stores/{store_id}/list-objects",
+      "component": "ListObjectsRequestViewer",
+      "props": { "user": "user:anne", "relation": "reader", "objectType": "document" }
+    },
+    {
+      "operationId": "ListUsers",
+      "method": "post",
+      "path": "/stores/{store_id}/list-users",
+      "component": "ListUsersRequestViewer",
+      "props": { "objectType": "document", "objectId": "budget", "relation": "reader", "userFilterType": "user" }
+    },
+    {
+      "operationId": "CreateStore",
+      "method": "post",
+      "path": "/stores",
+      "component": "CreateStoreViewer",
+      "props": { "storeName": "FGA Demo Store" }
+    }
+  ]
+}

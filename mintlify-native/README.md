@@ -59,12 +59,94 @@ The hidden, searchable API navigation group consumes the canonical OpenAPI 3.0.3
 the immutable merge commit for
 [`openfga/api#259`](https://github.com/openfga/api/pull/259). Update that revision
 through a reviewed change when adopting a newer API artifact. The navigation
-validator supports both local and HTTPS specifications and fails the build if the
-canonical operation set drifts. Mintlify's native `hidden` and `searchable`
+validator verifies the pinned source and additive SDK sample overlay and fails
+the build if either drifts. Mintlify's native `hidden` and `searchable`
 properties keep the generated API pages out of the docs sidebar while retaining
 direct routes, search, sitemap, assistant, and LLM index coverage. A native
 temporary redirect keeps `/api-reference` as the stable public entry and sends it
 to the first generated operation.
+
+### Native API SDK samples
+
+The API reference uses Mintlify's supported
+[OpenAPI overlays](https://www.mintlify.com/docs/api-playground/openapi-setup#transform-your-spec-with-overlays)
+and [`x-codeSamples`](https://www.mintlify.com/docs/api-playground/adding-sdk-examples).
+The canonical API schema is not copied, forked, or edited here:
+
+1. `api-samples.json` records the immutable source URL, its SHA-256 digest,
+   exact operation identities, shared viewer components, and request inputs.
+2. `scripts/api-code-samples.mjs` fetches and verifies that canonical source,
+   then calls `buildSdkExample(language, component, props)` from
+   `scripts/viewer-runtime.mjs`. Setup and request generation are shared with
+   the documentation viewers, not reimplemented in the overlay pipeline.
+3. `openapi/sdk-samples.overlay.json` is generated, committed output.
+   `docs.json` explicitly applies it to the canonical URL. Mintlify renders the
+   resulting samples in its native right-hand request-code panel (inline on
+   smaller screens).
+
+| Supported operation | Node.js | Go | .NET | Python | Java | curl |
+| --- | --- | --- | --- | --- | --- | --- |
+| Check | Yes | Yes | Yes | Yes | Yes | Yes |
+| BatchCheck | Yes | Yes | Yes | Yes | Yes | Yes |
+| Write relationships | Yes | Yes | Yes | Yes | Yes | Yes |
+| ListObjects | Yes | Yes | Yes | Yes | Yes | Yes |
+| ListUsers | Yes | Yes | Yes | Yes | Yes | Yes |
+| CreateStore | Yes | Yes | Yes | Yes | Yes | Yes |
+
+This is **six operations**, not SDK sample coverage for all 24. The other 18
+operations retain their existing Mintlify-generated HTTP-client examples.
+The reference remains in `simple` read-only mode; no Try it/Send controls,
+server URLs, or authentication schemes are added. The samples use
+`FGA_API_URL`, `FGA_STORE_ID`, and `FGA_MODEL_ID` as applicable for a self-hosted
+server with authentication disabled. CreateStore only needs `FGA_API_URL`.
+Install the corresponding SDK using the
+[installation guide](./docs/getting-started/install-sdk.mdx); authenticated
+client setup remains in the
+[SDK setup guide](./docs/getting-started/setup-sdk-client.mdx).
+The request values are illustrative; use a store/model and relationship data
+appropriate to the request. Samples do not assert an invented response.
+
+Each native sample has `lang`, `label`, and `source`. The viewer language labels
+are reused; native API aliases are `node`, `go`, `dotnet`, `python`, `java`,
+and `bash`, respectively (Mintlify displays the curl language selector as `cURL`).
+`source` is the complete import/setup/request program,
+so copying a sample does not require copying a second setup tab.
+
+```bash
+npm run generate:mintlify-api-samples
+npm run check:mintlify-api-samples
+npm run test:mintlify-api-samples
+npm run validate:mintlify-api-navigation
+```
+
+Generation is deterministic for fixed inputs, **not network-independent**.
+Generation, artifact checks, and API navigation validation fetch the pinned
+canonical document with a 30-second timeout and verify its digest and shape.
+Fetch/HTTP/timeout/parse failures, missing or mismatched operations, existing
+canonical samples on a covered operation, invalid overlay targets/fields,
+duplicate labels, missing languages, and stale/missing output fail explicitly.
+The generated overlay may only add `x-codeSamples` at the six exact operation
+targets. Stripping just those additions must recover the entire canonical
+document, including all 20 paths and 24 operations, unchanged.
+The API navigation guard runs this check and the regression tests in the existing
+prebuild chain. Unit tests use an explicit fixture generator and fixture schema.
+Integration tests compare all 36 committed samples with the shared generator and
+execute the six Node.js SDK and six curl programs against a loopback-only HTTP
+fixture, checking exact request bodies, paths, and absence of authentication.
+These tests are network-independent; they do not contact an OpenFGA deployment
+or prove authorization behavior against a real model. They do not execute the
+Go, .NET, Python, or Java SDKs.
+
+To update samples, edit their inputs or the shared SDK generators and regenerate;
+never hand-edit the generated overlay. The metadata admits only the reviewed
+minimal request inputs; expanding an example requires updating the input guards
+and regression tests. To adopt a newer canonical source, review
+the upstream artifact first, update the immutable URL in both `api-samples.json`
+and `docs.json`, and update its digest and reviewed operation identities/counts
+together with the guards and navigation as needed. Regenerate and run the checks
+before reviewing the overlay diff. Keep the explicit `overlays` list: Mintlify
+fails explicit overlay errors rather than silently skipping an auto-discovered
+overlay. No new Mintlify CLI dependency is required by this pipeline.
 
 ### docs/test-viewer.mdx
 
