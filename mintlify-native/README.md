@@ -164,6 +164,45 @@ non-lossy template-literal escaping. Literal examples inside larger code fences,
 inline code, and JSX comments are ignored. The root prebuild runs this guard
 through `validate:mintlify-navigation`.
 
+### Authoring MDX prose and expressions
+
+Run `npm run validate:mintlify-mdx` from the repository root. The navigation
+validation command (and therefore `prebuild`) runs it before the component and
+navigation guards. It checks **every `.mdx` file under `mintlify-native`**,
+including non-doc pages and MDX snippets. Run its regression tests with
+`npm run test:mintlify-mdx`. To check specific files or directories, append them
+after `--`. Symbolic links in the content tree are rejected rather than skipped.
+
+Curly braces in prose are JavaScript expressions, not placeholder delimiters:
+`{object types}` is invalid syntax, while `{user}` parses but fails at runtime
+unless `user` is bound. Write literal placeholders as inline code, for example
+`` `{object types}` ``, or escape both braces: `\{object types\}`.
+Escaped braces, character entities, inline/fenced code, and JSX comments are
+not checked as expressions. Leading YAML frontmatter delimited by `---` and
+closed by `---` or `...` is metadata, not MDX; its YAML values/schema are not
+validated by this guard.
+
+The guard compiles the complete MDX body without executing it and uses lexical
+scope analysis to reject unbound names throughout text/flow expressions,
+including nested JavaScript/JSX. Imports, named exported declarations,
+expression-local bindings, ECMAScript 2024 built-ins, and the MDX content
+function's `props` and `arguments` are supported. A named default layout export
+does not bind its name in prose; declare/import it separately if needed. Property
+names are not variable references; computed keys and template interpolations
+are. All references must be statically bound, even in `typeof` or dead branches;
+ambient runtime names need explicit validator support rather than lint-disable
+comments in a page.
+
+Diagnostics use `file:line:column` and distinguish MDX syntax failures from
+`unbound-prose` errors. Generated-JavaScript syntax errors use the page's start
+position and separately identify the generated line, not a claimed source line.
+This is **not a runtime-renderability proof**: imports are not resolved, values
+and initialization order are not evaluated, and names in ESM initializers or
+standalone MDX element attributes are not checked for binding. Component
+names/props belong to their own contracts. Valid JavaScript can still throw or
+return a value React cannot render. Unsupported parser/scope-analysis syntax
+fails explicitly.
+
 ### Generated browser artifacts
 
 `fga-codegen.js` is a pre-bundled IIFE of the installed
