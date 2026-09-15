@@ -187,8 +187,8 @@ A working Mintlify site exists on the `poc/mintlify-native` branch of `github.co
 - Native OpenAPI playground (24 endpoints, 6 tag groups)
 - All content audited against Docusaurus source for accuracy
 - Docs URL structure preserved; the API moves from `/api/service` to `/api-reference`
-- The logo, Project, and Blog links return to Docusaurus; Mintlify native search
-  remains in the docs header
+- The header links to the Mintlify API reference and the Docusaurus-owned Project,
+  Community, and Blog routes; the sidebar contains only documentation groups
 
 **What remains:**
 - Production Mintlify project and path-aware reverse-proxy configuration

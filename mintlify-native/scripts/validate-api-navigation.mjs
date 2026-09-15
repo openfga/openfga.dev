@@ -21,20 +21,33 @@ async function loadOpenApi(source) {
   return JSON.parse(readFileSync(openapiPath, 'utf8'));
 }
 
-const apiAnchor = docs.navigation?.anchors?.find(({ anchor }) => anchor === 'API Reference');
-if (!apiAnchor) {
-  throw new Error('docs.json must contain an "API Reference" navigation anchor');
+const apiGroup = docs.navigation?.groups?.find(({ group }) => group === 'API Reference');
+if (!apiGroup) {
+  throw new Error('docs.json must contain an "API Reference" navigation group');
 }
 
-if (typeof apiAnchor.openapi !== 'string') {
-  throw new Error('The "API Reference" anchor must define one OpenAPI specification');
+if (apiGroup.hidden !== true || apiGroup.searchable !== true) {
+  throw new Error('The "API Reference" navigation group must remain hidden and searchable');
 }
 
-if (!/^https:\/\/raw\.githubusercontent\.com\/openfga\/api\/[a-f0-9]{40}\//.test(apiAnchor.openapi)) {
+if (typeof apiGroup.openapi !== 'string') {
+  throw new Error('The "API Reference" group must define one OpenAPI specification');
+}
+
+if (!/^https:\/\/raw\.githubusercontent\.com\/openfga\/api\/[a-f0-9]{40}\//.test(apiGroup.openapi)) {
   throw new Error('The OpenAPI specification URL must be pinned to an immutable commit SHA');
 }
 
-const openapi = await loadOpenApi(apiAnchor.openapi);
+if (docs.api?.playground?.display !== 'simple') {
+  throw new Error('The API playground must remain in simple read-only mode');
+}
+
+const apiEntryRedirect = docs.redirects?.find(({ source }) => source === '/api-reference');
+if (apiEntryRedirect?.destination !== '/api-reference/stores/list-all-stores' || apiEntryRedirect.permanent !== false) {
+  throw new Error('The stable "/api-reference" entry must redirect temporarily to the first generated operation');
+}
+
+const openapi = await loadOpenApi(apiGroup.openapi);
 const httpMethods = new Set(['get', 'post', 'put', 'patch', 'delete', 'options', 'head', 'trace']);
 const expectedGroups = [
   'Stores',
@@ -45,7 +58,7 @@ const expectedGroups = [
   'AuthZenService',
 ];
 
-const groups = apiAnchor.groups ?? [];
+const groups = apiGroup.pages ?? [];
 const groupNames = groups.map(({ group }) => group);
 if (JSON.stringify(groupNames) !== JSON.stringify(expectedGroups)) {
   throw new Error(`API groups must be ordered as: ${expectedGroups.join(', ')}; found: ${groupNames.join(', ')}`);

@@ -19,9 +19,10 @@ npx mint dev --port 3333
 ```
 
 Then open `http://localhost:3333/docs` or `http://localhost:3333/api-reference`.
-The logo links to the Docusaurus homepage. Native sidebar anchors keep the API
-reference in Mintlify and link Project, Community, and Blog to their Docusaurus
-routes. Mintlify's native search remains available in the docs header.
+The logo links to the Docusaurus homepage. The native header links to the Mintlify
+API reference and the Docusaurus-owned Project, Community, and Blog routes, while
+the sidebar starts directly with documentation groups. Mintlify's native search
+remains available in the docs header.
 
 If startup fails with `Error: Client not built`, delete `~/.mintlify/mint/` and rerun —
 the CLI will re-download a fresh pre-built copy.
@@ -49,13 +50,17 @@ mintlify-native/
     └── validate-openfga-code-blocks.mjs
 ```
 
-The API tab consumes the canonical OpenAPI 3.0.3 document generated in
+The hidden, searchable API navigation group consumes the canonical OpenAPI 3.0.3 document generated in
 [`openfga/api`](https://github.com/openfga/api/tree/main/docs/openapiv3), pinned to
 the immutable merge commit for
 [`openfga/api#259`](https://github.com/openfga/api/pull/259). Update that revision
 through a reviewed change when adopting a newer API artifact. The navigation
 validator supports both local and HTTPS specifications and fails the build if the
-canonical operation set drifts.
+canonical operation set drifts. Mintlify's native `hidden` and `searchable`
+properties keep the generated API pages out of the docs sidebar while retaining
+direct routes, search, sitemap, assistant, and LLM index coverage. A native
+temporary redirect keeps `/api-reference` as the stable public entry and sends it
+to the first generated operation.
 
 ### docs/test-viewer.mdx
 

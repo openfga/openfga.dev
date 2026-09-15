@@ -15,6 +15,58 @@
   object-fit: contain;
 }
 
+/* Keep ordinary navbar destinations compact while preserving accessible hit areas. */
+#navbar
+  :is(
+    a[href='/api-reference'],
+    a[href='https://openfga.dev/project'],
+    a[href='https://openfga.dev/community'],
+    a[href='https://openfga.dev/blog']
+  ) {
+  min-height: 2.75rem;
+  padding-inline: 0.5rem !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0.25rem !important;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.25rem;
+  transition:
+    color 150ms ease,
+    text-decoration-color 150ms ease;
+}
+
+#navbar
+  :is(
+    a[href='/api-reference'],
+    a[href='https://openfga.dev/project'],
+    a[href='https://openfga.dev/community'],
+    a[href='https://openfga.dev/blog']
+  ):hover {
+  text-decoration-color: currentColor;
+}
+
+#navbar
+  :is(
+    a[href='/api-reference'],
+    a[href='https://openfga.dev/project'],
+    a[href='https://openfga.dev/community'],
+    a[href='https://openfga.dev/blog']
+  ):focus-visible {
+  outline: 2px solid rgb(var(--primary));
+  outline-offset: 2px;
+}
+
+body:has(#api-playground-2-operation-page) #navbar a[href='/api-reference'] {
+  color: rgb(var(--primary)) !important;
+  font-weight: 600;
+  text-decoration-color: currentColor;
+}
+
+.dark body:has(#api-playground-2-operation-page) #navbar a[href='/api-reference'] {
+  color: rgb(var(--primary-light)) !important;
+}
+
 /* Preserve intentional sentence case in top-level section labels. */
 .sidebar-group-header {
   text-transform: none;

@@ -40,13 +40,28 @@ if (docs.navigation?.tabs) {
   throw new Error('Top navigation tabs must not be configured');
 }
 
-const anchors = docs.navigation?.anchors ?? [];
-const expectedAnchors = ['Documentation', 'API Reference', 'Project', 'Community', 'Blog'];
-const anchorNames = anchors.map(({ anchor }) => anchor);
-if (JSON.stringify(anchorNames) !== JSON.stringify(expectedAnchors)) {
-  throw new Error(
-    `Navigation anchors must be ordered as: ${expectedAnchors.join(', ')}; found: ${anchorNames.join(', ')}`,
-  );
+const visibleDocumentationAnchor = docs.navigation?.anchors?.find(
+  ({ anchor, hidden }) => anchor === 'Documentation' && hidden !== true,
+);
+if (visibleDocumentationAnchor) {
+  throw new Error('The "Documentation" navigation anchor must not be visible');
+}
+
+const expectedHeaderLinks = [
+  ['API Reference', '/api-reference'],
+  ['Project', 'https://openfga.dev/project'],
+  ['Community', 'https://openfga.dev/community'],
+  ['Blog', 'https://openfga.dev/blog'],
+];
+const headerLinks = docs.navbar?.links ?? [];
+const actualHeaderLinks = headerLinks.slice(0, expectedHeaderLinks.length).map(({ label, href }) => [label, href]);
+if (JSON.stringify(actualHeaderLinks) !== JSON.stringify(expectedHeaderLinks)) {
+  throw new Error(`Navbar links must be ordered as: ${expectedHeaderLinks.map(([label]) => label).join(', ')}`);
+}
+
+const githubLink = headerLinks.at(expectedHeaderLinks.length);
+if (githubLink?.type !== 'github' || githubLink.href !== 'https://github.com/openfga/openfga') {
+  throw new Error('The native GitHub link must immediately follow the four header navigation links');
 }
 
 const expectedFooterLinks = [
@@ -81,8 +96,7 @@ if (docs.favicon !== '/images/img/openfga-icon.svg') {
   throw new Error('The favicon must remain the local icon-only OpenFGA asset');
 }
 
-const documentationAnchor = anchors[0];
-const groups = documentationAnchor.groups ?? [];
+const groups = (docs.navigation?.groups ?? []).filter(({ hidden }) => hidden !== true);
 const expectedGroups = [
   'Overview',
   'Get Started',
@@ -120,7 +134,7 @@ for (const group of groups) {
   }
 }
 
-const navigationReferences = collectPageReferences(documentationAnchor);
+const navigationReferences = collectPageReferences(groups);
 const counts = new Map();
 for (const reference of navigationReferences) {
   counts.set(reference, (counts.get(reference) ?? 0) + 1);
