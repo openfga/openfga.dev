@@ -124,6 +124,11 @@ footer a[href='https://openfga.dev/docs/llms-full.txt'] {
   color: #d1d5db;
 }
 
+/* Keep theme selection in the header rather than duplicating it in the footer. */
+#footer div:has(> button[data-testid='mode-switch-system']) {
+  display: none;
+}
+
 /* Activate Shiki's dark variables whenever the site is in dark mode. */
 .dark .shiki,
 .dark .shiki span {
