@@ -537,28 +537,21 @@ test('reviewed light palette meets WCAG AA for code and tab text', async () => {
   assert.ok(contrastRatio(expectedPalette['--openfga-tabs-active'], header) >= 4.5, 'active tab contrast');
 });
 
-test('custom request viewers share theme-aware language tabs', async () => {
+test('request language tabs belong to native code groups, not custom controls or CSS', async () => {
   const [css, ...viewers] = await Promise.all([
     readFile(GLOBAL_CSS_PATH, 'utf8'),
     ...LANGUAGE_TAB_VIEWER_PATHS.map((filePath) => readFile(filePath, 'utf8')),
   ]);
   for (const viewer of viewers) {
-    assert.match(viewer, /className="openfga-language-tabs"/);
-    assert.match(viewer, /className="openfga-language-tab"/);
-    assert.match(viewer, /aria-pressed=\{activeLang === lang\}/);
+    assert.match(viewer, /<CodeGroup/);
+    assert.match(viewer, /filename=\{LANG_LABEL\[lang\]\}/);
+    assert.doesNotMatch(viewer, /openfga-language-tab|aria-pressed|<button/);
     for (const darkOnlyColor of ['#1c1e22', '#3a3d44', '#718096', '#79ed83']) {
       assert.doesNotMatch(viewer, new RegExp(darkOnlyColor, 'i'));
     }
   }
-  assert.match(css, /\.openfga-language-tabs/);
+  assert.doesNotMatch(css, /\.openfga-language-tab/);
   assert.match(css, /\.dark[\s\S]*--openfga-tabs-surface:\s*#1c1e22/);
-  assert.match(css, /\.openfga-language-tabs[\s\S]*var\(--openfga-tabs-surface\)/);
-  assert.match(css, /\.openfga-language-tab:focus-visible/);
-  assert.match(css, /\.openfga-language-tab:focus-visible[\s\S]*var\(--openfga-tabs-accent\)/);
-  assert.ok(contrastRatio('#59636e', '#ffffff') >= 4.5, 'light inactive language tab contrast');
-  assert.ok(contrastRatio('#1f2328', '#ffffff') >= 4.5, 'light active language tab contrast');
-  assert.ok(contrastRatio('#a7b0bc', '#1c1e22') >= 4.5, 'dark inactive language tab contrast');
-  assert.ok(contrastRatio('#ffffff', '#1c1e22') >= 4.5, 'dark active language tab contrast');
 });
 
 test('freshness check is deterministic and leaves both artifacts unchanged', async () => {

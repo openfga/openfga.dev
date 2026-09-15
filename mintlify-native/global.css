@@ -301,36 +301,3 @@ footer a[href='https://openfga.dev/docs/llms-full.txt'] {
 .dark .openfga-code-viewer__code[data-language='dsl'] .openfga-code-token:not([data-token='error']) {
   color: var(--openfga-dark-token-color, var(--openfga-code-default, #ffffff));
 }
-
-/* Shared language tabs for custom request viewers that wrap native CodeGroup blocks. */
-.openfga-language-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 0.25rem 0.25rem 0;
-  background: var(--openfga-tabs-surface);
-  border-bottom: 1px solid var(--openfga-tabs-border);
-  border-radius: 0.5rem 0.5rem 0 0;
-}
-
-.openfga-language-tab {
-  padding: 0.4rem 0.75rem;
-  color: var(--openfga-tabs-inactive);
-  font-size: 0.82rem;
-  font-weight: 400;
-  white-space: nowrap;
-  cursor: pointer;
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-}
-
-.openfga-language-tab[data-state='active'] {
-  color: var(--openfga-tabs-active);
-  font-weight: 600;
-  border-bottom-color: var(--openfga-tabs-accent);
-}
-
-.openfga-language-tab:focus-visible {
-  outline: 2px solid var(--openfga-tabs-accent);
-  outline-offset: -3px;
-}

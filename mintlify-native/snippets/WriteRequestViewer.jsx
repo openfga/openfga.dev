@@ -41,6 +41,7 @@ export const WriteRequestViewer = ({
   const DEFAULT_MODEL_ID = runtime.defaultAuthorizationModelId;
   const langs = runtime.selectLanguages('WriteRequestViewer', allowedLanguages);
   const activeLang = langs.includes(selectedLanguage) ? selectedLanguage : langs[0];
+  const setupLangs = langs.filter(runtime.hasSetup);
   const buildSetupCode = (lang) => runtime.buildSdkSetup(lang, 'WriteRequestViewer');
 
   const modelId = authorizationModelId || DEFAULT_MODEL_ID;
@@ -291,24 +292,21 @@ var response = fgaClient.write(body, options).get();`;
             These examples use no authentication; see <a href="/docs/getting-started/setup-sdk-client">client setup</a> for authentication and runtime prerequisites.
             Go snippets run inside main; Python requests run inside an async function and the client must be closed afterward.
           </p>
-          <CodeGroup key={activeLang}>
-            <code className={`language-${LANG_CODE[activeLang]}`} language={LANG_CODE[activeLang]} filename={LANG_LABEL[activeLang]}>
-              {buildSetupCode(activeLang)}
-            </code>
+          <CodeGroup key={setupLangs.join(',')} onChange={(index) => setSelectedLanguage(setupLangs[index])}>
+            {setupLangs.map(lang => (
+              <code key={lang} className={`language-${LANG_CODE[lang]}`} language={LANG_CODE[lang]} filename={LANG_LABEL[lang]}>
+                {buildSetupCode(lang)}
+              </code>
+            ))}
           </CodeGroup>
         </Accordion>
       )}
-      <div className="openfga-language-tabs" role="group" aria-label="Example language">
+      <CodeGroup key={langs.join(',')} onChange={(index) => setSelectedLanguage(langs[index])}>
         {langs.map(lang => (
-          <button type="button" aria-pressed={activeLang === lang} className="openfga-language-tab" data-state={activeLang === lang ? 'active' : 'inactive'} key={lang} onClick={() => setSelectedLanguage(lang)}>
-            {LANG_LABEL[lang]}
-          </button>
+          <code key={lang} className={`language-${LANG_CODE[lang]}`} language={LANG_CODE[lang]} filename={LANG_LABEL[lang]}>
+            {buildCode(lang)}
+          </code>
         ))}
-      </div>
-      <CodeGroup key={activeLang}>
-        <code className={`language-${LANG_CODE[activeLang]}`} language={LANG_CODE[activeLang]} filename={LANG_LABEL[activeLang]}>
-          {buildCode(activeLang)}
-        </code>
       </CodeGroup>
     </div>
   );

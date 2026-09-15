@@ -376,17 +376,26 @@ browser helper and the component validator.
 
 Default tabs follow that order. Check supports all nine; BatchCheck omits CLI
 and Playground; Write/ListObjects/ListUsers omit Playground; CreateStore omits
-Pseudocode and Playground. `allowedLanguages` preserves the author's order and
-selects its first entry initially, as in the source filtering helper. Short
-aliases such as `js`, `go`, and `dotnet` are not authoring identifiers.
+Pseudocode and Playground. `allowedLanguages` preserves the author's order.
+The first entry is selected initially unless Mintlify restores a supported
+native language preference. Short aliases such as `js`, `go`, and `dotnet`
+are not authoring identifiers.
 Use `csharp`, not `dotnet`, for native .NET fences.
 
-Each request viewer keeps its own selected language. Setup always matches the
-selected request language; Pseudocode/Playground have no setup accordion.
-Changing theme or opening setup does not reset selection. Native CodeGroup
-rendering/copy controls remain in use and are keyed by language to refresh both
-the code and the registered grammar when switching. This does not implement
-Docusaurus's cross-viewer `groupId="languages"` preference synchronization.
+Every setup/request code surface is one native multi-language `CodeGroup`, with
+integrated tabs, highlighting and active-code copy controls. Snippets pass each
+child's canonical `language` grammar and `filename` tab label; `title` is not a
+CodeGroup tab label. Do not add a separate language selector or remount the
+group on each selection.
+
+Mintlify synchronizes matching tab labels between setup, request and other
+native code groups, and persists its language preference across navigation and
+reloads. Native selection callbacks keep the setup accordion hidden for
+Pseudocode/Playground. Setup contains only the caller's languages with real SDK
+or CLI initialization. Changing theme or opening setup does not reset selection.
+Native tabs own keyboard navigation, focus, horizontal scrolling and copy; no
+custom tab CSS or DOM synchronization is needed. This uses Mintlify's preference
+behavior, not Docusaurus's `groupId="languages"` implementation.
 
 ### SDK prerequisites
 
@@ -447,7 +456,7 @@ hidden viewer harness is additional and remains available.
 | `AuthorizationModel/AuthzModelSnippetViewer` | Custom snippet; DSL/JSON and single-type fragments supported. Source `showWrite` and source-default DSL-only presentation are not equivalent. |
 | `AuthorizationModel/AuthzModelCodeBlock`, `SyntaxTransformer`, `Dsl` | Converted through the model snippet, `OpenFGACodeBlock`, and existing official syntax-transformer/Prism artifacts; no runtime source-component import. |
 | `SnippetViewer/CheckRequestViewer`, `BatchCheckRequestViewer`, `WriteRequestViewer`, `ListObjectsRequestViewer`, `ListUsersRequestViewer` | Five custom snippets with shared language/setup infrastructure; operation-specific option/codegen parity remains incomplete. |
-| `SnippetViewer/DefaultTabbedViewer`, `SupportedLanguage`, `SdkSetup` | Converted to the canonical language contract, per-viewer controls, native CodeGroup and shared no-auth initialization. Pseudocode toggle and cross-viewer preference sync are not ported. |
+| `SnippetViewer/DefaultTabbedViewer`, `SupportedLanguage`, `SdkSetup` | Converted to the canonical language contract, native synchronized CodeGroup tabs and shared no-auth initialization. The separate source pseudocode toggle is not ported. |
 | Create-store examples (no dedicated source Docs component) | Custom `CreateStoreViewer`, with shared initialization and canonical language IDs. |
 | `SdkSetup/SdkSetupPrerequisite` | Converted to prose: all 43 source occurrences retain deployment, URL/store ID and optional API-token prerequisites. |
 | `SnippetViewer/ExecuteApiRequestViewer`, `ExecuteApiRequestStreamingViewer` | Missing reusable viewers; no current source MDX callers. |

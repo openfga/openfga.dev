@@ -195,3 +195,18 @@ type user`} />
     ]
   }}
 />
+
+## BatchCheckRequestViewer: reordered setup languages
+
+<BatchCheckRequestViewer
+  checks={[
+    {
+      user: "user:anne",
+      relation: "reader",
+      object: "document:Z",
+      correlation_id: "batch-setup-example",
+      allowed: true
+    }
+  ]}
+  allowedLanguages={["rpc", "curl", "dotnet-sdk"]}
+/>

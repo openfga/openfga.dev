@@ -8,12 +8,12 @@ import { defaultLanguages, languages } from './viewer-contract.mjs';
 
 const snippet = (name) => readFileSync(new URL(`../snippets/${name}.jsx`, import.meta.url), 'utf8');
 
-function renderSnippet(name, props, { language = null, ready = true } = {}) {
+function renderSnippet(name, props, { language = null, ready = true, onSelection = () => {} } = {}) {
   let state = 0;
   const states = [ready ? runtime : null, null, language];
   const context = {
     module: { exports: {} },
-    useState: () => [states[state++], () => {}],
+    useState: () => [states[state++], onSelection],
     useEffect: () => {},
     Accordion: 'Accordion',
     CodeGroup: 'CodeGroup',
@@ -38,6 +38,10 @@ const fixtures = {
   ListUsersRequestViewer: { objectType: 'document', objectId: 'planning', relation: 'reader', userFilterType: 'user', expectedResults: { users: [{ object: { type: 'user', id: 'anne' } }] } },
   CreateStoreViewer: {},
 };
+
+function requestCode(tree, language) {
+  return nodes(nodes(tree, 'CodeGroup').at(-1), 'code').find(({ props }) => props.key === language).children[0];
+}
 
 test('the shared contract preserves caller order and rejects unsupported languages', () => {
   assert.deepEqual(runtime.selectLanguages('CheckRequestViewer', ['curl', 'dotnet-sdk']), ['curl', 'dotnet-sdk']);
@@ -67,25 +71,32 @@ test('every SDK setup uses canonical environment variables and self-hosted no-au
   assert.match(runtime.buildSdkSetup('js-sdk', 'WriteRequestViewer'), /OnDuplicateWrites, OnMissingDeletes/);
 });
 
-test('all request viewers use shared metadata, setup, and keyed native code groups', () => {
+test('all request viewers give native code groups every ordered language and sample', () => {
   for (const [name, props] of Object.entries(fixtures)) {
     for (const language of defaultLanguages[name]) {
       const tree = renderSnippet(name, props, { language });
       const groups = nodes(tree, 'CodeGroup');
-      assert.ok(groups.length > 0, `${name}/${language}`);
-      assert.ok(groups.every(({ props }) => props.key === language), `${name}/${language} keys`);
-      const blocks = nodes(tree, 'code');
-      assert.ok(blocks.every(({ props }) => props.className === `language-${runtime.languageGrammars[language]}`));
-      assert.ok(blocks.every(({ props }) => props.language === runtime.languageGrammars[language]));
-      assert.ok(blocks.every(({ props }) => props.filename === runtime.languageLabels[language]));
-      assert.ok(blocks.every(({ children }) => children[0].trim().length > 0));
-      assert.ok(blocks.every(({ children }) => !children[0].includes('undefined')), `${name}/${language} undefined`);
-      assert.ok(blocks.every(({ children }) => !children[0].includes('-H "Authorization:')));
-      const selected = nodes(tree, 'button').filter(({ props }) => props['aria-pressed']);
-      assert.equal(selected.length, 1);
-      assert.equal(selected[0].children[0], runtime.languageLabels[language]);
+      const hasSetup = name !== 'CreateStoreViewer' && runtime.hasSetup(language);
+      assert.equal(groups.length, hasSetup ? 2 : 1, `${name}/${language}`);
+      for (const [index, group] of groups.entries()) {
+        const expected = hasSetup && index === 0
+          ? defaultLanguages[name].filter(runtime.hasSetup)
+          : defaultLanguages[name];
+        assert.equal(group.props.key, expected.join(','), 'selection does not remount the native group');
+        const blocks = nodes(group, 'code');
+        assert.deepEqual(blocks.map(({ props }) => props.key), expected);
+        for (const { props, children: [code] } of blocks) {
+          assert.equal(props.className, `language-${runtime.languageGrammars[props.key]}`);
+          assert.equal(props.language, runtime.languageGrammars[props.key]);
+          assert.equal(props.filename, runtime.languageLabels[props.key]);
+          assert.ok(code.trim().length > 0);
+          assert.doesNotMatch(code, /undefined|-H "Authorization:/, `${name}/${props.key}`);
+          if (hasSetup && index === 0) assert.equal(code, runtime.buildSdkSetup(props.key, name));
+        }
+      }
+      assert.equal(nodes(tree, 'button').length, 0, 'native tabs own selection and accessibility');
       if (name !== 'CreateStoreViewer') {
-        assert.equal(nodes(tree, 'Accordion').length, runtime.hasSetup(language) ? 1 : 0);
+        assert.equal(nodes(tree, 'Accordion').length, hasSetup ? 1 : 0);
         assert.equal(nodes(renderSnippet(name, { ...props, skipSetup: true }, { language }), 'Accordion').length, 0);
       }
     }
@@ -95,16 +106,38 @@ test('all request viewers use shared metadata, setup, and keyed native code grou
 test('request-only checks omit an invented response and custom headers survive', () => {
   for (const language of defaultLanguages.CheckRequestViewer) {
     const tree = renderSnippet('CheckRequestViewer', { ...tuple, headers: { 'X-Request-ID': 'example' } }, { language });
-    const code = nodes(tree, 'code').at(-1).children[0];
+    const code = requestCode(tree, language);
     assert.doesNotMatch(code, /undefined|Response:|Reply:|allowed =|Allowed =|allowed =|getAllowed\(\) =/);
     if (language === 'curl') assert.match(code, /X-Request-ID: example/);
   }
 });
 
-test('a removed selection falls back to the first allowed language without losing caller order', () => {
+test('restricted native groups retain caller order and omit unavailable languages', () => {
   const tree = renderSnippet('CheckRequestViewer', { ...tuple, allowedLanguages: ['curl', 'dotnet-sdk'] }, { language: 'java-sdk' });
-  assert.deepEqual(nodes(tree, 'button').map(({ children }) => children[0]), ['curl', '.NET']);
-  assert.equal(nodes(tree, 'button')[0].props['aria-pressed'], true);
+  for (const group of nodes(tree, 'CodeGroup')) {
+    assert.deepEqual(nodes(group, 'code').map(({ props }) => props.filename), ['curl', '.NET']);
+  }
+});
+
+test('native selection callbacks map each setup and request index to its own language list', () => {
+  for (const [name, props] of Object.entries(fixtures).filter(([name]) => name !== 'CreateStoreViewer')) {
+    const selected = [];
+    const tree = renderSnippet(name, {
+      ...props,
+      allowedLanguages: ['rpc', 'curl', 'dotnet-sdk'],
+    }, { language: 'dotnet-sdk', onSelection: language => selected.push(language) });
+    const [setup, request] = nodes(tree, 'CodeGroup');
+    assert.deepEqual(nodes(setup, 'code').map(({ props }) => props.key), ['curl', 'dotnet-sdk']);
+    setup.props.onChange(0);
+    setup.props.onChange(1);
+    request.props.onChange(0);
+    request.props.onChange(1);
+    request.props.onChange(2);
+    assert.deepEqual(selected, ['curl', 'dotnet-sdk', 'rpc', 'curl', 'dotnet-sdk'], name);
+    const pseudoOnly = renderSnippet(name, { ...props, allowedLanguages: ['rpc'] });
+    assert.equal(nodes(pseudoOnly, 'Accordion').length, 0);
+    assert.equal(nodes(pseudoOnly, 'CodeGroup').length, 1);
+  }
 });
 
 test('missing required batch and result data cannot masquerade as empty successful examples', () => {
@@ -130,7 +163,7 @@ test('write conditions without a stored context render in every supported langua
       relationshipTuples: [{ ...tuple, condition: { name: 'non_expired_grant' } }],
       conflictOptions: { onDuplicateWrites: 'ignore' },
     }, { language });
-    const code = nodes(tree, 'code').at(-1).children[0];
+    const code = requestCode(tree, language);
     assert.doesNotMatch(code, /undefined/);
     if (language !== 'rpc') assert.match(code, /non_expired_grant/);
   }
