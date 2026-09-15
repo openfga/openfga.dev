@@ -6,6 +6,7 @@ description: An overview of how to use the Check, Read, Expand, and ListObject A
 
 import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx';
 import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
+import { BatchCheckRequestViewer } from '/snippets/BatchCheckRequestViewer.jsx';
 import { ListObjectsRequestViewer } from '/snippets/ListObjectsRequestViewer.jsx';
 import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
 
@@ -17,14 +18,11 @@ In this guide you will learn the uses of and limitations for the Check, Read, Ex
 
 In order to understand this guide correctly you must be familiar with some OpenFGA concepts and know how to develop the things that we will list below.
 
-<details>
-<summary>
+<Accordion title="Example authorization model">
 
 Assume that you have the following authorization model.<br />
 You have a type called `document` that can have a `reader`
 and `writer`. All writers are readers. `bob` has a `writer` relationship with `document:planning`.
-
-</summary>
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -66,6 +64,10 @@ and `writer`. All writers are readers. `bob` has a `writer` relationship with `d
   }}
 />
 
+</Accordion>
+
+Bob has writer relationship with planning document
+
 ```json
 [
   {
@@ -91,8 +93,6 @@ You need to know how to create an authorization model and create a relationship 
 - A **Relation**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
 - An **Object**: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
 - A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
-
-</details>
 
 ## Check
 
@@ -137,36 +137,32 @@ Two scenarios are common to use Batch Check:
 
 For example, you can call Batch Check to determine whether `bob` has `can_view_name`, `can_view_dob`, and `can_view_ssn` relationships with `patient_record:1`.
 
-```json
-{
-  "checks": [
+<BatchCheckRequestViewer
+  checks={[
     {
-      "tuple_key": {
-        "user": "user:bob",
-        "relation": "can_view_name",
-        "object": "patient_record:1"
-      },
-      "correlation_id": "1"
+      user: 'user:bob',
+      relation: 'can_view_name',
+      object: 'patient_record:1',
+      correlation_id: '1',
+      allowed: true
     },
     {
-      "tuple_key": {
-        "user": "user:bob",
-        "relation": "can_view_dob",
-        "object": "patient_record:1"
-      },
-      "correlation_id": "2"
+      user: 'user:bob',
+      relation: 'can_view_dob',
+      object: 'patient_record:1',
+      correlation_id: '2',
+      allowed: true
     },
     {
-      "tuple_key": {
-        "user": "user:bob",
-        "relation": "can_view_ssn",
-        "object": "patient_record:1"
-      },
-      "correlation_id": "3"
+      user: 'user:bob',
+      relation: 'can_view_ssn',
+      object: 'patient_record:1',
+      correlation_id: '3',
+      allowed: false
     }
-  ]
-}
-```
+  ]}
+  skipSetup={true}
+/>
 
 The OpenFGA API will return `true` depending on the level of access assigned to that user and the implied relationships inherited in the authorization model.
 
@@ -192,23 +188,183 @@ Read can be called if you need to get all the stored relationship tuples that re
 6. [**object** with any user and relation](#6-read-all-tuples-related-to-a-particular-object-with-any-user-or-relation)
 7. [**all** with any user, relation, or object](#7-read-all-tuples-for-any-user-relation-or-object)
 
+<Accordion title="Initialize the SDK for Read and Expand">
+
+Set `FGA_API_URL` for your service (for example, `https://api.fga.example`) and `FGA_STORE_ID` for your store. Initialize once, then place the request snippets below in the same scope as the client. For Python, run requests inside the `async with` block; for Go, .NET, and Java, use the method that initializes the client. See [SDK client setup](/docs/getting-started/setup-sdk-client) for authentication options.
+
+<CodeGroup>
+
+```javascript Node.js
+const { OpenFgaClient } = require('@openfga/sdk');
+
+const fgaClient = new OpenFgaClient({
+  apiUrl: process.env.FGA_API_URL,
+  storeId: process.env.FGA_STORE_ID,
+  authorizationModelId: process.env.FGA_MODEL_ID, // Optional; overridable per request
+});
+```
+
+```go Go
+import (
+    "context"
+    "os"
+
+    . "github.com/openfga/go-sdk"
+    . "github.com/openfga/go-sdk/client"
+)
+
+func main() {
+    fgaClient, err := NewSdkClient(&ClientConfiguration{
+        ApiUrl: os.Getenv("FGA_API_URL"),
+        StoreId: os.Getenv("FGA_STORE_ID"),
+        AuthorizationModelId: os.Getenv("FGA_MODEL_ID"),
+    })
+    if err != nil {
+        panic(err)
+    }
+    // Place a request below here.
+}
+```
+
+```csharp .NET
+using OpenFga.Sdk.Client;
+using OpenFga.Sdk.Client.Model;
+using OpenFga.Sdk.Model;
+
+var configuration = new ClientConfiguration {
+    ApiUrl = System.Environment.GetEnvironmentVariable("FGA_API_URL") ?? "http://localhost:8080",
+    StoreId = System.Environment.GetEnvironmentVariable("FGA_STORE_ID"),
+    AuthorizationModelId = System.Environment.GetEnvironmentVariable("FGA_MODEL_ID"),
+};
+var fgaClient = new OpenFgaClient(configuration);
+```
+
+```python Python
+import asyncio
+import os
+from openfga_sdk.client import ClientConfiguration, OpenFgaClient
+from openfga_sdk.client.models import ClientExpandRequest
+from openfga_sdk.models import ReadRequestTupleKey
+
+async def main():
+    configuration = ClientConfiguration(
+        api_url=os.environ.get("FGA_API_URL"),
+        store_id=os.environ.get("FGA_STORE_ID"),
+        authorization_model_id=os.environ.get("FGA_MODEL_ID"),
+    )
+    async with OpenFgaClient(configuration) as fga_client:
+        # Place a request below here.
+        pass
+
+asyncio.run(main())
+```
+
+```java Java
+import dev.openfga.sdk.api.client.OpenFgaClient;
+import dev.openfga.sdk.api.configuration.ClientConfiguration;
+import dev.openfga.sdk.api.client.model.*;
+
+public class Example {
+    public static void main(String[] args) throws Exception {
+        var config = new ClientConfiguration()
+            .apiUrl(System.getenv("FGA_API_URL"))
+            .storeId(System.getenv("FGA_STORE_ID"))
+            .authorizationModelId(System.getenv("FGA_AUTHORIZATION_MODEL_ID"));
+        var fgaClient = new OpenFgaClient(config);
+        // Place a request below here.
+    }
+}
+```
+
+```bash CLI
+export FGA_API_URL="https://api.fga.example"
+export FGA_STORE_ID="<store-id>"
+```
+
+```bash curl
+export FGA_API_URL="https://api.fga.example"
+export FGA_STORE_ID="<store-id>"
+# Remove the Authorization header below if your service does not require it.
+```
+
+</CodeGroup>
+
+</Accordion>
+
 #### 1. Read a tuple related to a particular user, relation, and object
 
 For example, to query if `bob` has a `writer` relationship on `document:planning` (essentially finding out if a tuple exists), one can ask
 
-```json
-{
-  "tuple_key": {
-    "user": "user:bob",
-    "relation": "writer",
-    "object": "document:planning"
-  }
-}
+<CodeGroup>
+
+```javascript Node.js
+const { tuples } = await fgaClient.read({
+  user: "user:bob",
+  relation: "writer",
+  object: "document:planning",
+});
 ```
 
-Response:
+```go Go
+options := ClientReadOptions{}
+body := ClientReadRequest{
+    User: PtrString("user:bob"),
+    Relation: PtrString("writer"),
+    Object: PtrString("document:planning"),
+}
+data, err := fgaClient.Read(context.Background()).
+    Body(body).
+    Options(options).
+    Execute()
+```
 
-```json
+```csharp .NET
+var options = new ClientReadOptions {};
+var body = new ClientReadRequest {
+    User = "user:bob",
+    Relation = "writer",
+    Object = "document:planning",
+};
+var response = await fgaClient.Read(body, options);
+```
+
+```python Python
+options = {}
+body = ReadRequestTupleKey(
+    user="user:bob",
+    relation="writer",
+    object="document:planning",
+)
+response = await fga_client.read(body, options)
+```
+
+```java Java
+var body = new ClientReadRequest()
+    .user("user:bob")
+    .relation("writer")
+    ._object("document:planning");
+var response = fgaClient.read(body).get();
+```
+
+```bash CLI
+fga tuple read --store-id=${FGA_STORE_ID} --user user:bob --relation writer --object document:planning
+```
+
+```bash curl
+# Remove Authorization if your service does not require it.
+curl -X POST "$FGA_API_URL/stores/$FGA_STORE_ID/read" \
+  -H "Authorization: Bearer $FGA_API_TOKEN" \
+  -H "content-type: application/json" \
+  -d '{"tuple_key":{"user":"user:bob","relation":"writer","object":"document:planning"}}'
+```
+
+```text Pseudocode
+read("user:bob", "writer", "document:planning");
+```
+
+</CodeGroup>
+
+```json Response
 {
   "tuples": [
     {
@@ -216,7 +372,8 @@ Response:
         "user": "user:bob",
         "relation": "writer",
         "object": "document:planning"
-      }
+      },
+      "timestamp": "2021-10-06T15:32:11.128Z"
     }
   ]
 }
@@ -226,19 +383,76 @@ Response:
 
 For example, to query all the stored relationship tuples `bob` has a `writer` relationship with on type `document:`, one can ask
 
-```json
-{
-  "tuple_key": {
-    "user": "user:bob",
-    "relation": "writer",
-    "object": "document:"
-  }
-}
+<CodeGroup>
+
+```javascript Node.js
+const { tuples } = await fgaClient.read({
+  user: "user:bob",
+  relation: "writer",
+  object: "document:",
+});
 ```
 
-Response:
+```go Go
+options := ClientReadOptions{}
+body := ClientReadRequest{
+    User: PtrString("user:bob"),
+    Relation: PtrString("writer"),
+    Object: PtrString("document:"),
+}
+data, err := fgaClient.Read(context.Background()).
+    Body(body).
+    Options(options).
+    Execute()
+```
 
-```json
+```csharp .NET
+var options = new ClientReadOptions {};
+var body = new ClientReadRequest {
+    User = "user:bob",
+    Relation = "writer",
+    Object = "document:",
+};
+var response = await fgaClient.Read(body, options);
+```
+
+```python Python
+options = {}
+body = ReadRequestTupleKey(
+    user="user:bob",
+    relation="writer",
+    object="document:",
+)
+response = await fga_client.read(body, options)
+```
+
+```java Java
+var body = new ClientReadRequest()
+    .user("user:bob")
+    .relation("writer")
+    ._object("document:");
+var response = fgaClient.read(body).get();
+```
+
+```bash CLI
+fga tuple read --store-id=${FGA_STORE_ID} --user user:bob --relation writer --object document:
+```
+
+```bash curl
+# Remove Authorization if your service does not require it.
+curl -X POST "$FGA_API_URL/stores/$FGA_STORE_ID/read" \
+  -H "Authorization: Bearer $FGA_API_TOKEN" \
+  -H "content-type: application/json" \
+  -d '{"tuple_key":{"user":"user:bob","relation":"writer","object":"document:"}}'
+```
+
+```text Pseudocode
+read("user:bob", "writer", "document:");
+```
+
+</CodeGroup>
+
+```json Response
 {
   "tuples": [
     {
@@ -246,7 +460,8 @@ Response:
         "user": "user:bob",
         "relation": "writer",
         "object": "document:planning"
-      }
+      },
+      "timestamp": "2021-10-06T15:32:11.128Z"
     }
   ]
 }
@@ -256,18 +471,71 @@ Response:
 
 For example, to query all the stored relationship tuples `bob` has on type `document:planning`, one can ask
 
-```json
-{
-  "tuple_key": {
-    "user": "user:bob",
-    "object": "document:planning"
-  }
-}
+<CodeGroup>
+
+```javascript Node.js
+const { tuples } = await fgaClient.read({
+  user: "user:bob",
+  object: "document:planning",
+});
 ```
 
-Response:
+```go Go
+options := ClientReadOptions{}
+body := ClientReadRequest{
+    User: PtrString("user:bob"),
+    Object: PtrString("document:planning"),
+}
+data, err := fgaClient.Read(context.Background()).
+    Body(body).
+    Options(options).
+    Execute()
+```
 
-```json
+```csharp .NET
+var options = new ClientReadOptions {};
+var body = new ClientReadRequest {
+    User = "user:bob",
+    Object = "document:planning",
+};
+var response = await fgaClient.Read(body, options);
+```
+
+```python Python
+options = {}
+body = ReadRequestTupleKey(
+    user="user:bob",
+    object="document:planning",
+)
+response = await fga_client.read(body, options)
+```
+
+```java Java
+var body = new ClientReadRequest()
+    .user("user:bob")
+    ._object("document:planning");
+var response = fgaClient.read(body).get();
+```
+
+```bash CLI
+fga tuple read --store-id=${FGA_STORE_ID} --user user:bob --object document:planning
+```
+
+```bash curl
+# Remove Authorization if your service does not require it.
+curl -X POST "$FGA_API_URL/stores/$FGA_STORE_ID/read" \
+  -H "Authorization: Bearer $FGA_API_TOKEN" \
+  -H "content-type: application/json" \
+  -d '{"tuple_key":{"user":"user:bob","object":"document:planning"}}'
+```
+
+```text Pseudocode
+read("user:bob", "document:planning");
+```
+
+</CodeGroup>
+
+```json Response
 {
   "tuples": [
     {
@@ -275,7 +543,8 @@ Response:
         "user": "user:bob",
         "relation": "writer",
         "object": "document:planning"
-      }
+      },
+      "timestamp": "2021-10-06T15:32:11.128Z"
     }
   ]
 }
@@ -285,18 +554,71 @@ Response:
 
 For example, to query all the stored relationship tuples `bob` has on object type `document:`, one can ask
 
-```json
-{
-  "tuple_key": {
-    "user": "user:bob",
-    "object": "document:"
-  }
-}
+<CodeGroup>
+
+```javascript Node.js
+const { tuples } = await fgaClient.read({
+  user: "user:bob",
+  object: "document:",
+});
 ```
 
-Response:
+```go Go
+options := ClientReadOptions{}
+body := ClientReadRequest{
+    User: PtrString("user:bob"),
+    Object: PtrString("document:"),
+}
+data, err := fgaClient.Read(context.Background()).
+    Body(body).
+    Options(options).
+    Execute()
+```
 
-```json
+```csharp .NET
+var options = new ClientReadOptions {};
+var body = new ClientReadRequest {
+    User = "user:bob",
+    Object = "document:",
+};
+var response = await fgaClient.Read(body, options);
+```
+
+```python Python
+options = {}
+body = ReadRequestTupleKey(
+    user="user:bob",
+    object="document:",
+)
+response = await fga_client.read(body, options)
+```
+
+```java Java
+var body = new ClientReadRequest()
+    .user("user:bob")
+    ._object("document:");
+var response = fgaClient.read(body).get();
+```
+
+```bash CLI
+fga tuple read --store-id=${FGA_STORE_ID} --user user:bob --object document:
+```
+
+```bash curl
+# Remove Authorization if your service does not require it.
+curl -X POST "$FGA_API_URL/stores/$FGA_STORE_ID/read" \
+  -H "Authorization: Bearer $FGA_API_TOKEN" \
+  -H "content-type: application/json" \
+  -d '{"tuple_key":{"user":"user:bob","object":"document:"}}'
+```
+
+```text Pseudocode
+read("user:bob", "document:");
+```
+
+</CodeGroup>
+
+```json Response
 {
   "tuples": [
     {
@@ -304,7 +626,8 @@ Response:
         "user": "user:bob",
         "relation": "writer",
         "object": "document:planning"
-      }
+      },
+      "timestamp": "2021-10-06T15:32:11.128Z"
     }
   ]
 }
@@ -314,18 +637,71 @@ Response:
 
 For example, to query all the stored relationship tuples which have the `writer` relation on object `document:planning`, one can ask
 
-```json
-{
-  "tuple_key": {
-    "relation": "writer",
-    "object": "document:planning"
-  }
-}
+<CodeGroup>
+
+```javascript Node.js
+const { tuples } = await fgaClient.read({
+  relation: "writer",
+  object: "document:planning",
+});
 ```
 
-Response:
+```go Go
+options := ClientReadOptions{}
+body := ClientReadRequest{
+    Relation: PtrString("writer"),
+    Object: PtrString("document:planning"),
+}
+data, err := fgaClient.Read(context.Background()).
+    Body(body).
+    Options(options).
+    Execute()
+```
 
-```json
+```csharp .NET
+var options = new ClientReadOptions {};
+var body = new ClientReadRequest {
+    Relation = "writer",
+    Object = "document:planning",
+};
+var response = await fgaClient.Read(body, options);
+```
+
+```python Python
+options = {}
+body = ReadRequestTupleKey(
+    relation="writer",
+    object="document:planning",
+)
+response = await fga_client.read(body, options)
+```
+
+```java Java
+var body = new ClientReadRequest()
+    .relation("writer")
+    ._object("document:planning");
+var response = fgaClient.read(body).get();
+```
+
+```bash CLI
+fga tuple read --store-id=${FGA_STORE_ID} --relation writer --object document:planning
+```
+
+```bash curl
+# Remove Authorization if your service does not require it.
+curl -X POST "$FGA_API_URL/stores/$FGA_STORE_ID/read" \
+  -H "Authorization: Bearer $FGA_API_TOKEN" \
+  -H "content-type: application/json" \
+  -d '{"tuple_key":{"relation":"writer","object":"document:planning"}}'
+```
+
+```text Pseudocode
+read("writer", "document:planning");
+```
+
+</CodeGroup>
+
+```json Response
 {
   "tuples": [
     {
@@ -333,7 +709,8 @@ Response:
         "user": "user:bob",
         "relation": "writer",
         "object": "document:planning"
-      }
+      },
+      "timestamp": "2021-10-06T15:32:11.128Z"
     }
   ]
 }
@@ -343,17 +720,66 @@ Response:
 
 For example, to query all the stored relationship tuples for object `document:planning`, one can ask
 
-```json
-{
-  "tuple_key": {
-    "object": "document:planning"
-  }
-}
+<CodeGroup>
+
+```javascript Node.js
+const { tuples } = await fgaClient.read({
+  object: "document:planning",
+});
 ```
 
-Response:
+```go Go
+options := ClientReadOptions{}
+body := ClientReadRequest{
+    Object: PtrString("document:planning"),
+}
+data, err := fgaClient.Read(context.Background()).
+    Body(body).
+    Options(options).
+    Execute()
+```
 
-```json
+```csharp .NET
+var options = new ClientReadOptions {};
+var body = new ClientReadRequest {
+    Object = "document:planning",
+};
+var response = await fgaClient.Read(body, options);
+```
+
+```python Python
+options = {}
+body = ReadRequestTupleKey(
+    object="document:planning",
+)
+response = await fga_client.read(body, options)
+```
+
+```java Java
+var body = new ClientReadRequest()
+    ._object("document:planning");
+var response = fgaClient.read(body).get();
+```
+
+```bash CLI
+fga tuple read --store-id=${FGA_STORE_ID} --object document:planning
+```
+
+```bash curl
+# Remove Authorization if your service does not require it.
+curl -X POST "$FGA_API_URL/stores/$FGA_STORE_ID/read" \
+  -H "Authorization: Bearer $FGA_API_TOKEN" \
+  -H "content-type: application/json" \
+  -d '{"tuple_key":{"object":"document:planning"}}'
+```
+
+```text Pseudocode
+read("document:planning");
+```
+
+</CodeGroup>
+
+```json Response
 {
   "tuples": [
     {
@@ -361,7 +787,8 @@ Response:
         "user": "user:bob",
         "relation": "writer",
         "object": "document:planning"
-      }
+      },
+      "timestamp": "2021-10-06T15:32:11.128Z"
     }
   ]
 }
@@ -371,13 +798,57 @@ Response:
 
 For example, to query all stored relationship tuples, one can ask
 
-```json
-{}
+<CodeGroup>
+
+```javascript Node.js
+const { tuples } = await fgaClient.read({});
 ```
 
-Response:
+```go Go
+options := ClientReadOptions{}
+body := ClientReadRequest{}
+data, err := fgaClient.Read(context.Background()).
+    Body(body).
+    Options(options).
+    Execute()
+```
 
-```json
+```csharp .NET
+var options = new ClientReadOptions {};
+var body = new ClientReadRequest {};
+var response = await fgaClient.Read(body, options);
+```
+
+```python Python
+options = {}
+body = ReadRequestTupleKey()
+response = await fga_client.read(body, options)
+```
+
+```java Java
+var body = new ClientReadRequest();
+var response = fgaClient.read(body).get();
+```
+
+```bash CLI
+fga tuple read --store-id=${FGA_STORE_ID}
+```
+
+```bash curl
+# Remove Authorization if your service does not require it.
+curl -X POST "$FGA_API_URL/stores/$FGA_STORE_ID/read" \
+  -H "Authorization: Bearer $FGA_API_TOKEN" \
+  -H "content-type: application/json" \
+  -d '{}'
+```
+
+```text Pseudocode
+read();
+```
+
+</CodeGroup>
+
+```json Response
 {
   "tuples": [
     {
@@ -385,7 +856,8 @@ Response:
         "user": "user:bob",
         "relation": "writer",
         "object": "document:planning"
-      }
+      },
+      "timestamp": "2021-10-06T15:32:11.128Z"
     }
   ]
 }
@@ -400,13 +872,78 @@ For example, if you specify that `writers` are `viewers` in the authorization mo
 
 In the following case, although all `writers` have reader `relationships` for document objects and `bob` is a `writer` for `document:planning`, if you query for all objects that `bob` has `reader` relationships, it will not return `document:planning`.
 
-```json
+<CodeGroup>
+
+```javascript Node.js
+const { tuples } = await fgaClient.read({
+  user: "user:bob",
+  relation: "reader",
+  object: "document:",
+});
+```
+
+```go Go
+options := ClientReadOptions{}
+body := ClientReadRequest{
+    User: PtrString("user:bob"),
+    Relation: PtrString("reader"),
+    Object: PtrString("document:"),
+}
+data, err := fgaClient.Read(context.Background()).
+    Body(body).
+    Options(options).
+    Execute()
+```
+
+```csharp .NET
+var options = new ClientReadOptions {};
+var body = new ClientReadRequest {
+    User = "user:bob",
+    Relation = "reader",
+    Object = "document:",
+};
+var response = await fgaClient.Read(body, options);
+```
+
+```python Python
+options = {}
+body = ReadRequestTupleKey(
+    user="user:bob",
+    relation="reader",
+    object="document:",
+)
+response = await fga_client.read(body, options)
+```
+
+```java Java
+var body = new ClientReadRequest()
+    .user("user:bob")
+    .relation("reader")
+    ._object("document:");
+var response = fgaClient.read(body).get();
+```
+
+```bash CLI
+fga tuple read --store-id=${FGA_STORE_ID} --user user:bob --relation reader --object document:
+```
+
+```bash curl
+# Remove Authorization if your service does not require it.
+curl -X POST "$FGA_API_URL/stores/$FGA_STORE_ID/read" \
+  -H "Authorization: Bearer $FGA_API_TOKEN" \
+  -H "content-type: application/json" \
+  -d '{"tuple_key":{"user":"user:bob","relation":"reader","object":"document:"}}'
+```
+
+```text Pseudocode
+read("user:bob", "reader", "document:");
+```
+
+</CodeGroup>
+
+```json Response
 {
-  "tuple_key": {
-    "user": "user:bob",
-    "relation": "reader",
-    "object": "document:"
-  }
+  "tuples": []
 }
 ```
 
@@ -425,26 +962,98 @@ The response is represented as a tree of users or usersets. To build the full gr
 
 Expand is used for debugging and to understand why a user has a particular relationship with a specific object.
 
+Reuse the SDK initialization from the [Read examples](#read). Replace the example authorization model ID below with the ID of the model you want to expand.
+
 For example, to understand why `bob` can have a `reader` relationship with `document:planning`, one could first call
 
-```json
-{
-  "relation": "reader",
-  "object": "document:planning"
-}
+<CodeGroup>
+
+```javascript Node.js
+const { tree } = await fgaClient.expand({
+  relation: "reader",
+  object: "document:planning",
+}, {
+  authorizationModelId: "01HVMMBCMGZNT3SED4Z17ECXCA",
+});
 ```
+
+```go Go
+options := ClientExpandOptions{
+    AuthorizationModelId: PtrString("01HVMMBCMGZNT3SED4Z17ECXCA"),
+}
+body := ClientExpandRequest{
+    Relation: "reader",
+    Object: "document:planning",
+}
+data, err := fgaClient.Expand(context.Background()).
+    Body(body).
+    Options(options).
+    Execute()
+```
+
+```csharp .NET
+var options = new ClientExpandOptions {
+    AuthorizationModelId = "01HVMMBCMGZNT3SED4Z17ECXCA",
+};
+var body = new ClientExpandRequest {
+    Relation = "reader",
+    Object = "document:planning",
+};
+var response = await fgaClient.Expand(body, options);
+```
+
+```python Python
+options = {
+    "authorization_model_id": "01HVMMBCMGZNT3SED4Z17ECXCA",
+}
+body = ClientExpandRequest(
+    relation="reader",
+    object="document:planning",
+)
+response = await fga_client.expand(body, options)
+```
+
+```java Java
+var options = new ClientExpandOptions()
+    .authorizationModelId("01HVMMBCMGZNT3SED4Z17ECXCA");
+var body = new ClientExpandRequest()
+    .relation("reader")
+    ._object("document:planning");
+var response = fgaClient.expand(body, options).get();
+```
+
+```bash CLI
+fga query expand --store-id=${FGA_STORE_ID} --model-id=01HVMMBCMGZNT3SED4Z17ECXCA reader document:planning
+```
+
+```bash curl
+# Remove Authorization if your service does not require it.
+curl -X POST "$FGA_API_URL/stores/$FGA_STORE_ID/expand" \
+  -H "Authorization: Bearer $FGA_API_TOKEN" \
+  -H "content-type: application/json" \
+  -d '{"tuple_key":{"relation":"reader","object":"document:planning"},"authorization_model_id":"01HVMMBCMGZNT3SED4Z17ECXCA"}'
+```
+
+```text Pseudocode
+expand(
+  "reader",
+  "document:planning",
+  authorization_model_id="01HVMMBCMGZNT3SED4Z17ECXCA"
+);
+```
+
+</CodeGroup>
 
 The result of this call will be like
 
-```json
+```json Response
 {
-  "tree":{
-    "root":{
-      "type":"document:planning#reader",
-        "leaf":{
-          "computed":{
-            "userset":"document:planning#writer"
-          }
+  "tree": {
+    "root": {
+      "type": "document:planning#reader",
+      "leaf": {
+        "computed": {
+          "userset": "document:planning#writer"
         }
       }
     }
@@ -454,26 +1063,96 @@ The result of this call will be like
 
 The returned tree will contain `writer`, for which we will call
 
-```json
-{
-  "relation": "writer",
-  "object": "document:planning"
-}
+<CodeGroup>
+
+```javascript Node.js
+const { tree } = await fgaClient.expand({
+  relation: "writer",
+  object: "document:planning",
+}, {
+  authorizationModelId: "01HVMMBCMGZNT3SED4Z17ECXCA",
+});
 ```
+
+```go Go
+options := ClientExpandOptions{
+    AuthorizationModelId: PtrString("01HVMMBCMGZNT3SED4Z17ECXCA"),
+}
+body := ClientExpandRequest{
+    Relation: "writer",
+    Object: "document:planning",
+}
+data, err := fgaClient.Expand(context.Background()).
+    Body(body).
+    Options(options).
+    Execute()
+```
+
+```csharp .NET
+var options = new ClientExpandOptions {
+    AuthorizationModelId = "01HVMMBCMGZNT3SED4Z17ECXCA",
+};
+var body = new ClientExpandRequest {
+    Relation = "writer",
+    Object = "document:planning",
+};
+var response = await fgaClient.Expand(body, options);
+```
+
+```python Python
+options = {
+    "authorization_model_id": "01HVMMBCMGZNT3SED4Z17ECXCA",
+}
+body = ClientExpandRequest(
+    relation="writer",
+    object="document:planning",
+)
+response = await fga_client.expand(body, options)
+```
+
+```java Java
+var options = new ClientExpandOptions()
+    .authorizationModelId("01HVMMBCMGZNT3SED4Z17ECXCA");
+var body = new ClientExpandRequest()
+    .relation("writer")
+    ._object("document:planning");
+var response = fgaClient.expand(body, options).get();
+```
+
+```bash CLI
+fga query expand --store-id=${FGA_STORE_ID} --model-id=01HVMMBCMGZNT3SED4Z17ECXCA writer document:planning
+```
+
+```bash curl
+# Remove Authorization if your service does not require it.
+curl -X POST "$FGA_API_URL/stores/$FGA_STORE_ID/expand" \
+  -H "Authorization: Bearer $FGA_API_TOKEN" \
+  -H "content-type: application/json" \
+  -d '{"tuple_key":{"relation":"writer","object":"document:planning"},"authorization_model_id":"01HVMMBCMGZNT3SED4Z17ECXCA"}'
+```
+
+```text Pseudocode
+expand(
+  "writer",
+  "document:planning",
+  authorization_model_id="01HVMMBCMGZNT3SED4Z17ECXCA"
+);
+```
+
+</CodeGroup>
 
 The result of this call will be like
 
-```json
+```json Response
 {
-  "tree":{
-    "root":{
-      "type":"document:planning#writer",
-        "leaf":{
-          "users":{
-            "users":[
-              "user:bob"
-            ]
-          }
+  "tree": {
+    "root": {
+      "type": "document:planning#writer",
+      "leaf": {
+        "users": {
+          "users": [
+            "user:bob"
+          ]
         }
       }
     }

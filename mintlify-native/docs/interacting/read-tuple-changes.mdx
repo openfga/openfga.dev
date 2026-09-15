@@ -220,10 +220,12 @@ To get a paginated list of changes that happened in your store:
 
   <Tab title="Python">
     ```python
+    from openfga_sdk.client.models import ClientReadChangesRequest
+
     body = ClientReadChangesRequest()
-    options = new ClientReadChangesOptions {
-        page_size: 25,
-    };
+    options = {
+        "page_size": 25,
+    }
     response = await fga_client.read_changes(body, options)
     ```
   </Tab>
@@ -247,8 +249,9 @@ To get a paginated list of changes that happened in your store:
 
   <Tab title="curl">
     ```bash
-    curl -X GET $FGA_API_URL/stores/$FGA_STORE_ID/changes?page_size=25 \
-      -H "Authorization: Bearer $FGA_API_TOKEN" \ # Not needed if service does not require authorization
+    # Remove Authorization if your service does not require it.
+    curl -X GET "$FGA_API_URL/stores/$FGA_STORE_ID/changes?page_size=25" \
+      -H "Authorization: Bearer $FGA_API_TOKEN" \
       -H "content-type: application/json"
     ```
   </Tab>
@@ -303,11 +306,13 @@ You can then use this token to get the next set of changes:
 
   <Tab title="Python">
     ```python
+    from openfga_sdk.client.models import ClientReadChangesRequest
+
     body = ClientReadChangesRequest()
-    options = new ClientReadChangesOptions {
-        page_size: 25,
-        continuation_token: "eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ==",
-    };
+    options = {
+        "page_size": 25,
+        "continuation_token": "eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ==",
+    }
     response = await fga_client.read_changes(body, options)
     ```
   </Tab>
@@ -332,8 +337,9 @@ You can then use this token to get the next set of changes:
 
   <Tab title="curl">
     ```bash
-    curl -X GET $FGA_API_URL/stores/$FGA_STORE_ID/changes?page_size=25&continuation_token=eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ== \
-      -H "Authorization: Bearer $FGA_API_TOKEN" \ # Not needed if service does not require authorization
+    # Remove Authorization if your service does not require it.
+    curl -X GET "$FGA_API_URL/stores/$FGA_STORE_ID/changes?page_size=25&continuation_token=eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ==" \
+      -H "Authorization: Bearer $FGA_API_TOKEN" \
       -H "content-type: application/json"
     ```
   </Tab>
@@ -448,10 +454,12 @@ It is possible to get a list of changes that happened in your store that relate 
 
   <Tab title="Python">
     ```python
+    from openfga_sdk.client.models import ClientReadChangesRequest
+
     body = ClientReadChangesRequest("folder")
-    options = new ClientReadChangesOptions {
-        page_size: 25,
-    };
+    options = {
+        "page_size": 25,
+    }
     response = await fga_client.read_changes(body, options)
     ```
   </Tab>
@@ -476,8 +484,9 @@ It is possible to get a list of changes that happened in your store that relate 
 
   <Tab title="curl">
     ```bash
-    curl -X GET $FGA_API_URL/stores/$FGA_STORE_ID/changes?type=folder&page_size=25 \
-      -H "Authorization: Bearer $FGA_API_TOKEN" \ # Not needed if service does not require authorization
+    # Remove Authorization if your service does not require it.
+    curl -X GET "$FGA_API_URL/stores/$FGA_STORE_ID/changes?type=folder&page_size=25" \
+      -H "Authorization: Bearer $FGA_API_TOKEN" \
       -H "content-type: application/json"
     ```
   </Tab>
@@ -531,11 +540,13 @@ The response will include a continuation token. In subsequent calls, you have to
 
   <Tab title="Python">
     ```python
+    from openfga_sdk.client.models import ClientReadChangesRequest
+
     body = ClientReadChangesRequest("folder")
-    options = new ClientReadChangesOptions {
-        page_size: 25,
-        continuation_token: "eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ==",
-    };
+    options = {
+        "page_size": 25,
+        "continuation_token": "eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ==",
+    }
     response = await fga_client.read_changes(body, options)
     ```
   </Tab>
@@ -561,8 +572,9 @@ The response will include a continuation token. In subsequent calls, you have to
 
   <Tab title="curl">
     ```bash
-    curl -X GET $FGA_API_URL/stores/$FGA_STORE_ID/changes?type=folder&page_size=25&continuation_token=eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ== \
-      -H "Authorization: Bearer $FGA_API_TOKEN" \ # Not needed if service does not require authorization
+    # Remove Authorization if your service does not require it.
+    curl -X GET "$FGA_API_URL/stores/$FGA_STORE_ID/changes?type=folder&page_size=25&continuation_token=eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ==" \
+      -H "Authorization: Bearer $FGA_API_TOKEN" \
       -H "content-type: application/json"
     ```
   </Tab>

@@ -104,6 +104,8 @@ Please note that type-bound public access is not a wildcard or a regex expressio
 
 The following syntax is invalid:
 
+It is invalid to use this syntax in the object field. The below relationship tuple is invalid and does not mean that Bob can view all documents.
+
 ```json
 {
   "user": "user:bob",
@@ -119,6 +121,8 @@ The following syntax is invalid:
 **You cannot use `<type>:*` as part of a userset in the tuple's user field.**
 
 The following syntax is invalid:
+
+It is invalid to use this syntax as part of a userset. The below relationship tuple is invalid and does not mean that members of any org can view the company-psa document.
 
 ```json
 {

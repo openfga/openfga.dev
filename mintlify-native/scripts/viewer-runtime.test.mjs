@@ -85,7 +85,10 @@ test('every SDK setup uses canonical environment variables and self-hosted no-au
     runtime.buildSdkSetup('python-sdk', 'ListUsersRequestViewer'),
     /models.list_users_request import ClientListUsersRequest/,
   );
-  assert.match(runtime.buildSdkSetup('js-sdk', 'WriteRequestViewer'), /OnDuplicateWrites, OnMissingDeletes/);
+  assert.match(
+    runtime.buildSdkSetup('js-sdk', 'WriteRequestViewer'),
+    /ClientWriteRequestOnDuplicateWrites, ClientWriteRequestOnMissingDeletes/,
+  );
 });
 
 test('all request viewers give native code groups every ordered language and sample', () => {
@@ -209,7 +212,7 @@ test('write conditions without a stored context render in every supported langua
     );
     const code = requestCode(tree, language);
     assert.doesNotMatch(code, /undefined/);
-    if (language !== 'rpc') assert.match(code, /non_expired_grant/);
+    assert.match(code, /non_expired_grant/);
   }
 });
 

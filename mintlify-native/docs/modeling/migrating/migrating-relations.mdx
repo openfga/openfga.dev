@@ -197,64 +197,91 @@ Next, migrate the existing relationship tuples. The new relation makes this defi
 
 Use the `read` API to look up all relationship tuples.
 
+<Accordion title="Initialize the SDK for Read">
+
+Set `FGA_API_URL` for your service (for example, `https://api.fga.example`) and `FGA_STORE_ID` for your store. Use the [Read SDK initialization examples](/docs/interacting/relationship-queries#read), then place this request in the same scope as the client. For Python, use the `async with` block; for Go, .NET, and Java, use the method that initializes the client. See [SDK client setup](/docs/getting-started/setup-sdk-client) for authentication options.
+
+</Accordion>
+
 <Tabs>
   <Tab title="Node.js">
     ```javascript
-    const response = await fgaClient.read({
-      tuple_key: { user: 'user:anne', relation: 'editor', object: 'document:planning' }
-    });
+    const { tuples } = await fgaClient.read({});
     ```
   </Tab>
   <Tab title="Go">
     ```go
-    body, err := fgaClient.Read(context.Background()).Body(client.ClientReadRequest{
-        User: client.PtrString("user:anne"),
-        Relation: client.PtrString("editor"),
-        Object: client.PtrString("document:planning"),
-    }).Execute()
+    options := ClientReadOptions{}
+    body := ClientReadRequest{}
+    data, err := fgaClient.Read(context.Background()).
+        Body(body).
+        Options(options).
+        Execute()
     ```
   </Tab>
   <Tab title=".NET">
     ```csharp
-    var response = await fgaClient.Read(new ClientReadRequest {
-        User = "user:anne",
-        Relation = "editor",
-        Object = "document:planning"
-    });
+    var options = new ClientReadOptions {};
+    var body = new ClientReadRequest {};
+    var response = await fgaClient.Read(body, options);
     ```
   </Tab>
   <Tab title="Python">
     ```python
-    response = await fga_client.read(ClientReadRequest(
-        user='user:anne',
-        relation='editor',
-        object='document:planning',
-    ))
+    options = {}
+    body = ReadRequestTupleKey()
+    response = await fga_client.read(body, options)
     ```
   </Tab>
   <Tab title="Java">
     ```java
-    var body = new ClientReadRequest()
-        .user("user:anne")
-        .relation("editor")
-        .object("document:planning");
+    var body = new ClientReadRequest();
     var response = fgaClient.read(body).get();
     ```
   </Tab>
   <Tab title="CLI">
     ```bash
-    fga tuple read --store-id=$FGA_STORE_ID --user user:anne --relation editor --object document:planning
+    fga tuple read --store-id=${FGA_STORE_ID}
     ```
   </Tab>
   <Tab title="curl">
     ```bash
+    # Remove Authorization if your service does not require it.
     curl -X POST "$FGA_API_URL/stores/$FGA_STORE_ID/read" \
       -H "Authorization: Bearer $FGA_API_TOKEN" \
       -H "content-type: application/json" \
-      -d '{"tuple_key":{"user":"user:anne","relation":"editor","object":"document:planning"}}'
+      -d '{}'
+    ```
+  </Tab>
+  <Tab title="Pseudocode">
+    ```text
+    read();
     ```
   </Tab>
 </Tabs>
+
+```json Response
+{
+  "tuples": [
+    {
+      "key": {
+        "user": "user:anne",
+        "relation": "editor",
+        "object": "document:planning"
+      },
+      "timestamp": "2021-10-06T15:32:11.128Z"
+    },
+    {
+      "key": {
+        "user": "user:charles",
+        "relation": "editor",
+        "object": "document:planning"
+      },
+      "timestamp": "2021-10-06T15:32:11.128Z"
+    }
+  ]
+}
+```
 
 Then filter out the tuples that do not match the object type or relation (in this case, `document` and `editor` respectively), and update the new tuples with the `write` relationship.
 

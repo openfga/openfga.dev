@@ -283,37 +283,37 @@ Because of the `[user, team#member]` direct relationship type restrictions used,
 
 In the type definition snippet above, `anne` is a `member` of `team:product` if any of the following relationship tuple sets exist:
 
-* ```
-  [// Anne is directly related to the product team as a member
-    {
+* Anne is directly related to the product team as a member
+
+  ```json
+  [{
     "user": "user:anne",
     "relation": "member",
-    "object": "team:product",
-    "_description": "Anne is directly related to the product team as a member"
+    "object": "team:product"
   }]
   ```
-* ```
-  [// Everyone (`*`) is directly related to the product team as a member
-    {
+* Everyone (`*`) is directly related to the product team as a member
+
+  ```json
+  [{
     "user": "user:*",
     "relation": "member",
-    "object": "team:product",
-    "_description": "Everyone (`*`) is directly related to the product team as a member"
+    "object": "team:product"
   }]
   ```
-* ```
-  [// Members of the contoso team are members of the product team
-    {
+* Members of the contoso team are members of the product team
+
+  Anne is a member of the contoso team
+
+  ```json
+  [{
     "user": "team:contoso#member",
     "relation": "member",
-    "object": "team:product",
-    "_description": "Members of the contoso team are members of the product team"
-  }// Anne is a member of the contoso team
-    {
+    "object": "team:product"
+  }, {
     "user": "user:anne",
     "relation": "member",
-    "object": "team:contoso",
-    "_description": "Anne is a member of the contoso team"
+    "object": "team:contoso"
   }]
   ```
 
@@ -368,38 +368,39 @@ In the type definition snippet above, `anne` is a `viewer` of `document:new-road
 
 * *anne* is an *editor* of *document:new-roadmap*
 
+  Anne is an editor of the new-roadmap document
+
   ```json
-  [// Anne is an editor of the new-roadmap document
-    {
+  [{
     "user": "user:anne",
     "relation": "editor",
-    "object": "document:new-roadmap",
-    "_description": "Anne is an editor of the new-roadmap document"
+    "object": "document:new-roadmap"
   }]
   ```
 
 * *anne* is a *viewer* of *document:new-roadmap*
 
+  Anne is a viewer of the new-roadmap document
+
   ```json
-  [// Anne is a viewer of the new-roadmap document
-    {
+  [{
     "user": "user:anne",
     "relation": "viewer",
-    "object": "document:new-roadmap",
-    "_description": "Anne is a viewer of the new-roadmap document"
+    "object": "document:new-roadmap"
   }]
   ```
 
 `anne` has a `can_rename` relationship with `document:new-roadmap` only if `anne` has an `editor` relationship with the document:
 
 * *anne* is an *editor* of *document:new-roadmap*
+
+  Anne is an editor of thew new-roadmap document
+
   ```json
-  [// Anne is an editor of thew new-roadmap document
-    {
+  [{
     "user": "user:anne",
     "relation": "editor",
-    "object": "document:new-roadmap",
-    "_description": "Anne is an editor of thew new-roadmap document"
+    "object": "document:new-roadmap"
   }]
   ```
 
@@ -515,29 +516,30 @@ The snippet below (taken from the authorization model above) states that viewers
 In the authorization model above, `user:anne` is a `viewer` of `document:new-roadmap` if any one of the following relationship tuples sets exists:
 
 * Anne is a viewer of the parent folder of the new-roadmap document
+
+  1. planning folder is the parent folder of the new-roadmap document
+  2. anne is a viewer of the planning folder
+
   ```json
-  [// planning folder is the parent folder of the new-roadmap document
-    {
+  [{
     "user": "folder:planning",
     "relation": "parent_folder",
-    "object": "document:new-roadmap",
-    "_description": "planning folder is the parent folder of the new-roadmap document"
-  }// anne is a viewer of the planning folder
-    {
+    "object": "document:new-roadmap"
+  }, {
     "user": "user:anne",
     "relation": "viewer",
-    "object": "folder:planning",
-    "_description": "anne is a viewer of the planning folder"
+    "object": "folder:planning"
   }]
   ```
 * Anne is a viewer of the new-roadmap document (direct relationship)
+
+  anne is a viewer of the new-roadmap document
+
   ```json
-  [// anne is a viewer of the new-roadmap document
-    {
+  [{
     "user": "user:anne",
     "relation": "viewer",
-    "object": "document:new-roadmap",
-    "_description": "anne is a viewer of the new-roadmap document"
+    "object": "document:new-roadmap"
   }]
   ```
 

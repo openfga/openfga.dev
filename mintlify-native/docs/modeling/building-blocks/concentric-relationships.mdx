@@ -29,14 +29,11 @@ This allows you to only create a single _relationship tuple_ rather than creatin
 
 To better understand this guide, you should be familiar with some OpenFGA concepts and know how to develop the things listed below.
 
-<details>
-<summary>
+<Accordion title="Prerequisites and starting model">
 
 You will start with the _authorization model_ below, it represents a `document` _type_ that can have users **related** as `editor` and `viewer`.
 
 Let us also assume that we have a `document` called "meeting_notes.doc" and bob is assigned as editor to this document.
-
-</summary>
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -94,7 +91,7 @@ You need to know how to add users to groups and grant groups access to resources
 - An **Object**: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
 - A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
 
-</details>
+</Accordion>
 
 ## Step by step
 

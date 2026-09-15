@@ -3,6 +3,8 @@ title: "Authorization for MCP Servers"
 description: "Model Context Protocol (MCP) servers expose tools that AI agents can call. Without authorization, any authenticated user can invoke any tool. OpenFGA lets you control which tools each user can access, based on their role, group membership, or time-limited grants."
 ---
 
+import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
+
 import { ListObjectsRequestViewer } from '/snippets/ListObjectsRequestViewer.jsx';
 import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
 
@@ -144,265 +146,25 @@ tuples:
 
 When checking access, pass the current time in the request context. The check returns `true` only if the current time is within the grant window:
 
-<Tabs>
-  <Tab title="Node.js">
-    ```javascript
-    // Run a check
-    const { allowed } = await fgaClient.check({
-        user: 'user:carl',
-        relation: 'can_call',
-        object: 'tool:greet',
-        context: {"current_time":"2026-04-03T10:30:00Z"}
-      }, {
-        authorizationModelId: '01HVMMBCMGZNT3SED4Z17ECXCA',
-    });
-    // allowed = true
-    ```
-  </Tab>
-
-  <Tab title="Go">
-    ```go
-    options := ClientCheckOptions{
-        AuthorizationModelId: openfga.PtrString("01HVMMBCMGZNT3SED4Z17ECXCA"),
-    }
-    body := ClientCheckRequest{
-        User:     "user:carl",
-        Relation: "can_call",
-        Object:   "tool:greet",
-        Context: &map[string]interface{}{"current_time":"2026-04-03T10:30:00Z"},
-    }
-    data, err := fgaClient.Check(context.Background()).
-        Body(body).
-        Options(options).
-        Execute()
-    // data = { allowed: true }
-    ```
-  </Tab>
-
-  <Tab title=".NET">
-    ```csharp
-    var options = new ClientCheckOptions {
-        AuthorizationModelId = "01HVMMBCMGZNT3SED4Z17ECXCA"
-    };
-    var body = new ClientCheckRequest {
-        User = "user:carl",
-        Relation = "can_call",
-        Object = "tool:greet",
-        Context = new { current_time="2026-04-03T10:30:00Z" }
-    };
-    var response = await fgaClient.Check(body, options);
-    // response.Allowed = true
-    ```
-  </Tab>
-
-  <Tab title="Python">
-    ```python
-    options = {
-        "authorization_model_id": "01HVMMBCMGZNT3SED4Z17ECXCA",
-    }
-    body = ClientCheckRequest(
-        user="user:carl",
-        relation="can_call",
-        object="tool:greet",
-        context=dict(
-            current_time="2026-04-03T10:30:00Z"
-        )
-    )
-    response = await fga_client.check(body, options)
-    # response.allowed = true
-    ```
-  </Tab>
-
-  <Tab title="Java">
-    ```java
-    var options = new ClientCheckOptions()
-            .authorizationModelId("01HVMMBCMGZNT3SED4Z17ECXCA");
-    var body = new ClientCheckRequest()
-            .user("user:carl")
-            .relation("can_call")
-            ._object("tool:greet")
-            .context(Map.of("current_time", "2026-04-03T10:30:00Z"));
-    var response = fgaClient.check(body, options).get();
-    // response.getAllowed() = true 
-    ```
-  </Tab>
-
-  <Tab title="CLI">
-    ```bash
-    fga query check --store-id=$FGA_STORE_ID --model-id=01HVMMBCMGZNT3SED4Z17ECXCA user:carl can_call tool:greet --context='{"current_time":"2026-04-03T10:30:00Z"}'
-    # Response: {"allowed":true}
-    ```
-  </Tab>
-
-  <Tab title="curl">
-    ```bash
-    curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/check \
-      -H "Authorization: Bearer $FGA_API_TOKEN" \ # Not needed if service does not require authorization
-      -H "content-type: application/json" \
-      -d '{
-        "authorization_model_id": "01HVMMBCMGZNT3SED4Z17ECXCA",
-        "tuple_key": {
-          "user": "user:carl",
-          "relation": "can_call",
-          "object": "tool:greet"
-        },
-        "context": {"current_time":"2026-04-03T10:30:00Z"}
-      }'
-    # Response: {"allowed": true}
-    ```
-  </Tab>
-
-  <Tab title="Pseudocode">
-    ```text
-    check(
-      user = "user:carl", // check if the user `user:carl`
-      relation = "can_call", // has an `can_call` relation
-      object = "tool:greet", // with the object `tool:greet`
-      context = { current_time = "2026-04-03T10:30:00Z" },
-    );
-    Reply: true
-    ```
-  </Tab>
-
-  <Tab title="Playground">
-    ```text
-    is user:carl related to tool:greet as can_call?
-    # Note: Check context is not supported on the playground
-    # Response: A green path from the user to the object indicating that the response from the API is `{"allowed":true}`
-    ```
-  </Tab>
-</Tabs>
+<CheckRequestViewer
+  user={'user:carl'}
+  relation={'can_call'}
+  object={'tool:greet'}
+  allowed={true}
+  skipSetup={true}
+  context={{current_time: '2026-04-03T10:30:00Z'}}
+/>
 
 After the grant expires, the same check returns `false`:
 
-<Tabs>
-  <Tab title="Node.js">
-    ```javascript
-    // Run a check
-    const { allowed } = await fgaClient.check({
-        user: 'user:carl',
-        relation: 'can_call',
-        object: 'tool:greet',
-        context: {"current_time":"2026-04-03T11:30:00Z"}
-      }, {
-        authorizationModelId: '01HVMMBCMGZNT3SED4Z17ECXCA',
-    });
-    // allowed = false
-    ```
-  </Tab>
-
-  <Tab title="Go">
-    ```go
-    options := ClientCheckOptions{
-        AuthorizationModelId: openfga.PtrString("01HVMMBCMGZNT3SED4Z17ECXCA"),
-    }
-    body := ClientCheckRequest{
-        User:     "user:carl",
-        Relation: "can_call",
-        Object:   "tool:greet",
-        Context: &map[string]interface{}{"current_time":"2026-04-03T11:30:00Z"},
-    }
-    data, err := fgaClient.Check(context.Background()).
-        Body(body).
-        Options(options).
-        Execute()
-    // data = { allowed: false }
-    ```
-  </Tab>
-
-  <Tab title=".NET">
-    ```csharp
-    var options = new ClientCheckOptions {
-        AuthorizationModelId = "01HVMMBCMGZNT3SED4Z17ECXCA"
-    };
-    var body = new ClientCheckRequest {
-        User = "user:carl",
-        Relation = "can_call",
-        Object = "tool:greet",
-        Context = new { current_time="2026-04-03T11:30:00Z" }
-    };
-    var response = await fgaClient.Check(body, options);
-    // response.Allowed = false
-    ```
-  </Tab>
-
-  <Tab title="Python">
-    ```python
-    options = {
-        "authorization_model_id": "01HVMMBCMGZNT3SED4Z17ECXCA",
-    }
-    body = ClientCheckRequest(
-        user="user:carl",
-        relation="can_call",
-        object="tool:greet",
-        context=dict(
-            current_time="2026-04-03T11:30:00Z"
-        )
-    )
-    response = await fga_client.check(body, options)
-    # response.allowed = false
-    ```
-  </Tab>
-
-  <Tab title="Java">
-    ```java
-    var options = new ClientCheckOptions()
-            .authorizationModelId("01HVMMBCMGZNT3SED4Z17ECXCA");
-    var body = new ClientCheckRequest()
-            .user("user:carl")
-            .relation("can_call")
-            ._object("tool:greet")
-            .context(Map.of("current_time", "2026-04-03T11:30:00Z"));
-    var response = fgaClient.check(body, options).get();
-    // response.getAllowed() = false 
-    ```
-  </Tab>
-
-  <Tab title="CLI">
-    ```bash
-    fga query check --store-id=$FGA_STORE_ID --model-id=01HVMMBCMGZNT3SED4Z17ECXCA user:carl can_call tool:greet --context='{"current_time":"2026-04-03T11:30:00Z"}'
-    # Response: {"allowed":false}
-    ```
-  </Tab>
-
-  <Tab title="curl">
-    ```bash
-    curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/check \
-      -H "Authorization: Bearer $FGA_API_TOKEN" \ # Not needed if service does not require authorization
-      -H "content-type: application/json" \
-      -d '{
-        "authorization_model_id": "01HVMMBCMGZNT3SED4Z17ECXCA",
-        "tuple_key": {
-          "user": "user:carl",
-          "relation": "can_call",
-          "object": "tool:greet"
-        },
-        "context": {"current_time":"2026-04-03T11:30:00Z"}
-      }'
-    # Response: {"allowed": false}
-    ```
-  </Tab>
-
-  <Tab title="Pseudocode">
-    ```text
-    check(
-      user = "user:carl", // check if the user `user:carl`
-      relation = "can_call", // has an `can_call` relation
-      object = "tool:greet", // with the object `tool:greet`
-      context = { current_time = "2026-04-03T11:30:00Z" },
-    );
-    Reply: false
-    ```
-  </Tab>
-
-  <Tab title="Playground">
-    ```text
-    is user:carl related to tool:greet as can_call?
-    # Note: Check context is not supported on the playground
-    # Response: A red object indicating that the response from the API is `{"allowed":false}`
-    ```
-  </Tab>
-</Tabs>
+<CheckRequestViewer
+  user={'user:carl'}
+  relation={'can_call'}
+  object={'tool:greet'}
+  allowed={false}
+  skipSetup={true}
+  context={{current_time: '2026-04-03T11:30:00Z'}}
+/>
 
 ## Resource-level permissions within tools
 
@@ -438,243 +200,21 @@ tuples:
 
 When the tool executes, check whether the user has the `can_view_private_documents` relation and adjust the response accordingly:
 
-<Tabs>
-  <Tab title="Node.js">
-    ```javascript
-    // Run a check
-    const { allowed } = await fgaClient.check({
-        user: 'user:anne',
-        relation: 'can_view_private_documents',
-        object: 'tool:get_documents',
-      }, {
-        authorizationModelId: '01HVMMBCMGZNT3SED4Z17ECXCA',
-    });
-    // allowed = true
-    ```
-  </Tab>
+<CheckRequestViewer
+  user={'user:anne'}
+  relation={'can_view_private_documents'}
+  object={'tool:get_documents'}
+  allowed={true}
+  skipSetup={true}
+/>
 
-  <Tab title="Go">
-    ```go
-    options := ClientCheckOptions{
-        AuthorizationModelId: openfga.PtrString("01HVMMBCMGZNT3SED4Z17ECXCA"),
-    }
-    body := ClientCheckRequest{
-        User:     "user:anne",
-        Relation: "can_view_private_documents",
-        Object:   "tool:get_documents",
-    }
-    data, err := fgaClient.Check(context.Background()).
-        Body(body).
-        Options(options).
-        Execute()
-    // data = { allowed: true }
-    ```
-  </Tab>
-
-  <Tab title=".NET">
-    ```csharp
-    var options = new ClientCheckOptions {
-        AuthorizationModelId = "01HVMMBCMGZNT3SED4Z17ECXCA"
-    };
-    var body = new ClientCheckRequest {
-        User = "user:anne",
-        Relation = "can_view_private_documents",
-        Object = "tool:get_documents",
-    };
-    var response = await fgaClient.Check(body, options);
-    // response.Allowed = true
-    ```
-  </Tab>
-
-  <Tab title="Python">
-    ```python
-    options = {
-        "authorization_model_id": "01HVMMBCMGZNT3SED4Z17ECXCA",
-    }
-    body = ClientCheckRequest(
-        user="user:anne",
-        relation="can_view_private_documents",
-        object="tool:get_documents",
-    )
-    response = await fga_client.check(body, options)
-    # response.allowed = true
-    ```
-  </Tab>
-
-  <Tab title="Java">
-    ```java
-    var options = new ClientCheckOptions()
-            .authorizationModelId("01HVMMBCMGZNT3SED4Z17ECXCA");
-    var body = new ClientCheckRequest()
-            .user("user:anne")
-            .relation("can_view_private_documents")
-            ._object("tool:get_documents");
-    var response = fgaClient.check(body, options).get();
-    // response.getAllowed() = true 
-    ```
-  </Tab>
-
-  <Tab title="CLI">
-    ```bash
-    fga query check --store-id=$FGA_STORE_ID --model-id=01HVMMBCMGZNT3SED4Z17ECXCA user:anne can_view_private_documents tool:get_documents
-    # Response: {"allowed":true}
-    ```
-  </Tab>
-
-  <Tab title="curl">
-    ```bash
-    curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/check \
-      -H "Authorization: Bearer $FGA_API_TOKEN" \ # Not needed if service does not require authorization
-      -H "content-type: application/json" \
-      -d '{
-        "authorization_model_id": "01HVMMBCMGZNT3SED4Z17ECXCA",
-        "tuple_key": {
-          "user": "user:anne",
-          "relation": "can_view_private_documents",
-          "object": "tool:get_documents"
-        }
-      }'
-    # Response: {"allowed": true}
-    ```
-  </Tab>
-
-  <Tab title="Pseudocode">
-    ```text
-    check(
-      user = "user:anne", // check if the user `user:anne`
-      relation = "can_view_private_documents", // has an `can_view_private_documents` relation
-      object = "tool:get_documents", // with the object `tool:get_documents`
-    );
-    Reply: true
-    ```
-  </Tab>
-
-  <Tab title="Playground">
-    ```text
-    is user:anne related to tool:get_documents as can_view_private_documents?
-    # Response: A green path from the user to the object indicating that the response from the API is `{"allowed":true}`
-    ```
-  </Tab>
-</Tabs>
-
-<Tabs>
-  <Tab title="Node.js">
-    ```javascript
-    // Run a check
-    const { allowed } = await fgaClient.check({
-        user: 'user:beth',
-        relation: 'can_view_private_documents',
-        object: 'tool:get_documents',
-      }, {
-        authorizationModelId: '01HVMMBCMGZNT3SED4Z17ECXCA',
-    });
-    // allowed = false
-    ```
-  </Tab>
-
-  <Tab title="Go">
-    ```go
-    options := ClientCheckOptions{
-        AuthorizationModelId: openfga.PtrString("01HVMMBCMGZNT3SED4Z17ECXCA"),
-    }
-    body := ClientCheckRequest{
-        User:     "user:beth",
-        Relation: "can_view_private_documents",
-        Object:   "tool:get_documents",
-    }
-    data, err := fgaClient.Check(context.Background()).
-        Body(body).
-        Options(options).
-        Execute()
-    // data = { allowed: false }
-    ```
-  </Tab>
-
-  <Tab title=".NET">
-    ```csharp
-    var options = new ClientCheckOptions {
-        AuthorizationModelId = "01HVMMBCMGZNT3SED4Z17ECXCA"
-    };
-    var body = new ClientCheckRequest {
-        User = "user:beth",
-        Relation = "can_view_private_documents",
-        Object = "tool:get_documents",
-    };
-    var response = await fgaClient.Check(body, options);
-    // response.Allowed = false
-    ```
-  </Tab>
-
-  <Tab title="Python">
-    ```python
-    options = {
-        "authorization_model_id": "01HVMMBCMGZNT3SED4Z17ECXCA",
-    }
-    body = ClientCheckRequest(
-        user="user:beth",
-        relation="can_view_private_documents",
-        object="tool:get_documents",
-    )
-    response = await fga_client.check(body, options)
-    # response.allowed = false
-    ```
-  </Tab>
-
-  <Tab title="Java">
-    ```java
-    var options = new ClientCheckOptions()
-            .authorizationModelId("01HVMMBCMGZNT3SED4Z17ECXCA");
-    var body = new ClientCheckRequest()
-            .user("user:beth")
-            .relation("can_view_private_documents")
-            ._object("tool:get_documents");
-    var response = fgaClient.check(body, options).get();
-    // response.getAllowed() = false 
-    ```
-  </Tab>
-
-  <Tab title="CLI">
-    ```bash
-    fga query check --store-id=$FGA_STORE_ID --model-id=01HVMMBCMGZNT3SED4Z17ECXCA user:beth can_view_private_documents tool:get_documents
-    # Response: {"allowed":false}
-    ```
-  </Tab>
-
-  <Tab title="curl">
-    ```bash
-    curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/check \
-      -H "Authorization: Bearer $FGA_API_TOKEN" \ # Not needed if service does not require authorization
-      -H "content-type: application/json" \
-      -d '{
-        "authorization_model_id": "01HVMMBCMGZNT3SED4Z17ECXCA",
-        "tuple_key": {
-          "user": "user:beth",
-          "relation": "can_view_private_documents",
-          "object": "tool:get_documents"
-        }
-      }'
-    # Response: {"allowed": false}
-    ```
-  </Tab>
-
-  <Tab title="Pseudocode">
-    ```text
-    check(
-      user = "user:beth", // check if the user `user:beth`
-      relation = "can_view_private_documents", // has an `can_view_private_documents` relation
-      object = "tool:get_documents", // with the object `tool:get_documents`
-    );
-    Reply: false
-    ```
-  </Tab>
-
-  <Tab title="Playground">
-    ```text
-    is user:beth related to tool:get_documents as can_view_private_documents?
-    # Response: A red object indicating that the response from the API is `{"allowed":false}`
-    ```
-  </Tab>
-</Tabs>
+<CheckRequestViewer
+  user={'user:beth'}
+  relation={'can_view_private_documents'}
+  object={'tool:get_documents'}
+  allowed={false}
+  skipSetup={true}
+/>
 
 Since anne is an admin, she sees all documents. Beth, as a content editor, sees only public documents.
 

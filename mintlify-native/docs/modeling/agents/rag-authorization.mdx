@@ -3,6 +3,8 @@ title: "RAG Authorization"
 description: "Retrieval-Augmented Generation (RAG) enhances LLM responses by retrieving relevant documents from a knowledge base. Without authorization checks, a user can ask a question and receive answers derived from documents they should not have access to. OpenFGA lets you enforce document-level permissions so that RAG pipelines only return content the user is authorized to see."
 ---
 
+import { BatchCheckRequestViewer } from '/snippets/BatchCheckRequestViewer.jsx';
+
 import { ListObjectsRequestViewer } from '/snippets/ListObjectsRequestViewer.jsx';
 import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
 
@@ -90,345 +92,35 @@ The flow is:
 
 Use the [`BatchCheck`](/docs/interacting/relationship-queries#batch-check) API to check multiple documents in a single request. For example, if a vector search returns three documents for `user:carl`:
 
-<Tabs>
-  <Tab title="Node.js">
-    ```javascript
-    const body = {
-      checks: [
-        {
-          user: 'user:carl',
-          relation: 'viewer',
-          object: 'document:roadmap',
-          correlationId: 'roadmap-check'
-        },{
-          user: 'user:carl',
-          relation: 'viewer',
-          object: 'document:api_design',
-          correlationId: 'api-design-check'
-        },{
-          user: 'user:carl',
-          relation: 'viewer',
-          object: 'document:architecture',
-          correlationId: 'architecture-check'
-        }
-      ],
-    }
-    const options = {
-      authorization_model_id: '01HVMMBCMGZNT3SED4Z17ECXCA',
-      maxBatchSize: 50, // optional, default is 50, can be used to limit the number of checks in a single server request
-      maxParallelRequests: 10, // optional, default is 10, can be used to limit the parallelization of the BatchCheck chunks
-    };
-    const { result } = await fgaClient.batchCheck(body, options);
-    /*
+<BatchCheckRequestViewer
+  checks={[
     {
-      "results": [
-        {
-          "correlationId": 'roadmap-check',
-          "allowed": true,
-          "request": {
-            "user": 'user:carl',
-            "relation": 'viewer',
-            "object": 'document:roadmap'}
-        }, {
-          "correlationId": 'api-design-check',
-          "allowed": false,
-          "request": {
-            "user": 'user:carl',
-            "relation": 'viewer',
-            "object": 'document:api_design'}
-        }, {
-          "correlationId": 'architecture-check',
-          "allowed": false,
-          "request": {
-            "user": 'user:carl',
-            "relation": 'viewer',
-            "object": 'document:architecture'}
-        }
-      ],
-    }
-    */
-    ```
-  </Tab>
-
-  <Tab title="Go">
-    ```go
-    body := ClientBatchCheckRequest{
-      Checks: []ClientBatchCheckItem{
-        {
-          User:          "user:carl",
-          Relation:      "viewer",
-          Object:        "document:roadmap",
-          CorrelationId: "roadmap-check",
-        },
-        {
-          User:          "user:carl",
-          Relation:      "viewer",
-          Object:        "document:api_design",
-          CorrelationId: "api-design-check",
-        },
-        {
-          User:          "user:carl",
-          Relation:      "viewer",
-          Object:        "document:architecture",
-          CorrelationId: "architecture-check",
-        },
-      },
-    }
-    options := BatchCheckOptions{
-      MaxBatchSize:         openfga.PtrInt32(50), // optional, default is 50, can be used to limit the number of checks in a single server request
-      MaxParallelRequests:  openfga.PtrInt32(10), // optional, default is 10, can be used to limit the parallelization of the BatchCheck chunks,
-      AuthorizationModelId: openfga.PtrString("01HVMMBCMGZNT3SED4Z17ECXCA"),
-    }
-    data, err := fgaClient.BatchCheck(context.Background()).Body(body).Options(options).Execute()
-    /*
-    // Results are a map keyed by correlationId
-    // Example:
-    data.GetResult() = map[string]BatchCheckSingleResult{
-      "roadmap-check": {
-        Allowed: true,
-      },
-      "api-design-check": {
-        Allowed: false,
-        Error:   <FgaError ...>,
-      },
-      "architecture-check": {
-        Allowed: false,
-        Error:   <FgaError ...>,
-      },
-    }
-    */
-    ```
-  </Tab>
-
-  <Tab title=".NET">
-    ```csharp
-    var body = new ClientBatchCheckRequest {
-      Checks = new List<ClientBatchCheckItem> {
-        new() {
-          User = "user:carl",
-          Relation = "viewer",
-          Object = "document:roadmap",
-          CorrelationId = "roadmap-check",
-        },
-        new() {
-          User = "user:carl",
-          Relation = "viewer",
-          Object = "document:api_design",
-          CorrelationId = "api-design-check",
-        },
-        new() {
-          User = "user:carl",
-          Relation = "viewer",
-          Object = "document:architecture",
-          CorrelationId = "architecture-check",
-        }
-      }
-    };
-    var options = new ClientBatchCheckOptions {
-      AuthorizationModelId = "01HVMMBCMGZNT3SED4Z17ECXCA",
-      MaxBatchSize = 50, // optional, default is 50
-      MaxParallelRequests = 10 // optional, default is 10
-    };
-    var response = await fgaClient.BatchCheck(body, options);
-    /*
-    response.Result = [{
-      CorrelationId = "roadmap-check",
-      Allowed = true,
-      Request = {
-        User = "user:carl",
-        Relation = "viewer",
-        Object = "document:roadmap"
-      }
+      _description: 'carl can view roadmap (direct access)',
+      user: 'user:carl',
+      relation: 'viewer',
+      object: 'document:roadmap',
+      correlation_id: 'roadmap',
+      allowed: true,
     },
     {
-      CorrelationId = "api-design-check",
-      Allowed = false,
-      Request = {
-        User = "user:carl",
-        Relation = "viewer",
-        Object = "document:api_design"
-      }
+      _description: 'carl cannot view api_design',
+      user: 'user:carl',
+      relation: 'viewer',
+      object: 'document:api_design',
+      correlation_id: 'api-design',
+      allowed: false,
     },
     {
-      CorrelationId = "architecture-check",
-      Allowed = false,
-      Request = {
-        User = "user:carl",
-        Relation = "viewer",
-        Object = "document:architecture"
-      }
-    }]
-    */
-    ```
-  </Tab>
-
-  <Tab title="Python">
-    ```python
-    checks = [
-      ClientBatchCheckItem(
-        user="user:carl",
-        relation="viewer",
-        object="document:roadmap",
-        correlation_id="roadmap-check"
-      ),
-      ClientBatchCheckItem(
-        user="user:carl",
-        relation="viewer",
-        object="document:api_design",
-        correlation_id="api-design-check"
-      ),
-      ClientBatchCheckItem(
-        user="user:carl",
-        relation="viewer",
-        object="document:architecture",
-        correlation_id="architecture-check"
-      )
-    ]
-    options = {
-      "authorization_model_id": "01HVMMBCMGZNT3SED4Z17ECXCA"}
-    response = await fga_client.batch_check(ClientBatchCheckRequest(checks=checks), options)
-    # response.results = [{
-    #  correlation_id: 'roadmap-check',
-    #  allowed: true,
-    #  request: {
-    #    user: 'user:carl',
-    #    relation: 'viewer',
-    #    object: 'document:roadmap'}
-    #}, {
-    #  correlation_id: 'api-design-check',
-    #  allowed: false,
-    #  request: {
-    #    user: 'user:carl',
-    #    relation: 'viewer',
-    #    object: 'document:api_design'}
-    #}, {
-    #  correlation_id: 'architecture-check',
-    #  allowed: false,
-    #  request: {
-    #    user: 'user:carl',
-    #    relation: 'viewer',
-    #    object: 'document:architecture'}
-    #}]
-    ```
-  </Tab>
-
-  <Tab title="Java">
-    ```java
-    var request = new ClientBatchCheckRequest().checks(
-        List.of(
-          new ClientBatchCheckItem()
-              .user("user:carl")
-              .relation("viewer")
-              ._object("document:roadmap")
-              .correlationId("roadmap-check"),
-          new ClientBatchCheckItem()
-              .user("user:carl")
-              .relation("viewer")
-              ._object("document:api_design")
-              .correlationId("api-design-check"),
-          new ClientBatchCheckItem()
-              .user("user:carl")
-              .relation("viewer")
-              ._object("document:architecture")
-              .correlationId("architecture-check")  
-    );
-    var options = new ClientBatchCheckOptions()
-        .authorizationModelId("01HVMMBCMGZNT3SED4Z17ECXCA")
-        .maxBatchSize(50) // optional, default is 50, can be used to limit the number of checks in a single server request
-        .maxParallelRequests(10); // optional, default is 10, can be used to limit the parallelization of the BatchCheck chunks
-    var response = fgaClient.batchCheck(request, options).get();
-    /*
-    {
-      "result": [
-        {
-          "correlationId": 'roadmap-check',
-          "allowed": true,
-          "request": {
-            "user": 'user:carl',
-            "relation": 'viewer',
-            "_object": 'document:roadmap'}
-        }, {
-          "correlationId": 'api-design-check',
-          "allowed": false,
-          "request": {
-            "user": 'user:carl',
-            "relation": 'viewer',
-            "_object": 'document:api_design'}
-        }, {
-          "correlationId": 'architecture-check',
-          "allowed": false,
-          "request": {
-            "user": 'user:carl',
-            "relation": 'viewer',
-            "_object": 'document:architecture'}
-        }
-      ],
-    }
-    */
-    ```
-  </Tab>
-
-  <Tab title="curl">
-    ```bash
-    curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/batch-check \
-    -H "Authorization: Bearer $FGA_API_TOKEN" \ # Not needed if service does not require authorization
-    -H "content-type: application/json" \
-    -d '{
-      "authorization_model_id": "01HVMMBCMGZNT3SED4Z17ECXCA", 
-      "checks": [
-        {
-          "tuple_key": {
-            "user":"user:carl",
-            "relation":"viewer",
-            "object":"document:roadmap"
-          },
-          "correlation_id": "roadmap-check"
-        },
-        {
-          "tuple_key": {
-            "user":"user:carl",
-            "relation":"viewer",
-            "object":"document:api_design"
-          },
-          "correlation_id": "api-design-check"
-        },
-        {
-          "tuple_key": {
-            "user":"user:carl",
-            "relation":"viewer",
-            "object":"document:architecture"
-          },
-          "correlation_id": "architecture-check"
-        }
-      
-      ]
-    }'
-    # Response: 
-    {
-      "results": {
-        { "roadmap-check": { "allowed": true }}, # viewer
-        { "api-design-check": { "allowed": false }}, # viewer
-        { "architecture-check": { "allowed": false }}, # viewer
-        
-      }
-    }
-    ```
-  </Tab>
-
-  <Tab title="Pseudocode">
-    ```text
-    BatchCheck([
-      - user="user:carl", relation="viewer", object="document:roadmap"
-      - user="user:carl", relation="viewer", object="document:api_design"
-      - user="user:carl", relation="viewer", object="document:architecture"
-    ])
-    Reply:
-      - correlation_id="roadmap-check": true
-      - correlation_id="api-design-check": false
-      - correlation_id="architecture-check": false
-    ```
-  </Tab>
-</Tabs>
+      _description: 'carl cannot view architecture',
+      user: 'user:carl',
+      relation: 'viewer',
+      object: 'document:architecture',
+      correlation_id: 'architecture',
+      allowed: false,
+    },
+  ]}
+  skipSetup={true}
+/>
 
 Only `document:roadmap` is returned as allowed. The pipeline filters out the other two documents before passing context to the LLM.
 

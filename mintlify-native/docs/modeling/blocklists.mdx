@@ -23,14 +23,11 @@ This is useful when:
 
 Before you start this guide, make sure you're familiar with some OpenFGA concepts and know how to develop the things listed below.
 
-<details>
-<summary>
+<Accordion title="Prerequisites and starting model">
 
 You will start with the _authorization model_ below, it represents a `document` _type_ that can have users **related** as `editor`, and `team` type that can have users related as `member`.
 
 Let us also assume that we have a `document` called "planning", shared for editing within the product `team` (comprised of becky and carl).
-
-</summary>
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -71,6 +68,10 @@ Let us also assume that we have a `document` called "planning", shared for editi
 
 The current state of the system is represented by the following relationship tuples being in the system already:
 
+1. Members of the product team can edit the planning document
+2. Becky is a member of the product team
+3. Carl is a member of the product team
+
 ```json
 [
   {
@@ -108,7 +109,7 @@ You need to know how to add users to groups and grant groups access to resources
 - A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
 - [Exclusion Operator](/docs/configuration-language#the-exclusion-operator): the exclusion operator can be used to exclude certain usersets from being related to an object
 
-</details>
+</Accordion>
 
 ## Step by step
 

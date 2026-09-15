@@ -59,8 +59,7 @@ This approach has several advantages:
 
 - **Team autonomy with modules**: Resource types owned by each application team can be maintained in independent [modules](/docs/modeling/modular-models). You can control which application can write to specific resource types through API credentials, providing better security boundaries.
 
-<details>
-<summary>What to avoid: The overly generic model</summary>
+<Accordion title="What to avoid: The overly generic model">
 
 The model below can technically represent any organization hierarchy, any resource hierarchy, and any role hierarchy:
 
@@ -93,7 +92,7 @@ While flexible, this approach creates problems:
 - You can't use modules to isolate different resource types
 - ListObjects returns mixed results (all "resources" instead of just "documents")
 
-</details>
+</Accordion>
 
 ## Modeling Roles
 
@@ -267,8 +266,7 @@ Benefits of specific types:
 - **Clearer model**: Each type shows exactly what permissions apply to it
 - **Module support**: Different teams can own different resource types
 
-<details>
-<summary>What to avoid: The generic resource type</summary>
+<Accordion title="What to avoid: The generic resource type">
 
 <OpenFGACodeBlock code={`type resource
 \x20 relations
@@ -283,7 +281,7 @@ Problems with this approach:
 - No way to use modules for team ownership
 - Harder to understand and audit
 
-</details>
+</Accordion>
 
 ## Quick Reference
 

@@ -66,6 +66,8 @@ type document
 
 To configure authorization model, we can invoke the [write authorization models API](/api-reference/authorization-models/create-a-new-authorization-model).
 
+Initialize the SDK once, then place the request in the same scope as the client. For Python, put the request inside the `async with` block; for Go, .NET, and Java, use the method that initializes the client.
+
 <Tabs>
   <Tab title="Node.js">
     <Accordion title="Initialize the SDK">
@@ -139,6 +141,8 @@ To configure authorization model, we can invoke the [write authorization models 
       ```go
       // ApiTokenIssuer, ApiAudience, ClientId and ClientSecret are optional.
       import (
+          "context"
+          "encoding/json"
           "os"
 
           . "github.com/openfga/go-sdk"
@@ -187,6 +191,7 @@ To configure authorization model, we can invoke the [write authorization models 
       using OpenFga.Sdk.Client;
       using OpenFga.Sdk.Client.Model;
       using OpenFga.Sdk.Model;
+      using System.Text.Json;
       using Environment = System.Environment;
 
       namespace Example;
@@ -195,7 +200,7 @@ To configure authorization model, we can invoke the [write authorization models 
           public static async Task Main() {
               // Initialize the SDK with no auth - see "How to setup SDK client" for more options
               var configuration = new ClientConfiguration() {
-                ApiUrl = Environment.GetEnvironmentVariable("FGA_API_URL"), ?? "http://localhost:8080", // required, e.g. https://api.fga.example
+                ApiUrl = Environment.GetEnvironmentVariable("FGA_API_URL") ?? "http://localhost:8080", // required, e.g. https://api.fga.example
                 StoreId = Environment.GetEnvironmentVariable("FGA_STORE_ID"), // optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
                 AuthorizationModelId = Environment.GetEnvironmentVariable("FGA_MODEL_ID"), // Optional, can be overridden per request
               };
@@ -232,20 +237,17 @@ To configure authorization model, we can invoke the [write authorization models 
 
           # Enter a context with an instance of the OpenFgaClient
           async with OpenFgaClient(configuration) as fga_client:
-              api_response = await fga_client.read_authorization_models()
-              await fga_client.close()
+              # Place the write request below here.
+              pass
 
       asyncio.run(main())
       ```
     </Accordion>
 
     ```python
-    # from openfga_sdk.models.write_authorization_model_request import WriteAuthorizationModelRequest
-
-    async def write_authorization_model():
-        body_string = "{\"schema_version\":\"1.1\",\"type_definitions\":[{\"type\":\"user\"},{\"type\":\"document\",\"relations\":{\"reader\":{\"this\":{}},\"writer\":{\"this\":{}},\"owner\":{\"this\":{}}},\"metadata\":{\"relations\":{\"reader\":{\"directly_related_user_types\":[{\"type\":\"user\"}]},\"writer\":{\"directly_related_user_types\":[{\"type\":\"user\"}]},\"owner\":{\"directly_related_user_types\":[{\"type\":\"user\"}]}}}}]}"
-        response = await fga_client_instance.write_authorization_model(json.loads(body_string))
-        # response.authorization_model_id = "01HVMMBCMGZNT3SED4Z17ECXCA"
+    body_string = "{\"schema_version\":\"1.1\",\"type_definitions\":[{\"type\":\"user\"},{\"type\":\"document\",\"relations\":{\"reader\":{\"this\":{}},\"writer\":{\"this\":{}},\"owner\":{\"this\":{}}},\"metadata\":{\"relations\":{\"reader\":{\"directly_related_user_types\":[{\"type\":\"user\"}]},\"writer\":{\"directly_related_user_types\":[{\"type\":\"user\"}]},\"owner\":{\"directly_related_user_types\":[{\"type\":\"user\"}]}}}}]}"
+    response = await fga_client.write_authorization_model(json.loads(body_string))
+    # response.authorization_model_id = "01HVMMBCMGZNT3SED4Z17ECXCA"
     ```
   </Tab>
 
@@ -270,8 +272,8 @@ To configure authorization model, we can invoke the [write authorization models 
     </Accordion>
 
     ```java
-    // import com.fasterxml.jackson.databind.ObjectMapper;
-    // import dev.openfga.sdk.api.model.WriteAuthorizationModelRequest;
+    import com.fasterxml.jackson.databind.ObjectMapper;
+    import dev.openfga.sdk.api.model.WriteAuthorizationModelRequest;
 
     var mapper = new ObjectMapper().findAndRegisterModules();
     var authorizationModel = fgaClient
@@ -288,8 +290,9 @@ To configure authorization model, we can invoke the [write authorization models 
 
   <Tab title="curl">
     ```bash
-    curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/authorization-models \
-      -H "Authorization: Bearer $FGA_API_TOKEN" \ # Not needed if service does not require authorization
+    # Remove Authorization if your service does not require it.
+    curl -X POST "$FGA_API_URL/stores/$FGA_STORE_ID/authorization-models" \
+      -H "Authorization: Bearer $FGA_API_TOKEN" \
       -H "content-type: application/json" \
       -d '{"schema_version":"1.1","type_definitions":[{"type":"user"},{"type":"document","relations":{"reader":{"this":{}},"writer":{"this":{}},"owner":{"this":{}}},"metadata":{"relations":{"reader":{"directly_related_user_types":[{"type":"user"}]},"writer":{"directly_related_user_types":[{"type":"user"}]},"owner":{"directly_related_user_types":[{"type":"user"}]}}}}]}'
     ```

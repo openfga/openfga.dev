@@ -202,6 +202,7 @@ To return all users of type `user` that have have the `reader` relationship with
     users: [{ object: { type: 'user', id: 'anne' } }, { object: { type: 'user', id: 'beth' } }],
   }}
   skipSetup={true}
+  allowedLanguages={['js-sdk', 'go-sdk', 'dotnet-sdk', 'python-sdk', 'java-sdk', 'cli', 'curl']}
 />
 
 The result `user:anne` and `user:beth` are the `user` objects that have the `reader` relationship with `document:planning`.
@@ -264,6 +265,7 @@ Then calling the List Users API for `document:1` with relation `viewer` of type 
     ],
   }}
   skipSetup={true}
+  allowedLanguages={['js-sdk', 'go-sdk', 'dotnet-sdk', 'python-sdk', 'java-sdk', 'cli', 'curl']}
 />
 
 ## Type-bound public access

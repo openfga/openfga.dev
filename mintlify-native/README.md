@@ -165,9 +165,9 @@ These constraints explain patterns you'll see in every snippet file:
 
 - No `import` statements
 - All constants defined inside `export const MyComponent = (...) => { const X = ... }`
-- Operation-specific request generators stay inside each exported function.
-- Reused language metadata and SDK initialization live in a generated standalone
-  browser helper, not cross-snippet or runtime npm imports.
+- Snippets call the shared request generator from inside the exported function.
+- Language metadata, SDK initialization, and pure operation generators live in a
+  generated standalone browser helper, not cross-snippet or runtime npm imports.
 
 ### The window-global pattern
 
@@ -177,7 +177,7 @@ The standalone helpers expose these browser contracts:
 | ------------------- | ----------------------------------------------------- | --------------------------- |
 | `window.fgaCodegen` | `@openfga/syntax-transformer` (DSL ↔ JSON conversion) | `/fga-codegen.js`           |
 | `window.openfgaDsl` | Generated OpenFGA Prism tokenizer                     | `/openfga-dsl-highlight.js` |
-| `window.openfgaViewer` | Shared language metadata, SDK setup, create-store generator | `/openfga-viewer.js` |
+| `window.openfgaViewer` | Shared language metadata, SDK setup, operation generators | `/openfga-viewer.js` |
 
 These files are served as static assets by Mintlify. Snippets check for the
 global on mount, then load the asset if needed. The request viewers listen for
@@ -323,7 +323,7 @@ or import other snippets from inside a snippet.
 | --- | --- | --- |
 | `OpenFGACodeBlock` | `code`: string, canonically escaped template literal (see above) | `title`: string |
 | `AuthzModelSnippetViewer` | `configuration`: model JSON or a single type-definition fragment | `syntaxesToShow`: nonempty unique array of `dsl`/`json`, default `['dsl', 'json']`; `skipVersion`: boolean, default false |
-| `CheckRequestViewer` | `user`, `relation`, `object`: strings | `allowed`: boolean; omit for request-only examples (no response annotation); `contextualTuples`, `context`, `headers`: string record for curl; common request props below |
+| `CheckRequestViewer` | `user`, `relation`, `object`: strings | `allowed`: boolean; omit for request-only examples (no response annotation); `contextualTuples`, `context`, `headers`: string record for SDKs/curl; `consistency`; common request props below |
 | `BatchCheckRequestViewer` | `checks`: nonempty array of `{user, relation, object, correlation_id, allowed, contextualTuples?, context?}` | Common request props below |
 | `WriteRequestViewer` | At least one nonempty `relationshipTuples` or `deleteRelationshipTuples` array | Omitted tuple arrays default to `[]`; `conflictOptions`: `{onDuplicateWrites?: 'error' \| 'ignore', onMissingDeletes?: 'error' \| 'ignore'}`; common request props below |
 | `ListObjectsRequestViewer` | `user`, `relation`, `objectType`: strings; `expectedResults`: string array | `contextualTuples`, `context`; common request props below |
@@ -334,28 +334,78 @@ Common request props are `authorizationModelId` (string, default example ID
 `01HVMMBCMGZNT3SED4Z17ECXCA`), `skipSetup` (boolean, default false), and
 `allowedLanguages` (nonempty, duplicate-free array of supported identifiers).
 The example model ID must be replaced with the ID returned when writing your
-model; it is not a configured production model. The existing Check generator
-uses a nullish default; other request generators use the default for empty
-model-ID strings too.
+model; it is not a configured production model. Request fragments preserve the
+source default for omitted or empty model-ID strings. Complete build-time
+samples instead use `FGA_MODEL_ID`, unless an explicit model ID is supplied.
 
-Tuples contain string `user`, `relation`, and `object` fields. Write tuples also
-accept `_description` (a comment, not payload data) and `condition` with `name`
-and optional JSON-object `context`. Delete tuples cannot contain a condition.
+Tuples contain string `user`, `relation`, and `object` fields. Write and contextual
+tuples also accept `_description` (an instructional comment, never payload data)
+and `condition` with `name` and optional JSON-object `context`. Batch items may
+include `_description` too. Delete tuples cannot contain a condition.
 Request contexts are JSON objects, including nested values, arrays, booleans,
-and numbers. Each ListUsers result has exactly one of
+numbers, and nulls. Query viewers accept `consistency`: `UNSPECIFIED`,
+`MINIMIZE_LATENCY`, or `HIGHER_CONSISTENCY`. Read pagination/continuation options
+remain with the static Read examples, not these unrelated query operations.
+Each ListUsers result has exactly one of
 `object: {type, id}`, `wildcard: {type}`, or `userset: {type, id, relation}`.
 Model inputs support `schema_version`, `type_definitions`, relations, metadata,
 and conditions; a `{type, relations?, metadata?}` fragment is normalized to a
 single-type model for DSL conversion without displaying the schema header.
 
-These are **Mintlify authoring props, not a claim of Docusaurus parity**.
+These are **Mintlify authoring props, not ports of every Docusaurus export**.
 `showWrite`, `pseudoCodeMode`, and other source-only options are not supported;
 the validator reports them instead of letting React silently ignore them.
-Operation-specific generators have not been replaced in this task. In
-particular, some language branches still omit context/condition/filter options
-or serialize context values differently; accepting a prop is not proof that
-every SDK branch has equivalent output. Review generated requests when adding
-an example with new option combinations.
+Source pseudocode-only callers use `allowedLanguages={['rpc']}`. Operation
+generation preserves supplied context/condition/filter/consistency fields and
+explicit false or empty values; it does not infer a successful response.
+Invalid expectation types fail explicitly. Playground cannot execute contextual
+tuples, context, custom headers, or consistency options, and CLI does not support
+custom headers; those tabs say so instead of silently dropping the option.
+
+### Shared operation generation
+
+`scripts/operation-codegen.mjs` is the browser-safe, pure author source for all
+six SDK viewers. `scripts/viewer-runtime.mjs` re-exports it and supplies shared
+setup/composition. The standalone `openfga-viewer.js` bundle is generated from
+these modules; do not put author-source `.js` files under the Mintlify root,
+where they may be auto-injected as browser scripts.
+
+Node tooling can import the same functions directly:
+
+```js
+import { buildSdkExample, buildRequestCode } from './scripts/viewer-runtime.mjs';
+import { buildOperationRequest, buildOperationCode } from './scripts/operation-codegen.mjs';
+
+const props = { user: 'user:anne', relation: 'reader', object: 'document:planning' };
+const request = buildRequestCode('js-sdk', 'CheckRequestViewer', props);
+const fullSample = buildSdkExample('js-sdk', 'CheckRequestViewer', props);
+const curl = buildOperationCode('check', 'curl', props);
+const wireBody = buildOperationRequest('check', props);
+```
+
+Operation IDs are `check`, `batchCheck`, `write`, `listObjects`, `listUsers`,
+and `createStore`; component names and language IDs are the same as the snippet
+contract. Complete samples include Node error-handled async entry points, Go
+`main`, Python `async with`/`asyncio.run`, Java `Example.main`, or .NET top-level
+statements. They use the environment-based no-auth setup; curl expands
+`FGA_MODEL_ID` inside a shell-quoted JSON request. `buildCreateStoreCode` composes
+the same generator, not a second set of operation strings.
+
+Pure generators allow response expectations to be omitted, including batch
+items and list results. An explicit empty list is an expected empty result,
+not omission. Partial batch expectations annotate only the supplied decisions;
+denied checks do not imply errors. `_description` is emitted as instructional
+comments, never sent to the API. ListUsers wire `contextual_tuples` is an array,
+while Check/ListObjects/BatchCheck use a `tuple_keys` wrapper. SDK-specific
+wrapping happens only at the corresponding client boundary.
+
+`operation-codegen.test.mjs` compares every existing source operation caller's
+literal request, expectations, restrictions, descriptions, and generated bodies,
+then exercises rich requests through the installed Node SDK and curl against a
+loopback fixture. Python examples are syntax-checked. Static request and tuple
+fixture tests compare Read filters/results/timestamps/options, model-writing
+payloads and returned IDs, tuple descriptions, and combined YAML. These tests
+are not an assertion that every SDK version or authentication mode was executed.
 
 ### Languages and selection
 
@@ -455,26 +505,36 @@ hidden viewer harness is additional and remains available.
 | --- | --- |
 | `AuthorizationModel/AuthzModelSnippetViewer` | Custom snippet; DSL/JSON and single-type fragments supported. Source `showWrite` and source-default DSL-only presentation are not equivalent. |
 | `AuthorizationModel/AuthzModelCodeBlock`, `SyntaxTransformer`, `Dsl` | Converted through the model snippet, `OpenFGACodeBlock`, and existing official syntax-transformer/Prism artifacts; no runtime source-component import. |
-| `SnippetViewer/CheckRequestViewer`, `BatchCheckRequestViewer`, `WriteRequestViewer`, `ListObjectsRequestViewer`, `ListUsersRequestViewer` | Five custom snippets with shared language/setup infrastructure; operation-specific option/codegen parity remains incomplete. |
+| `SnippetViewer/CheckRequestViewer`, `BatchCheckRequestViewer`, `WriteRequestViewer`, `ListObjectsRequestViewer`, `ListUsersRequestViewer` | Five custom snippets with shared pure operation generation; current source callers retain request/expectation fixtures, including formerly static agent examples. RAG batch examples now have explicit correlation IDs in both source and migrated pages. |
 | `SnippetViewer/DefaultTabbedViewer`, `SupportedLanguage`, `SdkSetup` | Converted to the canonical language contract, native synchronized CodeGroup tabs and shared no-auth initialization. The separate source pseudocode toggle is not ported. |
 | Create-store examples (no dedicated source Docs component) | Custom `CreateStoreViewer`, with shared initialization and canonical language IDs. |
 | `SdkSetup/SdkSetupPrerequisite` | Converted to prose: all 43 source occurrences retain deployment, URL/store ID and optional API-token prerequisites. |
 | `SnippetViewer/ExecuteApiRequestViewer`, `ExecuteApiRequestStreamingViewer` | Missing reusable viewers; no current source MDX callers. |
-| `SnippetViewer/ExpandRequestViewer` | Lossy JSON conversion in `docs/interacting/relationship-queries`: SDK/CLI/curl/pseudocode and initialization are absent; surrounding response trees remain. |
-| `SnippetViewer/ReadRequestViewer` | Mixed static conversion. Relationship queries lose executable examples/timestamps. In `docs/modeling/migrating/migrating-relations`, a source read-all example incorrectly became an Anne-only query and lost other results. |
-| `SnippetViewer/ReadChangesRequestViewer` | Four static native-tab examples retain seven languages, page size, type filter and continuation-token combinations; reusable viewer missing. |
+| `SnippetViewer/ExpandRequestViewer` | Two static native code groups preserve source-supported SDK/CLI/curl/pseudocode instructions and initialization; surrounding response trees remain. No unused reusable export added. |
+| `SnippetViewer/ReadRequestViewer` | Nine static native code groups preserve executable source examples, filters, timestamps, options and results. The migration read-all request is unfiltered and retains all source tuples. |
+| `SnippetViewer/ReadChangesRequestViewer` | Four static native-tab examples retain seven languages, page size, type filter and continuation-token combinations. Python options/imports and curl quoting are executable; reusable viewer missing. |
 | `SnippetViewer/StreamedListObjectsRequestViewer` | Static native tabs retain the source caller's five SDK languages and streamed results; reusable viewer missing. |
-| `SnippetViewer/WriteAuthzModelViewer` | Static seven-language tabs. Configure-model retains payload/returned-ID examples; conditions has returned-ID drift and an unexplained CLI `model.fga` input. |
-| `SnippetViewer/TupleViewer` | Task-based authorization retains tuple/condition values as prose, but loses two-column structure and combined YAML copy output. |
-| `RelationshipTuples/RelationshipTuplesViewer`, `RelationshipCondition` | Static JSON/fences; some `_description` annotations and JSON language designations are lost. |
+| `SnippetViewer/WriteAuthzModelViewer` | Static seven-language examples retain source model payloads and returned IDs. CLI file prerequisites are explicit; no reusable viewer is claimed. |
+| `SnippetViewer/TupleViewer` | Four task-based examples retain ordered descriptions and values, readable tuple layout and one combined copyable YAML block per example. |
+| `RelationshipTuples/RelationshipTuplesViewer`, `RelationshipCondition` | All 42 actual source callers retain tuple values, descriptions and JSON designation. Import-only references are not treated as callers. |
 | `Column/ColumnLayout`, `CardBox`, `LinkBulletType`, internal `Link` | Tables/Markdown replace layout/link wrappers. Visual props are not ported; some instructional content is abridged. Internal Link has no direct MDX callers. |
 | `Overview/CardGrid`, `IntroCard`, `RelatedSection` | Native CardGroup/Card/Note or Markdown; some grouping, titles and outer descriptions are lost. |
 | `ProductName`, `ProductNameFormat`, `ProductConcept`, `IntroductionSection`, `UpdateProductNameInLinks` | Literal text/Markdown links; some source links became unlinked text. |
 | `Banner`, `Playground`, `DocumentationNotice`, `FeedbackCallout` | No equivalent custom snippets. Banner/feedback have no direct MDX callers; playground/notice rendering is dormant under the current source configuration. |
 
-The next parity work should address read-all semantics, missing Read/Expand
-instructions, model-writing outputs, tuple structure/copy, and omitted
-instructional content/links. The static SDK setup page retains 18 examples
+Tutorial examples must stay inline with their instructional step. Use ordinary
+code fences or native CodeGroups for requests and responses, and native
+Accordions for expandable prerequisites. Raw HTML `details` can hide examples;
+`RequestExample` and `ResponseExample` are API-page slots that can drop or
+aggregate tutorial content. Reserve those slots for intentional API-reference
+usage. Source-fixture tests check example ancestors and per-step placement, not
+just whether the expected strings exist in the file.
+
+The two model-design-principles examples and tuple prerequisite disclosures use
+native Accordions so their prose and DSL are visible on expansion.
+Unrelated layout/link/card wrapper differences
+remain as classified above, rather than being counted as completed component
+ports. The static SDK setup page retains 18 examples
 (three authentication modes across six languages); that is content coverage,
 not proof of synchronized tabs or SDK execution.
 

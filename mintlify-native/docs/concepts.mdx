@@ -348,34 +348,34 @@ import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
 
   * `user:anne` has a direct relationship with `document:new-roadmap` as `viewer` if the [type definition](#what-is-a-type-definition) allows it with [direct relationship type restrictions](/docs/configuration-language#direct-relationship-type-restrictions), and one of the following [relationship tuples](#what-is-a-relationship-tuple) exist:
 
-    * ```
-      [// Anne of type user is directly related to the document
-        {
-        "_description": "Anne of type user is directly related to the document",
+    * Anne of type user is directly related to the document
+
+      ```json
+      [{
         "user": "user:anne",
         "relation": "viewer",
         "object": "document:new-roadmap"
       }]
       ```
-    * ```
-      [// Everyone (`*`) of type user is directly related to the document
-        {
-        "_description": "Everyone (`*`) of type user is directly related to the document",
+    * Everyone (`*`) of type user is directly related to the document
+
+      ```json
+      [{
         "user": "user:*",
         "relation": "viewer",
         "object": "document:new-roadmap"
       }]
       ```
-    * ```
-      [// The userset is directly related to this document
-        {
-        "_description": "The userset is directly related to this document",
+    * The userset is directly related to this document
+
+      AND Anne of type user is a member of the userset team:product#member
+
+      ```json
+      [{
         "user": "team:product#member",
         "relation": "viewer",
         "object": "document:new-roadmap"
-      }// AND Anne of type user is a member of the userset team:product#member
-        {
-        "_description": "AND Anne of type user is a member of the userset team:product#member",
+      }, {
         "user": "user:anne",
         "relation": "member",
         "object": "team:product"
@@ -424,7 +424,7 @@ import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
 
     And assume the following relationship tuple exists in the system:
 
-    ```
+    ```json
     [{
       "user": "user:anne",
       "relation": "editor",
@@ -499,7 +499,7 @@ import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
 <Accordion title="What Is Type Bound Public Access?">
   For example, to indicate `document:new-roadmap` is publicly writable (in other words, has everyone of type `user` as an editor, add the following [relationship tuple](#what-is-a-relationship-tuple):
 
-  ```
+  ```json
   [{
     "user": "user:*",
     "relation": "editor",

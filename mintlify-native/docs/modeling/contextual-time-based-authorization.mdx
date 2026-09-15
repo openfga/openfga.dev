@@ -547,11 +547,13 @@ When Anne is connecting from an allowed ip address range and timeslot, OpenFGA w
   allowed={true}
   contextualTuples={[
     {
+      _description: 'Anne is connecting from within the 10.0.0.0/16 ip address range',
       user: 'user:anne',
       relation: 'user',
       object: 'ip-address-range:10.0.0.0/16',
     },
     {
+      _description: 'Anne is connecting between 12pm and 1pm',
       user: 'user:anne',
       relation: 'user',
       object: 'timeslot:12_13',
@@ -568,11 +570,13 @@ When Anne is connecting from a denied ip address range or timeslot, OpenFGA will
   allowed={false}
   contextualTuples={[
     {
+      _description: 'Anne is connecting from within the 10.0.0.0/16 ip address range',
       user: 'user:anne',
       relation: 'user',
       object: 'ip-address-range:10.0.0.0/16',
     },
     {
+      _description: 'Anne is connecting between 6pm and 7pm',
       user: 'user:anne',
       relation: 'user',
       object: 'timeslot:18_19',

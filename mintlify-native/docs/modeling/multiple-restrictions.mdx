@@ -28,8 +28,7 @@ This is useful when:
 
 In order to understand this guide correctly you must be familiar with some OpenFGA concepts and know how to develop the things that we will list below.
 
-<details>
-<summary>
+<Accordion title="Prerequisites and starting model">
 
 You will start with the _authorization model_ below,
 it represents a `document` _type_ that can have users
@@ -42,8 +41,6 @@ Let us also assume that we have:
 - Becky is a member of the ABC `organization`.
 - Carl is a member of the XYZ `organization`.
 - Becky and Carl both have `writer` access to the "planning" `document`.
-
-</summary>
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -93,6 +90,12 @@ Let us also assume that we have:
 />
 
 The current state of the system is represented by the following relationship tuples being in the system already:
+
+1. organization ABC is the owner of planning document
+2. Becky is a writer to the planning document
+3. Carl is a writer to the planning document
+4. Becky is a member of the organization ABC
+5. Carl is a member of the organization XYZ
 
 ```json
 [
@@ -149,7 +152,7 @@ You need to know how to model roles for users at the object level and model perm
 - A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
 - [Intersection Operator](/docs/configuration-language#the-intersection-operator): the intersection operator can be used to indicate a relationship exists if the user is in all the sets of users
 
-</details>
+</Accordion>
 
 ## Step By Step
 

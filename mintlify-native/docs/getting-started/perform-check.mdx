@@ -3,6 +3,7 @@ title: "Perform a Check"
 description: "Checking if a user is authorized to perform an action on a resource"
 ---
 
+import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
 import { BatchCheckRequestViewer } from '/snippets/BatchCheckRequestViewer.jsx';
 
 # Perform a Check
@@ -185,106 +186,14 @@ Before calling the check API, you will need to configure the API client.
 
 To check whether user `user:anne` has relationship `reader` with object `document:Z`
 
-<Tabs>
-  <Tab title="Node.js">
-    ```javascript
-    // Run a check
-    const { allowed } = await fgaClient.check({
-        user: 'user:anne',
-        relation: 'reader',
-        object: 'document:Z',
-      }, {
-        authorizationModelId: '01HVMMBCMGZNT3SED4Z17ECXCA',
-    });
-    // allowed = true
-    ```
-  </Tab>
-
-  <Tab title="Go">
-    ```go
-    options := ClientCheckOptions{
-        AuthorizationModelId: openfga.PtrString("01HVMMBCMGZNT3SED4Z17ECXCA"),
-    }
-    body := ClientCheckRequest{
-        User:     "user:anne",
-        Relation: "reader",
-        Object:   "document:Z",
-    }
-    data, err := fgaClient.Check(context.Background()).
-        Body(body).
-        Options(options).
-        Execute()
-    // data = { allowed: true }
-    ```
-  </Tab>
-
-  <Tab title=".NET">
-    ```csharp
-    var options = new ClientCheckOptions {
-        AuthorizationModelId = "01HVMMBCMGZNT3SED4Z17ECXCA"
-    };
-    var body = new ClientCheckRequest {
-        User = "user:anne",
-        Relation = "reader",
-        Object = "document:Z",
-    };
-    var response = await fgaClient.Check(body, options);
-    // response.Allowed = true
-    ```
-  </Tab>
-
-  <Tab title="Python">
-    ```python
-    options = {
-        "authorization_model_id": "01HVMMBCMGZNT3SED4Z17ECXCA",
-    }
-    body = ClientCheckRequest(
-        user="user:anne",
-        relation="reader",
-        object="document:Z",
-    )
-    response = await fga_client.check(body, options)
-    # response.allowed = true
-    ```
-  </Tab>
-
-  <Tab title="Java">
-    ```java
-    var options = new ClientCheckOptions()
-            .authorizationModelId("01HVMMBCMGZNT3SED4Z17ECXCA");
-    var body = new ClientCheckRequest()
-            .user("user:anne")
-            .relation("reader")
-            ._object("document:Z");
-    var response = fgaClient.check(body, options).get();
-    // response.getAllowed() = true 
-    ```
-  </Tab>
-
-  <Tab title="CLI">
-    ```bash
-    fga query check --store-id=$FGA_STORE_ID --model-id=01HVMMBCMGZNT3SED4Z17ECXCA user:anne reader document:Z
-    # Response: {"allowed":true}
-    ```
-  </Tab>
-
-  <Tab title="curl">
-    ```bash
-    curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/check \
-      -H "Authorization: Bearer $FGA_API_TOKEN" \ # Not needed if service does not require authorization
-      -H "content-type: application/json" \
-      -d '{
-        "authorization_model_id": "01HVMMBCMGZNT3SED4Z17ECXCA",
-        "tuple_key": {
-          "user": "user:anne",
-          "relation": "reader",
-          "object": "document:Z"
-        }
-      }'
-    # Response: {"allowed": true}
-    ```
-  </Tab>
-</Tabs>
+<CheckRequestViewer
+  user="user:anne"
+  relation="reader"
+  object="document:Z"
+  allowed={true}
+  skipSetup={true}
+  allowedLanguages={['js-sdk', 'go-sdk', 'dotnet-sdk', 'python-sdk', 'java-sdk', 'cli', 'curl']}
+/>
 
 The result's `allowed` field will be:
 

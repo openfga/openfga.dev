@@ -49,7 +49,7 @@ Write the model to the FGA store:
 <Tabs>
   <Tab title="Node.js">
     ```javascript
-    const { data: authorizationModel } = await fgaClient.writeAuthorizationModel({
+    const { authorization_model_id: id } = await fgaClient.writeAuthorizationModel({
       schema_version: "1.1",
       type_definitions: [
         { type: "user" },
@@ -81,153 +81,68 @@ Write the model to the FGA store:
         }
       }
     });
+    // id = "01HVMMBCMGZNT3SED4Z17ECXCA"
     ```
   </Tab>
   <Tab title="Go">
     ```go
-    body := fgaSdk.WriteAuthorizationModelRequest{
-      SchemaVersion: "1.1",
-      TypeDefinitions: []fgaSdk.TypeDefinition{
-        {Type: "user"},
-        {
-          Type: "document",
-          Relations: &map[string]fgaSdk.Userset{
-            "viewer": {This: &map[string]interface{}{}},
-          },
-          Metadata: &fgaSdk.Metadata{
-            Relations: &map[string]fgaSdk.RelationMetadata{
-              "viewer": {
-                DirectlyRelatedUserTypes: &[]fgaSdk.RelationReference{
-                  {Type: "user", Condition: fgaSdk.PtrString("non_expired_grant")},
-                },
-              },
-            },
-          },
-        },
-      },
-      Conditions: &map[string]fgaSdk.Condition{
-        "non_expired_grant": {
-          Name:       "non_expired_grant",
-          Expression: "current_time < grant_time + grant_duration",
-          Parameters: &map[string]fgaSdk.ConditionParamTypeRef{
-            "current_time":   {TypeName: fgaSdk.TYPENAME_TIMESTAMP},
-            "grant_duration": {TypeName: fgaSdk.TYPENAME_DURATION},
-            "grant_time":     {TypeName: fgaSdk.TYPENAME_TIMESTAMP},
-          },
-        },
-      },
+    // Requires context, encoding/json, and the OpenFGA SDK imports.
+    var writeAuthorizationModelRequestString = "{\"schema_version\":\"1.1\",\"type_definitions\":[{\"type\":\"user\"},{\"type\":\"document\",\"relations\":{\"viewer\":{\"this\":{}}},\"metadata\":{\"relations\":{\"viewer\":{\"directly_related_user_types\":[{\"type\":\"user\",\"condition\":\"non_expired_grant\"}]}}}}],\"conditions\":{\"non_expired_grant\":{\"name\":\"non_expired_grant\",\"expression\":\"current_time < grant_time + grant_duration\",\"parameters\":{\"current_time\":{\"type_name\":\"TYPE_NAME_TIMESTAMP\"},\"grant_duration\":{\"type_name\":\"TYPE_NAME_DURATION\"},\"grant_time\":{\"type_name\":\"TYPE_NAME_TIMESTAMP\"}}}}}"
+    var body WriteAuthorizationModelRequest
+    if err := json.Unmarshal([]byte(writeAuthorizationModelRequestString), &body); err != nil {
+        // Handle the invalid model.
+        return
     }
-    data, _, err := fgaClient.WriteAuthorizationModel(context.Background()).Body(body).Execute()
+
+    data, err := fgaClient.WriteAuthorizationModel(context.Background()).
+        Body(body).
+        Execute()
+    if err != nil {
+        // Handle the request error.
+        return
+    }
+    // data.AuthorizationModelId = "01HVMMBCMGZNT3SED4Z17ECXCA"
     ```
   </Tab>
   <Tab title=".NET">
     ```csharp
-    var body = new WriteAuthorizationModelRequest {
-      SchemaVersion = "1.1",
-      TypeDefinitions = new List<TypeDefinition> {
-        new() { Type = "user" },
-        new() {
-          Type = "document",
-          Relations = new Dictionary<string, Userset> {
-            ["viewer"] = new() { This = new() }
-          },
-          Metadata = new Metadata {
-            Relations = new Dictionary<string, RelationMetadata> {
-              ["viewer"] = new() {
-                DirectlyRelatedUserTypes = new List<RelationReference> {
-                  new() { Type = "user", Condition = "non_expired_grant" }
-                }
-              }
-            }
-          }
-        }
-      },
-      Conditions = new Dictionary<string, Condition> {
-        ["non_expired_grant"] = new() {
-          Name = "non_expired_grant",
-          Expression = "current_time < grant_time + grant_duration",
-          Parameters = new Dictionary<string, ConditionParamTypeRef> {
-            ["current_time"]   = new() { TypeName = TypeName.TIMESTAMP },
-            ["grant_duration"] = new() { TypeName = TypeName.DURATION },
-            ["grant_time"]     = new() { TypeName = TypeName.TIMESTAMP }
-          }
-        }
-      }
-    };
+    using System.Text.Json;
+
+    var modelJson = "{\"schema_version\":\"1.1\",\"type_definitions\":[{\"type\":\"user\"},{\"type\":\"document\",\"relations\":{\"viewer\":{\"this\":{}}},\"metadata\":{\"relations\":{\"viewer\":{\"directly_related_user_types\":[{\"type\":\"user\",\"condition\":\"non_expired_grant\"}]}}}}],\"conditions\":{\"non_expired_grant\":{\"name\":\"non_expired_grant\",\"expression\":\"current_time < grant_time + grant_duration\",\"parameters\":{\"current_time\":{\"type_name\":\"TYPE_NAME_TIMESTAMP\"},\"grant_duration\":{\"type_name\":\"TYPE_NAME_DURATION\"},\"grant_time\":{\"type_name\":\"TYPE_NAME_TIMESTAMP\"}}}}}";
+    var body = JsonSerializer.Deserialize<OpenFga.Sdk.Model.WriteAuthorizationModelRequest>(modelJson);
     var response = await fgaClient.WriteAuthorizationModel(body);
+    // response.AuthorizationModelId = "01HVMMBCMGZNT3SED4Z17ECXCA"
     ```
   </Tab>
   <Tab title="Python">
     ```python
-    body = WriteAuthorizationModelRequest(
-        schema_version="1.1",
-        type_definitions=[
-            TypeDefinition(type="user"),
-            TypeDefinition(
-                type="document",
-                relations={"viewer": Userset(this={})},
-                metadata=Metadata(
-                    relations={
-                        "viewer": RelationMetadata(
-                            directly_related_user_types=[
-                                RelationReference(type="user", condition="non_expired_grant")
-                            ]
-                        )
-                    }
-                ),
-            ),
-        ],
-        conditions={
-            "non_expired_grant": Condition(
-                name="non_expired_grant",
-                expression="current_time < grant_time + grant_duration",
-                parameters={
-                    "current_time": ConditionParamTypeRef(type_name=TypeName.TIMESTAMP),
-                    "grant_duration": ConditionParamTypeRef(type_name=TypeName.DURATION),
-                    "grant_time": ConditionParamTypeRef(type_name=TypeName.TIMESTAMP),
-                },
-            )
-        },
-    )
-    response = await fga_client.write_authorization_model(body)
+    import json
+
+    body_string = "{\"schema_version\":\"1.1\",\"type_definitions\":[{\"type\":\"user\"},{\"type\":\"document\",\"relations\":{\"viewer\":{\"this\":{}}},\"metadata\":{\"relations\":{\"viewer\":{\"directly_related_user_types\":[{\"type\":\"user\",\"condition\":\"non_expired_grant\"}]}}}}],\"conditions\":{\"non_expired_grant\":{\"name\":\"non_expired_grant\",\"expression\":\"current_time < grant_time + grant_duration\",\"parameters\":{\"current_time\":{\"type_name\":\"TYPE_NAME_TIMESTAMP\"},\"grant_duration\":{\"type_name\":\"TYPE_NAME_DURATION\"},\"grant_time\":{\"type_name\":\"TYPE_NAME_TIMESTAMP\"}}}}}"
+    response = await fga_client.write_authorization_model(json.loads(body_string))
+    # response.authorization_model_id = "01HVMMBCMGZNT3SED4Z17ECXCA"
     ```
   </Tab>
   <Tab title="Java">
     ```java
-    var body = new WriteAuthorizationModelRequest()
-        .schemaVersion("1.1")
-        .typeDefinitions(List.of(
-            new TypeDefinition().type("user"),
-            new TypeDefinition()
-                .type("document")
-                .relations(Map.of("viewer", new Userset().this_(Map.of())))
-                .metadata(new Metadata().relations(Map.of(
-                    "viewer", new RelationMetadata().directlyRelatedUserTypes(List.of(
-                        new RelationReference().type("user").condition("non_expired_grant")
-                    ))
-                )))
-        ))
-        .conditions(Map.of(
-            "non_expired_grant", new Condition()
-                .name("non_expired_grant")
-                .expression("current_time < grant_time + grant_duration")
-                .parameters(Map.of(
-                    "current_time", new ConditionParamTypeRef().typeName(TypeName.TIMESTAMP),
-                    "grant_duration", new ConditionParamTypeRef().typeName(TypeName.DURATION),
-                    "grant_time", new ConditionParamTypeRef().typeName(TypeName.TIMESTAMP)
-                ))
-        ));
-    var response = fgaClient.writeAuthorizationModel(body).get();
+    import com.fasterxml.jackson.databind.ObjectMapper;
+    import dev.openfga.sdk.api.model.WriteAuthorizationModelRequest;
+
+    var mapper = new ObjectMapper().findAndRegisterModules();
+    var authorizationModel = fgaClient
+        .writeAuthorizationModel(mapper.readValue("{\"schema_version\":\"1.1\",\"type_definitions\":[{\"type\":\"user\"},{\"type\":\"document\",\"relations\":{\"viewer\":{\"this\":{}}},\"metadata\":{\"relations\":{\"viewer\":{\"directly_related_user_types\":[{\"type\":\"user\",\"condition\":\"non_expired_grant\"}]}}}}],\"conditions\":{\"non_expired_grant\":{\"name\":\"non_expired_grant\",\"expression\":\"current_time < grant_time + grant_duration\",\"parameters\":{\"current_time\":{\"type_name\":\"TYPE_NAME_TIMESTAMP\"},\"grant_duration\":{\"type_name\":\"TYPE_NAME_DURATION\"},\"grant_time\":{\"type_name\":\"TYPE_NAME_TIMESTAMP\"}}}}}", WriteAuthorizationModelRequest.class))
+        .get();
     ```
   </Tab>
   <Tab title="CLI">
     ```shell
-    fga model write --store-id=$FGA_STORE_ID --file=model.fga
+    fga model write --store-id=${FGA_STORE_ID} --format=json '{"schema_version":"1.1","type_definitions":[{"type":"user"},{"type":"document","relations":{"viewer":{"this":{}}},"metadata":{"relations":{"viewer":{"directly_related_user_types":[{"type":"user","condition":"non_expired_grant"}]}}}}],"conditions":{"non_expired_grant":{"name":"non_expired_grant","expression":"current_time < grant_time + grant_duration","parameters":{"current_time":{"type_name":"TYPE_NAME_TIMESTAMP"},"grant_duration":{"type_name":"TYPE_NAME_DURATION"},"grant_time":{"type_name":"TYPE_NAME_TIMESTAMP"}}}}}'
     ```
   </Tab>
   <Tab title="curl">
     ```shell
-    curl -X POST $FGA_API_URL/stores/$FGA_STORE_ID/authorization-models \
+    # Remove Authorization if your service does not require it.
+    curl -X POST "$FGA_API_URL/stores/$FGA_STORE_ID/authorization-models" \
       -H "Authorization: Bearer $FGA_API_TOKEN" \
       -H "Content-Type: application/json" \
       -d '{

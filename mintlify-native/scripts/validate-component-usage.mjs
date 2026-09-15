@@ -17,9 +17,9 @@ const enumeration = (values) => ({ type: 'enum', values });
 const jsonObject = record(json);
 const tupleFields = { user: string, relation: string, object: string };
 const tupleRequired = Object.keys(tupleFields);
-const contextualTuples = array(object(tupleFields, tupleRequired));
 const describedTuple = { ...tupleFields, _description: string };
 const condition = object({ name: string, context: jsonObject }, ['name']);
+const contextualTuples = array(object({ ...describedTuple, condition }, tupleRequired));
 const writeTuples = array(object({ ...describedTuple, condition }, tupleRequired));
 const deleteTuples = array(object(describedTuple, tupleRequired));
 const objectRelation = object({ relation: string, object: string }, ['relation']);
@@ -67,7 +67,8 @@ const model = (value) => value?.kind === 'object' && value.entries.has('type') &
   ? { ...typeDefinition, properties: { ...typeDefinition.properties, schema_version: string, conditions: record(modelCondition) } }
   : fullModel;
 const requestFields = { authorizationModelId: string, skipSetup: boolean };
-const queryFields = { ...requestFields, contextualTuples, context: jsonObject };
+const consistency = enumeration(['UNSPECIFIED', 'MINIMIZE_LATENCY', 'HIGHER_CONSISTENCY']);
+const queryFields = { ...requestFields, contextualTuples, context: jsonObject, consistency };
 const userResult = {
   ...object({
     object: object({ type: string, id: string }, ['type', 'id']),
@@ -89,9 +90,10 @@ const schemas = {
   }, tupleRequired),
   BatchCheckRequestViewer: object({
     checks: array(object({
-      ...tupleFields, correlation_id: string, allowed: boolean, contextualTuples, context: jsonObject,
+      ...describedTuple, correlation_id: string, allowed: boolean, contextualTuples, context: jsonObject,
     }, [...tupleRequired, 'correlation_id', 'allowed']), 1),
     ...requestFields,
+    consistency,
   }, ['checks']),
   WriteRequestViewer: object({
     relationshipTuples: writeTuples,

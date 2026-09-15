@@ -3,6 +3,8 @@ title: "Modeling Agents as Principals"
 description: "Model agents as first-class principals in your authorization model so they inherit access through the same permission hierarchy as users"
 ---
 
+import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
+
 Most applications already have authorization models centered on human users. If you are building agents as part of your application, one common pattern is to model `agent` as a first-class principal - the same way users are granted access to resources today.
 
 This is orthogonal to patterns like [Task-Based Authorization](/docs/modeling/agents/task-based-authorization). Even if you use task-scoped permissions, you still want to constrain what an agent can do in general - beyond the permissions required for a specific task.
@@ -76,29 +78,25 @@ tuples:
 
 Check whether the agent can read a specific issue. The agent's project membership grants access:
 
-View code
-
-```text
-check(
-  user = "agent:triage-bot", // check if the user `agent:triage-bot`
-  relation = "can_read", // has an `can_read` relation
-  object = "issue:issue-123", // with the object `issue:issue-123`
-);
-Reply: true
-```
+<CheckRequestViewer
+  user={'agent:triage-bot'}
+  relation={'can_read'}
+  object={'issue:issue-123'}
+  allowed={true}
+  skipSetup={true}
+  allowedLanguages={['rpc']}
+/>
 
 The agent cannot delete the issue because `can_delete` requires `reporter` or project-level `can_delete` (which requires `owner` or `admin`):
 
-View code
-
-```text
-check(
-  user = "agent:triage-bot", // check if the user `agent:triage-bot`
-  relation = "can_delete", // has an `can_delete` relation
-  object = "issue:issue-123", // with the object `issue:issue-123`
-);
-Reply: false
-```
+<CheckRequestViewer
+  user={'agent:triage-bot'}
+  relation={'can_delete'}
+  object={'issue:issue-123'}
+  allowed={false}
+  skipSetup={true}
+  allowedLanguages={['rpc']}
+/>
 
 ## Direct assignment for fine-grained control
 
