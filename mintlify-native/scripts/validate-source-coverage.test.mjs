@@ -28,7 +28,6 @@ function fixture(t) {
         reason: 'Community is owned by Docusaurus.',
       },
     ],
-    fixtures: [{ destination: 'docs/test-viewer.mdx', reason: 'Local component harness.' }],
   };
   const docs = {
     navigation: {
@@ -54,7 +53,7 @@ function fixture(t) {
     put('mintlify-native/docs.json', JSON.stringify(docs));
   };
   for (const source of manifest.sources) put(`docs/content/${source}`);
-  for (const destination of ['docs/fga.mdx', 'docs/guide.mdx', 'docs/community.mdx', 'docs/test-viewer.mdx']) {
+  for (const destination of ['docs/fga.mdx', 'docs/guide.mdx', 'docs/community.mdx']) {
     put(`mintlify-native/${destination}`);
   }
   put('src/pages/community.mdx');
@@ -85,8 +84,7 @@ test('inventory and overrides cover every source without counting hidden API ope
     sourceCount: 3,
     ownedPages: ['docs/fga.mdx', 'docs/guide.mdx'],
     exclusionCount: 1,
-    fixtureCount: 1,
-    destinationCount: 4,
+    destinationCount: 3,
   });
   assert.match(output.join('\n'), /Inventory coverage only/);
   assert.equal(cli(root).status, 0);
@@ -186,16 +184,33 @@ mutation(
   /duplicate destination docs\/fga\.mdx: source docs\/content\/guide\.mdx and source docs\/content\/intro\.mdx/,
 );
 mutation(
-  'fixture entries cannot duplicate destinations',
-  ({ manifest }) => manifest.fixtures.push(manifest.fixtures[0]),
-  /duplicate destination docs\/test-viewer\.mdx/,
+  'old fixture exemptions cannot restore a published prototype',
+  ({ manifest, put }) => {
+    manifest.fixtures = [{ destination: 'docs/test-viewer.mdx', reason: 'Local component harness.' }];
+    put('mintlify-native/docs/test-viewer.mdx');
+  },
+  /manifest.fixtures is not a supported field/,
 );
 mutation(
   'a fixture cannot exempt a production destination',
   ({ manifest }) => {
-    manifest.fixtures[0].destination = 'docs/guide.mdx';
+    manifest.fixtures = [{ destination: 'docs/guide.mdx', reason: 'Component fixture.' }];
   },
-  /duplicate destination docs\/guide\.mdx/,
+  /manifest.fixtures is not a supported field/,
+);
+mutation(
+  'a source override cannot reclaim the retired harness route',
+  ({ manifest }) => {
+    manifest.overrides[0].destination = 'docs/test-viewer.mdx';
+  },
+  /retired fixture cannot be a published destination/,
+);
+mutation(
+  'a retained exclusion cannot reclaim the retired harness route',
+  ({ manifest }) => {
+    manifest.exclusions[0].retainedPage = 'docs/test-viewer.mdx';
+  },
+  /retired fixture cannot be a published destination/,
 );
 mutation(
   'an exclusion cannot also override a source',
@@ -236,28 +251,23 @@ mutation(
   /community\.mdx requires a nonempty reason/,
 );
 mutation(
-  'blank fixture reason fails',
-  ({ manifest }) => {
-    manifest.fixtures[0].reason = '';
-  },
-  /docs\/test-viewer\.mdx requires a nonempty reason/,
-);
-mutation(
   'missing retained copy fails',
   ({ remove }) => remove('mintlify-native/docs/community.mdx'),
   /docs\/community\.mdx: missing destination for retained copy/,
 );
 mutation(
-  'missing fixture fails',
-  ({ remove }) => remove('mintlify-native/docs/test-viewer.mdx'),
-  /docs\/test-viewer\.mdx: missing destination for fixture/,
+  'a retired fixture cannot reappear without navigation',
+  ({ put }) => put('mintlify-native/docs/test-viewer.mdx'),
+  /docs\/test-viewer\.mdx: unexpected MDX page/,
 );
 mutation(
-  'removing fixture exemption fails while its MDX remains',
-  ({ manifest }) => {
-    manifest.fixtures = [];
+  'new source inventory cannot turn the retired fixture into documentation',
+  ({ manifest, put }) => {
+    manifest.sources.push('test-viewer.mdx');
+    put('docs/content/test-viewer.mdx');
+    put('mintlify-native/docs/test-viewer.mdx');
   },
-  /docs\/test-viewer\.mdx: unexpected MDX page/,
+  /retired fixture cannot be a published destination/,
 );
 mutation(
   'assignment requires an existing owner page',
@@ -365,11 +375,11 @@ mutation(
   /retainedPage: invalid page path/,
 );
 mutation(
-  'out-of-root fixture fails',
+  'an external fixture cannot become a production manifest exemption',
   ({ manifest }) => {
-    manifest.fixtures[0].destination = '../test.mdx';
+    manifest.fixtures = [{ destination: '../tests/fixtures/mintlify/viewers.mdx', reason: 'Component fixture.' }];
   },
-  /fixtures.destination: invalid page path/,
+  /manifest.fixtures is not a supported field/,
 );
 mutation(
   'out-of-root owner page fails',
@@ -564,5 +574,58 @@ test('real manifest preserves all five route transformations and explicit non-pr
     );
   }
   assert.equal(manifest.exclusions.find(({ source }) => source === 'community.mdx')?.route, '/community');
-  assert.ok(manifest.fixtures.some(({ destination }) => destination === 'docs/test-viewer.mdx'));
+  assert.equal(Object.hasOwn(manifest, 'fixtures'), false);
 });
+
+for (const path of [
+  'test-viewer.mdx',
+  'docs/test-viewer.md',
+  'test-viewer.md',
+  'snippets/viewers.mdx',
+  'snippets/viewers.md',
+  'tests/fixtures/mintlify/viewers.mdx',
+  'tests/fixtures/mintlify/viewers.md',
+  'images/viewers.mdx',
+  'images/viewers.md',
+]) {
+  mutation(
+    `fixture cannot be republished at ${path}`,
+    ({ put }) => put(`mintlify-native/${path}`),
+    /unexpected (MDX|Markdown) page/,
+  );
+}
+
+for (const route of [
+  '/docs/test-viewer',
+  '/docs/test-viewer/',
+  '/docs/test-viewer.mdx',
+  '/test-viewer',
+  'https://openfga.dev/test-viewer',
+  'https://openfga.dev/docs/test-viewer',
+  '//openfga.dev/docs/test-viewer#examples',
+  'https://OPENFGA.DEV/docs/%74est-viewer',
+]) {
+  for (const location of ['alias', 'navbar', 'footer', 'redirect source', 'redirect destination']) {
+    mutation(
+      `${location} cannot restore retired route ${route}`,
+      ({ docs }) => {
+        if (location === 'alias') docs.navigation.groups[0].aliases = [route];
+        if (location === 'navbar') docs.navbar = { links: [{ label: 'Fixture', href: route }] };
+        if (location === 'footer') docs.footer = { links: [{ items: [{ label: 'Fixture', href: route }] }] };
+        if (location === 'redirect source') docs.redirects = [{ source: route, destination: '/docs/fga' }];
+        if (location === 'redirect destination') docs.redirects = [{ source: '/alias', destination: route }];
+      },
+      /must not enter production navigation, aliases, or redirects/,
+    );
+  }
+}
+
+for (const key of ['href', 'root']) {
+  mutation(
+    `same-origin root alias is not silently ignored in navigation ${key}`,
+    ({ docs }) => {
+      docs.navigation.global = { anchors: [{ anchor: 'Fixture', [key]: 'https://openfga.dev/test-viewer' }] };
+    },
+    /must not enter production navigation, aliases, or redirects/,
+  );
+}

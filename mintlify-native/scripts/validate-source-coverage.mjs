@@ -4,6 +4,8 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 
+import { retiredFixturePages } from './component-fixtures.mjs';
+
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const manifestPath = 'mintlify-native/source-pages.json';
 const sourceRoot = 'docs/content';
@@ -50,14 +52,18 @@ function regularPath(repoRoot, path, directory = false) {
   }
 }
 
-function listMdxFiles(repoRoot, root) {
+function listMdxFiles(repoRoot, root, published = false) {
   regularPath(repoRoot, root, true);
   function walk(directory) {
     return readdirSync(join(repoRoot, root, directory), { withFileTypes: true }).flatMap((entry) => {
       const path = directory ? `${directory}/${entry.name}` : entry.name;
       if (entry.isSymbolicLink()) throw new Error(`${root}/${path}: symlinks are not allowed in the page inventory`);
       if (entry.isDirectory()) return walk(path);
-      if (!/\.mdx$/i.test(path)) return [];
+      if (!(published ? /\.(mdx|md)$/i : /\.mdx$/i).test(path)) return [];
+      if (published && path === 'README.md') return [];
+      if (published && /\.md$/i.test(path)) {
+        throw new Error(`${root}/${path}: unexpected Markdown page; published pages must be inventoried MDX`);
+      }
       pagePath(path, `${root}/${path}`);
       if (!entry.isFile()) throw new Error(`${root}/${path}: expected a regular MDX file`);
       return [path];
@@ -77,9 +83,9 @@ function readJson(repoRoot, path) {
 
 function loadManifest(repoRoot) {
   const manifest = readJson(repoRoot, manifestPath);
-  fields(manifest, ['version', 'sources', 'overrides', 'exclusions', 'fixtures'], [], 'manifest');
+  fields(manifest, ['version', 'sources', 'overrides', 'exclusions'], [], 'manifest');
   if (manifest.version !== 1) fail('version must be 1');
-  for (const key of ['sources', 'overrides', 'exclusions', 'fixtures']) {
+  for (const key of ['sources', 'overrides', 'exclusions']) {
     if (!Array.isArray(manifest[key])) fail(`${key} must be an array`);
   }
   if (!manifest.sources.length) fail('sources must not be empty');
@@ -126,8 +132,10 @@ function loadManifest(repoRoot) {
 
   const destinations = new Map();
   const ownedPages = [];
-  const prohibitedPages = new Map();
+  const prohibitedPages = new Map(retiredFixturePages.map((page) => [page, 'retired component fixture']));
   function claim(destination, description) {
+    if (retiredFixturePages.includes(destination))
+      fail(`${destination}: retired fixture cannot be a published destination`);
     if (destinations.has(destination)) {
       fail(`duplicate destination ${destination}: ${destinations.get(destination)} and ${description}`);
     }
@@ -147,17 +155,46 @@ function loadManifest(repoRoot) {
       ownedPages.push(destination);
     }
   }
-  for (const fixture of manifest.fixtures) {
-    fields(fixture, ['destination', 'reason'], [], 'fixtures');
-    pagePath(fixture.destination, 'fixtures.destination', 'docs/');
-    reason(fixture.reason, fixture.destination);
-    claim(fixture.destination, `fixture ${fixture.destination}`);
-    prohibitedPages.set(fixture.destination, `fixture: ${fixture.reason}`);
-  }
   for (const page of ownedPages) {
     if (prohibitedPages.has(page)) fail(`${page}: an owned destination cannot also be excluded`);
   }
-  return { sources, destinations, ownedPages, prohibitedPages, exclusions, fixtures: manifest.fixtures };
+  return { sources, destinations, ownedPages, prohibitedPages, exclusions };
+}
+
+function rejectRetiredRoutes(value, location = 'docs.json', routeEntry = false) {
+  if (typeof value === 'string') {
+    if (!routeEntry) return;
+    let url;
+    try {
+      url = new URL(value, 'https://openfga.dev/');
+    } catch (error) {
+      throw new Error(`${location}: invalid route ${value}`, { cause: error });
+    }
+    if (url.origin !== 'https://openfga.dev' && url.origin !== 'http://openfga.dev') return;
+    let route;
+    try {
+      route = decodeURIComponent(url.pathname)
+        .replace(/^\/|\/$/g, '')
+        .replace(/\.(?:mdx|md)$/, '');
+    } catch (error) {
+      throw new Error(`${location}: invalid encoded route ${value}`, { cause: error });
+    }
+    if (retiredFixturePages.includes(`${route}.mdx`)) {
+      throw new Error(
+        `${location}: ${route}.mdx must not enter production navigation, aliases, or redirects (retired component fixture)`,
+      );
+    }
+  } else if (Array.isArray(value)) {
+    value.forEach((child, index) => rejectRetiredRoutes(child, `${location}[${index}]`, routeEntry));
+  } else if (value && typeof value === 'object') {
+    for (const [key, child] of Object.entries(value)) {
+      rejectRetiredRoutes(
+        child,
+        `${location}.${key}`,
+        ['pages', 'root', 'href', 'aliases', 'source', 'destination'].includes(key),
+      );
+    }
+  }
 }
 
 function navigationReferences(navigation) {
@@ -241,9 +278,9 @@ export function compareSourceWithRef(ref, { repoRoot = repositoryRoot, logger = 
 }
 
 export function validateSourceCoverage({ repoRoot = repositoryRoot, logger = console.log, compareRef } = {}) {
-  const { sources, destinations, ownedPages, prohibitedPages, exclusions, fixtures } = loadManifest(repoRoot);
+  const { sources, destinations, ownedPages, prohibitedPages, exclusions } = loadManifest(repoRoot);
   const sourceFiles = listMdxFiles(repoRoot, sourceRoot);
-  const destinationFiles = listMdxFiles(repoRoot, mintlifyRoot);
+  const destinationFiles = listMdxFiles(repoRoot, mintlifyRoot, true);
   const problems = [];
   for (const source of sourceFiles) {
     if (!sources.has(source)) problems.push(`${sourceRoot}/${source}: source has no manifest entry`);
@@ -263,6 +300,7 @@ export function validateSourceCoverage({ repoRoot = repositoryRoot, logger = con
 
   const docs = readJson(repoRoot, `${mintlifyRoot}/docs.json`);
   const references = navigationReferences(docs.navigation);
+  rejectRetiredRoutes(docs);
   const visibleCounts = new Map();
   const allCounts = new Map();
   for (const { page, location, hidden } of references) {
@@ -287,14 +325,13 @@ export function validateSourceCoverage({ repoRoot = repositoryRoot, logger = con
   checkCoverage(problems);
   if (compareRef !== undefined) compareSourceWithRef(compareRef, { repoRoot, logger });
   logger(
-    `Validated source page coverage: ${sources.size} sources, ${ownedPages.length} Mintlify-owned pages, ${exclusions.size} exclusions, ${fixtures.length} fixtures, ${destinationFiles.length} total Mintlify MDX files`,
+    `Validated source page coverage: ${sources.size} sources, ${ownedPages.length} Mintlify-owned pages, ${exclusions.size} exclusions, ${destinationFiles.length} total Mintlify MDX files`,
   );
   logger('Inventory coverage only; prose, examples, and component equivalence require separate review.');
   return {
     sourceCount: sources.size,
     ownedPages: ownedPages.sort(),
     exclusionCount: exclusions.size,
-    fixtureCount: fixtures.length,
     destinationCount: destinationFiles.length,
   };
 }

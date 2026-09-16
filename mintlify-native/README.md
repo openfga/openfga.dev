@@ -40,7 +40,7 @@ mintlify-native/
 ├── openfga-dsl-highlight.js   # Generated standalone DSL tokenizer (window global)
 ├── fga-codegen.js         # Generated @openfga/syntax-transformer bundle (window global)
 ├── openfga-viewer.js      # Generated shared language and SDK setup helpers
-├── docs/                  # 110 owned pages, retained Community copy, and test harness
+├── docs/                  # 110 owned pages and retained Community copy
 ├── images/                # Mintlify logo assets
 ├── snippets/              # 8 interactive React components (see below)
 ├── lib/codegen/
@@ -218,11 +218,30 @@ before reviewing the overlay diff. Keep the explicit `overlays` list: Mintlify
 fails explicit overlay errors rather than silently skipping an auto-discovered
 overlay. No new Mintlify CLI dependency is required by this pipeline.
 
-### docs/test-viewer.mdx
+### Non-production component fixture
 
-A component validation page (not in the sidebar nav) that renders all 8 interactive
-viewers with test data. Useful for quickly verifying components work after changes.
-Access at `/docs/test-viewer` on a running dev server.
+[`tests/fixtures/mintlify/viewers.mdx`](../tests/fixtures/mintlify/viewers.mdx)
+retains the 16 examples of all eight interactive components **outside the entire
+Mintlify content root**. It is test input, not a published page or static asset.
+The former internal `/docs/test-viewer` route has no replacement or redirect and
+must return the native not-found page.
+
+`npm run test:mintlify-component-usage` checks this fixture with the existing
+MDX compiler, component contracts, and canonical DSL guard. It also checks the
+complete DSL model's syntax, resolves logical `/snippets/...` imports against
+the real Mintlify root, and tests missing files, symlinked paths, invalid props,
+broken MDX, and lossy/invalid DSL. The tokenizer parity suite explicitly includes
+its two authorization models and one DSL block alongside production examples.
+Both `npm run check:mintlify` and `npm run test:mintlify-components` include these
+fixture checks.
+
+For an intentional visual preview, create a temporary directory **outside this
+repository**, copy `mintlify-native/` there, then copy the external fixture into
+that copy's `docs/` directory. Run `mint dev` from that isolated copy on a separate
+port, inspect the temporary page, stop the server, and remove only that temporary
+copy. Do not copy the fixture into the working content root, add it to `docs.json`,
+or commit/deploy the temporary preview. Normal previews must keep the old route
+absent.
 
 ### lib/codegen/check-reference.js.txt
 
@@ -257,8 +276,9 @@ The navigation validator invokes source coverage, and the navigation chain runs
 its mutation tests; both therefore run in the root prebuild. Counts come from
 the manifest and filesystem, not a hardcoded page total. The initial inventory is
 111 source pages: 110 Mintlify-owned pages and one Docusaurus-owned Community
-page. The 112 Mintlify MDX files also include the retained Community copy and the
-fixture-only `docs/test-viewer.mdx`.
+page. The 111 Mintlify MDX files comprise the 110 owned pages plus the retained
+Community copy. The separate component fixture is not counted as a published
+destination or source-page exemption.
 
 When adding a source page, add its exact path to `sources`, author its Mintlify
 counterpart, and add the destination route to visible docs navigation. Add an
@@ -272,15 +292,19 @@ detects coordinated source/manifest deletions or additions relative to that ref.
 Exclusions apply to one exact source and require a reason. An assignment to
 Docusaurus additionally records its `owner`, public `route`, and existing
 `ownerPage` under `src/pages/`. `retainedPage` explicitly accounts for an optional
-non-navigation migration copy. Fixtures likewise require an exact destination
-and reason and must exist. Community remains owned at `/community`; retain the
-test viewer during component work. Neither excluded copies nor fixtures may
-appear anywhere in docs navigation, including hidden/searchable groups. Hidden
+non-navigation migration copy. Community remains owned at `/community`. Published
+fixture exemptions are no longer supported: adding the old `fixtures` field
+fails validation. The external fixture has a fixed, symlink-free test location,
+not a production manifest entry. Excluded copies cannot appear anywhere in docs
+navigation, including hidden/searchable groups. The retired test-viewer routes
+cannot be reassigned to a source, retained as excluded copies, or restored via
+navigation, aliases, links, or redirects, including same-origin absolute URLs. Hidden
 OpenAPI operation references are checked separately by the API validator, not
 mistaken for documentation MDX.
 
 The guard rejects missing or unlisted sources, stale/missing/unassigned
-destinations (including MDX outside `docs/`), duplicate mappings/navigation,
+destinations (including MDX outside `docs/` and unexpected `.md` pages other than
+the root contributor README), duplicate mappings/navigation,
 conflicting ownership, malformed paths, globs, traversal, and symlinks. Paths
 use lowercase letters, digits, hyphens, underscores, and `/` separators.
 
@@ -408,6 +432,11 @@ After converting examples, run
 every converted model's bytes and order with the baseline and ensure existing
 canonical blocks have not changed. Source-fixture and ancestor checks also
 preserve instructional headings, step placement, and expandable examples.
+For the retired `docs/test-viewer.mdx`, the comparison follows only the explicit
+relocation to `tests/fixtures/mintlify/viewers.mdx` and checks the entire fixture
+byte-for-byte, including prose and props. Later baselines also compare that
+external fixture exactly once. Any other removed or renamed baseline page with
+DSL examples still fails; relocation is not a general missing-page exemption.
 
 ### Authoring MDX prose and expressions
 
@@ -673,8 +702,9 @@ literal data for custom viewer props so the validator can check the whole
 example. This command is separate from general MDX/prose validation.
 
 After changing the runtime, run `npm run generate:mintlify-codegen` and commit
-the generated helper with its source. Use `/docs/test-viewer` plus representative
-real docs to verify first load, on-demand loading, switching languages, setup,
+the generated helper with its source. Use representative real docs and, when
+needed, the [isolated fixture preview](#non-production-component-fixture) to
+verify first load, on-demand loading, switching languages, setup,
 copy, and desktop/mobile Light/Dark/System themes. Node tests alone cannot prove
 Mintlify's sandbox behavior or syntax grammar registration.
 

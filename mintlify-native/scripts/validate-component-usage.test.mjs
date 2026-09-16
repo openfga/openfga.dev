@@ -5,6 +5,7 @@ import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import test from 'node:test';
 
+import { readComponentFixture } from './component-fixtures.mjs';
 import { defaultLanguages } from './viewer-contract.mjs';
 import { analyzeMdx, formatDiagnostic, validateCorpus, validateMdxSource } from './validate-component-usage.mjs';
 
@@ -804,9 +805,12 @@ test('actionable file:line:column diagnostics and parse failures are returned ra
   assert.equal(malformed.counts.checked, 0);
 });
 
-test('current Mintlify corpus checks all 402 custom components with no errors or deferrals', () => {
+test('production pages and the external fixture check all 402 components without errors or deferrals', () => {
   const diagnostics = [];
-  const totals = validateCorpus({ logger: (line) => diagnostics.push(line) });
+  const totals = validateCorpus({
+    paths: [resolve('mintlify-native'), readComponentFixture().file],
+    logger: (line) => diagnostics.push(line),
+  });
   assert.equal(totals.errors, 0, diagnostics.join('\n'));
   assert.equal(totals.warnings, 0, diagnostics.join('\n'));
   assert.equal(totals.deferred, 0);

@@ -135,11 +135,5 @@
       "retainedPage": "docs/community.mdx",
       "reason": "The public Community page is Docusaurus-owned at /community. Retain the migration copy outside Mintlify navigation."
     }
-  ],
-  "fixtures": [
-    {
-      "destination": "docs/test-viewer.mdx",
-      "reason": "Component validation harness retained for local testing, not production documentation navigation."
-    }
   ]
 }

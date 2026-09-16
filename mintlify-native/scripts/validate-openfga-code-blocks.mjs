@@ -6,6 +6,8 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import vm from 'node:vm';
 
+import { componentFixturePath, previousComponentFixturePath, readComponentFixture } from './component-fixtures.mjs';
+
 const mintlifyDirectory = join(dirname(fileURLToPath(import.meta.url)), '..');
 const docsDirectory = join(mintlifyDirectory, 'docs');
 const repositoryRoot = resolve(mintlifyDirectory, '..');
@@ -322,7 +324,7 @@ export function compareWithRef(
   gitOutput(['rev-parse', '--verify', `${ref}^{commit}`], repoRoot, `Invalid comparison ref ${ref}`);
   const docsPath = relative(repoRoot, docsRoot).replaceAll('\\', '/');
   const previousPaths = gitOutput(
-    ['ls-tree', '-r', '--name-only', ref, '--', docsPath],
+    ['ls-tree', '-r', '--name-only', ref, '--', docsPath, componentFixturePath],
     repoRoot,
     `Could not enumerate ${docsPath} at ${ref}`,
   )
@@ -345,11 +347,25 @@ export function compareWithRef(
     });
     if (previous.modelEntries.length === 0) continue;
 
-    const currentPath = join(repoRoot, relativePath);
-    if (!existsSync(currentPath)) {
-      throw new Error(`${relativePath} had DSL examples at ${ref} but has no current counterpart`);
+    let currentPath = join(repoRoot, relativePath);
+    let currentSource;
+    if (
+      relativePath === componentFixturePath ||
+      (relativePath === previousComponentFixturePath && !existsSync(currentPath))
+    ) {
+      const fixture = readComponentFixture(repoRoot);
+      currentPath = fixture.file;
+      currentSource = fixture.source;
+      if (currentSource !== previousSource) {
+        throw new Error(`${componentFixturePath}: component fixture bytes drifted from ${ref}:${relativePath}`);
+      }
+    } else {
+      if (!existsSync(currentPath)) {
+        throw new Error(`${relativePath} had DSL examples at ${ref} but has no current counterpart`);
+      }
+      currentSource = readFileSync(currentPath, 'utf8');
     }
-    const current = validateMdxSource(readFileSync(currentPath, 'utf8'), relativePath);
+    const current = validateMdxSource(currentSource, relative(repoRoot, currentPath).replaceAll('\\', '/'));
     const expectedCodes = previous.modelEntries.map(({ code }) => code);
     const currentCodes = current.blocks.map(({ code }) => code);
     if (currentCodes.length !== expectedCodes.length) {

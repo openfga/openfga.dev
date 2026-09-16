@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 
+import { componentFixturePath, previousComponentFixturePath } from './component-fixtures.mjs';
 import {
   analyzeMdx,
   compareWithRef,
@@ -297,4 +298,50 @@ test('compare-ref preserves plain, alias, JSX, and pre-existing canonical model 
   } finally {
     rmSync(root, { force: true, recursive: true });
   }
+});
+
+test('compare-ref follows only the explicit fixture relocation and preserves all fixture bytes', (t) => {
+  const root = mkdtempSync(path.join(tmpdir(), 'openfga-relocated-fixture-'));
+  t.after(() => rmSync(root, { force: true, recursive: true }));
+  const docs = path.join(root, 'mintlify-native/docs');
+  const previous = path.join(root, previousComponentFixturePath);
+  const current = path.join(root, componentFixturePath);
+  const existing = path.join(docs, 'existing.mdx');
+  const source = `${IMPORT}\n\n# Retained example\n\n${component('type user')}\n`;
+  const retained = `${IMPORT}\n\n${component('type retained')}\n`;
+  const git = (...args) => execFileSync('git', args, { cwd: root }).toString().trim();
+  const commit = () => {
+    git('add', '.');
+    git('-c', 'user.name=OpenFGA Test', '-c', 'user.email=test@openfga.dev', 'commit', '--quiet', '-m', 'fixture');
+    return git('rev-parse', 'HEAD');
+  };
+  const compare = (ref) => compareWithRef(ref, { docsRoot: docs, repoRoot: root, logger() {} });
+  const expected = { comparedComponents: 0, comparedFiles: 2, sourceFences: 0, sourceJsxBlocks: 0 };
+  mkdirSync(docs, { recursive: true });
+  mkdirSync(path.dirname(current), { recursive: true });
+  writeFileSync(previous, source);
+  writeFileSync(existing, retained);
+  git('init', '--quiet');
+  const beforeMove = commit();
+  renameSync(previous, current);
+  assert.deepEqual(compare(beforeMove), expected);
+
+  for (const mutation of [
+    source.replace('Retained example', 'Changed example'),
+    source.replace('type user', 'type team'),
+  ]) {
+    writeFileSync(current, mutation);
+    assert.throws(() => compare(beforeMove), /component fixture bytes drifted/);
+  }
+  unlinkSync(current);
+  assert.throws(() => compare(beforeMove), /viewers\.mdx/);
+  writeFileSync(current, source);
+  renameSync(existing, path.join(docs, 'renamed.mdx'));
+  assert.throws(() => compare(beforeMove), /existing\.mdx.*no current counterpart/);
+  renameSync(path.join(docs, 'renamed.mdx'), existing);
+
+  const afterMove = commit();
+  assert.deepEqual(compare(afterMove), expected, 'external fixture is compared exactly once on later baselines');
+  writeFileSync(current, source.replace('Retained example', 'Changed example'));
+  assert.throws(() => compare(afterMove), /component fixture bytes drifted/);
 });

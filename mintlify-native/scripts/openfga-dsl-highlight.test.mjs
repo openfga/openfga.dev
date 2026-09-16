@@ -8,6 +8,7 @@ import test from 'node:test';
 import vm from 'node:vm';
 
 import { Prism } from 'prism-react-renderer';
+import { readComponentFixture } from './component-fixtures.mjs';
 import { analyzeMdx, encodeOpenFgaCode, extractOpenFgaCodeBlocks } from './validate-openfga-code-blocks.mjs';
 
 const require = createRequire(import.meta.url);
@@ -184,6 +185,7 @@ async function collectMigratedCorpus() {
   const corpus = [];
   const counts = { authorizationModels: 0, dslFences: 0, openFgaCodeBlocks: 0 };
   const files = await walk(path.join(REPO_ROOT, 'mintlify-native/docs'));
+  files.push(readComponentFixture().file);
 
   for (const file of files) {
     const content = await readFile(file, 'utf8');
