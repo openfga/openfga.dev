@@ -518,6 +518,12 @@ names/props belong to their own contracts. Valid JavaScript can still throw or
 return a value React cannot render. Unsupported parser/scope-analysis syntax
 fails explicitly.
 
+Declare an explicit `id` on linked native components, for example
+`<Accordion title="What Is A Type?" id="what-is-a-type">`. Preserve published
+fragment IDs when moving source headings into components. This lets Mintlify
+and the repository's static Markdown link checker resolve the same target;
+do not ignore `#fragment` links to bypass validation.
+
 ### Generated browser artifacts
 
 `fga-codegen.js` is a pre-bundled IIFE of the installed

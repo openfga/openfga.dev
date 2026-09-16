@@ -561,3 +561,48 @@ test('design-principle Accordions preserve each warning, example DSL, and conten
     content: content(node),
   })), original);
 });
+
+function assertConceptAnchors(source, migrated) {
+  const sourceNodes = nodes(source);
+  const sourceTitles = sourceNodes.filter((node) =>
+    node.type === 'heading' && node.depth === 2 &&
+    componentAncestors(sourceNodes, node).some((ancestor) => ancestor.name === 'summary'))
+    .map(text);
+  assert.equal(sourceTitles.length, 19, 'The source fixture must cover all 19 concept sections');
+  const expected = sourceTitles.map((title) => {
+    assert.match(title, /^[A-Za-z ]+\?$/, 'Concept section titles must have unambiguous legacy slugs');
+    return { title, id: title.slice(0, -1).toLowerCase().replaceAll(' ', '-') };
+  });
+  const migratedNodes = nodes(migrated);
+  const actual = migratedNodes.filter((node) => node.name === 'Accordion').map((node) => {
+    const { title, id } = props(node);
+    return { title, id };
+  });
+  assert.deepEqual(actual, expected, 'Concept accordions must preserve source titles and legacy section anchors');
+  const targets = new Set(actual.map(({ id }) => id));
+  for (const link of migratedNodes.filter((node) => node.type === 'link' && node.url.startsWith('#'))) {
+    assert.ok(targets.has(link.url.slice(1)), `Missing concept anchor for ${link.url}`);
+  }
+}
+
+const sourceConcepts = readFileSync(path.join(sourceRoot, 'concepts.mdx'), 'utf8');
+const migratedConcepts = readFileSync(path.join(repoRoot, 'mintlify-native/docs/concepts.mdx'), 'utf8');
+
+test('concept accordions expose all original section anchors to native rendering and static link checks', () => {
+  assertConceptAnchors(sourceConcepts, migratedConcepts);
+});
+
+for (const [name, before, after] of [
+  ['missing ID', ' id="what-is-a-type"', ''],
+  ['renamed ID', 'id="what-is-a-type"', 'id="type"'],
+  ['duplicate ID', 'id="what-is-a-user"', 'id="what-is-a-type"'],
+  ['broken fragment link', '](#what-is-a-user)', '](#unknown-concept)'],
+]) {
+  test(`concept anchor contract rejects ${name}`, () => {
+    assert.ok(migratedConcepts.includes(before));
+    assert.throws(
+      () => assertConceptAnchors(sourceConcepts, migratedConcepts.replace(before, after)),
+      /Concept accordions must preserve|Missing concept anchor/,
+    );
+  });
+}
