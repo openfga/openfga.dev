@@ -10,8 +10,9 @@
 # endpoints that aren't browsable pages, and sites that reject automated
 # requests (403/406/503) despite being reachable in a browser.
 
-# Treat these HTTP statuses as success (some hosts answer bots with 403).
-accept = [200, 206, 403]
+# Accepted HTTP success statuses. Bot-blocking hosts that return 403 are
+# handled via the exclude list below rather than accepted globally.
+accept = [200, 206]
 
 # Retry transient/rate-limited responses before failing.
 max_retries = 3
