@@ -37,7 +37,7 @@
     "validate:mintlify-code-blocks": "node mintlify-native/scripts/validate-openfga-code-blocks.mjs",
     "validate:mintlify-doc-navigation": "node mintlify-native/scripts/validate-doc-navigation.mjs",
     "validate:mintlify-api-navigation": "node mintlify-native/scripts/validate-api-navigation.mjs && npm run test:mintlify-api-samples",
-    "test:mintlify-navigation": "node --test mintlify-native/scripts/navigation-structure.test.mjs",
+    "test:mintlify-navigation": "node --test mintlify-native/scripts/navigation-structure.test.mjs mintlify-native/scripts/github-star-cache.test.mjs",
     "generate:mintlify-api-samples": "node mintlify-native/scripts/api-code-samples.mjs",
     "check:mintlify-api-samples": "node mintlify-native/scripts/api-code-samples.mjs --check",
     "test:mintlify-api-samples": "node --test mintlify-native/scripts/api-code-samples.test.mjs mintlify-native/scripts/api-code-samples.integration.test.mjs",

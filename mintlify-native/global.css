@@ -178,6 +178,17 @@ a[href='https://github.com/openfga/openfga'] > span:first-of-type {
   flex-shrink: 0;
 }
 
+.openfga-github-stars-fallback__value {
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1rem;
+}
+
+.openfga-github-stars-fallback__status {
+  font-size: 0.75rem;
+  line-height: 0.875rem;
+}
+
 .openfga-github-stars-fallback__icon {
   width: 0.875rem;
   height: 0.875rem;

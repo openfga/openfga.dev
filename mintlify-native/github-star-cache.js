@@ -21,6 +21,7 @@
       if (
         !cached ||
         typeof cached.display !== 'string' ||
+        !/^(?:\d{1,3}(?:,\d{3})+|\d+)$/.test(cached.display) ||
         !Number.isSafeInteger(cached.value) ||
         cached.value < 0 ||
         !Number.isFinite(cached.timestamp) ||
@@ -72,8 +73,12 @@
     });
   }
 
-  function setAccessibleLabel(link, display) {
+  function setAccessibleLabel(link, display, cachedTimestamp) {
     var label = display ? 'OpenFGA on GitHub — ' + display + ' stars' : 'OpenFGA on GitHub';
+    if (cachedTimestamp !== undefined) {
+      label +=
+        ' (last known). Current count unavailable. Last observed ' + new Date(cachedTimestamp).toLocaleString() + '.';
+    }
     link.setAttribute('aria-label', label);
     link.setAttribute('title', label);
   }
@@ -92,7 +97,14 @@
       var count = document.createElement('span');
       count.className = 'openfga-github-stars-fallback__count';
 
-      fallback.append(icon, count);
+      var status = document.createElement('span');
+      status.className = 'openfga-github-stars-fallback__status';
+      status.textContent = 'last known';
+
+      var value = document.createElement('span');
+      value.className = 'openfga-github-stars-fallback__value';
+      value.append(count, status);
+      fallback.append(icon, value);
       link.append(fallback);
     }
 
@@ -130,7 +142,7 @@
           var cached = readCache();
           if (cached) {
             addFallback(link, cached);
-            setAccessibleLabel(link, cached.display);
+            setAccessibleLabel(link, cached.display, cached.timestamp);
             nextScanDelay = Math.min(nextScanDelay, CACHE_TTL_MS - (now - cached.timestamp) + 25);
           } else {
             removeFallback(link);

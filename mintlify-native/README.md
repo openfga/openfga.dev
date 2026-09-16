@@ -298,9 +298,17 @@ up to date; those need separate review.
 
 Mintlify fetches the repository's exact GitHub star count for its native navbar
 control. `github-star-cache.js` stores successful native values for seven days
-and restores the last exact count if Mintlify's request is rate-limited. It never
-makes its own GitHub API request; first-time visitors without a valid cached value
-retain the native icon-only state when that request fails.
+and restores the last exact count if Mintlify's request fails. Cached values show
+a visible **last known** label; the link's tooltip and accessible name also state
+that the current count is unavailable and include when the value was observed.
+The fallback never refreshes its own timestamp. A successful native count replaces
+the cached display and removes the last-known label, even if the count decreased.
+Expired values are removed after seven days.
+
+The fallback never makes its own GitHub API request; first-time visitors without a
+valid cached value retain the native icon-only state when that request fails.
+`npm run test:mintlify-navigation` covers fallback labeling, expiry, recovery,
+navigation remounts and unavailable browser storage.
 
 ### Why Mintlify snippets look the way they do
 
