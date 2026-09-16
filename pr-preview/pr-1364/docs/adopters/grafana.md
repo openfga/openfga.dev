@@ -3,7 +3,7 @@ title: "Grafana Labs Case Study"
 description: "Why Grafana Labs replaced its single-tenant access control engine with OpenFGA to power multi-tenant Grafana Cloud and embedded OSS deployments."
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/adopters/grafana"
 content_type: "documentation"
-last_updated: "2026-09-16T11:56:45.000Z"
+last_updated: "2026-09-16T14:48:06.000Z"
 ---
 
 # Grafana Labs: From single-tenant engine to multi-tenant ReBAC

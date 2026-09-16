@@ -3,7 +3,7 @@ title: "Model Migrations"
 description: "This section has guides that focus on migrating models and relations."
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/modeling/migrating"
 content_type: "documentation"
-last_updated: "2026-09-16T11:56:45.000Z"
+last_updated: "2026-09-16T14:48:06.000Z"
 ---
 
 This section has guides that focus on migrating models and relations.

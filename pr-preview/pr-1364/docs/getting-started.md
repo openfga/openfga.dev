@@ -3,7 +3,7 @@ title: "Getting Started"
 description: "OpenFGA tutorial and quickstart: install the server, configure an authorization model, write tuples, and run your first permission checks in minutes."
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/getting-started"
 content_type: "documentation"
-last_updated: "2026-09-16T11:56:45.000Z"
+last_updated: "2026-09-16T14:48:06.000Z"
 ---
 
 The following will provide a step-by-step guide on how to get started with OpenFGA.
