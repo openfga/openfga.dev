@@ -42,6 +42,25 @@ To run the docs locally you will need to first install dependencies:
 npm install
 ```
 
+#### Mintlify repository quality checks
+
+From the repository root, use Node.js 22 with Git, Bash, Python 3, and curl available:
+
+```bash
+npm ci
+npm run check:mintlify
+```
+
+The aggregate checks generated browser artifact freshness and codegen/runtime/semantic regressions; MDX parsing, prose expressions, and their regressions; OpenFGA DSL blocks; documentation/API navigation and source inventory; native API sample overlay freshness and SDK regressions; and custom component usage and regressions. Shared viewer-runtime tests run once. Invalid content, stale artifacts, or failed checks exit nonzero without regenerating committed output.
+
+The [Mintlify repository quality workflow](.github/workflows/mintlify-quality.yml) runs on pull requests targeting `main` or `poc/mintlify-native`, pushes to `poc/mintlify-native`, and manual dispatch. It has read-only repository permissions, a 15-minute job timeout, and no path exclusions or deployment steps. Existing Docusaurus build, lint, and audit workflows remain separate and unchanged.
+
+This source-only gate does not fetch Git LFS objects (`lfs: false`). LFS-managed media remains as pointers, while the existing [`mintlify-native/` asset overrides](.gitattributes) keep native assets as ordinary Git blobs. The gate neither checks media contents nor builds or publishes assets. Existing Docusaurus build/preview/deploy workflows retain their LFS-aware checkout; use the Git LFS setup above when rendering the site locally.
+
+Validation is **not network-independent**: dependency installation uses the root lockfile, and API validation fetches the immutable canonical OpenAPI URL recorded in [`api-samples.json`](mintlify-native/api-samples.json), verifies its SHA-256 digest, and uses a 30-second timeout. Network, digest, or schema failures fail the gate; no cached-spec fallback masks them. SDK wire tests execute Node.js and curl programs against loopback fixtures, not a deployed OpenFGA server; other SDK samples have generator regressions, not execution coverage in this gate.
+
+These are repository-owned checks, **not official Mintlify validation or reproducible Mintlify CLI QA**. They do not install or run the Mintlify CLI, compare its native MDX validator, prove browser rendering, or change branch protection. See the [Mintlify authoring guide](mintlify-native/README.md#validating-authoring-changes) for individual checks and their limits.
+
 #### Running in Development
 
 You can then run 

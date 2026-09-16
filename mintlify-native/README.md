@@ -632,12 +632,18 @@ such as batch check and conflict options.
 
 ### Validating authoring changes
 
+Run the repository-owned quality gate from the repository root:
+
 ```bash
-npm run test:mintlify-components
-npm run validate:mintlify-components
-npm run check:mintlify-codegen
-npm run validate:mintlify-navigation
+npm run check:mintlify
 ```
+
+This includes the individual checks and their regression suites, including
+MDX/prose and custom-component tests. `test:mintlify-components` still runs both
+component-usage and viewer-runtime tests; the aggregate uses
+`test:mintlify-component-usage` because `check:mintlify-codegen` already runs the
+shared viewer-runtime suite. See the [root README](../README.md#mintlify-repository-quality-checks)
+for CI triggers, network requirements, and the distinction from Mintlify CLI QA.
 
 The component validator uses `@mdx-js/mdx`'s MDX/ESTree ASTs, not regular
 expressions or evaluation of document JavaScript. It checks imports, actual JSX
