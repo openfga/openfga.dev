@@ -91,10 +91,7 @@ jobs:
             git push "$repo_url" "HEAD:${UPDATE_BRANCH}"
           fi
 
-          pr_body="$(cat <<'BODY'
-This automated PR updates the generated OpenFGA configuration documentation from the latest OpenFGA release schema.
-BODY
-          )"
+          pr_body="This automated PR updates the generated OpenFGA configuration documentation from the latest OpenFGA release schema."
           pr_number="$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$UPDATE_BRANCH" --state open --json number --jq '.[0].number')"
 
           if [ -n "$pr_number" ]; then
