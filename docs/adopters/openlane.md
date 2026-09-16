@@ -3,7 +3,7 @@ title: "Openlane Case Study"
 description: "How compliance-automation startup OpenLane wires OpenFGA into ent at the data-access layer, with overfetch + BatchCheck replacing slow ListObjects."
 canonical: "https://openfga.dev/docs/adopters/openlane"
 content_type: "documentation"
-last_updated: "2026-09-14T12:37:36.000Z"
+last_updated: "2026-09-16T15:33:49.000Z"
 ---
 
 # Openlane: Authorization at the data-access layer for compliance automation

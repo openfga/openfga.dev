@@ -3,7 +3,7 @@ title: "Contextual Tuples"
 description: "Understanding and using contextual tuples"
 canonical: "https://openfga.dev/docs/interacting/contextual-tuples"
 content_type: "documentation"
-last_updated: "2026-09-14T12:37:36.000Z"
+last_updated: "2026-09-16T15:33:49.000Z"
 ---
 
 # Contextual Tuples

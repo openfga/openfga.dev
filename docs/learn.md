@@ -3,7 +3,7 @@ title: "Learn Authorization"
 description: "Authorization concepts explained — Zanzibar, ReBAC, RBAC, ABAC, fine-grained authorization, and policy engines — with FGA examples."
 canonical: "https://openfga.dev/docs/learn"
 content_type: "documentation"
-last_updated: "2026-09-14T12:37:36.000Z"
+last_updated: "2026-09-16T15:33:49.000Z"
 ---
 
 # Learn Authorization
