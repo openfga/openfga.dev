@@ -3,7 +3,7 @@ title: "Get Started with Modeling"
 description: "An introduction to modeling"
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/modeling/getting-started"
 content_type: "documentation"
-last_updated: "2026-09-16T11:40:56.000Z"
+last_updated: "2026-09-16T11:46:30.000Z"
 ---
 
 # Get Started with Modeling

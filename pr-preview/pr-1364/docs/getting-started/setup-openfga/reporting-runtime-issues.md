@@ -3,7 +3,7 @@ title: "Reporting Runtime Issues"
 description: "Information to gather when reporting OpenFGA runtime issues"
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/getting-started/setup-openfga/reporting-runtime-issues"
 content_type: "documentation"
-last_updated: "2026-09-16T11:40:56.000Z"
+last_updated: "2026-09-16T11:46:30.000Z"
 ---
 
 # Reporting Runtime Issues

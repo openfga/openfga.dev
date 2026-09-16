@@ -3,7 +3,7 @@ title: "Fine-Grained Authorization by Industry"
 description: "How healthcare, banking, e-commerce, HR, CRM, and LMS teams model fine-grained authorization with FGA."
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/industries"
 content_type: "documentation"
-last_updated: "2026-09-16T11:40:56.000Z"
+last_updated: "2026-09-16T11:46:30.000Z"
 ---
 
 # OpenFGA by Industry

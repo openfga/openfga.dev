@@ -3,7 +3,7 @@ title: "Perform a Check"
 description: "Checking if a user is authorized to perform an action on a resource"
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/getting-started/perform-check"
 content_type: "documentation"
-last_updated: "2026-09-16T11:40:56.000Z"
+last_updated: "2026-09-16T11:46:30.000Z"
 ---
 
 # Perform a Check
