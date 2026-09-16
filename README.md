@@ -27,12 +27,16 @@ Run `git clone https://github.com/openfga/openfga.dev.git` to clone the repo to 
 
 #### Setup Git LFS (Large File Storage)
 
-* Follow the instructions [here](https://git-lfs.github.com/) to install git lfs on your system.
-* If you haven't done so yet, run `git lfs install` to set up git lfs for your account.
-* Run `git lfs pull`
-* Run `git lfs checkout`
+Install [Git LFS](https://git-lfs.github.com/), then run these commands from the repository root:
 
-Currently `mp4`, `webm` and `svg` files are tracked. If you need to track more media formats, run: `git lfs track "*.extension"`
+```bash
+git lfs install
+git lfs pull
+```
+
+`git lfs pull` downloads and checks out the LFS media for the current ref. If the objects are already downloaded but the working tree still contains pointers, `git lfs checkout` restores those local objects without downloading them.
+
+The default rules in [`.gitattributes`](.gitattributes) cover SVG, PNG, JPG, JPEG, GIF, MP4, and WebM media. **Assets under `mintlify-native/` are an intentional exception:** they are committed as ordinary Git blobs, so a Mintlify checkout does not need to resolve LFS objects. See [Mintlify asset storage](mintlify-native/README.md#asset-storage-and-git-lfs) before copying or adding media. Keep native overrides after global LFS rules when introducing a new format; do not replace the repository's existing LFS policy.
 
 #### Install Dependencies
 

@@ -28,6 +28,47 @@ header.
 If startup fails with `Error: Client not built`, delete `~/.mintlify/mint/` and rerun —
 the CLI will re-download a fresh pre-built copy.
 
+## Asset storage and Git LFS
+
+The split site deliberately uses two storage paths:
+
+| Content | Storage and checkout |
+| --- | --- |
+| Docusaurus media, including source documentation assets | Default [Git LFS rules](../.gitattributes). Local rendering requires hydrated media; the existing Docusaurus build, preview, and deployment workflows use LFS-aware checkout. |
+| Assets anywhere under `mintlify-native/` | Ordinary Git blobs through the trailing path-specific overrides in `.gitattributes`. Mintlify receives the actual asset bytes without depending on an LFS fetch. |
+
+The repository quality workflow uses `lfs: false` because it checks source, not
+media contents or a rendered deployment. Its success does not prove that images
+and videos load. See the [root checkout instructions](../README.md#setup-git-lfs-large-file-storage)
+when working with LFS-managed source assets.
+
+When adding or copying media:
+
+1. Hydrate any LFS-managed source with `git lfs pull` before copying it. Never
+   copy an LFS pointer in place of the image or video.
+2. Put the actual bytes under `images/` or the existing documentation asset
+   directories, following nearby asset references.
+3. Preserve the native overrides after the global LFS patterns. A new media
+   format needs a reviewed native override if a global rule would track it;
+   fixing a native asset must not migrate unrelated Docusaurus media.
+
+Before committing, stage the asset and any attribute change, then check its
+exact repository-relative path. For example, from the repository root:
+
+```bash
+git check-attr --cached filter -- mintlify-native/images/img/openfga_logo.svg
+```
+
+The native asset should report `filter: unset`. Inspect the staged blob as well,
+not only the hydrated working copy (`git show :<asset-path>` for a text asset).
+An LFS pointer starts with `version https://git-lfs.github.com/spec/v1`, followed
+by an `oid sha256:` and a `size` line; these are metadata, not image bytes.
+
+Changing attributes does not replace an already committed pointer. Retrieve the
+original LFS object, copy its real contents into the native asset path, restage
+that file, and verify it renders in the preview. Do not remove global LFS rules
+or rewrite Git history as a workaround.
+
 ---
 
 ## What's in here
