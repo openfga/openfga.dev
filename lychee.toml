@@ -56,6 +56,7 @@ exclude = [
   # CNCF Slack deep links — 403 to bots.
   "^https://cloud-native\\.slack\\.com",
   # Medium and Medium-based publications — 403 to automated clients.
+  "^https://(www\\.)?medium\\.com",
   "^https://[a-z0-9-]+\\.medium\\.com",
   "^https://levelup\\.gitconnected\\.com",
   # Gartner — 403 to bots.
@@ -73,8 +74,13 @@ exclude = [
 
   # Package registries / repos that rate-limit or 403 automated checks.
   "^https://www\\.nuget\\.org/packages/OpenFga\\.Sdk",
-  "^https://www\\.npmjs\\.com/package/@openfga/sdk",
+  "^https://www\\.npmjs\\.com",
   "^https://pypi\\.org/project/openfga-sdk",
   "^https://github\\.com/openfga/(go|dotnet|python|java)-sdk",
   "^https://github\\.com/bytefish/gitclub-dotnet",
+
+  # Additional bot-blocking hosts found in CI.
+  "^https://docs\\.google\\.com",
+  "^https://www\\.couchbase\\.com",
+  "^https://podcastindex\\.org",
 ]
