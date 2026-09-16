@@ -3,7 +3,7 @@ title: "Community"
 description: "Learn how to engage with the OpenFGA Community"
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/community"
 content_type: "documentation"
-last_updated: "2026-09-16T11:34:43.000Z"
+last_updated: "2026-09-16T11:40:56.000Z"
 ---
 
 # OpenFGA Community

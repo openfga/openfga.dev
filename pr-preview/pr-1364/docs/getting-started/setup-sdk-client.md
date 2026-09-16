@@ -3,7 +3,7 @@ title: "Setup SDK Client for Store"
 description: "Setting up an OpenFGA SDK client"
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/getting-started/setup-sdk-client"
 content_type: "documentation"
-last_updated: "2026-09-16T11:34:43.000Z"
+last_updated: "2026-09-16T11:40:56.000Z"
 ---
 
 # Setup SDK Client for Store

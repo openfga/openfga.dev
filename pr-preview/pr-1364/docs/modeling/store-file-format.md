@@ -3,7 +3,7 @@ title: "Store File Format"
 description: "Store File Format (.fga.yaml)"
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/modeling/store-file-format"
 content_type: "documentation"
-last_updated: "2026-09-16T11:34:43.000Z"
+last_updated: "2026-09-16T11:40:56.000Z"
 ---
 
 # Store File Format

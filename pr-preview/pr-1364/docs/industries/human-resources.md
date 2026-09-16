@@ -3,7 +3,7 @@ title: "Fine-Grained Authorization for HR & HRIS with FGA"
 description: "Model employee records, manager hierarchies, payroll, benefits, and PII isolation in FGA for Workday-style HRIS, HR, and directory systems."
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/industries/human-resources"
 content_type: "documentation"
-last_updated: "2026-09-16T11:34:43.000Z"
+last_updated: "2026-09-16T11:40:56.000Z"
 ---
 
 # HR & HRIS Authorization with OpenFGA
