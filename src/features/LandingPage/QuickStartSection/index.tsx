@@ -81,7 +81,7 @@ const QuickStartSection = () => {
           </p>
           <p>
             Learn how to use sample authorization models and create your own with the project&rsquo;s extensive{' '}
-            <Link href="https://openfga.dev/docs/modeling/overview">documentation</Link>.
+            <Link href="https://openfga.dev/docs/modeling">documentation</Link>.
           </p>
         </div>
         <div className={styles.terminalContainer}>

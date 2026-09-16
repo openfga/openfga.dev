@@ -36,6 +36,7 @@ function fixture() {
         destination: '/api-reference/stores/list-all-stores',
         permanent: false,
       },
+      { source: '/docs/modeling', destination: '/docs/modeling/overview', permanent: false },
     ],
   };
 }
@@ -46,6 +47,19 @@ test('hidden anchors provide the exact route-scoped sidebar and header contract'
   assert.equal(result.docsAnchor, docs.navigation.anchors[0]);
   assert.equal(result.apiAnchor, docs.navigation.anchors[1]);
   assert.equal(getUniqueOpenApiNavigationEntry(docs.navigation), result.apiAnchor);
+});
+
+test('the homepage modeling link resolves in Docusaurus and retains its Mintlify redirect', () => {
+  const homepage = readFileSync(
+    new URL('../../src/features/LandingPage/QuickStartSection/index.tsx', import.meta.url),
+    'utf8',
+  );
+  const source = readFileSync(new URL('../../docs/content/modeling/overview.mdx', import.meta.url), 'utf8');
+  const docs = JSON.parse(readFileSync(new URL('../docs.json', import.meta.url), 'utf8'));
+
+  assert.match(homepage, /<Link href="https:\/\/openfga\.dev\/docs\/modeling">documentation<\/Link>/);
+  assert.match(source, /^slug: \/modeling$/m);
+  validateRouteScopedNavigation(docs);
 });
 
 test('navbar CSS separates the accessible target from the GitHub-sized visual surface', () => {
@@ -139,6 +153,30 @@ for (const [name, mutate, expected] of [
       docs.redirects[1].destination = '/api-reference/stores/create-a-store';
     },
     /stable "\/api-reference" entry must redirect temporarily/,
+  ],
+  [
+    'stable modeling entry requires its native redirect',
+    (docs) => docs.redirects.pop(),
+    /stable "\/docs\/modeling" entry must redirect temporarily/,
+  ],
+  [
+    'modeling redirect must retain its overview destination',
+    (docs) => {
+      docs.redirects[2].destination = '/docs/modeling/getting-started';
+    },
+    /stable "\/docs\/modeling" entry must redirect temporarily/,
+  ],
+  [
+    'modeling redirect cannot be duplicated',
+    (docs) => docs.redirects.push(structuredClone(docs.redirects[2])),
+    /stable "\/docs\/modeling" entry must redirect temporarily/,
+  ],
+  [
+    'modeling redirect must remain temporary during migration',
+    (docs) => {
+      docs.redirects[2].permanent = true;
+    },
+    /stable "\/docs\/modeling" entry must redirect temporarily/,
   ],
 ]) {
   test(name, () => {

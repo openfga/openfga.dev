@@ -112,6 +112,11 @@ the build if either drifts. Native temporary redirects keep `/docs` and
 `/api-reference` as stable public entries and send them to each section's first
 page.
 
+The homepage retains the existing `/docs/modeling` URL, which Docusaurus builds
+from the modeling overview's `slug`. Mintlify temporarily redirects that same
+URL to `/docs/modeling/overview`. Keep both targets working during migration
+rather than excluding the homepage link from validation.
+
 ### Native API SDK samples
 
 The API reference uses Mintlify's supported

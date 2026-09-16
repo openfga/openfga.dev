@@ -359,6 +359,11 @@
       "source": "/api-reference",
       "destination": "/api-reference/stores/list-all-stores",
       "permanent": false
+    },
+    {
+      "source": "/docs/modeling",
+      "destination": "/docs/modeling/overview",
+      "permanent": false
     }
   ],
   "search": {
