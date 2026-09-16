@@ -3,7 +3,7 @@ title: "Authorization for Agents"
 description: "Authorization patterns for AI agents and automated processes: model agents as principals, secure RAG pipelines, and control MCP server tool access."
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/modeling/agents"
 content_type: "documentation"
-last_updated: "2026-09-16T10:55:56.000Z"
+last_updated: "2026-09-16T11:26:51.000Z"
 ---
 
 # Authorization for Agents

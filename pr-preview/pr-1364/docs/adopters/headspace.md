@@ -3,7 +3,7 @@ title: "Headspace Case Study"
 description: "How Headspace authorizes Ebb, its empathetic AI companion, with OpenFGA — driving end-to-end checks down from 10-15 seconds to 10-15 milliseconds."
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/adopters/headspace"
 content_type: "documentation"
-last_updated: "2026-09-16T10:55:56.000Z"
+last_updated: "2026-09-16T11:26:51.000Z"
 ---
 
 # Headspace: Authorizing an empathetic AI companion at consumer scale

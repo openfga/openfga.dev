@@ -3,7 +3,7 @@ title: "Interacting with the API"
 description: "Programmatically writing authorization related data and interact with the API"
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/interacting"
 content_type: "documentation"
-last_updated: "2026-09-16T10:55:56.000Z"
+last_updated: "2026-09-16T11:26:51.000Z"
 ---
 
 This section helps you integrate OpenFGA with your system. To do this, you will learn how to programmatically write authorization related data to OpenFGA.
