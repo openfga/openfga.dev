@@ -81,6 +81,7 @@ jobs:
           args: >-
             --config lychee.toml
             --root-dir "${{ github.workspace }}/build"
+            --remap "https://openfga.dev/=${{ github.workspace }}/build/"
             --no-progress
             "build/**/*.html"
           fail: true
