@@ -30,13 +30,12 @@ exclude = [
   "^https?://localhost",
   "^https://api\\.openfga\\.example",
 
-  # Absolute links to the production site: internal equivalents (root-relative
-  # and relative paths) are validated against ./build via --root-dir. Absolute
-  # self-domain URLs are excluded because checking production would fail for
-  # pages that exist in the PR but are not yet deployed. The vast majority of
-  # internal links in this codebase use root-relative or relative paths and are
-  # fully validated.
-  "^https://openfga\\.dev",
+  # Absolute self-domain links are remapped to the local build via --remap in
+  # checks.yaml (https://openfga.dev/... -> file://.../build/...) so they
+  # validate against the PR build rather than the live site. Two remapped paths
+  # are excluded via --exclude in checks.yaml because they cannot be statically
+  # validated: /api/service (Swagger UI, JS-rendered anchors) and /search
+  # (template URL). No pattern is needed here for the self-domain.
 
   # Machine endpoints (not browsable HTML pages) — return 406 to normal clients.
   "^https://mcp\\.openfga\\.dev",
