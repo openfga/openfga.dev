@@ -3,7 +3,7 @@ title: "Managing Group Membership"
 description: "Updating a user's membership to a group by adding and removing them from it"
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/interacting/managing-group-membership"
 content_type: "documentation"
-last_updated: "2026-09-16T11:46:30.000Z"
+last_updated: "2026-09-16T11:56:45.000Z"
 ---
 
 # Managing Group Membership

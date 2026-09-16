@@ -3,7 +3,7 @@ title: "Fine-Grained Authorization for ATS & Recruiting with FGA"
 description: "Model jobs, candidates, applications, interviews, scorecards, and offer workflows in FGA for Greenhouse-style and Lever-style applicant tracking systems."
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/industries/applicant-tracking-system"
 content_type: "documentation"
-last_updated: "2026-09-16T11:46:30.000Z"
+last_updated: "2026-09-16T11:56:45.000Z"
 ---
 
 # ATS Authorization with OpenFGA
