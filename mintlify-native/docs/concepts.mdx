@@ -3,6 +3,7 @@ title: "Concepts"
 description: "Learning about FGA concepts"
 ---
 
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
 import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx';
 import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
 import { ListObjectsRequestViewer } from '/snippets/ListObjectsRequestViewer.jsx';
@@ -283,11 +284,9 @@ import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
 
   In the following snippet `less_than_hundred` defines a Condition that evaluates to a boolean outcome. The provided parameter `x`, defined as an integer type, is used in the boolean expression `x < 100`. The condition returns a truthy outcome if the expression returns a truthy outcome, but is otherwise false.
 
-  ```
-  condition less_than_hundred(x: int) {
-    x < 100
-  }
-  ```
+  <OpenFGACodeBlock code={`condition less_than_hundred(x: int) {
+\x20 x < 100
+}`} />
 </Accordion>
 
 <Accordion title="What Is A Relationship Tuple?">

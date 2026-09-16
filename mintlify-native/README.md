@@ -365,8 +365,9 @@ theme changes apply through CSS without re-tokenizing the model.
 
 #### Authoring DSL code blocks
 
-OpenFGA DSL examples must use `OpenFGACodeBlock`; do not use fenced blocks with
-the `dsl.openfga` language. Mintlify's native Shiki highlighter does not know the
+Standalone OpenFGA DSL examples must use `OpenFGACodeBlock`; do not use plain
+fences or language aliases such as `dsl.openfga`, `openfga`, `fga`, or `dsl`.
+Mintlify's native Shiki highlighter does not know the
 custom OpenFGA grammar, while the component uses the generated official Prism
 tokenizer:
 
@@ -383,13 +384,30 @@ Mintlify strips literal indentation at the start of lines inside JSX template
 literals. Escape the first leading space as `\x20`, as shown above, so the
 rendered model retains its indentation. Escape any literal backticks, `${`
 sequences, and backslashes as JavaScript template-literal content.
+Use `encodeOpenFgaCode` from `scripts/validate-openfga-code-blocks.mjs` for
+lossless conversion, including trailing spaces and whitespace-only lines.
+Keep existing `AuthzModelSnippetViewer` examples: their DSL view already uses
+the same tokenizer and also supports JSON.
 
 `npm run validate:mintlify-code-blocks` parses every Mintlify page as MDX,
-rejects actual `dsl.openfga` code nodes, verifies that component imports appear
+rejects legacy OpenFGA language aliases and standalone models/fragments in
+plain or unlabelled code nodes and literal JSX code wrappers, verifies that component imports appear
 exactly once where needed, and requires each `code` prop to use canonical,
-non-lossy template-literal escaping. Literal examples inside larger code fences,
-inline code, and JSX comments are ignored. The root prebuild runs this guard
+non-lossy template-literal escaping. For plain code, the official syntax parser
+must recognize the entire body; enclosing syntax is supplied only to identify
+standalone type, relation, condition, schema, and module-extension fragments,
+never to change their displayed content. This is syntax classification, not
+authorization-model validation. Mixed shell transcripts, YAML store files with
+embedded models, JSON, explicitly labelled other languages, and literal examples
+inside larger documentation fences remain unchanged. Inline code and JSX
+comments are ignored. The root prebuild runs this guard
 through `validate:mintlify-navigation`.
+
+After converting examples, run
+`npm run validate:mintlify-code-blocks -- --compare-ref <reviewed-base>` to compare
+every converted model's bytes and order with the baseline and ensure existing
+canonical blocks have not changed. Source-fixture and ancestor checks also
+preserve instructional headings, step placement, and expandable examples.
 
 ### Authoring MDX prose and expressions
 

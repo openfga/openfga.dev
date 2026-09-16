@@ -3,6 +3,7 @@ title: "Modeling Task-Based Authorization for Agents"
 description: "Modeling task-based authorization for agents"
 ---
 
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
 import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
 
 # Modeling Task-Based Authorization for Agents
@@ -17,18 +18,16 @@ This guide shows how to model task-based authorization in OpenFGA, progressing f
 
 The simplest model represents tool authorization for a [Model Context Protocol](https://modelcontextprotocol.io/) server. When a task starts, you write tuples granting it permission to call the tools it needs.
 
-```text
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 type task
 type tool
-  relations
-    define can_call: [task, task:*]
+\x20 relations
+\x20   define can_call: [task, task:*]
 type tool_resource
-  relations
-    define tool: [tool]
-    define can_call: [task] or can_call from tool
-```
+\x20 relations
+\x20   define tool: [tool]
+\x20   define can_call: [task] or can_call from tool`} />
 
 A `tool` represents a capability (e.g., `slack_send_message`), and a `tool_resource` represents a specific target within that tool (e.g., a Slack channel). Granting `can_call` on a `tool` automatically grants access to all of its resources. You can also grant access to individual resources, or use `task:*` to allow any task to call a tool.
 
@@ -72,42 +71,40 @@ When checking whether `task:2` can call `tool_resource:slack_send_message/XGA14F
 
 The model above is generic. If you are building agents for your own application, your authorization model should reflect your domain. Consider a project management system:
 
-```text
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 type user
 type task
 type organization
-  relations
-    define admin: [user]
-    define member: [user]
+\x20 relations
+\x20   define admin: [user]
+\x20   define member: [user]
 type project
-  relations
-    define organization: [organization]
-    # relations for users
-    define owner: [user]
-    define member: [user]
-    # relations for tasks
-    define read: [task]
-    define write: [task]
-    define delete: [task]
-    # permissions for users
-    define can_delete: delete or owner or admin from organization
-    define can_edit: write or owner or admin from organization
-    define can_read: read or can_edit or member from organization
-    define can_create_ticket: can_edit
+\x20 relations
+\x20   define organization: [organization]
+\x20   # relations for users
+\x20   define owner: [user]
+\x20   define member: [user]
+\x20   # relations for tasks
+\x20   define read: [task]
+\x20   define write: [task]
+\x20   define delete: [task]
+\x20   # permissions for users
+\x20   define can_delete: delete or owner or admin from organization
+\x20   define can_edit: write or owner or admin from organization
+\x20   define can_read: read or can_edit or member from organization
+\x20   define can_create_ticket: can_edit
 type ticket
-  relations
-    define project: [project]
-    define owner: [user]
-    # relations for tasks
-    define read: [task]
-    define write: [task]
-    define delete: [task]
-    define can_delete: owner or delete or can_delete from project
-    define can_edit: owner or write or can_edit from project
-    define can_read: read or write or can_read from project
-```
+\x20 relations
+\x20   define project: [project]
+\x20   define owner: [user]
+\x20   # relations for tasks
+\x20   define read: [task]
+\x20   define write: [task]
+\x20   define delete: [task]
+\x20   define can_delete: owner or delete or can_delete from project
+\x20   define can_edit: owner or write or can_edit from project
+\x20   define can_read: read or write or can_read from project`} />
 
 This enriches an existing user-oriented model by adding `task` as a principal. Granting a `task` the `write` relation on a project gives it permission to read and edit the project and all its tickets. You can also grant permissions at the ticket level for more granular control. This makes your application ready for agent authorization with minimal changes to your existing model.
 
@@ -117,20 +114,18 @@ If you follow this approach, your application needs to perform both user and tas
 
 In interactive scenarios, users may create multiple sessions. You can scope permissions to a session so that access applies to all tasks within it. You can also scope permissions to an agent so they persist across sessions.
 
-```text
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 type task
 type agent
-  relations
-    define task: [task]
+\x20 relations
+\x20   define task: [task]
 type session
-  relations
-    define task: [task]
+\x20 relations
+\x20   define task: [task]
 type tool
-  relations
-    define can_call: [task, session#task, agent#task]
-```
+\x20 relations
+\x20   define can_call: [task, session#task, agent#task]`} />
 
 The `can_call` relation accepts three types of assignments:
 
@@ -158,20 +153,18 @@ Each task is linked to its session and agent when created:
 
 You can use OpenFGA [conditions](/docs/configuration-language#conditional-relationships) to make permissions expire after a duration, or limit how many times the tool can be called.
 
-```text
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 type task
 type tool
-  relations
-    define can_call: [task, task with expiration, task with max_call_count]
+\x20 relations
+\x20   define can_call: [task, task with expiration, task with max_call_count]
 condition expiration(grant_time: timestamp, grant_duration: duration, current_time: timestamp) {
-  current_time < grant_time + grant_duration
+\x20 current_time < grant_time + grant_duration
 }
 condition max_call_count(max_tool_calls: int, current_tool_count: int) {
-  current_tool_count < max_tool_calls
-}
-```
+\x20 current_tool_count < max_tool_calls
+}`} />
 
 The `expiration` condition grants access for a fixed duration from the grant time. The `max_call_count` condition limits how many times the tool can be called. When writing the tuple, you provide the condition parameters:
 
@@ -200,18 +193,16 @@ When checking access, pass the current time or current call count in the request
 
 The examples above do not verify that the agent making the call is actually assigned to the task. You can enforce this using [contextual tuples](/docs/interacting/contextual-tuples) and an intersection (`and`) in the model, similar to the [Authorization Through Organization Context](/docs/modeling/organization-context-authorization) pattern.
 
-```text
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 type task
 type agent
-  relations
-    define task: [task]
+\x20 relations
+\x20   define task: [task]
 type tool
-  relations
-    define calling_agent: [agent]
-    define can_call: [task] and task from calling_agent
-```
+\x20 relations
+\x20   define calling_agent: [agent]
+\x20   define can_call: [task] and task from calling_agent`} />
 
 The `can_call` relation requires both that the task has been granted access **and** that the agent making the call is linked to the task. When the task is created, link it to its agent:
 

@@ -5,6 +5,7 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { createProcessor } from '@mdx-js/mdx';
 import { parse as parseYaml } from 'yaml';
+import { encodeOpenFgaCode } from './validate-openfga-code-blocks.mjs';
 
 const repoRoot = fileURLToPath(new URL('../../', import.meta.url));
 const processor = createProcessor();
@@ -178,13 +179,13 @@ function assertTutorialInlineExamples(source, route) {
 
 function examplePlacements(source) {
   const allNodes = nodes(source);
-  return allNodes.filter((node) => node.type === 'code').map((node) => {
+  return allNodes.filter((node) => node.type === 'code' || node.name === 'OpenFGACodeBlock').map((node) => {
     const headingPath = allNodes.filter((item) =>
       item.type === 'heading' && item.position.start.offset < node.position.start.offset)
       .reduce((stack, heading) => [...stack.filter((item) => item.depth < heading.depth), heading], []);
     return {
-      language: node.lang,
-      code: node.value,
+      language: node.name === 'OpenFGACodeBlock' ? 'dsl.openfga' : node.lang,
+      code: node.name === 'OpenFGACodeBlock' ? props(node).code : node.value,
       headings: headingPath.map(text),
       steps: componentAncestors(allNodes, node).filter((item) => item.name === 'Step').map((item) => props(item).title),
     };
@@ -365,6 +366,55 @@ test('tutorial fixture preserves complete requests and responses in their origin
   assertTutorialExampleParity(tutorialFixture, tutorialFixture.replace(request, `<CodeGroup>\n\n${request}\n\n</CodeGroup>`));
 });
 
+const tutorialDslFixture = `
+## Configure the model
+
+<Steps>
+<Step title="Write the model">
+
+\`\`\`dsl.openfga
+model
+  schema 1.1
+
+type task
+type tool
+  relations
+    define can_call: [task]
+\`\`\`
+
+</Step>
+</Steps>
+`;
+const tutorialDslNode = nodes(tutorialDslFixture).find((node) => node.type === 'code');
+const tutorialDslComponent = `<OpenFGACodeBlock code={\`${encodeOpenFgaCode(tutorialDslNode.value)}\`} />`;
+const tutorialDslMigrated = "import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';\n\n" +
+  tutorialDslFixture.slice(0, tutorialDslNode.position.start.offset) +
+  tutorialDslComponent +
+  tutorialDslFixture.slice(tutorialDslNode.position.end.offset);
+
+test('tutorial DSL fixture compares canonical components with the original fenced source', () => {
+  assertTutorialExampleParity(tutorialDslFixture, tutorialDslMigrated);
+});
+
+test('tutorial DSL fixture detects changed model bytes in a canonical component', () => {
+  assert.throws(
+    () => assertTutorialExampleParity(tutorialDslFixture, tutorialDslMigrated.replace('[task]', '[task, task:*]')),
+    /payload/,
+  );
+});
+
+test('tutorial DSL fixture detects a canonical model moved outside its original native step', () => {
+  const moved = `${tutorialDslMigrated.replace(tutorialDslComponent, '')}\n${tutorialDslComponent}\n`;
+  assert.throws(() => assertTutorialExampleParity(tutorialDslFixture, moved), /native step placement/);
+});
+
+test('tutorial DSL fixture detects a canonical model moved to a different instructional heading', () => {
+  assert.throws(
+    () => assertTutorialExampleParity(tutorialDslFixture, tutorialDslMigrated.replace('## Configure the model', '## Replace the model')),
+    /headings/,
+  );
+});
+
 for (const container of ['RequestExample', 'ResponseExample']) {
   test(`tutorial fixture rejects ${container} even without a standalone tuple viewer`, () => {
     const code = tutorialFixture.match(/```json[\s\S]*?```/)[0];
@@ -455,8 +505,20 @@ for (const filename of sourceFiles(sourceRoot)) {
 
 test('task examples retain their instructional sections, contextual descriptions, and shared request props', () => {
   const relative = 'modeling/agents/task-based-authorization.mdx';
-  const sourceNodes = nodes(readFileSync(path.join(sourceRoot, relative), 'utf8'));
-  const migratedNodes = nodes(readFileSync(path.join(repoRoot, 'mintlify-native/docs', relative), 'utf8'));
+  const source = readFileSync(path.join(sourceRoot, relative), 'utf8');
+  const migrated = readFileSync(path.join(repoRoot, 'mintlify-native/docs', relative), 'utf8');
+  const sourceNodes = nodes(source);
+  const migratedNodes = nodes(migrated);
+  const models = (content) => examplePlacements(content)
+    .filter((example) => example.language === 'dsl.openfga')
+    .map((example) => ({
+      ...example,
+      // The original native migration removed blank separator lines, not DSL content.
+      code: example.code.split('\n').filter((line) => line.trim() !== '').join('\n'),
+    }));
+  assert.equal(models(source).length, 5, 'The source fixture must cover all five task models');
+  assert.deepEqual(models(migrated), models(source),
+    'Task models must retain their original source DSL, order, headings, and native step placement');
   const section = (allNodes, node) => text(allNodes.filter((item) =>
     item.type === 'heading' && item.depth === 2 && item.position.start.offset < node.position.start.offset).at(-1));
   assert.deepEqual(

@@ -804,15 +804,15 @@ test('actionable file:line:column diagnostics and parse failures are returned ra
   assert.equal(malformed.counts.checked, 0);
 });
 
-test('current Mintlify corpus checks all 383 custom components with no errors or deferrals', () => {
+test('current Mintlify corpus checks all 402 custom components with no errors or deferrals', () => {
   const diagnostics = [];
   const totals = validateCorpus({ logger: (line) => diagnostics.push(line) });
   assert.equal(totals.errors, 0, diagnostics.join('\n'));
   assert.equal(totals.warnings, 0, diagnostics.join('\n'));
   assert.equal(totals.deferred, 0);
   assert.equal(totals.invalid, 0);
-  assert.equal(totals.components, 383);
-  assert.equal(totals.checked, 383);
+  assert.equal(totals.components, 402);
+  assert.equal(totals.checked, 402);
 });
 
 test('corpus runner reports separate deferred counts and CLI exits nonzero for errors', (t) => {

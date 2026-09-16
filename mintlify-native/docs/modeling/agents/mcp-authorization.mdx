@@ -3,6 +3,7 @@ title: "Authorization for MCP Servers"
 description: "Model Context Protocol (MCP) servers expose tools that AI agents can call. Without authorization, any authenticated user can invoke any tool. OpenFGA lets you control which tools each user can access, based on their role, group membership, or time-limited grants."
 ---
 
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
 import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
 
 import { ListObjectsRequestViewer } from '/snippets/ListObjectsRequestViewer.jsx';
@@ -14,23 +15,21 @@ This guide shows how to model tool-level authorization for an MCP server using O
 
 The model defines four types: users, groups, roles, and tools. Users belong to groups, groups are assigned to roles, and roles grant access to tools. Tools can also be made public or granted directly to a user.
 
-```text
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 type user
 type group
-  relations
-    define member: [user]
+\x20 relations
+\x20   define member: [user]
 type role
-  relations
-    define assignee: [user, group#member]
+\x20 relations
+\x20   define assignee: [user, group#member]
 type tool
-  relations
-    define can_call: [user:*, user, role#assignee, user with temporal_grant, role#assignee with temporal_grant]
+\x20 relations
+\x20   define can_call: [user:*, user, role#assignee, user with temporal_grant, role#assignee with temporal_grant]
 condition temporal_grant(grant_time: timestamp, grant_duration: duration, current_time: timestamp) {
-  current_time < grant_time + grant_duration
-}
-```
+\x20 current_time < grant_time + grant_duration
+}`} />
 
 The `can_call` relation on `tool` accepts several types of assignments:
 
@@ -170,24 +169,22 @@ After the grant expires, the same check returns `false`:
 
 Some tools return different results depending on user permissions. For example, a `get_documents` tool might return public documents to all users but restrict private documents to specific roles. You can model this by adding a separate relation to the tool:
 
-```text
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 type user
 type group
-  relations
-    define member: [user]
+\x20 relations
+\x20   define member: [user]
 type role
-  relations
-    define assignee: [user, group#member]
+\x20 relations
+\x20   define assignee: [user, group#member]
 type tool
-  relations
-    define can_call: [user:*, user, role#assignee, user with temporal_grant, role#assignee with temporal_grant]
-    define can_view_private_documents: [role#assignee]
+\x20 relations
+\x20   define can_call: [user:*, user, role#assignee, user with temporal_grant, role#assignee with temporal_grant]
+\x20   define can_view_private_documents: [role#assignee]
 condition temporal_grant(grant_time: timestamp, grant_duration: duration, current_time: timestamp) {
-  current_time < grant_time + grant_duration
-}
-```
+\x20 current_time < grant_time + grant_duration
+}`} />
 
 Grant the `can_view_private_documents` relation to the admin role:
 

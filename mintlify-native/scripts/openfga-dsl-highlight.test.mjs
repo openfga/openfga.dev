@@ -386,9 +386,9 @@ test('migrated model and DSL corpus matches independent Prism exactly', async ()
   assert.deepEqual(counts, {
     authorizationModels: 121,
     dslFences: 0,
-    openFgaCodeBlocks: 33,
+    openFgaCodeBlocks: 52,
   });
-  assert.equal(corpus.length, 154);
+  assert.equal(corpus.length, 173);
 
   const emittedTypes = new Set();
   for (const input of corpus) {

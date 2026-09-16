@@ -3,6 +3,7 @@ title: "Modeling Agents as Principals"
 description: "Model agents as first-class principals in your authorization model so they inherit access through the same permission hierarchy as users"
 ---
 
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
 import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
 
 Most applications already have authorization models centered on human users. If you are building agents as part of your application, one common pattern is to model `agent` as a first-class principal - the same way users are granted access to resources today.
@@ -15,33 +16,31 @@ This guide shows how to model agents as principals in a OpenFGA authorization mo
 
 The following issue-tracking model treats `agent` as a first-class principal alongside `user`:
 
-```text
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 type user
 type agent
 type organization
-  relations
-    define admin: [user]
-    define member: [user, agent]
+\x20 relations
+\x20   define admin: [user]
+\x20   define member: [user, agent]
 type project
-  relations
-    define organization: [organization]
-    define owner: [user]
-    define member: [user, agent]
-    define can_delete: owner or admin from organization
-    define can_edit: owner or admin from organization
-    define can_read: can_edit or member or member from organization
-    define can_create_issue: can_edit
+\x20 relations
+\x20   define organization: [organization]
+\x20   define owner: [user]
+\x20   define member: [user, agent]
+\x20   define can_delete: owner or admin from organization
+\x20   define can_edit: owner or admin from organization
+\x20   define can_read: can_edit or member or member from organization
+\x20   define can_create_issue: can_edit
 type issue
-  relations
-    define project: [project]
-    define reporter: [user, agent]
-    define assignee: [user, agent]
-    define can_delete: reporter or can_delete from project
-    define can_edit: assignee or can_edit from project
-    define can_read: reporter or can_edit or can_read from project
-```
+\x20 relations
+\x20   define project: [project]
+\x20   define reporter: [user, agent]
+\x20   define assignee: [user, agent]
+\x20   define can_delete: reporter or can_delete from project
+\x20   define can_edit: assignee or can_edit from project
+\x20   define can_read: reporter or can_edit or can_read from project`} />
 
 If your current model is user-centric, the main change is to allow `agent` anywhere you already allow `user` for the relationships an agent should hold.
 

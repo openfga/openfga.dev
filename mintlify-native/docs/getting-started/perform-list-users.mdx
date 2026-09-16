@@ -3,6 +3,7 @@ title: "Perform a List Users call"
 description: "List all users that have a certain relation with a particular object"
 ---
 
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
 import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
 
 # Perform a List Users call
@@ -64,14 +65,12 @@ This section will illustrate how to perform a list users request. The List Users
 
 Consider the following model which includes a `user` that can have a `reader` relationship with a `document`:
 
-```
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 type user
 type document
-  relations
-    define reader: [user]
-```
+\x20 relations
+\x20   define reader: [user]`} />
 
 Assume that you want to list all users of type `user` that have a `reader` relationship with `document:planning`:
 
@@ -217,17 +216,15 @@ In the above example, only specific subjects of the `user` type were returned. H
 
 Below is an example where usersets can be returned:
 
-```
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 type user
 type group
-  relations
-    define member: [ user ]
+\x20 relations
+\x20   define member: [ user ]
 type document
-  relations
-    define viewer: [ group#member ]
-```
+\x20 relations
+\x20   define viewer: [ group#member ]`} />
 
 With the tuples:
 

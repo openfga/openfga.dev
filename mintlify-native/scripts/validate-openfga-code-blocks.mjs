@@ -1,4 +1,5 @@
 import { createProcessor } from '@mdx-js/mdx';
+import { transformer } from '@openfga/syntax-transformer';
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
@@ -10,6 +11,8 @@ const docsDirectory = join(mintlifyDirectory, 'docs');
 const repositoryRoot = resolve(mintlifyDirectory, '..');
 const expectedImport = "import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx'";
 const processor = createProcessor({ format: 'mdx' });
+const dslLanguages = new Set(['dsl.openfga', 'openfga', 'fga', 'dsl', 'openfga-dsl', 'openfga.dsl']);
+const plainLanguages = new Set(['', 'text', 'txt', 'plain', 'plaintext', 'none']);
 
 function listMdxFiles(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -21,6 +24,54 @@ function listMdxFiles(directory) {
 function visit(node, callback) {
   callback(node);
   for (const child of node.children ?? []) visit(child, callback);
+  if (['mdxFlowExpression', 'mdxTextExpression'].includes(node.type)) {
+    const walkExpression = (expression) => {
+      if (!expression || typeof expression !== 'object') return;
+      if (expression.type === 'JSXElement') callback(jsxElement(expression));
+      for (const value of Object.values(expression)) {
+        if (Array.isArray(value)) value.forEach(walkExpression);
+        else if (value && typeof value === 'object' && typeof value.type === 'string') walkExpression(value);
+      }
+    };
+    walkExpression(node.data?.estree);
+  }
+}
+
+function jsxElement(node) {
+  const name = (value) => {
+    if (value.type === 'JSXIdentifier') return value.name;
+    if (value.type === 'JSXNamespacedName') return `${value.namespace.name}:${value.name.name}`;
+    return `${name(value.object)}.${name(value.property)}`;
+  };
+  const value = (expression) => ({
+    type: 'mdxJsxAttributeValueExpression',
+    data: { estree: { body: [{ expression }] } },
+  });
+  return {
+    type: 'mdxJsxFlowElement',
+    name: name(node.openingElement.name),
+    attributes: node.openingElement.attributes.map((attribute) =>
+      attribute.type === 'JSXAttribute'
+        ? {
+            type: 'mdxJsxAttribute',
+            name: attribute.name.name,
+            value:
+              attribute.value?.type === 'JSXExpressionContainer'
+                ? value(attribute.value.expression)
+                : attribute.value?.value,
+          }
+        : { type: 'mdxJsxExpressionAttribute' },
+    ),
+    children: node.children.map((child) => {
+      if (child.type === 'JSXText') return { type: 'text', value: child.value };
+      if (child.type === 'JSXExpressionContainer') return { ...value(child.expression), type: 'mdxTextExpression' };
+      return { type: 'unsupported' };
+    }),
+    position: {
+      start: { ...node.loc.start, offset: node.start },
+      end: { ...node.loc.end, offset: node.end },
+    },
+  };
 }
 
 function parseMdx(source, file) {
@@ -36,7 +87,61 @@ function codeLanguage(node) {
     .filter((value) => typeof value === 'string')
     .join(' ')
     .trim()
-    .split(/\s+/, 1)[0];
+    .split(/\s+/, 1)[0]
+    .toLowerCase();
+}
+
+export function isStandaloneOpenFgaDsl(code) {
+  const firstLine = code
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .find((line) => line && !line.startsWith('#'));
+  if (!firstLine) return false;
+  let prefix = '';
+  if (/^(?:type|condition)\s+\w/.test(firstLine)) prefix = 'model\n  schema 1.1\n';
+  else if (/^extend type\s+\w/.test(firstLine)) prefix = 'module fragment\n';
+  else if (/^schema\s+1\.\d/.test(firstLine)) prefix = 'model\n';
+  else if (/^relations(?:\s|$)/.test(firstLine)) prefix = 'model\n  schema 1.1\ntype fragment\n';
+  else if (/^define\s+\w/.test(firstLine)) prefix = 'model\n  schema 1.1\ntype fragment\n  relations\n';
+  else if (!/^(?:model(?:\s|$)|module\s+\w)/.test(firstLine)) return false;
+
+  // Parse the whole example, not just a model-shaped prefix in a shell transcript
+  // or store file. Prefixes supply only the enclosing syntax of standalone fragments.
+  return transformer.parseDSL(`${prefix}${code}`).errorListener.errors.length === 0;
+}
+
+function needsHighlighting(language, code) {
+  return dslLanguages.has(language) || (plainLanguages.has(language) && code !== null && isStandaloneOpenFgaDsl(code));
+}
+
+function literalString(value) {
+  if (typeof value === 'string') return value;
+  const expression = value?.data?.estree?.body?.[0]?.expression;
+  if (expression?.type === 'Literal' && typeof expression.value === 'string') return expression.value;
+  if (expression?.type === 'TemplateLiteral' && expression.expressions.length === 0)
+    return expression.quasis[0].value.cooked;
+  return null;
+}
+
+function jsxCode(node) {
+  if (!['code', 'pre', 'CodeBlock'].includes(node.name)) return null;
+  const attribute = (name) => node.attributes.find((item) => item.type === 'mdxJsxAttribute' && item.name === name);
+  const language =
+    literalString(attribute('language')?.value) ??
+    literalString(attribute('lang')?.value) ??
+    literalString(attribute('className')?.value)?.match(/(?:^|\s)language-([\w.-]+)/)?.[1] ??
+    '';
+  const content = (child) => {
+    if (child.type === 'text') return child.value;
+    if (['mdxFlowExpression', 'mdxTextExpression'].includes(child.type)) return literalString(child);
+    if (child.type !== 'paragraph') return null;
+    const parts = child.children.map(content);
+    return parts.includes(null) ? null : parts.join('');
+  };
+  const codeAttribute = attribute('code') ?? attribute('children');
+  const parts = node.children.map(content);
+  const code = codeAttribute ? literalString(codeAttribute.value) : parts.includes(null) ? null : parts.join('\n');
+  return { language: language.toLowerCase(), code };
 }
 
 export function encodeOpenFgaCode(source) {
@@ -123,16 +228,19 @@ function collectImports(node, source, imports) {
         (statement === expectedImport || statement === `${expectedImport};`),
       line: declaration.loc.start.line,
       source: declaration.source.value,
+      locals: declaration.specifiers.map((item) => item.local.name),
     });
   }
 }
 
 export function analyzeMdx(source, file = '<mdx>', { enforceCanonical = true } = {}) {
   const tree = parseMdx(source, file);
-  const analysis = { blocks: [], fences: [], imports: [], modelEntries: [] };
+  const analysis = { blocks: [], fences: [], legacyBlocks: [], imports: [], modelEntries: [] };
+  visit(tree, (node) => collectImports(node, source, analysis.imports));
+  const aliases = new Set(analysis.imports.flatMap((item) => item.locals));
 
   visit(tree, (node) => {
-    if (node.type === 'code' && codeLanguage(node) === 'dsl.openfga') {
+    if (node.type === 'code' && needsHighlighting(codeLanguage(node), node.value)) {
       const fence = {
         code: node.value,
         index: node.position.start.offset,
@@ -140,6 +248,14 @@ export function analyzeMdx(source, file = '<mdx>', { enforceCanonical = true } =
       };
       analysis.fences.push(fence);
       analysis.modelEntries.push({ ...fence, kind: 'fence' });
+      return;
+    }
+
+    const legacy = jsxCode(node);
+    if (legacy && needsHighlighting(legacy.language, legacy.code)) {
+      const block = { code: legacy.code, index: node.position.start.offset, line: node.position.start.line };
+      analysis.legacyBlocks.push(block);
+      analysis.modelEntries.push({ ...block, kind: 'jsx' });
       return;
     }
 
@@ -151,14 +267,16 @@ export function analyzeMdx(source, file = '<mdx>', { enforceCanonical = true } =
       throw new Error(`${file}:${node.position.start.line} must use OpenFGACodeBlock directly, not a namespace member`);
     }
 
+    if (aliases.has(node.name) && node.name !== 'OpenFGACodeBlock') {
+      throw new Error(`${file}:${node.position.start.line} must use the canonical OpenFGACodeBlock name, not an alias`);
+    }
+
     if ((node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') && node.name === 'OpenFGACodeBlock') {
       const block = parseCodeBlock(node, source, file, enforceCanonical);
       analysis.blocks.push(block);
       analysis.modelEntries.push({ ...block, kind: 'component' });
       return;
     }
-
-    collectImports(node, source, analysis.imports);
   });
 
   return analysis;
@@ -170,8 +288,11 @@ export function extractOpenFgaCodeBlocks(source, file) {
 
 export function validateMdxSource(source, file) {
   const analysis = analyzeMdx(source, file);
-  if (analysis.fences.length > 0) {
-    throw new Error(`${file} contains ${analysis.fences.length} dsl.openfga fence(s); use OpenFGACodeBlock`);
+  const legacy = [...analysis.fences, ...analysis.legacyBlocks];
+  if (legacy.length > 0) {
+    throw new Error(
+      `${file}:${legacy[0].line} contains ${legacy.length} unhighlighted OpenFGA DSL example(s); use OpenFGACodeBlock`,
+    );
   }
   if (analysis.blocks.length > 0 && (analysis.imports.length !== 1 || !analysis.imports[0].canonical)) {
     throw new Error(`${file} renders OpenFGACodeBlock but does not have exactly one canonical import`);
@@ -211,6 +332,7 @@ export function compareWithRef(
   let comparedComponents = 0;
   let comparedFiles = 0;
   let sourceFences = 0;
+  let sourceJsxBlocks = 0;
 
   for (const relativePath of previousPaths) {
     const previousSource = gitOutput(
@@ -221,18 +343,18 @@ export function compareWithRef(
     const previous = analyzeMdx(previousSource, `${ref}:${relativePath}`, {
       enforceCanonical: false,
     });
-    if (previous.fences.length === 0) continue;
+    if (previous.modelEntries.length === 0) continue;
 
     const currentPath = join(repoRoot, relativePath);
     if (!existsSync(currentPath)) {
-      throw new Error(`${relativePath} had DSL fences at ${ref} but has no current counterpart`);
+      throw new Error(`${relativePath} had DSL examples at ${ref} but has no current counterpart`);
     }
     const current = validateMdxSource(readFileSync(currentPath, 'utf8'), relativePath);
     const expectedCodes = previous.modelEntries.map(({ code }) => code);
     const currentCodes = current.blocks.map(({ code }) => code);
     if (currentCodes.length !== expectedCodes.length) {
       throw new Error(
-        `${relativePath} had ${previous.blocks.length} component(s) and ${previous.fences.length} DSL fence(s) at ${ref} but now has ${current.blocks.length} component(s)`,
+        `${relativePath} had ${previous.modelEntries.length} DSL example(s) at ${ref} but now has ${current.blocks.length} component(s)`,
       );
     }
     expectedCodes.forEach((code, index) => {
@@ -242,22 +364,27 @@ export function compareWithRef(
     });
 
     const convertedComponents = current.blocks.length - previous.blocks.length;
-    if (convertedComponents !== previous.fences.length) {
+    if (convertedComponents !== previous.fences.length + previous.legacyBlocks.length) {
       throw new Error(
-        `${relativePath} converted ${convertedComponents} component(s) from ${previous.fences.length} DSL fence(s)`,
+        `${relativePath} converted ${convertedComponents} component(s) from ${previous.fences.length + previous.legacyBlocks.length} legacy DSL example(s)`,
       );
     }
     sourceFences += previous.fences.length;
+    sourceJsxBlocks += previous.legacyBlocks.length;
     comparedComponents += convertedComponents;
     comparedFiles += 1;
   }
 
-  if (sourceFences !== comparedComponents) {
-    throw new Error(`Compared ${comparedComponents} component(s) from ${sourceFences} DSL fence(s) at ${ref}`);
+  if (sourceFences + sourceJsxBlocks !== comparedComponents) {
+    throw new Error(
+      `Compared ${comparedComponents} component(s) from ${sourceFences + sourceJsxBlocks} legacy DSL examples at ${ref}`,
+    );
   }
 
-  logger(`Matched ${comparedComponents}/${sourceFences} converted DSL blocks across ${comparedFiles} files to ${ref}`);
-  return { comparedComponents, comparedFiles, sourceFences };
+  logger(
+    `Matched ${comparedComponents}/${sourceFences + sourceJsxBlocks} converted DSL blocks and existing components across ${comparedFiles} files to ${ref}`,
+  );
+  return { comparedComponents, comparedFiles, sourceFences, sourceJsxBlocks };
 }
 
 export function validateOpenFgaCodeBlocks({

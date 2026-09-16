@@ -3,6 +3,8 @@ title: Adoption Patterns
 description: Describe different ways FGA can be adopted in an organization
 ---
 
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
+
 # OpenFGA Adoption Patterns
 
 This document outlines key implementation patterns for adopting OpenFGA in your organization.
@@ -11,23 +13,21 @@ This document outlines key implementation patterns for adopting OpenFGA in your 
 
 When evaluating this solution, many companies start by replicating their existing permissions structure before moving to more granular controls. For example, if you're using Role-Based Access Control (RBAC) in a B2B scenario, you might start with a simple model:
 
-```text
-model 
-  schema 1.1
+<OpenFGACodeBlock code={`model\x20
+\x20 schema 1.1
 
-  type user
-  type organization
-    relations
-      define admin: [user]
-      define member: [user]
-      # .. add additional organization roles
+\x20 type user
+\x20 type organization
+\x20   relations
+\x20     define admin: [user]
+\x20     define member: [user]
+\x20     # .. add additional organization roles
 
-      # map permissions to organization roles 
-      define can_add_member: admin
-      define can_delete_member: admin
-      define can_view_member: admin or member
-      define can_add_resource: admin or member
-```
+\x20     # map permissions to organization roles\x20
+\x20     define can_add_member: admin
+\x20     define can_delete_member: admin
+\x20     define can_view_member: admin or member
+\x20     define can_add_resource: admin or member`} />
 
 You can define any number of roles for the organization type and then define the permissions based on those roles. You can then check if users have a specific permission at the organization level by calling the Check API on the organization object:
 
@@ -37,29 +37,27 @@ Check(user: "user:anne", relation: "can_add_member", object: "organization:acme"
 
 A better implementation is to define the application's resource types in the model (e.g. documents, projects, insurance policies, bank accounts, etc):
 
-```text
-model 
-  schema 1.1
+<OpenFGACodeBlock code={`model\x20
+\x20 schema 1.1
 
-  type user
-  type organization
-    relations
-      define admin: [user]
-      define member: [user]
+\x20 type user
+\x20 type organization
+\x20   relations
+\x20     define admin: [user]
+\x20     define member: [user]
 
-      define can_add_member: admin
-      define can_delete_member: admin
-      define can_view_member: admin or member
-      define can_add_resource: admin or member
+\x20     define can_add_member: admin
+\x20     define can_delete_member: admin
+\x20     define can_view_member: admin or member
+\x20     define can_add_resource: admin or member
 
-   type resource
-     relations
-       define organization: [organization]
+\x20  type resource
+\x20    relations
+\x20      define organization: [organization]
 
-      # map resource permissions to organization roles
-       define can_delete_resource: admin from organization or member from organization
-       define can_view_resource: admin from organization or member from organization      
-```
+\x20     # map resource permissions to organization roles
+\x20      define can_delete_resource: admin from organization or member from organization
+\x20      define can_view_resource: admin from organization or member from organization\x20\x20\x20\x20\x20\x20`} />
 
 In this case, you'll need to write tuples that establish the relationship between resource instances and organizations, or use Contextual Tuples to specify them, e.g:
 
@@ -77,17 +75,15 @@ Check(user: "user:anne", relation: "can_view_resource", object: "resource:root")
 
 The main advantage of this approach is that your APIs will be checking permissions at the proper level. If you later want to evolve your authorization model to be more fine grained, you won't need to change your app. For example, you can add fine grained access permissions at the resource level, and your authorization check won't change:
 
-```text
-   type resource
-     relations
-       define organization: [organization]
-       define owner: [user]
-       define viewer: [user]
+<OpenFGACodeBlock code={`\x20  type resource
+\x20    relations
+\x20      define organization: [organization]
+\x20      define owner: [user]
+\x20      define viewer: [user]
 
-      # map resource permissions to organization roles
-       define can_delete_resource: admin from organization or member from organization or owner
-       define can_view_resource: admin from organization or member from organization or owner or viewer
-```
+\x20     # map resource permissions to organization roles
+\x20      define can_delete_resource: admin from organization or member from organization or owner
+\x20      define can_view_resource: admin from organization or member from organization or owner or viewer`} />
 
 ## Provide request-level data
 
@@ -117,12 +113,10 @@ Authentication services usually provide a way to enrich access tokens during the
 
 For example, if you want to include in the access token the organizations that a user can log-in to, based on the following model:
 
-```text
-  type user
-  type organization
-    relations
-      define member: [user]
-```
+<OpenFGACodeBlock code={`\x20 type user
+\x20 type organization
+\x20   relations
+\x20     define member: [user]`} />
 
 You can call `ListObjects(type:"organization", relation:"member", user: "user:xxx")` and include those.
 

@@ -3,6 +3,8 @@ title: Setup Access Control
 description: How to enable and setup the built-in access control OpenFGA server (experimental)
 ---
 
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
+
 # Setup Access Control
 
 In OpenFGA [v1.7.0](https://github.com/openfga/openfga/releases/tag/v1.7.0), we introduced an experimental built-in access control feature that allows you to control access to your OpenFGA server. It relies on a control store with its own model and tuples to authorize requests to the OpenFGA server itself.
@@ -37,45 +39,43 @@ You may choose to modify this model to suit your needs, however, keep in mind th
 The required types and relations that need to be defined are marked in the model below.
 </Note>
 
-```
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 
 type system # required
-  relations
-    define admin: [application] # required
-    define can_call_create_stores: admin # required
-    define can_call_list_stores: [application, application:*] or admin # required
+\x20 relations
+\x20   define admin: [application] # required
+\x20   define can_call_create_stores: admin # required
+\x20   define can_call_list_stores: [application, application:*] or admin # required
 
 type application # required
 
 type store # required
-  relations
-    define system: [system] # required
-    define admin: [application] or admin from system # required
-    define model_writer: [application] or admin
-    define reader: [application] or admin
-    define writer: [application] or admin
-    define can_call_delete_store: admin # required
-    define can_call_get_store: reader or writer or model_writer # required
-    define can_call_check: reader # required
-    define can_call_expand: reader # required
-    define can_call_list_objects: reader # required
-    define can_call_list_users: reader # required
-    define can_call_read: reader # required
-    define can_call_read_assertions: reader or model_writer # required
-    define can_call_read_authorization_models: reader or model_writer # required
-    define can_call_read_changes: reader # required
-    define can_call_write: writer # required
-    define can_call_write_assertions: model_writer # required
-    define can_call_write_authorization_models: model_writer # required
+\x20 relations
+\x20   define system: [system] # required
+\x20   define admin: [application] or admin from system # required
+\x20   define model_writer: [application] or admin
+\x20   define reader: [application] or admin
+\x20   define writer: [application] or admin
+\x20   define can_call_delete_store: admin # required
+\x20   define can_call_get_store: reader or writer or model_writer # required
+\x20   define can_call_check: reader # required
+\x20   define can_call_expand: reader # required
+\x20   define can_call_list_objects: reader # required
+\x20   define can_call_list_users: reader # required
+\x20   define can_call_read: reader # required
+\x20   define can_call_read_assertions: reader or model_writer # required
+\x20   define can_call_read_authorization_models: reader or model_writer # required
+\x20   define can_call_read_changes: reader # required
+\x20   define can_call_write: writer # required
+\x20   define can_call_write_assertions: model_writer # required
+\x20   define can_call_write_authorization_models: model_writer # required
 
 type module # required
-  relations
-    define store: [store] # required
-    define writer: [application]
-    define can_call_write: writer or writer from store # required
-```
+\x20 relations
+\x20   define store: [store] # required
+\x20   define writer: [application]
+\x20   define can_call_write: writer or writer from store # required`} />
 
 1. Place the model above in a file called `model.fga`.
 2. Run the following command to create the store and model:

@@ -3,6 +3,8 @@ title: Multi-Tenant SaaS Authorization with OpenFGA
 description: Authorize multi-tenant SaaS applications with OpenFGA. Strict tenant isolation, shared infrastructure, and cross-tenant sharing where you want it.
 ---
 
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
+
 # Multi-Tenant SaaS Authorization
 
 Multi-tenant SaaS is one of OpenFGA's most common production shapes. The same binary serves every tenant; tenant boundaries are enforced inside the authorization model rather than at the database or service layer.
@@ -25,36 +27,34 @@ This gives you:
 
 Most SaaS products eventually need tenant-defined roles — *"Acme wants a `billing-manager` role; Globex wants a `compliance-reviewer` role"* — without redeploying the model. The pattern is to make `role` a first-class type whose `assignee` relation can be a user, another role, or a group, and then bind those roles to organization-level permissions:
 
-```text
-type user
+<OpenFGACodeBlock code={`type user
 
 type group
-  relations
-    define member: [user, group#member]
+\x20 relations
+\x20   define member: [user, group#member]
 
 type role
-  relations
-    define assignee: [user, role#assignee, group#member]
+\x20 relations
+\x20   define assignee: [user, role#assignee, group#member]
 
 type organization
-  relations
-    define admin: [user, role#assignee]
-    define billing_manager: [role#assignee] or admin
-    define document_manager: [role#assignee] or admin
+\x20 relations
+\x20   define admin: [user, role#assignee]
+\x20   define billing_manager: [role#assignee] or admin
+\x20   define document_manager: [role#assignee] or admin
 
-    define can_invite_user: admin
-    define can_edit_billing: billing_manager
-    define can_create_document: document_manager
+\x20   define can_invite_user: admin
+\x20   define can_edit_billing: billing_manager
+\x20   define can_create_document: document_manager
 
 type document
-  relations
-    define organization: [organization]
-    define editor: document_manager from organization
-    define viewer: document_manager from organization
+\x20 relations
+\x20   define organization: [organization]
+\x20   define editor: document_manager from organization
+\x20   define viewer: document_manager from organization
 
-    define can_view: viewer or editor
-    define can_edit: editor
-```
+\x20   define can_view: viewer or editor
+\x20   define can_edit: editor`} />
 
 Each tenant creates its own `role:acme-billing-manager`, `role:acme-document-management`, etc., and binds them to the predefined organization-level relations (`billing_manager`, `document_manager`, `admin`). Users or groups become assignees of those roles, and document-level permissions inherit through the organization. The model itself stays static; tenants get full flexibility on which roles exist and who is in them.
 

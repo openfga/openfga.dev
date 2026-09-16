@@ -3,6 +3,7 @@ title: "Perform a list objects call"
 description: "List all objects a user is authorized to perform a specified action for a given resource type"
 ---
 
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
 import { ListObjectsRequestViewer } from '/snippets/ListObjectsRequestViewer.jsx';
 import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
 
@@ -65,14 +66,12 @@ This section describes how to perform a list objects request. The List Objects A
 
 Consider the following model which includes a `user` that can have a `reader` relationship with a `document`:
 
-```
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 type user
 type document
-  relations
-    define reader: [user]
-```
+\x20 relations
+\x20   define reader: [user]`} />
 
 Assume that you want to list all objects of type document that user `anne` has `reader` relationship with:
 

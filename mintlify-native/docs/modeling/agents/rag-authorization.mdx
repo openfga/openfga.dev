@@ -3,6 +3,7 @@ title: "RAG Authorization"
 description: "Retrieval-Augmented Generation (RAG) enhances LLM responses by retrieving relevant documents from a knowledge base. Without authorization checks, a user can ask a question and receive answers derived from documents they should not have access to. OpenFGA lets you enforce document-level permissions so that RAG pipelines only return content the user is authorized to see."
 ---
 
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
 import { BatchCheckRequestViewer } from '/snippets/BatchCheckRequestViewer.jsx';
 
 import { ListObjectsRequestViewer } from '/snippets/ListObjectsRequestViewer.jsx';
@@ -21,20 +22,18 @@ This pattern applies to both first-party and third-party scenarios:
 
 A typical RAG knowledge base contains documents organized in folders, with access controlled at both levels. The following model represents this structure:
 
-```text
-model
-  schema 1.1
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
 type user
 type folder
-  relations
-    define owner: [user]
-    define viewer: [user] or owner
+\x20 relations
+\x20   define owner: [user]
+\x20   define viewer: [user] or owner
 type document
-  relations
-    define folder: [folder]
-    define owner: [user]
-    define viewer: [user] or owner or viewer from folder
-```
+\x20 relations
+\x20   define folder: [folder]
+\x20   define owner: [user]
+\x20   define viewer: [user] or owner or viewer from folder`} />
 
 A `folder` has `owner` and `viewer` relations. A `document` belongs to a folder and inherits its viewers - anyone who can view the folder can view all documents inside it. You can also grant direct access to individual documents.
 
