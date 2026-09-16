@@ -3,7 +3,7 @@ title: "Model Migrations"
 description: "You can think of model migrations for  in the same way as you think about relational database migrations. You can perform migrations with or without downtime for both, and for some changes, doing them without downtime is harder."
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/modeling/migrating/migrating-models"
 content_type: "documentation"
-last_updated: "2026-09-16T11:26:51.000Z"
+last_updated: "2026-09-16T11:34:43.000Z"
 ---
 
 # Model Migrations

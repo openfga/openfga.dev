@@ -3,7 +3,7 @@ title: "Source of Truth"
 description: "Deciding where to store the \"source of truth\" for authorization data"
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/best-practices/source-of-truth"
 content_type: "documentation"
-last_updated: "2026-09-16T11:26:51.000Z"
+last_updated: "2026-09-16T11:34:43.000Z"
 ---
 
 # When to use OpenFGA as the 'source of truth' for authorization data

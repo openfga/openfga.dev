@@ -3,7 +3,7 @@ title: "Running OpenFGA in Production"
 description: "Best Practices of Running OpenFGA in a Production Environment"
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/best-practices/running-in-production"
 content_type: "documentation"
-last_updated: "2026-09-16T11:26:51.000Z"
+last_updated: "2026-09-16T11:34:43.000Z"
 ---
 
 # Running OpenFGA in Production

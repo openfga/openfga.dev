@@ -3,7 +3,7 @@ title: "RAG Authorization with OpenFGA"
 description: "Enforce per-user permissions on retrieval-augmented generation. Filter retrieved documents through OpenFGA before they reach the model."
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/use-cases/rag-authorization"
 content_type: "documentation"
-last_updated: "2026-09-16T11:26:51.000Z"
+last_updated: "2026-09-16T11:34:43.000Z"
 ---
 
 # RAG Authorization

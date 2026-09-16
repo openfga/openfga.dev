@@ -3,7 +3,7 @@ title: "MCP Server Authorization with OpenFGA"
 description: "Authorize Model Context Protocol (MCP) servers with OpenFGA. Per-tool, per-resource permission checks on every MCP request."
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/use-cases/mcp-server-authorization"
 content_type: "documentation"
-last_updated: "2026-09-16T11:26:51.000Z"
+last_updated: "2026-09-16T11:34:43.000Z"
 ---
 
 # MCP Server Authorization

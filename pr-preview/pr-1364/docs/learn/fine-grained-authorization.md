@@ -3,7 +3,7 @@ title: "What is Fine-Grained Authorization?"
 description: "Fine-grained authorization decides access at the resource and action level. Learn what FGA is, what it buys you, and how OpenFGA implements it."
 canonical: "https://openfga.dev/pr-preview/pr-1364/docs/learn/fine-grained-authorization"
 content_type: "documentation"
-last_updated: "2026-09-16T11:26:51.000Z"
+last_updated: "2026-09-16T11:34:43.000Z"
 ---
 
 # What is Fine-Grained Authorization?
