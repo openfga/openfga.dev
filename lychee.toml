@@ -1,0 +1,89 @@
+# Configuration for the lychee link checker (see .github/workflows/checks.yaml).
+#
+# Links are checked against the *built* site (the ./build output produced by
+# `npm run build`). Internal links (e.g. /docs/…, ./foo, ../bar) resolve to the
+# generated pages on disk via --root-dir + fallback_extensions, so a link to a
+# page added in the same PR is validated rather than skipped — nothing here
+# excludes internal links. External links are checked over the network.
+#
+# The `exclude` list below is EXTERNAL hosts only: placeholders used in docs,
+# endpoints that aren't browsable pages, and sites that reject automated
+# requests (403/406/503) despite being reachable in a browser.
+
+# Accepted HTTP success statuses. Bot-blocking hosts that return 403 are
+# handled via the exclude list below rather than accepted globally.
+accept = [200, 206]
+
+# Retry transient/rate-limited responses before failing.
+max_retries = 3
+retry_wait_time = 8
+
+# `trailingSlash: false` means the route /docs/x is written to disk as
+# build/docs/x.html — let lychee find it by trying the .html extension.
+fallback_extensions = ["html"]
+
+# A browser-like UA reduces spurious bot blocks.
+user_agent = "Mozilla/5.0 (compatible; lychee link checker; +https://github.com/lycheeverse/lychee)"
+
+exclude = [
+  # Placeholders / local-only URLs that appear in docs and code samples.
+  "^https?://localhost",
+  "^https://api\\.openfga\\.example",
+
+  # Absolute self-domain links are remapped to the local build via --remap in
+  # checks.yaml (https://openfga.dev/... -> file://.../build/...) so they
+  # validate against the PR build rather than the live site. Three remapped paths
+  # are excluded via --exclude in checks.yaml because they cannot be statically
+  # validated in the Docusaurus build: /api/service (Swagger UI, JS-rendered
+  # anchors), /api-reference (Mintlify-owned, covered by check:mintlify), and
+  # /search (template URL). No pattern is needed here for the self-domain.
+
+  # Machine endpoints (not browsable HTML pages) — return 406 to normal clients.
+  "^https://mcp\\.openfga\\.dev",
+  "^https://openfga\\.mcp\\.kapa\\.ai",
+
+  # Sites that block automated requests (verified: 403/406/503 to bots).
+  "^https?://(twitter|x)\\.com/",
+  "^https?://(www\\.)?linkedin\\.com",
+  "^https://(www\\.)?godaddy\\.com",
+  "^https://(www\\.)?instill\\.tech",
+  "^https://(www\\.)?headspace\\.com",
+  "^https://virv\\.ai",
+  "^https://app\\.fossa\\.com",
+  "^https://gradle\\.org/",
+  "^https://maven\\.apache\\.org/",
+  "^https://calendar\\.google\\.com",
+  "^https://auth0\\.com",
+  # Conference schedule pages (*.sched.com) — all return 403 to automated clients.
+  "^https://[a-z0-9.-]+\\.sched\\.com",
+  # CNCF Slack deep links — 403 to bots.
+  "^https://cloud-native\\.slack\\.com",
+  # Medium and Medium-based publications — 403 to automated clients.
+  "^https://(www\\.)?medium\\.com",
+  "^https://[a-z0-9-]+\\.medium\\.com",
+  "^https://levelup\\.gitconnected\\.com",
+  # Gartner — 403 to bots.
+  "^https://(www\\.)?gartner\\.com",
+
+  # Docusaurus auto-generates an "Edit this page" link on every page pointing
+  # back to the source file in this repo. These are UI chrome, not content
+  # links, and github.com rate-limits them heavily in CI (429). No value
+  # checking them: if the repo moves, the Docusaurus config changes, not the
+  # docs.
+  "^https://github\\.com/openfga/openfga\\.dev/edit/",
+
+  # GitHub search pages 429 on any automated client. Not a content link.
+  "^https://github\\.com/search",
+
+  # Package registries / repos that rate-limit or 403 automated checks.
+  "^https://www\\.nuget\\.org/packages/OpenFga\\.Sdk",
+  "^https://www\\.npmjs\\.com",
+  "^https://pypi\\.org/project/openfga-sdk",
+  "^https://github\\.com/openfga/(go|dotnet|python|java)-sdk",
+  "^https://github\\.com/bytefish/gitclub-dotnet",
+
+  # Additional bot-blocking hosts found in CI.
+  "^https://docs\\.google\\.com",
+  "^https://www\\.couchbase\\.com",
+  "^https://podcastindex\\.org",
+]
