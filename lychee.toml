@@ -51,6 +51,15 @@ exclude = [
   "^https://maven\\.apache\\.org/",
   "^https://calendar\\.google\\.com",
   "^https://auth0\\.com",
+  # Conference schedule pages (*.sched.com) — all return 403 to automated clients.
+  "^https://[a-z0-9.-]+\\.sched\\.com",
+  # CNCF Slack deep links — 403 to bots.
+  "^https://cloud-native\\.slack\\.com",
+  # Medium and Medium-based publications — 403 to automated clients.
+  "^https://[a-z0-9-]+\\.medium\\.com",
+  "^https://levelup\\.gitconnected\\.com",
+  # Gartner — 403 to bots.
+  "^https://(www\\.)?gartner\\.com",
 
   # Docusaurus auto-generates an "Edit this page" link on every page pointing
   # back to the source file in this repo. These are UI chrome, not content
