@@ -30,13 +30,13 @@ exclude = [
   "^https?://localhost",
   "^https://api\\.openfga\\.example",
 
-  # Swagger UI — anchors are JavaScript-rendered and cannot be validated by a
-  # static link checker.
-  "^https://openfga\\.dev/api/service",
-
-  # Search page uses a template URL (?q={search_term_string}) that is not a
-  # real navigable page and would always fail a link check.
-  "^https://openfga\\.dev/search",
+  # Absolute links to the production site: internal equivalents (root-relative
+  # and relative paths) are validated against ./build via --root-dir. Absolute
+  # self-domain URLs are excluded because checking production would fail for
+  # pages that exist in the PR but are not yet deployed. The vast majority of
+  # internal links in this codebase use root-relative or relative paths and are
+  # fully validated.
+  "^https://openfga\\.dev",
 
   # Machine endpoints (not browsable HTML pages) — return 406 to normal clients.
   "^https://mcp\\.openfga\\.dev",
