@@ -148,81 +148,81 @@ These are all the object types from the previous step (in order of appearance) b
   <Card title="Organization" icon="/docs/modeling/assets/getting-started-icon-org.svg" />
 </CardGroup>
 
-Let's highlight all object types in <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>blue</span>:
+Let's highlight all object types in <span className="openfga-modeling-highlight" style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>blue</span>:
 
-- A user can create a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> in a drive if they are the owner of the drive.
-- A user can create a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>folder</span> in a drive if they are the owner of the drive.
-- A user can create a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> in a folder if they are the owner of the folder.
-- A user can create a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>folder</span> in a folder if they are the owner of the folder.
-
----
-
-- A user can share a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> with another user or an organization as either editor or viewer if they are an owner or editor of a document or if they are an owner of the folder/drive that is the parent of the document.
+- A user can create a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> in a drive if they are the owner of the drive.
+- A user can create a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>folder</span> in a drive if they are the owner of the drive.
+- A user can create a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> in a folder if they are the owner of the folder.
+- A user can create a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>folder</span> in a folder if they are the owner of the folder.
 
 ---
 
-- A user can share a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>folder</span> with another user or an organization as a viewer if they are an owner of the folder.
+- A user can share a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> with another user or an organization as either editor or viewer if they are an owner or editor of a document or if they are an owner of the folder/drive that is the parent of the document.
 
 ---
 
-- A user can view a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> if they are an owner, viewer or editor of the document or if they are a viewer, owner of the folder/drive that is the parent of the document.
+- A user can share a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>folder</span> with another user or an organization as a viewer if they are an owner of the folder.
 
 ---
 
-- A user can edit a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> if they are an owner or editor of the document or if they are an owner of the folder/drive that is the parent of the document.
+- A user can view a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> if they are an owner, viewer or editor of the document or if they are a viewer, owner of the folder/drive that is the parent of the document.
 
 ---
 
-- A user can change the owner of a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> if they are an owner of the document.
+- A user can edit a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> if they are an owner or editor of the document or if they are an owner of the folder/drive that is the parent of the document.
 
 ---
 
-- A user can change the owner of a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>folder</span> if they are an owner of the folder.
+- A user can change the owner of a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> if they are an owner of the document.
 
 ---
 
-- A user can be a member of an <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>organization</span>.
+- A user can change the owner of a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>folder</span> if they are an owner of the folder.
+
+---
+
+- A user can be a member of an <span className="openfga-modeling-highlight" style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>organization</span>.
 
   *How a user is added as a member to an organization is beyond the scope of the feature we picked to write down.*
 
 ---
 
-- A user can view a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>folder</span> if they are the owner of the folder, or a viewer or owner of either the parent folder of the folder, or the parent drive of the folder.
+- A user can view a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>folder</span> if they are the owner of the folder, or a viewer or owner of either the parent folder of the folder, or the parent drive of the folder.
 
 However, the list of object types is not finished. To complete the list of object types you must also add all the second nouns that appear in conditions as part of expressions of this format: **"\{first noun\} of a/the \{second noun\}"**.
 
 > ... IF \{first noun\} of a/the \{second noun\}
 
-Let's highlight those expressions in <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>green</span>:
+Let's highlight those expressions in <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>green</span>:
 
-- A user can create a document in a drive if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the drive</span>.
-- A user can create a folder in a drive if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the drive</span>.
-- A user can create a document in a folder if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>. The folder is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
-- A user can create a folder in a folder if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>. The existing folder is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the new folder</span> .
-
----
-
-- A user can share a document with another user or an organization as either editor or viewer if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner or editor of a document</span> or if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder/drive</span> that is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
+- A user can create a document in a drive if they are the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the drive</span>.
+- A user can create a folder in a drive if they are the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the drive</span>.
+- A user can create a document in a folder if they are the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>. The folder is the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
+- A user can create a folder in a folder if they are the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>. The existing folder is the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the new folder</span> .
 
 ---
 
-- A user can share a folder with another user or an organization as a viewer if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>.
+- A user can share a document with another user or an organization as either editor or viewer if they are an <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner or editor of a document</span> or if they are an <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder/drive</span> that is the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
 
 ---
 
-- A user can view a document if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner, viewer or editor of the document</span> or if they are a <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>viewer or owner of the folder/drive</span> that is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
+- A user can share a folder with another user or an organization as a viewer if they are an <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>.
 
 ---
 
-- A user can edit a document if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner or editor of the document</span> or if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder/drive</span> that is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
+- A user can view a document if they are an <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner, viewer or editor of the document</span> or if they are a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>viewer or owner of the folder/drive</span> that is the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
 
 ---
 
-- A user can change the owner of a document if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the document</span>.
+- A user can edit a document if they are an <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner or editor of the document</span> or if they are an <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder/drive</span> that is the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
 
 ---
 
-- A user can change the owner of a folder if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>.
+- A user can change the owner of a document if they are an <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the document</span>.
+
+---
+
+- A user can change the owner of a folder if they are an <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>.
 
 ---
 
@@ -232,7 +232,7 @@ Let's highlight those expressions in <span style={{ backgroundColor: '#def7f1', 
 
 ---
 
-- A user can view a folder if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>, or a <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>viewer or owner of either the parent folder of the folder, or the parent drive of the folder</span>.
+- A user can view a folder if they are the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>, or a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>viewer or owner of either the parent folder of the folder, or the parent drive of the folder</span>.
 
 The only second noun we didn't have in our object type list is "Drive", so we'll add it to the list. We will also need to add "User" to the list as it establishes the type of user who can establish relations.
 
@@ -291,47 +291,47 @@ To identify relations for a type in the write-up we can perform an exercise simi
 
 Relations for a type \{type\} will be all of these:
 
-- any noun that is the \{noun\} of a "\{noun\} of a/an/the \{type\}" expression. **These are typically the Foreign Keys in a database.** We'll highlight these in <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>green</span>.
-- any verb or action that is the \{action\} of a "can \{action\} (in) a/an \{type\}" expression. **These are typically the permissions for a type.** We'll highlight these in <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>yellow</span>.
+- any noun that is the \{noun\} of a "\{noun\} of a/an/the \{type\}" expression. **These are typically the Foreign Keys in a database.** We'll highlight these in <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>green</span>.
+- any verb or action that is the \{action\} of a "can \{action\} (in) a/an \{type\}" expression. **These are typically the permissions for a type.** We'll highlight these in <span className="openfga-modeling-highlight" style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>yellow</span>.
 
-- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can create a document in a drive</span> if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the drive</span>.
-- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can create a folder in a drive</span> if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the drive</span>.
-- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can create a document in a folder</span> if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>. The folder is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
-- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can create a folder in a folder</span> if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>. The existing folder is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the new folder</span>.
-
----
-
-- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can share a document with another user or an organization</span> as either editor or viewer if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner or editor of a document</span> or if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder/drive</span> that is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
+- A user <span className="openfga-modeling-highlight" style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can create a document in a drive</span> if they are the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the drive</span>.
+- A user <span className="openfga-modeling-highlight" style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can create a folder in a drive</span> if they are the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the drive</span>.
+- A user <span className="openfga-modeling-highlight" style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can create a document in a folder</span> if they are the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>. The folder is the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
+- A user <span className="openfga-modeling-highlight" style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can create a folder in a folder</span> if they are the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>. The existing folder is the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the new folder</span>.
 
 ---
 
-- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can share a folder with another user or an organization</span> as a viewer if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>.
+- A user <span className="openfga-modeling-highlight" style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can share a document with another user or an organization</span> as either editor or viewer if they are an <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner or editor of a document</span> or if they are an <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder/drive</span> that is the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
 
 ---
 
-- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can view a document</span> if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner, viewer or editor of the document</span> or if they are a <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>viewer or owner of the folder/drive</span> that is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
+- A user <span className="openfga-modeling-highlight" style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can share a folder with another user or an organization</span> as a viewer if they are an <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>.
 
 ---
 
-- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can edit a document</span> if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner or editor of the document</span> or if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder/drive</span> that is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
+- A user <span className="openfga-modeling-highlight" style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can view a document</span> if they are an <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner, viewer or editor of the document</span> or if they are a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>viewer or owner of the folder/drive</span> that is the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
 
 ---
 
-- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can change the owner of a document</span> if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the document</span>.
+- A user <span className="openfga-modeling-highlight" style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can edit a document</span> if they are an <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner or editor of the document</span> or if they are an <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder/drive</span> that is the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
 
 ---
 
-- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can change the owner of a folder</span> if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>.
+- A user <span className="openfga-modeling-highlight" style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can change the owner of a document</span> if they are an <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the document</span>.
 
 ---
 
-- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can be a member of an organization</span>.
+- A user <span className="openfga-modeling-highlight" style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can change the owner of a folder</span> if they are an <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>.
+
+---
+
+- A user <span className="openfga-modeling-highlight" style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can be a member of an organization</span>.
 
   *How a user is added as a member to an organization is beyond the scope of the feature we picked to write down.*
 
 ---
 
-- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can view a folder</span> if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>, or a <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>viewer or owner of either the parent folder of the folder, or the parent drive of the folder</span>.
+- A user <span className="openfga-modeling-highlight" style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can view a folder</span> if they are the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>, or a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>viewer or owner of either the parent folder of the folder, or the parent drive of the folder</span>.
 
 The resulting list is:
 

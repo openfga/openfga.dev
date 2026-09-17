@@ -157,6 +157,19 @@ body:has(#api-playground-2-operation-page) #navbar a[href='/api-reference']::bef
   text-transform: none;
 }
 
+/* Preserve the original visual emphasis in the three modeling exercises. */
+#content .openfga-modeling-highlight {
+  padding: 1.2px 7.2px;
+  border-radius: 2.4px;
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
 /* Keep the repository name available to assistive technology without displaying it. */
 a[href='https://github.com/openfga/openfga'] > span:first-of-type {
   position: absolute;

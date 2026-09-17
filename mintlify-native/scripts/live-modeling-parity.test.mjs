@@ -188,6 +188,29 @@ test('all three worked exercises retain their complete sentences and original hi
   assert.ok(permission > gettingStarted.indexOf('### 03. List Relations For Those Types') && permission < gettingStarted.indexOf('### 04. Define Relations'));
 });
 
+test('all exercise highlights retain the original uppercase pill presentation', () => {
+  const spans = nodes(gettingStarted).filter((node) => node.name === 'span'
+    && Object.hasOwn(styleValues(node), 'backgroundColor'));
+  assert.equal(spans.length, 68);
+  assert.ok(spans.every((node) => props(node).className === 'openfga-modeling-highlight'));
+  const stylesheet = read('mintlify-native/global.css');
+  const rule = /#content \.openfga-modeling-highlight\s*\{([^}]+)\}/.exec(stylesheet);
+  assert.ok(rule, 'The highlight class must style the native article content');
+  const declarations = Object.fromEntries(rule[1].trim().split(';').filter((item) => item.trim())
+    .map((item) => item.split(':').map((part) => part.trim())));
+  assert.deepEqual(declarations, {
+    padding: '1.2px 7.2px',
+    'border-radius': '2.4px',
+    'font-family': "'Inter', sans-serif",
+    'font-style': 'normal',
+    'font-weight': '600',
+    'font-size': '12px',
+    'line-height': '18px',
+    'letter-spacing': '0.8px',
+    'text-transform': 'uppercase',
+  });
+});
+
 test('getting-started icons are the exact original assets and the ReBAC link targets the real heading', () => {
   for (const asset of contracts.assets) {
     assert.equal(hash(read(`mintlify-native/${asset.path}`)), asset.sha256, asset.path);
