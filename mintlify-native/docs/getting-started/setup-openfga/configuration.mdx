@@ -92,6 +92,14 @@ docker run docker.io/openfga/openfga:latest run \
 
 ## List of options
 
+{/*
+Run `npm run build:config-page` explicitly to update only the marked release/table.
+Keep the introduction, examples, headings, and related cards outside the markers.
+Release-driven changes require a separately reviewed update to independent
+production-parity fixtures; never regenerate those fixtures from this page.
+*/}
+{/* BEGIN GENERATED CONFIGURATION OPTIONS */}
+
 The following table lists the configuration options for the OpenFGA server [v1.20.0](https://github.com/openfga/openfga/releases/tag/v1.20.0), based on the [config-schema.json](https://raw.githubusercontent.com/openfga/openfga/refs/tags/v1.20.0/.config-schema.json).
 
 | Config File | Env Var | Flag Name | Type | Description | Default Value |
@@ -214,6 +222,8 @@ The following table lists the configuration options for the OpenFGA server [v1.2
 | `planner.initialGuess` | <span id="OPENFGA_PLANNER_INITIAL_GUESS" style={{ scrollMarginTop: '7rem' }}><code>OPENFGA_PLANNER_INITIAL_GUESS</code></span> | `planner-initial-guess` | string (duration) | The initial guess for the planners estimation. | `10ms` |
 | `planner.evictionThreshold` | <span id="OPENFGA_PLANNER_EVICTION_THRESHOLD" style={{ scrollMarginTop: '7rem' }}><code>OPENFGA_PLANNER_EVICTION_THRESHOLD</code></span> | `planner-eviction-threshold` |  | How long a planner key can be unused before being evicted. | `0` |
 | `planner.cleanupInterval` | <span id="OPENFGA_PLANNER_CLEANUP_INTERVAL" style={{ scrollMarginTop: '7rem' }}><code>OPENFGA_PLANNER_CLEANUP_INTERVAL</code></span> | `planner-cleanup-interval` | string (duration) | How often the planner checks for stale keys. | `0` |
+
+{/* END GENERATED CONFIGURATION OPTIONS */}
 
 ## Related Sections
 

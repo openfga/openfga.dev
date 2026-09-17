@@ -20,7 +20,7 @@ jobs:
       pull-requests: write # Create or update docs update pull requests
     env:
       UPDATE_BRANCH: docs/update-openfga-configuration
-      UPDATE_FILE: docs/content/getting-started/setup-openfga/configuration.mdx
+      UPDATE_FILE: mintlify-native/docs/getting-started/setup-openfga/configuration.mdx
       BASE_BRANCH: ${{ github.event.repository.default_branch }}
     steps:
       - name: Cached LFS checkout
@@ -36,8 +36,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Test configuration generator offline
+        run: node --test scripts/update-config-page.test.mjs
+
       - name: Update configuration docs
         run: npm run build:config-page
+
+      - name: Validate generated native page
+        run: node mintlify-native/scripts/validate-mdx.mjs "$UPDATE_FILE"
 
       - name: Check for documentation changes
         id: changes
@@ -48,6 +54,13 @@ jobs:
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
+
+      # A release can intentionally change the table, but cannot approve its own baseline.
+      - name: Check independent production parity
+        if: steps.changes.outputs.changed == 'true'
+        id: parity
+        continue-on-error: true
+        run: npm run test:mintlify-content-parity
 
       - name: Generate token
         if: steps.changes.outputs.changed == 'true'
@@ -77,6 +90,7 @@ jobs:
         if: steps.changes.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PARITY_OUTCOME: ${{ steps.parity.outcome }}
         run: |
           git checkout -B "$UPDATE_BRANCH"
           git add "$UPDATE_FILE"
@@ -91,7 +105,11 @@ jobs:
             git push "$repo_url" "HEAD:${UPDATE_BRANCH}"
           fi
 
-          pr_body="This automated PR updates the generated OpenFGA configuration documentation from the latest OpenFGA release schema."
+          pr_body="This draft PR updates only the generated native configuration version/table from the latest official OpenFGA release schema.
+
+          Generator tests and native MDX validation passed. Independent production-content parity: ${PARITY_OUTCOME}.
+
+          Independent parity expectations were NOT regenerated. Release-driven table changes (including corrected defaults) require separately sourced and reviewed baseline updates before this PR can merge. Review the release schema, preserve the hand-authored prose/examples/cards, and resolve any failing parity checks rather than accepting generated output as its own oracle."
           pr_number="$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$UPDATE_BRANCH" --state open --json number --jq '.[0].number')"
 
           if [ -n "$pr_number" ]; then
@@ -99,11 +117,22 @@ jobs:
               --repo "$GITHUB_REPOSITORY" \
               --title "docs: auto-update OpenFGA configuration documentation" \
               --body "$pr_body"
+            pr_is_draft="$(gh pr view "$pr_number" --repo "$GITHUB_REPOSITORY" --json isDraft --jq '.isDraft')"
+            if [ "$pr_is_draft" != "true" ]; then
+              gh pr ready "$pr_number" --undo --repo "$GITHUB_REPOSITORY"
+            fi
           else
             gh pr create \
               --repo "$GITHUB_REPOSITORY" \
               --base "$BASE_BRANCH" \
               --head "$UPDATE_BRANCH" \
+              --draft \
               --title "docs: auto-update OpenFGA configuration documentation" \
               --body "$pr_body"
           fi
+
+      - name: Require independent baseline review
+        if: steps.parity.outcome == 'failure'
+        run: |
+          echo "::error::A draft schema-update PR was created, but independent production parity failed. Review release-backed changes and update the independent baseline separately before merging; this workflow never regenerates parity expectations."
+          exit 1
