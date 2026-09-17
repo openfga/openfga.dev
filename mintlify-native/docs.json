@@ -364,6 +364,56 @@
       "source": "/docs/modeling",
       "destination": "/docs/modeling/overview",
       "permanent": false
+    },
+    {
+      "source": "/docs/adopters",
+      "destination": "/docs/adopters/overview",
+      "permanent": false
+    },
+    {
+      "source": "/docs/best-practices",
+      "destination": "/docs/best-practices/overview",
+      "permanent": false
+    },
+    {
+      "source": "/docs/industries",
+      "destination": "/docs/industries/overview",
+      "permanent": false
+    },
+    {
+      "source": "/docs/interacting",
+      "destination": "/docs/interacting/overview",
+      "permanent": false
+    },
+    {
+      "source": "/docs/learn",
+      "destination": "/docs/learn/overview",
+      "permanent": false
+    },
+    {
+      "source": "/docs/modeling/advanced",
+      "destination": "/docs/modeling/advanced/overview",
+      "permanent": false
+    },
+    {
+      "source": "/docs/modeling/agents",
+      "destination": "/docs/modeling/agents/overview",
+      "permanent": false
+    },
+    {
+      "source": "/docs/modeling/building-blocks",
+      "destination": "/docs/modeling/building-blocks/overview",
+      "permanent": false
+    },
+    {
+      "source": "/docs/modeling/migrating",
+      "destination": "/docs/modeling/migrating/overview",
+      "permanent": false
+    },
+    {
+      "source": "/docs/use-cases",
+      "destination": "/docs/use-cases/overview",
+      "permanent": false
     }
   ],
   "search": {

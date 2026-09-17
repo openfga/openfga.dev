@@ -23,6 +23,20 @@ export const expectedHeaderLinks = [
   { type: 'github', href: 'https://github.com/openfga/openfga' },
 ];
 
+export const expectedOverviewRoutes = [
+  '/docs/modeling',
+  '/docs/adopters',
+  '/docs/best-practices',
+  '/docs/industries',
+  '/docs/interacting',
+  '/docs/learn',
+  '/docs/modeling/advanced',
+  '/docs/modeling/agents',
+  '/docs/modeling/building-blocks',
+  '/docs/modeling/migrating',
+  '/docs/use-cases',
+];
+
 function collectNavigationEntries(value, predicate, location = 'navigation', results = []) {
   if (Array.isArray(value)) {
     value.forEach((entry, index) => collectNavigationEntries(entry, predicate, `${location}[${index}]`, results));
@@ -107,6 +121,6 @@ export function validateRouteScopedNavigation(docs) {
   deepStrictEqual(docs.navbar?.links, expectedHeaderLinks, 'Navbar links must retain the approved exact order');
   assertRedirect(docs, '/docs', '/docs/fga');
   assertRedirect(docs, '/api-reference', '/api-reference/stores/list-all-stores');
-  assertRedirect(docs, '/docs/modeling', '/docs/modeling/overview');
+  for (const route of expectedOverviewRoutes) assertRedirect(docs, route, `${route}/overview`);
   return { docsAnchor, apiAnchor };
 }

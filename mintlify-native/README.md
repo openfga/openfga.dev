@@ -113,9 +113,11 @@ the build if either drifts. Native temporary redirects keep `/docs` and
 page.
 
 The homepage retains the existing `/docs/modeling` URL, which Docusaurus builds
-from the modeling overview's `slug`. Mintlify temporarily redirects that same
-URL to `/docs/modeling/overview`. Keep both targets working during migration
-rather than excluding the homepage link from validation.
+from the modeling overview's `slug`. Mintlify temporarily redirects that URL
+and the other ten published overview URLs to their corresponding `/overview`
+pages. Source-backed navigation tests check every migrated page's public slug,
+including nested modeling overviews. Keep existing links working during
+migration rather than excluding them from validation.
 
 ### Native API SDK samples
 

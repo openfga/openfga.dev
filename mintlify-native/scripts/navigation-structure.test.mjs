@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { parse as parseYaml } from 'yaml';
 
 import {
   expectedHeaderLinks,
+  expectedOverviewRoutes,
   getUniqueOpenApiNavigationEntry,
   validateRouteScopedNavigation,
 } from './navigation-structure.mjs';
@@ -36,7 +38,7 @@ function fixture() {
         destination: '/api-reference/stores/list-all-stores',
         permanent: false,
       },
-      { source: '/docs/modeling', destination: '/docs/modeling/overview', permanent: false },
+      ...expectedOverviewRoutes.map((source) => ({ source, destination: `${source}/overview`, permanent: false })),
     ],
   };
 }
@@ -61,6 +63,42 @@ test('the homepage modeling link resolves in Docusaurus and retains its Mintlify
   assert.match(source, /^slug: \/modeling$/m);
   validateRouteScopedNavigation(docs);
 });
+
+test('all source documentation slugs retain a page or exact native redirect', () => {
+  const manifest = JSON.parse(readFileSync(new URL('../source-pages.json', import.meta.url), 'utf8'));
+  const docs = JSON.parse(readFileSync(new URL('../docs.json', import.meta.url), 'utf8'));
+  const exclusions = new Set(manifest.exclusions.map(({ source }) => source));
+  const overrides = new Map(manifest.overrides.map(({ source, destination }) => [source, destination]));
+  const redirects = [];
+  for (const source of manifest.sources) {
+    if (exclusions.has(source)) continue;
+    const text = readFileSync(new URL(`../../docs/content/${source}`, import.meta.url), 'utf8');
+    const frontmatter = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+    assert.ok(frontmatter, `${source}: expected YAML frontmatter`);
+    const { slug } = parseYaml(frontmatter[1]);
+    assert.equal(typeof slug, 'string', `${source}: expected explicit public slug`);
+    const publicRoute = `/docs${slug}`;
+    const destination = `/${(overrides.get(source) ?? `docs/${source}`).slice(0, -4)}`;
+    if (publicRoute === destination) continue;
+    assert.deepEqual(
+      docs.redirects.filter(({ source }) => source === publicRoute),
+      [{ source: publicRoute, destination, permanent: false }],
+      `${source}: preserve the existing ${publicRoute} URL`,
+    );
+    redirects.push(publicRoute);
+  }
+  assert.deepEqual(redirects.sort(), [...expectedOverviewRoutes].sort());
+});
+
+for (const route of expectedOverviewRoutes) {
+  test(`the published ${route} overview URL cannot lose its redirect`, () => {
+    const docs = fixture();
+    docs.redirects = docs.redirects.filter(({ source }) => source !== route);
+    assert.throws(() => validateRouteScopedNavigation(docs), {
+      message: `The stable "${route}" entry must redirect temporarily to "${route}/overview"`,
+    });
+  });
+}
 
 test('navbar CSS separates the accessible target from the GitHub-sized visual surface', () => {
   const css = readFileSync(new URL('../global.css', import.meta.url), 'utf8');
@@ -156,7 +194,7 @@ for (const [name, mutate, expected] of [
   ],
   [
     'stable modeling entry requires its native redirect',
-    (docs) => docs.redirects.pop(),
+    (docs) => docs.redirects.splice(2, 1),
     /stable "\/docs\/modeling" entry must redirect temporarily/,
   ],
   [
