@@ -26,17 +26,14 @@ Relationship tuples are helpful when you want to specify that a group of users a
 
 ## Before you start
 
-Familiarize yourself with basic OpenFGA concepts before you continue.
+Familiarize yourself with basic [OpenFGA Concepts](/docs/concepts) before you continue.
 
-<details>
-<summary>
+<Accordion title="Prerequisites and starting model">
 
-In the example below, you have the following authorization model with two types:
+In the example below, you have the following [authorization model](/docs/concepts#what-is-an-authorization-model) with two [types](/docs/concepts#what-is-a-type):
 
 - `company` that can have an `employee` relation
 - `document` that can have a `reader` relation.
-
-</summary>
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -85,19 +82,19 @@ OpenFGA allows you to add users to groups and grant groups access to an object. 
 
 ### OpenFGA concepts
 
-- A **Type**: a class of objects that have similar characteristics
-- A **User**: an entity in the system that can be related to an object
-- A **Relation**: a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
-- An **Object**: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
-- A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
+- A [Type](/docs/concepts#what-is-a-type): a class of objects that have similar characteristics
+- A [User](/docs/concepts#what-is-a-user): an entity in the system that can be related to an object
+- A [Relation](/docs/concepts#what-is-a-relation): a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An [Object](/docs/concepts#what-is-an-object): represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
+- A [Relationship Tuple](/docs/concepts#what-is-a-relationship-tuple): a grouping consisting of a user, a relation and an object stored in OpenFGA
 
-</details>
+</Accordion>
 
 ## Step by step
 
 ### 01. Adding company to the document
 
-The following Relationship Tuple assigns every `employee` of a type `company` a `reader` relationship with a particular object of type `document`, in this case `document:planning`:
+The following [Relationship Tuple](/docs/concepts#what-is-a-relationship-tuple) assigns every `employee` of a type `company` a `reader` relationship with a particular object of type `document`, in this case `document:planning`:
 
 Every employee in the company can read document:planning
 
@@ -113,7 +110,7 @@ Every employee in the company can read document:planning
 
 ### 02. Add an employee to the company
 
-Below is a relationship tuple specifying that `Anne` is an `employee` of `company:xyz`:
+Below is a [relationship tuple](/docs/concepts#what-is-a-relationship-tuple) specifying that `Anne` is an `employee` of `company:xyz`:
 
 <WriteRequestViewer
   relationshipTuples={[

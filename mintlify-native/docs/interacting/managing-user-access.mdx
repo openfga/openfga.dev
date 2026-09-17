@@ -8,10 +8,12 @@ import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
 
 # Managing User Access
 
-In this guide you will learn how to grant a user access to a particular object.
+In this guide you will learn how to grant a [user](/docs/concepts#what-is-a-user) access to a particular [object](/docs/concepts#what-is-an-object).
 
 <Note>
-Granting access with a _relationship tuple_ is a core part of OpenFGA. Without any relationship tuples, any _check_ will fail. You should use:
+**When to use**
+
+Granting access with a _[relationship tuple](/docs/concepts#what-is-a-relationship-tuple)_ is a core part of OpenFGA. Without any relationship tuples, any _[check](/docs/concepts#what-is-a-check-request)_ will fail. You should use:
 
 - _authorization model_ to represent what **relation**s are possible between the users and objects in your system
 - _relationship tuples_ to represent the facts about the relationships between users and objects in your system.
@@ -19,15 +21,12 @@ Granting access with a _relationship tuple_ is a core part of OpenFGA. Without a
 
 ## Before you start
 
-In order to understand this guide correctly you must be familiar with some OpenFGA concepts and know how to develop the things that we will list below.
+In order to understand this guide correctly you must be familiar with some [OpenFGA Concepts](/docs/concepts) and know how to develop the things that we will list below.
 
-<details>
-<summary>
+<Accordion title="Prerequisites and starting model">
 
-Assume that you have the following authorization model.<br />
-You have a type called `tweet` that can have a `reader`.
-
-</summary>
+Assume that you have the following [authorization model](/docs/concepts#what-is-an-authorization-model).<br />
+You have a [type](/docs/concepts#what-is-a-type) called `tweet` that can have a `reader`.
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -63,13 +62,13 @@ You need to know how to create an authorization model and create a relationship 
 
 ### OpenFGA concepts
 
-- A **Type**: a class of objects that have similar characteristics
-- A **User**: an entity in the system that can be related to an object
-- A **Relation**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
-- An **Object**: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
-- A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
+- A [Type](/docs/concepts#what-is-a-type): a class of objects that have similar characteristics
+- A [User](/docs/concepts#what-is-a-user): an entity in the system that can be related to an object
+- A [Relation](/docs/concepts#what-is-a-relation): is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An [Object](/docs/concepts#what-is-an-object): represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
+- A [Relationship Tuple](/docs/concepts#what-is-a-relationship-tuple): a grouping consisting of a user, a relation and an object stored in OpenFGA
 
-</details>
+</Accordion>
 
 ## Step by step
 

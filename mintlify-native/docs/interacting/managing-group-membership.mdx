@@ -25,12 +25,12 @@ These are cases where using group membership can be helpful as you do not need t
 
 ## Before you start
 
-In order to understand this guide correctly you must be familiar with some OpenFGA concepts and know how to develop the things that we will list below.
+In order to understand this guide correctly you must be familiar with some [OpenFGA Concepts](/docs/concepts) and know how to develop the things that we will list below.
 
 <Accordion title="Prerequisites and starting model">
 
-Assume that you have the following authorization model.<br />
-You have two types:
+Assume that you have the following [authorization model](/docs/concepts#what-is-an-authorization-model).<br />
+You have two [types](/docs/concepts#what-is-a-type):
 
 - `org` that can have a `member` relation
 - `document` that can have a `reader` relation.
@@ -72,7 +72,7 @@ You have two types:
   }}
 />
 
-Let us also assume that we have an `org` called "contoso" and a `document` called `planning`, and every `member` of that `org` can read the document. That is represented by having the following relationship tuple in the store:
+Let us also assume that we have an `org` called "contoso" and a `document` called `planning`, and every `member` of that `org` can read the document. That is represented by having the following _[relationship tuple](/docs/concepts#what-is-a-relationship-tuple)_ in the store:
 
 Members of the contoso org can read the planning document
 
@@ -86,7 +86,7 @@ Members of the contoso org can read the planning document
 ]
 ```
 
-With the above authorization model and relationship tuples, OpenFGA will respond with `{"allowed":false}` when check is called to see if Anne can read `document:planning`.
+With the above authorization model and relationship tuples, OpenFGA will respond with `{"allowed":false}` when _[check](/docs/concepts#what-is-a-check-request)_ is called to see if Anne can read `document:planning`.
 
 <CheckRequestViewer user={'anne'} relation={'reader'} object={'document:planning'} allowed={false} />
 
@@ -119,11 +119,11 @@ You need to know how to manage group access to an object. [Learn more →](/docs
 
 ### OpenFGA concepts
 
-- A **Type**: a class of objects that have similar characteristics
-- A **User**: an entity in the system that can be related to an object
-- A **Relation**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
-- An **Object**: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
-- A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
+- A [Type](/docs/concepts#what-is-a-type): a class of objects that have similar characteristics
+- A [User](/docs/concepts#what-is-a-user): an entity in the system that can be related to an object
+- A [Relation](/docs/concepts#what-is-a-relation): is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An [Object](/docs/concepts#what-is-an-object): represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
+- A [Relationship Tuple](/docs/concepts#what-is-a-relationship-tuple): a grouping consisting of a user, a relation and an object stored in OpenFGA
 
 </Accordion>
 
