@@ -1,9 +1,8 @@
 ---
-title: Source of Truth
+title: "When to use OpenFGA as the 'source of truth' for authorization data"
 description: Deciding where to store the "source of truth" for authorization data
+sidebarTitle: "Source of Truth"
 ---
-
-# When to use OpenFGA as the 'source of truth' for authorization data
 
 OpenFGA is inspired by [Google's Zanzibar](https://research.google/pubs/zanzibar-googles-consistent-global-authorization-system/). In Google's architecture, Zanzibar is an extremely efficient system for authorization checks, but it's never the source of truth for application data. The [Read endpoint](https://openfga.dev/docs/interacting/relationship-queries#read) is mostly used when you need to inspect the stored data, e.g. for troubleshooting consistency issues.
 

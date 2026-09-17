@@ -3,8 +3,6 @@ title: AuthZEN API (Experimental)
 description: Using the AuthZEN interoperability API with OpenFGA
 ---
 
-# AuthZEN API (Experimental)
-
 OpenFGA implements the [AuthZEN](https://openid.net/specs/authorization-api-1_0.html) specification, a standard API for authorization interoperability defined by the OpenID AuthZEN working group. This allows you to use OpenFGA as an AuthZEN-compliant Policy Decision Point (PDP).
 
 We recommend that you use the native API when integrating your application with OpenFGA, and you use AuthZEN when you are integrating an AuthZEN-compatible product like an API/MCP Gateway, or an Identity Provider. It's not possible to implement OpenFGA only with AuthZEN endpoints, as it does not specify endpoints to [Write](/docs/getting-started/update-tuples) and [Read](/docs/interacting/relationship-queries).

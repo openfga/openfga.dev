@@ -1,11 +1,10 @@
 ---
-title: RAG Authorization with OpenFGA
+title: "RAG Authorization"
 description: Enforce per-user permissions on retrieval-augmented generation. Filter retrieved documents through OpenFGA before they reach the model.
+sidebarTitle: "RAG Authorization with OpenFGA"
 ---
 
 import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
-
-# RAG Authorization
 
 Retrieval-augmented generation pipelines retrieve documents from a data set and hand them to the model as context. If the data set contains anything the asking user shouldn't see, the model will happily summarize it back to them. The fix is to **filter retrieval results by the user's permissions** before the model ever sees them.
 

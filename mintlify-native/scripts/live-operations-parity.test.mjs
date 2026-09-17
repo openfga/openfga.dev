@@ -2,9 +2,11 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { createProcessor } from '@mdx-js/mdx';
+import { parseDocument } from 'yaml';
 
 const root = new URL('../../', import.meta.url);
 const contract = JSON.parse(readFileSync(new URL('tests/fixtures/mintlify/live-operations/production-contract.json', root)));
+const titleContract = JSON.parse(readFileSync(new URL('tests/fixtures/mintlify/live-operations/single-title-contract.json', root)));
 const processor = createProcessor({ format: 'mdx' });
 
 function parse(page, legacy = false) {
@@ -26,6 +28,10 @@ function isHeading(node) {
   return node.type === 'heading' || /^h[1-6]$/.test(node.name ?? '');
 }
 
+function bodyTitles(tree) {
+  return descendants(tree).filter((node) => (node.type === 'heading' && node.depth === 1) || node.name === 'h1');
+}
+
 function links(nodes) {
   return nodes.filter((node) => node.type === 'link').map((node) => [text(node), node.url]);
 }
@@ -37,6 +43,35 @@ function expressionAst(value) {
     .filter(([key]) => !['start', 'end', 'loc', 'range', 'raw', 'comments'].includes(key))
     .map(([key, child]) => [key, expressionAst(child)]));
 }
+
+test('the single-title contract covers every assigned operations source page exactly once', () => {
+  const manifest = JSON.parse(readFileSync(new URL('mintlify-native/source-pages.json', root)));
+  const assigned = manifest.sources.filter((source) =>
+    /^(adopters|best-practices|industries|interacting|learn|use-cases)\//.test(source));
+  assert.equal(titleContract.pages.length, 48);
+  assert.deepEqual(titleContract.pages.map((page) => page.source).sort(), assigned.sort());
+});
+
+for (const { source, productionTitle, sidebarTitle } of titleContract.pages) {
+  test(`${source} uses one production headline without changing the native sidebar label`, () => {
+    const content = readFileSync(new URL(`mintlify-native/docs/${source}`, root), 'utf8');
+    const frontmatter = /^---\n([\s\S]*?)\n---\n/.exec(content);
+    assert.ok(frontmatter, 'The native renderer requires the page title in frontmatter');
+    const document = parseDocument(frontmatter[1]);
+    assert.deepEqual(document.errors, []);
+    const metadata = document.toJSON();
+    assert.equal(metadata.title, productionTitle);
+    assert.equal(metadata.sidebarTitle ?? metadata.title, sidebarTitle);
+    assert.deepEqual(bodyTitles(processor.parse(content.slice(frontmatter[0].length))), [],
+      'Frontmatter renders the sole H1; body H1s duplicate the visible headline');
+  });
+}
+
+test('the single-title check distinguishes real H1s from code examples', () => {
+  assert.equal(bodyTitles(processor.parse('```markdown\n# Example heading\n<h1>Example heading</h1>\n```')).length, 0);
+  assert.equal(bodyTitles(processor.parse('# Actual heading')).length, 1);
+  assert.equal(bodyTitles(processor.parse('<h1>Actual heading</h1>')).length, 1);
+});
 
 for (const [page, expected] of Object.entries(contract.conceptLinks)) {
   test(`${page} retains every production concept link in reading order`, () => {
