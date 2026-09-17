@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { createProcessor } from '@mdx-js/mdx';
 import { parse as parseYaml } from 'yaml';
 import { encodeOpenFgaCode } from './validate-openfga-code-blocks.mjs';
+import { readRegressionFixture } from './regression-fixtures.mjs';
 
 const repoRoot = fileURLToPath(new URL('../../', import.meta.url));
 const processor = createProcessor();
@@ -129,13 +130,17 @@ function tupleBlocks(allNodes) {
   });
 }
 
-function assertTupleParity(source, migrated, location = 'fixture') {
-  const callers = nodes(source).filter((node) => tupleViewers.has(node.name));
+function tupleCallers(source) {
+  return nodes(source).filter((node) => tupleViewers.has(node.name))
+    .map((node) => ({ component: node.name, props: props(node) }));
+}
+
+function assertTupleParity(callers, migrated, location = 'fixture') {
+  if (typeof callers === 'string') callers = tupleCallers(callers);
   const migratedNodes = nodes(migrated);
   const blocks = tupleBlocks(migratedNodes);
-  const examples = callers.map((node) => {
-    const values = props(node);
-    const allowedProps = node.name === 'TupleViewer' ? ['tuples', 'rightColumnTuples'] : ['relationshipTuples'];
+  const examples = callers.map(({ component, props: values }) => {
+    const allowedProps = component === 'TupleViewer' ? ['tuples', 'rightColumnTuples'] : ['relationshipTuples'];
     assert.ok(Object.keys(values).every((key) => allowedProps.includes(key)), `${location}: unaudited tuple viewer prop`);
     return values.relationshipTuples ?? [...values.tuples, ...(values.rightColumnTuples ?? [])];
   });
@@ -147,7 +152,7 @@ function assertTupleParity(source, migrated, location = 'fixture') {
   callers.forEach((caller, index) => {
     const block = blocks[index];
     assertInlineTupleBlock(migratedNodes, block.node, `${location}:${block.node.position.start.line}`);
-    if (caller.name === 'TupleViewer') assert.equal(block.node.lang, 'yaml', `${location}: TupleViewer copies YAML`);
+    if (caller.component === 'TupleViewer') assert.equal(block.node.lang, 'yaml', `${location}: TupleViewer copies YAML`);
     assertDescriptions(
       examples[index].flatMap((tuple) => tuple._description ? [tuple._description] : []),
       precedingText(migratedNodes, block.node),
@@ -519,22 +524,23 @@ test('all migrated tutorial pages keep native examples inline and properly neste
   }
 });
 
-const sourceRoot = path.join(repoRoot, 'docs/content');
-for (const filename of sourceFiles(sourceRoot)) {
-  const source = readFileSync(filename, 'utf8');
-  if (!/\b(?:RelationshipTuplesViewer|TupleViewer)\b/.test(source)) continue;
-  if (!nodes(source).some((node) => tupleViewers.has(node.name))) continue;
-  const relative = path.relative(sourceRoot, filename);
+const tupleExamples = readRegressionFixture('tuple-examples').pages;
+const tutorialStructure = readRegressionFixture('tutorial-structure');
+test('the independent tuple oracle covers all 46 source callers across 15 pages', () => {
+  assert.equal(Object.keys(tupleExamples).length, 15);
+  assert.equal(Object.values(tupleExamples).flat().length, 46);
+});
+
+for (const [relative, callers] of Object.entries(tupleExamples)) {
   test(`actual tuple caller parity: ${relative}`, () => {
-    assertTupleParity(source, readFileSync(path.join(repoRoot, 'mintlify-native/docs', relative), 'utf8'), relative);
+    assertTupleParity(callers, readFileSync(path.join(repoRoot, 'mintlify-native/docs', relative), 'utf8'), relative);
   });
 }
 
 test('task examples retain their instructional sections, contextual descriptions, and shared request props', () => {
   const relative = 'modeling/agents/task-based-authorization.mdx';
-  const source = readFileSync(path.join(sourceRoot, relative), 'utf8');
+  const expected = tutorialStructure.task;
   const migrated = readFileSync(path.join(repoRoot, 'mintlify-native/docs', relative), 'utf8');
-  const sourceNodes = nodes(source);
   const migratedNodes = nodes(migrated);
   const models = (content) => examplePlacements(content)
     .filter((example) => example.language === 'dsl.openfga')
@@ -543,21 +549,20 @@ test('task examples retain their instructional sections, contextual descriptions
       // The original native migration removed blank separator lines, not DSL content.
       code: example.code.split('\n').filter((line) => line.trim() !== '').join('\n'),
     }));
-  assert.equal(models(source).length, 5, 'The source fixture must cover all five task models');
-  assert.deepEqual(models(migrated), models(source),
+  assert.equal(expected.models.length, 5, 'The source fixture must cover all five task models');
+  assert.deepEqual(models(migrated), expected.models,
     'Task models must retain their original source DSL, order, headings, and native step placement');
   const section = (allNodes, node) => text(allNodes.filter((item) =>
     item.type === 'heading' && item.depth === 2 && item.position.start.offset < node.position.start.offset).at(-1));
   assert.deepEqual(
     tupleBlocks(migratedNodes).map(({ node }) => section(migratedNodes, node)),
-    sourceNodes.filter((node) => node.name === 'TupleViewer').map((node) => section(sourceNodes, node)),
+    expected.tupleSections,
   );
-  const checks = sourceNodes.filter((node) => node.name === 'CheckRequestViewer');
+  const checks = expected.checks;
   const migratedChecks = migratedNodes.filter((node) => node.name === 'CheckRequestViewer');
-  assert.deepEqual(migratedChecks.map(props), checks.map(props), 'Shared checks must retain every original source prop');
+  assert.deepEqual(migratedChecks.map(props), checks, 'Shared checks must retain every original source prop');
   assert.ok(!migratedNodes.some((node) => node.name === 'Tabs'), 'Static operation tabs must use the shared generator');
-  checks.forEach((check, index) => {
-    const expected = props(check);
+  checks.forEach((expected, index) => {
     assertDescriptions(
       expected.contextualTuples.map((tuple) => tuple._description),
       precedingText(migratedNodes, migratedChecks[index]),
@@ -568,7 +573,6 @@ test('task examples retain their instructional sections, contextual descriptions
 
 test('design-principle Accordions preserve each warning, example DSL, and content order from details', () => {
   const relative = 'best-practices/modeling-design-principles.mdx';
-  const sourceNodes = nodes(readFileSync(path.join(sourceRoot, relative), 'utf8'));
   const migrated = readFileSync(path.join(repoRoot, 'mintlify-native/docs', relative), 'utf8');
   const migratedNodes = nodes(migrated);
   assert.ok(!migratedNodes.some((node) => node.name === 'details' || node.name === 'summary'));
@@ -579,22 +583,13 @@ test('design-principle Accordions preserve each warning, example DSL, and conten
     if (node.type === 'paragraph' || node.type === 'heading') return [{ text: text(node) }];
     return (node.children ?? []).flatMap(content);
   };
-  const original = sourceNodes.filter((node) => node.name === 'details').map((node) => ({
-    title: text(descendants(node).find((child) => child.name === 'summary')),
-    content: content(node),
-  }));
   assert.deepEqual(migratedNodes.filter((node) => node.name === 'Accordion').map((node) => ({
     title: props(node).title,
     content: content(node),
-  })), original);
+  })), tutorialStructure.designPrinciples);
 });
 
-function assertConceptAnchors(source, migrated) {
-  const sourceNodes = nodes(source);
-  const sourceTitles = sourceNodes.filter((node) =>
-    node.type === 'heading' && node.depth === 2 &&
-    componentAncestors(sourceNodes, node).some((ancestor) => ancestor.name === 'summary'))
-    .map(text);
+function assertConceptAnchors(sourceTitles, migrated) {
   assert.equal(sourceTitles.length, 19, 'The source fixture must cover all 19 concept sections');
   const expected = sourceTitles.map((title) => {
     assert.match(title, /^[A-Za-z ]+\?$/, 'Concept section titles must have unambiguous legacy slugs');
@@ -630,7 +625,7 @@ function assertConceptAnchors(source, migrated) {
   }
 }
 
-const sourceConcepts = readFileSync(path.join(sourceRoot, 'concepts.mdx'), 'utf8');
+const sourceConcepts = tutorialStructure.conceptTitles;
 const migratedConcepts = readFileSync(path.join(repoRoot, 'mintlify-native/docs/concepts.mdx'), 'utf8');
 
 test('visible concept headings expose all original anchors before their collapsed examples', () => {

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { parse as parseYaml } from 'yaml';
+import { readRegressionFixture } from './regression-fixtures.mjs';
 
 import {
   expectedHeaderLinks,
@@ -51,16 +51,16 @@ test('hidden anchors provide the exact route-scoped sidebar and header contract'
   assert.equal(getUniqueOpenApiNavigationEntry(docs.navigation), result.apiAnchor);
 });
 
-test('the homepage modeling link resolves in Docusaurus and retains its Mintlify redirect', () => {
+test('the homepage modeling link retains its historical slug and native redirect', () => {
   const homepage = readFileSync(
     new URL('../../src/features/LandingPage/QuickStartSection/index.tsx', import.meta.url),
     'utf8',
   );
-  const source = readFileSync(new URL('../../docs/content/modeling/overview.mdx', import.meta.url), 'utf8');
+  const source = readRegressionFixture('historical-source-inventory').pages.find(({ source }) => source === 'modeling/overview.mdx');
   const docs = JSON.parse(readFileSync(new URL('../docs.json', import.meta.url), 'utf8'));
 
   assert.match(homepage, /<Link href="https:\/\/openfga\.dev\/docs\/modeling">documentation<\/Link>/);
-  assert.match(source, /^slug: \/modeling$/m);
+  assert.equal(source.slug, '/modeling');
   validateRouteScopedNavigation(docs);
 });
 
@@ -70,12 +70,8 @@ test('all source documentation slugs retain a page or exact native redirect', ()
   const exclusions = new Set(manifest.exclusions.map(({ source }) => source));
   const overrides = new Map(manifest.overrides.map(({ source, destination }) => [source, destination]));
   const redirects = [];
-  for (const source of manifest.sources) {
+  for (const { source, slug } of readRegressionFixture('historical-source-inventory').pages) {
     if (exclusions.has(source)) continue;
-    const text = readFileSync(new URL(`../../docs/content/${source}`, import.meta.url), 'utf8');
-    const frontmatter = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-    assert.ok(frontmatter, `${source}: expected YAML frontmatter`);
-    const { slug } = parseYaml(frontmatter[1]);
     assert.equal(typeof slug, 'string', `${source}: expected explicit public slug`);
     const publicRoute = `/docs${slug}`;
     const destination = `/${(overrides.get(source) ?? `docs/${source}`).slice(0, -4)}`;

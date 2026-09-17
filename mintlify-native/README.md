@@ -303,68 +303,80 @@ this file to understand what needs updating in `snippets/CheckRequestViewer.jsx`
 
 ## Architecture
 
-### Source page coverage
+### Historical migration and active native coverage
 
-[`source-pages.json`](./source-pages.json) is the reviewed page inventory, not a
-content migration engine. `sources` lists every exact path relative to
-`docs/content/`; its default destination is `mintlify-native/docs/<source>`.
-The five `overrides` preserve the routes for `intro` -> `fga`,
-`getting-started/overview` -> `getting-started`, `docker-setup` -> `docker`,
-`kubernetes-setup` -> `kubernetes`, and `modeling/testing-models` -> `modeling/testing`.
-Destination paths are relative to `mintlify-native/` and include `.mdx`.
+[`source-pages.json`](./source-pages.json) version 2 separates the **frozen 111-source
+migration inventory** from future native content. `sources` records historical
+paths relative to `docs/content/`, independently checked against
+[`historical-source-inventory.json`](../tests/fixtures/mintlify/historical-source-inventory.json).
+The fixture records each public slug and original file SHA-256 from commit
+`85bde5e19f7fa0b8687732c33c4f7c3a39fd83e0`; those paths are provenance, not files
+required in today's checkout. No Git history, fetch, or legacy source tree is
+needed. The old source-coverage `--compare-ref` option is retired.
+
+The default destination is `mintlify-native/docs/<source>`. The five `overrides`
+preserve `intro` -> `fga`, `getting-started/overview` -> `getting-started`,
+`docker-setup` -> `docker`, `kubernetes-setup` -> `kubernetes`, and
+`modeling/testing-models` -> `modeling/testing`. Destinations are exact `.mdx`
+paths relative to `mintlify-native/`.
 
 ```bash
 npm run validate:mintlify-source-parity
 npm run test:mintlify-source-parity
-git fetch origin main
-npm run validate:mintlify-source-parity -- --compare-ref origin/main
 ```
 
-The navigation validator invokes source coverage, and the navigation chain runs
-its mutation tests; both therefore run in the root prebuild. Counts come from
-the manifest and filesystem, not a hardcoded page total. The initial inventory is
-111 source pages: 110 Mintlify-owned pages and one Docusaurus-owned Community
-page. The 111 Mintlify MDX files comprise the 110 owned pages plus the retained
-Community copy. The separate component fixture is not counted as a published
-destination or source-page exemption.
+The navigation validator invokes coverage and the navigation chain runs its
+mutation tests. The historical inventory maps to 110 native pages and one
+Docusaurus-owned Community page at `/community`, with its existing
+`src/pages/community.mdx` owner. There is no duplicate native Community page.
+`retainedPage` and published fixture exemptions are rejected.
 
-When adding a source page, add its exact path to `sources`, author its Mintlify
-counterpart, and add the destination route to visible docs navigation. Add an
-override only for a different destination path. For deliberate removal or
-renaming, reconcile the source, manifest, destination, and navigation together;
-never regenerate the inventory just to silence a failure. A mapping removed
-while its source remains, a source removed while its entry remains, and a stale
-destination all fail validation. A comparison against a fetched reference also
-detects coordinated source/manifest deletions or additions relative to that ref.
+For a future native page, add a reviewed `{ "destination": "docs/new-page.mdx",
+"reason": "Purpose of this new guide" }` entry to `nativePages`, author the page,
+and add its route once to visible docs navigation. Maintain its semantic tests
+or an independently authored contract with the change. Do not add invented
+historical sources or generate expected content from the native page itself.
+For a historical page rename, update its override and navigation without
+changing `sources`; deliberate retirement requires an exact exclusion with a
+reason. Docusaurus ownership additionally requires `owner`, `route`, and an
+existing `ownerPage` under `src/pages/`.
 
-Exclusions apply to one exact source and require a reason. An assignment to
-Docusaurus additionally records its `owner`, public `route`, and existing
-`ownerPage` under `src/pages/`. `retainedPage` explicitly accounts for an optional
-non-navigation migration copy. Community remains owned at `/community`. Published
-fixture exemptions are no longer supported: adding the old `fixtures` field
-fails validation. The external fixture has a fixed, symlink-free test location,
-not a production manifest entry. Excluded copies cannot appear anywhere in docs
-navigation, including hidden/searchable groups. The retired test-viewer routes
-cannot be reassigned to a source, retained as excluded copies, or restored via
-navigation, aliases, links, or redirects, including same-origin absolute URLs. Hidden
-OpenAPI operation references are checked separately by the API validator, not
-mistaken for documentation MDX.
+The guard rejects coordinated historical inventory deletions, unregistered
+additions, missing/stale/unassigned destinations (including MDX outside `docs/`
+and unexpected `.md` pages other than the root contributor README), duplicate
+mappings/navigation, missing visible navigation, conflicting ownership,
+malformed paths, globs, traversal, and symlinks. Excluded pages cannot be
+claimed by `nativePages` or enter hidden or visible navigation. Retired
+test-viewer routes also cannot return through aliases, links, or redirects,
+including same-origin absolute URLs. API operation references are not MDX
+pages and remain subject to the separate API validator.
 
-The guard rejects missing or unlisted sources, stale/missing/unassigned
-destinations (including MDX outside `docs/` and unexpected `.md` pages other than
-the root contributor README), duplicate mappings/navigation,
-conflicting ownership, malformed paths, globs, traversal, and symlinks. Paths
-use lowercase letters, digits, hyphens, underscores, and `/` separators.
+**Inventory coverage is not semantic parity.** The compact regression fixtures
+in [`tests/fixtures/mintlify`](../tests/fixtures/mintlify) preserve the previous
+source-dependent comparisons without retaining the legacy MDX corpus:
 
-**Coverage is not semantic content parity.** The optional `--compare-ref` fails
-on a source inventory mismatch and reports byte-level source differences
-informationally, without fetching or changing either branch. It does not compare
-source prose or components to their Mintlify equivalents, record a "reviewed"
-hash, or certify freshness. At introduction, comparison against main commit
-`7002ddae8df201ada3d32e3073a82c41ac459b16` found the same 111 source paths but
-16 locally changed source files containing API-reference link rewrites. Matching
-paths do not establish that migrated prose, examples, or component behavior are
-up to date; those need separate review.
+| Fixture | Independent expectation captured at `85bde5e` |
+| --- | --- |
+| `historical-source-inventory.json` | 111 paths, public slugs, and original source byte digests |
+| `operation-callers.json` | All 215 operation callers across the 110 mapped pages, including empty caller lists, exact props, results, and language restrictions |
+| `tuple-examples.json` | 46 tuple examples across 15 pages, including both columns, descriptions, conditions, types, and order |
+| `tutorial-structure.json` | Five task DSL models with heading/step placement, tuple sections and contextual checks; two rich design-principle disclosures; all 19 concept headings |
+| `static-requests.json` | Read, Expand, model-write, and ReadChanges inputs; response trees; DSL; installation pins; original renderer language defaults, model ID, timestamp, and output strings |
+| `prerequisite-models.json` | Three complete configuration-expression AST digests, preserving definition/property/array order and literal semantics |
+
+Extraction used only the legacy sources and, for static renderer defaults,
+`src/components/Docs/SnippetViewer` at that exact commit. The original Expand
+response examples had one surplus closing brace; extraction removes only that
+brace, exactly as the previous test did. Prerequisite model digests use the
+previous test's AST normalization (strip positions, raw spellings, and comments
+only), rather than a sorted or simplified model. Rich definition/link checks
+and published headings remain in the existing independent `live-foundations`,
+`live-modeling`, and `live-operations` fixtures. Mutation tests still reject
+changed tuple semantics, hidden descriptions, reordered models, moved examples,
+lost definitions, and broken anchors. Do not regenerate these baselines from
+native output to silence failures; intentional behavior changes need explicit
+review of the independent contract. Matching source digests or inventory alone
+does not certify migrated prose or visual equivalence.
 
 ### GitHub star-count fallback
 

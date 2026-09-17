@@ -1,5 +1,6 @@
 {
-  "version": 1,
+  "version": 2,
+  "nativePages": [],
   "sources": [
     "adopters/agicap.mdx",
     "adopters/docker.mdx",
@@ -132,8 +133,7 @@
       "owner": "docusaurus",
       "route": "/community",
       "ownerPage": "src/pages/community.mdx",
-      "retainedPage": "docs/community.mdx",
-      "reason": "The public Community page is Docusaurus-owned at /community. Retain the migration copy outside Mintlify navigation."
+      "reason": "The public Community page is Docusaurus-owned at /community, with no duplicate native page."
     }
   ]
 }

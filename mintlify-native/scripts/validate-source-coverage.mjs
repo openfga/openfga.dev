@@ -1,14 +1,13 @@
-import { execFileSync } from 'node:child_process';
 import { lstatSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 
 import { retiredFixturePages } from './component-fixtures.mjs';
+import { historicalInventoryPath, historicalRevision } from './regression-fixtures.mjs';
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const manifestPath = 'mintlify-native/source-pages.json';
-const sourceRoot = 'docs/content';
 const mintlifyRoot = 'mintlify-native';
 const pagePattern = /^(?:[a-z0-9][a-z0-9_-]*\/)*[a-z0-9][a-z0-9_-]*\.mdx$/;
 
@@ -83,9 +82,9 @@ function readJson(repoRoot, path) {
 
 function loadManifest(repoRoot) {
   const manifest = readJson(repoRoot, manifestPath);
-  fields(manifest, ['version', 'sources', 'overrides', 'exclusions'], [], 'manifest');
-  if (manifest.version !== 1) fail('version must be 1');
-  for (const key of ['sources', 'overrides', 'exclusions']) {
+  fields(manifest, ['version', 'sources', 'overrides', 'exclusions', 'nativePages'], [], 'manifest');
+  if (manifest.version !== 2) fail('version must be 2');
+  for (const key of ['sources', 'overrides', 'exclusions', 'nativePages']) {
     if (!Array.isArray(manifest[key])) fail(`${key} must be an array`);
   }
   if (!manifest.sources.length) fail('sources must not be empty');
@@ -96,6 +95,28 @@ function loadManifest(repoRoot) {
     sources.add(source);
   }
 
+  const baseline = readJson(repoRoot, historicalInventoryPath);
+  fields(baseline, ['provenance', 'pages'], [], 'historical inventory');
+  if (baseline.provenance?.revision !== historicalRevision || baseline.provenance?.sourceRoot !== 'docs/content') {
+    fail(`historical inventory must originate from docs/content at ${historicalRevision}`);
+  }
+  if (!Array.isArray(baseline.pages) || !baseline.pages.length) fail('historical inventory pages must not be empty');
+  const historicalSources = new Set();
+  for (const page of baseline.pages) {
+    fields(page, ['source', 'slug', 'sha256'], [], 'historical page');
+    pagePath(page.source, 'historical page.source');
+    if (typeof page.slug !== 'string' || !page.slug.startsWith('/')) fail(`${page.source}: invalid historical slug`);
+    if (typeof page.sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(page.sha256)) fail(`${page.source}: invalid historical digest`);
+    if (historicalSources.has(page.source)) fail(`duplicate historical source ${page.source}`);
+    historicalSources.add(page.source);
+  }
+  checkCoverage([
+    ...[...historicalSources].filter((source) => !sources.has(source))
+      .map((source) => `${source}: historical source has no manifest entry`),
+    ...[...sources].filter((source) => !historicalSources.has(source))
+      .map((source) => `${source}: not a historical source; register future content in nativePages`),
+  ]);
+
   const overrides = new Map();
   const exclusions = new Map();
   for (const [kind, entries] of [
@@ -104,7 +125,7 @@ function loadManifest(repoRoot) {
   ]) {
     for (const entry of manifest[kind]) {
       const required = kind === 'overrides' ? ['source', 'destination'] : ['source', 'reason'];
-      const optional = kind === 'overrides' ? [] : ['owner', 'route', 'ownerPage', 'retainedPage'];
+      const optional = kind === 'overrides' ? [] : ['owner', 'route', 'ownerPage'];
       fields(entry, required, optional, kind);
       const source = pagePath(entry.source, `${kind}.source`);
       if (!sources.has(source)) fail(`${kind}: ${source} is not in sources`);
@@ -113,7 +134,6 @@ function loadManifest(repoRoot) {
         pagePath(entry.destination, `${source} destination`, 'docs/');
       } else {
         reason(entry.reason, source);
-        if (entry.retainedPage !== undefined) pagePath(entry.retainedPage, `${source} retainedPage`, 'docs/');
         if (['owner', 'route', 'ownerPage'].some((key) => Object.hasOwn(entry, key))) {
           if (entry.owner !== 'docusaurus') fail(`${source}: owner must be docusaurus`);
           pagePath(entry.ownerPage, `${source} ownerPage`, 'src/pages/');
@@ -145,15 +165,18 @@ function loadManifest(repoRoot) {
     const exclusion = exclusions.get(source);
     if (exclusion) {
       prohibitedPages.set(`docs/${source}`, `excluded source ${source}: ${exclusion.reason}`);
-      if (exclusion.retainedPage) {
-        claim(exclusion.retainedPage, `retained copy of ${source}`);
-        prohibitedPages.set(exclusion.retainedPage, `excluded source ${source}: ${exclusion.reason}`);
-      }
     } else {
       const destination = overrides.get(source)?.destination ?? `docs/${source}`;
-      claim(destination, `source ${sourceRoot}/${source}`);
+      claim(destination, `historical source docs/content/${source}`);
       ownedPages.push(destination);
     }
+  }
+  for (const entry of manifest.nativePages) {
+    fields(entry, ['destination', 'reason'], [], 'nativePages');
+    pagePath(entry.destination, 'nativePages.destination', 'docs/');
+    reason(entry.reason, `nativePages ${entry.destination}`);
+    claim(entry.destination, `native page: ${entry.reason}`);
+    ownedPages.push(entry.destination);
   }
   for (const page of ownedPages) {
     if (prohibitedPages.has(page)) fail(`${page}: an owned destination cannot also be excluded`);
@@ -244,51 +267,10 @@ function checkCoverage(problems) {
   if (problems.length) throw new Error(`Source page coverage failed:\n- ${problems.join('\n- ')}`);
 }
 
-export function compareSourceWithRef(ref, { repoRoot = repositoryRoot, logger = console.log } = {}) {
-  const git = (args) => execFileSync('git', args, { cwd: repoRoot, maxBuffer: 16 * 1024 * 1024 });
-  const revision = git(['rev-parse', '--verify', '--end-of-options', `${ref}^{commit}`])
-    .toString()
-    .trim();
-  const referenceSources = git(['ls-tree', '-r', '--name-only', '-z', revision, '--', sourceRoot])
-    .toString()
-    .split('\0')
-    .filter((path) => path.endsWith('.mdx'))
-    .map((path) => path.slice(sourceRoot.length + 1));
-  if (!referenceSources.length) throw new Error(`${ref} (${revision}): no ${sourceRoot}/**/*.mdx pages found`);
-  const currentSources = listMdxFiles(repoRoot, sourceRoot);
-  const problems = [
-    ...referenceSources
-      .filter((path) => !currentSources.includes(path))
-      .map((path) => `${sourceRoot}/${path}: present at ${ref}, missing locally`),
-    ...currentSources
-      .filter((path) => !referenceSources.includes(path))
-      .map((path) => `${sourceRoot}/${path}: absent at ${ref}, added locally`),
-  ];
-  checkCoverage(problems);
-  const differingSourcePages = referenceSources.filter(
-    (path) =>
-      !git(['show', `${revision}:${sourceRoot}/${path}`]).equals(readFileSync(join(repoRoot, sourceRoot, path))),
-  );
-  logger(`Source inventory matches ${ref} (${revision}): ${referenceSources.length} pages`);
-  logger(
-    `Source byte differences from ${ref}: ${differingSourcePages.length}; informational, not a semantic parity result`,
-  );
-  for (const path of differingSourcePages) logger(`  ${sourceRoot}/${path}`);
-  return { revision, sourceCount: referenceSources.length, differingSourcePages };
-}
-
-export function validateSourceCoverage({ repoRoot = repositoryRoot, logger = console.log, compareRef } = {}) {
+export function validateSourceCoverage({ repoRoot = repositoryRoot, logger = console.log } = {}) {
   const { sources, destinations, ownedPages, prohibitedPages, exclusions } = loadManifest(repoRoot);
-  const sourceFiles = listMdxFiles(repoRoot, sourceRoot);
   const destinationFiles = listMdxFiles(repoRoot, mintlifyRoot, true);
   const problems = [];
-  for (const source of sourceFiles) {
-    if (!sources.has(source)) problems.push(`${sourceRoot}/${source}: source has no manifest entry`);
-  }
-  for (const source of sources) {
-    if (!sourceFiles.includes(source))
-      problems.push(`${sourceRoot}/${source}: manifest source is missing (deleted or renamed)`);
-  }
   for (const [destination, description] of destinations) {
     if (!destinationFiles.includes(destination))
       problems.push(`${mintlifyRoot}/${destination}: missing destination for ${description}`);
@@ -323,9 +305,8 @@ export function validateSourceCoverage({ repoRoot = repositoryRoot, logger = con
       problems.push(`mintlify-native/docs.json: ${page} is missing from visible documentation navigation`);
   }
   checkCoverage(problems);
-  if (compareRef !== undefined) compareSourceWithRef(compareRef, { repoRoot, logger });
   logger(
-    `Validated source page coverage: ${sources.size} sources, ${ownedPages.length} Mintlify-owned pages, ${exclusions.size} exclusions, ${destinationFiles.length} total Mintlify MDX files`,
+    `Validated source page coverage: ${sources.size} historical sources, ${ownedPages.length} Mintlify-owned pages, ${exclusions.size} exclusions, ${destinationFiles.length} total Mintlify MDX files`,
   );
   logger('Inventory coverage only; prose, examples, and component equivalence require separate review.');
   return {
@@ -338,10 +319,9 @@ export function validateSourceCoverage({ repoRoot = repositoryRoot, logger = con
 
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
   const { values } = parseArgs({
-    options: { 'repo-root': { type: 'string' }, 'compare-ref': { type: 'string' } },
+    options: { 'repo-root': { type: 'string' } },
   });
   validateSourceCoverage({
     repoRoot: values['repo-root'] ? resolve(values['repo-root']) : repositoryRoot,
-    compareRef: values['compare-ref'],
   });
 }

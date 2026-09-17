@@ -5,20 +5,15 @@ import test from 'node:test';
 import { runInNewContext } from 'node:vm';
 import { createProcessor } from '@mdx-js/mdx';
 import { validateMdxSource } from './validate-mdx.mjs';
+import { readRegressionFixture } from './regression-fixtures.mjs';
 
 const root = new URL('../../', import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), 'utf8');
 const processor = createProcessor({ format: 'mdx' });
 const parse = (text) => processor.parse(text.replace(/^---\n[\s\S]*?\n---\n/, ''));
 const plain = (value) => JSON.parse(JSON.stringify(value));
-const sourceDirectory = 'src/components/Docs/SnippetViewer/';
-const languages = read(`${sourceDirectory}SupportedLanguage.tsx`);
-const languageLabels = Object.fromEntries(
-  [...languages.matchAll(/\[SupportedLanguage\.(\w+), '([^']+)'\]/g)].slice(0, 9).map((match) => match.slice(1)),
-);
-const modelId = languages.match(/DefaultAuthorizationModelId = '([^']+)'/)[1];
-const readRenderer = read(`${sourceDirectory}ReadRequestViewer.tsx`);
-const timestamp = readRenderer.match(/"timestamp": "([^"]+)"/)[1];
+const baseline = readRegressionFixture('static-requests');
+const { languageLabels, modelId, timestamp } = baseline;
 
 function descendants(node, predicate) {
   return [
@@ -27,49 +22,13 @@ function descendants(node, predicate) {
   ];
 }
 
-// Decode only fixture literals, never execute MDX or source imports.
-function literal(node) {
-  switch (node.type) {
-    case 'Literal':
-      return node.value;
-    case 'ArrayExpression':
-      return node.elements.map(literal);
-    case 'ObjectExpression':
-      return Object.fromEntries(node.properties.map((property) => {
-        assert.equal(property.type, 'Property');
-        assert.equal(property.computed, false);
-        return [property.key.name ?? property.key.value, literal(property.value)];
-      }));
-    case 'MemberExpression':
-      assert.equal(node.object.name, 'SupportedLanguage');
-      assert.equal(node.computed, false);
-      return node.property.name;
-    default:
-      assert.fail(`Unsupported fixture expression: ${node.type}`);
-  }
-}
-
-function props(node) {
-  return Object.fromEntries(node.attributes.map((attribute) => {
-    assert.equal(attribute.type, 'mdxJsxAttribute');
-    const value = attribute.value;
-    return [
-      attribute.name,
-      value?.type === 'mdxJsxAttributeValueExpression'
-        ? literal(value.data.estree.body[0].expression)
-        : value ?? true,
-    ];
-  }));
-}
-
 function sourceFixtures(page, name) {
-  return descendants(parse(read(`docs/content/${page}.mdx`)), (node) => node.name === name).map(props);
+  assert.ok(baseline.pages[page]?.[name], `${page}: missing independent ${name} fixtures`);
+  return baseline.pages[page][name];
 }
 
 function sourceLanguages(name, fixture) {
-  const renderer = read(`${sourceDirectory}${name}.tsx`);
-  const defaults = [...renderer.match(/const defaultLangs = \[([\s\S]*?)\];/)[1]
-    .matchAll(/SupportedLanguage\.(\w+)/g)].map((match) => match[1]);
+  const defaults = baseline.renderers[name].defaultLanguages;
   return (fixture.allowedLanguages ?? defaults).filter((language) => defaults.includes(language))
     .map((language) => languageLabels[language]);
 }
@@ -239,11 +198,7 @@ expandFixtures.forEach((fixture, index) => {
     });
     assert.deepEqual([...codes.Pseudocode.matchAll(/"([^"]+)"/g)].map((match) => match[1]),
       [fixture.relation, fixture.object, expectedModelId]);
-    const sourceTree = parse(read(`docs/content/${relationshipPage}.mdx`));
-    const response = descendants(sourceTree, (node) => node.type === 'code' && node.lang === 'json'
-      && node.value.includes(`"type":"${fixture.object}#${fixture.relation}"`))[0].value;
-    // The source response has one surplus closing brace; preserve its data, not invalid JSON.
-    assert.deepEqual(responseAfter(relationship.tree, expandGroups[index]), JSON.parse(response.replace(/\}\s*$/, '')));
+    assert.deepEqual(responseAfter(relationship.tree, expandGroups[index]), baseline.expandResponses[index]);
   });
 });
 
@@ -279,16 +234,7 @@ for (const page of ['modeling/conditions', 'getting-started/configure-model']) {
       assert.match(codes.CLI, /^fga model write --store-id=\$\{FGA_STORE_ID\} --format=json '/);
       assert.deepEqual(JSON.parse(codes.CLI.match(/--format=json '([\s\S]+)'/)[1]), expected);
       assert.doesNotMatch(codes.CLI, /--file|model\.fga/);
-      const outputExpressions = {
-        'Node.js': 'id',
-        Go: 'data.AuthorizationModelId',
-        '.NET': 'response.AuthorizationModelId',
-        Python: 'response.authorization_model_id',
-      };
-      const renderer = read(`${sourceDirectory}WriteAuthzModelViewer.tsx`);
-      for (const [language, expression] of Object.entries(outputExpressions)) {
-        const expectedOutput = `${expression} = "${modelId}"`;
-        assert.ok(renderer.includes(expectedOutput), 'The output must originate in the source renderer');
+      for (const [language, expectedOutput] of Object.entries(baseline.writeModelOutputs)) {
         assert.ok(codes[language].includes(expectedOutput), `${language} must retain the source model ID output`);
       }
       for (const language of ['Java', 'CLI', 'curl']) {
@@ -323,8 +269,7 @@ test('Read setup retains all SDK client environment options and executable shell
 });
 
 test('conditions keeps the source DSL text and canonical escaped indentation', () => {
-  const source = parse(read('docs/content/modeling/conditions.mdx'));
-  const expected = descendants(source, (node) => node.type === 'code' && node.lang === 'dsl.openfga')[0].value;
+  const expected = baseline.conditionDsl;
   const native = nativePage('modeling/conditions');
   const block = descendants(native.tree, (node) => node.name === 'OpenFGACodeBlock')[0];
   const value = block.attributes.find((attribute) => attribute.name === 'code').value.data.estree.body[0].expression;

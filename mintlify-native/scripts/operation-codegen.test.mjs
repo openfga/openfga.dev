@@ -13,6 +13,7 @@ import {
   renderJsonValue,
 } from './operation-codegen.mjs';
 import { buildSdkExample } from './viewer-runtime.mjs';
+import { readRegressionFixture } from './regression-fixtures.mjs';
 
 const tuple = { user: 'user:anne', relation: 'reader', object: 'document:planning' };
 const fixtures = {
@@ -244,9 +245,10 @@ test('every existing source operation caller keeps its exact request, expectatio
   const overrides = new Map(manifest.overrides.map((entry) => [entry.source, entry.destination]));
   let compared = 0;
   const errors = [];
-  for (const source of manifest.sources.filter((path) => !excluded.has(path))) {
+  const baseline = readRegressionFixture('operation-callers').pages;
+  assert.deepEqual(Object.keys(baseline).sort(), manifest.sources.filter((path) => !excluded.has(path)).sort());
+  for (const [source, original] of Object.entries(baseline)) {
     try {
-      const original = calls(readFileSync(new URL(`../../docs/content/${source}`, import.meta.url), 'utf8'));
       const migrated = calls(
         readFileSync(new URL(`../${overrides.get(source) ?? `docs/${source}`}`, import.meta.url), 'utf8'),
       );
@@ -291,7 +293,7 @@ test('every existing source operation caller keeps its exact request, expectatio
     }
   }
   assert.deepEqual(errors, []);
-  assert.ok(compared > 100, 'the semantic comparison must exercise the source corpus');
+  assert.equal(compared, 215, 'the independent oracle must cover every historical operation caller');
 });
 
 test('full Python and Node samples parse with their real language parsers', () => {

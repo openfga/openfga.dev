@@ -9,6 +9,7 @@ import { metadataUrl, overlayUrl, languagesForOperation } from './api-code-sampl
 import { buildApiExample } from './viewer-runtime.mjs';
 import { apiOperation, paginatedOperations } from './api-operation-contract.mjs';
 import { sdkVersions, apiSdkSupport, validateSdkCoverage } from './api-sdk-support.mjs';
+import { readRegressionFixture } from './regression-fixtures.mjs';
 
 const metadata = JSON.parse(await readFile(metadataUrl, 'utf8'));
 const overlay = JSON.parse(await readFile(overlayUrl, 'utf8'));
@@ -87,22 +88,19 @@ test('installed Node SDK matches the exact audited version', () => {
   assert.equal(require('@openfga/sdk/package.json').version, sdkVersions['js-sdk'].version);
 });
 
-test('source and migrated installation instructions name the audited SDK versions', async () => {
-  for (const path of [
-    '../../docs/content/getting-started/install-sdk.mdx',
-    '../docs/getting-started/install-sdk.mdx',
-  ]) {
-    const source = await readFile(new URL(path, import.meta.url), 'utf8');
-    for (const [language, { version }] of Object.entries(sdkVersions)) {
-      const install = {
-        'js-sdk': `@openfga/sdk@${version}`,
-        'go-sdk': `github.com/openfga/go-sdk@v${version}`,
-        'dotnet-sdk': `OpenFGA.Sdk --version ${version}`,
-        'python-sdk': `openfga_sdk==${version}`,
-        'java-sdk': `<version>${version}</version>`,
-      }[language];
-      assert.ok(source.includes(install), `${path} must install the audited ${language} ${version}`);
-    }
+test('historical and native installation instructions name the audited SDK versions', async () => {
+  const source = await readFile(new URL('../docs/getting-started/install-sdk.mdx', import.meta.url), 'utf8');
+  const historicalInstalls = readRegressionFixture('static-requests').sdkInstalls;
+  for (const [language, { version }] of Object.entries(sdkVersions)) {
+    const install = {
+      'js-sdk': `@openfga/sdk@${version}`,
+      'go-sdk': `github.com/openfga/go-sdk@v${version}`,
+      'dotnet-sdk': `OpenFGA.Sdk --version ${version}`,
+      'python-sdk': `openfga_sdk==${version}`,
+      'java-sdk': `<version>${version}</version>`,
+    }[language];
+    assert.equal(historicalInstalls[language], install, `Historical installation pins must match the audited ${language}`);
+    assert.ok(source.includes(install), `Native instructions must install the audited ${language} ${version}`);
   }
 });
 

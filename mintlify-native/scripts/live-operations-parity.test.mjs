@@ -1,17 +1,19 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { createProcessor } from '@mdx-js/mdx';
 import { parseDocument } from 'yaml';
+import { readRegressionFixture } from './regression-fixtures.mjs';
 
 const root = new URL('../../', import.meta.url);
 const contract = JSON.parse(readFileSync(new URL('tests/fixtures/mintlify/live-operations/production-contract.json', root)));
 const titleContract = JSON.parse(readFileSync(new URL('tests/fixtures/mintlify/live-operations/single-title-contract.json', root)));
 const processor = createProcessor({ format: 'mdx' });
+const prerequisiteModels = readRegressionFixture('prerequisite-models').pages;
 
-function parse(page, legacy = false) {
-  const directory = legacy ? 'docs/content' : 'mintlify-native/docs';
-  const source = readFileSync(new URL(`${directory}/${page}`, root), 'utf8');
+function parse(page) {
+  const source = readFileSync(new URL(`mintlify-native/docs/${page}`, root), 'utf8');
   return processor.parse(source.replace(/^---[\s\S]*?---/, ''));
 }
 
@@ -43,6 +45,17 @@ function expressionAst(value) {
     .filter(([key]) => !['start', 'end', 'loc', 'range', 'raw', 'comments'].includes(key))
     .map(([key, child]) => [key, expressionAst(child)]));
 }
+
+function assertPrerequisiteModel(model, page) {
+  const config = model.attributes.find((attribute) => attribute.name === 'configuration').value.data.estree;
+  const digest = createHash('sha256').update(JSON.stringify(expressionAst(config))).digest('hex');
+  assert.equal(digest, prerequisiteModels[page],
+    'Preserve literal model semantics and definition order while changing the disclosure');
+}
+
+test('the model oracle covers every prerequisites disclosure', () => {
+  assert.deepEqual(Object.keys(prerequisiteModels).sort(), Object.keys(contract.prerequisites).sort());
+});
 
 test('the single-title contract covers every assigned operations source page exactly once', () => {
   const manifest = JSON.parse(readFileSync(new URL('mintlify-native/source-pages.json', root)));
@@ -93,16 +106,32 @@ for (const [page, expected] of Object.entries(contract.prerequisites)) {
     assert.equal(children.filter((node) => node.type === 'listItem').length >= 5, true);
     const model = children.find((node) => node.name === 'AuthzModelSnippetViewer');
     assert.ok(model, 'The original model must remain inside the prerequisites');
-    const originalModel = descendants(parse(page, true)).find((node) => node.name === 'AuthzModelSnippetViewer');
-    const config = (node) => node.attributes.find((attribute) => attribute.name === 'configuration').value.data.estree;
-    assert.deepEqual(expressionAst(config(model)), expressionAst(config(originalModel)),
-      'Preserve literal model semantics and definition order while changing the disclosure');
+    assertPrerequisiteModel(model, page);
     const steps = nodes.find((node) => node.type === 'heading' && text(node) === 'Step by step');
     assert.ok(steps.position.start.offset > accordion.position.end.offset,
       'Step-by-step operations must remain outside the prerequisites disclosure');
   });
 }
 
+test('the prerequisite model oracle rejects changed relations and reordered definitions', () => {
+  const page = Object.keys(prerequisiteModels)[0];
+  const model = descendants(parse(page)).find((node) => node.name === 'AuthzModelSnippetViewer');
+  const config = (node) => node.attributes.find((attribute) => attribute.name === 'configuration').value.data.estree;
+  const changed = structuredClone(model);
+  config(changed).body[0].expression.properties.reverse();
+  assert.throws(() => assertPrerequisiteModel(changed, page), /model semantics and definition order/);
+  const changedValue = structuredClone(model);
+  const changeLiteral = (node) => {
+    if (!node || typeof node !== 'object') return false;
+    if (node.type === 'Literal' && typeof node.value === 'string') {
+      node.value += '-changed';
+      return true;
+    }
+    return Object.values(node).some(changeLiteral);
+  };
+  assert.ok(changeLiteral(config(changedValue)));
+  assert.throws(() => assertPrerequisiteModel(changedValue, page), /model semantics and definition order/);
+});
 for (const [page, expected] of Object.entries(contract.visibleSummaries)) {
   test(`${page} retains its full rich summary outside the collapsed disclosure`, () => {
     const tree = parse(page);

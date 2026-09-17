@@ -1,12 +1,13 @@
 import assert from 'node:assert/strict';
-import { execFileSync, spawnSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { compareSourceWithRef, validateSourceCoverage } from './validate-source-coverage.mjs';
+import { validateSourceCoverage } from './validate-source-coverage.mjs';
+import { historicalInventoryPath, historicalRevision, readRegressionFixture } from './regression-fixtures.mjs';
 
 const validator = fileURLToPath(new URL('./validate-source-coverage.mjs', import.meta.url));
 const manifestPath = 'mintlify-native/source-pages.json';
@@ -15,7 +16,8 @@ function fixture(t) {
   const root = mkdtempSync(join(tmpdir(), 'openfga-source-coverage-'));
   t.after(() => rmSync(root, { force: true, recursive: true }));
   const manifest = {
-    version: 1,
+    version: 2,
+    nativePages: [],
     sources: ['community.mdx', 'guide.mdx', 'intro.mdx'],
     overrides: [{ source: 'intro.mdx', destination: 'docs/fga.mdx' }],
     exclusions: [
@@ -24,7 +26,6 @@ function fixture(t) {
         owner: 'docusaurus',
         route: '/community',
         ownerPage: 'src/pages/community.mdx',
-        retainedPage: 'docs/community.mdx',
         reason: 'Community is owned by Docusaurus.',
       },
     ],
@@ -52,8 +53,11 @@ function fixture(t) {
     put(manifestPath, JSON.stringify(manifest));
     put('mintlify-native/docs.json', JSON.stringify(docs));
   };
-  for (const source of manifest.sources) put(`docs/content/${source}`);
-  for (const destination of ['docs/fga.mdx', 'docs/guide.mdx', 'docs/community.mdx']) {
+  put(historicalInventoryPath, JSON.stringify({
+    provenance: { revision: historicalRevision, sourceRoot: 'docs/content' },
+    pages: manifest.sources.map((source) => ({ source, slug: `/${source.slice(0, -4)}`, sha256: 'a'.repeat(64) })),
+  }));
+  for (const destination of ['docs/fga.mdx', 'docs/guide.mdx']) {
     put(`mintlify-native/${destination}`);
   }
   put('src/pages/community.mdx');
@@ -77,14 +81,14 @@ function mutation(name, mutate, expected) {
   });
 }
 
-test('inventory and overrides cover every source without counting hidden API operations as MDX', (t) => {
+test('historical inventory and active overrides validate without legacy docs or Git metadata', (t) => {
   const { root } = fixture(t);
   const output = [];
   assert.deepEqual(validateSourceCoverage({ repoRoot: root, logger: (line) => output.push(line) }), {
     sourceCount: 3,
     ownedPages: ['docs/fga.mdx', 'docs/guide.mdx'],
     exclusionCount: 1,
-    destinationCount: 3,
+    destinationCount: 2,
   });
   assert.match(output.join('\n'), /Inventory coverage only/);
   assert.equal(cli(root).status, 0);
@@ -109,50 +113,50 @@ test('hidden route-section anchors keep their nested sidebar pages visible', (t)
 });
 
 mutation(
-  'new source requires a manifest entry',
-  ({ put }) => put('docs/content/new.mdx'),
-  /docs\/content\/new\.mdx: source has no manifest entry/,
+  'new native page requires an inventory entry',
+  ({ put }) => put('mintlify-native/docs/new.mdx'),
+  /docs\/new\.mdx: unexpected MDX page/,
 );
 mutation(
-  'new source and destination still require an explicit inventory entry',
+  'new destination and navigation still require an explicit inventory entry',
   ({ put, docs }) => {
-    put('docs/content/new.mdx');
     put('mintlify-native/docs/new.mdx');
     docs.navigation.groups[0].pages.push('docs/new');
   },
-  /docs\/content\/new\.mdx: source has no manifest entry/,
+  /docs\/new\.mdx: unexpected MDX page/,
 );
 mutation(
-  'deleted source leaves an actionable stale manifest error',
-  ({ remove }) => remove('docs/content/guide.mdx'),
-  /docs\/content\/guide\.mdx: manifest source is missing/,
+  'missing independent baseline fails rather than accepting the native output as its own oracle',
+  ({ remove }) => remove(historicalInventoryPath),
+  /historical-source-inventory\.json/,
 );
 mutation(
-  'deleted inventory entry cannot hide a source',
+  'deleted inventory entry cannot hide a historical source',
   ({ manifest }) => {
     manifest.sources = manifest.sources.filter((source) => source !== 'guide.mdx');
   },
-  /docs\/content\/guide\.mdx: source has no manifest entry/,
+  /guide\.mdx: historical source has no manifest entry/,
 );
 mutation(
-  'deleted source and entry leave an orphaned destination',
-  ({ manifest, remove }) => {
+  'coordinated inventory, native page, and navigation deletions cannot erase history',
+  ({ manifest, remove, docs }) => {
     manifest.sources = manifest.sources.filter((source) => source !== 'guide.mdx');
-    remove('docs/content/guide.mdx');
+    remove('mintlify-native/docs/guide.mdx');
+    docs.navigation.groups[0].pages.pop();
   },
-  /mintlify-native\/docs\/guide\.mdx: unexpected MDX page/,
+  /guide\.mdx: historical source has no manifest entry/,
 );
 mutation(
   'deleted override fails rather than assuming a renamed page is covered',
   ({ manifest }) => {
     manifest.overrides = [];
   },
-  /docs\/intro\.mdx: missing destination for source docs\/content\/intro\.mdx/,
+  /docs\/intro\.mdx: missing destination for historical source docs\/content\/intro\.mdx/,
 );
 mutation(
   'missing target identifies its source',
   ({ remove }) => remove('mintlify-native/docs/fga.mdx'),
-  /docs\/fga\.mdx: missing destination for source docs\/content\/intro\.mdx/,
+  /docs\/fga\.mdx: missing destination for historical source docs\/content\/intro\.mdx/,
 );
 mutation(
   'stale pre-rename target is not ignored',
@@ -181,7 +185,7 @@ mutation(
   ({ manifest }) => {
     manifest.overrides.push({ source: 'guide.mdx', destination: 'docs/fga.mdx' });
   },
-  /duplicate destination docs\/fga\.mdx: source docs\/content\/guide\.mdx and source docs\/content\/intro\.mdx/,
+  /duplicate destination docs\/fga\.mdx: historical source docs\/content\/guide\.mdx and historical source docs\/content\/intro\.mdx/,
 );
 mutation(
   'old fixture exemptions cannot restore a published prototype',
@@ -206,11 +210,11 @@ mutation(
   /retired fixture cannot be a published destination/,
 );
 mutation(
-  'a retained exclusion cannot reclaim the retired harness route',
+  'retained copies cannot reclaim the retired harness route',
   ({ manifest }) => {
     manifest.exclusions[0].retainedPage = 'docs/test-viewer.mdx';
   },
-  /retired fixture cannot be a published destination/,
+  /retainedPage is not a supported field/,
 );
 mutation(
   'an exclusion cannot also override a source',
@@ -251,9 +255,9 @@ mutation(
   /community\.mdx requires a nonempty reason/,
 );
 mutation(
-  'missing retained copy fails',
-  ({ remove }) => remove('mintlify-native/docs/community.mdx'),
-  /docs\/community\.mdx: missing destination for retained copy/,
+  'excluded community copy cannot remain even outside navigation',
+  ({ put }) => put('mintlify-native/docs/community.mdx'),
+  /docs\/community\.mdx: unexpected MDX page/,
 );
 mutation(
   'a retired fixture cannot reappear without navigation',
@@ -264,10 +268,9 @@ mutation(
   'new source inventory cannot turn the retired fixture into documentation',
   ({ manifest, put }) => {
     manifest.sources.push('test-viewer.mdx');
-    put('docs/content/test-viewer.mdx');
     put('mintlify-native/docs/test-viewer.mdx');
   },
-  /retired fixture cannot be a published destination/,
+  /test-viewer\.mdx: not a historical source/,
 );
 mutation(
   'assignment requires an existing owner page',
@@ -314,9 +317,9 @@ mutation(
 mutation(
   'unsupported manifest version fails',
   ({ manifest }) => {
-    manifest.version = 2;
+    manifest.version = 1;
   },
-  /version must be 1/,
+  /version must be 2/,
 );
 
 for (const path of [
@@ -372,7 +375,7 @@ mutation(
   ({ manifest }) => {
     manifest.exclusions[0].retainedPage = '../community.mdx';
   },
-  /retainedPage: invalid page path/,
+  /retainedPage is not a supported field/,
 );
 mutation(
   'an external fixture cannot become a production manifest exemption',
@@ -389,12 +392,12 @@ mutation(
   /ownerPage: invalid page path/,
 );
 mutation(
-  'source symlinks cannot escape the root',
+  'historical fixture symlinks cannot escape the root',
   ({ root, remove }) => {
-    remove('docs/content/guide.mdx');
-    symlinkSync(join(root, 'src/pages/community.mdx'), join(root, 'docs/content/guide.mdx'));
+    remove(historicalInventoryPath);
+    symlinkSync(join(root, 'src/pages/community.mdx'), join(root, historicalInventoryPath));
   },
-  /docs\/content\/guide\.mdx: symlinks are not allowed/,
+  /historical-source-inventory\.json: expected a regular file/,
 );
 mutation(
   'directory symlinks cannot escape the root',
@@ -473,17 +476,15 @@ mutation(
   /navigation.groups\[0\].pages\[2\]: unexpected documentation reference/,
 );
 
-test('a new page is accepted after the source, inventory, destination, and navigation are reconciled', (t) => {
+test('a future native page requires a maintained inventory entry, existing destination, and visible navigation', (t) => {
   const { root, put, manifest, docs, save } = fixture(t);
-  manifest.sources.push('new-page.mdx');
-  manifest.overrides.push({ source: 'new-page.mdx', destination: 'docs/new-route.mdx' });
-  put('docs/content/new-page.mdx');
+  manifest.nativePages.push({ destination: 'docs/new-route.mdx', reason: 'New native guide reviewed after migration.' });
   put('mintlify-native/docs/new-route.mdx');
   docs.navigation.groups[0].pages.push('docs/new-route');
   save();
   const result = cli(root);
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /4 sources, 3 Mintlify-owned pages/);
+  assert.match(result.stdout, /3 historical sources, 3 Mintlify-owned pages/);
 });
 
 test('malformed JSON and invalid CLI options fail with context', (t) => {
@@ -495,61 +496,49 @@ test('malformed JSON and invalid CLI options fail with context', (t) => {
   for (const args of [['--compare-ref'], ['--unknown']]) assert.equal(cli(root, ...args).status, 1);
 });
 
-test('reference comparison reports byte drift honestly and detects coordinated inventory deletions/additions', (t) => {
-  const { root, put, remove, manifest, docs, save } = fixture(t);
-  const git = (...args) => execFileSync('git', args, { cwd: root, stdio: 'pipe' }).toString().trim();
-  git('init', '--quiet');
-  git('-c', 'user.name=OpenFGA Test', '-c', 'user.email=test@openfga.dev', 'add', '.');
-  git(
-    '-c',
-    'user.name=OpenFGA Test',
-    '-c',
-    'user.email=test@openfga.dev',
-    '-c',
-    'commit.gpgsign=false',
-    'commit',
-    '--quiet',
-    '-m',
-    'fixture',
-  );
-  const revision = git('rev-parse', 'HEAD');
-  const logger = () => {};
-  assert.deepEqual(compareSourceWithRef('HEAD', { repoRoot: root, logger }), {
-    revision,
-    sourceCount: 3,
-    differingSourcePages: [],
-  });
+mutation(
+  'coordinated native additions must not masquerade as historical source pages',
+  ({ manifest, put, docs }) => {
+    manifest.sources.push('new.mdx');
+    put('mintlify-native/docs/new.mdx');
+    docs.navigation.groups[0].pages.push('docs/new');
+  },
+  /new\.mdx: not a historical source; register future content in nativePages/,
+);
 
-  put('docs/content/intro.mdx', '# New source prose, not yet reconciled with Mintlify\n');
-  assert.deepEqual(compareSourceWithRef('HEAD', { repoRoot: root, logger }).differingSourcePages, ['intro.mdx']);
-  const drift = cli(root, '--compare-ref', 'HEAD');
-  assert.equal(drift.status, 0, drift.stderr);
-  assert.match(drift.stdout, /Source byte differences from HEAD: 1; informational, not a semantic parity result/);
-  assert.match(drift.stdout, /docs\/content\/intro\.mdx/);
+for (const [name, entry, expected] of [
+  ['reasonless', { destination: 'docs/new.mdx' }, /nativePages.reason is required/],
+  ['blank reason', { destination: 'docs/new.mdx', reason: ' ' }, /requires a nonempty reason/],
+  ['traversal', { destination: 'docs/../new.mdx', reason: 'Guide' }, /invalid page path/],
+  ['non-doc route', { destination: 'api-reference/new.mdx', reason: 'Guide' }, /invalid page path/],
+  ['duplicate historical destination', { destination: 'docs/guide.mdx', reason: 'Guide' }, /duplicate destination/],
+  ['excluded destination', { destination: 'docs/community.mdx', reason: 'Guide' }, /cannot also be excluded/],
+  ['retired fixture', { destination: 'docs/test-viewer.mdx', reason: 'Guide' }, /retired fixture cannot/],
+  ['missing destination', { destination: 'docs/new.mdx', reason: 'Guide' }, /missing destination for native page/],
+]) {
+  mutation(`future native inventory rejects ${name}`, ({ manifest }) => manifest.nativePages.push(entry), expected);
+}
 
-  remove('docs/content/guide.mdx');
-  remove('mintlify-native/docs/guide.mdx');
-  manifest.sources = manifest.sources.filter((source) => source !== 'guide.mdx');
-  docs.navigation.groups[0].pages.pop();
-  save();
-  assert.equal(cli(root).status, 0);
-  const deleted = cli(root, '--compare-ref', 'HEAD');
-  assert.equal(deleted.status, 1);
-  assert.match(deleted.stderr, /docs\/content\/guide\.mdx: present at HEAD, missing locally/);
-
-  put('docs/content/guide.mdx');
-  put('mintlify-native/docs/guide.mdx');
-  manifest.sources.push('guide.mdx', 'new.mdx');
-  docs.navigation.groups[0].pages.push('docs/guide', 'docs/new');
-  put('docs/content/new.mdx');
-  put('mintlify-native/docs/new.mdx');
-  save();
-  assert.equal(cli(root).status, 0);
-  const added = cli(root, '--compare-ref', 'HEAD');
-  assert.equal(added.status, 1);
-  assert.match(added.stderr, /docs\/content\/new\.mdx: absent at HEAD, added locally/);
-  assert.equal(cli(root, '--compare-ref', 'does-not-exist').status, 1);
-});
+mutation(
+  'future native inventory cannot contain duplicate destinations',
+  ({ manifest }) => {
+    manifest.nativePages.push({ destination: 'docs/new.mdx', reason: 'Guide' }, { destination: 'docs/new.mdx', reason: 'Duplicate' });
+  },
+  /duplicate destination/,
+);
+mutation(
+  'a registered future native page still requires visible navigation',
+  ({ manifest, put }) => {
+    manifest.nativePages.push({ destination: 'docs/new.mdx', reason: 'Guide' });
+    put('mintlify-native/docs/new.mdx');
+  },
+  /docs\/new\.mdx is missing from visible documentation navigation/,
+);
+mutation(
+  'unsupported historical provenance fails closed',
+  ({ put }) => put(historicalInventoryPath, JSON.stringify({ provenance: { revision: 'HEAD' }, pages: [] })),
+  /historical inventory must originate/,
+);
 
 test('real manifest preserves all five route transformations and explicit non-production ownership', () => {
   const root = fileURLToPath(new URL('../', import.meta.url));
@@ -574,7 +563,14 @@ test('real manifest preserves all five route transformations and explicit non-pr
     );
   }
   assert.equal(manifest.exclusions.find(({ source }) => source === 'community.mdx')?.route, '/community');
+  assert.equal(manifest.exclusions.find(({ source }) => source === 'community.mdx')?.ownerPage, 'src/pages/community.mdx');
+  assert.equal(Object.hasOwn(manifest.exclusions[0], 'retainedPage'), false);
   assert.equal(Object.hasOwn(manifest, 'fixtures'), false);
+  assert.equal(readRegressionFixture('historical-source-inventory').pages.length, 111);
+  const result = validateSourceCoverage({ logger: () => {} });
+  assert.equal(result.sourceCount, 111);
+  assert.equal(result.ownedPages.length, 110 + manifest.nativePages.length);
+  assert.equal(result.destinationCount, result.ownedPages.length);
 });
 
 for (const path of [
