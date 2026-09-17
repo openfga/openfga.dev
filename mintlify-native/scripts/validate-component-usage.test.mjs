@@ -64,6 +64,43 @@ test('all eight exact named imports accept their minimal real prop contracts', (
   );
 });
 
+test('raw HTML disclosures fail in MDX and nested JSX before their bodies disappear', () => {
+  for (const source of [
+    '<details>\n<summary>Prerequisites</summary>\n\nOriginal model.\n</details>',
+    '<summary>Original definition</summary>',
+    '{true && <details><summary>Prerequisites</summary>Original model.</details>}',
+    'export const Prerequisites = () => <details>Original model.</details>;',
+    '<Card content={<details>Original model.</details>} />',
+  ]) {
+    assertError(validateMdxSource(source, 'disclosure.mdx'), /Raw HTML <(?:details|summary)>.*native Accordion.*summary text visible/);
+  }
+  const result = validateMdxSource('# Guide\n\n<details>Original model.</details>', 'disclosure.mdx');
+  assert.equal(result.errors[0].line, 3);
+  assert.equal(result.errors[0].column, 1);
+});
+
+test('native disclosures, explicit heading IDs and literal HTML examples remain supported', () => {
+  assertChecked(validateMdxSource([
+    '<h2 id="legacy-heading-1">Original heading</h2>',
+    '',
+    'Original summary with a [concept link](/docs/concepts).',
+    '',
+    '<Accordion title="Examples and details">',
+    'Original model.',
+    '</Accordion>',
+    '',
+    'Use `<details>` and `<summary>` only as literal examples.',
+    '',
+    '```html',
+    '<details><summary>Example</summary>Literal body.</details>',
+    '```',
+    '',
+    '{/* <details><summary>Not rendered</summary></details> */}',
+    '',
+    '{"<details>Literal string</details>"}',
+  ].join('\n')), 0);
+});
+
 test('invalid custom imports are rejected even when unused', async (t) => {
   const imports = [
     "import CheckRequestViewer from '/snippets/CheckRequestViewer.jsx';",
@@ -124,7 +161,7 @@ test('native components and ordinary imports retain arbitrary props, content and
     '  <Tab><UI.Widget {...props} /><Local /><Tree><Tree.File name="file" /></Tree></Tab>',
     '</Tabs>',
     '',
-    '<details data-foo={anything()}><summary>Title</summary><div {...props}>Body</div></details>',
+    '<section data-foo={anything()}><h3>Title</h3><div {...props}>Body</div></section>',
     '',
     '<Info metadata={{ ...metadata }} />',
     '',

@@ -55,7 +55,7 @@ npm ci
 npm run check:mintlify
 ```
 
-The aggregate checks generated browser artifact freshness and codegen/runtime/semantic regressions; MDX parsing, prose expressions, and their regressions; OpenFGA DSL blocks; documentation/API navigation and source inventory; native API sample overlay freshness and SDK regressions; and custom component usage and regressions. Shared viewer-runtime tests run once. Invalid content, stale artifacts, or failed checks exit nonzero without regenerating committed output.
+The aggregate checks generated browser artifact freshness and codegen/runtime/semantic regressions; MDX parsing, prose expressions, and their regressions; OpenFGA DSL blocks; documentation/API navigation and source inventory; native API sample overlay freshness and SDK regressions; production-content parity fixtures; and custom component usage and regressions. Shared viewer-runtime tests run once. Invalid content, stale artifacts, or failed checks exit nonzero without regenerating committed output.
 
 The [Mintlify repository quality workflow](.github/workflows/mintlify-quality.yml) runs on pull requests targeting `main` or `poc/mintlify-native`, pushes to `poc/mintlify-native`, and manual dispatch. It has read-only repository permissions, a 15-minute job timeout, and no path exclusions or deployment steps. Existing Docusaurus build, lint, and audit workflows remain separate and unchanged.
 

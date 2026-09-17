@@ -430,6 +430,10 @@ export function validateMdxSource(source, file = '<mdx>') {
 
   function checkComponent(node, name, attributes, shadowed = new Set()) {
     if (!name) return;
+    if (name === 'details' || name === 'summary') {
+      report('error', node, `Raw HTML <${name}> can hide its content in Mintlify. Use a native Accordion and keep the original summary text visible outside it.`);
+      return;
+    }
     const parts = name.split('.');
     const root = parts[0];
     if (parts.length > 1 && parts.some((part) => componentNames.has(part))) {

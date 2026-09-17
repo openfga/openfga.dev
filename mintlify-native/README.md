@@ -525,11 +525,14 @@ names/props belong to their own contracts. Valid JavaScript can still throw or
 return a value React cannot render. Unsupported parser/scope-analysis syntax
 fails explicitly.
 
-Declare an explicit `id` on linked native components, for example
-`<Accordion title="What Is A Type?" id="what-is-a-type">`. Preserve published
-fragment IDs when moving source headings into components. This lets Mintlify
-and the repository's static Markdown link checker resolve the same target;
-do not ignore `#fragment` links to bypass validation.
+Preserve published fragment IDs when changing headings or moving them into
+components. Mintlify's automatic punctuation and duplicate-heading slugs can
+differ from Docusaurus. Use an explicit JSX heading such as
+`<h2 id="legacy-heading-1">Original heading</h2>` when needed; Mintlify retains
+its native anchor link and table-of-contents entry. Explicit IDs must identify
+the correct section, not alias a duplicate heading elsewhere on the page.
+Linked native components can also declare an `id`. Do not ignore `#fragment`
+links to bypass validation.
 
 ### Generated browser artifacts
 
@@ -740,7 +743,13 @@ npm run check:mintlify
 ```
 
 This includes the individual checks and their regression suites, including
-MDX/prose and custom-component tests. `test:mintlify-components` still runs both
+MDX/prose, production-content parity, and custom-component tests.
+`npm run test:mintlify-content-parity` runs the `live-*-parity.test.mjs` suites
+against captured production contracts and source fixtures without fetching the
+live site. These preserve restored prose and links, visible disclosure summaries,
+legacy heading targets, and literal examples. They complement, rather than
+replace, rendered comparisons and browser interaction checks.
+`test:mintlify-components` still runs both
 component-usage and viewer-runtime tests; the aggregate uses
 `test:mintlify-component-usage` because `check:mintlify-codegen` already runs the
 shared viewer-runtime suite. See the [root README](../README.md#mintlify-repository-quality-checks)
@@ -767,7 +776,7 @@ Mintlify's sandbox behavior or syntax grammar registration.
 Source paths below are relative to `src/components/Docs`. A static conversion
 is not reusable component parity. All 111 source MDX files have counterparts;
 the navigation guard separately checks the 110 sidebar source routes. The
-hidden viewer harness is additional and remains available.
+viewer harness remains outside the published tree as an external test fixture.
 
 | Source exports | Mintlify disposition |
 | --- | --- |
@@ -792,7 +801,10 @@ hidden viewer harness is additional and remains available.
 
 Tutorial examples must stay inline with their instructional step. Use ordinary
 code fences or native CodeGroups for requests and responses, and native
-Accordions for expandable prerequisites. Raw HTML `details` can hide examples;
+Accordions for expandable prerequisites. Keep original rich summary text visible
+outside the Accordion, with its examples or starting model inside. The component
+guard rejects raw HTML `details` and `summary`, including nested JSX, because
+Mintlify can silently omit their bodies. Literal code examples remain allowed.
 `RequestExample` and `ResponseExample` are API-page slots that can drop or
 aggregate tutorial content. Reserve those slots for intentional API-reference
 usage. Source-fixture tests check example ancestors and per-step placement, not
