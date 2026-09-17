@@ -76,6 +76,18 @@ function headings(nodes) {
   });
 }
 
+test('the Go SDK tab cannot shadow the published Go CLI installation heading', () => {
+  const source = readFileSync(new URL('mintlify-native/docs/getting-started/install-sdk.mdx', root), 'utf8');
+  const nodes = descendants(parse(source));
+  const tab = nodes.find((node) => node.name === 'Tab' && attribute(node, 'title') === 'Go');
+  assert.ok(tab);
+  assert.equal(attribute(tab, 'id'), 'go-sdk', 'The default native Go tab ID would shadow the original #go heading');
+  const targets = nodes.filter((node) => node.name && attribute(node, 'id') === 'go');
+  assert.equal(targets.length, 1);
+  assert.equal(targets[0].name, 'h3');
+  assert.equal(text(targets[0]), 'Go');
+});
+
 function assertDefinitions(tree, definitions) {
   for (const definition of definitions) {
     const index = tree.children.findIndex((node) => node.type === 'heading' && text(node) === definition.title);

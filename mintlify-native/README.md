@@ -537,6 +537,9 @@ its native anchor link and table-of-contents entry. Explicit IDs must identify
 the correct section, not alias a duplicate heading elsewhere on the page.
 Linked native components can also declare an `id`. Do not ignore `#fragment`
 links to bypass validation.
+Tabs generate anchors from their labels, so use an explicit tab `id` when a
+label would shadow an existing heading. For example, `<Tab title="Go" id="go-sdk">`
+keeps the original `#go` link available for the CLI installation heading.
 
 For fifth-level headings, use Markdown with an inline target, for example
 `##### <span id="legacy-heading" style={{ scrollMarginTop: '7rem' }}>Original heading</span>`.
@@ -781,7 +784,7 @@ verify first load, on-demand loading, switching languages, setup,
 copy, and desktop/mobile Light/Dark/System themes. Node tests alone cannot prove
 Mintlify's sandbox behavior or syntax grammar registration.
 
-### Source component inventory and remaining conversions
+### Source component inventory and native conversions
 
 Source paths below are relative to `src/components/Docs`. A static conversion
 is not reusable component parity. All 111 source MDX files have counterparts;
@@ -804,9 +807,9 @@ viewer harness remains outside the published tree as an external test fixture.
 | `SnippetViewer/WriteAuthzModelViewer` | Static seven-language examples retain source model payloads and returned IDs. CLI file prerequisites are explicit; no reusable viewer is claimed. |
 | `SnippetViewer/TupleViewer` | Four task-based examples retain ordered descriptions and values, readable tuple layout and one combined copyable YAML block per example. |
 | `RelationshipTuples/RelationshipTuplesViewer`, `RelationshipCondition` | All 42 actual source callers retain tuple values, descriptions and JSON designation. Import-only references are not treated as callers. |
-| `Column/ColumnLayout`, `CardBox`, `LinkBulletType`, internal `Link` | Tables/Markdown replace layout/link wrappers. Visual props are not ported; some instructional content is abridged. Internal Link has no direct MDX callers. |
-| `Overview/CardGrid`, `IntroCard`, `RelatedSection` | Native CardGroup/Card/Note or Markdown; some grouping, titles and outer descriptions are lost. |
-| `ProductName`, `ProductNameFormat`, `ProductConcept`, `IntroductionSection`, `UpdateProductNameInLinks` | Literal text/Markdown links; some source links became unlinked text. |
+| `Column/ColumnLayout`, `CardBox`, `LinkBulletType`, internal `Link` | Native cards, tables and Markdown retain instructional content, including the three highlighted modeling exercises and their original icons. Source layout/monospace-container props are not reusable native components. Internal Link has no direct MDX callers. |
+| `Overview/CardGrid`, `IntroCard`, `RelatedSection` | Native CardGroup/Card/Note or Markdown retain titles, descriptions, destinations and reading order. Whole-card links replace separate More actions; source grouping and styling can differ. |
+| `ProductName`, `ProductNameFormat`, `ProductConcept`, `IntroductionSection`, `UpdateProductNameInLinks` | Literal OpenFGA text and Markdown links retain visible introductions, concept references and destinations. No dynamic product-name substitution layer is ported. |
 | `Banner`, `Playground`, `DocumentationNotice`, `FeedbackCallout` | No equivalent custom snippets. Banner/feedback have no direct MDX callers; playground/notice rendering is dormant under the current source configuration. |
 
 Tutorial examples must stay inline with their instructional step. Use ordinary
@@ -827,6 +830,43 @@ remain as classified above, rather than being counted as completed component
 ports. The static SDK setup page retains 18 examples
 (three authentication modes across six languages); that is content coverage,
 not proof of synchronized tabs or SDK execution.
+
+### Content parity and platform differences
+
+The production-content fixtures cover all 110 documentation pages: 26 foundation
+and setup pages, 36 modeling pages, and 48 operations and example pages. They
+preserve page headlines and sidebar labels separately, restored explanations and
+links, example payloads, and published fragment targets. The original 32 article
+images retain their asset bytes and order; decorative modeling icons are tracked
+separately. These contracts supplement, rather than replace, rendered review.
+
+Native presentation is not a pixel-for-pixel copy of Docusaurus:
+
+- Concepts keep all 19 question headings and rich definitions visible, with
+  examples in collapsed **Examples and details** disclosures. Native Accordion
+  descriptions cannot represent the original rich paragraphs.
+- Native cards, callouts, synchronized language tabs, copy controls, page
+  descriptions and light/dark themes replace Docusaurus controls and styling.
+  Production Docusaurus currently exposes only its dark theme.
+- Three diagram alt texts are more descriptive. The MCP protocol reference is
+  linked at its first body mention instead of the metadata introduction.
+  Existing spelling and spacing corrections retain their original URL fragments.
+- Nine relation subsections in Modeling Getting Started and two subsections in
+  Organization Context use H4 instead of production H5. Their wording and
+  fragments are preserved. Other restored H5 targets use the inline-span pattern
+  documented above.
+- Previously accepted SDK version pins and executable request-generation fixes
+  remain, even where production still emits older examples. Source-matched
+  static examples are not a claim that every SDK program has been compiled.
+  Fenced native copy controls omit a renderer-added terminal newline.
+
+Platform limitations remain explicit: source FAQ/HowTo JSON-LD is not ported as
+a Docusaurus Head component, and native metadata equivalence needs separate
+review. AuthZEN's content `#pagination` also occurs on a Mintlify-generated
+footer navigation element; the original link reaches the correct content heading.
+Native search and production split-site routing require their own deployment
+acceptance. Content review alone does not authorize legacy-source removal or a
+production cutover.
 
 ---
 
