@@ -1,12 +1,12 @@
 ---
+title: "Contextual and Time-Based Authorization"
+sidebarTitle: "Contextual time based authorization"
 description: Checking relations that depends on certain dynamic or contextual data (such as time, location, ip address, weather) that have not been written
 ---
 
 import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx'
 import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx'
 import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
-
-# Contextual and Time-Based Authorization
 
 This section explores some methods available to you to tackle some use-cases where the expected authorization check may depend on certain dynamic or contextual data (such as time, location, ip address, weather) that have not been written to the OpenFGA store.
 
@@ -249,7 +249,7 @@ Note that so far, we have not prevented Anne from viewing the transaction outsid
 
 ### Take time and IP address into consideration
 
-<h5 id="extend-the-authorization-model">Extend the authorization model</h5>
+##### <span id="extend-the-authorization-model" style={{ scrollMarginTop: '7rem' }}>Extend the authorization model</span>
 
 In order to add time and ip address to our authorization model, we will add appropriate types for them. We will have a "timeslot" and an "ip-address-range" as types, and each can have users related to it as a user.
 
@@ -446,7 +446,7 @@ On the "transaction" type:
 - Nothing will need to be done, as it will inherit the updated "viewer" relation definition from "account"
 </Note>
 
-<h5 id="add-the-required-tuples-to-mark-that-anne-is-in-an-approved-context">Add the required tuples to mark that Anne is in an approved context</h5>
+##### <span id="add-the-required-tuples-to-mark-that-anne-is-in-an-approved-context" style={{ scrollMarginTop: '7rem' }}>Add the required tuples to mark that Anne is in an approved context</span>
 
 Now that we have updated our authorization model to take time and ip address into consideration, you will notice that Anne has lost access because nothing indicates that Anne is connecting from an approved ip address and time. You can verify that by issuing the following check:
 

@@ -6,8 +6,6 @@ description: "Modeling task-based authorization for agents"
 import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
 import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
 
-# Modeling Task-Based Authorization for Agents
-
 Agents need credentials to interact with APIs. These can be user or service credentials, for internal or third-party systems. In most cases, these credentials grant agents broad access because the underlying authorization systems do not support fine-grained permissions. Consent prompts and service credentials are too coarse for agent use cases.
 
 Task-Based Authorization grants agents access to perform specific actions only when necessary, without permanent permissions. Agents start with no permissions and receive only what a given task requires. For example, rather than allowing an agent to create tickets across all projects, you authorize it to "create a ticket in project X" — scoping permissions to a specific context.

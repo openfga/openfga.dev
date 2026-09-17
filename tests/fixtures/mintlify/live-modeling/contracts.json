@@ -184,7 +184,15 @@
       ],
       "replacedDetails": 1,
       "cards": [],
-      "noteTitles": []
+      "noteTitles": [],
+      "headline": {
+        "title": "Modeling Entitlements for a System with OpenFGA",
+        "sidebarLabel": "Entitlements",
+        "preservedMetadata": {
+          "description": "Modeling entitlements for a system"
+        },
+        "bodyProseSha256": "f13e2a94f37dca26cd4c11a7b3107c060353e1e94cc42510b886a046d01c7fda"
+      }
     },
     {
       "source": "modeling/advanced/gdrive.mdx",
@@ -432,7 +440,15 @@
           "text": "Give your users search results with objects that they have access to"
         }
       ],
-      "noteTitles": []
+      "noteTitles": [],
+      "headline": {
+        "title": "Modeling Google Drive permissions with OpenFGA",
+        "sidebarLabel": "Google Drive",
+        "preservedMetadata": {
+          "description": "Modeling Google Drive permissions"
+        },
+        "bodyProseSha256": "bfe0268ac72bac8f46e8b7a89e5b5d1e3fc8d39f70c4f39e142e48ce23ad4a05"
+      }
     },
     {
       "source": "modeling/advanced/github.mdx",
@@ -668,7 +684,15 @@
       ],
       "replacedDetails": 1,
       "cards": [],
-      "noteTitles": []
+      "noteTitles": [],
+      "headline": {
+        "title": "Modeling GitHub permissions with OpenFGA",
+        "sidebarLabel": "GitHub",
+        "preservedMetadata": {
+          "description": "Modeling GitHub permissions"
+        },
+        "bodyProseSha256": "af7e9df52ab79a46016436e1202304ba5e73090df244789f5ffd3b646a9cce34"
+      }
     },
     {
       "source": "modeling/advanced/iot.mdx",
@@ -882,7 +906,15 @@
       ],
       "replacedDetails": 1,
       "cards": [],
-      "noteTitles": []
+      "noteTitles": [],
+      "headline": {
+        "title": "Modeling Authorization for an IoT Security System with OpenFGA",
+        "sidebarLabel": "IoT",
+        "preservedMetadata": {
+          "description": "Modeling fine-grained authorization for an IoT security camera system"
+        },
+        "bodyProseSha256": "e285ebbf25a552093ee478036d1836e7da7b8c4d03b8ec59305f005a94a9ce0e"
+      }
     },
     {
       "source": "modeling/advanced/overview.mdx",
@@ -921,7 +953,15 @@
       ],
       "noteTitles": [
         "When to use"
-      ]
+      ],
+      "headline": {
+        "title": "Advanced Use-Cases",
+        "sidebarLabel": "Advanced Use-Cases",
+        "preservedMetadata": {
+          "description": "Advanced use cases and patterns for authorization modeling"
+        },
+        "bodyProseSha256": "39579d4079ccaaa2f5d45f2e039dea307402df518afe264ea4d7242d422e53a2"
+      }
     },
     {
       "source": "modeling/advanced/slack.mdx",
@@ -1185,15 +1225,27 @@
         },
         {
           "id": "general-channel",
-          "text": "#general channel"
+          "text": "#general channel",
+          "level": 5,
+          "inlineCode": [
+            "#general"
+          ]
         },
         {
           "id": "marketing-internal-channel",
-          "text": "#marketing-internal channel"
+          "text": "#marketing-internal channel",
+          "level": 5,
+          "inlineCode": [
+            "#marketing-internal"
+          ]
         },
         {
           "id": "proj-marketing-campaign-channel",
-          "text": "#proj-marketing-campaign channel"
+          "text": "#proj-marketing-campaign channel",
+          "level": 5,
+          "inlineCode": [
+            "#proj-marketing-campaign"
+          ]
         },
         {
           "id": "verification-1",
@@ -1218,7 +1270,15 @@
       ],
       "replacedDetails": 1,
       "cards": [],
-      "noteTitles": []
+      "noteTitles": [],
+      "headline": {
+        "title": "Modeling Authorization for Slack with OpenFGA",
+        "sidebarLabel": "Slack",
+        "preservedMetadata": {
+          "description": "Modeling authorization for Slack"
+        },
+        "bodyProseSha256": "3cf9362a7165274da69aea065f65d6baf8f414403b17b4ceb64f228344edba36"
+      }
     },
     {
       "source": "modeling/agents/agents-as-principals.mdx",
@@ -1274,7 +1334,15 @@
           "text": "Control which tools users can access on an MCP server."
         }
       ],
-      "noteTitles": []
+      "noteTitles": [],
+      "headline": {
+        "title": "Modeling Agents as Principals",
+        "sidebarLabel": "Modeling Agents as Principals",
+        "preservedMetadata": {
+          "description": "Model agents as first-class principals in your authorization model so they inherit access through the same permission hierarchy as users"
+        },
+        "bodyProseSha256": "e6fb2faf580fe860dd1b0554fa6953ed6d7a33e91a05a00fb9543fd213c3a283"
+      }
     },
     {
       "source": "modeling/agents/mcp-authorization.mdx",
@@ -1356,7 +1424,15 @@
           "text": "Integrate authorization into search and retrieval workflows"
         }
       ],
-      "noteTitles": []
+      "noteTitles": [],
+      "headline": {
+        "title": "Authorization for MCP Servers",
+        "sidebarLabel": "Authorization for MCP Servers",
+        "preservedMetadata": {
+          "description": "Model Context Protocol (MCP) servers expose tools that AI agents can call. Without authorization, any authenticated user can invoke any tool. OpenFGA lets you control which tools each user can access, based on their role, group membership, or time-limited grants."
+        },
+        "bodyProseSha256": "22c83e41868033df78f839f9a62dd7bbfc596ec1d8c159c5c62064536040bf5b"
+      }
     },
     {
       "source": "modeling/agents/overview.mdx",
@@ -1390,7 +1466,15 @@
       ],
       "noteTitles": [
         "When to use"
-      ]
+      ],
+      "headline": {
+        "title": "Authorization for Agents",
+        "sidebarLabel": "Authorization for Agents",
+        "preservedMetadata": {
+          "description": "Authorization patterns for AI agents and automated processes: model agents as principals, secure RAG pipelines, and control MCP server tool access."
+        },
+        "bodyProseSha256": "ddb1374edaf89e903945519d1fa0d4e99052b556d15ff8102e0f03c84eb90b9e"
+      }
     },
     {
       "source": "modeling/agents/rag-authorization.mdx",
@@ -1434,7 +1518,15 @@
           "text": "Add time-based expiration or other conditions to document access grants"
         }
       ],
-      "noteTitles": []
+      "noteTitles": [],
+      "headline": {
+        "title": "RAG Authorization",
+        "sidebarLabel": "RAG Authorization",
+        "preservedMetadata": {
+          "description": "Retrieval-Augmented Generation (RAG) enhances LLM responses by retrieving relevant documents from a knowledge base. Without authorization checks, a user can ask a question and receive answers derived from documents they should not have access to. OpenFGA lets you enforce document-level permissions so that RAG pipelines only return content the user is authorized to see."
+        },
+        "bodyProseSha256": "e4bb1acf222d40a1b735665c3237fcf094f73af8971deb3161250c4209dce3d0"
+      }
     },
     {
       "source": "modeling/agents/task-based-authorization.mdx",
@@ -1511,7 +1603,15 @@
           "text": "Learn how to use contextual tuples to send dynamic context at query time"
         }
       ],
-      "noteTitles": []
+      "noteTitles": [],
+      "headline": {
+        "title": "Modeling Task-Based Authorization for Agents",
+        "sidebarLabel": "Modeling Task-Based Authorization for Agents",
+        "preservedMetadata": {
+          "description": "Modeling task-based authorization for agents"
+        },
+        "bodyProseSha256": "cab2989da9e63ea13bc07b21694eb6599dcbd20a3822e7cac68ef4c2c028a429"
+      }
     },
     {
       "source": "modeling/blocklists.mdx",
@@ -1665,7 +1765,15 @@
       ],
       "noteTitles": [
         "When to use"
-      ]
+      ],
+      "headline": {
+        "title": "Blocklists",
+        "sidebarLabel": "Blocklists",
+        "preservedMetadata": {
+          "description": "Preventing certain users from accessing objects"
+        },
+        "bodyProseSha256": "e9246e64262147f5da1b2f00660dc452ec323ce97bfe561e86aca6a98c469a2e"
+      }
     },
     {
       "source": "modeling/building-blocks/concentric-relationships.mdx",
@@ -1785,7 +1893,15 @@
       ],
       "noteTitles": [
         "When to use"
-      ]
+      ],
+      "headline": {
+        "title": "Concentric Relationships",
+        "sidebarLabel": "Concentric relationships",
+        "preservedMetadata": {
+          "description": "Modeling Concepts: Concentric Relationships"
+        },
+        "bodyProseSha256": "dff248a35aafb236c57ac5999f3a0abe8449c7561f9b20dc5d94237151290b1c"
+      }
     },
     {
       "source": "modeling/building-blocks/direct-relationships.mdx",
@@ -1981,6 +2097,7 @@
       "disclosures": [
         {
           "title": "Before you start",
+          "id": "before-you-start-details",
           "paragraphs": [
             "Direct access",
             "You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. Learn more →",
@@ -2015,7 +2132,15 @@
       ],
       "noteTitles": [
         "When to use"
-      ]
+      ],
+      "headline": {
+        "title": "Direct Relationships",
+        "sidebarLabel": "Direct relationships",
+        "preservedMetadata": {
+          "description": "Modeling Concepts: Direct Relationships"
+        },
+        "bodyProseSha256": "6a641b5b24286635fd9001c527643770898cbcefb6ff535d9feaf1990666f655"
+      }
     },
     {
       "source": "modeling/building-blocks/object-to-object-relationships.mdx",
@@ -2206,7 +2331,15 @@
       ],
       "noteTitles": [
         "When to use"
-      ]
+      ],
+      "headline": {
+        "title": "Object to Object Relationships",
+        "sidebarLabel": "Object to object relationships",
+        "preservedMetadata": {
+          "description": "Modeling relationships between objects (e.g. folder parent of a document)"
+        },
+        "bodyProseSha256": "0389d51c1f689d157aedf651cfde2392fb6141659c78e0835afc16d4bd5e3ca6"
+      }
     },
     {
       "source": "modeling/building-blocks/overview.mdx",
@@ -2240,7 +2373,15 @@
       ],
       "noteTitles": [
         "When to use"
-      ]
+      ],
+      "headline": {
+        "title": "Authorization Model Building Blocks",
+        "sidebarLabel": "Building Blocks",
+        "preservedMetadata": {
+          "description": "Guides on the building blocks of authorization models in OpenFGA."
+        },
+        "bodyProseSha256": "10c267bd866f6d1b179e4f4cd131048825afb97cc7f8d6951b84a6da120bbad1"
+      }
     },
     {
       "source": "modeling/building-blocks/usersets.mdx",
@@ -2314,7 +2455,15 @@
           "text": "How to add permissions to a userset"
         }
       ],
-      "noteTitles": []
+      "noteTitles": [],
+      "headline": {
+        "title": "Usersets",
+        "sidebarLabel": "Usersets",
+        "preservedMetadata": {
+          "description": "Modeling with userset"
+        },
+        "bodyProseSha256": "2afc78def5835f189d894cf51fc03d2db51a7a694f384c3e1e849b3bcca4ed80"
+      }
     },
     {
       "source": "modeling/conditions.mdx",
@@ -2394,7 +2543,15 @@
       "disclosures": [],
       "replacedDetails": 0,
       "cards": [],
-      "noteTitles": []
+      "noteTitles": [],
+      "headline": {
+        "title": "Conditions",
+        "sidebarLabel": "Conditions",
+        "preservedMetadata": {
+          "description": "Modeling relationships with Conditions"
+        },
+        "bodyProseSha256": "47cc5bae2730d2f041eca7d050d5e77e05b5ac50f26241eb7c85fafbc808b1b1"
+      }
     },
     {
       "source": "modeling/contextual-time-based-authorization.mdx",
@@ -2520,11 +2677,13 @@
         },
         {
           "id": "extend-the-authorization-model",
-          "text": "Extend the authorization model"
+          "text": "Extend the authorization model",
+          "level": 5
         },
         {
           "id": "add-the-required-tuples-to-mark-that-anne-is-in-an-approved-context",
-          "text": "Add the required tuples to mark that Anne is in an approved context"
+          "text": "Add the required tuples to mark that Anne is in an approved context",
+          "level": 5
         }
       ],
       "disclosures": [
@@ -2561,7 +2720,15 @@
       ],
       "noteTitles": [
         "When to use"
-      ]
+      ],
+      "headline": {
+        "title": "Contextual and Time-Based Authorization",
+        "sidebarLabel": "Contextual time based authorization",
+        "preservedMetadata": {
+          "description": "Checking relations that depends on certain dynamic or contextual data (such as time, location, ip address, weather) that have not been written"
+        },
+        "bodyProseSha256": "db64767df5ec1a3486878d98e1260b06c5e06ebfa2c44383fc238299a2344ca7"
+      }
     },
     {
       "source": "modeling/custom-roles.mdx",
@@ -2665,7 +2832,15 @@
       ],
       "noteTitles": [
         "When to use"
-      ]
+      ],
+      "headline": {
+        "title": "Custom Roles",
+        "sidebarLabel": "Custom roles",
+        "preservedMetadata": {
+          "description": "Modeling custom and dynamically changing roles in your system"
+        },
+        "bodyProseSha256": "ae433d0dfd40297d106bfd2f851e6d35d9b2949c8c77d0c55d5ed777b6f24059"
+      }
     },
     {
       "source": "modeling/direct-access.mdx",
@@ -2821,7 +2996,15 @@
       ],
       "noteTitles": [
         "When to use"
-      ]
+      ],
+      "headline": {
+        "title": "Direct Access",
+        "sidebarLabel": "Direct access",
+        "preservedMetadata": {
+          "description": "Granting a user access to an object"
+        },
+        "bodyProseSha256": "9c4214175c8730fa15f60d21bc622f48c5df955b6d0f634599e88d8b9d8e4944"
+      }
     },
     {
       "source": "modeling/getting-started.mdx",
@@ -3012,11 +3195,13 @@
       "anchors": [
         {
           "id": "complete-type-definition",
-          "text": "Complete Type Definition"
+          "text": "Complete Type Definition",
+          "level": 5
         },
         {
           "id": "complete-type-definition-1",
-          "text": "Complete Type Definition"
+          "text": "Complete Type Definition",
+          "level": 5
         }
       ],
       "disclosures": [],
@@ -3112,7 +3297,15 @@
           "text": "Learn about modeling user access to an object."
         }
       ],
-      "noteTitles": []
+      "noteTitles": [],
+      "headline": {
+        "title": "Get Started with Modeling",
+        "sidebarLabel": "Get Started with Modeling",
+        "preservedMetadata": {
+          "description": "An introduction to modeling"
+        },
+        "bodyProseSha256": "22e1c42b2c2884e2632919a1850972d46e0ec2896a7bc1ef31226d1210bc9075"
+      }
     },
     {
       "source": "modeling/migrating/migrating-models.mdx",
@@ -3123,7 +3316,15 @@
       "disclosures": [],
       "replacedDetails": 0,
       "cards": [],
-      "noteTitles": []
+      "noteTitles": [],
+      "headline": {
+        "title": "Model Migrations",
+        "sidebarLabel": "Model Migrations",
+        "preservedMetadata": {
+          "description": "Learn how to migrate OpenFGA authorization models, including adding, removing, and renaming types and relations."
+        },
+        "bodyProseSha256": "5dc89759f16f896c57a2b552a47cd3f25211ffabd3cd97dfd265178d21dd5b8b"
+      }
     },
     {
       "source": "modeling/migrating/migrating-relations.mdx",
@@ -3278,7 +3479,15 @@
           "text": "Learn the best practices of running OpenFGA in a production environment."
         }
       ],
-      "noteTitles": []
+      "noteTitles": [],
+      "headline": {
+        "title": "Migrating Relations",
+        "sidebarLabel": "Migrating relations",
+        "preservedMetadata": {
+          "description": "Migrating relations"
+        },
+        "bodyProseSha256": "f7d3f516ec4674ac171e14ca6d52a82570eb1ea81a27fe02856eb7b536c33d69"
+      }
     },
     {
       "source": "modeling/migrating/overview.mdx",
@@ -3302,7 +3511,15 @@
       ],
       "noteTitles": [
         "When to use"
-      ]
+      ],
+      "headline": {
+        "title": "Model Migrations",
+        "sidebarLabel": "Model Migrations",
+        "preservedMetadata": {
+          "description": "Guides focused on migrating models and relations in OpenFGA."
+        },
+        "bodyProseSha256": "db93a802a5554d8697f5c0a70caf5652f2b9c3cd45f44db4beb2fadb348960db"
+      }
     },
     {
       "source": "modeling/modular-models.mdx",
@@ -3359,7 +3576,15 @@
       "disclosures": [],
       "replacedDetails": 0,
       "cards": [],
-      "noteTitles": []
+      "noteTitles": [],
+      "headline": {
+        "title": "Modular Models",
+        "sidebarLabel": "Modular Models",
+        "preservedMetadata": {
+          "description": "Modular Models"
+        },
+        "bodyProseSha256": "65865654fe4dc88a3a58c4d6ec8bd02a15a9de6233f2bb743aa2c9cade318505"
+      }
     },
     {
       "source": "modeling/multiple-restrictions.mdx",
@@ -3508,7 +3733,15 @@
       ],
       "noteTitles": [
         "When to use"
-      ]
+      ],
+      "headline": {
+        "title": "Multiple Restrictions",
+        "sidebarLabel": "Multiple restrictions",
+        "preservedMetadata": {
+          "description": "Modeling system that requires multiple authorizations before allowing users to perform actions on particular objects"
+        },
+        "bodyProseSha256": "b91bfe4aaee5ceae7b1fcbc638e744bc4b9e1171288ddfbf856f79d14781e452"
+      }
     },
     {
       "source": "modeling/organization-context-authorization.mdx",
@@ -3665,7 +3898,15 @@
       ],
       "noteTitles": [
         "When to use"
-      ]
+      ],
+      "headline": {
+        "title": "Authorization Through Organization Context",
+        "sidebarLabel": "Organization context authorization",
+        "preservedMetadata": {
+          "description": "Modeling authorization through organization context"
+        },
+        "bodyProseSha256": "5b1ead54bf98a289f6a3a87d0103315d88a3ecb4fe05a5d6cd9a0a2a28b5b152"
+      }
     },
     {
       "source": "modeling/overview.mdx",
@@ -3754,7 +3995,15 @@
       ],
       "noteTitles": [
         "When to use"
-      ]
+      ],
+      "headline": {
+        "title": "Modeling Guides",
+        "sidebarLabel": "Modeling Guides",
+        "preservedMetadata": {
+          "description": "Guides, concepts and examples that help you define an authorization model."
+        },
+        "bodyProseSha256": "8175953930c21bc24c74b7631d699ade900d0e808013307e173cc1cb9d98dc56"
+      }
     },
     {
       "source": "modeling/parent-child.mdx",
@@ -3892,7 +4141,15 @@
       ],
       "noteTitles": [
         "When to use"
-      ]
+      ],
+      "headline": {
+        "title": "Parent-Child Objects",
+        "sidebarLabel": "Parent child",
+        "preservedMetadata": {
+          "description": "Indicate relationships between objects, and how users' relationships to one object can affect their relationship with another"
+        },
+        "bodyProseSha256": "eb3101eb84e521cacb80729fd4d762967fc395d77ea95ab3b09001392d4e2413"
+      }
     },
     {
       "source": "modeling/public-access.mdx",
@@ -4034,7 +4291,15 @@
       ],
       "noteTitles": [
         "When to use"
-      ]
+      ],
+      "headline": {
+        "title": "Public Access",
+        "sidebarLabel": "Public access",
+        "preservedMetadata": {
+          "description": "Granting public access to an object"
+        },
+        "bodyProseSha256": "7fa4984e8c99a43fe4a94aae72489574a1f624218749ee3fffc1c67df7de07e9"
+      }
     },
     {
       "source": "modeling/roles-and-permissions.mdx",
@@ -4211,7 +4476,15 @@
       ],
       "noteTitles": [
         "When to use a Roles and Permissions model"
-      ]
+      ],
+      "headline": {
+        "title": "Roles and Permissions",
+        "sidebarLabel": "Roles and permissions",
+        "preservedMetadata": {
+          "description": "Modeling basic roles and permissions"
+        },
+        "bodyProseSha256": "b9902b589aa5c347dc6909cc1bd008aee5251b80a96719238db32fb08858af14"
+      }
     },
     {
       "source": "modeling/store-file-format.mdx",
@@ -4302,7 +4575,15 @@
           "text": "Learn how to test your authorization models"
         }
       ],
-      "noteTitles": []
+      "noteTitles": [],
+      "headline": {
+        "title": "Store File Format",
+        "sidebarLabel": "Store file format",
+        "preservedMetadata": {
+          "description": "Store File Format (.fga.yaml)"
+        },
+        "bodyProseSha256": "eb107e1d867727cba07bdfeaff58cb12ba53a2a0f5bb87b560db32901e8696a5"
+      }
     },
     {
       "source": "modeling/testing-models.mdx",
@@ -4363,7 +4644,15 @@
           "text": "Define a model and tests for B2B application entitlements."
         }
       ],
-      "noteTitles": []
+      "noteTitles": [],
+      "headline": {
+        "title": "Testing Models",
+        "sidebarLabel": "Testing Models",
+        "preservedMetadata": {
+          "description": "Test OpenFGA authorization models before deployment."
+        },
+        "bodyProseSha256": "1fd223c6147c17f21b48ac4f4ee78313b9ecb8a1753ca2de0c634eb8b4baa1e0"
+      }
     },
     {
       "source": "modeling/token-claims-contextual-tuples.mdx",
@@ -4433,7 +4722,15 @@
           "text": "Details on the Check API in the OpenFGA reference guide."
         }
       ],
-      "noteTitles": []
+      "noteTitles": [],
+      "headline": {
+        "title": "Use Token Claims As Contextual Tuples",
+        "sidebarLabel": "Token claims contextual tuples",
+        "preservedMetadata": {
+          "description": "Using identity token claims to define contextual relations"
+        },
+        "bodyProseSha256": "47bf1c151bbfa155fae96e042099b646035c0aa2f554b25f63e9024611eae6cb"
+      }
     },
     {
       "source": "modeling/user-groups.mdx",
@@ -4610,7 +4907,15 @@
       ],
       "noteTitles": [
         "When to use"
-      ]
+      ],
+      "headline": {
+        "title": "User Groups",
+        "sidebarLabel": "User groups",
+        "preservedMetadata": {
+          "description": "Adding users to groups and granting group members access to an object"
+        },
+        "bodyProseSha256": "7893a8350907a7af7a79abe5db38149f92108643217f31cfc0ef58fbb32d165c"
+      }
     }
   ],
   "highlights": [

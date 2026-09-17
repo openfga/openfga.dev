@@ -1,13 +1,12 @@
 ---
-title: Slack
+sidebarTitle: "Slack"
+title: "Modeling Authorization for Slack with OpenFGA"
 description: Modeling authorization for Slack
 ---
 
 import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx';
 import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
 import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
-
-# Modeling Authorization for Slack with OpenFGA
 
 This tutorial explains how to model permissions for a communication platform like Slack using OpenFGA.
 
@@ -716,7 +715,7 @@ The Sandcastle workspace is a parent workspace of the #general, #marketing-inter
   ]}
 />
 
-<h5 id="general-channel">`#general` channel</h5>
+##### <span id="general-channel" style={{ scrollMarginTop: '7rem' }}><code>#general</code> channel</span>
 
 The `#general` channel is a public channel visible to all the members of the workspace. In OpenFGA, you represent this relation in the form of the following relationship tuple:
 
@@ -755,7 +754,7 @@ And to indicate that Amy and Emily can write to it:
   ]}
 />
 
-<h5 id="marketing-internal-channel">`#marketing-internal` channel</h5>
+##### <span id="marketing-internal-channel" style={{ scrollMarginTop: '7rem' }}><code>#marketing-internal</code> channel</span>
 
 The `#marketing-internal` is visible to only Bob and Emily. They can view and write in it.
 
@@ -774,7 +773,7 @@ The `#marketing-internal` is visible to only Bob and Emily. They can view and wr
   ]}
 />
 
-<h5 id="proj-marketing-campaign-channel">`#proj-marketing-campaign` channel</h5>
+##### <span id="proj-marketing-campaign-channel" style={{ scrollMarginTop: '7rem' }}><code>#proj-marketing-campaign</code> channel</span>
 
 The `#proj-marketing-campaign` is public to all members of the Sandcastle workspace. They can view and write in it.
 

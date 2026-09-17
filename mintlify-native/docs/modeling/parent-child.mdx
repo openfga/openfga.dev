@@ -1,12 +1,12 @@
 ---
+title: "Parent-Child Objects"
+sidebarTitle: "Parent child"
 description: Indicate relationships between objects, and how users' relationships to one object can affect their relationship with another
 ---
 
 import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx';
 import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
 import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
-
-# Parent-Child Objects
 
 In OpenFGA, a user's [relationship](/docs/concepts#what-is-a-relationship) with an [object](/docs/concepts#what-is-an-object) can affect their relationship with another object. For example, an `editor` of a `folder` can also be an `editor` of all `documents` that `folder` is a `parent` of.
 
