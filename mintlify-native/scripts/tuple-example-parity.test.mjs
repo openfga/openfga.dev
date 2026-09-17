@@ -178,11 +178,19 @@ function assertTutorialInlineExamples(source, route) {
 }
 
 function examplePlacements(source) {
-  const allNodes = nodes(source);
+  const frontmatter = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/.exec(source);
+  const allNodes = nodes(frontmatter
+    ? frontmatter[0].replace(/[^\r\n]/g, ' ') + source.slice(frontmatter[0].length)
+    : source);
+  const level = (node) => node.type === 'heading' ? node.depth : Number(node.name?.slice(1));
+  const headings = allNodes.filter((node) => node.type === 'heading' || /^h[1-6]$/.test(node.name ?? ''));
+  const title = frontmatter ? parseYaml(frontmatter[1])?.title : undefined;
+  const pageHeading = typeof title === 'string' && !headings.some((node) => level(node) === 1)
+    ? [{ type: 'heading', depth: 1, children: [{ type: 'text', value: title }] }]
+    : [];
   return allNodes.filter((node) => node.type === 'code' || node.name === 'OpenFGACodeBlock').map((node) => {
-    const headingPath = allNodes.filter((item) =>
-      item.type === 'heading' && item.position.start.offset < node.position.start.offset)
-      .reduce((stack, heading) => [...stack.filter((item) => item.depth < heading.depth), heading], []);
+    const headingPath = headings.filter((item) => item.position.start.offset < node.position.start.offset)
+      .reduce((stack, heading) => [...stack.filter((item) => level(item) < level(heading)), heading], pageHeading);
     return {
       language: node.name === 'OpenFGACodeBlock' ? 'dsl.openfga' : node.lang,
       code: node.name === 'OpenFGACodeBlock' ? props(node).code : node.value,
@@ -394,6 +402,25 @@ const tutorialDslMigrated = "import { OpenFGACodeBlock } from '/snippets/OpenFGA
 
 test('tutorial DSL fixture compares canonical components with the original fenced source', () => {
   assertTutorialExampleParity(tutorialDslFixture, tutorialDslMigrated);
+});
+
+test('tutorial heading paths preserve a body headline promoted to native page metadata', () => {
+  const source = `# Original tutorial\n${tutorialDslFixture}`;
+  const migrated = `---\ntitle: Original tutorial\ndescription: Metadata is not a section heading\n---\n${tutorialDslMigrated}`;
+  assertTutorialExampleParity(source, migrated);
+  assert.throws(
+    () => assertTutorialExampleParity(source, migrated.replace('title: Original tutorial', 'title: Different tutorial')),
+    /headings/,
+  );
+});
+
+test('tutorial heading paths retain explicitly identified JSX headings', () => {
+  const migrated = tutorialDslMigrated.replace('## Configure the model', '<h2 id="configure">Configure the model</h2>');
+  assertTutorialExampleParity(tutorialDslFixture, migrated);
+  assert.throws(
+    () => assertTutorialExampleParity(tutorialDslFixture, migrated.replace('>Configure the model<', '>Replace the model<')),
+    /headings/,
+  );
 });
 
 test('tutorial DSL fixture detects changed model bytes in a canonical component', () => {

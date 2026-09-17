@@ -83,6 +83,8 @@ test('native disclosures, explicit heading IDs and literal HTML examples remain 
   assertChecked(validateMdxSource([
     '<h2 id="legacy-heading-1">Original heading</h2>',
     '',
+    '##### <span id="legacy-fifth" style={{ scrollMarginTop: "7rem" }}>Original fifth-level heading</span>',
+    '',
     'Original summary with a [concept link](/docs/concepts).',
     '',
     '<Accordion title="Examples and details">',
@@ -99,6 +101,14 @@ test('native disclosures, explicit heading IDs and literal HTML examples remain 
     '',
     '{"<details>Literal string</details>"}',
   ].join('\n')), 0);
+});
+
+test('explicit JSX fifth-level headings are rejected without matching literal examples', () => {
+  for (const source of [
+    '<h5 id="original">Original heading</h5>',
+    '{true && <h5 id="original">Original heading</h5>}',
+  ]) assertError(validateMdxSource(source), /Explicit JSX <h5>.*Markdown #####/);
+  assertChecked(validateMdxSource('```mdx\n<h5 id="literal">Example</h5>\n```'), 0);
 });
 
 test('invalid custom imports are rejected even when unused', async (t) => {

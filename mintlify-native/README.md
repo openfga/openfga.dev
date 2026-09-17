@@ -525,14 +525,24 @@ names/props belong to their own contracts. Valid JavaScript can still throw or
 return a value React cannot render. Unsupported parser/scope-analysis syntax
 fails explicitly.
 
+Put the original page headline in frontmatter `title`, without repeating an H1
+in the body. Use `sidebarTitle` when the navigation label differs from the
+headline; keep the existing label when changing title metadata.
+
 Preserve published fragment IDs when changing headings or moving them into
 components. Mintlify's automatic punctuation and duplicate-heading slugs can
-differ from Docusaurus. Use an explicit JSX heading such as
+differ from Docusaurus. For H2-H4, use an explicit JSX heading such as
 `<h2 id="legacy-heading-1">Original heading</h2>` when needed; Mintlify retains
 its native anchor link and table-of-contents entry. Explicit IDs must identify
 the correct section, not alias a duplicate heading elsewhere on the page.
 Linked native components can also declare an `id`. Do not ignore `#fragment`
 links to bypass validation.
+
+For fifth-level headings, use Markdown with an inline target, for example
+`##### <span id="legacy-heading" style={{ scrollMarginTop: '7rem' }}>Original heading</span>`.
+The span stays inside the semantic heading and clears the sticky header on
+fragment navigation. Explicit JSX `<h5>` headings can disappear in the native
+renderer and are rejected by the component guard.
 
 ### Generated browser artifacts
 

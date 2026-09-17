@@ -434,6 +434,10 @@ export function validateMdxSource(source, file = '<mdx>') {
       report('error', node, `Raw HTML <${name}> can hide its content in Mintlify. Use a native Accordion and keep the original summary text visible outside it.`);
       return;
     }
+    if (name === 'h5') {
+      report('error', node, 'Explicit JSX <h5> can disappear in Mintlify. Use a Markdown ##### heading with a nested span for its published ID.');
+      return;
+    }
     const parts = name.split('.');
     const root = parts[0];
     if (parts.length > 1 && parts.some((part) => componentNames.has(part))) {
