@@ -3,8 +3,6 @@ title: "Install SDK Client"
 description: "Installing SDK client"
 ---
 
-# Install SDK Client
-
 To get started, install the OpenFGA SDK packages. These commands select the exact versions used by the API reference samples.
 
 The API reference provides SDK programs for 18 standard operations and cURL for all 24 operations. The six experimental AuthZen endpoints are **HTTP-only** in these SDK versions: `GetConfiguration`, `Evaluation`, `Evaluations`, `ActionSearch`, `ResourceSearch`, and `SubjectSearch`. Use their cURL samples; no named SDK methods are available for these endpoints.
@@ -53,30 +51,34 @@ The API reference provides SDK programs for 18 standard operations and cURL for 
     }
     ```
 
-    Then run:
+    You can then run
 
     ```bash
     go mod tidy
     ```
+
+    to update `go.mod` and `go.sum` if you are using them.
   </Tab>
 
   <Tab title=".NET">
     The OpenFGA .NET SDK is available on [NuGet](https://www.nuget.org/packages/OpenFga.Sdk).
     The API reference programs use top-level statements and async streams; use a .NET 8 or newer application.
 
-    Using the dotnet CLI:
+    You can install it using:
+
+    - The [dotnet CLI](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-dotnet-cli):
 
     ```bash
     dotnet add package OpenFGA.Sdk --version 0.10.4
     ```
 
-    Using the Package Manager Console inside Visual Studio:
+    - The [Package Manager Console](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-powershell) inside Visual Studio:
 
     ```powershell
     Install-Package OpenFGA.Sdk -Version 0.10.4
     ```
 
-    You can also search for and install `OpenFGA.Sdk` in Visual Studio, Visual Studio for Mac, or IntelliJ Rider's package manager UI.
+    - [Visual Studio](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio), [Visual Studio for Mac](https://docs.microsoft.com/en-us/visualstudio/mac/nuget-walkthrough) and [IntelliJ Rider](https://www.jetbrains.com/help/rider/Using_NuGet.html): Search for and install `OpenFGA.Sdk` in each of their respective package manager UIs.
   </Tab>
 
   <Tab title="Python">
@@ -88,7 +90,7 @@ The API reference provides SDK programs for 18 standard operations and cURL for 
     pip3 install openfga_sdk==0.10.4
     ```
 
-    In your code, import the module:
+    In your code, import the module and use it:
 
     ```python
     import openfga_sdk
@@ -99,7 +101,7 @@ The API reference provides SDK programs for 18 standard operations and cURL for 
     You can find the Java package on [Maven Central](https://central.sonatype.com/artifact/dev.openfga/openfga-sdk).
     This SDK version requires Java 17 or newer.
 
-    Using Maven:
+    Using [Maven](https://maven.apache.org/):
 
     ```xml
     <dependency>
@@ -109,7 +111,7 @@ The API reference provides SDK programs for 18 standard operations and cURL for 
     </dependency>
     ```
 
-    Using Gradle:
+    Using [Gradle](https://gradle.org/):
 
     ```groovy
     implementation 'dev.openfga:openfga-sdk:0.10.0'
@@ -119,57 +121,72 @@ The API reference provides SDK programs for 18 standard operations and cURL for 
   <Tab title="CLI">
     The OpenFGA CLI is available on [GitHub](https://github.com/openfga/cli).
 
-    **Homebrew:**
+    To install:
+
+    <h3 id="brew">Brew</h3>
 
     ```bash
     brew install openfga/tap/fga
     ```
 
-    **Linux (deb, rpm, apk)** — download packages from the [releases page](https://github.com/openfga/cli/releases):
+    <h3 id="linux-deb-rpm-and-apk-packages">Linux (deb, rpm and apk) packages</h3>
+
+    Download the .deb, .rpm or .apk packages from the [releases page](https://github.com/openfga/cli/releases).
+
+    Debian:
 
     ```bash
-    # Debian
     sudo apt install ./fga_<version>_linux_<arch>.deb
+    ```
 
-    # Fedora
+    Fedora:
+
+    ```bash
     sudo dnf install ./fga_<version>_linux_<arch>.rpm
+    ```
 
-    # Alpine
+    Alpine Linux:
+
+    ```bash
     sudo apk add --allow-untrusted ./fga_<version>_linux_<arch>.apk
     ```
 
-    **Docker:**
+    <h3 id="docker">Docker</h3>
 
     ```bash
-    docker pull openfga/cli && docker run -it openfga/cli
+    docker pull openfga/cli; docker run -it openfga/cli
     ```
 
-    **Go:**
+    <h3 id="go">Go</h3>
 
     ```bash
     go install github.com/openfga/cli/cmd/fga@latest
     ```
 
-    Or download pre-compiled binaries from the [releases page](https://github.com/openfga/cli/releases).
+    <h3 id="manually">Manually</h3>
+
+    Download the pre-compiled binaries from the [releases page](https://github.com/openfga/cli/releases).
   </Tab>
 </Tabs>
 
 ## Related Sections
+
+Get OpenFGA's SDKs to add authorization to your API.
 
 <CardGroup>
   <Card title="OpenFGA Node.js SDK" href="https://www.npmjs.com/package/@openfga/sdk">
     Install our Node.js & JavaScript SDK to get started.
   </Card>
   <Card title="OpenFGA Go SDK" href="https://github.com/openfga/go-sdk">
-    Use our Go SDK to easily connect your Go application to the OpenFGA API.
+    Use our Go SDK to easily connect your Go application to the OpenFGA API
   </Card>
   <Card title="OpenFGA .NET SDK" href="https://github.com/openfga/dotnet-sdk">
-    Connect your .NET service with OpenFGA using our .NET SDK.
+    Connect your .NET service with OpenFGA using our .NET SDK
   </Card>
   <Card title="OpenFGA Python SDK" href="https://github.com/openfga/python-sdk">
-    Connect your Python service with OpenFGA using our Python SDK.
+    Connect your Python service with OpenFGA using our Python SDK
   </Card>
   <Card title="OpenFGA Java SDK" href="https://github.com/openfga/java-sdk">
-    Connect your Java service with OpenFGA using our Java SDK.
+    Connect your Java service with OpenFGA using our Java SDK
   </Card>
 </CardGroup>

@@ -6,9 +6,7 @@ description: "List all users that have a certain relation with a particular obje
 import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
 import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
 
-# Perform a List Users call
-
-This section will illustrate how to perform a list users request. The List Users call allows you to retrieve a list of users that have a specific relationship with a given object. This can be used in scenarios such as retrieving users who have access to a resource or managing members in a group.
+This section will illustrate how to perform a [list users](/docs/concepts#what-is-a-list-users-request) request. The List Users call allows you to retrieve a list of [users](/docs/concepts#what-is-a-user) that have a specific [relationship](/docs/concepts#what-is-a-relationship) with a given [object](/docs/concepts#what-is-an-object). This can be used in scenarios such as retrieving users who have access to a resource or managing members in a group.
 
 ## Before You Start
 
@@ -74,7 +72,7 @@ type document
 
 Assume that you want to list all users of type `user` that have a `reader` relationship with `document:planning`:
 
-### 01. Configure the OpenFGA API client
+<h3 id="01-configure-the--api-client">01. Configure the OpenFGA API client</h3>
 
 Before calling the List Users API, you will need to configure the API client.
 

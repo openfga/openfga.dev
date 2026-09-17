@@ -3,6 +3,8 @@ title: "Configure SDK Client Telemetry"
 description: "How to configure your SDK Client to collect telemetry using OpenTelemetry."
 ---
 
+The OpenFGA SDK Client supports telemetry data collection using [OpenTelemetry](https://opentelemetry.io).
+
 ## Enabling Telemetry
 
 1. [Install the OpenFGA SDK Client](/docs/getting-started/install-sdk)
@@ -274,7 +276,7 @@ npm install --save @opentelemetry/auto-instrumentations-node
 
 Create an initialization file to configure tracing:
 
-```typescript
+```javascript
 // tracing.ts
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';

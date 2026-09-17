@@ -7,9 +7,7 @@ import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
 import { ListObjectsRequestViewer } from '/snippets/ListObjectsRequestViewer.jsx';
 import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
 
-# Perform a list objects call
-
-This section describes how to perform a list objects request. The List Objects API allows you to retrieve all objects of a specified type that a user has a given relationship with. This can be used in scenarios like displaying all documents a user can read or listing resources a user can manage.
+This section describes how to perform a [list objects](/docs/concepts#what-is-a-list-objects-request) request. The List Objects API allows you to retrieve all [objects](/docs/concepts#what-is-an-object) of a specified [type](/docs/concepts#what-is-a-type) that a [user](/docs/concepts#what-is-a-user) has a given [relationship](/docs/concepts#what-is-a-relationship) with. This can be used in scenarios like displaying all documents a user can read or listing resources a user can manage.
 
 ## Before you start
 
@@ -75,7 +73,7 @@ type document
 
 Assume that you want to list all objects of type document that user `anne` has `reader` relationship with:
 
-### 01. Configure the OpenFGA API client
+<h3 id="01-configure-the--api-client">01. Configure the OpenFGA API client</h3>
 
 Before calling the check API, you will need to configure the API client.
 
@@ -180,6 +178,10 @@ Before calling the check API, you will need to configure the API client.
 
   <Tab title="curl">
     To obtain the [access token](https://auth0.com/docs/get-started/authentication-and-authorization-flow/call-your-api-using-the-client-credentials-flow):
+
+    ```bash
+    Set FGA_API_URL according to the service you are using (e.g. https://api.fga.example)
+    ```
   </Tab>
 
 </Tabs>

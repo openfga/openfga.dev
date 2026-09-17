@@ -6,9 +6,7 @@ description: "Checking if a user is authorized to perform an action on a resourc
 import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
 import { BatchCheckRequestViewer } from '/snippets/BatchCheckRequestViewer.jsx';
 
-# Perform a Check
-
-This section will illustrate how to perform a check request to determine whether a user has a certain relationship with an object.
+This section will illustrate how to perform a [check](/docs/concepts#what-is-a-check-request) request to determine whether a [user](/docs/concepts#what-is-a-user) has a certain [relationship](/docs/concepts#what-is-a-relationship) with an [object](/docs/concepts#what-is-an-object).
 
 ## Before you start
 
@@ -65,7 +63,7 @@ This section will illustrate how to perform a check request to determine whether
 
 Assume that you want to check whether user `anne` has relationship `reader` with object `document:Z`
 
-### 01. Configure the OpenFGA API client
+<h3 id="01-configure-the--api-client">01. Configure the OpenFGA API client</h3>
 
 Before calling the check API, you will need to configure the API client.
 

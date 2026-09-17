@@ -1,0 +1,1741 @@
+{
+  "pages": [
+    {
+      "source": "intro.mdx",
+      "native": "docs/fga.mdx",
+      "liveURL": "https://openfga.dev/docs/fga",
+      "requiredText": [
+        "OpenFGA is a scalable open source authorization system for developers that allows implementing authorization for any kind of application and smoothly evolve as complexity increases over time. It is owned by the Cloud Native Computing Foundation.",
+        "Inspired by Google’s Zanzibar, Google’s internal authorization system, OpenFGA relies on Relationship-Based Access Control, which allows developers to easily implement Role-Based Access Control and provides additional capabilities to implement Attribute-Based Access Control. You can learn more about different authorization concepts here.",
+        "OpenFGA provides developers the following benefits:",
+        "OpenFGA helps developers achieve those benefits with features as:",
+        "Learn about Authorization.",
+        "Learn about OpenFGA.",
+        "Learn about how to get started with modeling your permission system in OpenFGA.",
+        "Patterns for AI agents, RAG, MCP servers, multi-tenant SaaS, and microservices.",
+        "Sample models for healthcare, banking, e-commerce, HR, CRM, and LMS.",
+        "Zanzibar, ReBAC vs RBAC, ABAC vs ReBAC, and fine-grained authorization explained."
+      ],
+      "requiredImages": [],
+      "models": [],
+      "cards": [
+        {
+          "title": "Authorization Concepts",
+          "description": "Learn about Authorization.",
+          "href": "/docs/authorization-concepts"
+        },
+        {
+          "title": "Product Concepts",
+          "description": "Learn about OpenFGA.",
+          "href": "/docs/concepts"
+        },
+        {
+          "title": "Modeling: Getting Started",
+          "description": "Learn about how to get started with modeling your permission system in OpenFGA.",
+          "href": "/docs/modeling/getting-started"
+        },
+        {
+          "title": "Use Cases",
+          "description": "Patterns for AI agents, RAG, MCP servers, multi-tenant SaaS, and microservices.",
+          "href": "/docs/use-cases"
+        },
+        {
+          "title": "Industries",
+          "description": "Sample models for healthcare, banking, e-commerce, HR, CRM, and LMS.",
+          "href": "/docs/industries"
+        },
+        {
+          "title": "Learn Authorization",
+          "description": "Zanzibar, ReBAC vs RBAC, ABAC vs ReBAC, and fine-grained authorization explained.",
+          "href": "/docs/learn"
+        }
+      ]
+    },
+    {
+      "source": "authorization-concepts.mdx",
+      "native": "docs/authorization-concepts.mdx",
+      "liveURL": "https://openfga.dev/docs/authorization-concepts",
+      "requiredText": [
+        "Authentication ensures a user's identity. Authorization determines if a user can perform a certain action on a particular resource.",
+        "For example, when you log in to Google, Authentication is the process of verifying that your username and password are correct. Authorization is the process of ensuring that you can access a given Google service or feature.",
+        "Fine-Grained Authorization (FGA) means deciding access at the level of the individual resource and action — \"Alice can edit document-42\", not just \"Alice is an editor\". Well-designed FGA systems handle millions of objects and users with permissions that change rapidly, like Google Drive's per-document and per-folder sharing.",
+        "See Fine-Grained Authorization for the full explanation.",
+        "In Role-Based Access Control (RBAC), permissions are assigned to users based on roles like editor or admin. RBAC fits flat, single-tenant access models but breaks down with hierarchy, sharing, or multi-tenancy.",
+        "See RBAC vs. ReBAC for when roles run out and how OpenFGA models RBAC cleanly.",
+        "In Attribute-Based Access Control (ABAC), permissions are granted based on attributes of the user, resource, or request — for example, a user with marketing and manager attributes can publish marketing posts. ABAC implementations typically pull attributes from multiple sources at decision time.",
+        "See ABAC vs. ReBAC for how the two combine.",
+        "Policy-Based Access Control (PBAC) manages authorization policies centrally, external to application code. Most ABAC implementations are also PBAC. OpenFGA's model DSL is itself a policy: committed to Git, reviewed via PR, deployed like any other code — see Policy Engines vs. Relationship Engines.",
+        "Relationship-Based Access Control (ReBAC) makes access rules conditional on relationships between users and objects, and between objects themselves — \"a user can view a document if they have access to its parent folder\". ReBAC is a superset of RBAC and natively covers ABAC scenarios when attributes are expressed as relationships. OpenFGA extends ReBAC with Conditions and Contextual Tuples for the remaining attribute-driven cases.",
+        "See What is ReBAC? for the full picture.",
+        "Zanzibar is Google's global authorization system, used by Drive, YouTube, Calendar, and Cloud. It stores object-relation-user tuples and answers checks and reverse queries against the resulting graph. OpenFGA implements the Zanzibar model on your existing databases.",
+        "See What is Zanzibar? for what the paper introduced and how OpenFGA maps to it.",
+        "Learn about the OpenFGA Concepts",
+        "Learn about how to get started with modeling your permission system in OpenFGA."
+      ],
+      "requiredImages": [],
+      "models": [],
+      "cards": [
+        {
+          "title": "OpenFGA Concepts",
+          "description": "Learn about the OpenFGA Concepts",
+          "href": "/docs/concepts"
+        },
+        {
+          "title": "Modeling: Getting Started",
+          "description": "Learn about how to get started with modeling your permission system in OpenFGA.",
+          "href": "/docs/getting-started"
+        }
+      ]
+    },
+    {
+      "source": "concepts.mdx",
+      "native": "docs/concepts.mdx",
+      "liveURL": "https://openfga.dev/docs/concepts",
+      "requiredText": [
+        "The OpenFGA service answers authorization checks by determining whether a relationship exists between an object and a user. Checks reference your authorization model against your relationship tuples for authorization authority. Below are explanations of basic FGA concepts, like type and authorization model, and a playground to test your knowledge.",
+        "A type is a string. It defines a class of objects with similar characteristics.",
+        "The following are examples of types:",
+        "A type definition defines all possible relations a user or another object can have in relation to this type.",
+        "Below is an example of a type definition:",
+        "An authorization model combines one or more type definitions. This is used to define the permission model of a system.",
+        "Below is an example of an authorization model:",
+        "Together with relationship tuples, the authorization model determines whether a relationship exists between a user and an object.",
+        "OpenFGA uses two different syntaxes to define the authorization model:",
+        "Click here to learn more about the OpenFGA Configuration Language.",
+        "A store is an OpenFGA entity used to organize authorization check data.",
+        "Each store contains one or more versions of an authorization model and can contain various relationship tuples. Store data cannot be shared across stores; we recommended storing all data that may be related or affect your authorization result in a single store.",
+        "Separate stores can be created for separate authorization needs or isolated environments, e.g. development/prod.",
+        "An object represents an entity in the system. Users' relationships to it are defined by relationship tuples and the authorization model.",
+        "An object is a combination of a type and an identifier.",
+        "For example:",
+        "User, relation and object are the building blocks for relationship tuples.",
+        "For an example, see Direct Access.",
+        "A user is an entity in the system that can be related to an object.",
+        "A user is a combination of a type, an identifier, and an optional relation.",
+        "For example,",
+        "For more information, see Direct Access.",
+        "A relation is a string defined in the type definition of an authorization model. Relations define a possible relationship between an object (of the same type as the type definition) and a user in the system.",
+        "Examples of relation:",
+        "A relation definition lists the conditions or requirements under which a relationship is possible.",
+        "These would be defined in the authorization model:",
+        "There are four relations in the document type configuration: viewer, commenter, editor and owner. The editor relation exists when the report is directly assigned to the user or for any member of an assigned team.",
+        "A directly related user type is an array specified in the type definition to indicate which types of users can be directly related to that relation.",
+        "For the following model, only relationship tuples with user of type user may be assigned to document.",
+        "A relationship tuple with user user:anne or user:3f7768e0-4fa7-4e93-8417-4da68ce1846c may be written for objects with type document and relation viewer, so writing {\"user\": \"user:anne\",\"relation\":\"viewer\",\"object\":\"document:roadmap\"} succeeds. A relationship tuple with a disallowed user type for the viewer relation on objects of type document - for example workspace:auth0 or folder:planning#editor - will be rejected, so writing {\"user\": \"folder:product\",\"relation\":\"viewer\",\"object\":\"document:roadmap\"} will fail. This affects only relations that are directly related and have direct relationship type restrictions in their relation definition.",
+        "A condition is a function composed of one or more parameters and an expression. Every condition evaluates to a boolean outcome, and expressions are defined using Google's Common Expression Language (CEL).",
+        "In the following snippet less_than_hundred defines a Condition that evaluates to a boolean outcome. The provided parameter x, defined as an integer type, is used in the boolean expression x < 100. The condition returns a truthy outcome if the expression returns a truthy outcome, but is otherwise false.",
+        "A relationship tuple is a base tuple/triplet consisting of a user, relation, and object. Tuples may add an optional condition, like Conditional Relationship Tuples. Relationship tuples are written and stored in OpenFGA.",
+        "A relationship tuple consists of:",
+        "An authorization model, together with relationship tuples, determine whether a relationship exists between a user and an object.",
+        "Relationship tuples are usually shown in the following format:",
+        "A conditional relationship tuple is a relationship tuple that represents a relationship conditioned upon the evaluation of a condition.",
+        "If a relationship tuple is conditioned, then that condition must to a truthy outcome for the relationship tuple to be permissible.",
+        "The following relationship tuple is a conditional relationship tuple because it is conditioned on less_than_hundred. If the expression for less_than_hundred is defined as x < 100, then the relationship is permissible because the expression - 20 < 100 - evaluates to a truthy outcome.",
+        "A relationship is the realization of a relation between a user and an object.",
+        "An authorization model, together with relationship tuples, determine whether a relationship exists between a user and an object. Relationships may be direct or implied.",
+        "A direct relationship (R) between user X and object Y means the relationship tuple (user=X, relation=R, object=Y) exists, and the OpenFGA authorization model for that relation allows the direct relationship because of direct relationship type restrictions.",
+        "An implied (or computed) relationship (R) exists between user X and object Y if user X is related to an object Z that is in a direct or implied relationship with object Y, and the OpenFGA authorization model allows it.",
+        "user:anne has a direct relationship with document:new-roadmap as viewer if the type definition allows it with direct relationship type restrictions, and one of the following relationship tuples exist:",
+        "user:anne has an implied relationship with document:new-roadmap as viewer if the type definition allows it, and the presence of relationship tuples satisfying the relationship exist.",
+        "For example, assume the following type definition:",
+        "And assume the following relationship tuple exists in the system:",
+        "In this case, the relationship between user:anne and document:new-roadmap as a viewer is implied from the direct editor relationship user:anne has with that same document. Thus, the following request to check whether a viewer relationship exists between user:anne and document:new-roadmap will return true.",
+        "A check request is a call to the OpenFGA check endpoint, returning whether the user has a certain relationship with an object.",
+        "Check requests use the check methods in the OpenFGA SDKs (JavaScript SDK/Go SDK/.NET SDK) by manually calling the check endpoint using curl or in your code. The check endpoint responds with { \"allowed\": true } if a relationship exists, and with { \"allowed\": false } if the relationship does not.",
+        "For example, the following will check whether anne of type user has a viewer relation to document:new-roadmap:",
+        "For more information, see the Relationship Queries page and the official Check API Reference.",
+        "A list objects request is a call to the OpenFGA list objects endpoint that returns all objects of a given type that a user has a specified relationship with.",
+        "List objects requests are completed using the listobjects methods in the OpenFGA SDKs (JavaScript SDK/Go SDK/.NET SDK) by manually calling the list objects endpoint using curl or in your code.",
+        "The list objects endpoint responds with a list of objects for a given type that the user has the specified relationship with.",
+        "For example, the following returns all the objects with document type for which anne of type user has a viewer relation with:",
+        "For more information, see the Relationship Queries page and the List Objects API Reference.",
+        "A list users request is a call to the OpenFGA list users endpoint that returns all users of a given type that have a specified relationship with an object.",
+        "List users requests are completed using the relevant ListUsers method in SDKs, the fga query list-users command in the CLI, or by manually calling the ListUsers endpoint using curl or in your code.",
+        "The list users endpoint responds with a list of users for a given type that have the specificed relationship with an object.",
+        "For example, the following returns all the users of type user that have the viewer relationship for document:planning:",
+        "For more information, see the ListUsers API Reference.",
+        "Contextual tuples are tuples that can be added to a Check request, a ListObjects request, a ListUsers request, or an Expand request. They only exist within the context of that particular request and are not persisted in the datastore.",
+        "Similar to relationship tuples, contextual tuples are composed of a user, relation and object. Unlike relationship tuples, they are not written to the store. However, if contextual tuples are sent alongside a check request in the context of a particular check request, they are treated if they had been written in the store.",
+        "For more information, see Contextual and Time-Based Authorization, Authorization Through Organization Context and Check API Request Documentation.",
+        "In OpenFGA, type bound public access (represented by <type>:*) is a special OpenFGA syntax meaning \"every object of [type]\" when invoked as a user within a relationship tuple. For example, user:* represents every object of type user , including those not currently present in the system.",
+        "For example, to indicate document:new-roadmap is publicly writable (in other words, has everyone of type user as an editor, add the following relationship tuple:",
+        "Note: <type>:* cannot be used in the relation or object properties. In addition, <type>:* cannot be used as part of a userset in the tuple's user field. For more information, see Modeling Public Access and Advanced Modeling: Modeling Google Drive.",
+        "Learn about Authorization.",
+        "Learning about the FGA configuration language",
+        "Get started with modeling your permission system in OpenFGA"
+      ],
+      "requiredImages": [],
+      "models": [
+        {
+          "schema_version": "1.1",
+          "type": "document",
+          "relations": {
+            "viewer": {
+              "this": {}
+            },
+            "commenter": {
+              "this": {}
+            },
+            "editor": {
+              "this": {}
+            },
+            "owner": {
+              "this": {}
+            }
+          },
+          "metadata": {
+            "relations": {
+              "viewer": {
+                "directly_related_user_types": [
+                  {
+                    "type": "user"
+                  }
+                ]
+              },
+              "commenter": {
+                "directly_related_user_types": [
+                  {
+                    "type": "user"
+                  }
+                ]
+              },
+              "editor": {
+                "directly_related_user_types": [
+                  {
+                    "type": "user"
+                  }
+                ]
+              },
+              "owner": {
+                "directly_related_user_types": [
+                  {
+                    "type": "user"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "schema_version": "1.1",
+          "type_definitions": [
+            {
+              "type": "document",
+              "relations": {
+                "viewer": {
+                  "this": {}
+                },
+                "commenter": {
+                  "this": {}
+                },
+                "editor": {
+                  "this": {}
+                },
+                "owner": {
+                  "this": {}
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "viewer": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "domain",
+                        "relation": "member"
+                      },
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  },
+                  "commenter": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "domain",
+                        "relation": "member"
+                      },
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  },
+                  "editor": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "domain",
+                        "relation": "member"
+                      },
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  },
+                  "owner": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "domain",
+                        "relation": "member"
+                      },
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "type": "domain",
+              "relations": {
+                "member": {
+                  "this": {}
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "member": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "type": "user"
+            }
+          ]
+        },
+        {
+          "schema_version": "1.1",
+          "type_definitions": [
+            {
+              "type": "document",
+              "relations": {
+                "viewer": {
+                  "this": {}
+                },
+                "commenter": {
+                  "this": {}
+                },
+                "editor": {
+                  "this": {}
+                },
+                "owner": {
+                  "this": {}
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "viewer": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  },
+                  "commenter": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  },
+                  "editor": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "team",
+                        "relation": "member"
+                      },
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  },
+                  "owner": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "type": "user"
+            },
+            {
+              "type": "team",
+              "relations": {
+                "member": {
+                  "this": {}
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "member": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "schema_version": "1.1",
+          "type_definitions": [
+            {
+              "type": "document",
+              "relations": {
+                "viewer": {
+                  "this": {}
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "viewer": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "schema_version": "1.1",
+          "type_definitions": [
+            {
+              "type": "document",
+              "relations": {
+                "viewer": {
+                  "union": {
+                    "child": [
+                      {
+                        "this": {}
+                      },
+                      {
+                        "computedUserset": {
+                          "relation": "editor"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "editor": {
+                  "this": {}
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "editor": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  },
+                  "viewer": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "cards": [
+        {
+          "title": "Authorization Concepts",
+          "description": "Learn about Authorization.",
+          "href": "/docs/authorization-concepts"
+        },
+        {
+          "title": "Configuration Language",
+          "description": "Learning about the FGA configuration language",
+          "href": "/docs/configuration-language"
+        },
+        {
+          "title": "Direct access",
+          "description": "Get started with modeling your permission system in OpenFGA",
+          "href": "/docs/modeling/direct-access"
+        }
+      ],
+      "definitions": [
+        {
+          "title": "What Is A Type?",
+          "id": "what-is-a-type",
+          "paragraphs": [
+            "A type is a string. It defines a class of objects with similar characteristics."
+          ],
+          "links": []
+        },
+        {
+          "title": "What Is A Type Definition?",
+          "id": "what-is-a-type-definition",
+          "paragraphs": [
+            "A type definition defines all possible relations a user or another object can have in relation to this type."
+          ],
+          "links": []
+        },
+        {
+          "title": "What Is An Authorization Model?",
+          "id": "what-is-an-authorization-model",
+          "paragraphs": [
+            "An authorization model combines one or more type definitions. This is used to define the permission model of a system."
+          ],
+          "links": []
+        },
+        {
+          "title": "What Is A Store?",
+          "id": "what-is-a-store",
+          "paragraphs": [
+            "A store is an OpenFGA entity used to organize authorization check data."
+          ],
+          "links": []
+        },
+        {
+          "title": "What Is An Object?",
+          "id": "what-is-an-object",
+          "paragraphs": [
+            "An object represents an entity in the system. Users' relationships to it are defined by relationship tuples and the authorization model."
+          ],
+          "links": []
+        },
+        {
+          "title": "What Is A User?",
+          "id": "what-is-a-user",
+          "paragraphs": [
+            "A user is an entity in the system that can be related to an object."
+          ],
+          "links": []
+        },
+        {
+          "title": "What Is A Relation?",
+          "id": "what-is-a-relation",
+          "paragraphs": [
+            "A relation is a string defined in the type definition of an authorization model. Relations define a possible relationship between an object (of the same type as the type definition) and a user in the system."
+          ],
+          "links": []
+        },
+        {
+          "title": "What Is A Relation Definition?",
+          "id": "what-is-a-relation-definition",
+          "paragraphs": [
+            "A relation definition lists the conditions or requirements under which a relationship is possible."
+          ],
+          "links": []
+        },
+        {
+          "title": "What Is A Directly Related User Type?",
+          "id": "what-is-a-directly-related-user-type",
+          "paragraphs": [
+            "A directly related user type is an array specified in the type definition to indicate which types of users can be directly related to that relation."
+          ],
+          "links": []
+        },
+        {
+          "title": "What is a Condition?",
+          "id": "what-is-a-condition",
+          "paragraphs": [
+            "A condition is a function composed of one or more parameters and an expression. Every condition evaluates to a boolean outcome, and expressions are defined using Google's Common Expression Language (CEL)."
+          ],
+          "links": [
+            {
+              "text": "Google's Common Expression Language (CEL)",
+              "href": "https://github.com/google/cel-spec"
+            }
+          ]
+        },
+        {
+          "title": "What Is A Relationship Tuple?",
+          "id": "what-is-a-relationship-tuple",
+          "paragraphs": [
+            "A relationship tuple is a base tuple/triplet consisting of a user, relation, and object. Tuples may add an optional condition, like Conditional Relationship Tuples. Relationship tuples are written and stored in OpenFGA."
+          ],
+          "links": [
+            {
+              "text": "Conditional Relationship Tuples",
+              "href": "#what-is-a-conditional-relationship-tuple"
+            }
+          ]
+        },
+        {
+          "title": "What Is A Conditional Relationship Tuple?",
+          "id": "what-is-a-conditional-relationship-tuple",
+          "paragraphs": [
+            "A conditional relationship tuple is a relationship tuple that represents a relationship conditioned upon the evaluation of a condition."
+          ],
+          "links": [
+            {
+              "text": "relationship tuple",
+              "href": "#what-is-a-relationship-tuple"
+            },
+            {
+              "text": "relationship",
+              "href": "#what-is-a-relationship"
+            },
+            {
+              "text": "condition",
+              "href": "#what-is-a-condition"
+            }
+          ]
+        },
+        {
+          "title": "What Is A Relationship?",
+          "id": "what-is-a-relationship",
+          "paragraphs": [
+            "A relationship is the realization of a relation between a user and an object."
+          ],
+          "links": []
+        },
+        {
+          "title": "What Are Direct And Implied Relationships?",
+          "id": "what-are-direct-and-implied-relationships",
+          "paragraphs": [
+            "A direct relationship (R) between user X and object Y means the relationship tuple (user=X, relation=R, object=Y) exists, and the OpenFGA authorization model for that relation allows the direct relationship because of direct relationship type restrictions.",
+            "An implied (or computed) relationship (R) exists between user X and object Y if user X is related to an object Z that is in a direct or implied relationship with object Y, and the OpenFGA authorization model allows it."
+          ],
+          "links": [
+            {
+              "text": "direct relationship type restrictions",
+              "href": "/docs/configuration-language#direct-relationship-type-restrictions"
+            }
+          ]
+        },
+        {
+          "title": "What Is A Check Request?",
+          "id": "what-is-a-check-request",
+          "paragraphs": [
+            "A check request is a call to the OpenFGA check endpoint, returning whether the user has a certain relationship with an object."
+          ],
+          "links": []
+        },
+        {
+          "title": "What Is A List Objects Request?",
+          "id": "what-is-a-list-objects-request",
+          "paragraphs": [
+            "A list objects request is a call to the OpenFGA list objects endpoint that returns all objects of a given type that a user has a specified relationship with."
+          ],
+          "links": []
+        },
+        {
+          "title": "What Is A List Users Request?",
+          "id": "what-is-a-list-users-request",
+          "paragraphs": [
+            "A list users request is a call to the OpenFGA list users endpoint that returns all users of a given type that have a specified relationship with an object."
+          ],
+          "links": []
+        },
+        {
+          "title": "What Are Contextual Tuples?",
+          "id": "what-are-contextual-tuples",
+          "paragraphs": [
+            "Contextual tuples are tuples that can be added to a Check request, a ListObjects request, a ListUsers request, or an Expand request. They only exist within the context of that particular request and are not persisted in the datastore."
+          ],
+          "links": []
+        },
+        {
+          "title": "What Is Type Bound Public Access?",
+          "id": "what-is-type-bound-public-access",
+          "paragraphs": [
+            "In OpenFGA, type bound public access (represented by <type>:*) is a special OpenFGA syntax meaning \"every object of [type]\" when invoked as a user within a relationship tuple. For example, user:* represents every object of type user , including those not currently present in the system."
+          ],
+          "links": []
+        }
+      ]
+    },
+    {
+      "source": "configuration-language.mdx",
+      "native": "docs/configuration-language.mdx",
+      "liveURL": "https://openfga.dev/docs/configuration-language",
+      "requiredText": [
+        "OpenFGA's Configuration Language builds a representation of a system's authorization model, which informs OpenFGA's API on the object types in the system and how they relate to each other. The Configuration Language describes the relations possible for an object of a given type and lists the conditions under which one is related to that object.",
+        "The Configuration Language can be presented in DSL or JSON syntax. The JSON syntax is accepted by the API and closely tracks the language in the Zanzibar paper. The DSL adds syntactic sugar on top of JSON for ease of use, but compiles down to JSON before being sent to OpenFGA's API. JSON syntax is used to call API directly or through the SDKs, while DSL is used to interact with OpenFGA in the Playground, the CLI, and the IDE extensions for Visual Studio Code and IntelliJ. They can be switched between throughout this documentation.",
+        "Please familiarize yourself with basic OpenFGA Concepts and How to get started on modeling before starting this guide.",
+        "Below is a sample authorization model. The next sections discuss the basics of the OpenFGA configuration language.",
+        "The authorization model describes four types of objects: user, domain, folder and document.",
+        "The domain type definition has a single relation called member that only allows direct relationships.",
+        "The folder and document type definitions each have five relations: parent_folder, owner, writer, viewer and can_share.",
+        "When used at the beginning of a relation definition, [<string>, <string>, ...] allows direct relationships by the objects of these specified types, for example, [user, user:*, team#member]. The strings can be in one of three formats:",
+        "If no direct relationship type restrictions are specified, direct relationships are disallowed and tuples cannot be written relating other objects of this particular relation with objects of this type.",
+        "[<type1>, <type2>, ...] in the OpenFGA DSL translates to this in the OpenFGA API syntax.",
+        "For example, below is a snippet of the team type:",
+        "The team type definition above defines all the relations that users can have with an object of type team. In this example, the relation is member.",
+        "Because of the [user, team#member] direct relationship type restrictions used, a user in the system can have a direct relationship with the team type as a member for objects of:",
+        "In the type definition snippet above, anne is a member of team:product if any of the following relationship tuple sets exist:",
+        "For more examples, see Modeling Building Blocks: Direct Relationships.",
+        "The same object can also reference other relations. Below is a simplified document type definition:",
+        "Above, document type definition defines all the relations that users can have with an object of type document. In this case, the relations are editor, viewer and can_rename. The viewer and can_rename relation definitions both reference editor, which is another relation of the same type.",
+        "can_rename does not reference the direct relationship type restrictions, which means a user cannot be directly assigned this relation and it must be inherited when the editor relation is assigned. Conversely, the viewer relation allows both direct and indirect relationships using the Union Operator.",
+        "In the type definition snippet above, anne is a viewer of document:new-roadmap if any one of the following relationship tuple sets exists:",
+        "anne is an editor of document:new-roadmap",
+        "anne is a viewer of document:new-roadmap",
+        "anne has a can_rename relationship with document:new-roadmap only if anne has an editor relationship with the document:",
+        "For more examples, see Modeling Building Blocks: Concentric Relationships, Modeling: Roles and Permissions and Advanced Modeling: Google Drive.",
+        "Another set of indirect relationships are made possible by referencing relations to other objects.",
+        "The syntax is X from Y and requires that:",
+        "See the authorization model below.",
+        "The snippet below (taken from the authorization model above) states that viewers of a document are both (a) all users directly assigned the viewer relation and (b) all users who can view the document's parent folder.",
+        "In the authorization model above, user:anne is a viewer of document:new-roadmap if any one of the following relationship tuples sets exists:",
+        "Referencing relations on related objects defines transitive implied relationship. If User A is related to Object B as a viewer, and Object B is related to Object C as parent, then User A is related to Object C as viewer. This can indicate that viewers of a folders are viewers of all documents in that folder.",
+        "OpenFGA does not allow the referenced relation (the word after from, also called the tupleset) to reference another relation and does not allow non-concrete types (type bound public access (<object_type>:*) or usersets (<object_type>#<relation>)) in its type restrictions; adding them throws a validation error when calling WriteAuthorizationModel.",
+        "For more examples, see Modeling: Parent-Child Objects, Advanced Modeling: Google Drive, Advanced Modeling: GitHub, and Advanced Modeling: Entitlements.",
+        "The union operator (or in the DSL, union in the JSON syntax) indicates that a relationship exists if the user is in any of the sets of users (union).",
+        "In the type definition snippet above, user:anne is a viewer of document:new-roadmap if any of the following conditions are satisfied:",
+        "The above authorization model indicates that a user is related as a viewer if they are in any of the following:",
+        "If anne is in at least one of those usersets, meaning anne is either an editor or a viewer, the check on {\"user\": \"user:anne\", \"relation\": \"viewer\", \"object\": \"document:new-roadmap\"} returns {\"allowed\": true}.",
+        "For more examples, see Modeling Building Blocks: Concentric Relationships, Modeling Roles and Permissions and Advanced Modeling: Modeling for IoT.",
+        "The intersection operator (and in the DSL, intersection in the JSON syntax) indicates that a relationship exists if the user is in all the sets of users.",
+        "In the type definition snippet above, user:anne is a viewer of document:new-roadmap if all of the following conditions are satisfied:",
+        "The above authorization model indicates that a user is related as a viewer if they are in all of the following:",
+        "anne must be in the intersection of the usersets (meaning both an editor AND an authorized_user) for the check on {\"user\": \"user:anne\", \"relation\": \"viewer\", \"object\": \"document:new-roadmap\"} to return {\"allowed\": true}.",
+        "anne is not a viewer for document:new-roadmap if either of the following is true:",
+        "For more examples, see Modeling with Multiple Restrictions.",
+        "The exclusion operator (but not in the DSL, difference in the JSON syntax) indicates that a relationship exists if the user is in the base userset but not in the excluded userset. This operator is particularly useful when modeling exclusion or block lists.",
+        "In the type definition snippet above, user:anne is a viewer of document:new-roadmap if and only if:",
+        "anne has a direct relationship as viewer to document:new-roadmap",
+        "AND",
+        "anne is not blocked from document:new-roadmap (i.e., the following relationship tuple must not exist):",
+        "For more information, see Modeling: Blocklists.",
+        "The authorization model above indicates that a user is related as a viewer if they are in:",
+        "but not in:",
+        "anne must be both a viewer and not blocked for the check on {\"user\": \"user:anne\", \"relation\": \"viewer\", \"object\": \"document:new-roadmap\"} to return {\"allowed\": true}.",
+        "You can define complex conditions by using parentheses to group and nest operators. Note that direct relationships can be included in an expression with parentheses.",
+        "OpenFGA supports conditional relationships, which are only considered if a specific condition is met. You can learn more about Conditional Relationships in the Modeling: Conditional Relationships guide.",
+        "The JSON syntax accepted by the OpenFGA API closely mirrors the syntax represented in the Zanzibar paper. The major modifications are a slight flattening and conversion of keys from snake_case to camelCase.",
+        "The Zanzibar paper presents this example:",
+        "In the OpenFGA DSL, it becomes:",
+        "In the OpenFGA JSON, it becomes:",
+        "The following snippet:",
+        "Results in the following outcome:",
+        "Learn more about Zanzibar at the Zanzibar Academy.",
+        "Learn about the OpenFGA Concepts.",
+        "Learn about how to get started with modeling your permission system in OpenFGA.",
+        "Learn about modeling user access to an object."
+      ],
+      "requiredImages": [],
+      "models": [
+        {
+          "schema_version": "1.1",
+          "type_definitions": [
+            {
+              "type": "user"
+            },
+            {
+              "type": "domain",
+              "relations": {
+                "member": {
+                  "this": {}
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "member": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "type": "folder",
+              "relations": {
+                "can_share": {
+                  "computedUserset": {
+                    "object": "",
+                    "relation": "writer"
+                  }
+                },
+                "owner": {
+                  "union": {
+                    "child": [
+                      {
+                        "this": {}
+                      },
+                      {
+                        "tupleToUserset": {
+                          "tupleset": {
+                            "object": "",
+                            "relation": "parent_folder"
+                          },
+                          "computedUserset": {
+                            "object": "",
+                            "relation": "owner"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "parent_folder": {
+                  "this": {}
+                },
+                "viewer": {
+                  "union": {
+                    "child": [
+                      {
+                        "this": {}
+                      },
+                      {
+                        "computedUserset": {
+                          "object": "",
+                          "relation": "writer"
+                        }
+                      },
+                      {
+                        "tupleToUserset": {
+                          "tupleset": {
+                            "object": "",
+                            "relation": "parent_folder"
+                          },
+                          "computedUserset": {
+                            "object": "",
+                            "relation": "viewer"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "writer": {
+                  "union": {
+                    "child": [
+                      {
+                        "this": {}
+                      },
+                      {
+                        "computedUserset": {
+                          "object": "",
+                          "relation": "owner"
+                        }
+                      },
+                      {
+                        "tupleToUserset": {
+                          "tupleset": {
+                            "object": "",
+                            "relation": "parent_folder"
+                          },
+                          "computedUserset": {
+                            "object": "",
+                            "relation": "writer"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "owner": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      },
+                      {
+                        "type": "domain",
+                        "relation": "member"
+                      }
+                    ]
+                  },
+                  "parent_folder": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "folder"
+                      }
+                    ]
+                  },
+                  "viewer": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      },
+                      {
+                        "type": "domain",
+                        "relation": "member"
+                      }
+                    ]
+                  },
+                  "writer": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      },
+                      {
+                        "type": "domain",
+                        "relation": "member"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "type": "document",
+              "relations": {
+                "can_share": {
+                  "computedUserset": {
+                    "object": "",
+                    "relation": "writer"
+                  }
+                },
+                "owner": {
+                  "union": {
+                    "child": [
+                      {
+                        "this": {}
+                      },
+                      {
+                        "tupleToUserset": {
+                          "tupleset": {
+                            "object": "",
+                            "relation": "parent_folder"
+                          },
+                          "computedUserset": {
+                            "object": "",
+                            "relation": "owner"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "parent_folder": {
+                  "this": {}
+                },
+                "viewer": {
+                  "union": {
+                    "child": [
+                      {
+                        "this": {}
+                      },
+                      {
+                        "computedUserset": {
+                          "object": "",
+                          "relation": "writer"
+                        }
+                      },
+                      {
+                        "tupleToUserset": {
+                          "tupleset": {
+                            "object": "",
+                            "relation": "parent_folder"
+                          },
+                          "computedUserset": {
+                            "object": "",
+                            "relation": "viewer"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "writer": {
+                  "union": {
+                    "child": [
+                      {
+                        "this": {}
+                      },
+                      {
+                        "computedUserset": {
+                          "object": "",
+                          "relation": "owner"
+                        }
+                      },
+                      {
+                        "tupleToUserset": {
+                          "tupleset": {
+                            "object": "",
+                            "relation": "parent_folder"
+                          },
+                          "computedUserset": {
+                            "object": "",
+                            "relation": "writer"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "owner": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      },
+                      {
+                        "type": "domain",
+                        "relation": "member"
+                      }
+                    ]
+                  },
+                  "parent_folder": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "folder"
+                      }
+                    ]
+                  },
+                  "viewer": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      },
+                      {
+                        "type": "domain",
+                        "relation": "member"
+                      }
+                    ]
+                  },
+                  "writer": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      },
+                      {
+                        "type": "domain",
+                        "relation": "member"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "schema_version": "1.1",
+          "type": "team",
+          "relations": {
+            "member": {
+              "this": {}
+            }
+          },
+          "metadata": {
+            "relations": {
+              "member": {
+                "directly_related_user_types": [
+                  {
+                    "type": "user"
+                  },
+                  {
+                    "type": "user:*"
+                  },
+                  {
+                    "type": "team",
+                    "relation": "member"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "schema_version": "1.1",
+          "type": "document",
+          "relations": {
+            "editor": {
+              "this": {}
+            },
+            "viewer": {
+              "union": {
+                "child": [
+                  {
+                    "this": {}
+                  },
+                  {
+                    "computedUserset": {
+                      "relation": "editor"
+                    }
+                  }
+                ]
+              }
+            },
+            "can_rename": {
+              "computedUserset": {
+                "relation": "editor"
+              }
+            }
+          },
+          "metadata": {
+            "relations": {
+              "editor": {
+                "directly_related_user_types": [
+                  {
+                    "type": "user"
+                  }
+                ]
+              },
+              "viewer": {
+                "directly_related_user_types": [
+                  {
+                    "type": "user"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "schema_version": "1.1",
+          "type_definitions": [
+            {
+              "type": "user"
+            },
+            {
+              "type": "folder",
+              "relations": {
+                "viewer": {
+                  "this": {}
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "viewer": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      },
+                      {
+                        "type": "folder",
+                        "relation": "viewer"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "type": "document",
+              "relations": {
+                "parent_folder": {
+                  "this": {}
+                },
+                "viewer": {
+                  "union": {
+                    "child": [
+                      {
+                        "this": {}
+                      },
+                      {
+                        "tupleToUserset": {
+                          "tupleset": {
+                            "object": "",
+                            "relation": "parent_folder"
+                          },
+                          "computedUserset": {
+                            "object": "",
+                            "relation": "viewer"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "parent_folder": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "folder"
+                      }
+                    ]
+                  },
+                  "viewer": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "schema_version": "1.1",
+          "type_definitions": [
+            {
+              "type": "document",
+              "relations": {
+                "viewer": {
+                  "union": {
+                    "child": [
+                      {
+                        "this": {}
+                      },
+                      {
+                        "tupleToUserset": {
+                          "tupleset": {
+                            "object": "",
+                            "relation": "parent_folder"
+                          },
+                          "computedUserset": {
+                            "object": "",
+                            "relation": "viewer"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "viewer": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "schema_version": "1.1",
+          "type_definitions": [
+            {
+              "type": "document",
+              "relations": {
+                "viewer": {
+                  "union": {
+                    "child": [
+                      {
+                        "this": {}
+                      },
+                      {
+                        "computedUserset": {
+                          "relation": "editor"
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "viewer": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "schema_version": "1.1",
+          "type_definitions": [
+            {
+              "type": "document",
+              "relations": {
+                "viewer": {
+                  "intersection": {
+                    "child": [
+                      {
+                        "computedUserset": {
+                          "relation": "authorized_user"
+                        }
+                      },
+                      {
+                        "computedUserset": {
+                          "relation": "editor"
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "viewer": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "schema_version": "1.1",
+          "type_definitions": [
+            {
+              "type": "document",
+              "relations": {
+                "viewer": {
+                  "difference": {
+                    "base": {
+                      "this": {}
+                    },
+                    "subtract": {
+                      "computedUserset": {
+                        "relation": "blocked"
+                      }
+                    }
+                  }
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "viewer": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "schema_version": "1.1",
+          "type_definitions": [
+            {
+              "type": "user",
+              "relations": {},
+              "metadata": null
+            },
+            {
+              "type": "organization",
+              "relations": {
+                "member": {
+                  "this": {}
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "member": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "type": "folder",
+              "relations": {
+                "organization": {
+                  "this": {}
+                },
+                "parent": {
+                  "this": {}
+                },
+                "viewer": {
+                  "intersection": {
+                    "child": [
+                      {
+                        "union": {
+                          "child": [
+                            {
+                              "this": {}
+                            },
+                            {
+                              "tupleToUserset": {
+                                "computedUserset": {
+                                  "relation": "viewer"
+                                },
+                                "tupleset": {
+                                  "relation": "parent"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "tupleToUserset": {
+                          "computedUserset": {
+                            "relation": "member"
+                          },
+                          "tupleset": {
+                            "relation": "organization"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "organization": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "organization"
+                      }
+                    ]
+                  },
+                  "parent": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "folder"
+                      }
+                    ]
+                  },
+                  "viewer": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "schema_version": "1.1",
+          "type_definitions": [
+            {
+              "type": "doc",
+              "relations": {
+                "owner": {
+                  "this": {}
+                },
+                "editor": {
+                  "union": {
+                    "child": [
+                      {
+                        "this": {}
+                      },
+                      {
+                        "computedUserset": {
+                          "relation": "owner"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "viewer": {
+                  "union": {
+                    "child": [
+                      {
+                        "this": {}
+                      },
+                      {
+                        "computedUserset": {
+                          "relation": "editor"
+                        }
+                      },
+                      {
+                        "tupleToUserset": {
+                          "tupleset": {
+                            "relation": "parent"
+                          },
+                          "computedUserset": {
+                            "relation": "viewer"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "owner": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  },
+                  "editor": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  },
+                  "viewer": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "schema_version": "1.1",
+          "type_definitions": [
+            {
+              "type": "doc",
+              "relations": {
+                "owner": {
+                  "this": {}
+                },
+                "editor": {
+                  "union": {
+                    "child": [
+                      {
+                        "this": {}
+                      },
+                      {
+                        "computedUserset": {
+                          "relation": "owner"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "viewer": {
+                  "union": {
+                    "child": [
+                      {
+                        "this": {}
+                      },
+                      {
+                        "computedUserset": {
+                          "relation": "editor"
+                        }
+                      },
+                      {
+                        "tupleToUserset": {
+                          "tupleset": {
+                            "relation": "parent"
+                          },
+                          "computedUserset": {
+                            "relation": "viewer"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "owner": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  },
+                  "editor": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  },
+                  "viewer": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "schema_version": "1.1",
+          "type_definitions": [
+            {
+              "type": "doc",
+              "relations": {
+                "viewer": {
+                  "union": {
+                    "child": [
+                      {
+                        "this": {}
+                      },
+                      {
+                        "computedUserset": {
+                          "relation": "editor"
+                        }
+                      },
+                      {
+                        "tupleToUserset": {
+                          "tupleset": {
+                            "relation": "parent"
+                          },
+                          "computedUserset": {
+                            "relation": "viewer"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "metadata": {
+                "relations": {
+                  "viewer": {
+                    "directly_related_user_types": [
+                      {
+                        "type": "user"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "cards": [
+        {
+          "title": "OpenFGA Concepts",
+          "description": "Learn about the OpenFGA Concepts.",
+          "href": "/docs/concepts"
+        },
+        {
+          "title": "Modeling: Getting Started",
+          "description": "Learn about how to get started with modeling your permission system in OpenFGA.",
+          "href": "/docs/modeling/getting-started"
+        },
+        {
+          "title": "Direct Access",
+          "description": "Learn about modeling user access to an object.",
+          "href": "/docs/modeling/direct-access"
+        }
+      ],
+      "requiredLinks": [
+        {
+          "text": "authorization model",
+          "href": "/docs/concepts#what-is-an-authorization-model"
+        },
+        {
+          "text": "OpenFGA's API",
+          "href": "/api-reference"
+        },
+        {
+          "text": "object types",
+          "href": "/docs/concepts#what-is-a-type"
+        },
+        {
+          "text": "relations",
+          "href": "/docs/concepts#what-is-a-relation"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/framework.mdx",
+      "native": "docs/getting-started/framework.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/framework",
+      "requiredText": [
+        "This section will illustrate how to integrate OpenFGA within a framework, such as Fastify or Fiber.",
+        "Assume that you want to have a web service for documents using one of the frameworks mentioned above. The service will authenticate users via JWT tokens, which contain the user ID.",
+        "The reader should set up their own login method based on their OpenID connect provider's documentation.",
+        "Assume that you want to provide a route GET /read/{document} to return documents depending on whether the authenticated user has access to it.",
+        "The first step is to install the framework.",
+        "For the context of this example, we will use the Fastify framework. For that we need to install the following packages:",
+        "Using npm:",
+        "Using yarn:",
+        "Next, we setup the web service with the GET /read/{document} route in file app.js.",
+        "For the context of this example, we will use the Fiber framework. For that we need to install the following Go packages:",
+        "Next, we setup the web service with the GET /read/{document} route.",
+        "Before we can call OpenFGA to protect the /read/{document} route, we need to validate the user's JWT.",
+        "The fastify-jwt package allows validation of JWT tokens, as well as providing access to the user's identity.",
+        "In jwt-authenticate.js:",
+        "Then, use the preValidation hook of a route to protect it and access the user information inside the JWT:",
+        "In route-read.js:",
+        "Finally, update app.js to register the newly added hooks.",
+        "We will now setup middleware to authenticate the incoming JWTs.",
+        "First, we will create a decorator preauthorize to parse the incoming HTTP method as well as name of the document, and set the appropriate relation and object that we will call Check on.",
+        "In preauthorize.js:",
+        "Next, we will create a decorator called authorize. This decorator will invoke the Check API to see if the user has a relationship with the specified document.",
+        "In authorize.js:",
+        "We can now update the GET /read/{document} route to check for user permissions.",
+        "Finally, we will register the new hooks in app.js:",
+        "We will create two middlewares:",
+        "Modeling Entitlements for a System in OpenFGA.",
+        "Modeling Fine-Grained Authorization for an IoT Security Camera System with OpenFGA.",
+        "Modeling Authorization for Slack with OpenFGA.",
+        "Take a look at the following sections for examples that you can try when integrating with SDK."
+      ],
+      "requiredImages": [],
+      "models": [],
+      "cards": [
+        {
+          "title": "Entitlements",
+          "description": "Modeling Entitlements for a System in OpenFGA.",
+          "href": "/docs/modeling/advanced/entitlements"
+        },
+        {
+          "title": "IoT",
+          "description": "Modeling Fine-Grained Authorization for an IoT Security Camera System with OpenFGA.",
+          "href": "/docs/modeling/advanced/iot"
+        },
+        {
+          "title": "Slack",
+          "description": "Modeling Authorization for Slack with OpenFGA.",
+          "href": "/docs/modeling/advanced/slack"
+        }
+      ],
+      "requiredAnchors": [
+        "03-integrate-the--check-api-into-the-service"
+      ]
+    },
+    {
+      "source": "getting-started/overview.mdx",
+      "native": "docs/getting-started.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started",
+      "requiredText": [
+        "The following will provide a step-by-step guide on how to get started with OpenFGA.",
+        "This section is useful if you understand the basic concepts of OpenFGA, and want to learn how to get started.",
+        "How to setup an OpenFGA server.",
+        "Install the SDK for the language of your choice.",
+        "Creating an OpenFGA entity that owns an authorization model and relationship tuples.",
+        "Configure the SDK client for your store.",
+        "Programmatically configure authorization model for an OpenFGA store.",
+        "Programmatically write authorization data to an OpenFGA store.",
+        "Programmatically perform an authorization check against an OpenFGA store.",
+        "Programmatically perform a list objects request against an OpenFGA store.",
+        "Integrate authorization checks with a framework.",
+        "Learn how to take advantage of the immutable properties of Authorization Models in OpenFGA.",
+        "Best Practices for implementing OpenFGA.",
+        "When to use"
+      ],
+      "requiredImages": [],
+      "models": [],
+      "cards": []
+    }
+  ]
+}

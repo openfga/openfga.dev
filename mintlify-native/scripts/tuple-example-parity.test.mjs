@@ -600,13 +600,31 @@ function assertConceptAnchors(source, migrated) {
     assert.match(title, /^[A-Za-z ]+\?$/, 'Concept section titles must have unambiguous legacy slugs');
     return { title, id: title.slice(0, -1).toLowerCase().replaceAll(' ', '-') };
   });
-  const migratedNodes = nodes(migrated);
-  const actual = migratedNodes.filter((node) => node.name === 'Accordion').map((node) => {
-    const { title, id } = props(node);
-    return { title, id };
-  });
-  assert.deepEqual(actual, expected, 'Concept accordions must preserve source titles and legacy section anchors');
+  const migratedNodes = nodes(migrated.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, (frontmatter) =>
+    frontmatter.replace(/[^\r\n]/g, ' ')));
+  const headings = migratedNodes.filter((node) => node.type === 'heading' && node.depth === 2 && text(node) !== 'Related Sections');
+  const actual = headings.map((node) => ({
+    title: text(node),
+    id: text(node).replace(/\?$/, '').toLowerCase().replaceAll(' ', '-'),
+  }));
+  assert.deepEqual(actual, expected, 'Concept headings must preserve source titles and legacy section anchors');
+  const accordions = migratedNodes.filter((node) => node.name === 'Accordion');
+  assert.equal(accordions.length, expected.length, 'Concept disclosures must preserve all 19 example groups');
+  for (const [index, heading] of headings.entries()) {
+    assert.equal(componentAncestors(migratedNodes, heading).length, 0, 'Concept headings must remain visible outside disclosures');
+    const accordion = accordions[index];
+    assert.equal(props(accordion).id, `${expected[index].id}-examples`, 'Concept disclosures must retain unique example anchors');
+    assert.equal(props(accordion).title, 'Examples and details', 'Concept disclosures must identify their example content');
+    assert.notEqual(props(accordion).defaultOpen, true, 'Concept examples must remain collapsed by default');
+    assert.ok(heading.position.end.offset < accordion.position.start.offset &&
+      (!headings[index + 1] || accordion.position.end.offset < headings[index + 1].position.start.offset),
+    'Concept disclosures must stay with their corresponding definition');
+  }
   const targets = new Set(actual.map(({ id }) => id));
+  for (const node of migratedNodes.filter((node) => node.name)) {
+    const id = node.attributes?.find((attribute) => attribute.name === 'id')?.value;
+    assert.ok(!targets.has(id), 'Concept headings must not have duplicate explicit anchors');
+  }
   for (const link of migratedNodes.filter((node) => node.type === 'link' && node.url.startsWith('#'))) {
     assert.ok(targets.has(link.url.slice(1)), `Missing concept anchor for ${link.url}`);
   }
@@ -615,21 +633,22 @@ function assertConceptAnchors(source, migrated) {
 const sourceConcepts = readFileSync(path.join(sourceRoot, 'concepts.mdx'), 'utf8');
 const migratedConcepts = readFileSync(path.join(repoRoot, 'mintlify-native/docs/concepts.mdx'), 'utf8');
 
-test('concept accordions expose all original section anchors to native rendering and static link checks', () => {
+test('visible concept headings expose all original anchors before their collapsed examples', () => {
   assertConceptAnchors(sourceConcepts, migratedConcepts);
 });
 
 for (const [name, before, after] of [
-  ['missing ID', ' id="what-is-a-type"', ''],
-  ['renamed ID', 'id="what-is-a-type"', 'id="type"'],
-  ['duplicate ID', 'id="what-is-a-user"', 'id="what-is-a-type"'],
+  ['missing heading', '## What Is A Type?', ''],
+  ['renamed heading', '## What Is A Type?', '## Type'],
+  ['duplicate ID', 'id="what-is-a-user-examples"', 'id="what-is-a-type"'],
+  ['reordered disclosure', 'id="what-is-a-user-examples"', 'id="what-is-an-object-examples"'],
   ['broken fragment link', '](#what-is-a-user)', '](#unknown-concept)'],
 ]) {
   test(`concept anchor contract rejects ${name}`, () => {
     assert.ok(migratedConcepts.includes(before));
     assert.throws(
       () => assertConceptAnchors(sourceConcepts, migratedConcepts.replace(before, after)),
-      /Concept accordions must preserve|Missing concept anchor/,
+      /Concept headings must|Concept disclosures must|Missing concept anchor/,
     );
   });
 }

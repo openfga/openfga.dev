@@ -5,9 +5,7 @@ description: "Introduction to adding and deleting relationship tuples"
 
 import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
 
-# Update Relationship Tuples
-
-This is an introduction to adding and deleting _relationship tuples_.
+This is an introduction to adding and deleting _[relationship tuples](/docs/concepts#what-is-a-relationship-tuple)_.
 
 ## Before you start
 
@@ -72,7 +70,7 @@ Assume that you want to add user `user:anne` to have relationship `reader` with 
 }
 ```
 
-### 01. Configure the OpenFGA API client
+<h3 id="01-configure-the--api-client">01. Configure the OpenFGA API client</h3>
 
 Before calling the write API, you will need to configure the API client.
 
@@ -177,6 +175,10 @@ Before calling the write API, you will need to configure the API client.
 
   <Tab title="curl">
     To obtain the [access token](https://auth0.com/docs/get-started/authentication-and-authorization-flow/client-credentials-flow/call-your-api-using-the-client-credentials-flow):
+
+    ```bash
+    Set FGA_API_URL according to the service you are using (e.g. https://api.fga.example)
+    ```
   </Tab>
 
 </Tabs>

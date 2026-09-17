@@ -6,6 +6,8 @@ description: "Configuring authorization model for a store"
 
 import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
 
+This article explains how to configure an [authorization model](/docs/concepts#what-is-an-authorization-model) for a [store](/docs/concepts#what-is-a-store) in an OpenFGA server.
+
 ## Before you start
 
 <Tabs>
@@ -283,12 +285,24 @@ Initialize the SDK once, then place the request in the same scope as the client.
   </Tab>
 
   <Tab title="CLI">
+    <Accordion title="Set FGA_API_URL according to the service you are using (e.g. https://api.fga.example)">
+      ```bash
+      Set FGA_API_URL according to the service you are using (e.g. https://api.fga.example)
+      ```
+    </Accordion>
+
     ```bash
     fga model write --store-id=${FGA_STORE_ID} --format=json '{"schema_version":"1.1","type_definitions":[{"type":"user"},{"type":"document","relations":{"reader":{"this":{}},"writer":{"this":{}},"owner":{"this":{}}},"metadata":{"relations":{"reader":{"directly_related_user_types":[{"type":"user"}]},"writer":{"directly_related_user_types":[{"type":"user"}]},"owner":{"directly_related_user_types":[{"type":"user"}]}}}}]}'
     ```
   </Tab>
 
   <Tab title="curl">
+    <Accordion title="Set FGA_API_URL according to the service you are using (e.g. https://api.fga.example)">
+      ```bash
+      Set FGA_API_URL according to the service you are using (e.g. https://api.fga.example)
+      ```
+    </Accordion>
+
     ```bash
     # Remove Authorization if your service does not require it.
     curl -X POST "$FGA_API_URL/stores/$FGA_STORE_ID/authorization-models" \

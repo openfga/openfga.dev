@@ -1,6 +1,6 @@
 ---
 title: "Immutable Authorization Models"
-description: "Authorization Models in OpenFGA are immutable, they are created once and then can no longer be deleted or modified. Each time you write an authorization model, a new version is created."
+description: "Learn how to take advantage of the immutable properties of Authorization Models"
 ---
 
 Authorization Models in OpenFGA are immutable, they are created once and then can no longer be deleted or modified. Each time you write an authorization model, a new version is created.
@@ -32,7 +32,7 @@ Certain model changes require adapting your application code and migrating tuple
 * Copy existing tuples to use the new relation name.
 * Deploy the new application targeting the new model ID.
 
-You can learn more about model migrations [here](/docs/modeling/migrating).
+You can learn more about model migrations [here](/docs/modeling/migrating/overview).
 
 ### Progresivelly rollout changes
 
@@ -43,12 +43,15 @@ Being able to target multiple versions of the authorization model enables you to
 * When you are confident with your model, you could implement gradual rollouts that would allow you to monitor and check if any users are having access issues before you go ahead and increase the rollout to 100% of your user base.
 
 <Info>
+  **Getting an Authorization Model's Creation Date**
+
   The Authorization Model ID is a [ULID](https://github.com/ulid/spec) which includes the date created. You can extract the creation date using a library for your particular language.
 
   For example, in JavaScript you can do the following:
 
   ```javascript
   import ulid = require('ulid');
+
   const time = ulid.decodeTime(id);
   ```
 </Info>
@@ -67,6 +70,6 @@ Learn more about modeling and production usage in OpenFGA.
   </Card>
 
   <Card title="Data and API Best Practices" href="/docs/getting-started/tuples-api-best-practices">
-    Learn the best practices for managing data and invoking APIs in production environment.
+    Learn the best practices for managing data and invoking APIs in production environment
   </Card>
 </CardGroup>

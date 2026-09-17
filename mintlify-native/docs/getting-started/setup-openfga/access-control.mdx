@@ -1,18 +1,17 @@
 ---
-title: Setup Access Control
+title: "\U0001F6E1\uFE0FSetup Access Control"
+sidebarTitle: Setup Access Control
 description: How to enable and setup the built-in access control OpenFGA server (experimental)
 ---
 
 import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
-
-# Setup Access Control
 
 In OpenFGA [v1.7.0](https://github.com/openfga/openfga/releases/tag/v1.7.0), we introduced an experimental built-in access control feature that allows you to control access to your OpenFGA server. It relies on a control store with its own model and tuples to authorize requests to the OpenFGA server itself.
 
 Currently, there is no provided way to initialize that access control store and model, nor is there a way to bootstrap the client IDs that are supposed to be admins.
 
 <Warning>
-The built-in access control feature in OpenFGA is experimental and is not recommended for production use. We are looking for feedback on this, so if you do try it, please reach out on our [openfga Slack channel](../../community) in the CNCF community.
+The built-in access control feature in OpenFGA is experimental and is not recommended for production use. We are looking for feedback on this, so if you do try it, please reach out on our [openfga Slack channel](https://cloud-native.slack.com/archives/C06G1NNH47N) in the CNCF community.
 </Warning>
 
 Read the following steps to enable access control.
@@ -142,6 +141,8 @@ If you are calling `Write` with a credential that only has access to certain mod
 </Note>
 
 ## Related Sections
+
+Check the following sections for more on how to use OpenFGA.
 
 <CardGroup>
   <Card title="Setup OpenFGA" href="./configure-openfga">

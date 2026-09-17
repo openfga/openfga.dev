@@ -1,0 +1,2615 @@
+{
+  "provenance": {
+    "capturedFrom": "Public production article HTML, including all SSR tab panels, captured 2026-09-17.",
+    "code": "Bodies are reconstructed from production token-line nodes. Only outer blank space is trimmed; every body and language is matched exactly, including the restored JavaScript bytes and unchanged DSL. Production unlabelled/plaintext fences are explicitly tagged text in native.",
+    "text": "Whitespace normalized; decorative heading emoji and malformed bold markers are excluded. Cloudflare contact link is decoded from public HTML and checked against public source.",
+    "links": "Related-card More labels use their production card titles to match semantic native Card links. Relative native URLs must resolve against the native page URL. The access-control community-link exception is explicit in linkOverrides, retaining the captured live destination and the parent-approved external native destination.",
+    "tables": "Complete production headers and ordered cells; not regenerated from the changed native MDX or current source schema.",
+    "anchorStyle": "Native-only sticky-header clearance specified by the parent after browser verification; apply the same literal style to every required configuration-table anchor."
+  },
+  "pages": [
+    {
+      "source": "getting-started/setup-openfga/access-control.mdx",
+      "native": "docs/getting-started/setup-openfga/access-control.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/access-control",
+      "publicSourceURL": "https://github.com/openfga/openfga.dev/blob/main/docs/content/getting-started/setup-openfga/access-control.mdx",
+      "capturedAt": "2026-09-17T10:02:24.296Z",
+      "requiredText": [
+        "Setup Access Control",
+        "In OpenFGA v1.7.0, we introduced an experimental built-in access control feature that allows you to control access to your OpenFGA server. It relies on a control store with its own model and tuples to authorize requests to the OpenFGA server itself.",
+        "Currently, there is no provided way to initialize that access control store and model, nor is there a way to bootstrap the client IDs that are supposed to be admins.",
+        "The built-in access control feature in OpenFGA is experimental and is not recommended for production use. We are looking for feedback on this, so if you do try it, please reach out on our openfga Slack channel in the CNCF community.",
+        "Read the following steps to enable access control.",
+        "Requirements",
+        "OIDC Provider: You need to have an OIDC provider set up and configured in your OpenFGA server set up to use access control.",
+        "A Client ID ready to be used: You need to have the initial (admin) client ID that you want to manage access to your OpenFGA server.",
+        "The FGA CLI: While the CLI is not strictly required, you need to follow the steps below. You can install it by following the instructions here. If you do not want to use the CLI, you can call the API with the equivalent SDK or REST calls.",
+        "01. Ensure the server is running (with access control disabled)",
+        "This is important. If you enable access control before setting up the store and model and grant your initial client ID access, you will lock yourself out of the server, and you will have to turn it back off.",
+        "02. Create the access control store and model",
+        "We will be using the following model to enable access control.",
+        "You may choose to modify this model to suit your needs, however, keep in mind that configuring the model may not be supported in the future and you may be responsible for your own migrations at that point.",
+        "The required types and relations that need to be defined are marked in the model below.",
+        "Place the model above in a file called model.fga.",
+        "Run the following command to create the store and model:",
+        "This prints a store ID and model ID. You will need these IDs in the following steps.",
+        "Grant your initial client ID access. You can do so by writing a tuple to the access control store you just created. The tuple should be of the type application and should have the client_id field set to the client ID of the client you want to grant access to. You can use the FGA CLI to do this:",
+        "Replace ${ACCESS_CONTROL_STORE_ID} with the store ID you received in the previous step; replace ${FGA_ADMIN_CLIENT_ID} with the client ID you want to grant access to.",
+        "03. Enable access control",
+        "i. Enable access control in the server",
+        "Enable the experimental support for access control by setting the environment variable OPENFGA_EXPERIMENTALS to enable-access-control.",
+        "Enable the access control feature by setting the environment variable OPENFGA_ACCESS_CONTROL_ENABLED to true.",
+        "Set the environment variable OPENFGA_ACCESS_CONTROL_STORE_ID to the store ID you received in the previous step.",
+        "Set the environment variable OPENFGA_ACCESS_CONTROL_MODEL_ID to the model ID you received in the previous step.",
+        "ii. Customize what claim you want the API to use (optional)",
+        "By default, the API will use the following claims (in order) in the OIDC token to identify the client. If you want to use a different claim, you can set the environment variable OPENFGA_AUTHN_OIDC_CLIENT_ID_CLAIMS to the claim(s) you want to use.",
+        "If the claims are not set in the configuration, the following claims are used as default (in order):",
+        "azp: following the OpenID standard",
+        "client_id following RFC9068",
+        "That means that if the azp claim is present in the token, it will be used to identify the client. If not, the client_id claim will be used instead.",
+        "For example, you can set the environment variable OPENFGA_AUTHN_OIDC_CLIENT_ID_CLAIMS to user_id,employee_id,client_id to allow the OpenFGA server to authorize based on:",
+        "Use the user_id claim if present in the token.",
+        "If not try to use the employee_id claim if present.",
+        "If not try to use the client_id claim.",
+        "iii. Restart the server",
+        "You now need to restart the OpenFGA server in order for the configuration changes above to take effect. Congrats, you now have access control enabled!",
+        "04. Grant access to a store",
+        "You can now use the admin client ID to manage access to your OpenFGA server. We will call it FGA_ADMIN_CLIENT_ID in the following examples to differentiate it from the client ID (called FGA_CLIENT_ID) you are granting access to.",
+        "We will also use ACCESS_CONTROL_STORE_ID as the store ID of the access control store, and STORE_ID as the store ID you are granting the client access to.",
+        "Grant access to a store (based on the model above, your choices are admin, model_writer, writer and reader).",
+        "Grant access to writing tuples of a certain module in a store. In order to grant access to only write to relations in certain modules, you must have a model with modules. Refer to the modular models documentation for more on that feature. If you want to grant access to a module in a store, you must namespace the module ID with the store ID, so the object of the tuple will be of the form module:<store-id>|<module-name>.",
+        "Grant access to writing tuples of a certain module in a store.",
+        "In order to grant access to only write to relations in certain modules, you must have a model with modules. Refer to the modular models documentation for more on that feature.",
+        "If you want to grant access to a module in a store, you must namespace the module ID with the store ID, so the object of the tuple will be of the form module:<store-id>|<module-name>.",
+        "If you are calling Write with a credential that only has access to certain modules and not the store, you will not be able to send tuples for more than 1 module in a certain request or you will get the following error: the principal cannot write tuples of more than 1 module(s) in a single request",
+        "Related Sections",
+        "Check the following sections for more on how to use OpenFGA.",
+        "Setup OpenFGA",
+        "Learn how to setup and configure an OpenFGA server",
+        "Setup OIDC",
+        "Running OpenFGA in Production",
+        "Learn the best practices of running OpenFGA in a production environment"
+      ],
+      "requiredLinks": [
+        {
+          "text": "v1.7.0",
+          "href": "https://github.com/openfga/openfga/releases/tag/v1.7.0"
+        },
+        {
+          "text": "openfga Slack channel",
+          "href": "https://cloud-native.slack.com/archives/C06G1NNH47N"
+        },
+        {
+          "text": "set up and configured",
+          "href": "/docs/getting-started/setup-openfga/configure-openfga#oidc"
+        },
+        {
+          "text": "here",
+          "href": "/docs/getting-started/cli"
+        },
+        {
+          "text": "the OpenID standard",
+          "href": "https://openid.net/specs/openid-connect-core-1_0.html#IDToken"
+        },
+        {
+          "text": "RFC9068",
+          "href": "https://www.rfc-editor.org/rfc/rfc9068.html#name-data-structure"
+        },
+        {
+          "text": "modular models documentation",
+          "href": "/docs/modeling/modular-models"
+        },
+        {
+          "text": "Setup OpenFGA",
+          "href": "/docs/getting-started/setup-openfga/configure-openfga"
+        },
+        {
+          "text": "Setup OIDC",
+          "href": "/docs/getting-started/setup-openfga/configure-openfga#oidc"
+        },
+        {
+          "text": "Running OpenFGA in Production",
+          "href": "/docs/best-practices/running-in-production"
+        }
+      ],
+      "linkOverrides": [
+        {
+          "text": "openfga Slack channel",
+          "liveHref": "/docs/community",
+          "nativeHref": "https://cloud-native.slack.com/archives/C06G1NNH47N",
+          "publicSourceURL": "https://github.com/openfga/openfga.dev/blob/main/docs/content/community.mdx",
+          "reason": "Parent-approved removal of the native community route; direct CNCF #openfga channel preserves the explanatory reference without restoring a broken native route."
+        }
+      ],
+      "requiredImages": [],
+      "requiredAnchors": [],
+      "headings": [
+        {
+          "level": "h1",
+          "text": "Setup Access Control"
+        },
+        {
+          "level": "h2",
+          "id": "requirements",
+          "text": "Requirements"
+        },
+        {
+          "level": "h2",
+          "id": "01-ensure-the-server-is-running-with-access-control-disabled",
+          "text": "01. Ensure the server is running (with access control disabled)"
+        },
+        {
+          "level": "h2",
+          "id": "02-create-the-access-control-store-and-model",
+          "text": "02. Create the access control store and model"
+        },
+        {
+          "level": "h2",
+          "id": "03-enable-access-control",
+          "text": "03. Enable access control"
+        },
+        {
+          "level": "h3",
+          "id": "i-enable-access-control-in-the-server",
+          "text": "i. Enable access control in the server"
+        },
+        {
+          "level": "h3",
+          "id": "ii-customize-what-claim-you-want-the-api-to-use-optional",
+          "text": "ii. Customize what claim you want the API to use (optional)"
+        },
+        {
+          "level": "h2",
+          "id": "iii-restart-the-server",
+          "text": "iii. Restart the server"
+        },
+        {
+          "level": "h2",
+          "id": "04-grant-access-to-a-store",
+          "text": "04. Grant access to a store"
+        },
+        {
+          "level": "h2",
+          "id": "related-sections",
+          "text": "Related Sections"
+        }
+      ],
+      "requiredComponents": [],
+      "tabGroups": [],
+      "tables": [],
+      "code": [
+        {
+          "language": "dsl.openfga",
+          "body": "model\n  schema 1.1\n\ntype system # required\n  relations\n    define admin: [application] # required\n    define can_call_create_stores: admin # required\n    define can_call_list_stores: [application, application:*] or admin # required\n\ntype application # required\n\ntype store # required\n  relations\n    define system: [system] # required\n    define admin: [application] or admin from system # required\n    define model_writer: [application] or admin\n    define reader: [application] or admin\n    define writer: [application] or admin\n    define can_call_delete_store: admin # required\n    define can_call_get_store: reader or writer or model_writer # required\n    define can_call_check: reader # required\n    define can_call_expand: reader # required\n    define can_call_list_objects: reader # required\n    define can_call_list_users: reader # required\n    define can_call_read: reader # required\n    define can_call_read_assertions: reader or model_writer # required\n    define can_call_read_authorization_models: reader or model_writer # required\n    define can_call_read_changes: reader # required\n    define can_call_write: writer # required\n    define can_call_write_assertions: model_writer # required\n    define can_call_write_authorization_models: model_writer # required\n\ntype module # required\n  relations\n    define store: [store] # required\n    define writer: [application]\n    define can_call_write: writer or writer from store # required",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "fga store create --name root-access-control --model ./model.fga",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "fga tuple write --store-id \"${ACCESS_CONTROL_STORE_ID}\" \"application:${FGA_ADMIN_CLIENT_ID}\" admin \"system:fga\"",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "fga tuple write --store-id \"${ACCESS_CONTROL_STORE_ID}\" \"application:${FGA_CLIENT_ID}\" model_writer \"store:${STORE_ID}\" --client-id \"${FGA_ADMIN_CLIENT_ID}\" --client-secret ... --api-token-issuer ... --api-audience ...",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "fga tuple write --store-id \"${ACCESS_CONTROL_STORE_ID}\" \"application:${FGA_CLIENT_ID}\" writer \"module:${STORE_ID}|<module-name>\" --client-id \"${FGA_ADMIN_CLIENT_ID}\" --client-secret ... --api-token-issuer ... --api-audience ...",
+          "comparison": "exact"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/setup-openfga/configuration.mdx",
+      "native": "docs/getting-started/setup-openfga/configuration.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/configuration",
+      "publicSourceURL": "https://github.com/openfga/openfga.dev/blob/main/docs/content/getting-started/setup-openfga/configuration.mdx",
+      "capturedAt": "2026-09-17T10:02:24.342Z",
+      "requiredText": [
+        "OpenFGA Configuration Options",
+        "Passing in the options",
+        "You can configure the OpenFGA server in three ways:",
+        "Using a configuration file.",
+        "Using environment variables.",
+        "Using command line parameters.",
+        "If the same option is configured in multiple ways the command line parameters will take precedence over environment variables, which will take precedence over the configuration file.",
+        "You can configure the OpenFGA server with a config.yaml file, which can be specified in either:",
+        "/etc/openfga",
+        "$HOME/.openfga",
+        ". (i.e., the current working directory).",
+        "The OpenFGA server will search for the configuration file in the above order.",
+        "Here is a sample configuration to run OpenFGA with a Postgres database and using a preshared key for authentication:",
+        "The OpenFGA server supports environment variables for configuration, and they will take priority over your configuration file. Each variable must be prefixed with OPENFGA_ and followed by your option in uppercase (datastore.engine becomes OPENFGA_DATASTORE_ENGINE), e.g.",
+        "Command line parameters take precedence over environment variables and options in the configuration file. They are prefixed with -- (OPENFGA_DATASTORE_ENGINE becomes --datastore-engine), e.g.",
+        "List of options",
+        "The following table lists the configuration options for the OpenFGA server v1.20.0, based on the config-schema.json.",
+        "Related Sections",
+        "Check the following sections for more on how to configure OpenFGA.",
+        "Configuring OpenFGA",
+        "Learn more about the different ways to configure OpenFGA",
+        "Running OpenFGA in Production",
+        "Learn the best practices of running OpenFGA in a production environment"
+      ],
+      "requiredLinks": [
+        {
+          "text": "v1.20.0",
+          "href": "https://github.com/openfga/openfga/releases/tag/v1.20.0"
+        },
+        {
+          "text": "config-schema.json",
+          "href": "https://raw.githubusercontent.com/openfga/openfga/refs/tags/v1.20.0/.config-schema.json"
+        },
+        {
+          "text": "Configuring OpenFGA",
+          "href": "/docs/getting-started/setup-openfga/configure-openfga"
+        },
+        {
+          "text": "Running OpenFGA in Production",
+          "href": "/docs/best-practices/running-in-production"
+        }
+      ],
+      "linkOverrides": [],
+      "requiredImages": [],
+      "requiredAnchors": [
+        "OPENFGA_MAX_TUPLES_PER_WRITE",
+        "OPENFGA_MAX_TYPES_PER_AUTHORIZATION_MODEL",
+        "OPENFGA_MAX_AUTHORIZATION_MODEL_SIZE_IN_BYTES",
+        "OPENFGA_MAX_CONCURRENT_READS_FOR_CHECK",
+        "OPENFGA_MAX_CONCURRENT_READS_FOR_LIST_OBJECTS",
+        "OPENFGA_MAX_CONCURRENT_READS_FOR_LIST_USERS",
+        "OPENFGA_MAX_CONCURRENT_CHECKS_PER_BATCH_CHECK",
+        "OPENFGA_MAX_CHECKS_PER_BATCH_CHECK",
+        "OPENFGA_MAX_CONDITION_EVALUATION_COST",
+        "OPENFGA_CHANGELOG_HORIZON_OFFSET",
+        "OPENFGA_RESOLVE_NODE_LIMIT",
+        "OPENFGA_RESOLVE_NODE_BREADTH_LIMIT",
+        "OPENFGA_LIST_OBJECTS_DEADLINE",
+        "OPENFGA_LIST_OBJECTS_MAX_RESULTS",
+        "OPENFGA_LIST_OBJECTS_PIPELINE_ENABLED",
+        "OPENFGA_LIST_USERS_DEADLINE",
+        "OPENFGA_LIST_USERS_MAX_RESULTS",
+        "OPENFGA_READ_CHANGES_MAX_PAGE_SIZE",
+        "OPENFGA_REQUEST_DURATION_DATASTORE_QUERY_COUNT_BUCKETS",
+        "OPENFGA_REQUEST_DURATION_DISPATCH_COUNT_BUCKETS",
+        "OPENFGA_CONTEXT_PROPAGATION_TO_DATASTORE",
+        "OPENFGA_EXPERIMENTALS",
+        "OPENFGA_AUTHZEN_BASE_URL",
+        "OPENFGA_ACCESS_CONTROL_ENABLED",
+        "OPENFGA_ACCESS_CONTROL_STORE_ID",
+        "OPENFGA_ACCESS_CONTROL_MODEL_ID",
+        "OPENFGA_PLAYGROUND_ENABLED",
+        "OPENFGA_PLAYGROUND_PORT",
+        "OPENFGA_PLAYGROUND_ADDR",
+        "OPENFGA_PROFILER_ENABLED",
+        "OPENFGA_PROFILER_ADDR",
+        "OPENFGA_DATASTORE_ENGINE",
+        "OPENFGA_DATASTORE_URI",
+        "OPENFGA_DATASTORE_SECONDARY_URI",
+        "OPENFGA_DATASTORE_USERNAME",
+        "OPENFGA_DATASTORE_SECONDARY_USERNAME",
+        "OPENFGA_DATASTORE_PASSWORD",
+        "OPENFGA_DATASTORE_SECONDARY_PASSWORD",
+        "OPENFGA_DATASTORE_MAX_CACHE_SIZE",
+        "OPENFGA_DATASTORE_MAX_TYPESYSTEM_CACHE_SIZE",
+        "OPENFGA_DATASTORE_MAX_OPEN_CONNS",
+        "OPENFGA_DATASTORE_MIN_OPEN_CONNS",
+        "OPENFGA_DATASTORE_MAX_IDLE_CONNS",
+        "OPENFGA_DATASTORE_MIN_IDLE_CONNS",
+        "OPENFGA_DATASTORE_CONN_MAX_IDLE_TIME",
+        "OPENFGA_DATASTORE_CONN_MAX_LIFETIME",
+        "OPENFGA_DATASTORE_METRICS_ENABLED",
+        "OPENFGA_AUTHN_METHOD",
+        "OPENFGA_AUTHN_PRESHARED_KEYS",
+        "OPENFGA_AUTHN_OIDC_ISSUER",
+        "OPENFGA_AUTHN_OIDC_AUDIENCE",
+        "OPENFGA_AUTHN_OIDC_ISSUER_ALIASES",
+        "OPENFGA_AUTHN_OIDC_SUBJECTS",
+        "OPENFGA_AUTHN_OIDC_CLIENT_ID_CLAIMS",
+        "OPENFGA_GRPC_ADDR",
+        "OPENFGA_GRPC_MAX_RECV_MSG_BYTES",
+        "OPENFGA_GRPC_TLS_ENABLED",
+        "OPENFGA_GRPC_TLS_CERT",
+        "OPENFGA_GRPC_TLS_KEY",
+        "OPENFGA_HTTP_ENABLED",
+        "OPENFGA_HTTP_ADDR",
+        "OPENFGA_HTTP_TLS_ENABLED",
+        "OPENFGA_HTTP_TLS_CERT",
+        "OPENFGA_HTTP_TLS_KEY",
+        "OPENFGA_HTTP_UPSTREAM_TIMEOUT",
+        "OPENFGA_HTTP_CORS_ALLOWED_ORIGINS",
+        "OPENFGA_HTTP_CORS_ALLOWED_HEADERS",
+        "OPENFGA_LOG_FORMAT",
+        "OPENFGA_LOG_LEVEL",
+        "OPENFGA_LOG_TIMESTAMP_FORMAT",
+        "OPENFGA_TRACE_ENABLED",
+        "OPENFGA_TRACE_OTLP_ENDPOINT,OTEL_EXPORTER_OTLP_TRACES_ENDPOINT,OTEL_EXPORTER_OTLP_ENDPOINT",
+        "OPENFGA_TRACE_OTLP_TLS_ENABLED",
+        "OPENFGA_TRACE_SAMPLER,OTEL_TRACES_SAMPLER",
+        "OPENFGA_TRACE_SAMPLE_RATIO,OTEL_TRACES_SAMPLER_ARG",
+        "OPENFGA_TRACE_SERVICE_NAME,OTEL_SERVICE_NAME",
+        "OTEL_RESOURCE_ATTRIBUTES",
+        "OPENFGA_METRICS_ENABLED",
+        "OPENFGA_METRICS_ADDR",
+        "OPENFGA_METRICS_ENABLE_RPC_HISTOGRAMS",
+        "OPENFGA_CHECK_CACHE_LIMIT",
+        "OPENFGA_CHECK_ITERATOR_CACHE_ENABLED",
+        "OPENFGA_CHECK_ITERATOR_CACHE_MAX_RESULTS",
+        "OPENFGA_CHECK_ITERATOR_CACHE_TTL",
+        "OPENFGA_CHECK_QUERY_CACHE_ENABLED",
+        "OPENFGA_CHECK_QUERY_CACHE_LIMIT",
+        "OPENFGA_CHECK_QUERY_CACHE_TTL",
+        "OPENFGA_CACHE_CONTROLLER_ENABLED",
+        "OPENFGA_CACHE_CONTROLLER_TTL",
+        "OPENFGA_CACHE_TTL_JITTER_PERCENTAGE",
+        "OPENFGA_CHECK_DISPATCH_THROTTLING_ENABLED",
+        "OPENFGA_CHECK_DISPATCH_THROTTLING_FREQUENCY",
+        "OPENFGA_CHECK_DISPATCH_THROTTLING_THRESHOLD",
+        "OPENFGA_CHECK_DISPATCH_THROTTLING_MAX_THRESHOLD",
+        "OPENFGA_LIST_OBJECTS_ITERATOR_CACHE_ENABLED",
+        "OPENFGA_LIST_OBJECTS_ITERATOR_CACHE_MAX_RESULTS",
+        "OPENFGA_LIST_OBJECTS_ITERATOR_CACHE_TTL",
+        "OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_ENABLED",
+        "OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_FREQUENCY",
+        "OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_THRESHOLD",
+        "OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_MAX_THRESHOLD",
+        "OPENFGA_LIST_USERS_DISPATCH_THROTTLING_ENABLED",
+        "OPENFGA_LIST_USERS_DISPATCH_THROTTLING_FREQUENCY",
+        "OPENFGA_LIST_USERS_DISPATCH_THROTTLING_THRESHOLD",
+        "OPENFGA_LIST_USERS_DISPATCH_THROTTLING_MAX_THRESHOLD",
+        "OPENFGA_CHECK_DATASTORE_THROTTLE_THRESHOLD",
+        "OPENFGA_CHECK_DATASTORE_THROTTLE_DURATION",
+        "OPENFGA_LIST_OBJECTS_DATASTORE_THROTTLE_THRESHOLD",
+        "OPENFGA_LIST_OBJECTS_DATASTORE_THROTTLE_DURATION",
+        "OPENFGA_LIST_USERS_DATASTORE_THROTTLE_THRESHOLD",
+        "OPENFGA_LIST_USERS_DATASTORE_THROTTLE_DURATION",
+        "OPENFGA_SHARED_ITERATOR_ENABLED",
+        "OPENFGA_SHARED_ITERATOR_LIMIT",
+        "OPENFGA_REQUEST_TIMEOUT",
+        "OPENFGA_SHUTDOWN_TIMEOUT",
+        "OPENFGA_PLANNER_INITIAL_GUESS",
+        "OPENFGA_PLANNER_EVICTION_THRESHOLD",
+        "OPENFGA_PLANNER_CLEANUP_INTERVAL"
+      ],
+      "anchorStyle": {
+        "scrollMarginTop": "7rem"
+      },
+      "headings": [
+        {
+          "level": "h1",
+          "text": "OpenFGA Configuration Options"
+        },
+        {
+          "level": "h2",
+          "id": "passing-in-the-options",
+          "text": "Passing in the options"
+        },
+        {
+          "level": "h2",
+          "id": "list-of-options",
+          "text": "List of options"
+        },
+        {
+          "level": "h2",
+          "id": "related-sections",
+          "text": "Related Sections"
+        }
+      ],
+      "requiredComponents": [],
+      "tabGroups": [
+        {
+          "tabs": [
+            {
+              "title": "Configuration File",
+              "selected": true
+            },
+            {
+              "title": "Environment Variables",
+              "selected": false
+            },
+            {
+              "title": "Command Line Parameters (Flags)",
+              "selected": false
+            }
+          ]
+        }
+      ],
+      "tables": [
+        {
+          "headers": [
+            "Config File",
+            "Env Var",
+            "Flag Name",
+            "Type",
+            "Description",
+            "Default Value"
+          ],
+          "rows": [
+            [
+              "maxTuplesPerWrite",
+              "OPENFGA_MAX_TUPLES_PER_WRITE",
+              "max-tuples-per-write",
+              "integer",
+              "The maximum allowed number of tuples per Write transaction.",
+              "100"
+            ],
+            [
+              "maxTypesPerAuthorizationModel",
+              "OPENFGA_MAX_TYPES_PER_AUTHORIZATION_MODEL",
+              "max-types-per-authorization-model",
+              "integer",
+              "The maximum allowed number of type definitions per authorization model.",
+              "100"
+            ],
+            [
+              "maxAuthorizationModelSizeInBytes",
+              "OPENFGA_MAX_AUTHORIZATION_MODEL_SIZE_IN_BYTES",
+              "max-authorization-model-size-in-bytes",
+              "integer",
+              "The maximum size in bytes allowed for persisting an Authorization Model (default is 256KB).",
+              "262144"
+            ],
+            [
+              "maxConcurrentReadsForCheck",
+              "OPENFGA_MAX_CONCURRENT_READS_FOR_CHECK",
+              "max-concurrent-reads-for-check",
+              "integer",
+              "The maximum allowed number of concurrent reads in a single Check query (default is MaxUint32).",
+              "4294967295"
+            ],
+            [
+              "maxConcurrentReadsForListObjects",
+              "OPENFGA_MAX_CONCURRENT_READS_FOR_LIST_OBJECTS",
+              "max-concurrent-reads-for-list-objects",
+              "integer",
+              "The maximum allowed number of concurrent reads in a single ListObjects query (default is MaxUint32).",
+              "4294967295"
+            ],
+            [
+              "maxConcurrentReadsForListUsers",
+              "OPENFGA_MAX_CONCURRENT_READS_FOR_LIST_USERS",
+              "max-concurrent-reads-for-list-users",
+              "integer",
+              "The maximum allowed number of concurrent reads in a single ListUsers query (default is MaxUint32).",
+              "4294967295"
+            ],
+            [
+              "maxConcurrentChecksPerBatchCheck",
+              "OPENFGA_MAX_CONCURRENT_CHECKS_PER_BATCH_CHECK",
+              "max-concurrent-checks-per-batch-check",
+              "integer",
+              "The maximum number of checks that can be processed concurrently in a batch check request.",
+              "50"
+            ],
+            [
+              "maxChecksPerBatchCheck",
+              "OPENFGA_MAX_CHECKS_PER_BATCH_CHECK",
+              "max-checks-per-batch-check",
+              "integer",
+              "The maximum number of tuples allowed in a BatchCheck request.",
+              "50"
+            ],
+            [
+              "maxConditionEvaluationCost",
+              "OPENFGA_MAX_CONDITION_EVALUATION_COST",
+              "max-condition-evaluation-cost",
+              "integer",
+              "The maximum cost for CEL condition evaluation before a request returns an error (default is 100).",
+              "100"
+            ],
+            [
+              "changelogHorizonOffset",
+              "OPENFGA_CHANGELOG_HORIZON_OFFSET",
+              "changelog-horizon-offset",
+              "integer",
+              "The offset (in minutes) from the current time. Changes that occur after this offset will not be included in the response of ReadChanges.",
+              ""
+            ],
+            [
+              "resolveNodeLimit",
+              "OPENFGA_RESOLVE_NODE_LIMIT",
+              "resolve-node-limit",
+              "integer",
+              "Maximum resolution depth to attempt before throwing an error (defines how deeply nested an authorization model can be before a query errors out).",
+              "25"
+            ],
+            [
+              "resolveNodeBreadthLimit",
+              "OPENFGA_RESOLVE_NODE_BREADTH_LIMIT",
+              "resolve-node-breadth-limit",
+              "integer",
+              "Defines how many nodes on a given level can be evaluated concurrently in a Check resolution tree.",
+              "10"
+            ],
+            [
+              "listObjectsDeadline",
+              "OPENFGA_LIST_OBJECTS_DEADLINE",
+              "list-objects-deadline",
+              "string (duration)",
+              "The timeout deadline for serving ListObjects requests",
+              "3s"
+            ],
+            [
+              "listObjectsMaxResults",
+              "OPENFGA_LIST_OBJECTS_MAX_RESULTS",
+              "list-objects-max-results",
+              "integer",
+              "The maximum results to return in the non-streaming ListObjects API response. If 0, all results can be returned",
+              "1000"
+            ],
+            [
+              "listObjectsPipelineEnabled",
+              "OPENFGA_LIST_OBJECTS_PIPELINE_ENABLED",
+              "list-objects-pipeline-enabled",
+              "boolean",
+              "Enables the ListObjects pipeline optimization algorithm, which can significantly improve the latency of ListObjects requests. When enabled, the server will attempt to resolve intermediate nodes in the ListObjects resolution tree concurrently. This optimization is most effective for workloads with large and complex authorization models, but may not suit all cases. Can be disabled if it causes increased resource usage.",
+              "true"
+            ],
+            [
+              "listUsersDeadline",
+              "OPENFGA_LIST_USERS_DEADLINE",
+              "list-users-deadline",
+              "string (duration)",
+              "The timeout deadline for serving ListUsers requests. If 0s, there is no deadline",
+              "3s"
+            ],
+            [
+              "listUsersMaxResults",
+              "OPENFGA_LIST_USERS_MAX_RESULTS",
+              "list-users-max-results",
+              "integer",
+              "The maximum results to return in ListUsers API response. If 0, all results can be returned",
+              "1000"
+            ],
+            [
+              "readChangesMaxPageSize",
+              "OPENFGA_READ_CHANGES_MAX_PAGE_SIZE",
+              "read-changes-max-page-size",
+              "integer",
+              "The maximum page size allowed for ReadChanges API requests",
+              "100"
+            ],
+            [
+              "requestDurationDatastoreQueryCountBuckets",
+              "OPENFGA_REQUEST_DURATION_DATASTORE_QUERY_COUNT_BUCKETS",
+              "request-duration-datastore-query-count-buckets",
+              "[]integer",
+              "Datastore query count buckets used to label the histogram metric for measuring request duration.",
+              "50,200"
+            ],
+            [
+              "requestDurationDispatchCountBuckets",
+              "OPENFGA_REQUEST_DURATION_DISPATCH_COUNT_BUCKETS",
+              "request-duration-dispatch-count-buckets",
+              "[]integer",
+              "Dispatch count buckets used to label the histogram metric for measuring request duration.",
+              "50,200"
+            ],
+            [
+              "contextPropagationToDatastore",
+              "OPENFGA_CONTEXT_PROPAGATION_TO_DATASTORE",
+              "context-propagation-to-datastore",
+              "boolean",
+              "Propagate a requests context to the datastore implementation. Settings this parameter can result in connection pool draining on request aborts and timeouts.",
+              "false"
+            ],
+            [
+              "experimentals",
+              "OPENFGA_EXPERIMENTALS",
+              "experimentals",
+              "[]string (enum=[enable-check-optimizations, enable-list-objects-optimizations, enable-access-control, datastore_throttling, pipeline_list_objects, authzen])",
+              "a comma-separated list of experimental features to enable",
+              "pipeline_list_objects"
+            ],
+            [
+              "authzen.baseURL",
+              "OPENFGA_AUTHZEN_BASE_URL",
+              "authzen-base-url",
+              "string",
+              "The canonical absolute base URL published in AuthZEN discovery metadata. It may include an optional path prefix.",
+              ""
+            ],
+            [
+              "accessControl.enabled",
+              "OPENFGA_ACCESS_CONTROL_ENABLED",
+              "access-control-enabled",
+              "boolean",
+              "Enable/disable the access control store.",
+              "false"
+            ],
+            [
+              "accessControl.storeId",
+              "OPENFGA_ACCESS_CONTROL_STORE_ID",
+              "access-control-store-id",
+              "string",
+              "The storeId to be used for the access control store.",
+              ""
+            ],
+            [
+              "accessControl.modelId",
+              "OPENFGA_ACCESS_CONTROL_MODEL_ID",
+              "access-control-model-id",
+              "string",
+              "The modelId to be used for the access control store.",
+              ""
+            ],
+            [
+              "playground.enabled",
+              "OPENFGA_PLAYGROUND_ENABLED",
+              "playground-enabled",
+              "boolean",
+              "Enable/disable the OpenFGA Playground. The Playground can only be run when the authentication method is set to 'none'. Note that the built-in Playground is intended for local development and testing purposes, and is not recommended for production use. It has been deprecated and will be removed in a subsequent release.",
+              "false"
+            ],
+            [
+              "playground.port",
+              "OPENFGA_PLAYGROUND_PORT",
+              "playground-port",
+              "integer",
+              "Deprecated: The port to serve the local OpenFGA Playground on. Use 'addr' instead.",
+              "3000"
+            ],
+            [
+              "playground.addr",
+              "OPENFGA_PLAYGROUND_ADDR",
+              "playground-addr",
+              "string",
+              "The host:port address to serve the local OpenFGA Playground on.",
+              ""
+            ],
+            [
+              "profiler.enabled",
+              "OPENFGA_PROFILER_ENABLED",
+              "profiler-enabled",
+              "boolean",
+              "Enabled/disable pprof profiling.",
+              "false"
+            ],
+            [
+              "profiler.addr",
+              "OPENFGA_PROFILER_ADDR",
+              "profiler-addr",
+              "string",
+              "The host:port address to serve the pprof profiler server on.",
+              ":3001"
+            ],
+            [
+              "datastore.engine",
+              "OPENFGA_DATASTORE_ENGINE",
+              "datastore-engine",
+              "string (enum=[memory, postgres, mysql, sqlite])",
+              "The datastore engine that will be used for persistence.",
+              "memory"
+            ],
+            [
+              "datastore.uri",
+              "OPENFGA_DATASTORE_URI",
+              "datastore-uri",
+              "string",
+              "The connection uri to use to connect to the datastore (for any engine other than 'memory').",
+              ""
+            ],
+            [
+              "datastore.secondaryUri",
+              "OPENFGA_DATASTORE_SECONDARY_URI",
+              "datastore-secondary-uri",
+              "string",
+              "The connection uri to use to connect to the secondary datastore (for postgres only).",
+              ""
+            ],
+            [
+              "datastore.username",
+              "OPENFGA_DATASTORE_USERNAME",
+              "datastore-username",
+              "string",
+              "The connection username to connect to the datastore (overwrites any username provided in the connection uri).",
+              ""
+            ],
+            [
+              "datastore.secondaryUsername",
+              "OPENFGA_DATASTORE_SECONDARY_USERNAME",
+              "datastore-secondary-username",
+              "string",
+              "The connection username to connect to the secondary datastore (overwrites any username provided in the connection uri).",
+              ""
+            ],
+            [
+              "datastore.password",
+              "OPENFGA_DATASTORE_PASSWORD",
+              "datastore-password",
+              "string",
+              "The connection password to connect to the datastore (overwrites any password provided in the connection uri).",
+              ""
+            ],
+            [
+              "datastore.secondaryPassword",
+              "OPENFGA_DATASTORE_SECONDARY_PASSWORD",
+              "datastore-secondary-password",
+              "string",
+              "The connection password to connect to the secondary datastore (overwrites any password provided in the connection uri).",
+              ""
+            ],
+            [
+              "datastore.maxCacheSize",
+              "OPENFGA_DATASTORE_MAX_CACHE_SIZE",
+              "datastore-max-cache-size",
+              "integer",
+              "The maximum number of authorization models that will be cached in memory",
+              "100000"
+            ],
+            [
+              "datastore.maxTypesystemCacheSize",
+              "OPENFGA_DATASTORE_MAX_TYPESYSTEM_CACHE_SIZE",
+              "datastore-max-typesystem-cache-size",
+              "integer",
+              "The maximum number of type system models that will be cached in memory",
+              "100000"
+            ],
+            [
+              "datastore.maxOpenConns",
+              "OPENFGA_DATASTORE_MAX_OPEN_CONNS",
+              "datastore-max-open-conns",
+              "integer",
+              "The maximum number of open connections to the datastore.",
+              "30"
+            ],
+            [
+              "datastore.minOpenConns",
+              "OPENFGA_DATASTORE_MIN_OPEN_CONNS",
+              "datastore-min-open-conns",
+              "integer",
+              "The minimum number of open connections to the datastore. This is only available for PostgreSQL.",
+              "0"
+            ],
+            [
+              "datastore.maxIdleConns",
+              "OPENFGA_DATASTORE_MAX_IDLE_CONNS",
+              "datastore-max-idle-conns",
+              "integer",
+              "the maximum number of connections to the datastore in the idle connection pool.",
+              "10"
+            ],
+            [
+              "datastore.minIdleConns",
+              "OPENFGA_DATASTORE_MIN_IDLE_CONNS",
+              "datastore-min-idle-conns",
+              "integer",
+              "the minimum number of connections to the datastore in the idle connection pool. This is only available for PostgreSQL.",
+              "0"
+            ],
+            [
+              "datastore.connMaxIdleTime",
+              "OPENFGA_DATASTORE_CONN_MAX_IDLE_TIME",
+              "datastore-conn-max-idle-time",
+              "string (duration)",
+              "the maximum amount of time a connection to the datastore may be idle",
+              "0s"
+            ],
+            [
+              "datastore.connMaxLifetime",
+              "OPENFGA_DATASTORE_CONN_MAX_LIFETIME",
+              "datastore-conn-max-lifetime",
+              "string (duration)",
+              "the maximum amount of time a connection to the datastore may be reused",
+              "0s"
+            ],
+            [
+              "datastore.metrics.enabled",
+              "OPENFGA_DATASTORE_METRICS_ENABLED",
+              "datastore-metrics-enabled",
+              "boolean",
+              "enable/disable sql metrics for the datastore",
+              "false"
+            ],
+            [
+              "authn.method",
+              "OPENFGA_AUTHN_METHOD",
+              "authn-method",
+              "string (enum=[none, preshared, oidc])",
+              "The authentication method to use.",
+              "none"
+            ],
+            [
+              "authn.preshared.keys",
+              "OPENFGA_AUTHN_PRESHARED_KEYS",
+              "authn-preshared-keys",
+              "[]string",
+              "List of preshared keys used for authentication",
+              ""
+            ],
+            [
+              "authn.oidc.issuer",
+              "OPENFGA_AUTHN_OIDC_ISSUER",
+              "authn-oidc-issuer",
+              "string",
+              "The OIDC issuer (authorization server) signing the tokens.",
+              ""
+            ],
+            [
+              "authn.oidc.audience",
+              "OPENFGA_AUTHN_OIDC_AUDIENCE",
+              "authn-oidc-audience",
+              "string",
+              "The OIDC audience of the tokens being signed by the authorization server.",
+              ""
+            ],
+            [
+              "authn.oidc.issuerAliases",
+              "OPENFGA_AUTHN_OIDC_ISSUER_ALIASES",
+              "authn-oidc-issuer-aliases",
+              "[]string",
+              "the OIDC issuer DNS aliases that will be accepted as valid when verifying the iss field of the JWTs.",
+              ""
+            ],
+            [
+              "authn.oidc.subjects",
+              "OPENFGA_AUTHN_OIDC_SUBJECTS",
+              "authn-oidc-subjects",
+              "[]string",
+              "the OIDC subject names that will be accepted as valid when verifying the sub field of the JWTs. If empty, every sub will be allowed",
+              ""
+            ],
+            [
+              "authn.oidc.clientIdClaims",
+              "OPENFGA_AUTHN_OIDC_CLIENT_ID_CLAIMS",
+              "authn-oidc-client-id-claims",
+              "[]string",
+              "the OIDC client id claims that will be used to parse the clientID - configure in order of priority (first is highest). Defaults to [azp, client_id]",
+              ""
+            ],
+            [
+              "grpc.addr",
+              "OPENFGA_GRPC_ADDR",
+              "grpc-addr",
+              "string",
+              "The host:port address to serve the grpc server on.",
+              "0.0.0.0:8081"
+            ],
+            [
+              "grpc.maxRecvMsgBytes",
+              "OPENFGA_GRPC_MAX_RECV_MSG_BYTES",
+              "grpc-max-recv-msg-bytes",
+              "integer",
+              "The maximum size, in bytes, of a received gRPC message.",
+              "616448"
+            ],
+            [
+              "grpc.tls.enabled",
+              "OPENFGA_GRPC_TLS_ENABLED",
+              "grpc-tls-enabled",
+              "boolean",
+              "Enables or disables transport layer security (TLS).",
+              "false"
+            ],
+            [
+              "grpc.tls.cert",
+              "OPENFGA_GRPC_TLS_CERT",
+              "grpc-tls-cert",
+              "string",
+              "The (absolute) file path of the certificate to use for the TLS connection.",
+              ""
+            ],
+            [
+              "grpc.tls.key",
+              "OPENFGA_GRPC_TLS_KEY",
+              "grpc-tls-key",
+              "string",
+              "The (absolute) file path of the TLS key that should be used for the TLS connection.",
+              ""
+            ],
+            [
+              "http.enabled",
+              "OPENFGA_HTTP_ENABLED",
+              "http-enabled",
+              "boolean",
+              "Enables or disables the OpenFGA HTTP server. If this is set to true then 'grpc.enabled' must be set to true.",
+              "true"
+            ],
+            [
+              "http.addr",
+              "OPENFGA_HTTP_ADDR",
+              "http-addr",
+              "string",
+              "The host:port address to serve the HTTP server on.",
+              "0.0.0.0:8080"
+            ],
+            [
+              "http.tls.enabled",
+              "OPENFGA_HTTP_TLS_ENABLED",
+              "http-tls-enabled",
+              "boolean",
+              "Enables or disables transport layer security (TLS).",
+              "false"
+            ],
+            [
+              "http.tls.cert",
+              "OPENFGA_HTTP_TLS_CERT",
+              "http-tls-cert",
+              "string",
+              "The (absolute) file path of the certificate to use for the TLS connection.",
+              ""
+            ],
+            [
+              "http.tls.key",
+              "OPENFGA_HTTP_TLS_KEY",
+              "http-tls-key",
+              "",
+              "The (absolute) file path of the TLS key that should be used for the TLS connection.",
+              ""
+            ],
+            [
+              "http.upstreamTimeout",
+              "OPENFGA_HTTP_UPSTREAM_TIMEOUT",
+              "http-upstream-timeout",
+              "string",
+              "The timeout duration for proxying HTTP requests upstream to the grpc endpoint.",
+              "3s"
+            ],
+            [
+              "http.corsAllowedOrigins",
+              "OPENFGA_HTTP_CORS_ALLOWED_ORIGINS",
+              "http-cors-allowed-origins",
+              "[]string",
+              "List of allowed origins for CORS requests",
+              "*"
+            ],
+            [
+              "http.corsAllowedHeaders",
+              "OPENFGA_HTTP_CORS_ALLOWED_HEADERS",
+              "http-cors-allowed-headers",
+              "[]string",
+              "List of allowed headers for CORS requests",
+              "*"
+            ],
+            [
+              "log.format",
+              "OPENFGA_LOG_FORMAT",
+              "log-format",
+              "string (enum=[text, json])",
+              "The log format to output logs in. For production we recommend 'json' format.",
+              "text"
+            ],
+            [
+              "log.level",
+              "OPENFGA_LOG_LEVEL",
+              "log-level",
+              "string (enum=[none, debug, info, warn, error, panic, fatal])",
+              "The log level to set. For production we recommend 'info' format.",
+              "info"
+            ],
+            [
+              "log.timestampFormat",
+              "OPENFGA_LOG_TIMESTAMP_FORMAT",
+              "log-timestamp-format",
+              "string (enum=[Unix, ISO8601])",
+              "The timestamp format to use for the log output.",
+              "Unix"
+            ],
+            [
+              "trace.enabled",
+              "OPENFGA_TRACE_ENABLED",
+              "trace-enabled",
+              "boolean",
+              "Enable tracing.",
+              "false"
+            ],
+            [
+              "trace.otlp.endpoint",
+              "OPENFGA_TRACE_OTLP_ENDPOINT,OTEL_EXPORTER_OTLP_TRACES_ENDPOINT,OTEL_EXPORTER_OTLP_ENDPOINT",
+              "trace-otlp-endpoint,otel-exporter-otlp-traces-endpoint,otel-exporter-otlp-endpoint",
+              "string",
+              "The grpc endpoint of the trace collector",
+              "0.0.0.0:4317"
+            ],
+            [
+              "trace.otlp.tls.enabled",
+              "OPENFGA_TRACE_OTLP_TLS_ENABLED",
+              "trace-otlp-tls-enabled",
+              "boolean",
+              "Whether to use TLS connection for the trace collector",
+              "false"
+            ],
+            [
+              "trace.sampler",
+              "OPENFGA_TRACE_SAMPLER,OTEL_TRACES_SAMPLER",
+              "trace-sampler,otel-traces-sampler",
+              "string (enum=[always_on, always_off, traceidratio, parentbased_always_on, parentbased_always_off, parentbased_traceidratio])",
+              "The sampler to use for tracing. Controls how sampling decisions are made. Defaults to 'traceidratio' for backward compatibility (note: the OpenTelemetry spec default is 'parentbased_always_on'). Unrecognized values produce a warning (when tracing is enabled) and fall back to 'traceidratio'.",
+              "traceidratio"
+            ],
+            [
+              "trace.sampleRatio",
+              "OPENFGA_TRACE_SAMPLE_RATIO,OTEL_TRACES_SAMPLER_ARG",
+              "trace-sample-ratio,otel-traces-sampler-arg",
+              "number",
+              "The fraction of traces to sample. 1 means all, 0 means none.",
+              "0.2"
+            ],
+            [
+              "trace.serviceName",
+              "OPENFGA_TRACE_SERVICE_NAME,OTEL_SERVICE_NAME",
+              "trace-service-name,otel-service-name",
+              "string",
+              "The service name included in sampled traces.",
+              "openfga"
+            ],
+            [
+              "trace.resourceAttributes",
+              "OTEL_RESOURCE_ATTRIBUTES",
+              "otel-resource-attributes",
+              "string",
+              "Key-value pairs to be used as resource attributes",
+              ""
+            ],
+            [
+              "metrics.enabled",
+              "OPENFGA_METRICS_ENABLED",
+              "metrics-enabled",
+              "boolean",
+              "enable/disable prometheus metrics on the '/metrics' endpoint",
+              "true"
+            ],
+            [
+              "metrics.addr",
+              "OPENFGA_METRICS_ADDR",
+              "metrics-addr",
+              "string",
+              "the host:port address to serve the prometheus metrics server on",
+              "0.0.0.0:2112"
+            ],
+            [
+              "metrics.enableRPCHistograms",
+              "OPENFGA_METRICS_ENABLE_RPC_HISTOGRAMS",
+              "metrics-enable-rpc-histograms",
+              "boolean",
+              "enables prometheus histogram metrics for RPC latency distributions",
+              "false"
+            ],
+            [
+              "checkCache.limit",
+              "OPENFGA_CHECK_CACHE_LIMIT",
+              "check-cache-limit",
+              "integer",
+              "the size limit (in items) of the cache for Check (queries and iterators)",
+              "10000"
+            ],
+            [
+              "checkIteratorCache.enabled",
+              "OPENFGA_CHECK_ITERATOR_CACHE_ENABLED",
+              "check-iterator-cache-enabled",
+              "boolean",
+              "enable caching of datastore iterators. The key is a string representing a database query, and the value is a list of tuples. Each iterator is the result of a database query, for example usersets related to a specific object, or objects related to a specific user, up to a certain number of tuples per iterator. If the request's consistency is HIGHER_CONSISTENCY, this cache is not used.",
+              "false"
+            ],
+            [
+              "checkIteratorCache.maxResults",
+              "OPENFGA_CHECK_ITERATOR_CACHE_MAX_RESULTS",
+              "check-iterator-cache-max-results",
+              "integer",
+              "if caching of datastore iterators of Check requests is enabled, this is the limit of tuples to cache per key",
+              "10000"
+            ],
+            [
+              "checkIteratorCache.ttl",
+              "OPENFGA_CHECK_ITERATOR_CACHE_TTL",
+              "check-iterator-cache-ttl",
+              "string (duration)",
+              "if caching of datastore iterators of Check requests is enabled, this is the TTL of each value",
+              "10s"
+            ],
+            [
+              "checkQueryCache.enabled",
+              "OPENFGA_CHECK_QUERY_CACHE_ENABLED",
+              "check-query-cache-enabled",
+              "boolean",
+              "enable caching of Check requests. The key is a string representing a query, and the value is a boolean. For example, if you have a relation define viewer: owner or editor, and the query is Check(user:anne, viewer, doc:1), we'll evaluate the owner relation and the editor relation and cache both results: (user:anne, viewer, doc:1) -> allowed=true and (user:anne, owner, doc:1) -> allowed=true. The cache is stored in-memory; the cached values are overwritten on every change in the result, and cleared after the configured TTL. This flag improves latency, but turns Check and ListObjects into eventually consistent APIs. If the request's consistency is HIGHER_CONSISTENCY, this cache is not used.",
+              "false"
+            ],
+            [
+              "checkQueryCache.limit",
+              "OPENFGA_CHECK_QUERY_CACHE_LIMIT",
+              "check-query-cache-limit",
+              "integer",
+              "DEPRECATED use OPENFGA_CHECK_CACHE_LIMIT. If caching of Check and ListObjects calls is enabled, this is the size limit (in items) of the cache",
+              "10000"
+            ],
+            [
+              "checkQueryCache.ttl",
+              "OPENFGA_CHECK_QUERY_CACHE_TTL",
+              "check-query-cache-ttl",
+              "string (duration)",
+              "if caching of Check and ListObjects is enabled, this is the TTL of each value",
+              "10s"
+            ],
+            [
+              "cacheController.enabled",
+              "OPENFGA_CACHE_CONTROLLER_ENABLED",
+              "cache-controller-enabled",
+              "boolean",
+              "enable invalidation of check query cache and iterator cache based on recent tuple writes. Invalidation is triggered by Check and List Objects requests, which periodically check the datastore's changelog table for writes and invalidate cache entries earlier than recent writes. Invalidations from Check requests are rate-limited by cache-controller-ttl, whereas List Objects requests invalidate every time if list objects iterator cache is enabled.",
+              "false"
+            ],
+            [
+              "cacheController.ttl",
+              "OPENFGA_CACHE_CONTROLLER_TTL",
+              "cache-controller-ttl",
+              "string (duration)",
+              "if cache controller is enabled, this is the minimum time interval for Check requests to trigger cache invalidation. List Objects requests may trigger invalidation even sooner if list objects iterator cache is enabled.",
+              "10s"
+            ],
+            [
+              "cacheTTLJitterPercentage",
+              "OPENFGA_CACHE_TTL_JITTER_PERCENTAGE",
+              "cache-ttl-jitter-percentage",
+              "integer",
+              "A percentage (0-100) of the base TTL added as random jitter to each cache entry's TTL, spreading out expirations to prevent thundering herd effects. For example, a value of 10 with a base TTL of 10s means each entry gets a TTL between 10s and 11s.",
+              ""
+            ],
+            [
+              "checkDispatchThrottling.enabled",
+              "OPENFGA_CHECK_DISPATCH_THROTTLING_ENABLED",
+              "check-dispatch-throttling-enabled",
+              "boolean",
+              "enable throttling when check request's number of dispatches is high",
+              "false"
+            ],
+            [
+              "checkDispatchThrottling.frequency",
+              "OPENFGA_CHECK_DISPATCH_THROTTLING_FREQUENCY",
+              "check-dispatch-throttling-frequency",
+              "string (duration)",
+              "the frequency period that the deprioritized throttling queue is evaluated for a check request. A higher value will result in more aggressive throttling",
+              "10µs"
+            ],
+            [
+              "checkDispatchThrottling.threshold",
+              "OPENFGA_CHECK_DISPATCH_THROTTLING_THRESHOLD",
+              "check-dispatch-throttling-threshold",
+              "integer",
+              "define the number of recursive operations to occur before getting throttled for a check request",
+              "100"
+            ],
+            [
+              "checkDispatchThrottling.maxThreshold",
+              "OPENFGA_CHECK_DISPATCH_THROTTLING_MAX_THRESHOLD",
+              "check-dispatch-throttling-max-threshold",
+              "integer",
+              "define the maximum dispatch threshold beyond above which requests will be throttled. 0 will use the 'dispatchThrottling.threshold' value as maximum",
+              "0"
+            ],
+            [
+              "listObjectsIteratorCache.enabled",
+              "OPENFGA_LIST_OBJECTS_ITERATOR_CACHE_ENABLED",
+              "list-objects-iterator-cache-enabled",
+              "boolean",
+              "enable caching of datastore iterators in ListObjects. The key is a string representing a database query, and the value is a list of tuples. Each iterator is the result of a database query, for example usersets related to a specific object, or objects related to a specific user, up to a certain number of tuples per iterator. If the request's consistency is HIGHER_CONSISTENCY, this cache is not used.",
+              "false"
+            ],
+            [
+              "listObjectsIteratorCache.maxResults",
+              "OPENFGA_LIST_OBJECTS_ITERATOR_CACHE_MAX_RESULTS",
+              "list-objects-iterator-cache-max-results",
+              "integer",
+              "if caching of datastore iterators of ListObjects requests is enabled, this is the limit of tuples to cache per key",
+              "10000"
+            ],
+            [
+              "listObjectsIteratorCache.ttl",
+              "OPENFGA_LIST_OBJECTS_ITERATOR_CACHE_TTL",
+              "list-objects-iterator-cache-ttl",
+              "string (duration)",
+              "if caching of datastore iterators of ListObjects requests is enabled, this is the TTL of each value",
+              "10s"
+            ],
+            [
+              "listObjectsDispatchThrottling.enabled",
+              "OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_ENABLED",
+              "list-objects-dispatch-throttling-enabled",
+              "boolean",
+              "enable throttling when ListObjects request's number of dispatches is high. Only applies when pipeline is disabled.",
+              "false"
+            ],
+            [
+              "listObjectsDispatchThrottling.frequency",
+              "OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_FREQUENCY",
+              "list-objects-dispatch-throttling-frequency",
+              "string (duration)",
+              "the frequency period that the deprioritized throttling queue is evaluated for a ListObjects request. A higher value will result in more aggressive throttling",
+              "10µs"
+            ],
+            [
+              "listObjectsDispatchThrottling.threshold",
+              "OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_THRESHOLD",
+              "list-objects-dispatch-throttling-threshold",
+              "integer",
+              "define the number of recursive operations to occur before getting throttled for a ListObjects request",
+              "100"
+            ],
+            [
+              "listObjectsDispatchThrottling.maxThreshold",
+              "OPENFGA_LIST_OBJECTS_DISPATCH_THROTTLING_MAX_THRESHOLD",
+              "list-objects-dispatch-throttling-max-threshold",
+              "integer",
+              "define the maximum dispatch threshold beyond above which requests will be throttled for a ListObjects request. 0 will use the 'dispatchThrottling.threshold' value as maximum",
+              "0"
+            ],
+            [
+              "listUsersDispatchThrottling.enabled",
+              "OPENFGA_LIST_USERS_DISPATCH_THROTTLING_ENABLED",
+              "list-users-dispatch-throttling-enabled",
+              "boolean",
+              "enable throttling when list users request's number of dispatches is high",
+              "false"
+            ],
+            [
+              "listUsersDispatchThrottling.frequency",
+              "OPENFGA_LIST_USERS_DISPATCH_THROTTLING_FREQUENCY",
+              "list-users-dispatch-throttling-frequency",
+              "string (duration)",
+              "the frequency period that the deprioritized throttling queue is evaluated for a list users request. A higher value will result in more aggressive throttling",
+              "10µs"
+            ],
+            [
+              "listUsersDispatchThrottling.threshold",
+              "OPENFGA_LIST_USERS_DISPATCH_THROTTLING_THRESHOLD",
+              "list-users-dispatch-throttling-threshold",
+              "integer",
+              "define the number of recursive operations to occur before getting throttled for a list users request",
+              "100"
+            ],
+            [
+              "listUsersDispatchThrottling.maxThreshold",
+              "OPENFGA_LIST_USERS_DISPATCH_THROTTLING_MAX_THRESHOLD",
+              "list-users-dispatch-throttling-max-threshold",
+              "integer",
+              "define the maximum dispatch threshold beyond above which requests will be throttled for a list users request. 0 will use the 'dispatchThrottling.threshold' value as maximum",
+              "0"
+            ],
+            [
+              "checkDatastoreThrottle.threshold",
+              "OPENFGA_CHECK_DATASTORE_THROTTLE_THRESHOLD",
+              "check-datastore-throttle-threshold",
+              "integer",
+              "define the number of datastore requests allowed before being throttled. A value of 0 means throttling is disabled.",
+              ""
+            ],
+            [
+              "checkDatastoreThrottle.duration",
+              "OPENFGA_CHECK_DATASTORE_THROTTLE_DURATION",
+              "check-datastore-throttle-duration",
+              "string (duration)",
+              "defines the time for which the datastore request will be suspended for being throttled.",
+              "0s"
+            ],
+            [
+              "listObjectsDatastoreThrottle.threshold",
+              "OPENFGA_LIST_OBJECTS_DATASTORE_THROTTLE_THRESHOLD",
+              "list-objects-datastore-throttle-threshold",
+              "integer",
+              "define the number of datastore requests allowed before being throttled. A value of 0 means throttling is disabled.",
+              ""
+            ],
+            [
+              "listObjectsDatastoreThrottle.duration",
+              "OPENFGA_LIST_OBJECTS_DATASTORE_THROTTLE_DURATION",
+              "list-objects-datastore-throttle-duration",
+              "string (duration)",
+              "defines the time for which the datastore request will be suspended for being throttled.",
+              "0s"
+            ],
+            [
+              "listUsersDatastoreThrottle.threshold",
+              "OPENFGA_LIST_USERS_DATASTORE_THROTTLE_THRESHOLD",
+              "list-users-datastore-throttle-threshold",
+              "integer",
+              "define the number of datastore requests allowed before being throttled. A value of 0 means throttling is disabled.",
+              ""
+            ],
+            [
+              "listUsersDatastoreThrottle.duration",
+              "OPENFGA_LIST_USERS_DATASTORE_THROTTLE_DURATION",
+              "list-users-datastore-throttle-duration",
+              "string (duration)",
+              "defines the time for which the datastore request will be suspended for being throttled.",
+              "0s"
+            ],
+            [
+              "sharedIterator.enabled",
+              "OPENFGA_SHARED_ITERATOR_ENABLED",
+              "shared-iterator-enabled",
+              "boolean",
+              "enabling sharing of datastore iterators with different consumers. Each iterator is the result of a database query, for example usersets related to a specific object, or objects related to a specific user, up to a certain number of tuples per iterator.",
+              "false"
+            ],
+            [
+              "sharedIterator.limit",
+              "OPENFGA_SHARED_ITERATOR_LIMIT",
+              "shared-iterator-limit",
+              "integer",
+              "if shared-iterator-enabled is enabled, this is the limit of the number of iterators that can be shared.",
+              "1000000"
+            ],
+            [
+              "requestTimeout",
+              "OPENFGA_REQUEST_TIMEOUT",
+              "request-timeout",
+              "string (duration)",
+              "The timeout duration for a request.",
+              "3s"
+            ],
+            [
+              "shutdownTimeout",
+              "OPENFGA_SHUTDOWN_TIMEOUT",
+              "shutdown-timeout",
+              "string (duration)",
+              "The timeout duration for a graceful shutdown.",
+              "10s"
+            ],
+            [
+              "planner.initialGuess",
+              "OPENFGA_PLANNER_INITIAL_GUESS",
+              "planner-initial-guess",
+              "string (duration)",
+              "The initial guess for the planners estimation.",
+              "10ms"
+            ],
+            [
+              "planner.evictionThreshold",
+              "OPENFGA_PLANNER_EVICTION_THRESHOLD",
+              "planner-eviction-threshold",
+              "",
+              "How long a planner key can be unused before being evicted.",
+              "0"
+            ],
+            [
+              "planner.cleanupInterval",
+              "OPENFGA_PLANNER_CLEANUP_INTERVAL",
+              "planner-cleanup-interval",
+              "string (duration)",
+              "How often the planner checks for stale keys.",
+              "0"
+            ]
+          ]
+        }
+      ],
+      "code": [
+        {
+          "language": "yaml",
+          "body": "datastore:\n  engine: postgres\n  uri: postgres://user:password@localhost:5432/mydatabase\nauthn:\n  method: preshared\n  preshared:\n    keys: [\"key1\", \"key2\"]\nplayground:\n  enabled: false",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "# Running as a binary\nexport OPENFGA_DATASTORE_ENGINE=postgres\nexport OPENFGA_DATASTORE_URI='postgres://postgres:password@postgres:5432/postgres?sslmode=disable'\nexport OPENFGA_AUTHN_METHOD=preshared\nexport OPENFGA_AUTHN_PRESHARED_KEYS='key1,key2'\nexport OPENFGA_PLAYGROUND_ENABLED=false\nopenfga run\n\n# Running in docker\ndocker run docker.io/openfga/openfga:latest \\ \n  -e OPENFGA_DATASTORE_ENGINE=postgres \\ \n  -e OPENFGA_DATASTORE_URI='postgres://postgres:password@postgres:5432/postgres?sslmode=disable' \\ \n  -e OPENFGA_AUTHN_METHOD=preshared \\ \n  -e OPENFGA_AUTHN_PRESHARED_KEYS='key1,key2' \\ \n  -e OPENFGA_PLAYGROUND_ENABLED=false \\ \n  run",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "# Running as a binary\nopenfga run \\ \n  --datastore-engine postgres \\ \n  --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable' \\ \n  --authn-method=preshared \\ \n  --authn-preshared-keys='key1,key2' \\ \n  --playground-enabled=false\n\n# Running in docker\ndocker run docker.io/openfga/openfga:latest run \\ \n  --datastore-engine postgres \\ \n  --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable' \\ \n  --authn-method=preshared \\ \n  --authn-preshared-keys='key1,key2' \\ \n  --playground-enabled=false",
+          "comparison": "exact"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/setup-openfga/configure-openfga.mdx",
+      "native": "docs/getting-started/setup-openfga/configure-openfga.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/configure-openfga",
+      "publicSourceURL": "https://github.com/openfga/openfga.dev/blob/main/docs/content/getting-started/setup-openfga/configure-openfga.mdx",
+      "capturedAt": "2026-09-17T10:02:24.969Z",
+      "requiredText": [
+        "Configuring OpenFGA",
+        "Refer to the OpenFGA Getting Started for info on the various ways to install OpenFGA.",
+        "The instructions below assume OpenFGA is installed and that you have the openfga binary in your PATH. If you have built openfga as a binary, but not in your path, you can refer to it directly (e.g. replace openfga in the instructions below with ./openfga or /path/to/openfga).",
+        "For a list of all the configuration options that the latest release of OpenFGA supports, see Configuration Options, or you can run openfga --help to see the ones specific to your version.",
+        "The instructions below are for configuring the standalone OpenFGA server. If you are using OpenFGA as a library, you can refer to the GoDoc for more information.",
+        "Configuring data storage",
+        "OpenFGA supports multiple storage engine options, including:",
+        "memory - A memory storage engine, which is the default. Data is lost between server restarts.",
+        "postgres - A Postgres storage engine.",
+        "mysql - A MySQL storage engine.",
+        "sqlite - A SQLite storage engine.",
+        "The first time you run OpenFGA, or when you install a new version, you need to run the openfga migrate command. This will create the required database tables or perform the database migration required for a new version.",
+        "Postgres",
+        "PostgreSQL Read Replicas Configuration",
+        "OpenFGA supports configuring separate read and write datastores for PostgreSQL to improve performance and scalability. This feature allows you to distribute read operations across read replicas while directing write operations to the primary database.",
+        "Setting Up Read Replicas",
+        "To use read replicas, you need to configure both a primary datastore (for writes) and a secondary datastore (for reads):",
+        "Important considerations:",
+        "The --datastore-uri parameter specifies the primary database (used for writes and high-consistency reads)",
+        "The --datastore-secondary-uri parameter specifies the read replica (used for regular read operations)",
+        "Both databases must have the same schema and should be kept in sync through PostgreSQL replication",
+        "Synchronous vs Asynchronous Replication",
+        "The choice between synchronous and asynchronous replication affects data consistency and performance:",
+        "Synchronous Replication:",
+        "Pros: Guarantees data consistency across primary and replica",
+        "Cons: Higher latency for write operations",
+        "Use case: When data consistency is critical and you can tolerate slower writes",
+        "PostgreSQL config: synchronous_commit = on and synchronous_standby_names = 'replica_name'",
+        "Asynchronous Replication:",
+        "Pros: Better write performance, lower latency",
+        "Cons: Potential for read-after-write inconsistencies (replica lag)",
+        "Use case: When write performance is prioritized and slight delays in read consistency are acceptable",
+        "PostgreSQL config: synchronous_commit = off (default)",
+        "Consistency Preferences",
+        "OpenFGA provides consistency controls to handle read-after-write scenarios:",
+        "Higher Consistency Mode: When using HIGHER_CONSISTENCY preference in read operations, OpenFGA will automatically route the query to the primary database instead of the read replica, ensuring you get the most up-to-date data.",
+        "Default Consistency Mode: Regular read operations without the HIGHER_CONSISTENCY flag will be routed to the read replica for better performance.",
+        "Best Practices",
+        "Monitor Replica Lag: Set up monitoring for replication lag between primary and replica",
+        "Use Higher Consistency Sparingly: Only use HIGHER_CONSISTENCY when you need immediate read-after-write consistency",
+        "Connection Pooling: Configure appropriate connection pools for both primary and replica connections",
+        "Example PostgreSQL Replication Setup",
+        "Here's a basic example of setting up PostgreSQL streaming replication:",
+        "Primary server configuration (postgresql.conf):",
+        "Primary server authentication (pg_hba.conf):",
+        "Replica server configuration (postgresql.conf):",
+        "Replica server recovery configuration:",
+        "This is a simplified example. For production setups, refer to the PostgreSQL documentation on replication for comprehensive configuration guidelines.",
+        "When using asynchronous replication, be aware that read replicas might have slightly outdated data due to replication lag. Use the HIGHER_CONSISTENCY preference for operations that require the most recent data.",
+        "To learn how to run in Docker, check our Docker documentation.",
+        "MySQL",
+        "The MySQL datastore has stricter limits for the max length of some fields for tuples compared to other datastore engines, in particular:",
+        "object type is at most 128 characters (down from 256)",
+        "object id is at most 255 characters (down from 256)",
+        "user is at most 256 characters (down from 512)",
+        "The connection URI needs to specify the query parseTime=true.",
+        "SQLite",
+        "Configuring authentication",
+        "You can configure authentication in three ways:",
+        "no authentication (default)",
+        "pre-shared key authentication",
+        "OIDC",
+        "Pre-shared key authentication",
+        "If using Pre-shared key authentication, you will configure OpenFGA with one or more secret keys and your application calling OpenFGA will have to set an Authorization: Bearer <YOUR-KEY-HERE> header.",
+        "If you are going to use this setup in production, you should enable HTTP TLS in your OpenFGA server. You will need to configure the TLS certificate and key.",
+        "Update the config.yaml file to",
+        "Configure the authentication method to preshared: export OPENFGA_AUTHN_METHOD=preshared.",
+        "Configure the authentication keys: export OPENFGA_AUTHN_PRESHARED_KEYS=key1,key2",
+        "Enable the HTTP TLS configuration: export OPENFGA_HTTP_TLS_ENABLED=true",
+        "Configure the HTTP TLS certificate location: export OPENFGA_HTTP_TLS_CERT=/Users/myuser/key/server.crt",
+        "Configure the HTTP TLS key location: export OPENFGA_HTTP_TLS_KEY=/Users/myuser/key/server.key",
+        "To configure with OIDC authentication, you will first need to obtain the OIDC issuer and audience from your provider.",
+        "Configure the authentication method to OIDC: export OPENFGA_AUTHN_METHOD=oidc.",
+        "Configure the valid issuer (required): export OPENFGA_AUTHN_OIDC_ISSUER=oidc-issuer",
+        "Configure the valid issuer aliases (optional): export OPENFGA_AUTHN_OIDC_ISSUER_ALIASES=oidc-issuer-1,oidc-issuer-2",
+        "Configure the valid audience (required): export OPENFGA_AUTHN_OIDC_AUDIENCE=oidc-audience",
+        "Configure the valid subjects (optional): export OPENFGA_AUTHN_OIDC_SUBJECTS=oidc-subject-1,oidc-subject-2",
+        "Profiler (pprof)",
+        "Continuous profiling can be used in production deployments, but we recommend disabling it unless it is needed to troubleshoot specific performance or memory problems.",
+        "Profiling through pprof can be enabled on the OpenFGA server by providing the --profiler-enabled flag. For example:",
+        "If you need to serve the profiler on a different port than the default 3001, you can do so by specifying the --profiler-addr flag. For example:",
+        "If you want to run it in docker:",
+        "Health check",
+        "OpenFGA is configured with an HTTP health check endpoint /healthz and a gRPC health check grpc.health.v1.Health/Check, which is wired to datastore testing. Possible response values are",
+        "UNKNOWN",
+        "SERVING",
+        "NOT_SERVING",
+        "SERVICE_UNKNOWN",
+        "Experimental features",
+        "Various releases of OpenFGA may have experimental features that can be enabled by providing the --experimentals flag or the experimentals config.",
+        "or if you're using environment variables,",
+        "The following table enumerates the experimental flags, a description of what they do, and the versions of OpenFGA the flag is supported in:",
+        "Experimental features are not guaranteed to be stable and may lead to server instabilities. It is not recommended to enable experimental features for anything other than experimentation.",
+        "Experimental feature flags are also not considered part of API compatibility and are subject to change, so please refer to each OpenFGA specific release for a list of the experimental feature flags that can be enabled for that release.",
+        "Telemetry",
+        "OpenFGA telemetry data is collected by default starting on version v0.3.5. The telemetry information that is captured includes Metrics, Traces, and Logs.",
+        "Please refer to the docker-compose.yaml file as an example of how to collect Metrics and Tracing in OpenFGA in a Docker environment using the OpenTelemetry Collector. This should serve as a good example that you can adjust for your specific deployment scenario.",
+        "Metrics",
+        "OpenFGA metrics are collected with the Prometheus data format and exposed on address 0.0.0.0:2112/metrics.",
+        "Metrics are exposed by default, but you can disable this with --metrics-enabled=false (or OPENFGA_METRICS_ENABLED=false environment variable).",
+        "To set an alternative address, you can provide the --metrics-addr flag (OPENFGA_METRICS_ADDR environment variable). For example:",
+        "To see the request latency per endpoint of your OpenFGA deployment, you can provide the --metrics-enable-rpc-histograms flag (OPENFGA_METRICS_ENABLE_RPC_HISTOGRAMS environment variable).",
+        "Tracing",
+        "OpenFGA traces can be collected with the OTLP data format.",
+        "Tracing is disabled by default, but you can enable this with the --trace-enabled=true (OPENFGA_TRACE_ENABLED=true environment variable). Traces will be exported by default to address 0.0.0.0:4317. You can change this address with the --trace-otlp-endpoint flag (OPENFGA_TRACE_OTLP_ENDPOINT environment variable). In order to just correlate trace_id in logs if you are propagating tracing contexts into OpenFGA, exporter can be disabled by providing none as endpoint value.",
+        "To increase or decrease the trace sampling ratio, you can provide the --trace-sample-ratio flag (OPENFGA_TRACE_SAMPLE_RATIO env variable).",
+        "Tracing by default uses",
+        "insecure connection. You can enable TLS by using --trace-otlp-tls-enabled=true flag or the environment variable OPENFGA_TRACE_OTLP_TLS_ENABLED.",
+        "It is not recommended to sample all traces (e.g. --trace-sample-ratio=1). You will need to adjust your sampling ratio based on the amount of traffic your deployment receives. Higher traffic will require less sampling and lower traffic can tolerate higher sampling ratios.",
+        "Logging",
+        "OpenFGA generates structured logs by default, and it can be configured with the following flags:",
+        "--log-format: sets the log format. Today we support text and json format.",
+        "--log-level: sets the minimum log level (defaults to info). It can be set to none to turn off logging.",
+        "It is highly recommended to enable logging in production environments. Disabling logging (--log-level=none) can mask important operations and hinder the ability to detect and diagnose issues, including potential security incidents. Ensure that logs are enabled and properly monitored to maintain visibility into the application's behavior and security.",
+        "Related Sections",
+        "Check the following sections for more on how to use OpenFGA.",
+        "Configuration Options",
+        "Find out all the different flags and options that OpenFGA accepts",
+        "Running OpenFGA in Production",
+        "Learn the best practices of running OpenFGA in a production environment"
+      ],
+      "requiredLinks": [
+        {
+          "text": "OpenFGA Getting Started",
+          "href": "https://github.com/openfga/openfga?tab=readme-ov-file#getting-started"
+        },
+        {
+          "text": "Configuration Options",
+          "href": "/docs/getting-started/setup-openfga/configuration"
+        },
+        {
+          "text": "GoDoc",
+          "href": "https://pkg.go.dev/github.com/openfga/openfga"
+        },
+        {
+          "text": "PostgreSQL documentation on replication",
+          "href": "https://www.postgresql.org/docs/current/runtime-config-replication.html"
+        },
+        {
+          "text": "Docker documentation",
+          "href": "/docs/getting-started/setup-openfga/docker#using-postgres"
+        },
+        {
+          "text": "Docker documentation",
+          "href": "/docs/getting-started/setup-openfga/docker#using-mysql"
+        },
+        {
+          "text": "Docker documentation",
+          "href": "/docs/getting-started/setup-openfga/docker#using-sqlite"
+        },
+        {
+          "text": "Docker documentation",
+          "href": "/docs/getting-started/setup-openfga/docker#pre-shared-key-authentication"
+        },
+        {
+          "text": "Docker documentation",
+          "href": "/docs/getting-started/setup-openfga/docker#oidc-authentication"
+        },
+        {
+          "text": "pprof",
+          "href": "https://github.com/google/pprof/blob/main/doc/README.md"
+        },
+        {
+          "text": "--experimentals",
+          "href": "/docs/getting-started/setup-openfga/configuration#OPENFGA_EXPERIMENTALS"
+        },
+        {
+          "text": "access control",
+          "href": "/docs/getting-started/setup-openfga/access-control"
+        },
+        {
+          "text": "docker-compose.yaml",
+          "href": "https://github.com/openfga/openfga/blob/main/docker-compose.yaml"
+        },
+        {
+          "text": "OpenTelemetry Collector",
+          "href": "https://opentelemetry.io/docs/collector/"
+        },
+        {
+          "text": "Prometheus data format",
+          "href": "https://prometheus.io/docs/concepts/data_model/"
+        },
+        {
+          "text": "OTLP data format",
+          "href": "https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md"
+        },
+        {
+          "text": "Configuration Options",
+          "href": "/docs/getting-started/setup-openfga/configuration"
+        },
+        {
+          "text": "Running OpenFGA in Production",
+          "href": "/docs/best-practices/running-in-production"
+        }
+      ],
+      "linkOverrides": [],
+      "requiredImages": [],
+      "requiredAnchors": [
+        "setting-up-read-replicas",
+        "synchronous-vs-asynchronous-replication",
+        "consistency-preferences",
+        "best-practices",
+        "example-postgresql-replication-setup"
+      ],
+      "headings": [
+        {
+          "level": "h1",
+          "text": "Configuring OpenFGA"
+        },
+        {
+          "level": "h2",
+          "id": "configuring-data-storage",
+          "text": "Configuring data storage"
+        },
+        {
+          "level": "h3",
+          "id": "postgres",
+          "text": "Postgres"
+        },
+        {
+          "level": "h4",
+          "id": "postgresql-read-replicas-configuration",
+          "text": "PostgreSQL Read Replicas Configuration"
+        },
+        {
+          "level": "h5",
+          "id": "setting-up-read-replicas",
+          "text": "Setting Up Read Replicas"
+        },
+        {
+          "level": "h5",
+          "id": "synchronous-vs-asynchronous-replication",
+          "text": "Synchronous vs Asynchronous Replication"
+        },
+        {
+          "level": "h5",
+          "id": "consistency-preferences",
+          "text": "Consistency Preferences"
+        },
+        {
+          "level": "h5",
+          "id": "best-practices",
+          "text": "Best Practices"
+        },
+        {
+          "level": "h5",
+          "id": "example-postgresql-replication-setup",
+          "text": "Example PostgreSQL Replication Setup"
+        },
+        {
+          "level": "h3",
+          "id": "mysql",
+          "text": "MySQL"
+        },
+        {
+          "level": "h3",
+          "id": "sqlite",
+          "text": "SQLite"
+        },
+        {
+          "level": "h2",
+          "id": "configuring-authentication",
+          "text": "Configuring authentication"
+        },
+        {
+          "level": "h3",
+          "id": "pre-shared-key-authentication",
+          "text": "Pre-shared key authentication"
+        },
+        {
+          "level": "h3",
+          "id": "oidc",
+          "text": "OIDC"
+        },
+        {
+          "level": "h2",
+          "id": "profiler-pprof",
+          "text": "Profiler (pprof)"
+        },
+        {
+          "level": "h2",
+          "id": "health-check",
+          "text": "Health check"
+        },
+        {
+          "level": "h2",
+          "id": "experimental-features",
+          "text": "Experimental features"
+        },
+        {
+          "level": "h2",
+          "id": "telemetry",
+          "text": "Telemetry"
+        },
+        {
+          "level": "h2",
+          "id": "metrics",
+          "text": "Metrics"
+        },
+        {
+          "level": "h2",
+          "id": "tracing",
+          "text": "Tracing"
+        },
+        {
+          "level": "h2",
+          "id": "logging",
+          "text": "Logging"
+        },
+        {
+          "level": "h2",
+          "id": "related-sections",
+          "text": "Related Sections"
+        }
+      ],
+      "requiredComponents": [
+        {
+          "name": "span",
+          "props": {
+            "id": "setting-up-read-replicas"
+          }
+        },
+        {
+          "name": "span",
+          "props": {
+            "id": "synchronous-vs-asynchronous-replication"
+          }
+        },
+        {
+          "name": "span",
+          "props": {
+            "id": "consistency-preferences"
+          }
+        },
+        {
+          "name": "span",
+          "props": {
+            "id": "best-practices"
+          }
+        },
+        {
+          "name": "span",
+          "props": {
+            "id": "example-postgresql-replication-setup"
+          }
+        }
+      ],
+      "tabGroups": [
+        {
+          "tabs": [
+            {
+              "title": "Configuration File",
+              "selected": true
+            },
+            {
+              "title": "Environment Variables",
+              "selected": false
+            }
+          ]
+        },
+        {
+          "tabs": [
+            {
+              "title": "Configuration File",
+              "selected": true
+            },
+            {
+              "title": "Environment Variables",
+              "selected": false
+            }
+          ]
+        },
+        {
+          "tabs": [
+            {
+              "title": "cURL",
+              "selected": true
+            },
+            {
+              "title": "gRPC",
+              "selected": false
+            }
+          ]
+        }
+      ],
+      "tables": [
+        {
+          "headers": [
+            "Name",
+            "Description",
+            "OpenFGA Version"
+          ],
+          "rows": [
+            [
+              "otel-metrics",
+              "Enables support for exposing OpenFGA metrics through OpenTelemetry",
+              "0.3.2 <= v < 0.3.5"
+            ],
+            [
+              "list-objects",
+              "Enables ListObjects API",
+              "0.2.0 <= v < 0.3.3"
+            ],
+            [
+              "check-query-cache",
+              "Enables caching of check subproblem result",
+              "1.3.1 <= v < 1.3.6"
+            ],
+            [
+              "enable-conditions",
+              "Enables conditional relationship tuples",
+              "1.3.8 <= v < 1.4.0"
+            ],
+            [
+              "enable-modular-models",
+              "Enables modular authorization modules",
+              "1.5.1 <= v < 1.5.3"
+            ],
+            [
+              "enable-list-users",
+              "Enables new ListUsers API",
+              "1.5.4 <= v < 1.5.6"
+            ],
+            [
+              "enable-consistency-params",
+              "Enables consistency options",
+              "1.5.6 <= v < 1.6.0"
+            ],
+            [
+              "enable-check-optimizations",
+              "Enables performance optimization on Check",
+              "1.6.2 <= v"
+            ],
+            [
+              "enable-access-control",
+              "Enables the ability to configure and setup access control",
+              "1.7.0 <= v"
+            ]
+          ]
+        }
+      ],
+      "code": [
+        {
+          "language": "bash",
+          "body": "openfga migrate \\\n    --datastore-engine postgres \\\n    --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'\n\nopenfga run \\\n    --datastore-engine postgres \\\n    --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "openfga run \\\n    --datastore-engine postgres \\\n    --datastore-uri 'postgres://postgres:password@primary:5432/postgres?sslmode=disable' \\\n    --datastore-secondary-uri 'postgres://postgres:password@replica:5432/postgres?sslmode=disable'",
+          "comparison": "exact"
+        },
+        {
+          "language": "javascript",
+          "body": "// Example: Reading with higher consistency\n  const { allowed } = await fgaClient.check(\n      {  user: \"user:anne\", relation: \"can_view\", object: \"document:roadmap\"},\n      {  consistency: ConsistencyPreference.HigherConsistency }\n  );",
+          "comparison": "exact"
+        },
+        {
+          "language": "text",
+          "body": "wal_level = replica\nmax_wal_senders = 3\nwal_keep_size = 64MB\nsynchronous_commit = on  # for synchronous replication\nsynchronous_standby_names = 'replica1'  # for synchronous replication",
+          "comparison": "exact"
+        },
+        {
+          "language": "text",
+          "body": "host replication replicator replica_ip/32 md5",
+          "comparison": "exact"
+        },
+        {
+          "language": "text",
+          "body": "hot_standby = on",
+          "comparison": "exact"
+        },
+        {
+          "language": "text",
+          "body": "standby_mode = 'on'\nprimary_conninfo = 'host=primary_ip port=5432 user=replicator'",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "openfga migrate \\\n    --datastore-engine mysql \\\n    --datastore-uri 'root:secret@tcp(mysql:3306)/openfga?parseTime=true'\n\nopenfga run \\\n    --datastore-engine mysql \\\n    --datastore-uri 'root:secret@tcp(mysql:3306)/openfga?parseTime=true'",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "openfga migrate\n    --datastore-engine sqlite \\\n    --datastore-uri 'file:/path/to/openfga.db'\n\nopenfga run\n    --datastore-engine sqlite \\\n    --datastore-uri 'file:/path/to/openfga.db'",
+          "comparison": "exact"
+        },
+        {
+          "language": "yaml",
+          "body": "authn:\n  method: preshared\n  preshared:\n    keys: [\"key1\", \"key2\"]\nhttp:\n  tls:\n    enabled: true\n    cert: /Users/myuser/key/server.crt\n    key: /Users/myuser/key/server.key",
+          "comparison": "exact"
+        },
+        {
+          "language": "yaml",
+          "body": "authn:\n  method: oidc\n  oidc:\n    issuer: \"oidc-issuer\" # required\n    issuerAliases: \"oidc-issuer-1\", \"oidc-issuer-2\" # optional\n    audience: \"oidc-audience\" # required\n    subjects: \"valid-subject-1\", \"valid-subject-2\" # optional\n\nhttp:\n  tls:\n    enabled: true\n    cert: /Users/myuser/key/server.crt\n    key: /Users/myuser/key/server.key",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "openfga run --profiler-enabled",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "openfga run --profiler-enabled --profiler-addr :3002",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3002:3002 openfga/openfga run --profiler-enabled --profiler-addr :3002",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "curl -X GET $FGA_API_URL/healthz\n\n# {\"status\":\"SERVING\"}",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "# See https://github.com/fullstorydev/grpcurl#installation\ngrpcurl -plaintext $FGA_API_URL grpc.health.v1.Health/Check\n\n# {\"status\":\"SERVING\"}",
+          "comparison": "exact"
+        },
+        {
+          "language": "text",
+          "body": "openfga run --experimentals=\"feature1, feature2\"",
+          "comparison": "exact"
+        },
+        {
+          "language": "text",
+          "body": "openfga -e OPENFGA_EXPERIMENTALS=\"feature1, feature2\" run",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "openfga run --metrics-addr=0.0.0.0:2114",
+          "comparison": "exact"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/setup-openfga/docker-setup.mdx",
+      "native": "docs/getting-started/setup-openfga/docker.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/docker",
+      "publicSourceURL": "https://github.com/openfga/openfga.dev/blob/main/docs/content/getting-started/setup-openfga/docker-setup.mdx",
+      "capturedAt": "2026-09-17T10:02:25.043Z",
+      "requiredText": [
+        "Setup OpenFGA with Docker",
+        "This article explains how to run your own OpenFGA server using Docker. To learn the different ways to configure OpenFGA check Configuring OpenFGA.",
+        "Step by step",
+        "If you want to run OpenFGA locally as a Docker container, follow these steps:",
+        "Install Docker (if not already installed).",
+        "Run docker pull openfga/openfga to get the latest docker image.",
+        "Run docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 openfga/openfga run.",
+        "This will start an HTTP server and gRPC server with the default configuration options. Port 8080 is used to serve the HTTP API, 8081 is used to serve the gRPC API, and 3000 is used for the Playground.",
+        "Using Postgres",
+        "To run OpenFGA and Postgres in containers, you can create a new network to make communication between containers simpler:",
+        "You can then start Postgres in the network you created above:",
+        "You should now have Postgres running in a container in the openfga network. However, it will not have the tables required for running OpenFGA. You can use the migrate command to create the tables. Using the OpenFGA container, this will look like:",
+        "Finally, start OpenFGA:",
+        "Copy the below code block into a local file named: docker-compose.yaml",
+        "In a terminal, navigate to that directory and run:",
+        "This will start the Postgres database, run openfga migrate to configure the database and finally start the OpenFGA server.",
+        "Using MySQL",
+        "We first make a network:",
+        "Then, start MySQL in the network you created above:",
+        "You should now have MySQL running in a container in the openfga network. But we still have to migrate all the tables to be able to run OpenFGA. You can use the migrate command to create the tables. Using the OpenFGA container, this will look like:",
+        "This will start the MySQL database, run openfga migrate to configure the database and finally start the OpenFGA server.",
+        "Using SQLite",
+        "Then, create a volume to hold the openfga database:",
+        "Next you have to migrate all the tables to be able to run OpenFGA. You can use the migrate command to create the tables. Using the OpenFGA container, this will look like:",
+        "This will create a new openfga volume to store the SQLite database, run openfga migrate to configure the database and finally start the OpenFGA server.",
+        "Pre-shared key authentication",
+        "To configure with pre-shared authentication and enabling TLS in http server with Docker.",
+        "Copy the certificate and key files to your Docker container.",
+        "Run with the following command:",
+        "OIDC authentication",
+        "To configure with OIDC authentication and enabling TLS in http server with Docker.",
+        "Copy the certificate and key files to your docker container.",
+        "Run the following command",
+        "Enabling profiling",
+        "If you are enabling profiling, make sure you enable the corresponding port in docker. The default port is 3001, but if you need to serve the profiler on a different port, you can do so by specifying the --profiler-addr flag. For example:",
+        "Related sections",
+        "Check the following sections for more on how to use OpenFGA.",
+        "Running OpenFGA in Production",
+        "Learn the best practices of running OpenFGA in a production environment"
+      ],
+      "requiredLinks": [
+        {
+          "text": "Configuring OpenFGA",
+          "href": "/docs/getting-started/setup-openfga/configure-openfga"
+        },
+        {
+          "text": "Install Docker",
+          "href": "https://docs.docker.com/get-docker/"
+        },
+        {
+          "text": "Playground",
+          "href": "/docs/getting-started/setup-openfga/playground"
+        },
+        {
+          "text": "Running OpenFGA in Production",
+          "href": "/docs/best-practices/running-in-production"
+        }
+      ],
+      "linkOverrides": [],
+      "requiredImages": [],
+      "requiredAnchors": [],
+      "headings": [
+        {
+          "level": "h1",
+          "text": "Setup OpenFGA with Docker"
+        },
+        {
+          "level": "h2",
+          "id": "step-by-step",
+          "text": "Step by step"
+        },
+        {
+          "level": "h2",
+          "id": "using-postgres",
+          "text": "Using Postgres"
+        },
+        {
+          "level": "h2",
+          "id": "using-mysql",
+          "text": "Using MySQL"
+        },
+        {
+          "level": "h2",
+          "id": "using-sqlite",
+          "text": "Using SQLite"
+        },
+        {
+          "level": "h2",
+          "id": "pre-shared-key-authentication",
+          "text": "Pre-shared key authentication"
+        },
+        {
+          "level": "h2",
+          "id": "oidc-authentication",
+          "text": "OIDC authentication"
+        },
+        {
+          "level": "h2",
+          "id": "enabling-profiling",
+          "text": "Enabling profiling"
+        },
+        {
+          "level": "h2",
+          "id": "related-sections",
+          "text": "Related sections"
+        }
+      ],
+      "requiredComponents": [],
+      "tabGroups": [
+        {
+          "tabs": [
+            {
+              "title": "Docker",
+              "selected": true
+            },
+            {
+              "title": "Docker Compose",
+              "selected": false
+            }
+          ]
+        },
+        {
+          "tabs": [
+            {
+              "title": "Docker",
+              "selected": true
+            },
+            {
+              "title": "Docker Compose",
+              "selected": false
+            }
+          ]
+        },
+        {
+          "tabs": [
+            {
+              "title": "Docker",
+              "selected": true
+            },
+            {
+              "title": "Docker Compose",
+              "selected": false
+            }
+          ]
+        }
+      ],
+      "tables": [],
+      "code": [
+        {
+          "language": "bash",
+          "body": "docker network create openfga",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "docker run -d --name postgres --network=openfga -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password postgres:17",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "docker run --rm --network=openfga openfga/openfga migrate \\\n    --datastore-engine postgres \\\n    --datastore-uri \"postgres://postgres:password@postgres:5432/postgres?sslmode=disable\"",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \\\n    --datastore-engine postgres \\\n    --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'",
+          "comparison": "exact"
+        },
+        {
+          "language": "yaml",
+          "body": "networks:\n  openfga:\n\nservices:\n  postgres:\n    image: postgres:17\n    container_name: postgres\n    networks:\n      - openfga\n    ports:\n      - \"5432:5432\"\n    environment:\n      - POSTGRES_USER=postgres\n      - POSTGRES_PASSWORD=password\n    healthcheck:\n      test: [ \"CMD-SHELL\", \"pg_isready -U postgres\" ]\n      interval: 5s\n      timeout: 5s\n      retries: 5\n\n  migrate:\n    depends_on:\n      postgres:\n        condition: service_healthy\n    image: openfga/openfga:latest\n    container_name: migrate\n    command: migrate\n    environment:\n      - OPENFGA_DATASTORE_ENGINE=postgres\n      - OPENFGA_DATASTORE_URI=postgres://postgres:password@postgres:5432/postgres?sslmode=disable\n    networks:\n      - openfga\n\n  openfga:\n    depends_on:\n      migrate:\n        condition: service_completed_successfully\n    image: openfga/openfga:latest\n    container_name: openfga\n    environment:\n      - OPENFGA_DATASTORE_ENGINE=postgres\n      - OPENFGA_DATASTORE_URI=postgres://postgres:password@postgres:5432/postgres?sslmode=disable\n      - OPENFGA_LOG_FORMAT=json\n    command: run\n    networks:\n      - openfga\n    ports:\n      # Needed for the http server\n      - \"8080:8080\"\n      # Needed for the grpc server (if used)\n      - \"8081:8081\"\n      # Needed for the playground (Do not enable in prod!)\n      - \"3000:3000\"",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "docker-compose up",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "docker network create openfga",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "docker run -d --name mysql --network=openfga -e MYSQL_ROOT_PASSWORD=secret -e MYSQL_DATABASE=openfga mysql:8",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "docker run --rm --network=openfga openfga/openfga migrate \\\n    --datastore-engine mysql \\\n    --datastore-uri 'root:secret@tcp(mysql:3306)/openfga?parseTime=true'",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \\\n    --datastore-engine mysql \\\n    --datastore-uri 'root:secret@tcp(mysql:3306)/openfga?parseTime=true'",
+          "comparison": "exact"
+        },
+        {
+          "language": "yaml",
+          "body": "networks:\n  openfga:\n\nservices:\n  mysql:\n    image: mysql:8\n    container_name: mysql\n    networks:\n      - openfga\n    ports:\n      - \"3306:3306\"\n    environment:\n      - MYSQL_ROOT_PASSWORD=secret\n      - MYSQL_DATABASE=openfga\n    healthcheck:\n      test: [\"CMD\", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]\n      timeout: 20s\n      retries: 5\n\n  migrate:\n    depends_on:\n        mysql:\n            condition: service_healthy\n    image: openfga/openfga:latest\n    container_name: migrate\n    command: migrate\n    environment:\n      - OPENFGA_DATASTORE_ENGINE=mysql\n      - OPENFGA_DATASTORE_URI=root:secret@tcp(mysql:3306)/openfga?parseTime=true\n    networks:\n      - openfga\n\n  openfga:\n    depends_on:\n      migrate:\n        condition: service_completed_successfully\n    image: openfga/openfga:latest\n    container_name: openfga\n    environment:\n      - OPENFGA_DATASTORE_ENGINE=mysql\n      - OPENFGA_DATASTORE_URI=root:secret@tcp(mysql:3306)/openfga?parseTime=true\n      - OPENFGA_LOG_FORMAT=json\n    command: run\n    networks:\n      - openfga\n    ports:\n      # Needed for the http server\n      - \"8080:8080\"\n      # Needed for the grpc server (if used)\n      - \"8081:8081\"\n      # Needed for the playground (Do not enable in prod!)\n      - \"3000:3000\"",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "docker-compose up",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "docker network create openfga",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "docker volume create openfga",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "docker run --rm --network=openfga \\\n    -v openfga:/home/nonroot \\\n    -u nonroot \\\n    openfga/openfga migrate \\\n    --datastore-engine sqlite \\\n    --datastore-uri 'file:/home/nonroot/openfga.db'",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "docker run --name openfga --network=openfga \\\n    -p 3000:3000 -p 8080:8080 -p 8081:8081 \\\n    -v openfga:/home/nonroot \\\n    -u nonroot \\\n    openfga/openfga run \\\n    --datastore-engine sqlite \\\n    --datastore-uri 'file:/home/nonroot/openfga.db'",
+          "comparison": "exact"
+        },
+        {
+          "language": "yaml",
+          "body": "networks:\n  openfga:\n\nvolumes:\n  openfga:\n\nservices:\n  migrate:\n    image: openfga/openfga:latest\n    container_name: migrate\n    command: migrate\n    user: nonroot\n    environment:\n      - OPENFGA_DATASTORE_ENGINE=sqlite\n      - OPENFGA_DATASTORE_URI=file:/home/nonroot/openfga.db\n    networks:\n      - openfga\n    volumes:\n      - openfga:/home/nonroot\n\n  openfga:\n    depends_on:\n      migrate:\n        condition: service_completed_successfully\n    image: openfga/openfga:latest\n    container_name: openfga\n    user: nonroot\n    environment:\n      - OPENFGA_DATASTORE_ENGINE=sqlite\n      - OPENFGA_DATASTORE_URI=file:/home/nonroot/openfga.db\n      - OPENFGA_LOG_FORMAT=json\n    command: run\n    networks:\n      - openfga\n    volumes:\n      - openfga:/home/nonroot\n    ports:\n      # Needed for the http server\n      - \"8080:8080\"\n      # Needed for the grpc server (if used)\n      - \"8081:8081\"\n      # Needed for the playground (Do not enable in prod!)\n      - \"3000:3000\"",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "docker-compose up",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \\\n    --authn-method=preshared \\\n    --authn-preshared-keys=\"key1,key2\" \\\n    --http-tls-enabled=true \\\n    --http-tls-cert=\"/Users/myuser/key/server.crt\" \\\n    --http-tls-key=\"/Users/myuser/key/server.key\"",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \\\n    --authn-method=oidc \\\n    --authn-oidc-issuer=\"oidc-issuer\" \\\n    --authn-oidc-audience=\"oidc-audience\" \\\n    --http-tls-enabled=true \\\n    --http-tls-cert=\"/Users/myuser/key/server.crt\" \\\n    --http-tls-key=\"/Users/myuser/key/server.key\"",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3002:3002 openfga/openfga run --profiler-enabled --profiler-addr :3002",
+          "comparison": "exact"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/setup-openfga/kubernetes-setup.mdx",
+      "native": "docs/getting-started/setup-openfga/kubernetes.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/kubernetes",
+      "publicSourceURL": "https://github.com/openfga/openfga.dev/blob/main/docs/content/getting-started/setup-openfga/kubernetes-setup.mdx",
+      "capturedAt": "2026-09-17T10:02:25.650Z",
+      "requiredText": [
+        "Setup OpenFGA with Kubernetes",
+        "To deploy OpenFGA into a Kubernetes environment you can use the official OpenFGA Helm chart. Please refer to the official documentation on Artifact Hub for the Helm chart for more instructions."
+      ],
+      "requiredLinks": [
+        {
+          "text": "OpenFGA Helm chart",
+          "href": "https://artifacthub.io/packages/helm/openfga/openfga"
+        }
+      ],
+      "linkOverrides": [],
+      "requiredImages": [],
+      "requiredAnchors": [],
+      "headings": [
+        {
+          "level": "h1",
+          "text": "Setup OpenFGA with Kubernetes"
+        }
+      ],
+      "requiredComponents": [],
+      "tabGroups": [],
+      "tables": [],
+      "code": []
+    },
+    {
+      "source": "getting-started/setup-openfga/overview.mdx",
+      "native": "docs/getting-started/setup-openfga/overview.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/overview",
+      "publicSourceURL": "https://github.com/openfga/openfga.dev/blob/main/docs/content/getting-started/setup-openfga/overview.mdx",
+      "capturedAt": "2026-09-17T10:02:25.712Z",
+      "requiredText": [
+        "Setup OpenFGA",
+        "Follow the guides below to set up an OpenFGA server.",
+        "Configure an OpenFGA Server",
+        "How to setup an OpenFGA server.",
+        "Docker Setup Guide",
+        "How to setup an OpenFGA server with Docker.",
+        "Kubernetes Setup Guide",
+        "How to setup an OpenFGA server with Kubernetes.",
+        "Setup Access Control",
+        "How to enable and setup the built-in access control OpenFGA server (experimental)."
+      ],
+      "requiredLinks": [
+        {
+          "text": "Configure an OpenFGA Server",
+          "href": "/docs/getting-started/setup-openfga/configure-openfga"
+        },
+        {
+          "text": "Docker Setup Guide",
+          "href": "/docs/getting-started/setup-openfga/docker"
+        },
+        {
+          "text": "Kubernetes Setup Guide",
+          "href": "/docs/getting-started/setup-openfga/kubernetes"
+        },
+        {
+          "text": "Setup Access Control",
+          "href": "/docs/getting-started/setup-openfga/access-control"
+        }
+      ],
+      "linkOverrides": [],
+      "requiredImages": [],
+      "requiredAnchors": [],
+      "headings": [
+        {
+          "level": "h1",
+          "text": "Setup OpenFGA"
+        }
+      ],
+      "requiredComponents": [],
+      "tabGroups": [],
+      "tables": [],
+      "code": []
+    },
+    {
+      "source": "getting-started/setup-openfga/playground.mdx",
+      "native": "docs/getting-started/setup-openfga/playground.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/playground",
+      "publicSourceURL": "https://github.com/openfga/openfga.dev/blob/main/docs/content/getting-started/setup-openfga/playground.mdx",
+      "capturedAt": "2026-09-17T10:02:26.327Z",
+      "requiredText": [
+        "Using the OpenFGA Playground",
+        "The Playground facilitates rapid development by allowing you to visualize and model your application's authorization models and manage relationship tuples with a locally running OpenFGA instance.",
+        "It is enabled on port 3000 by default and accessible at http://localhost:3000/playground.",
+        "The Playground is designed for early prototyping and learning. It has several limitations:",
+        "It works by embedding the public Playground website in an <iframe>. To do this securely, the public Playground configures its Content Security Policies to enable running it from localhost.",
+        "You can't run the Playground in a host different than localhost.",
+        "It does not support OIDC authentication.",
+        "It loads up to 100 tuples.",
+        "It does not support conditional tuples or contextual tuples.",
+        "We have the intention to rewrite the Playground code and open source it, which will make it possible to overcome some of those limitations.",
+        "However, we recommend that for managing a production OpenFGA deployment, you use the Visual Studio Code integration, OpenFGA CLI, combined with the ability to specify a model + tuples + assertions in .fga.yaml files.",
+        "Running the Playground in a different port",
+        "You can change the playground port using the --playground-port flag. For example,",
+        "Disabling the Playground",
+        "As the Playground allows performing any action in the OpenFGA server, it's not recommended to have it enabled in production deployments.",
+        "To run OpenFGA with the Playground disabled, provide the --playground-enabled=false flag."
+      ],
+      "requiredLinks": [
+        {
+          "text": "http://localhost:3000/playground",
+          "href": "http://localhost:3000/playground"
+        },
+        {
+          "text": "Playground website",
+          "href": "https://play.fga.dev"
+        },
+        {
+          "text": "the intention",
+          "href": "https://github.com/openfga/roadmap/issues/7"
+        },
+        {
+          "text": "Visual Studio Code integration",
+          "href": "https://github.com/openfga/vscode-ext"
+        },
+        {
+          "text": "OpenFGA CLI",
+          "href": "https://github.com/openfga/cli"
+        },
+        {
+          "text": ".fga.yaml",
+          "href": "https://github.com/openfga/cli#run-tests-on-an-authorization-model"
+        }
+      ],
+      "linkOverrides": [],
+      "requiredImages": [],
+      "requiredAnchors": [],
+      "headings": [
+        {
+          "level": "h1",
+          "text": "Using the OpenFGA Playground"
+        },
+        {
+          "level": "h2",
+          "id": "running-the-playground-in-a-different-port",
+          "text": "Running the Playground in a different port"
+        },
+        {
+          "level": "h2",
+          "id": "disabling-the-playground",
+          "text": "Disabling the Playground"
+        }
+      ],
+      "requiredComponents": [],
+      "tabGroups": [],
+      "tables": [],
+      "code": [
+        {
+          "language": "bash",
+          "body": "openfga run --playground-enabled --playground-port 3001",
+          "comparison": "exact"
+        },
+        {
+          "language": "bash",
+          "body": "openfga run --playground-enabled=false",
+          "comparison": "exact"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/setup-openfga/reporting-runtime-issues.mdx",
+      "native": "docs/getting-started/setup-openfga/reporting-runtime-issues.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/reporting-runtime-issues",
+      "publicSourceURL": "https://github.com/openfga/openfga.dev/blob/main/docs/content/getting-started/setup-openfga/reporting-runtime-issues.mdx",
+      "capturedAt": "2026-09-17T10:02:26.374Z",
+      "requiredText": [
+        "Reporting Runtime Issues",
+        "If you're experiencing runtime issues with OpenFGA, such as unexpected latency or runtime errors, gathering the right information upfront will help us diagnose the problem. The more details you can share, the faster we can help.",
+        "This guide outlines the key details necessary to investigate runtime issues.",
+        "Full Reproduction",
+        "The best way to help us diagnose your issue is to provide everything needed to fully reproduce the problem:",
+        "Authorization model (.fga file)",
+        "Relationship tuples (export via the OpenFGA CLI)",
+        "Script or steps to reproduce the problem",
+        "With these three items, we can recreate your exact scenario in our own environment, which speeds up diagnosis and resolution.",
+        "If you cannot share your real model and tuples due to data sensitivity, consider creating a synthetic reproduction.",
+        "Build a simplified model and generate mock tuples that demonstrate the same characteristics. This approach still allows us to reproduce the issue without exposing sensitive data.",
+        "If you can provide this information, please see the sections below for details on how to export and share it. If you cannot share this level of detail due to data sensitivity or other constraints, don't worry—the following sections detail alternative information that will still help us investigate the issue.",
+        "Runtime Investigation Requirements",
+        "Timeline Of Events",
+        "When did the issue start?",
+        "Were there any changes made to your OpenFGA setup around that time? (e.g., model changes, configuration changes, infrastructure changes)",
+        "Is the issue consistent or intermittent? If intermittent, how often does it occur?",
+        "What troubleshooting have you already attempted?",
+        "Authorization Data",
+        "Authorization Model",
+        "Please provide your current authorization model (.fga file). This helps us understand the complexity of your relationships and potential performance implications.",
+        "Relationship Tuples",
+        "The best-case scenario is if you can share an export of your relationship tuples. You can get this by running:",
+        "Alternative: Simplified Reproduction",
+        "If you can't share your real tuples due to data sensitivity, consider creating a mock dataset that reproduces the same issue. This allows us to reproduce the problem without handling sensitive information. Generate fake tuples with similar:",
+        "Volume (same number of tuples)",
+        "Cardinality patterns (i.e. how many or how few objects are related to another object)",
+        "Structure (same types and relations)",
+        "As a last resort, if you can't share tuples directly (real or mock), please provide:",
+        "The cardinality distribution for your most common object type/relation pairs",
+        "Approximate order of magnitude (hundreds, thousands, millions) counts are fine—we mainly need to understand the scale and distribution of your data",
+        "OpenFGA Configuration",
+        "Version Information",
+        "Which version of OpenFGA are you running? This is critical as performance characteristics can vary significantly between versions.",
+        "Configuration Settings",
+        "Please share your configuration settings (you should omit any secrets). You can find more information on configuration settings in the Configure OpenFGA documentation.",
+        "Key settings we're interested in include:",
+        "Cache configuration",
+        "Concurrency limits",
+        "Database connection pool settings",
+        "Any experimental flags you've enabled",
+        "Infrastructure Details",
+        "OpenFGA nodes: How many OpenFGA nodes/pods are you running? What are the CPU and RAM specs for each?",
+        "Database: Which database are you using (e.g., PostgreSQL, MySQL)? What are its specs (e.g., instance type, vCPU, RAM)?",
+        "Testing Scenario",
+        "Understanding how you're testing helps us reproduce and diagnose the issue. Ideally, this would be part of your full reproduction package.",
+        "Load Testing Script",
+        "If you're using a load-testing script, please share it. This allows us to reproduce your scenario exactly and is one of the three key components needed for full reproduction.",
+        "Request Examples",
+        "If you don't have a script or cannot share your full reproduction, please provide example requests and responses for the calls that are problematic:",
+        "Check API calls",
+        "Write API calls",
+        "ListObjects API calls",
+        "ListUsers API calls",
+        "Other relevant API calls",
+        "Performance Expectations",
+        "What are your target p95/p99 response times for these queries? Understanding your requirements helps us determine if there's a performance issue or if expectations need adjustment.",
+        "Observability",
+        "If you cannot provide a full reproduction, observability data becomes especially valuable for diagnosing your issue.",
+        "Screenshots from your monitoring dashboards are incredibly helpful! We're most interested in the following metrics, grouped by request type:",
+        "Key Metrics",
+        "Request latency: p50, p95, p99 percentiles",
+        "Database query counts: p50, p95 percentiles",
+        "Requests Per Second (RPS): Overall throughput",
+        "Database connections: Active and idle connections",
+        "Cache hit ratio: Effectiveness of caching",
+        "Goroutine count: Concurrency patterns",
+        "Traces",
+        "If you have a specific query that is consistently slow, a trace for that request is the single most valuable piece of information you can provide. Traces allow us to see exactly where time is being spent in the request lifecycle.",
+        "Logs",
+        "OpenFGA logs are critical for diagnosing runtime errors and understanding system behavior. When you can't reproduce the issue, logs can help us diagnose the problem. Please include all logs from the moment the OpenFGA instance is launched, using the default logging verbosity configuration.",
+        "How to Share This Information",
+        "When reporting an issue, please:",
+        "Create a GitHub issue in the OpenFGA repository",
+        "Include as many of the above details as possible",
+        "If sharing sensitive information, consider creating sanitized/anonymized versions of your data",
+        "If you prefer to share the data confidentially, send it by email to contact@openfga.dev, or suggest an alternative method on the issue",
+        "The best way to help us diagnose your issue is to provide a full reproduction (model + tuples + script). If that's not possible, providing as much of the information above as you can will still help us investigate and resolve your issue.",
+        "Related Sections",
+        "Check the following sections for more on how to configure OpenFGA.",
+        "Configuring OpenFGA",
+        "Learn more about the different ways to configure OpenFGA",
+        "Running OpenFGA in Production",
+        "Learn the best practices of running OpenFGA in a production environment"
+      ],
+      "requiredLinks": [
+        {
+          "text": "OpenFGA CLI",
+          "href": "https://github.com/openfga/cli"
+        },
+        {
+          "text": "Configure OpenFGA documentation",
+          "href": "/docs/getting-started/setup-openfga/configure-openfga"
+        },
+        {
+          "text": "OpenFGA repository",
+          "href": "https://github.com/openfga/openfga/issues"
+        },
+        {
+          "text": "contact@openfga.dev",
+          "href": "mailto:contact@openfga.dev"
+        },
+        {
+          "text": "Configuring OpenFGA",
+          "href": "/docs/getting-started/setup-openfga/configure-openfga"
+        },
+        {
+          "text": "Running OpenFGA in Production",
+          "href": "/docs/best-practices/running-in-production"
+        }
+      ],
+      "linkOverrides": [],
+      "requiredImages": [],
+      "requiredAnchors": [],
+      "headings": [
+        {
+          "level": "h1",
+          "text": "Reporting Runtime Issues"
+        },
+        {
+          "level": "h2",
+          "id": "full-reproduction",
+          "text": "Full Reproduction"
+        },
+        {
+          "level": "h2",
+          "id": "runtime-investigation-requirements",
+          "text": "Runtime Investigation Requirements"
+        },
+        {
+          "level": "h3",
+          "id": "timeline-of-events",
+          "text": "Timeline Of Events"
+        },
+        {
+          "level": "h3",
+          "id": "authorization-data",
+          "text": "Authorization Data"
+        },
+        {
+          "level": "h4",
+          "id": "authorization-model",
+          "text": "Authorization Model"
+        },
+        {
+          "level": "h4",
+          "id": "relationship-tuples",
+          "text": "Relationship Tuples"
+        },
+        {
+          "level": "h4",
+          "id": "alternative-simplified-reproduction",
+          "text": "Alternative: Simplified Reproduction"
+        },
+        {
+          "level": "h3",
+          "id": "openfga-configuration",
+          "text": "OpenFGA Configuration"
+        },
+        {
+          "level": "h4",
+          "id": "version-information",
+          "text": "Version Information"
+        },
+        {
+          "level": "h4",
+          "id": "configuration-settings",
+          "text": "Configuration Settings"
+        },
+        {
+          "level": "h4",
+          "id": "infrastructure-details",
+          "text": "Infrastructure Details"
+        },
+        {
+          "level": "h3",
+          "id": "testing-scenario",
+          "text": "Testing Scenario"
+        },
+        {
+          "level": "h4",
+          "id": "load-testing-script",
+          "text": "Load Testing Script"
+        },
+        {
+          "level": "h4",
+          "id": "request-examples",
+          "text": "Request Examples"
+        },
+        {
+          "level": "h4",
+          "id": "performance-expectations",
+          "text": "Performance Expectations"
+        },
+        {
+          "level": "h3",
+          "id": "observability",
+          "text": "Observability"
+        },
+        {
+          "level": "h4",
+          "id": "key-metrics",
+          "text": "Key Metrics"
+        },
+        {
+          "level": "h4",
+          "id": "traces",
+          "text": "Traces"
+        },
+        {
+          "level": "h4",
+          "id": "logs",
+          "text": "Logs"
+        },
+        {
+          "level": "h3",
+          "id": "how-to-share-this-information",
+          "text": "How to Share This Information"
+        },
+        {
+          "level": "h2",
+          "id": "related-sections",
+          "text": "Related Sections"
+        }
+      ],
+      "requiredComponents": [],
+      "tabGroups": [],
+      "tables": [],
+      "code": [
+        {
+          "language": "bash",
+          "body": "fga tuple read --output-format=csv --max-pages 0 > tuples.csv",
+          "comparison": "exact"
+        }
+      ]
+    }
+  ]
+}

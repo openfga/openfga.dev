@@ -3,8 +3,6 @@ title: Configuring OpenFGA
 description: Configuring an OpenFGA Server
 ---
 
-# Configuring OpenFGA
-
 Refer to the [OpenFGA Getting Started](https://github.com/openfga/openfga?tab=readme-ov-file#getting-started) for info on the various ways to install OpenFGA.
 
 The instructions below assume OpenFGA is installed and that you have the `openfga` binary in your PATH. If you have built `openfga` as a binary, but not in your path, you can refer to it directly (e.g. replace `openfga` in the instructions below with `./openfga` or `/path/to/openfga`).
@@ -42,7 +40,7 @@ openfga run \
 
 OpenFGA supports configuring separate read and write datastores for PostgreSQL to improve performance and scalability. This feature allows you to distribute read operations across read replicas while directing write operations to the primary database.
 
-##### Setting Up Read Replicas
+##### <span id="setting-up-read-replicas" style={{ scrollMarginTop: '7rem' }}>Setting Up Read Replicas</span>
 
 To use read replicas, you need to configure both a primary datastore (for writes) and a secondary datastore (for reads):
 
@@ -59,7 +57,7 @@ openfga run \
 - The `--datastore-secondary-uri` parameter specifies the read replica (used for regular read operations)
 - Both databases must have the same schema and should be kept in sync through PostgreSQL replication
 
-##### Synchronous vs Asynchronous Replication
+##### <span id="synchronous-vs-asynchronous-replication" style={{ scrollMarginTop: '7rem' }}>Synchronous vs Asynchronous Replication</span>
 
 The choice between synchronous and asynchronous replication affects data consistency and performance:
 
@@ -75,7 +73,7 @@ The choice between synchronous and asynchronous replication affects data consist
 - **Use case:** When write performance is prioritized and slight delays in read consistency are acceptable
 - **PostgreSQL config:** `synchronous_commit = off` (default)
 
-##### Consistency Preferences
+##### <span id="consistency-preferences" style={{ scrollMarginTop: '7rem' }}>Consistency Preferences</span>
 
 OpenFGA provides consistency controls to handle read-after-write scenarios:
 
@@ -84,27 +82,27 @@ When using `HIGHER_CONSISTENCY` preference in read operations, OpenFGA will auto
 
 ```javascript
 // Example: Reading with higher consistency
-const { allowed } = await fgaClient.check(
-    { user: "user:anne", relation: "can_view", object: "document:roadmap" },
-    { consistency: ConsistencyPreference.HigherConsistency }
-);
+  const { allowed } = await fgaClient.check(
+      {  user: "user:anne", relation: "can_view", object: "document:roadmap"},
+      {  consistency: ConsistencyPreference.HigherConsistency }
+  );
 ```
 
 **Default Consistency Mode:**
 Regular read operations without the `HIGHER_CONSISTENCY` flag will be routed to the read replica for better performance.
 
-##### Best Practices
+##### <span id="best-practices" style={{ scrollMarginTop: '7rem' }}>Best Practices</span>
 
 1. **Monitor Replica Lag:** Set up monitoring for replication lag between primary and replica
 2. **Use Higher Consistency Sparingly:** Only use `HIGHER_CONSISTENCY` when you need immediate read-after-write consistency
 3. **Connection Pooling:** Configure appropriate connection pools for both primary and replica connections
 
-##### Example PostgreSQL Replication Setup
+##### <span id="example-postgresql-replication-setup" style={{ scrollMarginTop: '7rem' }}>Example PostgreSQL Replication Setup</span>
 
 Here's a basic example of setting up PostgreSQL streaming replication:
 
 **Primary server configuration (postgresql.conf):**
-```
+```text
 wal_level = replica
 max_wal_senders = 3
 wal_keep_size = 64MB
@@ -113,17 +111,17 @@ synchronous_standby_names = 'replica1'  # for synchronous replication
 ```
 
 **Primary server authentication (pg_hba.conf):**
-```
+```text
 host replication replicator replica_ip/32 md5
 ```
 
 **Replica server configuration (postgresql.conf):**
-```
+```text
 hot_standby = on
 ```
 
 **Replica server recovery configuration:**
-```
+```text
 standby_mode = 'on'
 primary_conninfo = 'host=primary_ip port=5432 user=replicator'
 ```
@@ -301,7 +299,7 @@ OpenFGA is configured with an HTTP health check endpoint `/healthz` and a gRPC h
 - SERVICE_UNKNOWN
 
 <Tabs>
-  <Tab title="curl">
+  <Tab title="cURL">
 
 ```bash
 curl -X GET $FGA_API_URL/healthz
@@ -324,15 +322,15 @@ grpcurl -plaintext $FGA_API_URL grpc.health.v1.Health/Check
 
 ## Experimental features
 
-Various releases of OpenFGA may have experimental features that can be enabled by providing the [`--experimentals`](./configuration) flag or the `experimentals` config.
+Various releases of OpenFGA may have experimental features that can be enabled by providing the [`--experimentals`](./configuration#OPENFGA_EXPERIMENTALS) flag or the `experimentals` config.
 
-```bash
+```text
 openfga run --experimentals="feature1, feature2"
 ```
 
 or if you're using environment variables,
 
-```bash
+```text
 openfga -e OPENFGA_EXPERIMENTALS="feature1, feature2" run
 ```
 
@@ -404,6 +402,8 @@ It is highly recommended to enable logging in production environments. Disabling
 </Warning>
 
 ## Related Sections
+
+Check the following sections for more on how to use OpenFGA.
 
 <CardGroup>
   <Card title="Configuration Options" href="./configuration">
