@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { createProcessor } from '@mdx-js/mdx';
 import remarkGfm from 'remark-gfm';
 import { parse as parseYaml } from 'yaml';
-import { validateMdxSource } from '../mintlify-native/scripts/validate-mdx.mjs';
+import { validateMdxSource } from '../docs-site/scripts/validate-mdx.mjs';
 import {
   END_MARKER, OUTPUT_FILE, START_MARKER, fetchJson, generateConfigurationPage,
   generateConfigurationSection, releaseMetadata, updateConfigurationPage,
@@ -151,7 +151,7 @@ for (const newline of ['\n', '\r\n']) test(`preserves unrelated bytes and is ide
 });
 
 test('the accepted page is the default native target, with unchanged examples/cards after a schema update', async () => {
-  assert.equal(OUTPUT_FILE, fileURLToPath(new URL('../mintlify-native/docs/getting-started/setup-openfga/configuration.mdx', import.meta.url)));
+  assert.equal(OUTPUT_FILE, fileURLToPath(new URL('../docs-site/docs/getting-started/setup-openfga/configuration.mdx', import.meta.url)));
   const source = await readFile(OUTPUT_FILE, 'utf8');
   const generated = generateConfigurationPage(source, 'v1.21.0', schema);
   assert.deepEqual(outside(generated), outside(source));
@@ -332,7 +332,7 @@ test('nightly hard-stops invalid generation, creates drafts, and fails on indepe
   assert.equal(steps[parity]['continue-on-error'], true);
   assert.equal(steps[parity].run, 'npm run test:mintlify-content-parity');
   assert.equal(steps[report].if, "steps.parity.outcome == 'failure'");
-  assert.equal(job.env.UPDATE_FILE, 'mintlify-native/docs/getting-started/setup-openfga/configuration.mdx');
+  assert.equal(job.env.UPDATE_FILE, 'docs-site/docs/getting-started/setup-openfga/configuration.mdx');
   assert.match(steps[commit].run, /--draft/);
   assert.match(steps[commit].run, /--force-with-lease="refs\/heads\/\$\{UPDATE_BRANCH\}:\$\{remote_sha\}"/);
   assert.match(steps[commit].run, /expectations were NOT regenerated/);

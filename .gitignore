@@ -36,3 +36,4 @@ entities.json
 # lychee link checker
 .lycheecache
 /lychee/
+/.link-check/

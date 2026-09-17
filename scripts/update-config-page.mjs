@@ -2,10 +2,10 @@ import fs from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
-import { validateMdxSource } from '../mintlify-native/scripts/validate-mdx.mjs';
+import { validateMdxSource } from '../docs-site/scripts/validate-mdx.mjs';
 
 export const OUTPUT_FILE = fileURLToPath(new URL(
-  '../mintlify-native/docs/getting-started/setup-openfga/configuration.mdx', import.meta.url,
+  '../docs-site/docs/getting-started/setup-openfga/configuration.mdx', import.meta.url,
 ));
 export const START_MARKER = '{/* BEGIN GENERATED CONFIGURATION OPTIONS */}';
 export const END_MARKER = '{/* END GENERATED CONFIGURATION OPTIONS */}';

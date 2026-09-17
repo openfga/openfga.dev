@@ -8,6 +8,12 @@ This document describes both options, compares them, and presents findings from 
 
 ## Current Direction — Split Site
 
+The implementation now uses `docs-site/` for 110 product documentation pages and
+24 API operations. The old Docusaurus docs corpus is retired; Community remains
+a website page. The 111-page figures below describe the earlier migration
+inventory, not the current published native page count. See the repository
+[README](README.md) for current development and deployment instructions.
+
 The implementation now keeps the marketing homepage, Project page, Community
 page, and blog on Docusaurus while serving `/docs/**` and `/api-reference/**`
 from Mintlify. The legacy `/api` and `/api/service` routes redirect to
@@ -156,7 +162,7 @@ These are all mechanical conversions applied across all 111 current documentatio
 
 This is a significant gotcha for any repo that uses Git LFS, confirmed through deployment testing.
 
-**Mintlify's deployment reads files via the GitHub API, which returns LFS pointers instead of actual content.** All static assets must be stored as regular git blobs. The `openfga.dev` repo tracks all binary files with LFS globally (`*.svg`, `*.png`, `*.mp4`, `*.webm`), so the `mintlify-native/` subdirectory needs `.gitattributes` override rules. Two implementation details matter:
+**Mintlify's deployment reads files via the GitHub API, which returns LFS pointers instead of actual content.** All static assets must be stored as regular git blobs. The `openfga.dev` repo tracks all binary files with LFS globally (`*.svg`, `*.png`, `*.mp4`, `*.webm`), so the `docs-site/` subdirectory needs `.gitattributes` override rules. Two implementation details matter:
 
 1. **Override rules must appear *after* global LFS rules** in `.gitattributes` — later rules win, so any override placed before the global `*.mp4 filter=lfs` line will be overridden back.
 2. **Git LFS hooks intercept `git add`** even when the filter attribute is unset. You must bypass them explicitly: `git -c filter.lfs.clean=cat add <files>`.
@@ -178,7 +184,7 @@ Curly braces `{}` in MDX are parsed as JavaScript expressions. Text like `{objec
 
 ## Current State of the Spike
 
-A working Mintlify site exists on the `poc/mintlify-native` branch of `github.com/openfga/openfga.dev`. Run `npx mint dev` from the `mintlify-native/` directory to see it locally.
+A working Mintlify site exists on the `poc/mintlify-native` branch of `github.com/openfga/openfga.dev`. Run `npx mint dev` from the `docs-site/` directory to see it locally.
 
 **What is done:**
 - 111 pages — the complete current OpenFGA docs corpus, ported from source MDX
@@ -207,7 +213,7 @@ deploying the Mintlify origin and routing only the documentation surfaces to it.
 
 ### Phase 2 — Production setup
 - Create a Mintlify project, connect the repo
-- Enable monorepo mode, set root directory to `/mintlify-native`
+- Enable monorepo mode, set root directory to `/docs-site`
 - Register `openfga.dev` as Mintlify's custom domain so generated canonical URLs use
   the public host, while keeping the `*.mintlify.site` hostname as the proxy target
 - Put a path-aware edge proxy in front of the Docusaurus and Mintlify origins

@@ -48,10 +48,10 @@ export default [
     },
   },
   {
-    ignores: ['.docusaurus/**/*', 'build/**/*', 'mintlify-native/fga-codegen.js'],
+    ignores: ['.docusaurus/**/*', 'build/**/*', 'docs-site/fga-codegen.js'],
   },
   {
-    files: ['scripts/**/*.mjs', 'mintlify-native/scripts/**/*.mjs'],
+    files: ['scripts/**/*.mjs', 'docs-site/scripts/**/*.mjs'],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -64,7 +64,7 @@ export default [
     },
   },
   {
-    files: ['mintlify-native/snippets/**/*.jsx'],
+    files: ['docs-site/snippets/**/*.jsx'],
     languageOptions: {
       globals: {
         Accordion: 'readonly',
