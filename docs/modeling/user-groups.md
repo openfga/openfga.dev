@@ -3,7 +3,7 @@ title: "User Groups"
 description: "Adding users to groups and granting group members access to an object"
 canonical: "https://openfga.dev/docs/modeling/user-groups"
 content_type: "documentation"
-last_updated: "2026-09-16T15:33:49.000Z"
+last_updated: "2026-09-17T10:46:58.000Z"
 ---
 
 # User Groups

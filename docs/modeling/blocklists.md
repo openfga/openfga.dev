@@ -3,7 +3,7 @@ title: "Blocklists"
 description: "Preventing certain users from accessing objects"
 canonical: "https://openfga.dev/docs/modeling/blocklists"
 content_type: "documentation"
-last_updated: "2026-09-16T15:33:49.000Z"
+last_updated: "2026-09-17T10:46:58.000Z"
 ---
 
 # Blocklists

@@ -3,7 +3,7 @@ title: "Advanced Use-Cases"
 description: "Advanced use cases and patterns for authorization modeling"
 canonical: "https://openfga.dev/docs/modeling/advanced"
 content_type: "documentation"
-last_updated: "2026-09-16T15:33:49.000Z"
+last_updated: "2026-09-17T10:46:58.000Z"
 ---
 
 # Advanced Use-Cases
