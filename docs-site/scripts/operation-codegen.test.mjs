@@ -205,12 +205,7 @@ function evaluate(node, bindings) {
 }
 
 function calls(text) {
-  const tree = createProcessor().parse(
-    text
-      .replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '')
-      .replace(/<!--[\s\S]*?-->/g, '')
-      .replace(/ \{#[\w-]+\}$/gm, ''),
-  );
+  const tree = createProcessor().parse(text.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, ''));
   const bindings = new Map();
   for (const node of tree.children.filter((node) => node.type === 'mdxjsEsm')) {
     for (const entry of node.data.estree.body) {
@@ -238,6 +233,20 @@ function calls(text) {
   walk(tree);
   return result;
 }
+
+test('native caller parsing preserves comment-like attribute data and accepts MDX comments', () => {
+  const source = `{/* An author comment, not an operation caller. */}
+<CheckRequestViewer user="user:anne" relation="reader" object="document:a<!--note-->b" />`;
+  assert.deepEqual(calls(source), [{
+    component: 'CheckRequestViewer',
+    props: { user: 'user:anne', relation: 'reader', object: 'document:a<!--note-->b' },
+  }]);
+});
+
+test('native caller parsing rejects unsupported HTML comments instead of rewriting them', () => {
+  assert.throws(() => calls('<!-- legacy comment -->\n<CheckRequestViewer />'), /Unexpected character/);
+  assert.throws(() => calls('<!<!---->-->\n<CheckRequestViewer />'), /Unexpected character/);
+});
 
 test('every existing source operation caller keeps its exact request, expectations and language restriction', () => {
   const manifest = JSON.parse(readFileSync(new URL('../source-pages.json', import.meta.url)));
