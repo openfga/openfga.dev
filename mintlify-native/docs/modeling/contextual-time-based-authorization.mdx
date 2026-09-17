@@ -22,14 +22,14 @@ Contextual Tuples should be used when modeling cases where a user's access to an
 
 ## Before you start
 
-To follow this guide, you should be familiar with some OpenFGA concepts.
+To follow this guide, you should be familiar with some [OpenFGA concepts](/docs/concepts).
 
-### OpenFGA concepts
+<h3 id="-concepts">OpenFGA concepts</h3>
 
-- A **Relation**: Defined in the type definition of an authorization model, a relation is a string that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system.
-- A **Check Request**: is a call to the OpenFGA check endpoint that returns whether the user has a certain relationship with an object.
-- A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
-- A **Contextual Tuple**: a tuple that can be added to a Check request, and only exists within the context of that particular request.
+- A **[Relation](/docs/concepts#what-is-a-relation)**: Defined in the type definition of an authorization model, a relation is a string that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system.
+- A **[Check Request](/docs/concepts#what-is-a-check-request)**: is a call to the OpenFGA check endpoint that returns whether the user has a certain relationship with an object.
+- A **[Relationship Tuple](/docs/concepts#what-is-a-relationship-tuple)**: a grouping consisting of a user, a relation and an object stored in OpenFGA
+- A **[Contextual Tuple](/docs/concepts#what-are-contextual-tuples)**: a tuple that can be added to a Check request, and only exists within the context of that particular request.
 
 You also need to be familiar with:
 
@@ -152,8 +152,6 @@ We will start with the following Authorization Model
   }}
 />
 
-<details>
-<summary>
 We are considering the case that:
 
 - Anne is the Account Manager at the West-Side branch
@@ -162,8 +160,7 @@ We are considering the case that:
 - Checking account number 526 has a transaction, we'll call it transaction A
 - The West-Side branch's office hours is from 8am-3pm UTC
 
-</summary>
-
+<Accordion title="Relationship tuples">
 The above state translates to the following relationship tuples:
 
 <WriteRequestViewer relationshipTuples={[
@@ -192,7 +189,7 @@ The above state translates to the following relationship tuples:
     "object": "transaction:A"
   },
 ]} />
-</details>
+</Accordion>
 
 ### Requirements
 
@@ -252,7 +249,7 @@ Note that so far, we have not prevented Anne from viewing the transaction outsid
 
 ### Take time and IP address into consideration
 
-##### Extend the authorization model
+<h5 id="extend-the-authorization-model">Extend the authorization model</h5>
 
 In order to add time and ip address to our authorization model, we will add appropriate types for them. We will have a "timeslot" and an "ip-address-range" as types, and each can have users related to it as a user.
 
@@ -449,7 +446,7 @@ On the "transaction" type:
 - Nothing will need to be done, as it will inherit the updated "viewer" relation definition from "account"
 </Note>
 
-##### Add the required tuples to mark that Anne is in an approved context
+<h5 id="add-the-required-tuples-to-mark-that-anne-is-in-an-approved-context">Add the required tuples to mark that Anne is in an approved context</h5>
 
 Now that we have updated our authorization model to take time and ip address into consideration, you will notice that Anne has lost access because nothing indicates that Anne is connecting from an approved ip address and time. You can verify that by issuing the following check:
 
@@ -536,7 +533,7 @@ First, we will need to undo adding the stored relationship tuples where Anne is 
   ]}
 />
 
-For Check calls, OpenFGA has a concept called "Contextual Tuples". Contextual Tuples are tuples that do **not** exist in the system state and are not written beforehand to OpenFGA. They are tuples that are sent alongside the Check request and will be treated as _if_ they already exist in the state for the context of that particular Check call.
+For Check calls, OpenFGA has a concept called "[Contextual Tuples](/docs/concepts#what-are-contextual-tuples)". Contextual Tuples are tuples that do **not** exist in the system state and are not written beforehand to OpenFGA. They are tuples that are sent alongside the Check request and will be treated as _if_ they already exist in the state for the context of that particular Check call.
 
 When Anne is connecting from an allowed ip address range and timeslot, OpenFGA will return `{"allowed":true}`:
 
@@ -586,11 +583,7 @@ When Anne is connecting from a denied ip address range or timeslot, OpenFGA will
 
 ## Summary
 
-<details>
-<summary>
-  Final version of the Authorization Model and Relationship tuples
-</summary>
-
+<Accordion title="Final version of the Authorization Model and Relationship tuples">
 <AuthzModelSnippetViewer configuration={{
     schema_version: '1.1',
   "type_definitions": [
@@ -853,7 +846,7 @@ When Anne is connecting from a denied ip address range or timeslot, OpenFGA will
     "object": "branch:west-side"
   },
 ]} />
-</details>
+</Accordion>
 
 <Warning>
 Contextual tuples:

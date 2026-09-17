@@ -8,7 +8,7 @@ import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx'
 
 # Get Started with Modeling
 
-Creating a Relationship Based Access Control (ReBAC) authorization model might feel odd at first. Most of us tend to think about authorization models in terms of roles and permissions. After all, most software works like that. Your existing systems are likely built on a model using roles and permissions.
+Creating a [Relationship Based Access Control (ReBAC)](/docs/authorization-concepts#what-is-relationship-based-access-control) authorization model might feel odd at first. Most of us tend to think about authorization models in terms of roles and permissions. After all, most software works like that. Your existing systems are likely built on a model using roles and permissions.
 
 This guide outlines a process for defining your [authorization model](/docs/concepts#what-is-an-authorization-model) with OpenFGA.
 
@@ -41,7 +41,7 @@ We'll provide more detailed examples throughout this article.
 
 When you are modeling, you need to answer a more general question:
 
-> **Why could user U perform an action A on an object O?**
+<Card title="Why could user U perform an action A on an object O?" icon="/docs/modeling/assets/getting-started-fga-logo.svg" />
 
 If you can answer that question for all types of objects in your system, then you can codify that into an authorization model.
 
@@ -144,23 +144,109 @@ Find all the objects in the previous step using this template:
 
 These are all the object types from the previous step (in order of appearance) based on that template:
 
-- **Document**
-- **Folder**
-- **Organization**
+<CardGroup cols={3}>
+  <Card title="Document" icon="/docs/modeling/assets/getting-started-icon-doc.svg" />
+  <Card title="Folder" icon="/docs/modeling/assets/getting-started-icon-dir.svg" />
+  <Card title="Organization" icon="/docs/modeling/assets/getting-started-icon-org.svg" />
+</CardGroup>
+
+Let's highlight all object types in <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>blue</span>:
+
+- A user can create a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> in a drive if they are the owner of the drive.
+- A user can create a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>folder</span> in a drive if they are the owner of the drive.
+- A user can create a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> in a folder if they are the owner of the folder.
+- A user can create a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>folder</span> in a folder if they are the owner of the folder.
+
+---
+
+- A user can share a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> with another user or an organization as either editor or viewer if they are an owner or editor of a document or if they are an owner of the folder/drive that is the parent of the document.
+
+---
+
+- A user can share a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>folder</span> with another user or an organization as a viewer if they are an owner of the folder.
+
+---
+
+- A user can view a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> if they are an owner, viewer or editor of the document or if they are a viewer, owner of the folder/drive that is the parent of the document.
+
+---
+
+- A user can edit a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> if they are an owner or editor of the document or if they are an owner of the folder/drive that is the parent of the document.
+
+---
+
+- A user can change the owner of a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> if they are an owner of the document.
+
+---
+
+- A user can change the owner of a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>folder</span> if they are an owner of the folder.
+
+---
+
+- A user can be a member of an <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>organization</span>.
+
+  *How a user is added as a member to an organization is beyond the scope of the feature we picked to write down.*
+
+---
+
+- A user can view a <span style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>folder</span> if they are the owner of the folder, or a viewer or owner of either the parent folder of the folder, or the parent drive of the folder.
 
 However, the list of object types is not finished. To complete the list of object types you must also add all the second nouns that appear in conditions as part of expressions of this format: **"\{first noun\} of a/the \{second noun\}"**.
 
 > ... IF \{first noun\} of a/the \{second noun\}
 
+Let's highlight those expressions in <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>green</span>:
+
+- A user can create a document in a drive if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the drive</span>.
+- A user can create a folder in a drive if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the drive</span>.
+- A user can create a document in a folder if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>. The folder is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
+- A user can create a folder in a folder if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>. The existing folder is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the new folder</span> .
+
+---
+
+- A user can share a document with another user or an organization as either editor or viewer if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner or editor of a document</span> or if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder/drive</span> that is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
+
+---
+
+- A user can share a folder with another user or an organization as a viewer if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>.
+
+---
+
+- A user can view a document if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner, viewer or editor of the document</span> or if they are a <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>viewer or owner of the folder/drive</span> that is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
+
+---
+
+- A user can edit a document if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner or editor of the document</span> or if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder/drive</span> that is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
+
+---
+
+- A user can change the owner of a document if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the document</span>.
+
+---
+
+- A user can change the owner of a folder if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>.
+
+---
+
+- A user can be a member of an organization.
+
+  *How a user is added as a member to an organization is beyond the scope of the feature we picked to write down.*
+
+---
+
+- A user can view a folder if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>, or a <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>viewer or owner of either the parent folder of the folder, or the parent drive of the folder</span>.
+
 The only second noun we didn't have in our object type list is "Drive", so we'll add it to the list. We will also need to add "User" to the list as it establishes the type of user who can establish relations.
 
 The complete list of object types:
 
-- **User**
-- **Document**
-- **Folder**
-- **Organization**
-- **Drive**
+<CardGroup cols={3}>
+  <Card title="User" />
+  <Card title="Document" icon="/docs/modeling/assets/getting-started-icon-doc.svg" />
+  <Card title="Folder" icon="/docs/modeling/assets/getting-started-icon-dir.svg" />
+  <Card title="Organization" icon="/docs/modeling/assets/getting-started-icon-org.svg" />
+  <Card title="Drive" icon="/docs/modeling/assets/getting-started-icon-drive.svg" />
+</CardGroup>
 
 Now that we have a list of object types we can start defining them using the [OpenFGA Configuration Language](/docs/configuration-language):
 
@@ -201,18 +287,59 @@ In those cases [**User** should also be an object type](/docs/modeling/building-
 
 ![List relations for those types](./assets/getting-started-diagram-04.svg)
 
-Each of the previously defined types has a set of relations. [Relations](/docs/concepts#what-is-a-relation) are an important component in your model. After all, OpenFGA is a Relationship Based Access Control (ReBAC) system.
+Each of the previously defined types has a set of relations. [Relations](/docs/concepts#what-is-a-relation) are an important component in your model. After all, OpenFGA is a [Relationship Based Access Control (ReBAC)](/docs/authorization-concepts#what-is-relationship-based-access-control) system.
 
 To identify relations for a type in the write-up we can perform an exercise similar to the one we did in [list the type of objects in your system](#02-list-the-object-types).
 
 Relations for a type \{type\} will be all of these:
 
-- any noun that is the \{noun\} of a "\{noun\} of a/an/the \{type\}" expression. **These are typically the Foreign Keys in a database.**
-- any verb or action that is the \{action\} of a "can \{action\} (in) a/an \{type\}" expression. **These are typically the permissions for a type.**
+- any noun that is the \{noun\} of a "\{noun\} of a/an/the \{type\}" expression. **These are typically the Foreign Keys in a database.** We'll highlight these in <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>green</span>.
+- any verb or action that is the \{action\} of a "can \{action\} (in) a/an \{type\}" expression. **These are typically the permissions for a type.** We'll highlight these in <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>yellow</span>.
+
+- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can create a document in a drive</span> if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the drive</span>.
+- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can create a folder in a drive</span> if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the drive</span>.
+- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can create a document in a folder</span> if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>. The folder is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
+- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can create a folder in a folder</span> if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>. The existing folder is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the new folder</span>.
+
+---
+
+- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can share a document with another user or an organization</span> as either editor or viewer if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner or editor of a document</span> or if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder/drive</span> that is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
+
+---
+
+- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can share a folder with another user or an organization</span> as a viewer if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>.
+
+---
+
+- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can view a document</span> if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner, viewer or editor of the document</span> or if they are a <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>viewer or owner of the folder/drive</span> that is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
+
+---
+
+- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can edit a document</span> if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner or editor of the document</span> or if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder/drive</span> that is the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>parent of the document</span>.
+
+---
+
+- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can change the owner of a document</span> if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the document</span>.
+
+---
+
+- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can change the owner of a folder</span> if they are an <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>.
+
+---
+
+- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can be a member of an organization</span>.
+
+  *How a user is added as a member to an organization is beyond the scope of the feature we picked to write down.*
+
+---
+
+- A user <span style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can view a folder</span> if they are the <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>, or a <span style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>viewer or owner of either the parent folder of the folder, or the parent drive of the folder</span>.
 
 The resulting list is:
 
-**Document:**
+<CardGroup cols={2}>
+<Card title="Document" icon="/docs/modeling/assets/getting-started-icon-doc.svg">
+
 - parent
 - can_share
 - owner
@@ -222,7 +349,9 @@ The resulting list is:
 - viewer
 - can_change_owner
 
-**Folder:**
+</Card>
+<Card title="Folder" icon="/docs/modeling/assets/getting-started-icon-dir.svg">
+
 - can_create_document
 - owner
 - can_create_folder
@@ -230,13 +359,20 @@ The resulting list is:
 - viewer
 - parent
 
-**Organization:**
+</Card>
+<Card title="Organization" icon="/docs/modeling/assets/getting-started-icon-org.svg">
+
 - member
 
-**Drive:**
+</Card>
+<Card title="Drive" icon="/docs/modeling/assets/getting-started-icon-drive.svg">
+
 - can_create_document
 - owner
 - can_create_folder
+
+</Card>
+</CardGroup>
 
 <Note>
 In OpenFGA, relations can only have alphanumeric characters, underscores and hyphens. We recommend using underscore (\_) to separate words and removing prepositions. E.g.: "can create a document" can become "can_create_document" or "create_document" if you are into brevity.
@@ -284,11 +420,13 @@ You're now in the process of building a version you can use. The model above is 
 
 We will use the [OpenFGA Configuration Language](/docs/configuration-language) to create a [relation definition](/docs/concepts#what-is-a-relation) for each of the relations we identified. At this stage we will encode the answers to the question we asked at the beginning of the document:
 
-> **Why could a user U, perform an action A on an object O?**
+<Card title="Why could a user U, perform an action A on an object O?" icon="/docs/modeling/assets/getting-started-fga-logo.svg" />
 
 We are going to go over each type and each of its relations and create a definition for it.
 
 #### Type: Organization
+
+<img src="/docs/modeling/assets/getting-started-icon-org.svg" alt="" width="36" height="36" />
 
 We recommend starting from objects that represent groups/containers of users. For features in most systems these are easy to define and help reason about the other types. Examples of type names for these are "team", "group", "organization", etc.
 
@@ -354,7 +492,7 @@ This also automatically supports nested organizational membership if you want su
 If you want to learn more, you can read further about this in [Modeling User Groups](/docs/modeling/user-groups) and [Managing Relationships Between Objects](/docs/interacting/managing-relationships-between-objects).
 </Note>
 
-##### Complete Type Definition
+<h5 id="complete-type-definition">Complete Type Definition</h5>
 
 The complete [type definition](/docs/concepts#what-is-a-type-definition) for the **organization** type is:
 
@@ -381,6 +519,8 @@ The complete [type definition](/docs/concepts#what-is-a-type-definition) for the
 />
 
 #### Type: Document
+
+<img src="/docs/modeling/assets/getting-started-icon-doc.svg" alt="" width="36" height="36" />
 
 After defining your "group" like types, continue with the most important type for the feature: the one that allows the main use case. In this case "document", since the main use case for users is to create, write, read and collaborate on documents.
 
@@ -728,7 +868,7 @@ Similar to the [can_share relation](#relation-can_share), we can achieve that wi
   }}
 />
 
-##### Complete Type Definition
+<h5 id="complete-type-definition-1">Complete Type Definition</h5>
 
 The complete [type definition](/docs/concepts#what-is-a-type-definition) for the document type is:
 
@@ -1080,7 +1220,7 @@ Once you have defined your group like types and the most important type for your
 
 How? Remember from the introduction that **OpenFGA's** main job is to answer the question:
 
-> **Can user U, perform an action A on an object O?**
+<Card title="Can user U, perform an action A on an object O?" icon="/docs/modeling/assets/getting-started-fga-logo.svg" />
 
 The OpenFGA service does that by checking if a user has a particular relationship to an object, based on your authorization model and relationship tuples.
 

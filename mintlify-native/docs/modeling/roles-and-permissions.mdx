@@ -8,10 +8,10 @@ import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
 
 # Roles and Permissions
 
-Roles and permissions can be modeled within OpenFGA using an authorization model and relationship tuples.
+Roles and permissions can be modeled within OpenFGA using an [authorization model](/docs/concepts#what-is-an-authorization-model) and [relationship tuples](/docs/concepts#what-is-a-relationship-tuple).
 
-- **Roles** are assigned to users or a group of users. Any user can have more than one role, like `editor` or `owner`.
-- **Permissions** allow users to access certain objects based on their specific roles, like `device_renamer` or `channel_archiver`.
+- **Roles** are assigned to [users](/docs/concepts#what-is-a-user) or a group of users. Any user can have more than one role, like `editor` or `owner`.
+- **Permissions** allow users to access certain [objects](/docs/concepts#what-is-an-object) based on their specific roles, like `device_renamer` or `channel_archiver`.
 
 For example, the role `viewer` of a `trip` can have permissions to view bookings, while the role `owners` can have permissions to add or view trip bookings.
 
@@ -29,15 +29,11 @@ Implementing a Roles and Permissions model allows existing roles to have finer-g
 
 ## Before you start
 
-Familiarize yourself with the basics of OpenFGA concepts.
+Familiarize yourself with the basics of [OpenFGA concepts](/docs/concepts).
 
-<details>
-<summary>
+Assume that you have the following [authorization model](/docs/concepts#what-is-an-authorization-model) and a [type](/docs/concepts#what-is-a-type) called `trip` that users can be related to as `viewer` and/or an `owner`.
 
-Assume that you have the following authorization model and a type called `trip` that users can be related to as `viewer` and/or an `owner`.
-
-</summary>
-
+<Accordion title="Authorization model">
 <AuthzModelSnippetViewer
   configuration={{
     schema_version: '1.1',
@@ -70,23 +66,22 @@ Assume that you have the following authorization model and a type called `trip` 
 
 In addition, you need to know the following:
 
-### Direct Access
+<h3 id="direct-access">Direct Access</h3>
 
 Creating an authorization model and a relationship tuple can grant a user access to an object. To learn more, [read about Direct Access](/docs/modeling/direct-access).
 
-### OpenFGA Concepts
+<h3 id="-concepts">OpenFGA Concepts</h3>
 
-- A **Type**: a class of objects that have similar characteristics
-- A **User**: an entity in the system that can be related to an object
-- A **Relation**: a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
-- An **Object**: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
-- A **Relationship Tuple**: a group stored in OpenFGA that consists of a user, a relation, and an object
-- A **Relationship**: OpenFGA will be called to check if there is a relationship between a user and an object, indicating that the access is allowed
+- A **[Type](/docs/concepts#what-is-a-type)**: a class of objects that have similar characteristics
+- A **[User](/docs/concepts#what-is-a-user)**: an entity in the system that can be related to an object
+- A **[Relation](/docs/concepts#what-is-a-relation)**: a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An **[Object](/docs/concepts#what-is-an-object)**: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
+- A **[Relationship Tuple](/docs/concepts#what-is-a-relationship-tuple)**: a group stored in OpenFGA that consists of a user, a relation, and an object
+- A **[Relationship](/docs/concepts#what-is-a-relationship)**: OpenFGA will be called to check if there is a relationship between a user and an object, indicating that the access is allowed
 - [Union Operator](/docs/configuration-language#the-union-operator): can be used to indicate that the user has multiple ways of being related to an object
 - [Direct Relationship Type Restrictions](/docs/configuration-language#direct-relationship-type-restrictions): can be used to indicate direct relationships between users and objects
-- A **Check API Request**: used to check for relationships between users and objects
-
-</details>
+- A **[Check API Request](/docs/concepts#what-is-a-check-request)**: used to check for relationships between users and objects
+</Accordion>
 
 ## Step by step
 
@@ -96,7 +91,7 @@ To represent this in an OpenFGA environment, you need to:
 
 1. Understand how roles are related to direct relations for the trip booking system
 2. Add implied relations to the existing authorization model to define permissions for bookings
-3. Check user roles and their permissions based on relationship tuples for direct and implied relations
+3. [Check](/docs/concepts#what-is-a-check-request) user roles and their permissions based on relationship tuples for direct and implied relations
 
 ### 01. Understand how roles work within the trip booking system
 
@@ -191,7 +186,7 @@ To allow `viewers` of a `trip` to have permissions to view bookings and `owners`
 
 ### 03. Check user roles and their permissions
 
-Your type definitions reflects the roles and permissions on how bookings can be viewed/added, so you can create relationship tuples to assign roles to users, then check if users have the proper permissions.
+Your type definitions reflects the roles and permissions on how bookings can be viewed/added, so you can create [relationship tuples](/docs/concepts#what-is-a-relationship-tuple) to assign roles to users, then [check](/docs/concepts#what-is-a-check-request) if users have the proper permissions.
 
 Create two relationship tuples:
 

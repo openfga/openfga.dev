@@ -14,10 +14,10 @@ This tutorial explains how to model permissions for a communication platform lik
 <Note>
 **What you will learn**
 
-- How to indicate relationships between a group of **users** and an **object**.
+- How to indicate relationships between a group of **[users](/docs/concepts#what-is-a-user)** and an **[object](/docs/concepts#what-is-an-object)**.
   Used here to indicate that all members of a slack workspace can write in a certain channel.
   See [Modeling User Groups](/docs/modeling/user-groups) for more.
-- How to Model **concentric relationship** to have a certain relation on an object imply another relation on the same object.
+- How to Model **concentric relationship** to have a certain [relation](/docs/concepts#what-is-a-relation) on an object imply another relation on the same object.
   Used here to indicate that legacy admins have all the permissions of the more granular channels admin.
   See [Modeling Concentric Relationships](/docs/modeling/building-blocks/concentric-relationships) for more.
 - How to use [**the union operator**](/docs/configuration-language#the-union-operator) condition to indicate that a user might have a certain relation with an object if they match any of the criteria indicated.
@@ -27,29 +27,22 @@ This tutorial explains how to model permissions for a communication platform lik
 
 In order to understand this guide correctly you must be familiar with some OpenFGA concepts and know how to develop the things that we will list below.
 
-<details>
-<summary>
-
-### OpenFGA concepts
-
 It would be helpful to have an understanding of some concepts of OpenFGA before you start.
 
-</summary>
-
-#### Direct access
+<Accordion title="OpenFGA concepts" id="-concepts">
+<h4 id="direct-access">Direct access</h4>
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](/docs/modeling/direct-access)
 
-#### Modeling concentric relationships
+<h4 id="modeling-concentric-relationships">Modeling concentric relationships</h4>
 
 You need to know how to update the authorization model to allow having nested relations such as all writers are readers. [Learn more →](/docs/modeling/building-blocks/concentric-relationships)
 
-#### Concepts & configuration language
+<h4 id="concepts--configuration-language">Concepts & configuration language</h4>
 
-- Some OpenFGA concepts
+- Some [OpenFGA concepts](/docs/concepts)
 - [Configuration Language](/docs/configuration-language)
-
-</details>
+</Accordion>
 
 ## What you will be modeling
 
@@ -118,11 +111,11 @@ These users will interact in the following scenarios:
 In production, it is highly recommended to use unique, immutable identifiers. Names are used in this article to make it easier to read and follow.
 </Warning>
 
-## Modeling workspaces & channels
+<h2 id="modeling-workspaces--channels">Modeling workspaces & channels</h2>
 
 The goal by the end of this post is to ask OpenFGA: Does person X have permission to perform action Y on channel Z? In response, you want to either get a confirmation that person X can indeed do that, or a rejection that they cannot. E.g. does David have access to view #general?
 
-OpenFGA is based on [Zanzibar](https://zanzibar.academy), a Relation Based Access Control system. This means it relies on objects and user relations to perform authorization checks.
+OpenFGA is based on [Zanzibar](https://zanzibar.academy), a Relation Based Access Control system. This means it relies on [objects](/docs/concepts#what-is-an-object) and [user](/docs/concepts#what-is-a-user) [relations](/docs/concepts#what-is-a-relation) to perform authorization [checks](/docs/concepts#what-is-a-check-request).
 
 Setting aside the permissions, you will start with the roles and learn how to express the requirements in terms of relations you can feed into OpenFGA.
 
@@ -133,7 +126,7 @@ The requirements stated:
 - **Catherine** and **Emily** are a normal **members** of the **Sandcastle workspace**
 - **David** is a **guest** user
 
-Here is how you would express than in OpenFGA's authorization model: You have a type called "workspace", and users can be related to it as a legacy_admin, channels_admin, member and guest
+Here is how you would express than in OpenFGA's [authorization model](/docs/concepts#what-is-an-authorization-model): You have a [type](/docs/concepts#what-is-a-type) called "workspace", and users can be related to it as a legacy_admin, channels_admin, member and guest
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -183,7 +176,7 @@ Here is how you would express than in OpenFGA's authorization model: You have a 
 - Member (`member`)
 - Guest (`guest`)
 
-[Direct relationship type restrictions](/docs/configuration-language#direct-relationship-type-restrictions) indicate that a user can have a direct relationship with an object of the type the relation specifies.
+[Direct relationship type restrictions](/docs/configuration-language#direct-relationship-type-restrictions) indicate that a user can have a [direct relationship](/docs/concepts#what-are-direct-and-implied-relationships) with an object of the type the relation specifies.
 </Note>
 
 ### 01. Individual permissions
@@ -200,7 +193,7 @@ At the end of this section we want to have the following permissions represented
 | david     | guest          | workspace:sandcastle |
 | emily     | member         | workspace:sandcastle |
 
-To represent permissions in OpenFGA we use relations. For workspace permissions we need to create the following authorization model:
+To represent permissions in OpenFGA we use [relations](/docs/concepts#what-is-a-relation). For workspace permissions we need to create the following [authorization model](/docs/concepts#what-is-an-authorization-model):
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -238,7 +231,7 @@ To represent permissions in OpenFGA we use relations. For workspace permissions 
   }}
 />
 
-The OpenFGA service determines if a user has access to an object by checking if the user has a relation to that object. Let us examine one of those relations in detail:
+The OpenFGA service determines if a [user](/docs/concepts#what-is-a-user) has access to an [object](/docs/concepts#what-is-an-object) by [checking](/docs/concepts#what-is-a-check-request) if the user has a relation to that object. Let us examine one of those relations in detail:
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -262,7 +255,7 @@ The OpenFGA service determines if a user has access to an object by checking if 
 <Note>
 The snippet above indicates that objects of type workspace have users related to them as "member" if those users belong to the userset of all users related to the workspace as "member".
 
-This means that a user can be directly related as a member to an object of type "workspace"
+This means that a user can be [directly related](/docs/concepts#what-are-direct-and-implied-relationships) as a member to an object of type "workspace"
 </Note>
 
 If we want to say `amy` is a `legacy_admin` of `workspace:sandcastle` we create this relationship tuple
@@ -295,7 +288,7 @@ We can also say that `catherine` is a `member` of `workspace:sandcastle`:
   ]}
 />
 
-And verify by asking OpenFGA
+And verify by [asking](/docs/concepts#what-is-a-check-request) OpenFGA
 
 <CheckRequestViewer user={'user:catherine'} relation={'member'} object={'workspace:sandcastle'} allowed={true} />
 
@@ -330,7 +323,7 @@ Repeat this process for the other relationships
 
 #### Verification
 
-To verify, we can issue check requests to verify it is working as expected.
+To verify, we can issue [check requests](/docs/concepts#what-is-a-check-request) to verify it is working as expected.
 
 <CheckRequestViewer user={'user:amy'} relation={'legacy_admin'} object={'workspace:sandcastle'} allowed={true} />
 
@@ -351,11 +344,11 @@ Some of the queries that you ran earlier, while returning the correct response, 
 
 <CheckRequestViewer user={'user:amy'} relation={'member'} object={'workspace:sandcastle'} allowed={false} />
 
-As you saw before, running this query will return `amy is not a member of workspace:sandcastle`, which is correct based on the data you have given OpenFGA so far. But in reality, Amy, who is a `legacy_admin` already has an implied `channels_admin` and `member` relations. In fact anyone (other than a guest) is a `member` of the workspace.
+As you saw before, running this query will return `amy is not a member of workspace:sandcastle`, which is correct based on the data you have given OpenFGA so far. But in reality, Amy, who is a `legacy_admin` already has an [implied](/docs/concepts#what-are-direct-and-implied-relationships) `channels_admin` and `member` relations. In fact anyone (other than a guest) is a `member` of the workspace.
 
 To change this behavior, we will update our system with a [**concentric relationship**](/docs/modeling/building-blocks/concentric-relationships) model.
 
-With the following updated authorization model, you are informing OpenFGA that any user who is related to a workspace as `legacy_admin`, is also related as a `channels_admin` and a `member`.
+With the following updated [authorization model](/docs/concepts#what-is-a-type-definition), you are informing OpenFGA that any user who is related to a workspace as `legacy_admin`, is also related as a `channels_admin` and a `member`.
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -444,7 +437,7 @@ We can check for other users and relationships.
 
 ### 03. Updating the authorization model to include channels
 
-So far, you have modeled the users' relations to the workspace itself. In this task you will expand the model to include the relations concerning the channels.
+So far, you have modeled the users' [relations](/docs/concepts#what-is-a-relation) to the workspace itself. In this task you will expand the model to include the relations concerning the channels.
 
 By the end of it, you will run some queries to check whether a user can view or write to a certain channel. Queries such as:
 
@@ -520,7 +513,7 @@ The configuration snippet above describes a channel that can have the following 
 
 #### Implied relation
 
-There is an implied relation that anyone who can write to a channel can also read from it, so the authorization model can be modified to be:
+There is an [implied relation](/docs/concepts#what-are-direct-and-implied-relationships) that anyone who can write to a channel can also read from it, so the authorization model can be modified to be:
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -580,7 +573,7 @@ There is an implied relation that anyone who can write to a channel can also rea
 <Note>
 Note that the channel type definition has been updated to indicate that viewer is the union of:
 
-- the set of users with a direct viewer relation to this object
+- the set of users with a [direct](/docs/concepts#what-are-direct-and-implied-relationships) viewer relation to this object
 - the set of users with writer relations to this object
 </Note>
 
@@ -699,7 +692,7 @@ As a result, the authorization model is:
 
 #### Updating relationship tuples
 
-What remains is to add the relationship tuples to indicate the relation between the users, workspace and the channels.
+What remains is to add the [relationship tuples](/docs/concepts#what-is-a-relationship-tuple) to indicate the relation between the users, workspace and the channels.
 
 The Sandcastle workspace is a parent workspace of the #general, #marketing-internal and #proj-marketing-campaign channels.
 
@@ -723,7 +716,7 @@ The Sandcastle workspace is a parent workspace of the #general, #marketing-inter
   ]}
 />
 
-##### `#general` channel
+<h5 id="general-channel">`#general` channel</h5>
 
 The `#general` channel is a public channel visible to all the members of the workspace. In OpenFGA, you represent this relation in the form of the following relationship tuple:
 
@@ -762,7 +755,7 @@ And to indicate that Amy and Emily can write to it:
   ]}
 />
 
-##### `#marketing-internal` channel
+<h5 id="marketing-internal-channel">`#marketing-internal` channel</h5>
 
 The `#marketing-internal` is visible to only Bob and Emily. They can view and write in it.
 
@@ -781,7 +774,7 @@ The `#marketing-internal` is visible to only Bob and Emily. They can view and wr
   ]}
 />
 
-##### `#proj-marketing-campaign` channel
+<h5 id="proj-marketing-campaign-channel">`#proj-marketing-campaign` channel</h5>
 
 The `#proj-marketing-campaign` is public to all members of the Sandcastle workspace. They can view and write in it.
 
@@ -807,7 +800,7 @@ David is a guest user who can also view and write to #proj-marketing-campaign
   ]}
 />
 
-#### Verification
+<h4 id="verification-1">Verification</h4>
 
 Now that you have added the necessary relationship tuples, you will check to make sure that your configuration is valid.
 
@@ -840,10 +833,13 @@ Repeat this for the following relations
 
 ## Summary
 
+- Have a basic understanding of [authorization](/docs/authorization-concepts#authentication-and-authorization) and [OpenFGA Concepts](/docs/concepts).
+- Understand how to model authorization for a communication platform like Slack using OpenFGA.
+
 In this tutorial, you:
 
+- were introduced to [fine-grained authorization](/docs/authorization-concepts#what-is-fine-grained-authorization) and OpenFGA.
 - learned how to build and test an OpenFGA authorization model for a communication platform like Slack.
-- were introduced to fine-grained authorization and OpenFGA.
 
 Upcoming tutorials will dive deeper into OpenFGA, introducing concepts that will improve on the model you built today, and tackling different permission systems, with other relations and requirements that need to be met.
 

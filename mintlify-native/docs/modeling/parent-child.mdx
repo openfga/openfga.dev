@@ -8,9 +8,11 @@ import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
 
 # Parent-Child Objects
 
-In OpenFGA, a user's relationship with an object can affect their relationship with another object. For example, an `editor` of a `folder` can also be an `editor` of all `documents` that `folder` is a `parent` of.
+In OpenFGA, a user's [relationship](/docs/concepts#what-is-a-relationship) with an [object](/docs/concepts#what-is-an-object) can affect their relationship with another object. For example, an `editor` of a `folder` can also be an `editor` of all `documents` that `folder` is a `parent` of.
 
 <Note>
+**When to use**
+
 Object-to-object relationships can combine with a configured authorization model to indicate that a user's relationship with one object may influence the user's relationship with another object. They can also eliminate the need to modify relationships between objects using [user groups](/docs/modeling/user-groups#03-assign-the-team-members-a-relation-to-an-object).
 
 The follow are examples of simple object-to-object relationships:
@@ -22,19 +24,15 @@ The follow are examples of simple object-to-object relationships:
 
 ## Before you start
 
-Familiarize yourself with basic OpenFGA concepts:
+Familiarize yourself with basic [OpenFGA concepts](/docs/concepts):
 
-<details>
-<summary>
-
-Assume that you have the following authorization model.<br />
+Assume that you have the following [authorization model](/docs/concepts#what-is-an-authorization-model).<br />
 You have two types:
 
 - `folder` that users can be related to as an `editor`
 - `document` that users can be related to as an `editor`
 
-</summary>
-
+<Accordion title="Authorization model">
 <AuthzModelSnippetViewer
   configuration={{
     schema_version: '1.1',
@@ -76,20 +74,19 @@ You have two types:
 
 In addition:
 
-### Direct access
+<h3 id="direct-access">Direct access</h3>
 
 Creating an authorization model and a relationship tuple can grant a user access to an object. To learn more, [read about Direct Access](/docs/modeling/direct-access).
 
-### OpenFGA concepts
+<h3 id="-concepts">OpenFGA concepts</h3>
 
-- A **Type**: a class of objects that have similar characteristics
-- A **User**: an entity in the system that can be related to an object
-- A **Relation**: a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
-- An **Object**: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
-- A **Relationship Tuple**: a group stored in OpenFGA that consists of a user, a relation, and an object
+- A **[Type](/docs/concepts#what-is-a-type)**: a class of objects that have similar characteristics
+- A **[User](/docs/concepts#what-is-a-user)**: an entity in the system that can be related to an object
+- A **[Relation](/docs/concepts#what-is-a-relation)**: a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An **[Object](/docs/concepts#what-is-an-object)**: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
+- A **[Relationship Tuple](/docs/concepts#what-is-a-relationship-tuple)**: a group stored in OpenFGA that consists of a user, a relation, and an object
 - [Union Operator](/docs/configuration-language#the-union-operator): can be used to indicate that the user has multiple ways of being related to an object
-
-</details>
+</Accordion>
 
 ## Step by step
 
@@ -106,7 +103,7 @@ The following three steps indicate and verify that `bob` is an `editor` of `docu
 4. Create a new _relationship tuple_ to indicate that **folder:notes** is a `parent` of **document:meeting_notes.doc**
 5. Check to see if **bob** is an `editor` of **document:meeting_notes.doc**
 
-### 01. Update the Authorization Model to allow a parent relationship between folder and document
+<h3 id="01-update-the-athorization-model-to-allow-a-parent-relationship-between-folder-and-document">01. Update the Authorization Model to allow a parent relationship between folder and document</h3>
 
 As documented in [Modeling Concepts: Object to Object Relationships](/docs/modeling/building-blocks/object-to-object-relationships), the following update to the authorization model allows a `parent` relation between a `folder` and a `document`:
 
@@ -244,7 +241,7 @@ To leverage the new cascading relation, create a relationship tuple stating that
 **Note:** Use unique ids for each object and user within your application domain when creating relationship tuples for OpenFGA. We use first names and simple ids below as an easy-to-follow example.
 </Warning>
 
-### 04. Create a new relationship tuple to indicate that `folder:notes` is a `parent` of `document:meeting_notes.doc`
+<h3 id="04-create-a-new-relationship-tuple-to-indicate-that-foldernotes-is-a-parent-of-documentmeeting_notesdoc">04. Create a new relationship tuple to indicate that `folder:notes` is a `parent` of `document:meeting_notes.doc`</h3>
 
 Now that `bob` is an `editor` of `folder:notes`, we need to indicate that **folder:notes** is a `parent` of **document:meeting_notes.doc**.
 
@@ -259,7 +256,7 @@ Now that `bob` is an `editor` of `folder:notes`, we need to indicate that **fold
   ]}
 />
 
-### 05. Check if `bob` is an `editor` of `document:meeting_notes.doc`
+<h3 id="05-check-if-bob-is-an-editor-of-documentmeeting_notesdoc">05. Check if `bob` is an `editor` of `document:meeting_notes.doc`</h3>
 
 After changing the authorization model and adding two new relationship tuples, verify that your configuration is correct by running the following check: **is bob an editor of document:meeting_notes.doc**.
 

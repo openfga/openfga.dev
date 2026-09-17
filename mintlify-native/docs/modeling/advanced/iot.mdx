@@ -22,41 +22,34 @@ This tutorial explains how to model permissions for an IoT system using OpenFGA.
 
 In order to understand this guide correctly you must be familiar with some OpenFGA concepts and know how to develop the things that we will list below.
 
-<details>
-<summary>
-
-### OpenFGA concepts
-
 It would be helpful to have an understanding of some concepts of OpenFGA before you start.
 
-</summary>
-
-#### Direct access
+<Accordion title="OpenFGA concepts" id="-concepts">
+<h4 id="direct-access">Direct access</h4>
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](/docs/modeling/direct-access)
 
-#### Modeling concentric relationships
+<h4 id="modeling-concentric-relationships">Modeling concentric relationships</h4>
 
 You need to know how to update the authorization model to allow having nested relations such as all writers are readers. [Learn more →](/docs/modeling/building-blocks/concentric-relationships)
 Used here to indicate that both IT Admins and Security Guards can view live video.
 
-#### Direct relationships
+<h4 id="direct-relationships">Direct relationships</h4>
 
 You need to know how to disallow granting direct relation to an object and requiring the user to have a relation with another object that would imply a relation with the first one. [Learn more →](/docs/modeling/building-blocks/direct-relationships)
 Used here to indicate that "Rename Device" is a permission that cannot be assigned directly, but can only be granted through the "IT Admin" role.
 
-#### User groups
+<h4 id="user-groups">User groups</h4>
 
 You need to know how to add users to groups and create relationships between groups of users and an object. [Learn more →](/docs/modeling/building-blocks/direct-relationships)
 
 Used here to indicate that security guards on a certain group are security guards on a device in that group.
 
-#### Concepts & configuration language
+<h4 id="concepts--configuration-language">Concepts & configuration language</h4>
 
-- Some OpenFGA concepts
+- Some [OpenFGA concepts](/docs/concepts)
 - [Configuration Language](/docs/configuration-language)
-
-</details>
+</Accordion>
 
 ## What You Will be modeling
 
@@ -100,7 +93,7 @@ In production, it is highly recommended to use unique, immutable identifiers. Na
 
 ## Modeling device authorization
 
-The OpenFGA service is based on [Zanzibar](https://zanzibar.academy), a Relationship Based Access Control system. This means it relies on objects and user relations to perform authorization checks.
+The OpenFGA service is based on [Zanzibar](https://zanzibar.academy), a Relationship Based Access Control system. This means it relies on [objects](/docs/concepts#what-is-an-object) and [user](/docs/concepts#what-is-a-user) [relations](/docs/concepts#what-is-a-relation) to perform authorization [checks](/docs/concepts#what-is-a-check-request).
 
 Starting with devices, you will learn how to express the requirements in terms of relations you can feed into OpenFGA.
 
@@ -115,7 +108,7 @@ The goal is to ask OpenFGA whether person X has permission to perform action Y o
 
 The actions users can take on a device are: _view live videos_, _view recorded videos_, and _rename devices_. Mapping them to relations, they become: _live_video_viewer_, _recorded_video_viewer_, _device_renamer_.
 
-In OpenFGA, the authorization model for the device would be:
+In OpenFGA, the [authorization model](/docs/concepts#what-is-an-authorization-model) for the device would be:
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -213,7 +206,7 @@ Likewise, we will add Beth's relationship with device:1.
 
 #### Verification
 
-Now that you have some relationship tuples added, you can start using it to ask some questions, e.g., whether a person has access to rename a device.
+Now that you have some relationship tuples added, you can start using it to [ask](/docs/concepts#what-is-a-check-request) some questions, e.g., whether a person has access to rename a device.
 
 First, you will find out if `anne` has permission to `view the live video` on `device:1`, then you will see if `anne` can `rename` `device:1`.
 
@@ -238,11 +231,11 @@ Now, check the other relationships fore Anne and Beth.
 
 ### 03. Updating our authorization model to facilitate future changes
 
-Notice how you had to add the Anne and Beth as direct relations to all the actions they can take on Device 1 instead of just stating that they are related as Security Guard or IT Admin, and having the other permissions implied? In practice this might have some disadvantages: if your authorization model changes, (e.g so that Security Guards can no longer view previously recorded videos), you would need to change relationship tuples in the system instead of just changing the configuration.
+Notice how you had to add the Anne and Beth as [direct relations](/docs/concepts#what-are-direct-and-implied-relationships) to all the actions they can take on Device 1 instead of just stating that they are related as Security Guard or IT Admin, and having the other permissions implied? In practice this might have some disadvantages: if your authorization model changes, (e.g so that Security Guards can no longer view previously recorded videos), you would need to change relationship tuples in the system instead of just changing the configuration.
 
 We can address this by using [**concentric relation models**](/docs/modeling/building-blocks/concentric-relationships). It allows you to express that sets of users who have a relation X to the object also have relation Y. For example, anyone that is related to the device as a `security_guard` is also related as a `live_video_viewer` and `recorded_video_viewer`, and anyone who is related to the device as an `it_admin` is also related as a `live_video_viewer`, a `recorded_video_viewer`, and a `device_renamer`.
 
-At the end you want to make sure that checking if Anne, Beth, Charles, or Dianne have permission to view the live video or rename the device, will get you the correct answers back.
+At the end you want to make sure that [checking](/docs/concepts#what-is-a-check-request) if Anne, Beth, Charles, or Dianne have permission to view the live video or rename the device, will get you the correct answers back.
 
 The resulting authorization model is:
 
@@ -364,7 +357,7 @@ Instead of adding different relationship tuples with direct relations to the act
   ]}
 />
 
-#### Verification
+<h4 id="verification-1">Verification</h4>
 
 We can now verify whether charles is related to device:1 as live_video_viewer.
 
@@ -396,7 +389,7 @@ The requirements regarding device groups were:
 - **Devices** can be grouped into **Device Groups**
 - **Security guards** with access to the **Device Group** are **Security Guards** with access to the **Devices** within the **Device Group**. Similarly for **IT Admins**
 
-The type definition for the device group:
+The [type definition](/docs/concepts#what-is-a-type-definition) for the device group:
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -419,7 +412,7 @@ The type definition for the device group:
   }} skipVersion={true}
 />
 
-With this change, the full authorization model becomes:
+With this change, the full [authorization model](/docs/concepts#what-is-an-authorization-model) becomes:
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -527,7 +520,7 @@ With this change, the full authorization model becomes:
 
 #### Updating relationship tuples on roles
 
-Remember that **Charles** is a **Security Guard**, and **Dianne** an **IT Admin** on **Group 1**, enter the relationship tuples below to reflect that.
+Remember that **Charles** is a **Security Guard**, and **Dianne** an **IT Admin** on **Group 1**, enter the [relationship tuples](/docs/concepts#what-is-a-relationship-tuple) below to reflect that.
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -573,7 +566,7 @@ You still need to give all the security guards of group1 a `security_guard` rela
   ]}
 />
 
-#### Verification
+<h4 id="verification-2">Verification</h4>
 
 Now that you have finalized the model and added the relationship tuples, you can start asking some queries. Try asking the same queries you did earlier but on device 2 instead of device 1.
 
@@ -604,7 +597,7 @@ Notice that despite following **[Step 03](/docs/modeling/advanced/iot#03-updatin
 
 #### Updating the authorization model
 
-`anne` is a `live_video_viewer` by both her position as `security_guard` as well as her direct relationship assignment. This is undesirable. Imagine `anne` left her position of `security_guard` and she will still have `live_video_viewer` access to `device:1`.
+`anne` is a `live_video_viewer` by both her position as `security_guard` as well as her [direct relationship](/docs/concepts#what-are-direct-and-implied-relationships) assignment. This is undesirable. Imagine `anne` left her position of `security_guard` and she will still have `live_video_viewer` access to `device:1`.
 
 To remedy this, remove `[user]` from `live_video_viewer`, `recorded_video_viewer` and `device_renamer`. This denies direct relations to `live_video_viewer`, `recorded_video_viewer` and `device_renamer` from having an effect. To do this:
 
@@ -702,17 +695,17 @@ To remedy this, remove `[user]` from `live_video_viewer`, `recorded_video_viewer
 
 <Note>
 
-Notice that any reference to the [**direct relationship type restrictions**](/docs/configuration-language#direct-relationship-type-restrictions) has been removed. That indicates that a user cannot have a direct relationship with an object in this type.
+Notice that any reference to the [**direct relationship type restrictions**](/docs/configuration-language#direct-relationship-type-restrictions) has been removed. That indicates that a user cannot have a [direct relationship](/docs/concepts#what-are-direct-and-implied-relationships) with an object in this type.
 
 With this change, `anne` can no longer have a `live_video_viewer` permission for `device:1` except through having a `security_guard` or `it_admin` role first, and when she loses access to that role, she will automatically lose access to the `live_video_viewer` permission.
 
 </Note>
 
-#### Verification
+<h4 id="verification-3">Verification</h4>
 
 Now that direct relationship is denied, we should see that `anne` has `live_video_viewer` relation to `device:1` solely based on her position as `security_guard` to `device:1`. Let's find out.
 
-To test this, we can add a new user `emily`. Emily is **not** a `security_guard` nor an `it_admin`. However, we attempt to access via direct relations by adding the following relationship tuples:
+To test this, we can add a new user `emily`. Emily is **not** a `security_guard` nor an `it_admin`. However, we attempt to access via direct relations by adding the following [relationship tuples](/docs/concepts#what-is-a-relationship-tuple):
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -747,7 +740,7 @@ Query on the other relationships and you will see:
 
 ## Summary
 
-In this post, you were introduced to fine grain authentication and OpenFGA.
+In this post, you were introduced to [fine grain authentication](/docs/authorization-concepts#what-is-fine-grained-authorization) and OpenFGA.
 
 Upcoming posts will dive deeper into OpenFGA, introducing concepts that will improve on the model you built today, and tackling more complex permission systems, with more relations and requirements that need to be met.
 

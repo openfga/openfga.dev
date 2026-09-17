@@ -8,10 +8,12 @@ import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
 
 # Object to Object Relationships
 
-In this guide you'll learn how to model your application with objects that are not specifically tied to a user. For example, a `folder` is a `parent` of a `document`.
+In this guide you'll learn how to model your application with [objects](/docs/concepts#what-is-an-object) that are not specifically tied to a user. For example, a `folder` is a `parent` of a `document`.
 
 <Note>
-This design pattern is helpful in the case where there are relationships between different objects. With OpenFGA, so long as both objects are in a type defined in the authorization model, relationship tuples can be added to indicate a relationship between them.
+**When to use**
+
+This design pattern is helpful in the case where there are relationships between different objects. With OpenFGA, so long as both objects are in a type defined in the [authorization model](/docs/concepts#what-is-an-authorization-model), relationship tuples can be added to indicate a relationship between them.
 
 For example:
 
@@ -27,15 +29,11 @@ For example:
 
 ## Before you start
 
-To better follow this guide, make sure you're familiar with some OpenFGA concepts and know how to develop the things listed below.
+To better follow this guide, make sure you're familiar with some [OpenFGA concepts](/docs/concepts) and know how to develop the things listed below.
 
-<details>
-<summary>
+You will start with the _[authorization model](/docs/concepts#what-is-an-authorization-model)_ below, it represents a `document` _[type](/docs/concepts#what-is-a-type)_ that can have users **[related](/docs/concepts#what-is-a-relation)** as `editor`, and `folder` type that can have users related as `viewer`.
 
-You will start with the _authorization model_ below, it represents a `document` _type_ that can have users **related** as `editor`, and `folder` type that can have users related as `viewer`.
-
-</summary>
-
+<Accordion title="Authorization model">
 <AuthzModelSnippetViewer
   configuration={{
     schema_version: '1.1',
@@ -77,25 +75,24 @@ You will start with the _authorization model_ below, it represents a `document` 
 
 In addition, you will need to know the following:
 
-### Modeling user groups
+<h3 id="modeling-user-groups">Modeling user groups</h3>
 
 You need to know how to add users to groups and grant groups access to resources. [Learn more →](/docs/modeling/user-groups)
 
-### OpenFGA concepts
+<h3 id="-concepts">OpenFGA concepts</h3>
 
-- A **Type**: a class of objects that have similar characteristics
-- A **User**: an entity in the system that can be related to an object
-- A **Relation**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
-- An **Object**: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
-- A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
-
-</details>
+- A **[Type](/docs/concepts#what-is-a-type)**: a class of objects that have similar characteristics
+- A **[User](/docs/concepts#what-is-a-user)**: an entity in the system that can be related to an object
+- A **[Relation](/docs/concepts#what-is-a-relation)**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An **[Object](/docs/concepts#what-is-an-object)**: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
+- A **[Relationship Tuple](/docs/concepts#what-is-a-relationship-tuple)**: a grouping consisting of a user, a relation and an object stored in OpenFGA
+</Accordion>
 
 ## Step by step
 
 ### 01. Create parent relations in document
 
-To represent that a `folder` can be a `parent` of a `document`, we first need to modify our `document` type definition to allow a `parent` relation.
+To represent that a `folder` can be a `parent` of a `document`, we first need to modify our `document` [type definition](/docs/concepts#what-is-a-type-definition) to allow a `parent` [relation](/docs/concepts#what-is-a-relation).
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -140,7 +137,7 @@ To represent that a `folder` can be a `parent` of a `document`, we first need to
 
 ### 02. Add Parent Relationship Tuples
 
-Once the type definition is updated, we can now create the relationship between a `folder` as a `parent` of a `document`. To do this, we will create a new **relationship tuple** that describes: **folder:budgets** is a `parent` of **document:may_budget.doc**. In OpenFGA, users in the relationship tuples can not only be IDs, but also other objects in the form of `type:object_id`.
+Once the type definition is updated, we can now create the [relationship](/docs/concepts#what-is-a-relationship) between a `folder` as a `parent` of a `document`. To do this, we will create a new **[relationship tuple](/docs/concepts#what-is-a-relationship-tuple)** that describes: **folder:budgets** is a `parent` of **document:may_budget.doc**. In OpenFGA, [users](/docs/concepts#what-is-a-user) in the relationship tuples can not only be IDs, but also other objects in the form of `type:object_id`.
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -155,7 +152,7 @@ Once the type definition is updated, we can now create the relationship between 
 
 ### 03. Check that parent folders have permissions
 
-Once that relationship tuple is added to OpenFGA, we can check if the relationship is valid by asking the following: **"is folder:budgets a parent of document:may_budget.doc?"**
+Once that relationship tuple is added to OpenFGA, we can [check](/docs/concepts#what-is-a-check-request) if the relationship is valid by asking the following: **"is folder:budgets a parent of document:may_budget.doc?"**
 
 <CheckRequestViewer user={'folder:budgets'} relation={'parent'} object={'document:may_budget.doc'} allowed={true} />
 
@@ -171,7 +168,7 @@ Object to object can be used for more advanced use case, such as [entitlements](
 
 ### 01. Create authorization model with object to object relationships
 
-To do this, the authorization model will have two types - feature and plan.
+To do this, the authorization model will have two [types](/docs/concepts#what-is-a-type) - feature and plan.
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -232,7 +229,7 @@ To do this, the authorization model will have two types - feature and plan.
 
 Type `feature` has two relations, associated_plan and access. Relation `associated_plan` allows associating plans with features while `access` defines who can access the feature. In our case, the access can be achieved either from
 
-- direct relationship via [direct relationship type restrictions](/docs/configuration-language#direct-relationship-type-restrictions), or `this`
+- [direct relationship](/docs/concepts#what-are-direct-and-implied-relationships) via [direct relationship type restrictions](/docs/configuration-language#direct-relationship-type-restrictions), or `this`
 - object to object relationship where a user can access because it is a subscriber_member of a particular plan AND that plan is associated with the feature.
 
 Here, we define `plan` as the user of object `feature` with relationship `associated_plan` rather than defining `feature` as the user of object `plan` with relationship `feature`. The reason we choose the former is that we want to describe our system in the following [plain language](/docs/modeling/getting-started#write-it-in-plain-language):

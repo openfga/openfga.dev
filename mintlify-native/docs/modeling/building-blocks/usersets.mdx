@@ -10,11 +10,11 @@ import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx'
 
 ## What is a userset?
 
-A userset represents a set or collection of users.
+A userset represents a set or collection of [users](/docs/concepts#what-is-a-user).
 
-Usersets can be used to indicate that a group of users in the system have a certain relation with an object. This can be used to assign permissions to groups of users rather than specific ones, allowing us to represent the permissions in our system using less tuples and granting us flexibility in granting or denying access in bulk.
+Usersets can be used to indicate that a group of users in the system have a certain [relation](/docs/concepts#what-is-a-relation) with an [object](/docs/concepts#what-is-an-object). This can be used to assign permissions to groups of users rather than specific ones, allowing us to represent the permissions in our system using less tuples and granting us flexibility in granting or denying access in bulk.
 
-In OpenFGA, usersets are represented via this notation: `object#relation`, where object is made up of a type and an object identifier. For example:
+In OpenFGA, usersets are represented via this notation: `object#relation`, where [object](/docs/concepts#what-is-an-object) is made up of a [type](/docs/concepts#what-is-a-type) and an object identifier. For example:
 
 - `company:xyz#employee` represents all users that are related to `company:xyz` as `employee`
 - `tweet:12345#viewer` represents all users that are related to `tweet:12345` as `viewer`
@@ -80,7 +80,7 @@ Now let us assume that the store has the following tuples:
 ]
 ```
 
-If we call the check API to see if user `anne` has a `reader` relationship with `document:budget`, OpenFGA will check whether `anne` is part of the userset that does have a `reader` relationship. Because she is part of that userset, the request will return true:
+If we call the [check API](/docs/concepts#what-is-a-check-request) to see if user `anne` has a `reader` relationship with `document:budget`, OpenFGA will check whether `anne` is part of the userset that does have a `reader` relationship. Because she is part of that userset, the request will return true:
 
 <CheckRequestViewer user={'user:anne'} relation={'reader'} object={'document:budget'} allowed={true} />
 

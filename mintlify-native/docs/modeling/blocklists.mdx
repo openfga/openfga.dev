@@ -11,6 +11,8 @@ import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx'
 In this guide you'll see how to model preventing users from accessing objects using OpenFGA. For example, `blocking` users from accessing a `document`, even if it has been already shared with them.
 
 <Note>
+**When to use**
+
 Exclusion is useful while building applications. You may need to support access patterns like granting access to some users, but excluding specific people or groups, similar to how users can block others from following them on social media, or prevent them from sharing documents on Google Drive.
 
 This is useful when:
@@ -21,11 +23,11 @@ This is useful when:
 
 ## Before you start
 
-Before you start this guide, make sure you're familiar with some OpenFGA concepts and know how to develop the things listed below.
+Before you start this guide, make sure you're familiar with some [OpenFGA concepts](/docs/concepts) and know how to develop the things listed below.
 
 <Accordion title="Prerequisites and starting model">
 
-You will start with the _authorization model_ below, it represents a `document` _type_ that can have users **related** as `editor`, and `team` type that can have users related as `member`.
+You will start with the _[authorization model](/docs/concepts#what-is-an-authorization-model)_ below, it represents a `document` _[type](/docs/concepts#what-is-a-type)_ that can have users **[related](/docs/concepts#what-is-a-relation)** as `editor`, and `team` type that can have users related as `member`.
 
 Let us also assume that we have a `document` called "planning", shared for editing within the product `team` (comprised of becky and carl).
 
@@ -100,20 +102,20 @@ In addition, you will need to know the following:
 
 You need to know how to add users to groups and grant groups access to resources. [Learn more →](/docs/modeling/user-groups)
 
-### OpenFGA Concepts
+<h3 id="-concepts">OpenFGA Concepts</h3>
 
-- A **Type**: a class of objects that have similar characteristics
-- A **User**: an entity in the system that can be related to an object
-- A **Relation**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
-- An **Object**: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
-- A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
+- A **[Type](/docs/concepts#what-is-a-type)**: a class of objects that have similar characteristics
+- A **[User](/docs/concepts#what-is-a-user)**: an entity in the system that can be related to an object
+- A **[Relation](/docs/concepts#what-is-a-relation)**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An **[Object](/docs/concepts#what-is-an-object)**: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
+- A **[Relationship Tuple](/docs/concepts#what-is-a-relationship-tuple)**: a grouping consisting of a user, a relation and an object stored in OpenFGA
 - [Exclusion Operator](/docs/configuration-language#the-exclusion-operator): the exclusion operator can be used to exclude certain usersets from being related to an object
 
 </Accordion>
 
 ## Step by step
 
-With the above authorization model and relationship tuples, OpenFGA will correctly respond with `{"allowed":true}` when check is called to see if Carl and Becky can edit this `document`.
+With the above authorization model and relationship tuples, OpenFGA will correctly respond with `{"allowed":true}` when [check](/docs/concepts#what-is-a-check-request) is called to see if Carl and Becky can edit this `document`.
 
 We can verify that by issuing two check requests:
 
@@ -137,7 +139,7 @@ c. [Becky still has edit access](#c-becky-still-has-edit-access)
 
 ### 01. Modify our model so users can be blocked from accessing a document
 
-To allow users to be "blocked" from accessing a `document`, we first need to allow this relation. We'll update our store model to add a `blocked` relation to the `document` type.
+To allow users to be "blocked" from accessing a `document`, we first need to allow this relation. We'll update our store model to add a `blocked` [relation](/docs/concepts#what-is-a-relation) to the `document` type.
 
 The authorization model becomes this:
 
@@ -244,7 +246,7 @@ To check if our new model works, we'll add a relationship tuple with Carl as `bl
 
 #### a. Indicate that Carl is blocked from the planning document
 
-With our modified authorization model, we can indicate that Carl is blocked by adding this _relationship tuple_.
+With our modified authorization model, we can indicate that Carl is blocked by adding this _[relationship tuple](/docs/concepts#what-is-a-relationship-tuple)_.
 
 <WriteRequestViewer
   relationshipTuples={[

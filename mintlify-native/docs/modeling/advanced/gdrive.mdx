@@ -14,13 +14,13 @@ This tutorial explains how to represent [Google Drive](https://www.google.com/in
 <Note>
 **What you will learn**
 
-- Indicate relationships between a group of **users** and an **object**. See [Modeling User Groups](/docs/modeling/user-groups) for more.
+- Indicate [relationships](/docs/concepts#what-is-a-relationship) between a group of **[users](/docs/concepts#what-is-a-user)** and an **[object](/docs/concepts#what-is-an-object)**. See [Modeling User Groups](/docs/modeling/user-groups) for more.
   Used here to indicate that all users within a domain can access a document (sharing a document within an organization).
-- Model **concentric relationship** to have a certain relation on an object imply another relation on the same object. See [Modeling Concepts: Concentric Relationships](/docs/modeling/building-blocks/concentric-relationships) for more.
+- Model **concentric relationship** to have a certain [relation](/docs/concepts#what-is-a-relation) on an object imply another relation on the same object. See [Modeling Concepts: Concentric Relationships](/docs/modeling/building-blocks/concentric-relationships) for more.
   Used here is to indicate that writers are also commenters and viewers.
 - Using [**the union operator**](/docs/configuration-language#the-union-operator) condition to indicate that a user might have a certain relation with an object if they match any of the criteria indicated.
   Used here to indicate that a user can be a viewer on a document, or can have the viewer relationship implied through commenter.
-- Using the **type bound public access** in a relationship tuple's user field to indicate that everyone has a certain relation with an object. See [Modeling Public Access](/docs/modeling/public-access) for more.
+- Using the **[type bound public access](/docs/concepts#what-is-type-bound-public-access)** in a [relationship tuple's](/docs/concepts#what-is-a-relationship-tuple) user field to indicate that everyone has a certain relation with an object. See [Modeling Public Access](/docs/modeling/public-access) for more.
   Used here to [share documents publicly](#04-sharing-files-and-folders-publicly).
 - Model [**parent-child objects**](/docs/modeling/parent-child) to indicate that a user having a relationship with a certain object implies having a relationship with another object in OpenFGA.
   Used here is to indicate that a writer on a folder is a writer on all documents inside that folder.
@@ -30,34 +30,28 @@ This tutorial explains how to represent [Google Drive](https://www.google.com/in
 
 In order to understand this guide correctly you must be familiar with some OpenFGA concepts and know how to develop the things that we will list below.
 
-<details>
-<summary>
-
-### OpenFGA concepts
-
 It would be helpful to have an understanding of some concepts of OpenFGA before you start.
 
-</summary>
-
-#### Modeling concentric relationships
+<Accordion title="OpenFGA concepts" id="-concepts">
+<h4 id="modeling-concentric-relationships">Modeling concentric relationships</h4>
 
 You need to know how to update the authorization model to allow having nested relations such as all writers are readers. [Learn more →](/docs/modeling/building-blocks/concentric-relationships)
 
-#### Modeling object-to-object relationships
+<h4 id="modeling-object-to-object-relationships">Modeling object-to-object relationships</h4>
 
 You need to know how to create relationships between objects and how that might affect a user's relationships to those objects. [Learn more →](/docs/modeling/building-blocks/object-to-object-relationships)
 
 Used here to indicate that users who have access to view a folder have access to view all documents inside it.
 
-#### Modeling public access
+<h4 id="modeling-public-access">Modeling public access</h4>
 
 You need to know how to add a relationship tuple to indicate that a resource is publicly available. [Learn more →](/docs/modeling/public-access)
 
-#### Concepts & configuration language
+<h4 id="concepts--configuration-language">Concepts & configuration language</h4>
 
+- The [OpenFGA Concepts](/docs/concepts)
 - [Configuration Language](/docs/configuration-language)
-
-</details>
+</Accordion>
 
 ## What you will be modeling
 
@@ -96,7 +90,7 @@ There will be:
 - a 2021-planning folder, viewable by Diane and contains the 2021-budget document
 - a 2021-public-roadmap document, owned by Anne, available for members xyz domain to comment on and is publicly viewable
 
-## Modeling Google Drive's permissions
+<h2 id="modeling-google-drives-permissions">Modeling Google Drive's permissions</h2>
 
 ### 01. Individual permissions
 
@@ -106,7 +100,7 @@ At the end of this section we want to have the following permissions represented
 
 ![Image showing permissions](./assets/gdrive-gdrive1.svg)
 
-To represent permissions in OpenFGA we use relations. For document permissions we need to create the following authorization model:
+To represent permissions in OpenFGA we use [relations](/docs/concepts#what-is-a-relation). For document permissions we need to create the following [authorization model](/docs/concepts#what-is-an-authorization-model):
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -144,7 +138,7 @@ To represent permissions in OpenFGA we use relations. For document permissions w
   }}
 />
 
-The OpenFGA service determines if a user has access to an object by checking if the user has a relation to that object. Let us examine one of those relations in detail:
+The OpenFGA service determines if a [user](/docs/concepts#what-is-a-user) has access to an [object](/docs/concepts#what-is-an-object) by [checking](/docs/concepts#what-is-a-check-request) if the user has a relation to that object. Let us examine one of those relations in detail:
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -169,7 +163,7 @@ The OpenFGA service determines if a user has access to an object by checking if 
 <Note>
 The snippet above indicates that objects of type document have users related to them as "viewer" if those users belong to the userset of all users related to the document as "viewer".
 
-This means that a user can be directly related as a viewer to an object of type "document"
+This means that a user can be [directly related](/docs/concepts#what-are-direct-and-implied-relationships) as a viewer to an object of type "document"
 </Note>
 
 If we want to say `beth` is a commenter of **document:2021-budget** we create this relationship tuple:
@@ -200,7 +194,7 @@ We could also say that `anne` is an owner of the same document:
   ]}
 />
 
-And ask some questions to OpenFGA:
+And [ask](/docs/concepts#what-is-a-check-request) some questions to OpenFGA:
 
 <CheckRequestViewer user={'user:anne'} relation={'owner'} object={'document:2021-budget'} allowed={true} />
 <CheckRequestViewer user={'user:anne'} relation={'writer'} object={'document:2021-budget'} allowed={false} />
@@ -308,7 +302,7 @@ At the end of this section we want to end up with the following permissions repr
 
 ![Image showing permissions](./assets/gdrive-gdrive2.svg)
 
-To add support for domains and members all we need to do is add this object to the OpenFGA authorization model. In addition, update the model to allow domain member to be assigned to document:
+To add support for domains and members all we need to do is add this object to the OpenFGA [authorization model](/docs/concepts#what-is-a-type-definition). In addition, update the model to allow domain member to be assigned to document:
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -431,7 +425,7 @@ Let's now create a domain, add members to it and make all members **viewers** of
   ]}
 />
 
-The last relationship tuple introduces a new **OpenFGA** concept. A **userset**. When the value of a user is formatted like this **objectType:objectId#relation**, OpenFGA will automatically expand the userset into all its individual user identifiers:
+The last relationship tuple introduces a new **OpenFGA** concept. A **[userset](/docs/concepts#what-is-a-user)**. When the value of a user is formatted like this **objectType:objectId#relation**, OpenFGA will automatically expand the userset into all its individual user identifiers:
 
 <CheckRequestViewer user={'user:charles'} relation={'viewer'} object={'document:2021-budget'} allowed={true} />
 
@@ -602,7 +596,7 @@ We express it like this:
 <Note>
 The users with a viewer relationship to a certain object of type "document" are any of:
 
-- the "viewers": the set of users who are directly related to the document as a "viewer"
+- the "viewers": the set of users who are [directly related](/docs/concepts#what-are-direct-and-implied-relationships) to the document as a "viewer"
 - the "commenters": the set of users who are related to the object as "commenter"
 - the "viewers of the parents": from the objects who are related to the doc as parent, return the sets of users who are related to those objects as "viewer"
 
@@ -761,7 +755,7 @@ Assume that `Anne` has created a new document: `2021-public-roadmap`, has shared
 
 ![Image showing requirements](./assets/gdrive-gdrive4.svg)
 
-Here's where another OpenFGA feature, type bound public access (as in everyone), would come in handy.
+Here's where another OpenFGA feature, [type bound public access](/docs/concepts#what-is-type-bound-public-access) (as in everyone), would come in handy.
 
 First, we will need to update our model to allow for public access with type `user` for viewer relation.
 

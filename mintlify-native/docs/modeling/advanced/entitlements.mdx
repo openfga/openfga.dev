@@ -22,33 +22,26 @@ This tutorial explains how to model entitlements for a platform like GitHub usin
 
 In order to understand this guide correctly you must be familiar with some OpenFGA concepts and know how to develop the things that we will list below.
 
-<details>
-<summary>
-
-### OpenFGA concepts
-
 It would be helpful to have an understanding of some concepts of OpenFGA before you start.
 
-</summary>
-
-#### Modeling object-to-object relationships
+<Accordion title="OpenFGA concepts" id="-concepts">
+<h4 id="modeling-object-to-object-relationships">Modeling object-to-object relationships</h4>
 
 You need to know how to create relationships between objects and how that might affect a user's relationships to those objects. [Learn more →](/docs/modeling/building-blocks/object-to-object-relationships)
 
 Used here to indicate that members of an org are subscriber members of the plan the org is subscriber to, and subscriber members of a plan get access to all the plan's features.
 
-#### Direct relationships
+<h4 id="direct-relationships">Direct relationships</h4>
 
 You need to know how to disallow granting direct relation to an object and requiring the user to have a relation with another object that would imply a relation with the first one. [Learn more →](/docs/modeling/building-blocks/direct-relationships)
 
 Used here to indicate that "access" to a feature cannot be directly granted to a user, but is implied through the users organization subscribing to a plan that offers that feature.
 
-#### Concepts & configuration language
+<h4 id="concepts--configuration-language">Concepts & configuration language</h4>
 
-- Some OpenFGA concepts
+- Some [OpenFGA concepts](/docs/concepts)
 - [Configuration Language](/docs/configuration-language)
-
-</details>
+</Accordion>
 
 ## What you will be modeling
 
@@ -113,7 +106,7 @@ By the end of this tutorial, you should be able to query OpenFGA with queries li
 
 ### 01. Building The Initial Authorization Model And Relationship Tuples
 
-In this tutorial you are going to take a different approach to previous tutorials. You will start with a simple authorization model, add relationship tuples to represent some sample scenarios, and iterate until those scenarios return the results you expect.
+In this tutorial you are going to take a different approach to previous tutorials. You will start with a simple [authorization model](/docs/concepts#what-is-an-authorization-model), add [relationship tuples](/docs/concepts#what-is-a-relationship-tuple) to represent some sample scenarios, and iterate until those scenarios return the results you expect.
 
 In the scenarios outlined above, you have `organizations`, `plans` and `features`.
 
@@ -287,7 +280,7 @@ For example, the relationship tuple indicating that _anne is a member of organiz
 
 Now that you have some data, you can start using it to ask is `${USER}` related to `${OBJECT}` as `${RELATION}`?
 
-First, you will check if `anne` is a member of `organization:alpha`. This is one of the relationship tuples you previously added, you will make sure OpenFGA can detect a relation in this case.
+First, you will [check](/docs/concepts#what-is-a-check-request) if `anne` is a member of `organization:alpha`. This is one of the relationship tuples you previously added, you will make sure OpenFGA can detect a relation in this case.
 
 <CheckRequestViewer user={'user:anne'} relation={'member'} object={'organization:alpha'} allowed={true} />
 
@@ -332,13 +325,13 @@ Add it now. Like so:
 
 <Info>
 
-`access` relation was added to the configuration of the `feature` type.
+`access` [relation](/docs/concepts#what-is-a-relation) was added to the configuration of the `feature` [type](/docs/concepts#what-is-a-type).
 
 </Info>
 
 <Note>
 
-In this tutorial, you will find the phrases direct relationship and implied relationship.
+In this tutorial, you will find the phrases [direct relationship and implied relationship](/docs/concepts#what-are-direct-and-implied-relationships).
 
 A _direct relationship_ R between user X and object Y means the relationship tuple (user=X, relation=R, object=Y) exists, and the OpenFGA authorization model for that relation allows this direct relationship (by use of [direct relationship type restrictions](/docs/configuration-language#direct-relationship-type-restrictions)).
 
@@ -408,7 +401,7 @@ Now we can ask the following query: `is anne related to feature:issues as access
 
 <CheckRequestViewer user={'user:anne'} relation={'access'} object={'feature:issues'} allowed={false} />
 
-So far so good. OpenFGA understood your query, but said that no relation exists. That is because according to the configuration provided so far, there is no `access` relation between `anne` and `feature:issues`.
+So far so good. OpenFGA understood your query, but said that no [relation](/docs/concepts#what-is-a-relation) exists. That is because according to the configuration provided so far, there is no `access` relation between `anne` and `feature:issues`.
 
 We can also try to query `is organization:alpha related to feature:issues as access?` and we see that there is no relationship.
 
@@ -497,7 +490,7 @@ So everyone who has direct access, as well as the subscribers of the associated 
 
 That would mean that in order for an object to have an `access` relation to a feature y, there needs to be either:
 
-- a direct relationship via a relationship tuple:
+- a [direct relationship](/docs/concepts#what-are-direct-and-implied-relationships) via a relationship tuple:
   e.g. `{ "user": "user:x", "relation": "access", "object": "feature:y" }`
 - a subscriber relationship with another object related to x associated_plan:
   e.g. `{ "user": "user:x", "relation": "subscriber", "object": "plan:z" } { "user": "plan:z", "relation": "associated_plan", "object": "feature:y" }`
@@ -778,7 +771,7 @@ a subsequent check for `is anne related to feature:issues as access?` would retu
 - `{ "user": "organization:z", "relation": "subscriber", "object": "plan:y" }`
 - `{ "user": "plan:y", "relation": "associated_plan", "object": "feature:issues" }`
 
-#### Verification
+<h4 id="verification-1">Verification</h4>
 
 Ensure that your authorization model matches the one below
 

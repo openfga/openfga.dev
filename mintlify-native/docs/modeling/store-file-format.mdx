@@ -106,7 +106,7 @@ The model defines the authorization schema including:
 
 Tuples define the actual relationships between users and objects. You can specify them in two ways:
 
-#### Option A: External File Reference
+<h4 id="option-a-external-file-reference-1">Option A: External File Reference</h4>
 ```yaml
 tuple_file: "./path/to/tuples.yaml"
 ```
@@ -227,7 +227,7 @@ tests:
 
 The store file supports flexible composition:
 
-### Global + Test-Specific Data
+<h3 id="global--test-specific-data">Global + Test-Specific Data</h3>
 - **Global tuples**: Applied to all tests
 - **Test-specific tuples**: Appended to global tuples for individual tests
 - Both `tuple_file` and `tuples` can be used together

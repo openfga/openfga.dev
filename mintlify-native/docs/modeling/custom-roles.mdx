@@ -26,17 +26,11 @@ Custom roles are useful when:
 
 ## Before you start
 
-Before you start this guide, make sure you're familiar with some OpenFGA concepts and know how to develop the things listed below.
+Before you start this guide, make sure you're familiar with some [OpenFGA concepts](/docs/concepts) and know how to develop the things listed below.
 
-<details>
-<summary>
+To start, let's say there is an application with a [type](/docs/concepts#what-is-a-type) called `asset-category`. Users can have view and/or edit access to assets in that category. Any user who can edit can also view.
 
-### Initial Model
-
-To start, let's say there is an application with a type called `asset-category`. Users can have view and/or edit access to assets in that category. Any user who can edit can also view.
-
-</summary>
-
+<Accordion title="Initial Model" id="initial-model">
 We'll start with the following authorization model showing a system with an `asset-category` type. This type allows users to have view and edit access to it.
 
 <AuthzModelSnippetViewer
@@ -82,20 +76,19 @@ We'll start with the following authorization model showing a system with an `ass
 
 In addition, you'll need to know the following:
 
-### Modeling Roles and Permissions
+<h3 id="modeling-roles-and-permissions">Modeling Roles and Permissions</h3>
 
 You need to know how to add users to groups and grant groups access to resources. [Learn more →](/docs/modeling/user-groups)
 
-### Modeling Object-to-Object Relationships
+<h3 id="modeling-object-to-object-relationships">Modeling Object-to-Object Relationships</h3>
 
 You need to know how to create relationships between objects and how that might affect a user's relationships to those objects. [Learn more →](/docs/modeling/building-blocks/object-to-object-relationships)
 
-### Concepts & Configuration Language
+<h3 id="concepts--configuration-language">Concepts & Configuration Language</h3>
 
 - [OpenFGA Concepts](/docs/concepts)
 - [Configuration Language](/docs/configuration-language)
-
-</details>
+</Accordion>
 
 ## Step By Step
 
@@ -116,7 +109,7 @@ Imagine these are what the permissions the roles in one organization using our s
 
 Finally, the administrator wants to assign **Anne** the **media-manager** role and **Beth** the **media-viewer** role.
 
-At the end, we'll verify our model by ensuring the following access check requests return the expected result.
+At the end, we'll verify our model by ensuring the following access [check](/docs/concepts#what-is-a-check-request) requests return the expected result.
 
 ![Image showing expected results](./assets/custom-roles-expectations.svg)
 
@@ -187,7 +180,7 @@ The authorization model becomes this:
 
 With this change we can add relationship tuples indicating that a certain user is `assigned` a certain `role`.
 
-### 02. Use Relationship Tuples To Tie The Users To The Roles
+<h3 id="02use-relationship-tuples-to-tie-the-users-to-the-roles">02. Use Relationship Tuples To Tie The Users To The Roles</h3>
 
 Once we've added the `role` type, we can assign roles to Anne and Beth. Anne is assigned the "media-manager" role and Beth is assigned the "media-viewer" role. We can do that by adding relationship tuples as follows:
 

@@ -9,7 +9,9 @@ import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
 
 In this guide you'll learn how to model relationships that may or may not be assigned directly to individual users.
 
-<Note title="When to use">
+<Note>
+**When to use**
+
 Disabling _direct relationships_ for a certain relation on an object is useful especially in cases where you are trying to model some permissions that are not usually granted individually to a user.
 
 This is useful when:
@@ -19,39 +21,33 @@ This is useful when:
 
 ## Before you start
 
-To better understand this guide, you should be familiar with some OpenFGA concepts and know how to develop the things listed below.
-
-<details>
-
-<summary>
+To better understand this guide, you should be familiar with some [OpenFGA concepts](/docs/concepts) and know how to develop the things listed below.
 
 You will need to know the following:
 
 - Direct Access
 - OpenFGA Concepts
 
-</summary>
-
-### Direct access
+<Accordion title="Before you start">
+<h3 id="direct-access">Direct access</h3>
 
 You need to know how to create an authorization model and create a relationship tuple to grant a user access to an object. [Learn more →](/docs/modeling/direct-access)
 
-### OpenFGA Concepts
+<h3 id="-concepts">OpenFGA Concepts</h3>
 
-- A **Type**: a class of objects that have similar characteristics
-- A **User**: an entity in the system that can be related to an object
-- A **Relation**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
-- An **Object**: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
-- A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
+- A **[Type](/docs/concepts#what-is-a-type)**: a class of objects that have similar characteristics
+- A **[User](/docs/concepts#what-is-a-user)**: an entity in the system that can be related to an object
+- A **[Relation](/docs/concepts#what-is-a-relation)**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An **[Object](/docs/concepts#what-is-an-object)**: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
+- A **[Relationship Tuple](/docs/concepts#what-is-a-relationship-tuple)**: a grouping consisting of a user, a relation and an object stored in OpenFGA
 - [Direct Relationship Type Restrictions](/docs/configuration-language#direct-relationship-type-restrictions): used in the context of the relation definition can be used to allow direct relationships to the objects of this type
-
-</details>
+</Accordion>
 
 ## What are direct relationships?
 
-Direct relationships are relationships where a user has a relationship to an **object** that is not dependent on any other relationship they have with that object.
+Direct relationships are relationships where a user has a relationship to an **[object](/docs/concepts#what-is-an-object)** that is not dependent on any other relationship they have with that object.
 
-When checking for a relationship, a direct relationship exists if a _**relationship tuple**_ is present in the system with the exact same object and relation that were in the query and where the user is one of:
+When checking for a relationship, a direct relationship exists if a _**[relationship tuple](/docs/concepts#what-is-a-relationship-tuple)**_ is present in the system with the exact same object and relation that were in the query and where the user is one of:
 
 - the same user ID as that in the query
 - type bound public access (`<type>:*`)
@@ -59,7 +55,7 @@ When checking for a relationship, a direct relationship exists if a _**relations
 
 ## Enable or disable direct relationships
 
-Direct relationships can be enabled for a specific relation on an _**object type**_ by adding [direct relationship type restrictions](/docs/configuration-language#direct-relationship-type-restrictions) from that **relation's definition**. Likewise, they can be disabled by removing the direct relationship type restrictions.
+Direct relationships can be enabled for a specific relation on an _**[object type](/docs/concepts#what-is-a-type)**_ by adding [direct relationship type restrictions](/docs/configuration-language#direct-relationship-type-restrictions) from that **[relation's definition](/docs/concepts#what-is-a-relation-definition)**. Likewise, they can be disabled by removing the direct relationship type restrictions.
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -122,9 +118,9 @@ Direct relationships can be enabled for a specific relation on an _**object type
 />
 
 <Note>
-The **authorization model** describes two **object types**: `document` and `team`.
+The **[authorization model](/docs/concepts#what-is-an-authorization-model)** describes two **[object types](/docs/concepts#what-is-a-type)**: `document` and `team`.
 
-The `document` **type definition** has two **relations**, `editor` and `viewer`. Both relations allow a direct relationship; `viewer` also allows an **indirect relationship** through `editor`.
+The `document` **[type definition](/docs/concepts#what-is-a-type-definition)** has two **[relations](/docs/concepts#what-is-a-relation)**, `editor` and `viewer`. Both relations allow a direct relationship; `viewer` also allows an **[indirect relationship](/docs/concepts#what-are-direct-and-implied-relationships)** through `editor`.
 
 In the `team` type definition, there is a single `member` relation that only allows direct relationships.
 </Note>
@@ -214,7 +210,7 @@ Assume you have a tuple that states that Anne is a `viewer` of `document:plannin
 ]
 ```
 
-Now if we do a **check request** to see if Anne can view the planning document, we will get a response of `{"allowed": true}`.
+Now if we do a **[check request](/docs/concepts#what-is-a-check-request)** to see if Anne can view the planning document, we will get a response of `{"allowed": true}`.
 
 <CheckRequestViewer user={'user:anne'} relation={'viewer'} object={'document:planning'} allowed={true} />
 
@@ -227,7 +223,7 @@ This is because:
 
 <Tab title="Type Bound Public Access">
 
-Assume you have a **type bound public access** tuple where everyone of type `user` is a `viewer` of `document:planning` (In other words, the document is public)
+Assume you have a **[type bound public access](/docs/concepts#what-is-type-bound-public-access)** tuple where everyone of type `user` is a `viewer` of `document:planning` (In other words, the document is public)
 
 ```json
 [
@@ -342,7 +338,7 @@ Note: Even though the relationship tuple stored in the system does not specify t
 
 <Tab title="Indirect Relationship">
 
-Here we will cover one example of an **indirect relationship** in order to see how they differ from direct relationships.
+Here we will cover one example of an **[indirect relationship](/docs/concepts#what-are-direct-and-implied-relationships)** in order to see how they differ from direct relationships.
 
 With the same authorization model we have above, assume there is a relationship tuple that specifies that Emily is an `editor` of `document:planning`.
 

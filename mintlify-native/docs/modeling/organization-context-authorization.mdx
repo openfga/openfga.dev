@@ -11,6 +11,8 @@ import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
 This section tackles cases where a user may have access to a particular resource through their presence in a particular organization, and they should have that access only when logged in within the context of that organization.
 
 <Note>
+**When to use**
+
 Contextual Tuples should be used when modeling cases where a user's access to an object depends on the context of their request. For example:
 
 - An employee's ability to access a document when they are connected to the organization VPN or the api call is originating from an internal IP address.
@@ -20,14 +22,14 @@ Contextual Tuples should be used when modeling cases where a user's access to an
 
 ## Before You Start
 
-To follow this guide, you should be familiar with some OpenFGA concepts.
+To follow this guide, you should be familiar with some [OpenFGA concepts](/docs/concepts).
 
-### OpenFGA Concepts
+<h3 id="-concepts">OpenFGA Concepts</h3>
 
-- A **Relation**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
-- A **Check Request**: is a call to the OpenFGA check endpoint that returns whether the user has a certain relationship with an object.
-- A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
-- A **Contextual Tuple**: a tuple that can be added to a check request, and only exist within the context of that particular request.
+- A **[Relation](/docs/concepts#what-is-a-relation)**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- A **[Check Request](/docs/concepts#what-is-a-check-request)**: is a call to the OpenFGA check endpoint that returns whether the user has a certain relationship with an object.
+- A **[Relationship Tuple](/docs/concepts#what-is-a-relationship-tuple)**: a grouping consisting of a user, a relation and an object stored in OpenFGA
+- A **[Contextual Tuple](/docs/concepts#what-are-contextual-tuples)**: a tuple that can be added to a check request, and only exist within the context of that particular request.
 
 You also need to be familiar with:
 
@@ -171,9 +173,6 @@ We will start with the following authorization model:
   }}
 />
 
-<details>
-<summary>
-
 We are considering the case that:
 
 - Anne has a project manager role at organizations A, B and C
@@ -182,8 +181,7 @@ We are considering the case that:
 - Project X is owned by organization A
 - Project X is shared with organization B
 
-</summary>
-
+<Accordion title="Relationship tuples">
 The above state translates to the following relationship tuples:
 
 <WriteRequestViewer
@@ -233,8 +231,7 @@ The above state translates to the following relationship tuples:
   ]}
   skipSetup={true}
 />
-
-</details>
+</Accordion>
 
 ### Requirements
 
@@ -263,10 +260,8 @@ We can verify that using the following checks:
 - Anne can delete Project X
   <CheckRequestViewer user={'user:anne'} relation={'can_delete'} object={'project:X'} allowed={true} skipSetup={true} />
 
-<details>
-  <summary>More checks</summary>
-
-  - Beth can view Project X
+<Accordion title="More checks">
+- Beth can view Project X
   <CheckRequestViewer user={'user:beth'} relation={'can_view'} object={'project:X'} allowed={true} skipSetup={true} />
   - Beth cannot delete Project X
   <CheckRequestViewer user={'user:beth'} relation={'can_delete'} object={'project:X'} allowed={false} skipSetup={true} />
@@ -274,7 +269,7 @@ We can verify that using the following checks:
   <CheckRequestViewer user={'user:carl'} relation={'can_view'} object={'project:X'} allowed={false} skipSetup={true} />
   - Carl cannot delete Project X
   <CheckRequestViewer user={'user:carl'} relation={'can_delete'} object={'project:X'} allowed={false} skipSetup={true} />
-</details>
+</Accordion>
 
 Note that so far, we have not prevented Anne from viewing "Project X" even if Anne is viewing it from the context of Organization C.
 
@@ -399,7 +394,7 @@ We can verify this by running a check request
 
 Now that we know we can authorize based on present state, we have a different problem to solve. We are storing the tuples in the state in order for OpenFGA to evaluate them, which fails in certain use-cases where Anne can be connected to two different contexts in different browser windows at the same time, as each has a different context at the same time, so if they are written to the state, which will OpenFGA use to compute Anne's access to the project?
 
-For Check calls, OpenFGA has a concept called "Contextual Tuples". Contextual Tuples are tuples that do **not** exist in the system state and are not written beforehand to OpenFGA. They are tuples that are sent alongside the Check request and will be treated as _if_ they already exist in the state for the context of that particular Check call. That means that Anne can be using two different sessions, each within a different organization context, and OpenFGA will correctly respond to each one with the correct authorization decision.
+For Check calls, OpenFGA has a concept called "[Contextual Tuples](/docs/concepts#what-are-contextual-tuples)". Contextual Tuples are tuples that do **not** exist in the system state and are not written beforehand to OpenFGA. They are tuples that are sent alongside the Check request and will be treated as _if_ they already exist in the state for the context of that particular Check call. That means that Anne can be using two different sessions, each within a different organization context, and OpenFGA will correctly respond to each one with the correct authorization decision.
 
 First, we will undo the [temporary step](#add-the-required-tuples-to-mark-that-anne-is-in-an-approved-context) and remove the stored tuples for which Anne has a `user_in_context` relation with `organization:A`.
 
@@ -467,11 +462,7 @@ Using this, you can check that the following requirements are satisfied:
 
 ## Summary
 
-<details>
-<summary>
-  Final version of the Authorization Model and Relationship tuples
-</summary>
-
+<Accordion title="Final version of the Authorization Model and Relationship tuples">
 <AuthzModelSnippetViewer configuration={{
     schema_version: '1.1',
     type_definitions: [
@@ -678,8 +669,7 @@ Using this, you can check that the following requirements are satisfied:
   ]}
   skipSetup={true}
 />
-
-</details>
+</Accordion>
 
 <Warning>
 Contextual tuples:

@@ -14,9 +14,9 @@ This tutorial explains how to model GitHub's Organization permission model using
 <Note>
 **What you will learn**
 
-- Indicate relationships between a group of **users** and an **object**. See [Modeling User Groups](/docs/modeling/user-groups) for more details.
+- Indicate [relationships](/docs/concepts#what-is-a-relationship) between a group of **[users](/docs/concepts#what-is-a-user)** and an **[object](/docs/concepts#what-is-an-object)**. See [Modeling User Groups](/docs/modeling/user-groups) for more details.
   Used here to indicate that all members of an organization are repository admins on the organization.
-- Modeling **concentric relationship** to have a certain relation on an object imply another relation on the same object. See [Modeling Concepts: Concentric Relationships](/docs/modeling/building-blocks/concentric-relationships) for more.
+- Modeling **concentric relationship** to have a certain [relation](/docs/concepts#what-is-a-relation) on an object imply another relation on the same object. See [Modeling Concepts: Concentric Relationships](/docs/modeling/building-blocks/concentric-relationships) for more.
   Used here to indicate that maintainers of a repository are also writers of that repository.
 - Using [**the union operator**](/docs/configuration-language#the-union-operator) condition to indicate that a user might have a certain relation with an object if they match any of the criteria indicated.
   Used here to indicate that a user can be a reader on a repository, or can have the reader relationship implied through triager.
@@ -28,31 +28,24 @@ This tutorial explains how to model GitHub's Organization permission model using
 
 In order to understand this guide correctly you must be familiar with some OpenFGA concepts and know how to develop the things that we will list below.
 
-<details>
-<summary>
-
-### OpenFGA concepts
-
 It would be helpful to have an understanding of some concepts of OpenFGA before you start.
 
-</summary>
-
-#### Modeling concentric relationships
+<Accordion title="OpenFGA concepts" id="-concepts">
+<h4 id="modeling-concentric-relationships">Modeling concentric relationships</h4>
 
 You need to know how to update the authorization model to allow having nested relations such as all writers are readers. [Learn more →](/docs/modeling/building-blocks/concentric-relationships)
 
-#### Modeling object-to-object relationships
+<h4 id="modeling-object-to-object-relationships">Modeling object-to-object relationships</h4>
 
 You need to know how to create relationships between objects and how that might affect a user's relationships to those objects. [Learn more →](/docs/modeling/building-blocks/object-to-object-relationships)
 
 Used here to indicate that users who have repo admin access on an organization, have admin access to all repositories owned by that organization.
 
-#### Concepts & configuration language
+<h4 id="concepts--configuration-language">Concepts & configuration language</h4>
 
-- Some concepts
+- Some [OpenFGA Concepts](/docs/concepts)
 - [Configuration Language](/docs/configuration-language)
-
-</details>
+</Accordion>
 
 ## What you will be modeling
 
@@ -96,7 +89,7 @@ There will be a:
 
 - contoso/tooling repository, owned by the contoso org and of which Beth is a writer and Anne is a reader and members of the contoso/engineering team are admins
 
-## Modeling GitHub's permissions
+<h2 id="modeling-githubs-permissions">Modeling GitHub's permissions</h2>
 
 ### 01. Permissions For Individuals In An Org
 
@@ -108,7 +101,7 @@ At the end of this section we want to end up with the following permissions repr
 
 ![Image showing permissions](./assets/github-01.svg)
 
-To represent permissions in OpenFGA we use relations. For repository permissions we need to create the following authorization model:
+To represent permissions in OpenFGA we use [relations](/docs/concepts#what-is-a-relation). For repository permissions we need to create the following [authorization model](/docs/concepts#what-is-an-authorization-model):
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -150,7 +143,7 @@ To represent permissions in OpenFGA we use relations. For repository permissions
   }}
 />
 
-The OpenFGA service determines if a user has access to an object by checking if the user has a relation to that object. Let us examine one of those relations in detail:
+The OpenFGA service determines if a [user](/docs/concepts#what-is-a-user) has access to an [object](/docs/concepts#what-is-an-object) by [checking](/docs/concepts#what-is-a-check-request) if the user has a relation to that object. Let us examine one of those relations in detail:
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -184,7 +177,7 @@ Objects of type "repo" have users related to them as "reader" if those users bel
 
 </Info>
 
-If we want to say `anne` is a reader of repository **repo:contoso/tooling** we create this relationship tuple:
+If we want to say `anne` is a reader of repository **repo:contoso/tooling** we create this [relationship tuple](/docs/concepts#what-is-a-relationship-tuple):
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -196,7 +189,7 @@ If we want to say `anne` is a reader of repository **repo:contoso/tooling** we c
   ]}
 />
 
-We can now ask OpenFGA "is `anne` a reader of repository **repo:contoso/tooling**?"
+We can now [ask](/docs/concepts#what-is-a-check-request) OpenFGA "is `anne` a reader of repository **repo:contoso/tooling**?"
 
 <CheckRequestViewer user={'user:anne'} relation={'reader'} object={'repo:contoso/tooling'} allowed={true} />
 
@@ -345,7 +338,7 @@ Let us examine one of those relations in detail:
 
 The users with a reader relationship to a certain object of type "repo" are any of:
 
-- the "readers": the set of users who are directly related to the repo as a "reader"
+- the "readers": the set of users who are [directly related](/docs/concepts#what-are-direct-and-implied-relationships) to the repo as a "reader"
 - the "triagers": the set of users who are related to the object as "triager"
 
 </Info>
@@ -363,7 +356,7 @@ At the end of this section we want to end up with the following permissions repr
 
 ![Image showing permissions](./assets/github-02.svg)
 
-To add support for teams and memberships all we need to do is add this object to the OpenFGA authorization model:
+To add support for teams and memberships all we need to do is add this object to the OpenFGA [authorization model](/docs/concepts#what-is-an-authorization-model):
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -474,7 +467,7 @@ In addition, the repo's relations should have team member as a directly related 
   }}
 />
 
-Let us now create a team, add a member to it and make it an admin of **repo:contoso/tooling** by adding the following relationship tuples:
+Let us now create a team, add a member to it and make it an admin of **repo:contoso/tooling** by adding the following [relationship tuples](/docs/concepts#what-is-a-relationship-tuple):
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -493,14 +486,14 @@ Let us now create a team, add a member to it and make it an admin of **repo:cont
   ]}
 />
 
-The last relationship tuple introduces a new **OpenFGA** concept. A **userset**. When the value of a user is formatted like this **type:objectId#relation**, OpenFGA will automatically expand the userset into all its individual user identifiers:
+The last relationship tuple introduces a new **OpenFGA** concept. A **[userset](/docs/concepts#what-is-a-user)**. When the value of a user is formatted like this **type:objectId#relation**, OpenFGA will automatically expand the userset into all its individual user identifiers:
 
 <CheckRequestViewer user={'user:charles'} relation={'admin'} object={'repo:contoso/tooling'} allowed={true} />
 
 ### 03. Permissions for child teams in an org
 
 GitHub also supports team nesting, [known as "child teams"](https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/requesting-to-add-a-child-team). **Child teams inherit the access permissions of the parent team.**
-Let's say we have a **protocols** team that is part of the **engineering**. The simplest way to achieve the aforementioned requirement is just adding this relationship tuple:
+Let's say we have a **protocols** team that is part of the **engineering**. The simplest way to achieve the aforementioned requirement is just adding this [relationship tuple](/docs/concepts#what-is-a-relationship-tuple):
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -765,7 +758,7 @@ We express it like this:
 
 The users with an admin relationship to a certain object of type "repo" are any of:
 
-- the "admins": the set of users who are directly related to the repo as an "admin"
+- the "admins": the set of users who are [directly related](/docs/concepts#what-are-direct-and-implied-relationships) to the repo as an "admin"
 - the "repository admins of the org that owns the repo": from the objects who are related to the doc as owner, return the sets of users who are related to those objects as "repo_admin"
 
 What the added section is doing is:

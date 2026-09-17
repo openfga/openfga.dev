@@ -7,7 +7,7 @@ import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
 
 # Concentric Relationships
 
-In this short guide, you'll learn how to represent a concentric relationships.
+In this short guide, you'll learn how to represent a concentric [relationships](/docs/concepts#what-is-a-relationship).
 
 For example, if you want to have all editors of a document also be viewers of said document.
 
@@ -27,11 +27,11 @@ This allows you to only create a single _relationship tuple_ rather than creatin
 
 ## Before You Start
 
-To better understand this guide, you should be familiar with some OpenFGA concepts and know how to develop the things listed below.
+To better understand this guide, you should be familiar with some [OpenFGA concepts](/docs/concepts) and know how to develop the things listed below.
 
 <Accordion title="Prerequisites and starting model">
 
-You will start with the _authorization model_ below, it represents a `document` _type_ that can have users **related** as `editor` and `viewer`.
+You will start with the _[authorization model](/docs/concepts#what-is-an-authorization-model)_ below, it represents a `document` _[type](/docs/concepts#what-is-a-type)_ that can have users **[related](/docs/concepts#what-is-a-relation)** as `editor` and `viewer`.
 
 Let us also assume that we have a `document` called "meeting_notes.doc" and bob is assigned as editor to this document.
 
@@ -83,19 +83,19 @@ In addition, you will need to know the following:
 
 You need to know how to add users to groups and grant groups access to resources. [Learn more →](/docs/modeling/user-groups)
 
-### OpenFGA concepts
+<h3 id="-concepts">OpenFGA concepts</h3>
 
-- A **Type**: a class of objects that have similar characteristics
-- A **User**: an entity in the system that can be related to an object
-- A **Relation**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
-- An **Object**: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
-- A **Relationship Tuple**: a grouping consisting of a user, a relation and an object stored in OpenFGA
+- A **[Type](/docs/concepts#what-is-a-type)**: a class of objects that have similar characteristics
+- A **[User](/docs/concepts#what-is-a-user)**: an entity in the system that can be related to an object
+- A **[Relation](/docs/concepts#what-is-a-relation)**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An **[Object](/docs/concepts#what-is-an-object)**: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
+- A **[Relationship Tuple](/docs/concepts#what-is-a-relationship-tuple)**: a grouping consisting of a user, a relation and an object stored in OpenFGA
 
 </Accordion>
 
 ## Step by step
 
-With the current type definition, there isn't a way to indicate that all `editors` of a certain `document` are also automatically `viewers` of that document. So for a certain user, in order to indicate that they can both `edit` and `view` a certain `document`, two _relationship tuples_ need to be created (one for `editor`, and another for `viewer`).
+With the current type definition, there isn't a way to indicate that all `editors` of a certain `document` are also automatically `viewers` of that document. So for a certain user, in order to indicate that they can both `edit` and `view` a certain `document`, two _[relationship tuples](/docs/concepts#what-is-a-relationship-tuple)_ need to be created (one for `editor`, and another for `viewer`).
 
 ### 01. Modify our model to imply editor as viewer
 
