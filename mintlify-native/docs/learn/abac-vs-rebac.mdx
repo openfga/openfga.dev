@@ -27,7 +27,7 @@ description: "ABAC decides on attributes; ReBAC decides on relationships. Learn 
 * You need **reverse queries** for UI rendering or filtered listings.
 * Permissions need to traverse multi-hop graphs (team → project → folder → document).
 
-## OpenFGA does both
+<h2 id="-does-both">OpenFGA does both</h2>
 
 OpenFGA is a ReBAC engine, but it covers ABAC needs through [conditions](/docs/modeling/conditions) (CEL expressions evaluated at check time) and [contextual tuples](/docs/interacting/contextual-tuples) (request-time data passed into the check). For most applications that's enough — you don't need a second engine.
 

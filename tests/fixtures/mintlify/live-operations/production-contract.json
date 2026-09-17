@@ -82,6 +82,116 @@
       "link": ["Learn more \u2192", "/docs/modeling/direct-access"]
     }
   },
+  "visibleSummaries": {
+    "interacting/managing-group-access.mdx": [
+      "In the example below, you have the following authorization model with two types:",
+      "company that can have an employee relation",
+      "document that can have a reader relation."
+    ],
+    "interacting/managing-group-membership.mdx": [
+      "Assume that you have the following authorization model.",
+      "You have two types:",
+      "org that can have a member relation",
+      "document that can have a reader relation."
+    ],
+    "interacting/managing-relationships-between-objects.mdx": [
+      "Assume that you have the following authorization model",
+      "a repo type that can have a admin relation"
+    ],
+    "interacting/managing-user-access.mdx": [
+      "Assume that you have the following authorization model.",
+      "You have a type called tweet that can have a reader."
+    ],
+    "interacting/relationship-queries.mdx": [
+      "Assume that you have the following authorization model.",
+      "You have a type called document that can have a reader and writer. All writers are readers. bob has a writer relationship with document:planning."
+    ]
+  },
+  "headingAnchors": {
+    "best-practices/adoption-patterns.mdx": [
+      ["h2", "Use OpenFGA to enrich JWTs", "use--to-enrich-jwts"],
+      ["h2", "Shadowing the OpenFGA API", "shadowing-the--api"]
+    ],
+    "best-practices/modeling-design-principles.mdx": [
+      ["h3", "Use Specific Types, Not a Generic \"Resource\"", "use-specific-types-not-a-generic-resource"]
+    ],
+    "best-practices/modeling-roles.mdx": [
+      ["h3", "Pros and Cons", "pros-and-cons-1"],
+      ["h3", "Pros and Cons", "pros-and-cons-2"]
+    ],
+    "industries/applicant-tracking-system.mdx": [
+      ["h2", "Where this maps to OpenFGA features", "where-this-maps-to--features"]
+    ],
+    "industries/banking.mdx": [
+      ["h2", "Where this maps to OpenFGA features", "where-this-maps-to--features"]
+    ],
+    "industries/crm.mdx": [
+      ["h2", "Where this maps to OpenFGA features", "where-this-maps-to--features"]
+    ],
+    "industries/ecommerce.mdx": [
+      ["h2", "Where this maps to OpenFGA features", "where-this-maps-to--features"]
+    ],
+    "industries/healthcare.mdx": [
+      ["h2", "Where this maps to OpenFGA features", "where-this-maps-to--features"]
+    ],
+    "industries/human-resources.mdx": [
+      ["h2", "Where this maps to OpenFGA features", "where-this-maps-to--features"]
+    ],
+    "industries/lms.mdx": [
+      ["h2", "Where this maps to OpenFGA features", "where-this-maps-to--features"]
+    ],
+    "interacting/managing-group-access.mdx": [
+      ["h3", "OpenFGA concepts", "-concepts"],
+      ["h3", "03. Checking an individual member's access to an object", "03-checking-an-individual-members-access-to-an-object"]
+    ],
+    "interacting/managing-group-membership.mdx": [
+      ["h3", "OpenFGA concepts", "-concepts"]
+    ],
+    "interacting/managing-relationships-between-objects.mdx": [
+      ["h3", "OpenFGA concepts", "-concepts"]
+    ],
+    "interacting/managing-user-access.mdx": [
+      ["h3", "OpenFGA concepts", "-concepts"]
+    ],
+    "interacting/read-tuple-changes.mdx": [
+      ["h3", "01. Configure the OpenFGA API client", "01-configure-the--api-client"]
+    ],
+    "interacting/relationship-queries.mdx": [
+      ["h3", "OpenFGA concepts", "-concepts"],
+      ["h3", "What is it for?", "what-is-it-for-1"],
+      ["h3", "When to use?", "when-to-use-1"],
+      ["h3", "Caveats and when not to use it", "caveats-and-when-not-to-use-it-1"],
+      ["h3", "What Is It For?", "what-is-it-for-2"],
+      ["h3", "When to use?", "when-to-use-2"],
+      ["h3", "Caveats and when not to use it", "caveats-and-when-not-to-use-it-2"],
+      ["h3", "What is it for?", "what-is-it-for-3"],
+      ["h3", "When to use?", "when-to-use-3"],
+      ["h3", "What is it for?", "what-is-it-for-4"],
+      ["h3", "When to use?", "when-to-use-4"],
+      ["h3", "What is it for?", "what-is-it-for-5"],
+      ["h3", "When to use?", "when-to-use-5"],
+      ["h3", "Caveats", "caveats-1"]
+    ],
+    "learn/abac-vs-rebac.mdx": [
+      ["h2", "OpenFGA does both", "-does-both"]
+    ],
+    "learn/fine-grained-authorization.mdx": [
+      ["h2", "What \"fine-grained\" actually buys you", "what-fine-grained-actually-buys-you"],
+      ["h2", "How OpenFGA implements FGA", "how--implements-fga"]
+    ],
+    "learn/policy-engine.mdx": [
+      ["h2", "Policy as code in OpenFGA", "policy-as-code-in-"]
+    ],
+    "learn/rbac-vs-rebac.mdx": [
+      ["h2", "Doing both in OpenFGA", "doing-both-in-"]
+    ],
+    "learn/rebac.mdx": [
+      ["h2", "ReBAC in OpenFGA", "rebac-in-"]
+    ],
+    "learn/zanzibar.mdx": [
+      ["h2", "How OpenFGA maps to Zanzibar", "how--maps-to-zanzibar"]
+    ]
+  },
   "calloutPages": [
     "interacting/managing-user-access.mdx",
     "interacting/managing-relationships-between-objects.mdx",

@@ -22,6 +22,10 @@ function text(node) {
   return (node.children ?? []).map(text).join('');
 }
 
+function isHeading(node) {
+  return node.type === 'heading' || /^h[1-6]$/.test(node.name ?? '');
+}
+
 function links(nodes) {
   return nodes.filter((node) => node.type === 'link').map((node) => [text(node), node.url]);
 }
@@ -49,8 +53,7 @@ for (const [page, expected] of Object.entries(contract.prerequisites)) {
     const accordion = nodes.find((node) => node.name === 'Accordion');
     assert.ok(accordion, 'Prerequisites require a native Accordion');
     const children = descendants(accordion);
-    assert.ok(text(accordion).includes(expected.intro));
-    assert.deepEqual(children.filter((node) => node.type === 'heading').map(text), expected.headings);
+    assert.deepEqual(children.filter(isHeading).map(text), expected.headings);
     assert.ok(links(children).some((link) => link[0] === expected.link[0] && link[1] === expected.link[1]));
     assert.equal(children.filter((node) => node.type === 'listItem').length >= 5, true);
     const model = children.find((node) => node.name === 'AuthzModelSnippetViewer');
@@ -62,6 +65,35 @@ for (const [page, expected] of Object.entries(contract.prerequisites)) {
     const steps = nodes.find((node) => node.type === 'heading' && text(node) === 'Step by step');
     assert.ok(steps.position.start.offset > accordion.position.end.offset,
       'Step-by-step operations must remain outside the prerequisites disclosure');
+  });
+}
+
+for (const [page, expected] of Object.entries(contract.visibleSummaries)) {
+  test(`${page} retains its full rich summary outside the collapsed disclosure`, () => {
+    const tree = parse(page);
+    const accordion = tree.children.find((node) => node.name === 'Accordion');
+    assert.ok(accordion);
+    const visible = tree.children
+      .filter((node) => node.position.end.offset < accordion.position.start.offset)
+      .map(text).join(' ').replace(/\s+/g, ' ');
+    let position = 0;
+    for (const phrase of expected) {
+      const at = visible.indexOf(phrase, position);
+      assert.notEqual(at, -1, `Missing or collapsed original summary: ${phrase}`);
+      position = at + phrase.length;
+    }
+  });
+}
+
+for (const [page, expected] of Object.entries(contract.headingAnchors)) {
+  test(`${page} preserves production heading IDs and duplicate-heading order`, () => {
+    const headings = descendants(parse(page)).filter((node) => /^h[1-6]$/.test(node.name ?? ''));
+    const actual = headings.map((node) => [
+      node.name, text(node), node.attributes.find((attribute) => attribute.name === 'id')?.value,
+    ]);
+    assert.deepEqual(actual, expected);
+    assert.equal(new Set(actual.map(([, , id]) => id)).size, actual.length,
+      'Explicit heading IDs must not collide');
   });
 }
 

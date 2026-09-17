@@ -7,7 +7,7 @@ description: "Fine-grained authorization decides access at the resource and acti
 
 **Fine-grained authorization (FGA)** means deciding access at the level of the individual resource and action, rather than at the role or coarse-scope level. *"Alice can edit document-42"* is fine-grained; *"Alice is an editor"* is not.
 
-## What "fine-grained" actually buys you
+<h2 id="what-fine-grained-actually-buys-you">What "fine-grained" actually buys you</h2>
 
 * **Per-resource sharing.** A user can be granted access to one document without inheriting access to everything in the workspace.
 * **Hierarchical inheritance.** Access to a folder grants access to its documents — but only that folder, not every folder.
@@ -16,7 +16,7 @@ description: "Fine-grained authorization decides access at the resource and acti
 
 Coarse-grained models can simulate these with enough effort, but the authorization layer ends up duplicating a graph database in roles tables. Fine-grained engines store the graph directly.
 
-## How OpenFGA implements FGA
+<h2 id="how--implements-fga">How OpenFGA implements FGA</h2>
 
 * A typed [model](/docs/configuration-language) defines resource types and the relations between them.
 * [Tuples](/docs/concepts) record specific relationships between specific principals and specific resources.

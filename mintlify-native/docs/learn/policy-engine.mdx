@@ -25,7 +25,7 @@ OPA's [graduated CNCF status](https://www.cncf.io/projects/open-policy-agent-opa
 * You need **reverse queries** — *"list every resource this user can read"* — which inherently require a stored graph.
 * Permissions are **per-resource and per-user**, not just per-attribute.
 
-## Policy as code in OpenFGA
+<h2 id="policy-as-code-in-">Policy as code in OpenFGA</h2>
 
 The "policy in Git, reviewed via PR" workflow isn't unique to policy engines. The OpenFGA [model DSL](/docs/configuration-language) is the policy: types, relations, and [conditions](/docs/modeling/conditions) live in a text file you commit, review, and deploy like any other code. The same model backs authorization decisions across services, languages, and domains — one source of truth instead of policy logic re-implemented per service.
 

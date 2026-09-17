@@ -101,7 +101,7 @@ You'll need to make the trade-off between writing the data to OpenFGA so it's al
 
 We've seen companies successfully following a hybrid approach, starting by synchronizing the data that's easy first and providing the rest as contextual tuples. As their implementation matures, they implement more synchronization processes and stop sending the contextual tuples.
 
-## Use OpenFGA to enrich JWTs
+<h2 id="use--to-enrich-jwts">Use OpenFGA to enrich JWTs</h2>
 
 Once you have your authorization model and data set up, you can start making authorization checks from your application. The preferred way is to perform a [Check()](/docs/getting-started/perform-check) call.
 
@@ -142,7 +142,7 @@ Some companies decide to wrap OpenFGA with their own authorization service. They
 
 On the other hand, adding another service increases latency, adds additional complexity and would make the teams less likely to find help from existing public OpenFGA documentation and resources.
 
-## Shadowing the OpenFGA API
+<h2 id="shadowing-the--api">Shadowing the OpenFGA API</h2>
 
 When migrating from an existing authorization system to OpenFGA, it's recommended to first run both systems in parallel, with OpenFGA in "shadow mode". This means that while the existing system continues to make the actual authorization decisions, you also make calls to OpenFGA asynchronously and compare the results.
 
