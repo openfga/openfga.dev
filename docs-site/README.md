@@ -1,458 +1,120 @@
-# OpenFGA Docs — Mintlify Port (POC)
+# OpenFGA documentation
 
-This directory contains the documentation and API-reference portion of
-[openfga.dev](https://openfga.dev) ported from Docusaurus to
-[Mintlify](https://mintlify.com). The homepage, Project page, Community page, and
-blog remain on Docusaurus. It is a proof-of-concept on the
-`poc/mintlify-native` branch of the `openfga/openfga.dev` repo.
+This directory contains the Mintlify source for 110 product documentation pages and 24 read-only API operations. The homepage, Project, Community, and Blog stay on Docusaurus.
 
-The migration proposal is in [`MINTLIFY-MIGRATION-PROPOSAL.md`](../MINTLIFY-MIGRATION-PROPOSAL.md)
-at the repo root.
+The [hosted Mintlify site](https://fga.mintlify.site/docs/fga) is available. Serving it through `openfga.dev/docs` and `openfga.dev/api-reference` requires the separate [split-site deployment](#split-site-deployment). Publishing this directory does not configure that routing.
 
----
+## In this guide
+
+- [Run locally](#running-locally)
+- [Add and edit pages](#authoring-pages)
+- [Use interactive examples](#interactive-viewer-components)
+- [Maintain API samples](#native-api-sdk-samples)
+- [Update generated files](#generated-files)
+- [Add media safely](#asset-storage-and-git-lfs)
+- [Validate changes](#validating-authoring-changes)
+- [Understand migration limits](#migration-contracts-and-known-differences)
+- [Configure deployment](#split-site-deployment)
 
 ## Running locally
 
+Use Node.js 22 and the repository's lockfile. Git, Bash, Python 3, and curl are also needed for the full quality checks.
+
 ```bash
-cd docs-site/
+# From the repository root
+npm ci
+
+cd docs-site
 npx mint dev --port 3333
 ```
 
-Then open `http://localhost:3333/docs` or `http://localhost:3333/api-reference`.
-The logo links to the Docusaurus homepage. The native header links to Docs, the
-Mintlify API reference, and the Docusaurus-owned Project, Community, and Blog
-routes. Docs routes show only the eight documentation groups; API routes show
-only the six endpoint groups. Mintlify's native search remains available in the
-header.
+Open `http://localhost:3333/`. It redirects to `/docs/fga`; the API reference starts at `/api-reference`.
 
-If startup fails with `Error: Client not built`, delete `~/.mintlify/mint/` and rerun —
-the CLI will re-download a fresh pre-built copy.
+Use the project's tested Mintlify CLI version when comparing rendering behavior. See the [Mintlify CLI guide](https://www.mintlify.com/docs/cli/index) for installation and startup help. Avoid clearing a shared CLI cache while other previews are running.
 
-## Asset storage and Git LFS
+All `npm run` commands in this guide run from the repository root. Mintlify CLI commands run from `docs-site/`.
 
-The split site deliberately uses two storage paths:
+## Where to make changes
 
-| Content | Storage and checkout |
-| --- | --- |
-| Docusaurus website and Blog media | Default [Git LFS rules](../.gitattributes). Local rendering requires hydrated media; the Docusaurus build, preview, and deployment workflows use LFS-aware checkout. |
-| Assets anywhere under `docs-site/` | Ordinary Git blobs through the trailing path-specific overrides in `.gitattributes`. Mintlify receives the actual asset bytes without depending on an LFS fetch. |
+| Location                                                  | Purpose                                                             |
+| --------------------------------------------------------- | ------------------------------------------------------------------- |
+| [`docs/`](./docs/)                                        | Product documentation in MDX                                        |
+| [`docs.json`](./docs.json)                                | Navigation, theme, redirects, and the pinned OpenAPI source         |
+| [`snippets/`](./snippets/)                                | Eight reusable JSX viewers                                          |
+| [`global.css`](./global.css)                              | Shared documentation and API styling                                |
+| [`images/`](./images/) and page asset directories         | Native media, stored as ordinary Git files                          |
+| [`scripts/`](./scripts/)                                  | Validators, browser-helper source, SDK generators, and tests        |
+| [`api-samples.json`](./api-samples.json)                  | Canonical schema identity and reviewed API sample inputs            |
+| [`source-pages.json`](./source-pages.json)                | Historical page mappings and registration of new native pages       |
+| [`tests/fixtures/mintlify/`](../tests/fixtures/mintlify/) | Independent content expectations and the unpublished viewer fixture |
 
-The repository quality workflow uses `lfs: false` because it checks source, not
-media contents or a rendered deployment. Its success does not prove that images
-and videos load. See the [root checkout instructions](../README.md#setup-git-lfs-large-file-storage)
-when working with LFS-managed source assets.
+The root browser bundles and [`openapi/sdk-samples.overlay.json`](./openapi/sdk-samples.overlay.json) are generated files. Edit their source or inputs, then regenerate them.
 
-When adding or copying media:
+## Authoring pages
 
-1. Hydrate any LFS-managed source with `git lfs pull` before copying it. Never
-   copy an LFS pointer in place of the image or video.
-2. Put the actual bytes under `images/` or the existing documentation asset
-   directories, following nearby asset references.
-3. Preserve the native overrides after the global LFS patterns. A new media
-   format needs a reviewed native override if a global rule would track it;
-   fixing a native asset must not migrate unrelated Docusaurus media.
+### Add, rename, or retire a page
 
-Before committing, stage the asset and any attribute change, then check its
-exact repository-relative path. For example, from the repository root:
+1. Add an MDX file under `docs/`, with the page headline in frontmatter `title`.
+2. Add its route once to a documentation group in `docs.json`, without the `.mdx` extension.
+3. Register a new page in `source-pages.json` under `nativePages`:
 
-```bash
-git check-attr --cached filter -- docs-site/images/img/openfga_logo.svg
+```json
+{
+  "destination": "docs/new-page.mdx",
+  "reason": "Explain the purpose of the new guide"
+}
 ```
 
-The native asset should report `filter: unset`. Inspect the staged blob as well,
-not only the hydrated working copy (`git show :<asset-path>` for a text asset).
-An LFS pointer starts with `version https://git-lfs.github.com/spec/v1`, followed
-by an `oid sha256:` and a `size` line; these are metadata, not image bytes.
+Add independent content or behavioral expectations with the page. Do not generate the expected content from the page being tested.
 
-Changing attributes does not replace an already committed pointer. Retrieve the
-original LFS object, copy its real contents into the native asset path, restage
-that file, and verify it renders in the preview. Do not remove global LFS rules
-or rewrite Git history as a workaround.
+For a historical page rename, update its `overrides` entry and navigation, and preserve the old URL with a redirect. Do not edit the frozen `sources` list. Retiring a page requires an explicit exclusion and reason; a Docusaurus-owned page also needs its owner, route, and existing `ownerPage`. Community remains at `/community`, not in the native docs tree.
 
----
+The two hidden navigation anchors separate Docs and API Reference sidebars. They hide the section switcher, not the pages or their search visibility. Keep the existing `/docs`, `/api-reference`, and overview entry redirects.
 
-## What's in here
+### Write MDX that renders reliably
 
-```
-docs-site/
-├── docs.json              # Mintlify nav and theme config
-├── global.css             # Shared docs/API theme fixes
-├── github-star-cache.js   # Cache-only fallback for Mintlify's native GitHub star count
-├── openfga-dsl-highlight.js   # Generated standalone DSL tokenizer (window global)
-├── fga-codegen.js         # Generated @openfga/syntax-transformer bundle (window global)
-├── openfga-viewer.js      # Generated shared language and SDK setup helpers
-├── docs/                  # 110 owned product documentation pages
-├── images/                # Mintlify logo assets
-├── snippets/              # 8 interactive React components (see below)
-├── lib/codegen/
-│   └── check-reference.js.txt  # Reference file — see note below
-└── scripts/
-    ├── build-fga-codegen.sh   # Reproducible build for all browser artifacts
-    ├── openfga-dsl-highlight.entry.cjs
-    ├── openfga-dsl-highlight.test.mjs
-    ├── validate-openfga-code-blocks.mjs
-    ├── viewer-contract.mjs   # Language identifiers, labels, grammars and order
-    ├── viewer-runtime.mjs    # Shared SDK initialization and create-store code
-    └── validate-component-usage.mjs
+| Situation                           | Use                                                                           |
+| ----------------------------------- | ----------------------------------------------------------------------------- |
+| Page headline                       | Frontmatter `title`; do not repeat it as a body H1                            |
+| Different sidebar label             | `sidebarTitle`, preserving the existing navigation wording                    |
+| Literal placeholders                | Inline code such as `{object types}`, or escaped braces `\{object types\}`    |
+| Expandable tutorial content         | Native `Accordion`, with rich introductory text outside it when needed        |
+| Tutorial requests and responses     | Ordinary code fences or native `CodeGroup`, next to the relevant step         |
+| API-specific request/response slots | `RequestExample` and `ResponseExample` only for intentional API-reference use |
+
+Braces in prose are JavaScript expressions. `{user}` can parse successfully and still fail at runtime if `user` is not bound. Imports and expression bindings must be explicit.
+
+Do not use raw HTML `details` or `summary`: Mintlify can omit their bodies. Keep examples inside the instructional section they explain, rather than collecting them elsewhere just to satisfy a content check.
+
+### Preserve heading links
+
+Changing a heading can break an existing URL even when its text looks unchanged. Mintlify and Docusaurus differ in punctuation handling and duplicate-heading slugs.
+
+For H2 through H4, use an explicit heading ID when the generated slug would change:
+
+```mdx
+<h2 id="legacy-heading">Original heading</h2>
 ```
 
-Two hidden root anchors partition the native navigation by route without adding
-an anchor switcher to the interface. The Docs anchor owns the documentation
-groups, and the API Reference anchor owns the endpoint groups. Hiding an anchor
-hides only its section selector; its active route sidebar and pages remain
-navigable and searchable.
+For H5, use Markdown with an inline target. Raw JSX `<h5>` can disappear in the native renderer.
 
-The API anchor consumes the canonical OpenAPI 3.0.3 document generated in
-[`openfga/api`](https://github.com/openfga/api/tree/main/docs/openapiv3), pinned to
-the immutable merge commit for
-[`openfga/api#259`](https://github.com/openfga/api/pull/259). Update that revision
-through a reviewed change when adopting a newer API artifact. The navigation
-validator verifies the pinned source and additive SDK sample overlay and fails
-the build if either drifts. Native temporary redirects keep `/docs` and
-`/api-reference` as stable public entries and send them to each section's first
-page.
-
-The homepage retains the existing `/docs/modeling` URL. Mintlify temporarily redirects that URL
-and the other ten published overview URLs to their corresponding `/overview`
-pages. Independently captured navigation fixtures check every migrated page's public slug,
-including nested modeling overviews. Keep existing links working during
-migration rather than excluding them from validation.
-
-### Native API SDK samples
-
-The API reference uses Mintlify's supported
-[OpenAPI overlays](https://www.mintlify.com/docs/api-playground/openapi-setup#transform-your-spec-with-overlays)
-and [`x-codeSamples`](https://www.mintlify.com/docs/api-playground/adding-sdk-examples).
-The canonical API schema is not copied, forked, or edited here:
-
-1. `api-samples.json` records the immutable source URL, its SHA-256 digest,
-   all 24 exact operation identities and request inputs.
-   `scripts/api-operation-contract.mjs` defines operation identities and setup
-   scopes independently of UI components; `scripts/api-sdk-support.mjs` records
-   the audited SDK versions, public source evidence, named methods, and explicit
-   unsupported cases.
-2. `scripts/api-code-samples.mjs` fetches and verifies that canonical source,
-   validates sample inputs against its request schemas, then calls
-   `buildApiExample(language, operationId, props)` from `scripts/viewer-runtime.mjs`.
-   Existing viewer operations reuse `buildSdkExample`; API-only operations use
-   the shared `api-operation-*.mjs` generators and the same complete-program
-   composer. There are no artificial viewer components or duplicate SDK strings
-   in the overlay pipeline.
-3. `openapi/sdk-samples.overlay.json` is generated, committed output.
-   `docs.json` explicitly applies it to the canonical URL. Mintlify renders the
-   resulting samples in its native right-hand request-code panel (inline on
-   smaller screens).
-
-| Operation | Node.js 0.9.7 | Go 0.8.2 | .NET 0.10.4 | Python 0.10.4 | Java 0.10.0 | curl |
-| --- | --- | --- | --- | --- | --- | --- |
-| Check | `check` | `Check` | `Check` | `check` | `check` | Yes |
-| BatchCheck | `batchCheck` | `BatchCheck` | `BatchCheck` | `batch_check` | `batchCheck` | Yes |
-| Write | `write` | `Write` | `Write` | `write` | `write` | Yes |
-| ListObjects | `listObjects` | `ListObjects` | `ListObjects` | `list_objects` | `listObjects` | Yes |
-| ListUsers | `listUsers` | `ListUsers` | `ListUsers` | `list_users` | `listUsers` | Yes |
-| CreateStore | `createStore` | `CreateStore` | `CreateStore` | `create_store` | `createStore` | Yes |
-| ListStores | `listStores` | `ListStores` | `ListStores` | `list_stores` | `listStores` | Yes |
-| GetStore | `getStore` | `GetStore` | `GetStore` | `get_store` | `getStore` | Yes |
-| DeleteStore | `deleteStore` | `DeleteStore` | `DeleteStore` | `delete_store` | `deleteStore` | Yes |
-| ReadAuthorizationModels | `readAuthorizationModels` | `ReadAuthorizationModels` | `ReadAuthorizationModels` | `read_authorization_models` | `readAuthorizationModels` | Yes |
-| ReadAuthorizationModel | `readAuthorizationModel` | `ReadAuthorizationModel` | `ReadAuthorizationModel` | `read_authorization_model` | `readAuthorizationModel` | Yes |
-| WriteAuthorizationModel | `writeAuthorizationModel` | `WriteAuthorizationModel` | `WriteAuthorizationModel` | `write_authorization_model` | `writeAuthorizationModel` | Yes |
-| Read | `read` | `Read` | `Read` | `read` | `read` | Yes |
-| ReadChanges | `readChanges` | `ReadChanges` | `ReadChanges` | `read_changes` | `readChanges` | Yes |
-| Expand | `expand` | `Expand` | `Expand` | `expand` | `expand` | Yes |
-| ReadAssertions | `readAssertions` | `ReadAssertions` | `ReadAssertions` | `read_assertions` | `readAssertions` | Yes |
-| WriteAssertions | `writeAssertions` | `WriteAssertions` | `WriteAssertions` | `write_assertions` | `writeAssertions` | Yes |
-| StreamedListObjects | `streamedListObjects` | `StreamedListObjects` | `StreamedListObjects` | `streamed_list_objects` | `streamedListObjects` | Yes |
-| GetConfiguration | No | No | No | No | No | Yes |
-| Evaluation | No | No | No | No | No | Yes |
-| Evaluations | No | No | No | No | No | Yes |
-| ActionSearch | No | No | No | No | No | Yes |
-| ResourceSearch | No | No | No | No | No | Yes |
-| SubjectSearch | No | No | No | No | No | Yes |
-
-These are **90 genuine SDK programs across 18 operations, plus curl for all
-24 operations: 114 samples total**, not 24-by-five SDK coverage.
-Each method above is a named high-level SDK client method, verified against
-immutable public sources:
-[Node.js](https://github.com/openfga/js-sdk/blob/ff0a9f54631700f98349662746e0d6b3cae52993/client.ts),
-[Go](https://github.com/openfga/go-sdk/blob/76d209a9753a5284db64df848eea41fea2506c6f/client/client.go),
-[.NET](https://github.com/openfga/dotnet-sdk/blob/ec8ee04761b41e2400693b911a17463877e500c3/src/OpenFga.Sdk/Client/Client.cs),
-[Python](https://github.com/openfga/python-sdk/blob/60a0a73a8481867dd25dadf7e6516fb4aca82a14/openfga_sdk/client/client.py),
-[Java](https://github.com/openfga/java-sdk/blob/0c5c5c77c1a25e6d0b0ce684833981a6a74db510/src/main/java/dev/openfga/sdk/api/client/OpenFgaClient.java).
-The support registry also records generated low-level API sources, checked for
-methods absent from the high-level clients. The six AuthZen endpoints have no
-named client **or** generated low-level operation in these versions. Their native
-panels explicitly show **HTTP-only curl**, not SDK-labelled generic HTTP clients.
-Generic SDK request executors are not counted as operation support.
-
-Streaming uses actual SDK streaming interfaces: a Node async generator, Go
-result/error channels, Python async iteration, Java item consumers and a
-completion future, and .NET async enumeration. Java uses the client's dedicated
-streaming implementation, not the generated API's single-response method.
-The reference remains in `simple` read-only mode; no Try it/Send controls,
-server URLs, or authentication schemes are added. The samples use
-`FGA_API_URL`, `FGA_STORE_ID`, and `FGA_MODEL_ID` as applicable for a self-hosted
-server with authentication disabled. ListStores and CreateStore need only
-`FGA_API_URL`. Store administration, model listing/writing, tuple reads and
-change reads need a store but no model ID. Model reads, assertions and
-relationship queries use the configured model ID.
-Install the corresponding SDK using the
-[installation guide](./docs/getting-started/install-sdk.mdx); authenticated
-client setup remains in the
-[SDK setup guide](./docs/getting-started/setup-sdk-client.mdx).
-The request values are illustrative; use a store/model and relationship data
-appropriate to the request. Samples do not assert an invented response.
-Paginated examples request the first page. To request another page, supply the
-actual returned token as the string `continuationToken`; `pageSize` is an integer
-from 1 to 100. ListStores also accepts `name`; ReadChanges accepts `startTime`
-as a UTC RFC 3339 string. A ReadChanges token can remain unchanged when there
-are no new changes, so these examples do not invent an until-empty polling loop.
-
-The model-write fixture deliberately uses a small schema 1.1 direct-relation
-model. Generator input guards cover reviewed example shapes, not every SDK
-feature. Conditional assertions require low-level methods in several SDKs,
-and Java contextual Expand requires its low-level request model; those optional
-features are not claimed by these basic examples. The .NET 0.10.4 assertion
-serializer omits a false-valued `expectation` member; the sample uses an explicit
-true expectation, and .NET false-assertion wire/server semantics have not been
-execution-tested.
-
-Each native sample has `lang`, `label`, and `source`. The viewer language labels
-are reused; native API aliases are `node`, `go`, `dotnet`, `python`, `java`,
-and `bash`, respectively (Mintlify displays the curl language selector as `cURL`).
-`source` is the complete import/setup/request program,
-so copying a sample does not require copying a second setup tab.
-
-```bash
-npm run generate:mintlify-api-samples
-npm run check:mintlify-api-samples
-npm run test:mintlify-api-samples
-npm run validate:mintlify-api-navigation
+```mdx
+##### <span id="legacy-heading" style={{ scrollMarginTop: '7rem' }}>Original heading</span>
 ```
 
-Generation is deterministic for fixed inputs, **not network-independent**.
-Generation, artifact checks, and API navigation validation fetch the pinned
-canonical document with a 30-second timeout and verify its digest and shape.
-Fetch/HTTP/timeout/parse failures, missing or mismatched operations, existing
-canonical samples on a covered operation, invalid overlay targets/fields,
-duplicate labels, missing languages, and stale/missing output fail explicitly.
-The generated overlay may only add `x-codeSamples` at the 24 exact operation
-targets. Stripping just those additions must recover the entire canonical
-document, including all 20 paths and 24 operations, unchanged.
-The API navigation guard runs this check and the regression tests in the existing
-prebuild chain. Unit tests use an explicit fixture generator and fixture schema.
-Integration tests compare every committed sample with the shared generator and
-execute every emitted Node.js SDK and curl program against a loopback-only HTTP
-fixture, checking exact methods, bodies, paths, query parameters, streaming
-consumption, and absence of authentication.
-These tests are network-independent; they do not contact an OpenFGA deployment
-or prove authorization behavior against a real model. They do not execute the
-Go, .NET, Python, or Java SDKs. Separate cached-toolchain checks compiled all 18
-exact Go programs against 0.8.2 and ran all 18 Python 0.10.4 programs through
-real constructors/configuration and async entrypoints with SDK requests mocked
-and networking forbidden. Java 0.10.0 and .NET 0.10.4 signatures and model types
-were checked against public source; JVM/.NET compilation and execution were
-not available. Output equality alone is not an executed SDK test.
+IDs must identify the correct section and remain unique. Tabs also generate IDs from their labels; use an explicit tab ID to avoid a collision:
 
-To update samples, edit their inputs or the shared SDK generators and regenerate;
-never hand-edit the generated overlay. The metadata admits only the reviewed
-minimal request inputs; expanding an example requires updating the input guards
-and regression tests. To adopt a newer canonical source, review
-the upstream artifact first, update the immutable URL in both `api-samples.json`
-and `docs.json`, and update its digest and reviewed operation identities/counts
-together with the guards and navigation as needed. Regenerate and run the checks
-before reviewing the overlay diff. Keep the explicit `overlays` list: Mintlify
-fails explicit overlay errors rather than silently skipping an auto-discovered
-overlay. No new Mintlify CLI dependency is required by this pipeline.
-
-### Non-production component fixture
-
-[`tests/fixtures/mintlify/viewers.mdx`](../tests/fixtures/mintlify/viewers.mdx)
-retains the 16 examples of all eight interactive components **outside the entire
-Mintlify content root**. It is test input, not a published page or static asset.
-The former internal `/docs/test-viewer` route has no replacement or redirect and
-must return the native not-found page.
-
-`npm run test:mintlify-component-usage` checks this fixture with the existing
-MDX compiler, component contracts, and canonical DSL guard. It also checks the
-complete DSL model's syntax, resolves logical `/snippets/...` imports against
-the real Mintlify root, and tests missing files, symlinked paths, invalid props,
-broken MDX, and lossy/invalid DSL. The tokenizer parity suite explicitly includes
-its two authorization models and one DSL block alongside production examples.
-Both `npm run check:mintlify` and `npm run test:mintlify-components` include these
-fixture checks.
-
-For an intentional visual preview, create a temporary directory **outside this
-repository**, copy `docs-site/` there, then copy the external fixture into
-that copy's `docs/` directory. Run `mint dev` from that isolated copy on a separate
-port, inspect the temporary page, stop the server, and remove only that temporary
-copy. Do not copy the fixture into the working content root, add it to `docs.json`,
-or commit/deploy the temporary preview. Normal previews must keep the old route
-absent.
-
-### lib/codegen/check-reference.js.txt
-
-**Not a runtime file.** A readable reference extraction of the `CheckRequestViewer`
-codegen logic (ported from the Docusaurus source). The `.txt` suffix prevents
-Mintlify from executing this non-runtime reference as a browser script. When the upstream
-`src/components/Docs/SnippetViewer/CheckRequestViewer.tsx` changes, diff against
-this file to understand what needs updating in `snippets/CheckRequestViewer.jsx`.
-
----
-
-## Architecture
-
-### Historical migration and active native coverage
-
-[`source-pages.json`](./source-pages.json) version 2 separates the **frozen 111-source
-migration inventory** from future native content. `sources` records historical
-paths relative to `docs/content/`, independently checked against
-[`historical-source-inventory.json`](../tests/fixtures/mintlify/historical-source-inventory.json).
-The fixture records each public slug and original file SHA-256 from commit
-`85bde5e19f7fa0b8687732c33c4f7c3a39fd83e0`; those paths are provenance, not files
-required in today's checkout. No Git history, fetch, or legacy source tree is
-needed. The old source-coverage `--compare-ref` option is retired.
-
-The default destination is `docs-site/docs/<source>`. The five `overrides`
-preserve `intro` -> `fga`, `getting-started/overview` -> `getting-started`,
-`docker-setup` -> `docker`, `kubernetes-setup` -> `kubernetes`, and
-`modeling/testing-models` -> `modeling/testing`. Destinations are exact `.mdx`
-paths relative to `docs-site/`.
-
-```bash
-npm run validate:mintlify-source-parity
-npm run test:mintlify-source-parity
+```mdx
+<Tab title="Go" id="go-sdk">
+  SDK instructions
+</Tab>
 ```
 
-The navigation validator invokes coverage and the navigation chain runs its
-mutation tests. The historical inventory maps to 110 native pages and one
-Docusaurus-owned Community page at `/community`, with its existing
-`src/pages/community.mdx` owner. There is no duplicate native Community page.
-`retainedPage` and published fixture exemptions are rejected.
+This keeps `#go` available for the existing CLI installation heading. Do not ignore fragment links or redirect them to a different section to make validation pass.
 
-For a future native page, add a reviewed `{ "destination": "docs/new-page.mdx",
-"reason": "Purpose of this new guide" }` entry to `nativePages`, author the page,
-and add its route once to visible docs navigation. Maintain its semantic tests
-or an independently authored contract with the change. Do not add invented
-historical sources or generate expected content from the native page itself.
-For a historical page rename, update its override and navigation without
-changing `sources`; deliberate retirement requires an exact exclusion with a
-reason. Docusaurus ownership additionally requires `owner`, `route`, and an
-existing `ownerPage` under `src/pages/`.
+### Author OpenFGA DSL examples
 
-The guard rejects coordinated historical inventory deletions, unregistered
-additions, missing/stale/unassigned destinations (including MDX outside `docs/`
-and unexpected `.md` pages other than the root contributor README), duplicate
-mappings/navigation, missing visible navigation, conflicting ownership,
-malformed paths, globs, traversal, and symlinks. Excluded pages cannot be
-claimed by `nativePages` or enter hidden or visible navigation. Retired
-test-viewer routes also cannot return through aliases, links, or redirects,
-including same-origin absolute URLs. API operation references are not MDX
-pages and remain subject to the separate API validator.
-
-**Inventory coverage is not semantic parity.** The compact regression fixtures
-in [`tests/fixtures/mintlify`](../tests/fixtures/mintlify) preserve the previous
-source-dependent comparisons without retaining the legacy MDX corpus:
-
-| Fixture | Independent expectation captured at `85bde5e` |
-| --- | --- |
-| `historical-source-inventory.json` | 111 paths, public slugs, and original source byte digests |
-| `operation-callers.json` | All 215 operation callers across the 110 mapped pages, including empty caller lists, exact props, results, and language restrictions |
-| `tuple-examples.json` | 46 tuple examples across 15 pages, including both columns, descriptions, conditions, types, and order |
-| `tutorial-structure.json` | Five task DSL models with heading/step placement, tuple sections and contextual checks; two rich design-principle disclosures; all 19 concept headings |
-| `static-requests.json` | Read, Expand, model-write, and ReadChanges inputs; response trees; DSL; installation pins; original renderer language defaults, model ID, timestamp, and output strings |
-| `prerequisite-models.json` | Three complete configuration-expression AST digests, preserving definition/property/array order and literal semantics |
-
-Extraction used only the legacy sources and, for static renderer defaults,
-`src/components/Docs/SnippetViewer` at that exact commit. The original Expand
-response examples had one surplus closing brace; extraction removes only that
-brace, exactly as the previous test did. Prerequisite model digests use the
-previous test's AST normalization (strip positions, raw spellings, and comments
-only), rather than a sorted or simplified model. Rich definition/link checks
-and published headings remain in the existing independent `live-foundations`,
-`live-modeling`, and `live-operations` fixtures. Mutation tests still reject
-changed tuple semantics, hidden descriptions, reordered models, moved examples,
-lost definitions, and broken anchors. Do not regenerate these baselines from
-native output to silence failures; intentional behavior changes need explicit
-review of the independent contract. Matching source digests or inventory alone
-does not certify migrated prose or visual equivalence.
-
-### GitHub star-count fallback
-
-Mintlify fetches the repository's exact GitHub star count for its native navbar
-control. `github-star-cache.js` stores successful native values for seven days
-and restores the last exact count if Mintlify's request fails. Cached values show
-a visible **last known** label; the link's tooltip and accessible name also state
-that the current count is unavailable and include when the value was observed.
-The fallback never refreshes its own timestamp. A successful native count replaces
-the cached display and removes the last-known label, even if the count decreased.
-Expired values are removed after seven days.
-
-The fallback never makes its own GitHub API request; first-time visitors without a
-valid cached value retain the native icon-only state when that request fails.
-`npm run test:mintlify-navigation` covers fallback labeling, expiry, recovery,
-navigation remounts and unavailable browser storage.
-
-### Why Mintlify snippets look the way they do
-
-Mintlify's "snippets" system (JSX files in `snippets/`) has two constraints that
-shape all the code in this directory:
-
-1. **No npm imports** — snippets cannot `import` packages. All logic must be
-   self-contained.
-2. **Only the exported binding is reliably scoped** — sibling top-level `const`
-   declarations in the same file are not visible to Mintlify's runtime. Everything
-   must be defined inside the exported function body.
-
-These constraints explain patterns you'll see in every snippet file:
-
-- No `import` statements
-- All constants defined inside `export const MyComponent = (...) => { const X = ... }`
-- Snippets call the shared request generator from inside the exported function.
-- Language metadata, SDK initialization, and pure operation generators live in a
-  generated standalone browser helper, not cross-snippet or runtime npm imports.
-
-### The window-global pattern
-
-The standalone helpers expose these browser contracts:
-
-| Global              | Library                                               | Set by                      |
-| ------------------- | ----------------------------------------------------- | --------------------------- |
-| `window.fgaCodegen` | `@openfga/syntax-transformer` (DSL ↔ JSON conversion) | `/fga-codegen.js`           |
-| `window.openfgaDsl` | Generated OpenFGA Prism tokenizer                     | `/openfga-dsl-highlight.js` |
-| `window.openfgaViewer` | Shared language metadata, SDK setup, operation generators | `/openfga-viewer.js` |
-
-These files are served as static assets by Mintlify. Snippets check for the
-global on mount, then load the asset if needed. The request viewers listen for
-load/error events, display an explicit loading state, and report a failed or
-timed-out helper load as an alert. Model/DSL viewers retain their existing polling
-loaders. Mintlify may also load root JavaScript files automatically; consumers
-must work both with a preloaded global and with on-demand loading.
-
-Mintlify does not support a `docs.json` field for custom scripts — the only mechanism
-is to drop a `.js` file in the content tree and have snippets load it on demand.
-
-### DSL syntax highlighting
-
-OpenFGA DSL uses a custom Prism grammar registered via `@openfga/frontend-utils`.
-Mintlify uses Shiki and has no mechanism for registering custom grammars.
-
-`openfga-dsl-highlight.js` is generated from the Prism grammar and `openfga-dark`
-theme exported by the lockfile-pinned `@openfga/frontend-utils` package. It
-bundles official Prism core so grammar features retain Prism's behavior without a
-project-specific tokenizer implementation. The generated runtime is standalone,
-keeps Prism in manual mode, restores any existing Prism global, and has no runtime
-npm imports or dynamic code evaluation. Custom DSL viewers use the exact exported
-colors in dark mode and a centralized WCAG AA light palette from `global.css`;
-theme changes apply through CSS without re-tokenizing the model.
-
-#### Authoring DSL code blocks
-
-Standalone OpenFGA DSL examples must use `OpenFGACodeBlock`; do not use plain
-fences or language aliases such as `dsl.openfga`, `openfga`, `fga`, or `dsl`.
-Mintlify's native Shiki highlighter does not know the
-custom OpenFGA grammar, while the component uses the generated official Prism
-tokenizer:
+Use `OpenFGACodeBlock` for standalone DSL examples. Mintlify's native highlighter does not support the OpenFGA grammar.
 
 ```mdx
 import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
@@ -463,129 +125,19 @@ import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
 type user`} />
 ```
 
-Mintlify strips literal indentation at the start of lines inside JSX template
-literals. Escape the first leading space as `\x20`, as shown above, so the
-rendered model retains its indentation. Escape any literal backticks, `${`
-sequences, and backslashes as JavaScript template-literal content.
-Use `encodeOpenFgaCode` from `scripts/validate-openfga-code-blocks.mjs` for
-lossless conversion, including trailing spaces and whitespace-only lines.
-Keep existing `AuthzModelSnippetViewer` examples: their DSL view already uses
-the same tokenizer and also supports JSON.
+Mintlify strips leading indentation inside JSX template literals. Escape the first leading space as `\x20`; also escape literal backticks, `${` sequences, and backslashes. The `encodeOpenFgaCode` helper in [`validate-openfga-code-blocks.mjs`](./scripts/validate-openfga-code-blocks.mjs) preserves whitespace during conversion.
 
-`npm run validate:mintlify-code-blocks` parses every Mintlify page as MDX,
-rejects legacy OpenFGA language aliases and standalone models/fragments in
-plain or unlabelled code nodes and literal JSX code wrappers, verifies that component imports appear
-exactly once where needed, and requires each `code` prop to use canonical,
-non-lossy template-literal escaping. For plain code, the official syntax parser
-must recognize the entire body; enclosing syntax is supplied only to identify
-standalone type, relation, condition, schema, and module-extension fragments,
-never to change their displayed content. This is syntax classification, not
-authorization-model validation. Mixed shell transcripts, YAML store files with
-embedded models, JSON, explicitly labelled other languages, and literal examples
-inside larger documentation fences remain unchanged. Inline code and JSX
-comments are ignored. The root prebuild runs this guard
-through `validate:mintlify-navigation`.
+Do not use standalone DSL fences or aliases such as `openfga`, `dsl.openfga`, `fga`, or `dsl`. Keep existing `AuthzModelSnippetViewer` examples when both DSL and JSON views are useful. Shell transcripts, JSON, and YAML with embedded models retain their appropriate native formats.
 
-After converting examples, run
-`npm run validate:mintlify-code-blocks -- --compare-ref <reviewed-base>` to compare
-every converted model's bytes and order with the baseline and ensure existing
-canonical blocks have not changed. Source-fixture and ancestor checks also
-preserve instructional headings, step placement, and expandable examples.
-For the retired `docs/test-viewer.mdx`, the comparison follows only the explicit
-relocation to `tests/fixtures/mintlify/viewers.mdx` and checks the entire fixture
-byte-for-byte, including prose and props. Later baselines also compare that
-external fixture exactly once. Any other removed or renamed baseline page with
-DSL examples still fails; relocation is not a general missing-page exemption.
-
-### Authoring MDX prose and expressions
-
-Run `npm run validate:mintlify-mdx` from the repository root. The navigation
-validation command (and therefore `prebuild`) runs it before the component and
-navigation guards. It checks **every `.mdx` file under `docs-site`**,
-including non-doc pages and MDX snippets. Run its regression tests with
-`npm run test:mintlify-mdx`. To check specific files or directories, append them
-after `--`. Symbolic links in the content tree are rejected rather than skipped.
-
-Curly braces in prose are JavaScript expressions, not placeholder delimiters:
-`{object types}` is invalid syntax, while `{user}` parses but fails at runtime
-unless `user` is bound. Write literal placeholders as inline code, for example
-`` `{object types}` ``, or escape both braces: `\{object types\}`.
-Escaped braces, character entities, inline/fenced code, and JSX comments are
-not checked as expressions. Leading YAML frontmatter delimited by `---` and
-closed by `---` or `...` is metadata, not MDX; its YAML values/schema are not
-validated by this guard.
-
-The guard compiles the complete MDX body without executing it and uses lexical
-scope analysis to reject unbound names throughout text/flow expressions,
-including nested JavaScript/JSX. Imports, named exported declarations,
-expression-local bindings, ECMAScript 2024 built-ins, and the MDX content
-function's `props` and `arguments` are supported. A named default layout export
-does not bind its name in prose; declare/import it separately if needed. Property
-names are not variable references; computed keys and template interpolations
-are. All references must be statically bound, even in `typeof` or dead branches;
-ambient runtime names need explicit validator support rather than lint-disable
-comments in a page.
-
-Diagnostics use `file:line:column` and distinguish MDX syntax failures from
-`unbound-prose` errors. Generated-JavaScript syntax errors use the page's start
-position and separately identify the generated line, not a claimed source line.
-This is **not a runtime-renderability proof**: imports are not resolved, values
-and initialization order are not evaluated, and names in ESM initializers or
-standalone MDX element attributes are not checked for binding. Component
-names/props belong to their own contracts. Valid JavaScript can still throw or
-return a value React cannot render. Unsupported parser/scope-analysis syntax
-fails explicitly.
-
-Put the original page headline in frontmatter `title`, without repeating an H1
-in the body. Use `sidebarTitle` when the navigation label differs from the
-headline; keep the existing label when changing title metadata.
-
-Preserve published fragment IDs when changing headings or moving them into
-components. Mintlify's automatic punctuation and duplicate-heading slugs can
-differ from Docusaurus. For H2-H4, use an explicit JSX heading such as
-`<h2 id="legacy-heading-1">Original heading</h2>` when needed; Mintlify retains
-its native anchor link and table-of-contents entry. Explicit IDs must identify
-the correct section, not alias a duplicate heading elsewhere on the page.
-Linked native components can also declare an `id`. Do not ignore `#fragment`
-links to bypass validation.
-Tabs generate anchors from their labels, so use an explicit tab `id` when a
-label would shadow an existing heading. For example, `<Tab title="Go" id="go-sdk">`
-keeps the original `#go` link available for the CLI installation heading.
-
-For fifth-level headings, use Markdown with an inline target, for example
-`##### <span id="legacy-heading" style={{ scrollMarginTop: '7rem' }}>Original heading</span>`.
-The span stays inside the semantic heading and clears the sticky header on
-fragment navigation. Explicit JSX `<h5>` headings can disappear in the native
-renderer and are rejected by the component guard.
-
-### Generated browser artifacts
-
-`fga-codegen.js` is a pre-bundled IIFE of the installed
-`@openfga/syntax-transformer`, produced by the exact esbuild version in
-`package-lock.json`. The size is inherent to the library's dependencies (ANTLR4,
-AJV, and yaml). Its crypto shim maps `require("crypto")` to `globalThis.crypto`
-(Web Crypto API).
-
-Install the root dependencies and regenerate the committed artifacts after
-upgrading either source package or Prism:
+When converting existing examples, compare their bytes and order against a reviewed baseline:
 
 ```bash
-npm ci
-npm run generate:mintlify-codegen
+npm run validate:mintlify-code-blocks -- --compare-ref <reviewed-base>
 ```
-
-`npm run check:mintlify-codegen` rebuilds into a temporary directory, fails when
-any committed artifact is stale, and runs tokenizer parity, source consistency,
-runtime isolation, shared SDK setup, and migrated-corpus tests. The root build invokes this freshness
-check in `prebuild`.
-
----
 
 ## Interactive viewer components
 
-### Import and prop contract
-
-Use exactly one unaliased named import for each component used on a page:
+Use one unaliased named import for each component:
 
 ```mdx
 import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
@@ -599,428 +151,357 @@ import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
 />
 ```
 
-The eight supported paths are `/snippets/AuthzModelSnippetViewer.jsx`,
-`/snippets/OpenFGACodeBlock.jsx`, `/snippets/CheckRequestViewer.jsx`,
-`/snippets/BatchCheckRequestViewer.jsx`, `/snippets/CreateStoreViewer.jsx`,
-`/snippets/WriteRequestViewer.jsx`, `/snippets/ListObjectsRequestViewer.jsx`, and
-`/snippets/ListUsersRequestViewer.jsx`. The exported name matches the filename.
-Do not use default/namespace imports, aliases, Docusaurus `@components` imports,
-or import other snippets from inside a snippet.
+The export name matches the filename under `/snippets/`. Default imports, namespace imports, aliases, and Docusaurus `@components` imports are not supported. Prefer literal prop values so the validator can inspect the example.
 
-| Component | Required props | Optional props and defaults |
-| --- | --- | --- |
-| `OpenFGACodeBlock` | `code`: string, canonically escaped template literal (see above) | `title`: string |
-| `AuthzModelSnippetViewer` | `configuration`: model JSON or a single type-definition fragment | `syntaxesToShow`: nonempty unique array of `dsl`/`json`, default `['dsl', 'json']`; `skipVersion`: boolean, default false |
-| `CheckRequestViewer` | `user`, `relation`, `object`: strings | `allowed`: boolean; omit for request-only examples (no response annotation); `contextualTuples`, `context`, `headers`: string record for SDKs/curl; `consistency`; common request props below |
-| `BatchCheckRequestViewer` | `checks`: nonempty array of `{user, relation, object, correlation_id, allowed, contextualTuples?, context?}` | Common request props below |
-| `WriteRequestViewer` | At least one nonempty `relationshipTuples` or `deleteRelationshipTuples` array | Omitted tuple arrays default to `[]`; `conflictOptions`: `{onDuplicateWrites?: 'error' \| 'ignore', onMissingDeletes?: 'error' \| 'ignore'}`; common request props below |
-| `ListObjectsRequestViewer` | `user`, `relation`, `objectType`: strings; `expectedResults`: string array | `contextualTuples`, `context`; common request props below |
-| `ListUsersRequestViewer` | `objectType`, `objectId`, `relation`, `userFilterType`: strings; `expectedResults`: `{users: [...]}` | `userFilterRelation`: string; `contextualTuples`, `context`; common request props below |
-| `CreateStoreViewer` | None | `storeName`: nonempty string, default `"FGA Demo Store"`; `allowedLanguages` |
+### Component inputs
 
-Common request props are `authorizationModelId` (string, default example ID
-`01HVMMBCMGZNT3SED4Z17ECXCA`), `skipSetup` (boolean, default false), and
-`allowedLanguages` (nonempty, duplicate-free array of supported identifiers).
-The example model ID must be replaced with the ID returned when writing your
-model; it is not a configured production model. Request fragments preserve the
-source default for omitted or empty model-ID strings. Complete build-time
-samples instead use `FGA_MODEL_ID`, unless an explicit model ID is supplied.
+| Component                  | Required inputs                                                                                     | Component-specific options                                                                                                         |
+| -------------------------- | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `OpenFGACodeBlock`         | `code`, using canonical template-literal escaping                                                   | `title`                                                                                                                            |
+| `AuthzModelSnippetViewer`  | `configuration`: a model or single type-definition fragment                                         | `syntaxesToShow`: unique `dsl`/`json` entries, default `['dsl', 'json']`; `skipVersion`, default `false`                           |
+| `CheckRequestViewer`       | String `user`, `relation`, and `object`                                                             | `allowed`; omit it for a request without a response annotation. Also accepts contextual tuples, context, headers, and consistency. |
+| `BatchCheckRequestViewer`  | Nonempty `checks` array with `user`, `relation`, `object`, `correlation_id`, and `allowed` per item | Items can include contextual tuples, context, and descriptions.                                                                    |
+| `WriteRequestViewer`       | At least one nonempty `relationshipTuples` or `deleteRelationshipTuples` array                      | `conflictOptions`: `onDuplicateWrites` and/or `onMissingDeletes`, each `error` or `ignore`                                         |
+| `ListObjectsRequestViewer` | `user`, `relation`, `objectType`, and string-array `expectedResults`                                | Contextual tuples, context, and consistency                                                                                        |
+| `ListUsersRequestViewer`   | `objectType`, `objectId`, `relation`, `userFilterType`, and `expectedResults: {users: [...]}`       | `userFilterRelation`, contextual tuples, context, and consistency                                                                  |
+| `CreateStoreViewer`        | None                                                                                                | `storeName`, default `"FGA Demo Store"`; `allowedLanguages`                                                                        |
 
-Tuples contain string `user`, `relation`, and `object` fields. Write and contextual
-tuples also accept `_description` (an instructional comment, never payload data)
-and `condition` with `name` and optional JSON-object `context`. Batch items may
-include `_description` too. Delete tuples cannot contain a condition.
-Request contexts are JSON objects, including nested values, arrays, booleans,
-numbers, and nulls. Query viewers accept `consistency`: `UNSPECIFIED`,
-`MINIMIZE_LATENCY`, or `HIGHER_CONSISTENCY`. Read pagination/continuation options
-remain with the static Read examples, not these unrelated query operations.
-Each ListUsers result has exactly one of
-`object: {type, id}`, `wildcard: {type}`, or `userset: {type, id, relation}`.
-Model inputs support `schema_version`, `type_definitions`, relations, metadata,
-and conditions; a `{type, relations?, metadata?}` fragment is normalized to a
-single-type model for DSL conversion without displaying the schema header.
+Request viewers share `authorizationModelId`, `skipSetup` (default `false`), and `allowedLanguages`. CreateStore does not need a model ID. The default example model ID is illustrative; replace it with the ID returned by your model write.
 
-These are **Mintlify authoring props, not ports of every Docusaurus export**.
-`showWrite`, `pseudoCodeMode`, and other source-only options are not supported;
-the validator reports them instead of letting React silently ignore them.
-Source pseudocode-only callers use `allowedLanguages={['rpc']}`. Operation
-generation preserves supplied context/condition/filter/consistency fields and
-explicit false or empty values; it does not infer a successful response.
-Invalid expectation types fail explicitly. Playground cannot execute contextual
-tuples, context, custom headers, or consistency options, and CLI does not support
-custom headers; those tabs say so instead of silently dropping the option.
+Data conventions:
 
-### Shared operation generation
+- Tuples have string `user`, `relation`, and `object` fields. Write and contextual tuples can include a `condition` with a name and optional JSON-object context. Delete tuples cannot include conditions.
+- `_description` is an instructional comment, never API payload data.
+- Request `context` values are JSON objects; custom `headers` are string records.
+- `consistency` is `UNSPECIFIED`, `MINIMIZE_LATENCY`, or `HIGHER_CONSISTENCY`.
+- Each ListUsers result has exactly one of `object: {type, id}`, `wildcard: {type}`, or `userset: {type, id, relation}`.
+- Preserve explicit `false` and empty results. Do not replace them with assumed success.
 
-`scripts/operation-codegen.mjs` is the browser-safe, pure author source for all
-six SDK viewers. `scripts/viewer-runtime.mjs` re-exports it and supplies shared
-setup/composition. The standalone `openfga-viewer.js` bundle is generated from
-these modules; do not put author-source `.js` files under the Mintlify root,
-where they may be auto-injected as browser scripts.
+These are native authoring contracts, not every option from the old Docusaurus components. Source-only options such as `showWrite` and `pseudoCodeMode` are rejected. Use `allowedLanguages={['rpc']}` for pseudocode-only examples.
 
-Node tooling can import the same functions directly:
+### Languages and tabs
 
-```js
-import { buildSdkExample, buildRequestCode } from './scripts/viewer-runtime.mjs';
-import { buildOperationRequest, buildOperationCode } from './scripts/operation-codegen.mjs';
+[`viewer-contract.mjs`](./scripts/viewer-contract.mjs) defines language identifiers, labels, grammars, and supported combinations.
 
-const props = { user: 'user:anne', relation: 'reader', object: 'document:planning' };
-const request = buildRequestCode('js-sdk', 'CheckRequestViewer', props);
-const fullSample = buildSdkExample('js-sdk', 'CheckRequestViewer', props);
-const curl = buildOperationCode('check', 'curl', props);
-const wireBody = buildOperationRequest('check', props);
+| Identifier   | Label      | Code grammar |
+| ------------ | ---------- | ------------ |
+| `js-sdk`     | Node.js    | `javascript` |
+| `go-sdk`     | Go         | `go`         |
+| `dotnet-sdk` | .NET       | `csharp`     |
+| `python-sdk` | Python     | `python`     |
+| `java-sdk`   | Java       | `java`       |
+| `cli`        | CLI        | `shell`      |
+| `curl`       | curl       | `shell`      |
+| `rpc`        | Pseudocode | `text`       |
+| `playground` | Playground | `text`       |
+
+Check supports all nine languages. BatchCheck omits CLI and Playground; Write, ListObjects, and ListUsers omit Playground; CreateStore omits Pseudocode and Playground.
+
+`allowedLanguages` must be nonempty and duplicate-free. Its order controls the tabs; the first entry is selected unless Mintlify restores a supported language preference. Short names such as `js` or `dotnet` are not authoring identifiers. Use `csharp` for native .NET code fences.
+
+Use a native `CodeGroup` for setup and request code. Its children use `language` for the grammar and `filename` for the tab label, not `title`. Mintlify synchronizes matching labels across groups and handles preference persistence, keyboard navigation, focus, scrolling, and copying. Do not add a separate selector or remount groups on selection.
+
+Playground cannot represent contextual tuples, context, headers, or consistency options. CLI does not support custom headers. Unsupported combinations must remain visible as limitations, not silently lose request fields.
+
+### Running the examples
+
+Install a compatible [SDK or CLI](./docs/getting-started/install-sdk.mdx), start an OpenFGA server, and set `FGA_API_URL`. Store-scoped examples also need `FGA_STORE_ID`; complete samples use `FGA_MODEL_ID` where the operation requires it.
+
+The shared setup uses **no authentication**, for a self-hosted server with authentication disabled. Follow the [SDK setup guide](./docs/getting-started/setup-sdk-client.mdx) for pre-shared keys or client credentials. Never add credentials to documentation.
+
+Tutorial request tabs contain fragments: keep imports at file scope, Go code inside `main`, Java requests inside an exception-handling method, and Python requests inside an async function that closes the client. API-reference samples, described below, contain complete programs.
+
+### Non-production component fixture
+
+[`viewers.mdx`](../tests/fixtures/mintlify/viewers.mdx) exercises all eight viewers outside the Mintlify content root. It is not a page to publish. `/docs/test-viewer` must remain a 404, without a replacement redirect.
+
+For visual testing, copy `docs-site/` to an isolated temporary directory outside the repository, add the fixture to that copy's `docs/` directory, and preview it on a separate port. Stop the preview and remove the temporary copy afterward. Never add the fixture to the working content root or production navigation.
+
+## Native API SDK samples
+
+The API reference reads the canonical OpenAPI 3.0.3 document from [`openfga/api`](https://github.com/openfga/api/tree/main/docs/openapiv3), pinned to the immutable revision from [openfga/api#259](https://github.com/openfga/api/pull/259).
+
+An explicit [OpenAPI overlay](https://www.mintlify.com/docs/api-playground/openapi-setup#transform-your-spec-with-overlays) adds `x-codeSamples` without changing the canonical operations. The reference stays in `simple`, read-only mode, without Try it or Send controls.
+
+### Coverage
+
+There are **90 SDK samples across 18 operations, plus cURL for all 24 operations**. The six AuthZen operations are HTTP-only in the audited SDK versions; generic HTTP requests are not presented as SDK support.
+
+| Operation               | Node.js 0.9.7             | Go 0.8.2                  | .NET 0.10.4               | Python 0.10.4               | Java 0.10.0               | curl |
+| ----------------------- | ------------------------- | ------------------------- | ------------------------- | --------------------------- | ------------------------- | ---- |
+| Check                   | `check`                   | `Check`                   | `Check`                   | `check`                     | `check`                   | Yes  |
+| BatchCheck              | `batchCheck`              | `BatchCheck`              | `BatchCheck`              | `batch_check`               | `batchCheck`              | Yes  |
+| Write                   | `write`                   | `Write`                   | `Write`                   | `write`                     | `write`                   | Yes  |
+| ListObjects             | `listObjects`             | `ListObjects`             | `ListObjects`             | `list_objects`              | `listObjects`             | Yes  |
+| ListUsers               | `listUsers`               | `ListUsers`               | `ListUsers`               | `list_users`                | `listUsers`               | Yes  |
+| CreateStore             | `createStore`             | `CreateStore`             | `CreateStore`             | `create_store`              | `createStore`             | Yes  |
+| ListStores              | `listStores`              | `ListStores`              | `ListStores`              | `list_stores`               | `listStores`              | Yes  |
+| GetStore                | `getStore`                | `GetStore`                | `GetStore`                | `get_store`                 | `getStore`                | Yes  |
+| DeleteStore             | `deleteStore`             | `DeleteStore`             | `DeleteStore`             | `delete_store`              | `deleteStore`             | Yes  |
+| ReadAuthorizationModels | `readAuthorizationModels` | `ReadAuthorizationModels` | `ReadAuthorizationModels` | `read_authorization_models` | `readAuthorizationModels` | Yes  |
+| ReadAuthorizationModel  | `readAuthorizationModel`  | `ReadAuthorizationModel`  | `ReadAuthorizationModel`  | `read_authorization_model`  | `readAuthorizationModel`  | Yes  |
+| WriteAuthorizationModel | `writeAuthorizationModel` | `WriteAuthorizationModel` | `WriteAuthorizationModel` | `write_authorization_model` | `writeAuthorizationModel` | Yes  |
+| Read                    | `read`                    | `Read`                    | `Read`                    | `read`                      | `read`                    | Yes  |
+| ReadChanges             | `readChanges`             | `ReadChanges`             | `ReadChanges`             | `read_changes`              | `readChanges`             | Yes  |
+| Expand                  | `expand`                  | `Expand`                  | `Expand`                  | `expand`                    | `expand`                  | Yes  |
+| ReadAssertions          | `readAssertions`          | `ReadAssertions`          | `ReadAssertions`          | `read_assertions`           | `readAssertions`          | Yes  |
+| WriteAssertions         | `writeAssertions`         | `WriteAssertions`         | `WriteAssertions`         | `write_assertions`          | `writeAssertions`         | Yes  |
+| StreamedListObjects     | `streamedListObjects`     | `StreamedListObjects`     | `StreamedListObjects`     | `streamed_list_objects`     | `streamedListObjects`     | Yes  |
+| GetConfiguration        | No                        | No                        | No                        | No                          | No                        | Yes  |
+| Evaluation              | No                        | No                        | No                        | No                          | No                        | Yes  |
+| Evaluations             | No                        | No                        | No                        | No                          | No                        | Yes  |
+| ActionSearch            | No                        | No                        | No                        | No                          | No                        | Yes  |
+| ResourceSearch          | No                        | No                        | No                        | No                          | No                        | Yes  |
+| SubjectSearch           | No                        | No                        | No                        | No                          | No                        | Yes  |
+
+[`api-sdk-support.mjs`](./scripts/api-sdk-support.mjs) records the versions, named methods, immutable source evidence, and unsupported cases. The documentation matrix is checked against that registry.
+
+### Update a sample
+
+1. Edit the reviewed inputs in `api-samples.json` or the shared generators in `scripts/`. Extend input guards and tests when adding a new request shape.
+2. Regenerate the overlay and review its diff:
+
+```bash
+npm run generate:mintlify-api-samples
+npm run check:mintlify-api-samples
+npm run test:mintlify-api-samples
+npm run validate:mintlify-api-navigation
 ```
 
-Operation IDs are `check`, `batchCheck`, `write`, `listObjects`, `listUsers`,
-and `createStore`; component names and language IDs are the same as the snippet
-contract. Complete samples include Node error-handled async entry points, Go
-`main`, Python `async with`/`asyncio.run`, Java `Example.main`, or .NET top-level
-statements. They use the environment-based no-auth setup; curl expands
-`FGA_MODEL_ID` inside a shell-quoted JSON request. `buildCreateStoreCode` composes
-the same generator, not a second set of operation strings.
+Do not hand-edit the overlay. It may add only `x-codeSamples` at the 24 exact operation targets; removing those additions must recover the unchanged canonical schema.
 
-Pure generators allow response expectations to be omitted, including batch
-items and list results. An explicit empty list is an expected empty result,
-not omission. Partial batch expectations annotate only the supplied decisions;
-denied checks do not imply errors. `_description` is emitted as instructional
-comments, never sent to the API. ListUsers wire `contextual_tuples` is an array,
-while Check/ListObjects/BatchCheck use a `tuple_keys` wrapper. SDK-specific
-wrapping happens only at the corresponding client boundary.
+To adopt a new schema revision, review the upstream artifact, then update the immutable URL in both `api-samples.json` and `docs.json`, its SHA-256 digest, and the operation contracts. Keep the explicit overlay configuration so overlay errors fail the build.
 
-`operation-codegen.test.mjs` compares every existing source operation caller's
-literal request, expectations, restrictions, descriptions, and generated bodies,
-then exercises rich requests through the installed Node SDK and curl against a
-loopback fixture. Python examples are syntax-checked. Static request and tuple
-fixture tests compare Read filters/results/timestamps/options, model-writing
-payloads and returned IDs, tuple descriptions, and combined YAML. These tests
-are not an assertion that every SDK version or authentication mode was executed.
+Generation is deterministic but requires network access: it fetches the pinned schema with a 30-second timeout and verifies its digest. Fetch, parsing, schema, and stale-output failures are errors, not reasons to use an unverified fallback.
 
-### Languages and selection
+### Sample behavior and limits
 
-`scripts/viewer-contract.mjs` is the authoritative metadata source, used by the
-browser helper and the component validator.
+Each native sample contains the complete imports, setup, and request. CreateStore and ListStores need only `FGA_API_URL`; other samples declare the store and model variables required by the operation. Examples assume no authentication and do not invent successful responses.
 
-| Identifier | Label | Native syntax grammar |
-| --- | --- | --- |
-| `js-sdk` | Node.js | `javascript` |
-| `go-sdk` | Go | `go` |
-| `dotnet-sdk` | .NET | `csharp` |
-| `python-sdk` | Python | `python` |
-| `java-sdk` | Java | `java` |
-| `cli` | CLI | `shell` |
-| `curl` | curl | `shell` |
-| `rpc` | Pseudocode | `text` (intentionally unhighlighted) |
-| `playground` | Playground | `text` (intentionally unhighlighted) |
+Paginated examples request one page. Supply the returned `continuationToken` for another page; `pageSize` must be an integer from 1 to 100. ReadChanges can return the same token when no changes are available, so do not use an unconditional until-empty loop. StreamedListObjects uses each SDK's streaming interface, not a single-response substitute.
 
-Default tabs follow that order. Check supports all nine; BatchCheck omits CLI
-and Playground; Write/ListObjects/ListUsers omit Playground; CreateStore omits
-Pseudocode and Playground. `allowedLanguages` preserves the author's order.
-The first entry is selected initially unless Mintlify restores a supported
-native language preference. Short aliases such as `js`, `go`, and `dotnet`
-are not authoring identifiers.
-Use `csharp`, not `dotnet`, for native .NET fences.
+Coverage has limits:
 
-Every setup/request code surface is one native multi-language `CodeGroup`, with
-integrated tabs, highlighting and active-code copy controls. Snippets pass each
-child's canonical `language` grammar and `filename` tab label; `title` is not a
-CodeGroup tab label. Do not add a separate language selector or remount the
-group on each selection.
+- Repository wire tests execute Node.js and cURL against loopback HTTP fixtures, not a deployed OpenFGA model.
+- Separate checks compiled the Go samples and exercised Python setup with mocked requests. Java and .NET were source-reviewed, not compiled or executed.
+- Reviewed inputs do not cover every optional SDK feature. Conditional assertions and Java contextual Expand require additional low-level handling in some clients.
+- The .NET 0.10.4 serializer omits a false-valued assertion `expectation`. Samples use an explicit true value; false-assertion wire behavior has not been execution-tested.
 
-Mintlify synchronizes matching tab labels between setup, request and other
-native code groups, and persists its language preference across navigation and
-reloads. Native selection callbacks keep the setup accordion hidden for
-Pseudocode/Playground. Setup contains only the caller's languages with real SDK
-or CLI initialization. Changing theme or opening setup does not reset selection.
-Native tabs own keyboard navigation, focus, horizontal scrolling and copy; no
-custom tab CSS or DOM synchronization is needed. This uses Mintlify's preference
-behavior, not Docusaurus's `groupId="languages"` implementation.
+## Generated files
 
-### SDK prerequisites
+### Browser helpers
 
-Install the SDK or CLI using `/docs/getting-started/install-sdk`, deploy your
-OpenFGA server, and set `FGA_API_URL` to that server's URL. Request examples also
-need `FGA_STORE_ID`; `FGA_MODEL_ID` configures an optional client-level model ID
-that a per-request `authorizationModelId` overrides. All SDK setup tabs now use
-the same environment-variable names, including Java.
+| Generated file             | Browser contract                                                            |
+| -------------------------- | --------------------------------------------------------------------------- |
+| `fga-codegen.js`           | `window.fgaCodegen`: DSL/JSON conversion from `@openfga/syntax-transformer` |
+| `openfga-dsl-highlight.js` | `window.openfgaDsl`: official OpenFGA Prism grammar and dark-theme tokens   |
+| `openfga-viewer.js`        | `window.openfgaViewer`: language metadata, setup, and request generation    |
 
-CreateStore does not need a store or model ID. Initialization is shared with
-request viewers, but excludes those fields. These snippets intentionally use
-**no authentication**, appropriate to a self-hosted server with authentication
-disabled. For pre-shared keys or client credentials, follow
-`/docs/getting-started/setup-sdk-client`; do not invent a hosted API URL or paste
-credentials into docs. The setup page retains its separate authentication-mode
-examples and is not generated from these no-auth helpers.
+Edit their entry points and shared source under `scripts/`, then regenerate:
 
-Request code is a fragment: keep imports at file scope, Go statements inside
-`main`, Java statements inside a method that handles exceptions, and Python
-requests in an async function with the client closed afterward (prefer
-`async with OpenFgaClient(configuration)`). CreateStore includes Go/Python entry
-points. Install compatible SDK versions before using newer optional features
-such as batch check and conflict options.
+```bash
+npm run generate:mintlify-codegen
+npm run check:mintlify-codegen
+```
 
-### Validating authoring changes
+Commit source and generated output together. The check rebuilds into a temporary directory and rejects stale artifacts. It also runs tokenizer, runtime, SDK setup, and content regressions.
 
-Run the repository-owned quality gate from the repository root:
+### Architecture
+
+Mintlify snippets cannot import npm packages. Keep constants and helper access inside the exported component function; sibling top-level bindings are not reliably available in the sandbox. Do not import one snippet from another.
+
+Shared logic lives in standalone browser helpers. Snippets must work whether Mintlify preloads those scripts or loads them on demand. Request viewers show loading and failure states; model/DSL viewers use their existing polling loaders.
+
+Keep author-source modules under `scripts/` as `.mjs`, not root `.js` files that Mintlify may inject into pages. [`operation-codegen.mjs`](./scripts/operation-codegen.mjs) owns pure request generation; [`viewer-runtime.mjs`](./scripts/viewer-runtime.mjs) composes shared setup and complete programs.
+
+The DSL bundle uses the lockfile-pinned Prism grammar from `@openfga/frontend-utils`. Dark colors come from that package; the light palette lives in `global.css`. Do not add a second tokenizer or edit generated tokens.
+
+Two maintenance details:
+
+- `github-star-cache.js` restores the last exact native GitHub count for up to seven days when the native request fails. It labels stale values as **last known** and makes no additional API requests.
+- `lib/codegen/check-reference.js.txt` is a reference extraction, not runtime code. Keep its `.txt` suffix so Mintlify does not execute it.
+
+### Server configuration table
+
+The generator updates only the marked release/table region in [`configuration.mdx`](./docs/getting-started/setup-openfga/configuration.mdx). It preserves the surrounding authored content.
+
+```bash
+# Fetch the latest official release
+npm run build:config-page
+
+# Regenerate from a reviewed local schema without network access
+npm run build:config-page -- --release v1.20.0 --schema /path/to/schema.json
+```
+
+Ordinary website builds do not run this generator. Review release changes against the independent content fixtures; never regenerate expected fixtures from the generated table just to make checks pass. The nightly workflow produces draft updates that still require this review.
+
+## Asset storage and Git LFS
+
+| Asset location              | Storage                                                    |
+| --------------------------- | ---------------------------------------------------------- |
+| Docusaurus website and Blog | Git LFS; rendering requires hydrated media                 |
+| Anything under `docs-site/` | Ordinary Git blobs; Mintlify must receive the actual bytes |
+
+See the [repository LFS setup](../README.md#setup-git-lfs-large-file-storage) and [`.gitattributes`](../.gitattributes).
+
+Before copying an LFS-managed asset, run `git lfs pull` to retrieve its contents. Put the real image or video under the appropriate native asset directory, then stage it and check its attributes:
+
+```bash
+git check-attr --cached filter -- docs-site/images/img/openfga_logo.svg
+```
+
+A native asset should report `filter: unset`. Inspect the staged blob, not just the working copy. A file beginning with `version https://git-lfs.github.com/spec/v1` is a pointer, not image data.
+
+Keep native overrides after the global LFS patterns. Attribute changes do not repair an already committed pointer: retrieve the original object, restage its bytes, and verify the asset renders. Do not remove global LFS rules or rewrite history to fix a native asset.
+
+## Validating authoring changes
+
+Run the full repository-owned gate before submitting a change:
 
 ```bash
 npm run check:mintlify
 ```
 
-This includes the individual checks and their regression suites, including
-MDX/prose, production-content parity, and custom-component tests.
-`npm run test:mintlify-content-parity` runs the `live-*-parity.test.mjs` suites
-against captured production contracts and source fixtures without fetching the
-live site. These preserve restored prose and links, visible disclosure summaries,
-legacy heading targets, and literal examples. They complement, rather than
-replace, rendered comparisons and browser interaction checks.
-`test:mintlify-components` still runs both
-component-usage and viewer-runtime tests; the aggregate uses
-`test:mintlify-component-usage` because `check:mintlify-codegen` already runs the
-shared viewer-runtime suite. See the [root README](../README.md#mintlify-repository-quality-checks)
-for CI triggers, network requirements, and the distinction from Mintlify CLI QA.
+During development, use the checks relevant to the change:
 
-The component validator uses `@mdx-js/mdx`'s MDX/ESTree ASTs, not regular
-expressions or evaluation of document JavaScript. It checks imports, actual JSX
-uses, props and known data shapes, language subsets, and model/result structure.
-Native Mintlify components, fenced examples, and comments are not constrained
-by the custom-component contract. Expressions that cannot be inspected safely
-are reported as deferred checks, not silently claimed as validated. Prefer
-literal data for custom viewer props so the validator can check the whole
-example. This command is separate from general MDX/prose validation.
+| Change                           | Command                                                   |
+| -------------------------------- | --------------------------------------------------------- |
+| MDX prose and expressions        | `npm run validate:mintlify-mdx`                           |
+| Specific MDX files               | `npm run validate:mintlify-mdx -- docs-site/docs/fga.mdx` |
+| Standalone DSL                   | `npm run validate:mintlify-code-blocks`                   |
+| Pages, navigation, and redirects | `npm run validate:mintlify-navigation`                    |
+| Viewer imports and props         | `npm run validate:mintlify-components`                    |
+| Viewer behavior and fixture      | `npm run test:mintlify-components`                        |
+| Captured content expectations    | `npm run test:mintlify-content-parity`                    |
+| Configuration generator          | `npm run test:config-page`                                |
+| Split-site ownership contracts   | `npm run test:site-boundary`                              |
 
-After changing the runtime, run `npm run generate:mintlify-codegen` and commit
-the generated helper with its source. Use representative real docs and, when
-needed, the [isolated fixture preview](#non-production-component-fixture) to
-verify first load, on-demand loading, switching languages, setup,
-copy, and desktop/mobile Light/Dark/System themes. Node tests alone cannot prove
-Mintlify's sandbox behavior or syntax grammar registration.
+The full gate checks generated artifacts, MDX, DSL, navigation, API samples, independent content fixtures, component contracts, configuration generation, and site boundaries. API checks fetch the pinned canonical schema. See the [repository CI guide](../README.md#mintlify-repository-quality-checks) for prerequisites and workflow details.
 
-### Source component inventory and native conversions
+Know what each result proves:
 
-Source paths below are relative to `src/components/Docs`. A static conversion
-is not reusable component parity. The 110 owned source pages have native counterparts;
-Community remains solely at the Docusaurus `/community` route. The
-viewer harness remains outside the published tree as an external test fixture.
+| Check                   | Proves                                                                 | Does not prove                                                   |
+| ----------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| MDX validation          | Syntax and supported expression bindings are valid                     | Imports resolve or all expressions render at runtime             |
+| Component validation    | Inspectable imports, props, languages, and data shapes match contracts | Deferred expressions or browser interactions work                |
+| Source/content fixtures | Inventory and independently captured semantics are preserved           | Pixel equivalence or correct authorization against a real server |
+| SDK wire tests          | Executed Node.js/cURL requests match fixture expectations              | Every SDK, authentication mode, or live model was tested         |
+| Source-only CI          | Repository checks passed                                               | LFS assets render or the hosted deployment works                 |
 
-| Source exports | Mintlify disposition |
-| --- | --- |
-| `AuthorizationModel/AuthzModelSnippetViewer` | Custom snippet; DSL/JSON and single-type fragments supported. Source `showWrite` and source-default DSL-only presentation are not equivalent. |
-| `AuthorizationModel/AuthzModelCodeBlock`, `SyntaxTransformer`, `Dsl` | Converted through the model snippet, `OpenFGACodeBlock`, and existing official syntax-transformer/Prism artifacts; no runtime source-component import. |
-| `SnippetViewer/CheckRequestViewer`, `BatchCheckRequestViewer`, `WriteRequestViewer`, `ListObjectsRequestViewer`, `ListUsersRequestViewer` | Five custom snippets with shared pure operation generation; current source callers retain request/expectation fixtures, including formerly static agent examples. RAG batch examples now have explicit correlation IDs in both source and migrated pages. |
-| `SnippetViewer/DefaultTabbedViewer`, `SupportedLanguage`, `SdkSetup` | Converted to the canonical language contract, native synchronized CodeGroup tabs and shared no-auth initialization. The separate source pseudocode toggle is not ported. |
-| Create-store examples (no dedicated source Docs component) | Custom `CreateStoreViewer`, with shared initialization and canonical language IDs. |
-| `SdkSetup/SdkSetupPrerequisite` | Converted to prose: all 43 source occurrences retain deployment, URL/store ID and optional API-token prerequisites. |
-| `SnippetViewer/ExecuteApiRequestViewer`, `ExecuteApiRequestStreamingViewer` | Missing reusable viewers; no current source MDX callers. |
-| `SnippetViewer/ExpandRequestViewer` | Two static native code groups preserve source-supported SDK/CLI/curl/pseudocode instructions and initialization; surrounding response trees remain. No unused reusable export added. |
-| `SnippetViewer/ReadRequestViewer` | Nine static native code groups preserve executable source examples, filters, timestamps, options and results. The migration read-all request is unfiltered and retains all source tuples. |
-| `SnippetViewer/ReadChangesRequestViewer` | Four static native-tab examples retain seven languages, page size, type filter and continuation-token combinations. Python options/imports and curl quoting are executable; reusable viewer missing. |
-| `SnippetViewer/StreamedListObjectsRequestViewer` | Static native tabs retain the source caller's five SDK languages and streamed results; reusable viewer missing. |
-| `SnippetViewer/WriteAuthzModelViewer` | Static seven-language examples retain source model payloads and returned IDs. CLI file prerequisites are explicit; no reusable viewer is claimed. |
-| `SnippetViewer/TupleViewer` | Four task-based examples retain ordered descriptions and values, readable tuple layout and one combined copyable YAML block per example. |
-| `RelationshipTuples/RelationshipTuplesViewer`, `RelationshipCondition` | All 42 actual source callers retain tuple values, descriptions and JSON designation. Import-only references are not treated as callers. |
-| `Column/ColumnLayout`, `CardBox`, `LinkBulletType`, internal `Link` | Native cards, tables and Markdown retain instructional content, including the three highlighted modeling exercises and their original icons. Source layout/monospace-container props are not reusable native components. Internal Link has no direct MDX callers. |
-| `Overview/CardGrid`, `IntroCard`, `RelatedSection` | Native CardGroup/Card/Note or Markdown retain titles, descriptions, destinations and reading order. Whole-card links replace separate More actions; source grouping and styling can differ. |
-| `ProductName`, `ProductNameFormat`, `ProductConcept`, `IntroductionSection`, `UpdateProductNameInLinks` | Literal OpenFGA text and Markdown links retain visible introductions, concept references and destinations. No dynamic product-name substitution layer is ported. |
-| `Banner`, `Playground`, `DocumentationNotice`, `FeedbackCallout` | No equivalent custom snippets. Banner/feedback have no direct MDX callers; playground/notice rendering is dormant under the current source configuration. |
+After changing viewers or runtime helpers, inspect representative pages in Mintlify. Check first load, language selection, setup, copying, fragment navigation, and desktop/mobile rendering in light, dark, and system themes. Use the [isolated component fixture](#non-production-component-fixture) when needed.
 
-Tutorial examples must stay inline with their instructional step. Use ordinary
-code fences or native CodeGroups for requests and responses, and native
-Accordions for expandable prerequisites. Keep original rich summary text visible
-outside the Accordion, with its examples or starting model inside. The component
-guard rejects raw HTML `details` and `summary`, including nested JSX, because
-Mintlify can silently omit their bodies. Literal code examples remain allowed.
-`RequestExample` and `ResponseExample` are API-page slots that can drop or
-aggregate tutorial content. Reserve those slots for intentional API-reference
-usage. Source-fixture tests check example ancestors and per-step placement, not
-just whether the expected strings exist in the file.
+Repository checks do not run the Mintlify CLI or replace its build validation and hosted acceptance.
 
-The two model-design-principles examples and tuple prerequisite disclosures use
-native Accordions so their prose and DSL are visible on expansion.
-Unrelated layout/link/card wrapper differences
-remain as classified above, rather than being counted as completed component
-ports. The static SDK setup page retains 18 examples
-(three authentication modes across six languages); that is content coverage,
-not proof of synchronized tabs or SDK execution.
+## Migration contracts and known differences
 
-### Content parity and platform differences
+### Independent regression fixtures
 
-The production-content fixtures cover all 110 documentation pages: 26 foundation
-and setup pages, 36 modeling pages, and 48 operations and example pages. They
-preserve page headlines and sidebar labels separately, restored explanations and
-links, example payloads, and published fragment targets. The original 32 article
-images retain their asset bytes and order; decorative modeling icons are tracked
-separately. These contracts supplement, rather than replace, rendered review.
+`source-pages.json` preserves a frozen inventory of 111 historical sources: 110 native pages and the Docusaurus-owned Community page. Its `docs/content/` paths are provenance, not files required in the current checkout. The legacy corpus and Git history are not needed to run the checks.
 
-Native presentation is not a pixel-for-pixel copy of Docusaurus:
+The fixtures under [`tests/fixtures/mintlify/`](../tests/fixtures/mintlify/) preserve:
 
-- Concepts keep all 19 question headings and rich definitions visible, with
-  examples in collapsed **Examples and details** disclosures. Native Accordion
-  descriptions cannot represent the original rich paragraphs.
-- Native cards, callouts, synchronized language tabs, copy controls, page
-  descriptions and light/dark themes replace Docusaurus controls and styling.
-  Production Docusaurus currently exposes only its dark theme.
-- Three diagram alt texts are more descriptive. The MCP protocol reference is
-  linked at its first body mention instead of the metadata introduction.
-  Existing spelling and spacing corrections retain their original URL fragments.
-- Nine relation subsections in Modeling Getting Started and two subsections in
-  Organization Context use H4 instead of production H5. Their wording and
-  fragments are preserved. Other restored H5 targets use the inline-span pattern
-  documented above.
-- Previously accepted SDK version pins and executable request-generation fixes
-  remain, even where production still emits older examples. Source-matched
-  static examples are not a claim that every SDK program has been compiled.
-  Fenced native copy controls omit a renderer-added terminal newline.
+| Fixture                                                   | Expected content                                                            |
+| --------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `historical-source-inventory.json`                        | Original paths, public slugs, and source digests                            |
+| `operation-callers.json`                                  | Operation props, expectations, descriptions, and language restrictions      |
+| `tuple-examples.json`                                     | Tuple values, conditions, descriptions, and ordering                        |
+| `tutorial-structure.json`                                 | Models, headings, instructional placement, and disclosures                  |
+| `static-requests.json`                                    | Static request/response examples, setup defaults, and SDK installation pins |
+| `prerequisite-models.json`                                | Configuration-expression structure and literal semantics                    |
+| `live-foundations/`, `live-modeling/`, `live-operations/` | Captured production headlines, prose, links, headings, and examples         |
 
-Platform limitations remain explicit: source FAQ/HowTo JSON-LD is not ported as
-a Docusaurus Head component, and native metadata equivalence needs separate
-review. AuthZEN's content `#pagination` also occurs on a Mintlify-generated
-footer navigation element; the original link reaches the correct content heading.
-Native search and production split-site routing require their own deployment
-acceptance. Content review alone does not authorize legacy-source removal or a
-production cutover.
+The historical fixtures were extracted from `85bde5e19f7fa0b8687732c33c4f7c3a39fd83e0`, independently of native output. Do not overwrite them with current output to silence failures. Intentional changes need a reviewed update to the contract.
 
----
+### Native behavior is not identical to Docusaurus
+
+The migration preserves instructional content, URLs, examples, and image bytes where contracted. It does not promise identical styling, metadata, or execution of every SDK example.
+
+- Cards, callouts, language tabs, copy controls, and themes use Mintlify's native presentation. Concepts keep rich definitions visible and put supporting examples in disclosures.
+- Eleven historical H5 subsections use H4: nine in Modeling Getting Started and two in Organization Context. Their wording and fragment targets remain intact.
+- Source FAQ/HowTo JSON-LD was not ported as Docusaurus `Head` content. Review native metadata separately.
+- AuthZen's content `#pagination` also appears on a generated footer element. The existing link reaches the content heading, but the duplicate is a platform limitation.
+- Accepted SDK fixes can differ from older production snippets. Native fenced-code copying also omits a renderer-added terminal newline.
+
+Read, Expand, ReadChanges, StreamedListObjects, and model-write tutorial examples are static native conversions, not reusable viewers. Unsupported source-only exports and layout props have not been recreated merely to match the old component inventory.
+
+The [migration proposal](../MINTLIFY-MIGRATION-PROPOSAL.md) provides background. Content acceptance and source retirement do not authorize a production traffic switch.
 
 ## Split-site deployment
 
-### Starting page and public ownership
+### Route ownership
 
-The Mintlify origin at `https://fga.mintlify.site/` redirects to `/docs/fga`.
-The exact `/` redirect in `docs.json` is temporary, like the existing `/docs`
-entry redirect. It must not become a redirect on the public website:
-`https://openfga.dev/` continues to serve the Docusaurus homepage.
+The Mintlify origin `https://fga.mintlify.site/` redirects temporarily to `/docs/fga`. The public `https://openfga.dev/` must continue serving the Docusaurus homepage.
 
-The public site uses path-based ownership, not a domain-wide move to Mintlify:
+| Public route                                                | Owner                             |
+| ----------------------------------------------------------- | --------------------------------- |
+| `/`, `/project`, `/community`, `/blog/**`                   | Docusaurus                        |
+| `/docs`, `/docs/**`                                         | Mintlify                          |
+| `/api-reference`, `/api-reference/**`                       | Mintlify                          |
+| Exact `/api` and `/api/service`, including trailing slashes | Edge redirect to `/api-reference` |
 
-| Public route                              | Origin                                                         |
-| ----------------------------------------- | -------------------------------------------------------------- |
-| `/`, `/project`, `/community`, `/blog/**` | Docusaurus                                                     |
-| `/docs`, `/docs/**`                       | Mintlify documentation                                         |
-| `/api-reference`, `/api-reference/**`     | Mintlify                                                       |
-| `/api`, `/api/service`                    | Permanent redirect to `/api-reference`                         |
+Docusaurus also owns `/search`, `/robots.txt`, `/sitemap.xml`, `/search-index.json`, root LLM indexes, and `/assets/**`, `/img/**`, `/css/**`, and `/icons/**`. Paths not explicitly assigned to Mintlify or a redirect fall through to the website.
 
-Docusaurus also owns `/search`, `/robots.txt`, `/sitemap.xml`,
-`/search-index.json`, `/llms.txt`, `/llms-full.txt`, `/assets/**`, `/img/**`,
-`/css/**`, and `/icons/**`. Every route not explicitly assigned to Mintlify or
-an edge redirect falls back to Docusaurus. Page ownership does not cover every
-network request: Mintlify also needs its own runtime and service paths below.
+Website search covers Blog, Project, and Community; its search plugin excludes the homepage. Product-docs search belongs to Mintlify.
 
-### Recommended edge: the existing Cloudflare zone
+### Use the existing Cloudflare edge
 
-The deployment workflow publishes Docusaurus to GitHub Pages with the
-`openfga.dev` custom domain. Public DNS and response headers checked on
-2026-09-18 show Cloudflare already fronts that origin. Use a
-[Cloudflare Worker Route](https://developers.cloudflare.com/workers/configuration/routing/routes/)
-on the existing proxied zone, keeping GitHub Pages as the website origin.
-Do not move the website to Vercel, replace the apex DNS record with Mintlify,
-or make a Worker Custom Domain the origin just to split these paths.
+The [deployment workflow](../.github/workflows/deploy.yml) publishes the website to GitHub Pages. Cloudflare already fronts that origin. Use a [Cloudflare Worker Route](https://developers.cloudflare.com/workers/configuration/routing/routes/) on the existing proxied zone, retaining GitHub Pages as the website origin.
 
-Mintlify's origin is `https://fga.mintlify.site`, never `https://openfga.dev`.
-A Worker Route can fall through to the existing origin with `fetch(request)`;
-Mintlify requests must use the explicit Mintlify upstream instead of recursively
-fetching the public site. Invocation patterns must include query-bearing entry
-URLs such as `/docs?source=nav`, with exact path-segment checks inside the Worker:
-`/docs-other` and `/api-reference-other` still belong to the website.
+Proxy Mintlify requests to `https://fga.mintlify.site`, never back to `https://openfga.dev`. A Worker Route can use `fetch(request)` for website fallthrough. Do not replace apex DNS with Mintlify or introduce a new website hosting platform just for this split.
 
-Configure Mintlify monorepo mode with `/docs-site` as the docs directory.
-The previous `/mintlify-native` directory no longer exists; update the hosting
-project setting before deploying the renamed tree.
+Worker invocation patterns must cover query-bearing entries such as `/docs?source=nav`. Inside the Worker, match complete path segments: `/docs-other` and `/api-reference-other` are not native routes.
 
-Before changing the custom-domain configuration, confirm the following with
-Mintlify. Its [subpath guide](https://www.mintlify.com/docs/deploy/docs-subpath)
-describes a single deployment base path, not this site's two sibling page
-prefixes:
+### Configure Mintlify
 
-- Keep the native base path unset: source paths already include `docs/`, and
-  generated API pages use `api-reference/`. Adding `/docs` as a deployment base
-  path is not a safe substitute and can change both URL families.
-- Confirm custom-domain registration for `openfga.dev` without handing Mintlify
-  the whole hostname. Canonical and `og:url` values must use the public host
-  with the correct page paths for both sections.
-- Confirm the discovery/resource arrangement below, the required `Origin`
-  header, and any additional search, assistant, or MCP endpoints for this
-  deployment. The generic proxy and Cloudflare examples differ on `Origin`
-  and domain-verification handling; do not treat either example as a complete
-  configuration for this split site.
+| Setting               | Required value or review                                                                |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| Repository directory  | `/docs-site`                                                                            |
+| Upstream origin       | `https://fga.mintlify.site`                                                             |
+| Deployment base path  | Leave unset; source paths already include `docs/`, while API pages use `api-reference/` |
+| Public canonical host | `https://openfga.dev`, with the correct path for each section                           |
 
-### Proxy route and transport contract
+Confirm the custom-domain setup with Mintlify before changing it. Its [subpath guide](https://www.mintlify.com/docs/deploy/docs-subpath) describes one deployment base path, while this site has two sibling prefixes. Adding a global `/docs` base path can change both URL families.
 
-Apply specific redirects and resource mappings before the general page rules.
-The [Mintlify Cloudflare guide](https://www.mintlify.com/docs/deploy/cloudflare)
-requires `/mintlify-assets/**` and `/_mintlify/**` alongside documentation paths.
+Also confirm `Origin` forwarding, domain-verification ownership, and generated search, assistant, MCP, and discovery endpoints. The generic proxy and Cloudflare examples differ on some of these details.
 
-| Path or resource | Edge behavior |
-| --- | --- |
-| Exact `/api`, `/api/`, `/api/service`, `/api/service/` | Redirect to `/api-reference`; preserve query parameters. |
-| `/docs`, `/docs/**`, `/api-reference`, `/api-reference/**` | Proxy to the same path and query on `fga.mintlify.site`. |
-| `/mintlify-assets/**`, `/_mintlify/**` | Proxy to Mintlify, including runtime assets and service requests. |
-| Additional images, custom scripts, OpenAPI assets, and `/_next/**` requests | Add only the nonconflicting paths emitted by the hosted site, verified by status and MIME type. Repository assets include `/images/**`, `/fga-codegen.js`, `/openfga-dsl-highlight.js`, and `/openfga-viewer.js`; hosted loaders may use different paths. |
-| Exact `/api/request`, if emitted | Compatibility rewrite to Mintlify's `/_mintlify/api/request`, as in its [Vercel recipe](https://www.mintlify.com/docs/deploy/vercel); never capture `/api/**` wholesale. The current API reference is read-only. |
-| MCP and agent discovery | Add the confirmed endpoint paths only; do not capture all `/.well-known/**`. |
-| Domain and certificate verification | Preserve the existing verification owner unless an exact Mintlify challenge path is approved. Do not blanket-proxy ACME or all `.well-known` paths. |
-| Everything else | Retain the existing Docusaurus/GitHub Pages origin. |
+### Forward support requests, not just pages
 
-Forward all methods, query parameters, request bodies, and response streams.
-Use the Mintlify upstream for outbound Host/TLS, retain the public
-`X-Forwarded-Host` and HTTPS protocol, and derive client-IP headers from trusted
-ingress rather than untrusted caller values. Confirm `Origin` behavior with
-Mintlify before release. Preserve redirects without automatically following them;
-verify `Location` never creates an origin loop or leaks the Mintlify hostname.
-Do not buffer assistant streams or apply an HTML cache policy to POST, dynamic
-responses, discovery files, or domain challenges. Keep upstream content types,
-security headers, and `Vary`; scope any policy changes to Mintlify responses.
+The [Mintlify Cloudflare guide](https://www.mintlify.com/docs/deploy/cloudflare) requires runtime and service routes alongside the page prefixes.
 
-### Discovery and sitemap release gates
+| Request                                                                     | Edge behavior                                                                                                                          |
+| --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `/docs`, `/docs/**`, `/api-reference`, `/api-reference/**`                  | Preserve the path and query when proxying to Mintlify.                                                                                 |
+| `/mintlify-assets/**`, `/_mintlify/**`                                      | Forward Mintlify runtime assets and service requests.                                                                                  |
+| Images, custom scripts, OpenAPI assets, and additional `/_next/**` requests | Allow only verified, nonconflicting paths emitted by the hosted site; check status and MIME type.                                      |
+| Exact `/api/request`, if emitted                                            | Rewrite to `/_mintlify/api/request`, as in the [Vercel recipe](https://www.mintlify.com/docs/deploy/vercel). Do not capture `/api/**`. |
+| MCP and agent discovery                                                     | Allow confirmed endpoint paths, not all `/.well-known/**`.                                                                             |
+| Certificate/domain challenges                                               | Preserve the existing owner unless a specific Mintlify verification path is approved.                                                  |
 
-The intended native discovery URLs are `/docs/llms.txt` and
-`/docs/llms-full.txt`; website root `/llms.txt` and `/llms-full.txt` remain
-Docusaurus-owned. **Rewriting just the two text files is insufficient.**
-Mintlify's [reverse-proxy guide](https://www.mintlify.com/docs/deploy/reverse-proxy)
-requires generated discovery links and resource paths to agree with the public
-URL layout. Confirm all recursive `/_llms/**` links, per-page Markdown URLs,
-`Link` and `X-Llms-Txt` headers, MCP discovery, and `.well-known` aliases against
-the two-prefix design before enabling mappings. In particular, a Mintlify page
-must not advertise the website-only root full-text bundle as its docs corpus.
+Repository assets include `/images/**`, `/fga-codegen.js`, `/openfga-dsl-highlight.js`, and `/openfga-viewer.js`; hosted loaders may use different URLs. Do not route all JavaScript or image requests to Mintlify.
 
-The website root index links to native product documentation and the canonical
-OpenAPI v3 specification; the root full bundle contains only Home, Project, and
-Community content. The footer already uses the intended canonical
-`openfga.dev/docs/*` resource URLs, but neither local preview nor this repository
-provisions the required edge/discovery integration.
+The proxy must preserve methods, queries, bodies, response streams, content types, security headers, and `Vary`. Use the Mintlify upstream for outbound Host/TLS, retain public `X-Forwarded-Host` and HTTPS information, and derive client-IP headers from trusted ingress.
 
-The public `/sitemap.xml` must be a composite of the Docusaurus and Mintlify
-sitemaps. Docusaurus emits only its owned website routes; the composite must
-include Mintlify `/docs/**` and `/api-reference/**` without duplicate ownership.
-The root website `/robots.txt` remains authoritative for the whole hostname;
-do not rely on `/docs/robots.txt` to govern crawling.
+Do not automatically follow upstream redirects, buffer assistant streams, or apply an HTML cache policy to POST requests, dynamic responses, discovery files, or verification challenges. Check `Location` for loops and unintended Mintlify-host URLs. Confirm the required `Origin` behavior before release.
 
-### Activation and rollback
+### Resolve discovery and sitemap ownership
 
-1. Obtain Cloudflare zone/Worker deployment access and Mintlify domain settings
-   access. Confirm the two-prefix and discovery contracts above.
-2. Save the current edge configuration and the last complete Docusaurus
-   deployment, including its old docs output. Simply removing Worker routes
-   after deploying the retired-docs website will not restore the old docs.
-3. Exercise the proposed proxy in an isolated staging environment. Check both
-   page prefixes, bare entry URLs, query strings, redirects, negative prefix
-   matches, website fallthrough, asset MIME types, native viewers, search,
-   assistant streaming where enabled, analytics POST, and discovery resources.
-   The pinned local Mintlify CLI drops query parameters on the origin-root
-   redirect; verify hosted redirect behavior separately.
-4. Confirm canonical URLs, sitemap coverage, robots ownership, TLS verification
-   and renewal, and cache freshness. No public-root redirect is permitted.
-5. Coordinate Worker activation with the website deployment that removes legacy
-   docs. Enable permanent legacy API redirects only after staging acceptance.
-   Keep this PR draft until the owners approve the cutover.
-6. On regression, restore both the saved edge configuration and the complete
-   prior website deployment, then invalidate affected edge caches.
+Native docs should expose `/docs/llms.txt` and `/docs/llms-full.txt`. Root `/llms.txt` and `/llms-full.txt` remain website-owned; the root full bundle contains Home, Project, and Community content only.
 
-The website build validates outgoing docs/API links against this checkout's
-native page/anchor inventory, redirects, and canonical API operations before
-Lychee checks external URLs. Native external links remain in the network check
-after the old docs HTML is removed. Website search covers Blog, Project, and
-Community; the local-search plugin excludes the homepage. Product-docs search
-remains Mintlify-owned.
+Rewriting only the two native index files is insufficient. Follow the [reverse-proxy requirements](https://www.mintlify.com/docs/deploy/reverse-proxy) and verify recursive `/_llms/**` links, per-page Markdown, `Link` and `X-Llms-Txt` headers, MCP discovery, and `.well-known` aliases. A docs page must not advertise the website-only full bundle as its documentation corpus.
 
-This is the deployment contract, not an installed Worker. No production edge
-configuration or Cloudflare account credentials are stored in this repository.
+The native footer already links to the intended public resource URLs, but this repository does not provision those mappings.
+
+Publish a composite root `/sitemap.xml` covering website, `/docs/**`, and `/api-reference/**` routes without duplicates. Keep the website's root `/robots.txt` authoritative; `/docs/robots.txt` does not govern the whole hostname.
+
+### Activate with a rollback path
+
+1. Obtain Cloudflare Worker/zone access and Mintlify domain-settings access. Confirm the two-prefix, header, and discovery contracts.
+2. Save the current edge configuration and the last complete Docusaurus deployment, including its old docs output.
+3. Stage the proxy. Check both page prefixes, entry URLs, query strings, redirects, negative prefix matches, website fallthrough, assets, viewers, search, enabled assistant streaming, analytics POST, and discovery. Native origin-root redirects can drop query parameters; check this explicitly.
+4. Verify canonical URLs, sitemap coverage, robots ownership, certificate verification/renewal, and cache freshness. Public `/` must not redirect to the docs.
+5. Coordinate Worker activation with the website deployment that removes legacy docs. Enable permanent legacy API redirects after staging acceptance and owner approval.
+6. If routing or rendering regresses, restore both the saved edge configuration and the complete prior website deployment, then invalidate affected caches.
+
+**Removing Worker routes alone is not a rollback:** the new Docusaurus build no longer contains the old docs.
+
+This section is a deployment contract, not an installed Worker. Production edge configuration and Cloudflare credentials are not stored here. Keep the migration PR draft until the owners approve the cutover.

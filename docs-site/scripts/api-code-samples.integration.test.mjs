@@ -108,7 +108,7 @@ test('documented 24-operation matrix agrees with every audited SDK method and HT
   const readme = await readFile(new URL('../README.md', import.meta.url), 'utf8');
   const order = ['js-sdk', 'go-sdk', 'dotnet-sdk', 'python-sdk', 'java-sdk'];
   for (const { operationId } of metadata.operations) {
-    const row = readme.split('\n').find((line) => line.startsWith(`| ${operationId} |`));
+    const row = readme.split('\n').find((line) => line.trimStart().startsWith('|') && line.split('|')[1]?.trim() === operationId);
     assert.ok(row, `Missing documentation coverage row: ${operationId}`);
     assert.deepEqual(
       row
