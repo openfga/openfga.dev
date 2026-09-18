@@ -12,9 +12,9 @@ export function resolveLegacyApiFragment(hash, routes) {
     if (!(error instanceof URIError)) throw error;
     return { destination: '/api-reference', warning: 'Malformed legacy API fragment' };
   }
-  const parts = fragment.split('/');
-  if (parts.length === 3 && parts[0] === '#') {
-    const [, tag, operationId] = parts;
+  const match = /^#\/?([^/]+)\/([^/]+)$/.exec(fragment);
+  if (match) {
+    const [, tag, operationId] = match;
     if (Object.hasOwn(routes, tag) && Object.hasOwn(routes[tag], operationId)) {
       return { destination: routes[tag][operationId] };
     }

@@ -7,13 +7,16 @@ import { resolveLegacyApiFragment } from '../src/utils/legacy-api-redirect.mjs';
 const routes = JSON.parse(readFileSync(new URL('../src/data/legacy-api-routes.json', import.meta.url), 'utf8'));
 const metadata = JSON.parse(readFileSync(new URL('../docs-site/api-samples.json', import.meta.url), 'utf8'));
 
-test('every canonical operation keeps its raw and encoded Swagger deep link', () => {
+test('every canonical operation accepts raw and encoded tags with or without a leading slash', () => {
   const operations = [];
   for (const [tag, entries] of Object.entries(routes)) {
     for (const [operationId, destination] of Object.entries(entries)) {
       operations.push(operationId);
-      for (const fragment of [`#/${tag}/${operationId}`, `#/${encodeURIComponent(tag)}/${operationId}`]) {
-        assert.deepEqual(resolveLegacyApiFragment(fragment, routes), { destination });
+      for (const prefix of ['#', '#/']) {
+        for (const tagFragment of [tag, encodeURIComponent(tag)]) {
+          const fragment = `${prefix}${tagFragment}/${operationId}`;
+          assert.deepEqual(resolveLegacyApiFragment(fragment, routes), { destination }, fragment);
+        }
       }
       assert.match(destination, /^\/api-reference\/[^/]+\/[^/]+$/);
     }
@@ -24,6 +27,7 @@ test('every canonical operation keeps its raw and encoded Swagger deep link', ()
 
 test('Check, BatchCheck, and AuthZEN use the matching deployed operation, not List stores', () => {
   for (const [fragment, destination] of [
+    ['#Relationship%20Queries/Check', '/api-reference/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object'],
     ['#/Relationship%20Queries/Check', '/api-reference/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object'],
     ['#/Relationship%20Queries/BatchCheck', '/api-reference/relationship-queries/send-a-list-of-%60check%60-operations-in-a-single-request'],
     ['#/AuthZenService/GetConfiguration', '/api-reference/authzenservice/[experimental]-get-authzen-pdp-configuration-and-capabilities'],
@@ -36,6 +40,8 @@ test('empty fragments use the API index; unknown or malformed fragments explicit
     '#/Missing/Check', '#/Relationship%20Queries/Missing', '#/Stores', '#/Stores/ListStores/extra',
     '#/constructor/toString', '#/__proto__/toString', '#/Stores/__proto__',
     '#https://example.invalid', '#//example.invalid', '#/Relationship%ZZQueries/Check',
+    '#Missing/Check', '#Relationship%ZZQueries/Check', '#constructor/toString', '#__proto__/toString',
+    '#//Stores/ListStores', '#Stores//ListStores', '#Stores/ListStores/extra', 'Stores/ListStores',
   ]) {
     const result = resolveLegacyApiFragment(hash, routes);
     assert.equal(result.destination, '/api-reference', hash);
