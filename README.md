@@ -23,6 +23,12 @@ Mintlify owns the complete product documentation index, bundle, and per-page Mar
 
 `npm run build` validates the website resources and cross-site links against native pages, anchors, redirects, and canonical API operations from the same checkout. External links in native MDX are also extracted for the CI link checker.
 
+### Production routing
+
+The [Cloudflare proxy](deploy/cloudflare/README.md) forwards `/docs` and `/api-reference` to Mintlify while preserving the existing website origin. This repository includes its code, environment configuration, offline checks, and a manual deployment workflow. No ordinary build or PR check deploys it.
+
+The website build generates a composite sitemap index with separate website and native children. Cloudflare activation, Mintlify domain/discovery verification, and the website publication must be coordinated by their owners before removing the old public docs deployment. See the runbook for acceptance and complete rollback requirements.
+
 ## Getting Started
 
 ### Setup and Installation

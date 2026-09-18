@@ -445,7 +445,11 @@ Website search covers Blog, Project, and Community; its search plugin excludes t
 
 ### Use the existing Cloudflare edge
 
-The [deployment workflow](../.github/workflows/deploy.yml) publishes the website to GitHub Pages. Cloudflare already fronts that origin. Use a [Cloudflare Worker Route](https://developers.cloudflare.com/workers/configuration/routing/routes/) on the existing proxied zone, retaining GitHub Pages as the website origin.
+The [Cloudflare Worker](../deploy/cloudflare/worker.mjs), environment configuration, offline tests, and [manual deployment workflow](../.github/workflows/docs-proxy.yml) are included in this repository. They do not activate production routing on merge. Follow the [operator runbook](../deploy/cloudflare/README.md) for account setup, staging, acceptance, cutover, and rollback.
+
+The [website deployment workflow](../.github/workflows/deploy.yml) continues to publish Docusaurus to GitHub Pages. The Worker uses a [Worker Route](https://developers.cloudflare.com/workers/configuration/routing/routes/) on the existing proxied zone, retaining that website origin.
+
+Run `npm run check:docs-proxy` for offline tests and a production bundle dry run. It requires no Cloudflare credentials and does not deploy.
 
 Proxy Mintlify requests to `https://fga.mintlify.site`, never back to `https://openfga.dev`. A Worker Route can use `fetch(request)` for website fallthrough. Do not replace apex DNS with Mintlify or introduce a new website hosting platform just for this split.
 
@@ -489,9 +493,9 @@ Native docs should expose `/docs/llms.txt` and `/docs/llms-full.txt`. Root `/llm
 
 Rewriting only the two native index files is insufficient. Follow the [reverse-proxy requirements](https://www.mintlify.com/docs/deploy/reverse-proxy) and verify recursive `/_llms/**` links, per-page Markdown, `Link` and `X-Llms-Txt` headers, MCP discovery, and `.well-known` aliases. A docs page must not advertise the website-only full bundle as its documentation corpus.
 
-The native footer already links to the intended public resource URLs, but this repository does not provision those mappings.
+The Worker provides the two native index aliases, recursive index routing, and discovery-header rewriting. MCP and selected `.well-known` aliases are namespaced under `/docs`; generated metadata still needs provider validation. The proxy does not fabricate missing resources or rewrite unknown vendor hosts.
 
-Publish a composite root `/sitemap.xml` covering website, `/docs/**`, and `/api-reference/**` routes without duplicates. Keep the website's root `/robots.txt` authoritative; `/docs/robots.txt` does not govern the whole hostname.
+`npm run build` creates a composite root `/sitemap.xml` referencing `sitemap-website.xml` and `sitemap-docs.xml`. The native child covers all owned docs and API pages from the same checkout. Website preview prefixes apply only to website URLs. The website's root `/robots.txt` remains authoritative; `/docs/robots.txt` does not govern the whole hostname.
 
 ### Activate with a rollback path
 
@@ -504,4 +508,4 @@ Publish a composite root `/sitemap.xml` covering website, `/docs/**`, and `/api-
 
 **Removing Worker routes alone is not a rollback:** the new Docusaurus build no longer contains the old docs.
 
-This section is a deployment contract, not an installed Worker. Production edge configuration and Cloudflare credentials are not stored here. Keep the migration PR draft until the owners approve the cutover.
+Production activation is an owner-approved action, not part of ordinary CI. Cloudflare credentials are not stored here. Keep the migration PR draft until the owners approve the cutover and resolve the [runbook's acceptance gates](../deploy/cloudflare/README.md#acceptance-and-cutover).

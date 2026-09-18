@@ -52,6 +52,12 @@ test('hidden anchors provide the exact route-scoped sidebar and header contract'
   assert.equal(getUniqueOpenApiNavigationEntry(docs.navigation), result.apiAnchor);
 });
 
+test('native metadata uses the public host and indexes pages inside hidden route selectors', () => {
+  const docs = JSON.parse(readFileSync(new URL('../docs.json', import.meta.url), 'utf8'));
+  assert.equal(docs.seo.metatags.canonical, 'https://openfga.dev');
+  assert.equal(docs.seo.indexing, 'all');
+});
+
 test('the homepage modeling link retains its historical slug and native redirect', () => {
   const homepage = readFileSync(
     new URL('../../src/features/LandingPage/QuickStartSection/index.tsx', import.meta.url),

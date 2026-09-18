@@ -27,7 +27,9 @@
   },
   "favicon": "/images/img/openfga-icon.svg",
   "seo": {
+    "indexing": "all",
     "metatags": {
+      "canonical": "https://openfga.dev",
       "og:image": "https://openfga.dev/img/og-rich-embed.png"
     }
   },

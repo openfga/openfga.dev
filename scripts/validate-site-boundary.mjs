@@ -2,8 +2,9 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { loadCanonical } from '../docs-site/scripts/api-code-samples.mjs';
-import { decodeHtmlEntities, normalizeBasePath, readAttribute, siteOrigin } from './agent-content.mjs';
+import { normalizeBasePath, readAttribute, siteOrigin } from './agent-content.mjs';
 import { apiRoutesFromSchema, inspectNativePage, isNativeRoute, validateNativeLink } from './site-boundary.mjs';
+import { nativeSitemapRoutes, sitemapFiles, validateCompositeSitemap } from './site-sitemap.mjs';
 
 const nativeDirectory = path.resolve('docs-site');
 const buildDirectory = path.resolve('build');
@@ -46,12 +47,14 @@ for (const file of files.filter((file) => file.endsWith('.html'))) {
 }
 const rootIndex = await fs.readFile(path.join(buildDirectory, 'llms.txt'), 'utf8');
 for (const [, href] of rootIndex.matchAll(/\]\(([^)]+)\)/g)) validate(href, '/llms.txt');
-const sitemap = await fs.readFile(path.join(buildDirectory, 'sitemap.xml'), 'utf8');
-for (const [, location] of sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)) {
-  const route = new URL(decodeHtmlEntities(location)).pathname;
-  const unprefixed = basePath && route.startsWith(`${basePath}/`) ? route.slice(basePath.length) : route;
-  assert.ok(!isNativeRoute(unprefixed) && !/^\/api(?:\/|$)/.test(unprefixed), `Docusaurus sitemap claims native route ${route}`);
-}
+const nativeFiles = await fs.readdir(nativeDirectory, { recursive: true });
+const { routes: nativeRoutes } = nativeSitemapRoutes({
+  config, schema, docFiles: nativeFiles.filter((file) => file.endsWith('.mdx')).map((file) => file.split(path.sep).join('/')),
+});
+const [indexXml, websiteXml, docsXml] = await Promise.all(
+  [sitemapFiles.index, sitemapFiles.website, sitemapFiles.docs].map((file) => fs.readFile(path.join(buildDirectory, file), 'utf8')),
+);
+validateCompositeSitemap({ indexXml, websiteXml, docsXml, nativeRoutes, baseUrl });
 const searchFiles = files.filter((file) => /^search-index(?:[.-].+)?\.json$/.test(file));
 assert.ok(searchFiles.length, 'Missing website search index');
 function validateSearchIndex(value) {
