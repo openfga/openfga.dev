@@ -34,8 +34,9 @@ function fixture() {
 const run = (files) => verifyDeployment({
   origin, mode: 'proxy', routes,
   get: async (url) => {
-    assert.ok(url.startsWith(origin));
-    const key = url.slice(origin.length);
+    const target = new URL(url);
+    assert.equal(target.origin, origin);
+    const key = `${target.pathname}${target.search}`;
     assert.ok(files.has(key), `Unexpected URL ${url}`);
     return files.get(key);
   },
