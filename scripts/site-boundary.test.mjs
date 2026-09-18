@@ -22,6 +22,20 @@ test('ownership matches complete path segments', () => {
   assert.ok(isNativeRoute('/docs') && isNativeRoute('/docs/fga') && isNativeRoute('/api-reference/stores'));
   assert.ok(!isNativeRoute('/docs-extra') && !isNativeRoute('/api-reference-other') && !isNativeRoute('/blog'));
 });
+test('the Mintlify origin root redirect does not take ownership of the public website', () => {
+  const native = JSON.parse(readFileSync(new URL('../docs-site/docs.json', import.meta.url), 'utf8'));
+  assert.deepEqual(native.redirects.filter(({ source }) => source === '/'), [
+    { source: '/', destination: '/docs/fga', permanent: false },
+  ]);
+  const nativeOptions = { ...options, config: native };
+  for (const href of [
+    '/', 'https://openfga.dev/', 'https://openfga.dev/?utm_source=docs#quick-start',
+    '/project', '/community', '/blog', '/search', '/llms.txt', '/llms-full.txt', '/sitemap.xml',
+  ]) {
+    assert.equal(validateNativeLink(href, nativeOptions), false, `${href} must remain website-owned`);
+  }
+  assert.deepEqual(validateNativeLink('/docs', nativeOptions), { page: '/docs/fga' });
+});
 test('same-PR documentation pages, original redirects and exact anchors resolve offline', () => {
   for (const href of ['/docs', '/docs/fga.md', '/docs/fga#introduction', '/docs/fga#explicit', '/docs/fga#deep', '/docs/modeling#models']) {
     assert.ok(validateNativeLink(href, options).page);

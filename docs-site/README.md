@@ -883,60 +883,137 @@ production cutover.
 
 ## Split-site deployment
 
-The public site uses path-based ownership:
+### Starting page and public ownership
+
+The Mintlify origin at `https://fga.mintlify.site/` redirects to `/docs/fga`.
+The exact `/` redirect in `docs.json` is temporary, like the existing `/docs`
+entry redirect. It must not become a redirect on the public website:
+`https://openfga.dev/` continues to serve the Docusaurus homepage.
+
+The public site uses path-based ownership, not a domain-wide move to Mintlify:
 
 | Public route                              | Origin                                                         |
 | ----------------------------------------- | -------------------------------------------------------------- |
 | `/`, `/project`, `/community`, `/blog/**` | Docusaurus                                                     |
-| `/docs`, `/docs/**`                       | Mintlify, including `/docs/llms.txt` and `/docs/llms-full.txt` |
+| `/docs`, `/docs/**`                       | Mintlify documentation                                         |
 | `/api-reference`, `/api-reference/**`     | Mintlify                                                       |
 | `/api`, `/api/service`                    | Permanent redirect to `/api-reference`                         |
 
 Docusaurus also owns `/search`, `/robots.txt`, `/sitemap.xml`,
 `/search-index.json`, `/llms.txt`, `/llms-full.txt`, `/assets/**`, `/img/**`,
 `/css/**`, and `/icons/**`. Every route not explicitly assigned to Mintlify or
-an edge redirect falls back to Docusaurus.
+an edge redirect falls back to Docusaurus. Page ownership does not cover every
+network request: Mintlify also needs its own runtime and service paths below.
+
+### Recommended edge: the existing Cloudflare zone
+
+The deployment workflow publishes Docusaurus to GitHub Pages with the
+`openfga.dev` custom domain. Public DNS and response headers checked on
+2026-09-18 show Cloudflare already fronts that origin. Use a
+[Cloudflare Worker Route](https://developers.cloudflare.com/workers/configuration/routing/routes/)
+on the existing proxied zone, keeping GitHub Pages as the website origin.
+Do not move the website to Vercel, replace the apex DNS record with Mintlify,
+or make a Worker Custom Domain the origin just to split these paths.
+
+Mintlify's origin is `https://fga.mintlify.site`, never `https://openfga.dev`.
+A Worker Route can fall through to the existing origin with `fetch(request)`;
+Mintlify requests must use the explicit Mintlify upstream instead of recursively
+fetching the public site. Invocation patterns must include query-bearing entry
+URLs such as `/docs?source=nav`, with exact path-segment checks inside the Worker:
+`/docs-other` and `/api-reference-other` still belong to the website.
 
 Configure Mintlify monorepo mode with `/docs-site` as the docs directory.
 The previous `/mintlify-native` directory no longer exists; update the hosting
 project setting before deploying the renamed tree.
-Register `openfga.dev` as Mintlify's custom domain so canonical and discovery
-metadata use the public host, but keep the generated `*.mintlify.site` hostname as
-the proxy target. Do not add a Mintlify base path: the content paths already
-include `docs/`, while generated API pages use `api-reference/`. The footer uses
-canonical `openfga.dev/docs/*` URLs because local preview does not emulate the
-split-site edge rewrites.
 
-Configure edge rules in this order:
+Before changing the custom-domain configuration, confirm the following with
+Mintlify. Its [subpath guide](https://www.mintlify.com/docs/deploy/docs-subpath)
+describes a single deployment base path, not this site's two sibling page
+prefixes:
 
-1. Permanently redirect the exact `/api` and `/api/service` paths to
-   `/api-reference`.
-2. Proxy `/docs/llms.txt` and `/docs/llms-full.txt` to Mintlify's generated
-   `/llms.txt` and `/llms-full.txt` resources respectively. Proxy Mintlify's
-   `/_llms/**` paths as well if generated indexes link to chunked resources.
-3. Proxy `/docs`, `/docs/**`, `/api-reference`, `/api-reference/**`,
-   `/_mintlify/**`, `/mintlify-assets/**`, `/_next/**`, `/images/**`,
-   `/fga-codegen.js`, and
-   `/openfga-dsl-highlight.js`, and `/openfga-viewer.js` to the Mintlify origin.
-4. Send all remaining paths to Docusaurus.
+- Keep the native base path unset: source paths already include `docs/`, and
+  generated API pages use `api-reference/`. Adding `/docs` as a deployment base
+  path is not a safe substitute and can change both URL families.
+- Confirm custom-domain registration for `openfga.dev` without handing Mintlify
+  the whole hostname. Canonical and `og:url` values must use the public host
+  with the correct page paths for both sections.
+- Confirm the discovery/resource arrangement below, the required `Origin`
+  header, and any additional search, assistant, or MCP endpoints for this
+  deployment. The generic proxy and Cloudflare examples differ on `Origin`
+  and domain-verification handling; do not treat either example as a complete
+  configuration for this split site.
 
-Forward all HTTP methods, preserve `X-Forwarded-For`, `X-Forwarded-Proto`,
-`X-Real-IP`, `X-Forwarded-Host`, and `User-Agent`, set `Origin` and the upstream
-`Host` to the Mintlify subdomain, and do not forward `openfga.dev` as the upstream
-`Host`. Route both `/.well-known/vercel/**` and
-`/.well-known/acme-challenge/**` to Mintlify while configuring and verifying the
-custom domain.
+### Proxy route and transport contract
 
-Root `/llms.txt` and `/llms-full.txt` remain Docusaurus-owned.
-`/docs/llms.txt`, `/docs/llms-full.txt`, and Mintlify's per-page `/docs/*.md`
-exports are covered by the `/docs/**` proxy rule. The root index links to native
-product documentation and the canonical OpenAPI v3 specification; the root full
-bundle contains only Home, Project, and Community content. Docusaurus no longer
-builds product docs or the legacy Swagger API page.
+Apply specific redirects and resource mappings before the general page rules.
+The [Mintlify Cloudflare guide](https://www.mintlify.com/docs/deploy/cloudflare)
+requires `/mintlify-assets/**` and `/_mintlify/**` alongside documentation paths.
+
+| Path or resource | Edge behavior |
+| --- | --- |
+| Exact `/api`, `/api/`, `/api/service`, `/api/service/` | Redirect to `/api-reference`; preserve query parameters. |
+| `/docs`, `/docs/**`, `/api-reference`, `/api-reference/**` | Proxy to the same path and query on `fga.mintlify.site`. |
+| `/mintlify-assets/**`, `/_mintlify/**` | Proxy to Mintlify, including runtime assets and service requests. |
+| Additional images, custom scripts, OpenAPI assets, and `/_next/**` requests | Add only the nonconflicting paths emitted by the hosted site, verified by status and MIME type. Repository assets include `/images/**`, `/fga-codegen.js`, `/openfga-dsl-highlight.js`, and `/openfga-viewer.js`; hosted loaders may use different paths. |
+| Exact `/api/request`, if emitted | Compatibility rewrite to Mintlify's `/_mintlify/api/request`, as in its [Vercel recipe](https://www.mintlify.com/docs/deploy/vercel); never capture `/api/**` wholesale. The current API reference is read-only. |
+| MCP and agent discovery | Add the confirmed endpoint paths only; do not capture all `/.well-known/**`. |
+| Domain and certificate verification | Preserve the existing verification owner unless an exact Mintlify challenge path is approved. Do not blanket-proxy ACME or all `.well-known` paths. |
+| Everything else | Retain the existing Docusaurus/GitHub Pages origin. |
+
+Forward all methods, query parameters, request bodies, and response streams.
+Use the Mintlify upstream for outbound Host/TLS, retain the public
+`X-Forwarded-Host` and HTTPS protocol, and derive client-IP headers from trusted
+ingress rather than untrusted caller values. Confirm `Origin` behavior with
+Mintlify before release. Preserve redirects without automatically following them;
+verify `Location` never creates an origin loop or leaks the Mintlify hostname.
+Do not buffer assistant streams or apply an HTML cache policy to POST, dynamic
+responses, discovery files, or domain challenges. Keep upstream content types,
+security headers, and `Vary`; scope any policy changes to Mintlify responses.
+
+### Discovery and sitemap release gates
+
+The intended native discovery URLs are `/docs/llms.txt` and
+`/docs/llms-full.txt`; website root `/llms.txt` and `/llms-full.txt` remain
+Docusaurus-owned. **Rewriting just the two text files is insufficient.**
+Mintlify's [reverse-proxy guide](https://www.mintlify.com/docs/deploy/reverse-proxy)
+requires generated discovery links and resource paths to agree with the public
+URL layout. Confirm all recursive `/_llms/**` links, per-page Markdown URLs,
+`Link` and `X-Llms-Txt` headers, MCP discovery, and `.well-known` aliases against
+the two-prefix design before enabling mappings. In particular, a Mintlify page
+must not advertise the website-only root full-text bundle as its docs corpus.
+
+The website root index links to native product documentation and the canonical
+OpenAPI v3 specification; the root full bundle contains only Home, Project, and
+Community content. The footer already uses the intended canonical
+`openfga.dev/docs/*` resource URLs, but neither local preview nor this repository
+provisions the required edge/discovery integration.
 
 The public `/sitemap.xml` must be a composite of the Docusaurus and Mintlify
 sitemaps. Docusaurus emits only its owned website routes; the composite must
 include Mintlify `/docs/**` and `/api-reference/**` without duplicate ownership.
+The root website `/robots.txt` remains authoritative for the whole hostname;
+do not rely on `/docs/robots.txt` to govern crawling.
+
+### Activation and rollback
+
+1. Obtain Cloudflare zone/Worker deployment access and Mintlify domain settings
+   access. Confirm the two-prefix and discovery contracts above.
+2. Save the current edge configuration and the last complete Docusaurus
+   deployment, including its old docs output. Simply removing Worker routes
+   after deploying the retired-docs website will not restore the old docs.
+3. Exercise the proposed proxy in an isolated staging environment. Check both
+   page prefixes, bare entry URLs, query strings, redirects, negative prefix
+   matches, website fallthrough, asset MIME types, native viewers, search,
+   assistant streaming where enabled, analytics POST, and discovery resources.
+   The pinned local Mintlify CLI drops query parameters on the origin-root
+   redirect; verify hosted redirect behavior separately.
+4. Confirm canonical URLs, sitemap coverage, robots ownership, TLS verification
+   and renewal, and cache freshness. No public-root redirect is permitted.
+5. Coordinate Worker activation with the website deployment that removes legacy
+   docs. Enable permanent legacy API redirects only after staging acceptance.
+   Keep this PR draft until the owners approve the cutover.
+6. On regression, restore both the saved edge configuration and the complete
+   prior website deployment, then invalidate affected edge caches.
 
 The website build validates outgoing docs/API links against this checkout's
 native page/anchor inventory, redirects, and canonical API operations before
@@ -945,5 +1022,5 @@ after the old docs HTML is removed. Website search covers Blog, Project, and
 Community; the local-search plugin excludes the homepage. Product-docs search
 remains Mintlify-owned.
 
-The repository does not contain the production edge configuration, so that routing
-must be provisioned in the hosting/CDN platform before cutover.
+This is the deployment contract, not an installed Worker. No production edge
+configuration or Cloudflare account credentials are stored in this repository.

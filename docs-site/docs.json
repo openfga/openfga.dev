@@ -351,6 +351,11 @@
   },
   "redirects": [
     {
+      "source": "/",
+      "destination": "/docs/fga",
+      "permanent": false
+    },
+    {
       "source": "/docs/community",
       "destination": "https://openfga.dev/community",
       "permanent": true

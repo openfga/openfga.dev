@@ -212,27 +212,20 @@ deploying the Mintlify origin and routing only the documentation surfaces to it.
 - Review pages visually in `mint dev`
 
 ### Phase 2 — Production setup
-- Create a Mintlify project, connect the repo
-- Enable monorepo mode, set root directory to `/docs-site`
-- Register `openfga.dev` as Mintlify's custom domain so generated canonical URLs use
-  the public host, while keeping the `*.mintlify.site` hostname as the proxy target
-- Put a path-aware edge proxy in front of the Docusaurus and Mintlify origins
-- Route `/docs`, `/docs/**`, `/api-reference`, and `/api-reference/**` to Mintlify
-- Map `/docs/llms.txt` and `/docs/llms-full.txt` to Mintlify's generated root
-  resources before the general `/docs/**` rule, keeping Docusaurus's root agent
-  indexes unchanged
-- Route Mintlify's `/_llms/**` support paths to Mintlify when generated indexes
-  reference chunked resources
-- Route `/`, `/project`, `/community`, `/blog/**`, search/SEO files, agent indexes,
-  and Docusaurus static asset roots to Docusaurus
-- Keep the root Docusaurus agent indexes in place, and proxy Mintlify's exact
-  OpenAPI asset plus runtime/static asset paths
-- Forward all HTTP methods and Mintlify's required proxy headers without forwarding
-  the public `Host` header
-- Route Mintlify's Vercel and ACME verification paths during custom-domain setup
-- Publish a composite sitemap containing Docusaurus routes and Mintlify's
-  `/api-reference/**` routes, excluding the legacy `/api/service` page
-- Redirect `/api` and `/api/service` permanently to `/api-reference`
+- Use the existing Mintlify project at `fga.mintlify.site` with the `/docs-site`
+  repository directory. Its native `/` entry redirects to `/docs/fga`; the public
+  `openfga.dev/` homepage stays on Docusaurus.
+- Keep the existing Cloudflare-fronted GitHub Pages origin for the website.
+  Implement selective routing with a Cloudflare Worker Route rather than changing
+  apex DNS or moving the website to another hosting platform.
+- Confirm Mintlify's custom-domain and discovery configuration for two sibling
+  prefixes before deployment. Do not blindly enable a `/docs` base path or rewrite
+  only the LLM index files; neither establishes this site's complete URL contract.
+- Follow the [split-site deployment contract](docs-site/README.md#split-site-deployment)
+  for page and support paths, headers, discovery, sitemap ownership, staging,
+  coordinated activation, and rollback.
+- Obtain owner approval before changing production routing. Retain the last
+  complete Docusaurus deployment as well as the previous edge configuration.
 
 ### Ongoing
 - New docs pages: write MDX, add to `docs.json` nav — same workflow as today

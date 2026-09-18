@@ -39,6 +39,7 @@ function fixture() {
         permanent: false,
       },
       ...expectedOverviewRoutes.map((source) => ({ source, destination: `${source}/overview`, permanent: false })),
+      { source: '/', destination: '/docs/fga', permanent: false },
     ],
   };
 }
@@ -173,6 +174,32 @@ for (const [name, mutate, expected] of [
     'GitHub must remain after the marketing links',
     (docs) => docs.navbar.links.pop(),
     /Navbar links must retain the approved exact order/,
+  ],
+  [
+    'the Mintlify origin root requires its starting-page redirect',
+    (docs) => {
+      docs.redirects = docs.redirects.filter(({ source }) => source !== '/');
+    },
+    /stable "\/" entry must redirect temporarily/,
+  ],
+  [
+    'the Mintlify origin root must start at the introduction',
+    (docs) => {
+      docs.redirects.find(({ source }) => source === '/').destination = '/docs/getting-started';
+    },
+    /stable "\/" entry must redirect temporarily/,
+  ],
+  [
+    'the Mintlify origin root redirect cannot be duplicated',
+    (docs) => docs.redirects.push({ source: '/', destination: '/docs/fga', permanent: false }),
+    /stable "\/" entry must redirect temporarily/,
+  ],
+  [
+    'the Mintlify origin root redirect must remain temporary during migration',
+    (docs) => {
+      docs.redirects.find(({ source }) => source === '/').permanent = true;
+    },
+    /stable "\/" entry must redirect temporarily/,
   ],
   [
     'stable Docs entry requires its native redirect',

@@ -119,6 +119,7 @@ export function validateRouteScopedNavigation(docs) {
   }
 
   deepStrictEqual(docs.navbar?.links, expectedHeaderLinks, 'Navbar links must retain the approved exact order');
+  assertRedirect(docs, '/', '/docs/fga');
   assertRedirect(docs, '/docs', '/docs/fga');
   assertRedirect(docs, '/api-reference', '/api-reference/stores/list-all-stores');
   for (const route of expectedOverviewRoutes) assertRedirect(docs, route, `${route}/overview`);
