@@ -48,10 +48,10 @@ export default [
     },
   },
   {
-    ignores: ['.docusaurus/**/*'],
+    ignores: ['.docusaurus/**/*', 'build/**/*', 'docs-site/fga-codegen.js'],
   },
   {
-    files: ['scripts/**/*.mjs'],
+    files: ['scripts/**/*.mjs', 'docs-site/scripts/**/*.mjs'],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -61,6 +61,32 @@ export default [
     },
     rules: {
       'no-useless-escape': 'off',
+    },
+  },
+  {
+    files: ['deploy/cloudflare/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.serviceworker,
+      },
+    },
+  },
+  {
+    files: ['docs-site/snippets/**/*.jsx'],
+    languageOptions: {
+      globals: {
+        Accordion: 'readonly',
+        CodeGroup: 'readonly',
+        useEffect: 'readonly',
+        useState: 'readonly',
+      },
+    },
+    rules: {
+      'react/jsx-no-undef': 'off',
+      'react/prop-types': 'off',
+      // Mintlify consumes filename on CodeGroup children as the accessible tab label.
+      'react/no-unknown-property': ['error', { ignore: ['filename'] }],
     },
   },
   {

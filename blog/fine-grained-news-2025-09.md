@@ -29,7 +29,7 @@ The OpenFGA team has been mostly focused on performance improvements, and we are
 
 ### Improved Write API
 
-OpenFGA v1.10 adds additional parameters to the [`/write`](https://openfga.dev/api/service#/Relationship%20Tuples/Write) endpoint that allow specifying the behavior when duplicated tuples are written or non-existing tuples are deleted. This was a much requested feature - we're looking forward for your feedback on it!
+OpenFGA v1.10 adds additional parameters to the [`/write`](https://openfga.dev/api-reference/relationship-tuples/add-or-delete-tuples-from-the-store) endpoint that allow specifying the behavior when duplicated tuples are written or non-existing tuples are deleted. This was a much requested feature - we're looking forward for your feedback on it!
 
 The SDKs and the CLI will add support for these options over the coming month.
 

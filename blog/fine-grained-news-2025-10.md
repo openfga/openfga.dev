@@ -31,7 +31,7 @@ Starting with [OpenFGA v1.10.0](https://github.com/openfga/openfga/releases/tag/
 
 ### Write Endpoint Enhancements  
 
-In case you missed it, we also included in [v1.10.0](https://github.com/openfga/openfga/releases/tag/v1.10.0) two new (optional) parameters to the [`/write`](https://openfga.dev/api/service#/Relationship%20Tuples/Write) endpoint that allow specifying the expected behavior when duplicated tuples are written or non-existing tuples are deleted. The Go, Java, and .NET SDK already support them, and we'll be completing support for Python, and Javascript in the next few weeks.
+In case you missed it, we also included in [v1.10.0](https://github.com/openfga/openfga/releases/tag/v1.10.0) two new (optional) parameters to the [`/write`](https://openfga.dev/api-reference/relationship-tuples/add-or-delete-tuples-from-the-store) endpoint that allow specifying the expected behavior when duplicated tuples are written or non-existing tuples are deleted. The Go, Java, and .NET SDK already support them, and we'll be completing support for Python, and Javascript in the next few weeks.
 
 ### SDK & Tooling Updates
 

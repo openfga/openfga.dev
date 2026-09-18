@@ -1,0 +1,266 @@
+{
+  "pages": [
+    {
+      "source": "getting-started/configure-model.mdx",
+      "native": "docs/getting-started/configure-model.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/configure-model",
+      "requiredText": [
+        "This article explains how to configure an",
+        "The API will then return the authorization model ID.",
+        "The OpenFGA API only accepts an authorization model in the API's JSON syntax."
+      ],
+      "requiredLinks": [
+        { "text": "authorization model", "href": "/docs/concepts#what-is-an-authorization-model" },
+        { "text": "store", "href": "/docs/concepts#what-is-a-store" },
+        { "text": "FGA CLI", "href": "https://github.com/openfga/cli/" }
+      ],
+      "requiredImages": [],
+      "requiredAnchors": ["before-you-start", "step-by-step", "related-sections"],
+      "code": [
+        { "language": "dsl.openfga", "body": "model\n  schema 1.1\ntype user\ntype document\n  relations\n    define reader: [user]\n    define writer: [user]\n    define owner: [user]" },
+        { "language": "bash", "body": "Set FGA_API_URL according to the service you are using (e.g. https://api.fga.example)" }
+      ]
+    },
+    {
+      "source": "getting-started/create-store.mdx",
+      "native": "docs/getting-started/create-store.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/create-store",
+      "requiredText": [
+        "is a OpenFGA entity that contains your authorization data.",
+        "You will need to create a store in OpenFGA before adding an",
+        "This article explains how to set up an OpenFGA store."
+      ],
+      "requiredComponents": [
+        { "name": "CreateStoreViewer", "props": { "storeName": "FGA Demo Store" } }
+      ],
+      "requiredLinks": [
+        { "text": "store", "href": "/docs/concepts#what-is-a-store" },
+        { "text": "authorization model", "href": "/docs/concepts#what-is-an-authorization-model" },
+        { "text": "relationship tuples", "href": "/docs/concepts#what-is-a-relationship-tuple" }
+      ],
+      "requiredImages": [],
+      "requiredAnchors": ["step-by-step"],
+      "code": [
+        { "language": "bash", "body": "# To create the store and directly put the Store ID into an env variable:\n# export FGA_STORE_ID=$(fga store create --name \"FGA Demo Store\" | jq -r .store.id)" }
+      ]
+    },
+    {
+      "source": "getting-started/install-sdk.mdx",
+      "native": "docs/getting-started/install-sdk.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/install-sdk",
+      "requiredText": [
+        "You can then run",
+        "if you are using them.",
+        "You can install it using:",
+        "Search for and install",
+        "in each of their respective package manager UIs.",
+        "Linux (deb, rpm and apk) packages",
+        "Download the .deb, .rpm or .apk packages from the",
+        "Alpine Linux:",
+        "Download the pre-compiled binaries from the",
+        "Get OpenFGA's SDKs to add authorization to your API."
+      ],
+      "requiredLinks": [
+        { "text": "dotnet CLI", "href": "https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-dotnet-cli" },
+        { "text": "Package Manager Console", "href": "https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-powershell" },
+        { "text": "Visual Studio", "href": "https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio" },
+        { "text": "Visual Studio for Mac", "href": "https://docs.microsoft.com/en-us/visualstudio/mac/nuget-walkthrough" },
+        { "text": "IntelliJ Rider", "href": "https://www.jetbrains.com/help/rider/Using_NuGet.html" },
+        { "text": "Maven", "href": "https://maven.apache.org/" },
+        { "text": "Gradle", "href": "https://gradle.org/" }
+      ],
+      "requiredImages": [],
+      "requiredAnchors": [
+        "brew",
+        "linux-deb-rpm-and-apk-packages",
+        "docker",
+        "go",
+        "manually",
+        "related-sections"
+      ],
+      "code": [
+        { "language": "bash", "body": "go mod tidy" },
+        { "language": "bash", "body": "sudo apt install ./fga_<version>_linux_<arch>.deb" },
+        { "language": "bash", "body": "sudo dnf install ./fga_<version>_linux_<arch>.rpm" },
+        { "language": "bash", "body": "sudo apk add --allow-untrusted ./fga_<version>_linux_<arch>.apk" },
+        { "language": "bash", "body": "docker pull openfga/cli; docker run -it openfga/cli" }
+      ]
+    },
+    {
+      "source": "getting-started/perform-check.mdx",
+      "native": "docs/getting-started/perform-check.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/perform-check",
+      "requiredText": [
+        "This section will illustrate how to perform a",
+        "03. Calling Batch Check API",
+        "Configuring Batch Check",
+        "OPENFGA_MAX_CHECKS_PER_BATCH_CHECK",
+        "OPENFGA_MAX_CONCURRENT_CHECKS_PER_BATCH_CHECK"
+      ],
+      "requiredLinks": [
+        { "text": "check", "href": "/docs/concepts#what-is-a-check-request" },
+        { "text": "user", "href": "/docs/concepts#what-is-a-user" },
+        { "text": "relationship", "href": "/docs/concepts#what-is-a-relationship" },
+        { "text": "object", "href": "/docs/concepts#what-is-an-object" }
+      ],
+      "requiredImages": [],
+      "requiredAnchors": [
+        "before-you-start",
+        "step-by-step",
+        "01-configure-the--api-client",
+        "02-calling-check-api",
+        "03-calling-batch-check-api",
+        "configuring-batch-check",
+        "related-sections"
+      ],
+      "code": []
+    },
+    {
+      "source": "getting-started/perform-list-objects.mdx",
+      "native": "docs/getting-started/perform-list-objects.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/perform-list-objects",
+      "requiredText": [
+        "This section describes how to perform a",
+        "This can be used in scenarios like displaying all documents a user can read or listing resources a user can manage.",
+        "Using Streamed List Objects",
+        "OPENFGA_LIST_OBJECTS_DEADLINE"
+      ],
+      "requiredLinks": [
+        { "text": "list objects", "href": "/docs/concepts#what-is-a-list-objects-request" },
+        { "text": "objects", "href": "/docs/concepts#what-is-an-object" },
+        { "text": "type", "href": "/docs/concepts#what-is-a-type" },
+        { "text": "user", "href": "/docs/concepts#what-is-a-user" },
+        { "text": "relationship", "href": "/docs/concepts#what-is-a-relationship" }
+      ],
+      "requiredImages": [],
+      "requiredAnchors": [
+        "before-you-start",
+        "step-by-step",
+        "01-configure-the--api-client",
+        "02-calling-list-objects-api",
+        "streamed-list-objects",
+        "using-streamed-list-objects",
+        "related-sections"
+      ],
+      "code": [
+        { "language": "dsl.openfga", "body": "model\n  schema 1.1\ntype user\ntype document\n  relations\n    define reader: [user]" },
+        { "language": "bash", "body": "Set FGA_API_URL according to the service you are using (e.g. https://api.fga.example)" }
+      ]
+    },
+    {
+      "source": "getting-started/perform-list-users.mdx",
+      "native": "docs/getting-started/perform-list-users.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/perform-list-users",
+      "requiredText": [
+        "This section will illustrate how to perform a",
+        "Usersets",
+        "group:engineering#member",
+        "group:product#member",
+        "user:will",
+        "Type-bound public access",
+        "Example response with type-bound public access:"
+      ],
+      "requiredLinks": [
+        { "text": "list users", "href": "/docs/concepts#what-is-a-list-users-request" },
+        { "text": "users", "href": "/docs/concepts#what-is-a-user" },
+        { "text": "relationship", "href": "/docs/concepts#what-is-a-relationship" },
+        { "text": "object", "href": "/docs/concepts#what-is-an-object" },
+        { "text": "usersets", "href": "/docs/modeling/building-blocks/usersets" },
+        { "text": "perform a Check", "href": "/docs/getting-started/perform-check" }
+      ],
+      "requiredImages": [],
+      "requiredAnchors": [
+        "before-you-start",
+        "step-by-step",
+        "01-configure-the--api-client",
+        "02-calling-list-users-api",
+        "usersets",
+        "type-bound-public-access",
+        "related-sections"
+      ],
+      "code": [
+        { "language": "json", "body": "{\n  \"users\": [\n    {\n      \"wildcard\": {\n        \"type\": \"user\"\n      }\n    },\n    {\n      \"object\": {\n        \"type\": \"user\",\n        \"id\": \"anne\"\n      }\n    }\n  ]\n}" }
+      ]
+    },
+    {
+      "source": "getting-started/setup-sdk-client.mdx",
+      "native": "docs/getting-started/setup-sdk-client.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/setup-sdk-client",
+      "requiredText": [
+        "This article explains how to build an OpenFGA client by using the SDKs.",
+        "Using No Authentication",
+        "This is a simple setup but it is not recommended for production use.",
+        "Using shared key authentication",
+        "If you are going to use this setup in production, you should enable TLS in your OpenFGA server.",
+        "Using client credentials flow",
+        "The OpenFGA server does not support the client credentials flow"
+      ],
+      "requiredLinks": [
+        { "text": "these steps", "href": "/docs/getting-started/create-store" },
+        { "text": "Running OpenFGA in Production", "href": "/docs/best-practices/running-in-production" }
+      ],
+      "requiredImages": [],
+      "requiredAnchors": [
+        "using-no-authentication",
+        "using-shared-key-authentication",
+        "using-client-credentials-flow"
+      ],
+      "code": []
+    },
+    {
+      "source": "getting-started/tuples-api-best-practices.mdx",
+      "native": "docs/getting-started/tuples-api-best-practices.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/tuples-api-best-practices",
+      "requiredText": [
+        "Do Not Store Personal Identifiable Information in Tuples",
+        "The documentation and samples uses first names and simple ids to illustrate easy-to-follow examples.",
+        "Always specify authorization model ID whenever possible",
+        "Allows consistent behavior in your production system until you are ready to switch to the new model."
+      ],
+      "requiredLinks": [
+        { "text": "Check", "href": "/docs/getting-started/perform-check" },
+        { "text": "ListObjects", "href": "/docs/interacting/relationship-queries#listobjects" },
+        { "text": "Write", "href": "/docs/getting-started/update-tuples" }
+      ],
+      "requiredImages": [],
+      "requiredAnchors": [
+        "do-not-store-personal-identifiable-information-in-tuples",
+        "always-specify-authorization-model-id-whenever-possible",
+        "related-sections"
+      ],
+      "code": []
+    },
+    {
+      "source": "getting-started/update-tuples.mdx",
+      "native": "docs/getting-started/update-tuples.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/update-tuples",
+      "requiredText": [
+        "This is an introduction to adding and deleting",
+        "04. Writing and deleting relationship tuples in the same request",
+        "05. Ignoring duplicate or missing tuples",
+        "cannot_allow_duplicate_tuples_in_one_request",
+        "same user, relation, object, condition name, and condition context",
+        "the entire transaction will fail with a",
+        "409 Conflict"
+      ],
+      "requiredLinks": [
+        { "text": "relationship tuples", "href": "/docs/concepts#what-is-a-relationship-tuple" },
+        { "text": "OpenFGA v1.10.0", "href": "https://github.com/openfga/openfga/releases/tag/v1.10.0" }
+      ],
+      "requiredImages": [],
+      "requiredAnchors": [
+        "before-you-start",
+        "step-by-step",
+        "01-configure-the--api-client",
+        "02-calling-write-api-to-add-new-relationship-tuples",
+        "03-calling-write-api-to-delete-relationship-tuples",
+        "04-writing-and-deleting-relationship-tuples-in-the-same-request",
+        "05-ignoring-duplicate-or-missing-tuples",
+        "related-sections"
+      ],
+      "code": [
+        { "language": "json", "body": "{\n  user: 'user:anne',\n  relation: 'reader',\n  object: 'document:Z'\n}" }
+      ]
+    }
+  ]
+}

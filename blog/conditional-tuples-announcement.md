@@ -45,7 +45,7 @@ If we write the following tuples:
 | user:bob | viewer| document:1| |
 | user:anne | viewer| document:1| `name` : `non_expired_grant`, `context` : \{ `grant_time` : `2023-01-01T00:00:00Z`, `grant_duration` : `1h` \} |
 
-You'll get the following results for the [Check](https://openfga.dev/api/service#/Relationship%20Queries/Check) operations below:
+You'll get the following results for the [Check](https://openfga.dev/api-reference/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object) operations below:
 
 | user | relation| object| context | result |
 |------|---------|-------|---|---|
@@ -54,7 +54,7 @@ You'll get the following results for the [Check](https://openfga.dev/api/service
 | user:anne | viewer| document:1| `current_time` : `2023-01-01T02:00:00Z` | `allowed` : `false` |
 | user:anne | viewer| document:1 | | `error` : "failed to evaluate relationship condition 'non_expired_grant': context is missing parameters '[current_time]' |
 
-You'll get the following results for the [ListObjects](https://openfga.dev/api/service#/Relationship%20Queries/ListObjects) operations below:
+You'll get the following results for the [ListObjects](https://openfga.dev/api-reference/relationship-queries/list-all-objects-of-the-given-type-that-the-user-has-a-relation-with) operations below:
 
 | user | relation| object| context | result |
 |------|---------|-------|---|---|
@@ -99,7 +99,7 @@ OpenFGA has a rich ecosystem of developer tools. The following have been updated
 
 We’ll address some limitations of the current implementation:
 
-- The [Expand API](https://openfga.dev/api/service#/Relationship%20Queries/Expand) does not consider conditions.
+- The [Expand API](https://openfga.dev/api-reference/relationship-queries/expand-all-relationships-in-userset-tree-format-and-following-userset-rewrite-rules-useful-to-reason-about-and-debug-a-certain-relationship) does not consider conditions.
 - The Visual Studio Code integration is not validating the expressions in conditions. 
 - The Playground does not let you add context for tuples and assertions. You should use the VS Code Extension + the FGA CLI to test your models for now.
 

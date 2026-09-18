@@ -50,12 +50,10 @@ jobs:
 
   # Check links against the *built* site rather than raw Markdown.
   #
-  # Internal links (/docs/…, ./…, ../…) resolve to the generated pages in
-  # ./build, so a link to a page added in the same PR is validated instead of
-  # skipped — and it can never break just because a new page was added.
-  # External links are checked over the network; excluded hosts live in
-  # lychee.toml. (Internal routing is additionally enforced by Docusaurus'
-  # `onBrokenLinks: 'throw'` during the build step below.)
+  # Website links resolve against ./build. Before Lychee runs, npm run build
+  # validates cross-site docs/API links against native pages, anchors, redirects
+  # and canonical OpenAPI operations from this checkout. It also extracts native
+  # external links, preserving their network coverage after legacy docs removal.
   link-check:
     runs-on: ubuntu-latest
     steps:
@@ -82,8 +80,11 @@ jobs:
             --config lychee.toml
             --root-dir "${{ github.workspace }}/build"
             --remap "https://openfga\\.dev/(.*) file://${{ github.workspace }}/build/\$1"
-            --exclude "^file://${{ github.workspace }}/build/api/service"
+            --exclude "^file://${{ github.workspace }}/build/docs(?:/|$)"
+            --exclude "^file://${{ github.workspace }}/build/api(?:/service)?/?(?:[?#].*)?$"
+            --exclude "^file://${{ github.workspace }}/build/api-reference(?:/|$)"
             --exclude "^file://${{ github.workspace }}/build/search"
             --no-progress
             "build/**/*.html"
+            ".link-check/native-external-links.md"
           fail: true

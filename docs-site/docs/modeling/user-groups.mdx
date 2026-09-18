@@ -1,0 +1,190 @@
+---
+title: "User Groups"
+sidebarTitle: "User groups"
+description: Adding users to groups and granting group members access to an object
+---
+
+import { AuthzModelSnippetViewer } from '/snippets/AuthzModelSnippetViewer.jsx';
+import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
+import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
+
+To add users to groups and grant groups access to an [object](/docs/concepts#what-is-an-object) using OpenFGA.
+
+<Note>
+**When to use**
+
+Relationship tuples can specify that an entire group has a relation to an object, which is helpful when you want to encompass a set of users with the same relation to an object. For example:
+
+- Grant `viewer` access to a group of `engineers` in `roadmap.doc`
+- Create a `block_list` of `members` who can't access a `document`
+- Sharing a `document` with a `team`
+- Granting `viewer` access to a `photo` to `followers` only
+- Making a `file` viewable for all `users` within an `organization`
+- Restricting access from or to `users` in a certain `locale`
+</Note>
+
+## Before you start
+
+Familiarize yourself with the [OpenFGA concepts](/docs/concepts).
+
+Assume you have the following [authorization model](/docs/concepts#what-is-an-authorization-model): you have an _[object](/docs/concepts#what-is-an-object)_ called `document` that users can relate to as an `editor`.
+
+<Accordion title="Authorization model">
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'document',
+        relations: {
+          editor: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+---
+
+In addition, you will need to know the following:
+
+<h3 id="direct-access">Direct Access</h3>
+
+You need to know how to create an authorization model and a relationship tuple to grant a user access to an object. To learn more, see [direct access](/docs/modeling/direct-access).
+
+<h3 id="-concepts">OpenFGA Concepts</h3>
+
+- A **[Type](/docs/concepts#what-is-a-type)**: a class of objects that have similar characteristics.
+- A **[User](/docs/concepts#what-is-a-user)**: an entity in the system that can be related to an object.
+- A **[Relation](/docs/concepts#what-is-a-relation)**: a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system.
+- An **[Object](/docs/concepts#what-is-an-object)**: represents an entity in the system. Users' relationships to it can be defined with relationship tuples and the authorization model.
+- A **[Relationship Tuple](/docs/concepts#what-is-a-relationship-tuple)**: a grouping consisting of a user, a relation and an object stored in OpenFGA.
+</Accordion>
+
+## Step By Step
+
+There are possible use cases where a group of users have a certain role on or permission to an object. For example, `members` of a certain `team` could have an `editor` relation to a certain `document`.
+
+To represent this in OpenFGA:
+
+1. Introduce the concept of a `team` to the authorization model. [→](#step-1)
+2. Add users as `members` to the `team`. [→](#step-2)
+3. Assign the `team` members a relation to an object. [→](#step-3)
+4. Check an individual member's access to the object. [→](#step-4)
+
+<h3 id="step-1">01. Introduce the concept of a team to the authorization model</h3>
+
+First, define the _[object](/docs/concepts#what-is-an-object)_ `team` in your authorization model. In this use case, a `team` can have `member`s, so you make the following changes to the authorization model:
+
+<AuthzModelSnippetViewer
+  configuration={{
+    schema_version: '1.1',
+    type_definitions: [
+      {
+        type: 'user',
+      },
+      {
+        type: 'document',
+        relations: {
+          editor: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            editor: { directly_related_user_types: [{ type: 'team', relation: 'member' }] },
+          },
+        },
+      },
+      {
+        type: 'team',
+        relations: {
+          member: {
+            this: {},
+          },
+        },
+        metadata: {
+          relations: {
+            member: { directly_related_user_types: [{ type: 'user' }] },
+          },
+        },
+      },
+    ],
+  }}
+/>
+
+<h3 id="step-2">02. Add users as members to the team</h3>
+
+You can now assign _[users](/docs/concepts#what-is-a-user)_ as `member`s of `team`s. Create a new _[relationship tuple](/docs/concepts#what-is-a-relationship-tuple)_ that states `user:alice` is a member of `team:writers`.
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'user:alice',
+      relation: 'member',
+      object: 'team:writers',
+    },
+  ]}
+/>
+
+<h3 id="step-3">03. Assign the team members a relation to an object</h3>
+
+To represent groups, use the `type:object_id#relation` format, which represents the set of users related to the `type:object_id` as a certain relation. For example, `team:writers#members` represents the set of users related to the `team:writers` object as `member`s.
+
+In order to assign `member`s of a `team` a relation to a `document`, create the following relationship tuple stating that members of `team:writers` are editors of `document:meeting_notes.doc`.
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: "Set of users related to 'team:writers' as 'member'",
+      user: 'team:writers#member',
+      relation: 'editor',
+      object: 'document:meeting_notes.doc',
+    },
+  ]}
+/>
+
+<h3 id="step-4">04. Check an individual member's access to an object</h3>
+
+Now that you have:
+
+- a relationship tuple indicating that `alice` is a `member` of `team:writers`
+- a relationship tuple indicating that `members` of `team:writers` are editors of `document:meeting_notes.doc`
+
+The [check](/docs/concepts#what-is-a-check-request) `is alice an editor of document:meeting_notes.doc` returns the following:
+
+<CheckRequestViewer user={'user:alice'} relation={'editor'} object={'document:meeting_notes.doc'} allowed={true} />
+
+The chain of resolution is:
+
+- `alice` is `member` of `team:writers`
+- `member`s of `team:writers` are `editor`s of `document:meeting_notes`
+- therefore, `alice` is `editor` of `document:meeting_notes`
+
+<Warning>
+**Note:** When creating relationship tuples for OpenFGA, use unique ids for each object and user in your application domain. This example uses first names and simple ids as a suggested example.
+</Warning>
+
+## Related Sections
+
+<CardGroup>
+  <Card title="Managing Group Membership" href="/docs/interacting/managing-group-membership">
+    Learn how to add and remove users from groups
+  </Card>
+  <Card title="Modeling Google Drive" href="/docs/modeling/advanced/gdrive#02-organization-permissions">
+    See how User Groups can be used to share documents within a domain in the Google Drive use-case.
+  </Card>
+  <Card title="Modeling GitHub" href="/docs/modeling/advanced/github#02-permissions-for-teams-in-an-org">
+    Granting teams permissions to a repo in the GitHub use-case.
+  </Card>
+</CardGroup>

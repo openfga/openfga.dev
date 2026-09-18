@@ -28,6 +28,18 @@ yarn-error.log*
 *.sublime-*
 *.orig
 
+# MemPalace per-project files (issue #185)
+mempalace.yaml
+entities.json
+.mintlify/
+
 # lychee link checker
 .lycheecache
 /lychee/
+/.link-check/
+
+# Local Cloudflare Worker state and secrets
+/.wrangler/
+/deploy/cloudflare/.wrangler/
+/deploy/cloudflare/.dev.vars*
+/deploy/cloudflare/.env*
