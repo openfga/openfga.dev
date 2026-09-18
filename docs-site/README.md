@@ -1,6 +1,6 @@
 # OpenFGA documentation
 
-This directory contains the Mintlify source for 110 product documentation pages and 24 read-only API operations. The homepage, Project, Community, and Blog stay on Docusaurus.
+This directory contains the Mintlify source for 110 product documentation pages and a read-only reference for 24 API operations. The homepage, Project, Community, and Blog stay on Docusaurus.
 
 The [hosted Mintlify site](https://fga.mintlify.site/docs/fga) is available. Serving it through `openfga.dev/docs` and `openfga.dev/api-reference` requires the separate [split-site deployment](#split-site-deployment). Publishing this directory does not configure that routing.
 
