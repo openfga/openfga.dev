@@ -50,9 +50,12 @@ test('missing pages and fragments are not hidden by the split-site boundary', ()
   assert.throws(() => validateNativeLink('/api-reference/stores/missing', options), /no configured native API operation/);
   assert.throws(() => validateNativeLink('/api-reference/stores/list-all-stores#unverified', options), /explicit native anchor contract/);
 });
-test('legacy API aliases resolve to an actual native operation', () => {
-  for (const href of ['/api', '/api/', '/api/service', '/api/service/', '/api-reference']) {
+test('legacy API root resolves natively while Swagger fragment links retain their compatibility page', () => {
+  for (const href of ['/api', '/api/', '/api-reference']) {
     assert.deepEqual(validateNativeLink(href, options), { api: '/api-reference/stores/list-all-stores' });
+  }
+  for (const href of ['/api/service', '/api/service/', '/api/service#/Relationship%20Queries/Check']) {
+    assert.deepEqual(validateNativeLink(href, options), { website: '/api/service' });
   }
   assert.equal(validateNativeLink('/api/not-an-alias', options), false);
 });
@@ -80,12 +83,12 @@ test('API route contracts come from configured canonical operation summaries', (
   assert.deepEqual([...routes], ['/api-reference/stores/list-all-stores']);
 });
 
-test('the repository has one native docs root and no legacy product corpus or Swagger page', () => {
+test('the repository retains only a small legacy API compatibility page, not the old Swagger implementation', () => {
   const root = new URL('../', import.meta.url);
-  for (const retired of ['docs', 'mintlify-native', 'src/pages/api/service.tsx', 'src/components/SwaggerUI']) {
+  for (const retired of ['docs', 'mintlify-native', 'src/components/SwaggerUI']) {
     assert.ok(!existsSync(new URL(retired, root)), `${retired} must remain retired`);
   }
-  for (const retained of ['docs-site/docs/fga.mdx', 'src/pages/index.tsx', 'src/pages/project.mdx', 'src/pages/community.mdx', 'blog/ignore-duplicate-writes-announcement.md', 'src/components/Docs']) {
+  for (const retained of ['docs-site/docs/fga.mdx', 'src/pages/index.tsx', 'src/pages/project.mdx', 'src/pages/community.mdx', 'src/pages/api/service.tsx', 'blog/ignore-duplicate-writes-announcement.md', 'src/components/Docs']) {
     assert.ok(existsSync(new URL(retained, root)), `${retained} must remain available`);
   }
   assert.ok(!existsSync(new URL('docs-site/docs/community.mdx', root)), 'Do not duplicate the Community page');
@@ -96,4 +99,6 @@ test('the repository has one native docs root and no legacy product corpus or Sw
   assert.doesNotMatch(pkg.scripts.build, /build:config-page/, 'Ordinary builds must not rewrite authored docs from the latest release');
   assert.equal(pkg.scripts.postinstall, 'patch-package --error-on-fail');
   assert.match(readFileSync(new URL('docusaurus.config.js', root), 'utf8'), /docs: false/);
+  assert.doesNotMatch(readFileSync(new URL('src/pages/api/service.tsx', root), 'utf8'), /swagger-ui|SwaggerUI/);
+  assert.equal(pkg.dependencies['swagger-ui-react'], undefined);
 });

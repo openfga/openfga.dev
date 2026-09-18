@@ -26,7 +26,22 @@ for (const file of await fs.readdir(path.join(nativeDirectory, 'docs'), { recurs
 }
 
 const files = await fs.readdir(buildDirectory, { recursive: true });
-assert.ok(!files.some((file) => /^(?:docs|api|api-reference)(?:\/|\.html$)/.test(file)), 'Docusaurus must not emit retired docs or API routes');
+const compatibilityFiles = files.filter((file) => /^api\/service(?:\.html|\/index\.html)$/.test(file));
+const compatibilityAliases = files.filter((file) => /^api\/service\.html(?:\.html|\/index\.html)$/.test(file));
+assert.equal(compatibilityFiles.length, 1, 'Docusaurus must emit exactly one legacy API compatibility page');
+assert.ok(!files.some((file) => /^(?:docs|api|api-reference)(?:\/|\.html$)/.test(file)
+  && !compatibilityFiles.includes(file) && !compatibilityAliases.includes(file)),
+'Docusaurus must not emit retired docs or API routes outside the compatibility page');
+for (const file of compatibilityAliases) {
+  const html = await fs.readFile(path.join(buildDirectory, file), 'utf8');
+  const canonical = (html.match(/<link\b[^>]*>/gi) ?? []).find((tag) => readAttribute(tag, 'rel') === 'canonical');
+  assert.equal(readAttribute(canonical ?? '', 'href'), `${basePath}/api/service`, 'HTML alias must lead to the compatibility page');
+}
+const compatibilityHtml = await fs.readFile(path.join(buildDirectory, compatibilityFiles[0]), 'utf8');
+assert.match(compatibilityHtml, /data-legacy-api-compatibility/);
+assert.ok((compatibilityHtml.match(/<meta\b[^>]*>/gi) ?? []).some((tag) =>
+  readAttribute(tag, 'name') === 'robots' && readAttribute(tag, 'content')?.includes('noindex')),
+'The legacy API compatibility page must not be indexed');
 const websiteRoutes = new Set(files.filter((file) => file.endsWith('.html'))
   .map((file) => `/${file.replace(/\.html$/, '').replace(/(^|\/)index$/, '')}`.replace(/\/$/, '') || '/'));
 let checkedLinks = 0;
@@ -64,6 +79,7 @@ function validateSearchIndex(value) {
       const route = new URL(child, siteOrigin).pathname;
       const unprefixed = basePath && route.startsWith(`${basePath}/`) ? route.slice(basePath.length) : route;
       assert.ok(!isNativeRoute(unprefixed), `Website search index contains retired docs route ${child}`);
+      assert.notEqual(unprefixed.replace(/\/$/, ''), '/api/service', 'Compatibility page must not appear in website search');
     } else validateSearchIndex(child);
   }
 }

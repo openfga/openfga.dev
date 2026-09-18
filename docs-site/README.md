@@ -432,16 +432,19 @@ The [migration proposal](../MINTLIFY-MIGRATION-PROPOSAL.md) provides background.
 
 The Mintlify origin `https://fga.mintlify.site/` redirects temporarily to `/docs/fga`. The public `https://openfga.dev/` must continue serving the Docusaurus homepage.
 
-| Public route                                                | Owner                             |
-| ----------------------------------------------------------- | --------------------------------- |
-| `/`, `/project`, `/community`, `/blog/**`                   | Docusaurus                        |
-| `/docs`, `/docs/**`                                         | Mintlify                          |
-| `/api-reference`, `/api-reference/**`                       | Mintlify                          |
-| Exact `/api` and `/api/service`, including trailing slashes | Edge redirect to `/api-reference` |
+| Public route                              | Owner                                                      |
+| ----------------------------------------- | ---------------------------------------------------------- |
+| `/`, `/project`, `/community`, `/blog/**` | Docusaurus                                                 |
+| `/docs`, `/docs/**`                       | Mintlify                                                   |
+| `/api-reference`, `/api-reference/**`     | Mintlify                                                   |
+| Exact `/api`, including trailing slash    | Edge redirect to `/api-reference`                          |
+| `/api/service`                            | Website compatibility page for Swagger operation fragments |
 
 Docusaurus also owns `/search`, `/robots.txt`, `/sitemap.xml`, `/search-index.json`, root LLM indexes, and `/assets/**`, `/img/**`, `/css/**`, and `/icons/**`. Paths not explicitly assigned to Mintlify or a redirect fall through to the website.
 
 Website search covers Blog, Project, and Community; its search plugin excludes the homepage. Product-docs search belongs to Mintlify.
+
+The `/api/service` compatibility page preserves old links such as `#/Relationship%20Queries/Check`, routing them to the matching native operation. Unknown fragments fall back to the API index. `/api/service/` normalizes to that page rather than discarding its fragment. The shim is excluded from search, sitemaps, and LLM bundles; it is not a second API reference. Its operation map is generated from the pinned schema with `npm run generate:legacy-api-routes` and checked by ordinary builds and `check:mintlify`.
 
 ### Use the existing Cloudflare edge
 

@@ -28,9 +28,10 @@ const entries = new Map([
   ['/docs', '/docs/fga'],
   ['/api-reference', '/api-reference/stores/list-all-stores'],
 ]);
-const legacyApiRoutes = new Set(['/api', '/api/service']);
+const legacyApiRoutes = new Set(['/api']);
 
 export function routeRequest(pathname) {
+  if (pathname === '/api/service/') return { kind: 'redirect', destination: '/api/service' };
   const entry = pathname.replace(/\/$/, '');
   if (legacyApiRoutes.has(entry)) return { kind: 'legacy-redirect', destination: '/api-reference' };
   if (entries.has(entry)) return { kind: 'redirect', destination: entries.get(entry) };

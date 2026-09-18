@@ -16,8 +16,9 @@ inventory, not the current published native page count. See the repository
 
 The implementation now keeps the marketing homepage, Project page, Community
 page, and blog on Docusaurus while serving `/docs/**` and `/api-reference/**`
-from Mintlify. The legacy `/api` and `/api/service` routes redirect to
-`/api-reference`.
+from Mintlify. The legacy `/api` route redirects to `/api-reference`. A small
+website compatibility page at `/api/service` maps old Swagger operation
+fragments to the corresponding native API pages.
 
 This retains Docusaurus for the surfaces it handles well while using Mintlify for
 documentation navigation, search, Markdown exports, and the native OpenAPI

@@ -4,20 +4,24 @@ This Worker serves Mintlify documentation through the existing `openfga.dev` Clo
 
 ## Ownership
 
-| Paths                                                            | Destination                                                                |
-| ---------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `/docs/**`, `/api-reference/**`                                  | `https://fga.mintlify.site`, preserving path and query                     |
-| `/docs`, `/api-reference`                                        | Redirect to each section's first page                                      |
-| `/api`, `/api/service`, with optional trailing slash             | Redirect to `/api-reference`                                               |
-| `/docs/community`                                                | Redirect to the website's `/community`                                     |
-| `/mintlify-assets/**`, `/_mintlify/**`, `/_next/**`, `/_llms/**` | Mintlify runtime, services, and generated indexes                          |
-| `/images/**`, five exact root scripts/styles                     | Native repository assets listed in `routing.mjs`                           |
-| `/docs/llms.txt`, `/docs/llms-full.txt`                          | Mintlify's root index and complete bundle                                  |
-| `/docs/mcp`, selected `/docs/.well-known/**` endpoints           | Corresponding native MCP/discovery endpoints, subject to vendor acceptance |
-| Exact `/api/request`                                             | `/_mintlify/api/request`                                                   |
-| Everything else                                                  | Existing Docusaurus origin                                                 |
+| Paths                                                            | Destination                                                                   |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `/docs/**`, `/api-reference/**`                                  | `https://fga.mintlify.site`, preserving path and query                        |
+| `/docs`, `/api-reference`                                        | Redirect to each section's first page                                         |
+| `/api`, with optional trailing slash                             | Redirect to `/api-reference`                                                  |
+| `/api/service`                                                   | Website compatibility page maps legacy Swagger fragments to native operations |
+| `/api/service/`                                                  | Normalize to `/api/service`, preserving the browser's fragment                |
+| `/docs/community`                                                | Redirect to the website's `/community`                                        |
+| `/mintlify-assets/**`, `/_mintlify/**`, `/_next/**`, `/_llms/**` | Mintlify runtime, services, and generated indexes                             |
+| `/images/**`, five exact root scripts/styles                     | Native repository assets listed in `routing.mjs`                              |
+| `/docs/llms.txt`, `/docs/llms-full.txt`                          | Mintlify's root index and complete bundle                                     |
+| `/docs/mcp`, selected `/docs/.well-known/**` endpoints           | Corresponding native MCP/discovery endpoints, subject to vendor acceptance    |
+| Exact `/api/request`                                             | `/_mintlify/api/request`                                                      |
+| Everything else                                                  | Existing Docusaurus origin                                                    |
 
 The website keeps `/`, `/project`, `/community`, `/blog/**`, `/search`, `/robots.txt`, all sitemap files, root LLM resources, and its asset directories. Root `/.well-known/**` and certificate-verification routes are not captured. `/docs-other`, `/api-reference-other`, and arbitrary `/api/**` paths are not native routes.
+
+Do not redirect `/api/service` directly to the new API index. Swagger links such as `/api/service#/Relationship%20Queries/Check` carry their operation in a fragment, which the Worker cannot see. The small website page reads that fragment and replaces the browser location with the matching native operation, preserving query parameters. Empty, unknown, and malformed fragments fall back to `/api-reference`; a link remains usable without JavaScript. The page is excluded from search, sitemaps, and website LLM bundles, and does not restore Swagger.
 
 Use a **Worker Route**, not a Worker Custom Domain or an apex DNS replacement. The named production configuration uses `openfga.dev/*` so bare routes with query strings also invoke the Worker. The code then applies segment-aware ownership. Website fallthrough uses the original `fetch(request)` to reach the existing origin.
 
@@ -89,11 +93,11 @@ npm run verify:docs-origin
 npm run verify:docs-proxy -- --origin https://APPROVED-STAGING-HOST
 ```
 
-These commands make read-only HTTP requests and report nonzero failures for wrong canonical hosts, missing runtime assets, incomplete recursive docs indexes, bundle failures, lost redirect queries, website capture, and incomplete composite sitemap output. They fetch the digest-pinned OpenAPI schema to derive the expected API routes. They do not prove browser interactions, Cloudflare route precedence, permissions, or complete MCP compatibility.
+These commands make read-only HTTP requests and report nonzero failures for wrong canonical hosts, missing runtime assets, incomplete recursive docs indexes, bundle failures, lost redirect queries, website capture, a missing compatibility page, and incomplete composite sitemap output. They fetch the digest-pinned OpenAPI schema and check all 24 advertised API operation URLs, not just List stores. They do not prove browser interactions, Cloudflare route precedence, permissions, or complete MCP compatibility.
 
-Staging uses the currently published website, so record the expected composite-sitemap failure until the coordinated website publication. Do not waive any other failure on that basis. Verify generated agent metadata and every URL it advertises manually.
+Staging uses the currently published website, so record the expected composite-sitemap and new compatibility-page failures until the coordinated website publication. Validate the compatibility page against the local website build before activation and rerun the public checks after publication. Do not waive other failures on that basis. Verify generated agent metadata and every URL it advertises manually.
 
-In an HTTPS browser, check docs and API navigation, direct deep links, per-page Markdown, images, custom viewers, search results, enabled assistant streaming, and analytics POSTs. Check response MIME types, upstream error propagation, theme changes, and reloads. Test website Home, Project, Community, Blog, search, root LLM resources, and negative prefix matches. Root `openfga.dev/` must not redirect to docs.
+In an HTTPS browser, check docs and API navigation, direct deep links, per-page Markdown, images, custom viewers, search results, enabled assistant streaming, and analytics POSTs. Follow legacy Swagger fragments for Check, BatchCheck, and AuthZEN, including encoded tag names and the trailing-slash variant. Check response MIME types, upstream error propagation, theme changes, and reloads. Test website Home, Project, Community, Blog, search, root LLM resources, and negative prefix matches. Root `openfga.dev/` must not redirect to docs.
 
 Before the change window, save:
 

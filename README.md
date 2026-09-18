@@ -29,6 +29,8 @@ The [Cloudflare proxy](deploy/cloudflare/README.md) forwards `/docs` and `/api-r
 
 The website build generates a composite sitemap index with separate website and native children. Cloudflare activation, Mintlify domain/discovery verification, and the website publication must be coordinated by their owners before removing the old public docs deployment. See the runbook for acceptance and complete rollback requirements.
 
+The small `/api/service` compatibility page preserves old Swagger operation fragments without restoring Swagger or duplicating the API reference. Regenerate its operation map with `npm run generate:legacy-api-routes` when changing the pinned API schema or navigation. Builds and native quality checks reject stale mappings; the compatibility page stays out of website search, sitemaps, and LLM bundles.
+
 ## Getting Started
 
 ### Setup and Installation

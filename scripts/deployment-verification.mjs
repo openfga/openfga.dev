@@ -40,9 +40,27 @@ export async function verifyDeployment({ origin, mode, routes, get = fetchText }
       assert.equal(result.headers.get('x-llms-txt'), '/docs/llms.txt', 'Docs discovery must not advertise the website-only bundle');
     }
   };
+  const operationPages = async () => {
+    const paths = routes.filter((path) => path.startsWith('/api-reference/'));
+    for (let i = 0; i < paths.length; i += 4) {
+      await Promise.all(paths.slice(i, i + 4).map(async (path) => {
+        const result = await get(`${origin}${path}`);
+        assert.equal(result.status, 200, `API route returns HTTP ${result.status}: ${path}`);
+        assert.match(result.headers.get('content-type') ?? '', /text\/html/);
+        const canonical = (result.text.match(/<link\b[^>]*>/gi) ?? [])
+          .find((tag) => readAttribute(tag, 'rel') === 'canonical');
+        const href = readAttribute(canonical ?? '', 'href');
+        assert.ok(href, `Missing API canonical: ${path}`);
+        const url = new URL(href);
+        assert.equal(url.origin, siteOrigin);
+        assert.equal(url.pathname, path, `API route canonical does not match its advertised path: ${path}`);
+      }));
+    }
+  };
   await Promise.all([
     check('Documentation page and runtime', () => page('/docs/fga')),
     check('API page and runtime', () => page('/api-reference/stores/list-all-stores')),
+    check('Every advertised API operation resolves', operationPages),
     check('Native discovery covers every page', async () => {
       const path = mode === 'native' ? '/llms.txt' : '/docs/llms.txt';
       const index = await get(`${origin}${path}`);
@@ -105,12 +123,19 @@ export async function verifyDeployment({ origin, mode, routes, get = fetchText }
       check('Entry URLs preserve query parameters', async () => {
         for (const [path, destination] of [
           ['/docs', '/docs/fga'], ['/api-reference', '/api-reference/stores/list-all-stores'],
-          ['/api', '/api-reference'], ['/api/service/', '/api-reference'],
+          ['/api', '/api-reference'], ['/api/service/', '/api/service'],
         ]) {
           const result = await get(`${origin}${path}?acceptance=1`);
           assert.ok([307, 308].includes(result.status), `${path}: expected method-preserving redirect`);
           assert.equal(result.headers.get('location'), `${destination}?acceptance=1`);
         }
+      }),
+      check('Legacy Swagger compatibility page preserves fragment handling', async () => {
+        const result = await get(`${origin}/api/service`);
+        assert.equal(result.status, 200, 'Legacy Swagger links require an HTML compatibility page, not an edge redirect');
+        assert.match(result.headers.get('content-type') ?? '', /text\/html/);
+        assert.match(result.text, /data-legacy-api-compatibility/);
+        assert.equal(result.headers.get('location'), null);
       }),
       check('Composite sitemap has website and exact native inventory', async () => {
         const index = await get(`${origin}/sitemap.xml`);

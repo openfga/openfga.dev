@@ -12,6 +12,7 @@ const websitePaths = [
   '/search-index.json', '/robots.txt', '/sitemap.xml', '/sitemap-website.xml', '/sitemap-docs.xml',
   '/llms.txt', '/llms-full.txt', '/.well-known/acme-challenge/token', '/.well-known/vercel/token',
   '/.well-known/agent-card.json', '/mcp', '/images-other/asset.png',
+  '/api/service', '/api/service?source=legacy', '/api/service/health',
 ];
 
 test('website paths, discovery roots, verification, and lookalike prefixes stay on the original request', async () => {
@@ -66,7 +67,7 @@ test('entry and legacy redirects preserve query strings and methods without fetc
       ['/api-reference', '/api-reference/stores/list-all-stores'],
       ['/api-reference/', '/api-reference/stores/list-all-stores'],
       ['/api', '/api-reference'], ['/api/', '/api-reference'],
-      ['/api/service', '/api-reference'], ['/api/service/', '/api-reference'],
+      ['/api/service/', '/api/service'],
       ['/docs/community', '/community'],
     ]) {
       const result = await handleRequest(request(`${path}?a=1&a=2`, { method }), {}, () => assert.fail('Unexpected fetch'));

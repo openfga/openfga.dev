@@ -4,7 +4,7 @@ import GithubSlugger from 'github-slugger';
 import { normalizeBasePath, siteOrigin } from './agent-content.mjs';
 
 export const nativeResources = new Set(['/docs/llms.txt', '/docs/llms-full.txt']);
-export const legacyApiRedirects = new Map([['/api', '/api-reference'], ['/api/service', '/api-reference']]);
+export const legacyApiRedirects = new Map([['/api', '/api-reference']]);
 
 export function isNativeRoute(route) {
   return /^\/(?:docs|api-reference)(?:\/|$)/.test(route);
@@ -36,9 +36,10 @@ export function inspectNativePage(source) {
   return { anchors, links };
 }
 
-export function apiRoutesFromSchema(config, schema) {
+export function apiOperationsFromSchema(config, schema) {
   const routes = new Set();
-  const slug = (value) => value.toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu, '').trim().replace(/\s+/g, '-');
+  const operations = [];
+  const slug = (value) => value.toLowerCase().replace(/[^\p{L}\p{N}\s`[\]-]/gu, '').trim().replace(/\s+/g, '-');
   const anchor = config.navigation.anchors.find((entry) => entry.openapi);
   assert.ok(anchor, 'Missing native OpenAPI navigation');
   for (const group of anchor.groups) {
@@ -46,12 +47,17 @@ export function apiRoutesFromSchema(config, schema) {
       const [method, ...parts] = reference.split(' ');
       const operation = schema.paths[parts.join(' ')]?.[method.toLowerCase()];
       assert.ok(operation?.summary, `${reference}: missing canonical operation summary`);
-      const route = `/api-reference/${slug(group.group)}/${slug(operation.summary)}`;
+      const route = new URL(`/api-reference/${slug(group.group)}/${slug(operation.summary)}`, siteOrigin).pathname;
       assert.ok(!routes.has(route), `Duplicate native API route ${route}`);
       routes.add(route);
+      operations.push({ operationId: operation.operationId, tags: operation.tags, route });
     }
   }
-  return routes;
+  return operations;
+}
+
+export function apiRoutesFromSchema(config, schema) {
+  return new Set(apiOperationsFromSchema(config, schema).map(({ route }) => route));
 }
 
 export function validateNativeLink(href, { config, pages, apiRoutes, baseUrl = '/', from = '/' }) {
@@ -60,6 +66,7 @@ export function validateNativeLink(href, { config, pages, apiRoutes, baseUrl = '
   const basePath = normalizeBasePath(baseUrl);
   const strippedPath = basePath && url.pathname.startsWith(`${basePath}/`)
     ? url.pathname.slice(basePath.length) : url.pathname;
+  if (strippedPath.replace(/\/$/, '') === '/api/service') return { website: '/api/service' };
   if (!isNativeRoute(strippedPath) && !legacyApiRedirects.has(strippedPath.replace(/\/$/, ''))) return false;
   assert.equal(url.pathname, strippedPath, `${href}: native links must not use the Docusaurus preview prefix`);
   const redirects = new Map(config.redirects.map(({ source, destination }) => [source, destination]));

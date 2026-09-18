@@ -175,6 +175,17 @@ const canonicalSummaries = {
   SubjectSearch: '[Experimental] Search for subjects with access to a resource',
 };
 
+// Captured from the deployed Mintlify sitemap and checked against the operation pages.
+const deployedPunctuationRoutes = [
+  '/api-reference/relationship-queries/send-a-list-of-%60check%60-operations-in-a-single-request',
+  '/api-reference/authzenservice/[experimental]-get-authzen-pdp-configuration-and-capabilities',
+  '/api-reference/authzenservice/[experimental]-evaluate-whether-a-subject-can-perform-an-action-on-a-resource',
+  '/api-reference/authzenservice/[experimental]-check-whether-one-or-more-users-are-authorized-to-access-resources',
+  '/api-reference/authzenservice/[experimental]-search-for-actions-a-subject-can-perform-on-a-resource',
+  '/api-reference/authzenservice/[experimental]-search-for-resources-a-subject-has-access-to',
+  '/api-reference/authzenservice/[experimental]-search-for-subjects-with-access-to-a-resource',
+];
+
 test('repository navigation and source files contribute exactly 110 docs and all 24 generated API pages offline', async () => {
   assert.equal(metadata.canonical.sha256, 'dbf0d4d2248cb7f844aaf05110a684b63c31c015092e682f57fecbd65a8088b0',
     'Review the offline canonical summary fixture when updating the pinned API');
@@ -192,8 +203,12 @@ test('repository navigation and source files contribute exactly 110 docs and all
   assert.equal(inventory.routes.size, 134);
   const composite = createCompositeSitemap({ websiteXml, nativeRoutes: inventory.routes });
   assert.equal(parseSitemap(composite.docsXml).locations.length, 134);
-  assert.ok(inventory.apiRoutes.has('/api-reference/relationship-queries/send-a-list-of-check-operations-in-a-single-request'));
-  assert.ok(inventory.apiRoutes.has('/api-reference/authzenservice/experimental-get-authzen-pdp-configuration-and-capabilities'));
+  for (const route of deployedPunctuationRoutes) {
+    assert.ok(inventory.apiRoutes.has(route), `Missing deployed API route ${route}`);
+    assert.ok(parseSitemap(composite.docsXml).locations.includes(`https://openfga.dev${route}`));
+    const stripped = route.replace(/%60|\[|\]/g, '');
+    assert.ok(!inventory.apiRoutes.has(stripped), `Do not advertise the nonexistent stripped route ${stripped}`);
+  }
 });
 
 async function buildFixture(t) {

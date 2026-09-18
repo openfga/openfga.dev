@@ -11,6 +11,7 @@ function response(text, type = 'text/plain', status = 200, headers = {}) {
 function fixture() {
   const files = new Map([
     ['/', response('<html><div id="__docusaurus"></div></html>', 'text/html')],
+    ['/api/service', response('<main data-legacy-api-compatibility>API reference moved</main>', 'text/html')],
     ['/mintlify-assets/app.js', response('console.log("native")', 'application/javascript')],
     ['/docs/llms.txt', response('[First index](/_llms/first.md)')],
     ['/_llms/first.md', response('[Second index](/_llms/second.md)')],
@@ -25,7 +26,7 @@ function fixture() {
   }
   for (const [path, destination] of [
     ['/docs', '/docs/fga'], ['/api-reference', '/api-reference/stores/list-all-stores'],
-    ['/api', '/api-reference'], ['/api/service/', '/api-reference'],
+    ['/api', '/api-reference'], ['/api/service/', '/api/service'],
   ]) {
     files.set(`${path}?acceptance=1`, response('', 'text/plain', 307, { location: `${destination}?acceptance=1` }));
   }
@@ -44,7 +45,7 @@ const run = (files) => verifyDeployment({
 
 test('deployment acceptance follows nested discovery indexes and validates all surfaces', async () => {
   const results = await run(fixture());
-  assert.equal(results.length, 7);
+  assert.equal(results.length, 9);
   assert.ok(results.every(({ ok }) => ok), JSON.stringify(results));
 });
 
@@ -59,6 +60,7 @@ for (const [name, path, value] of [
   ['off-origin page links', '/_llms/second.md', response(routes.map((route) => `[Page](https://missing.example${route}.md)`).join('\n'))],
   ['off-origin recursive links', '/docs/llms.txt', response('[Index](https://missing.example/_llms/first.md)')],
   ['page paths present only as plain text', '/docs/llms.txt', response(routes.map((route) => `${publicOrigin}${route}.md`).join('\n'))],
+  ['legacy fragments lost to an edge redirect', '/api/service', response('', 'text/html', 308, { location: '/api-reference' })],
 ]) {
   test(`deployment acceptance reports ${name} instead of a green fallback`, async () => {
     const files = fixture();
@@ -67,3 +69,15 @@ for (const [name, path, value] of [
     assert.ok(results.some(({ ok, error }) => !ok && error));
   });
 }
+
+test('deployment acceptance detects an extra advertised API operation that returns 404', async () => {
+  const files = fixture();
+  const missingRoute = '/api-reference/relationship-queries/send-a-list-of-check-operations-in-a-single-request';
+  files.set(missingRoute, response('Not found', 'text/html', 404));
+  const results = await verifyDeployment({
+    origin, mode: 'native', routes: [...routes, missingRoute],
+    get: async (url) => files.get(new URL(url).pathname) ?? response('Not found', 'text/plain', 404),
+  });
+  assert.ok(results.some(({ name, ok, error }) => name === 'Every advertised API operation resolves'
+    && !ok && error.includes(missingRoute)));
+});

@@ -175,7 +175,7 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
           includeDocs: false,
           includeVersionedDocs: false,
           includeGeneratedIndex: false,
-          excludeRoutes: [agentRoute('/search')],
+          excludeRoutes: [agentRoute('/search'), agentRoute('/api/service')],
           remarkStringify: {
             bullet: '-',
             emphasis: '_',
@@ -216,6 +216,9 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
       ({
         debug: isDev,
         docs: false,
+        sitemap: {
+          ignorePatterns: ['**/api/service', '**/api/service/'],
+        },
         blog: {
           blogTitle: 'OpenFGA Blog — ReBAC, Fine-Grained Authorization & CNCF Updates',
           blogDescription:
