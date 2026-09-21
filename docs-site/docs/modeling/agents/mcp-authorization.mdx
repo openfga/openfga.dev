@@ -1,6 +1,6 @@
 ---
 title: "Authorization for MCP Servers"
-description: "Model Context Protocol (MCP) servers expose tools that AI agents can call. Without authorization, any authenticated user can invoke any tool. OpenFGA lets you control which tools each user can access, based on their role, group membership, or time-limited grants."
+description: 'Authorize MCP server tools with OpenFGA: control which tools each user can invoke based on roles, group membership, and time-limited temporal grants.'
 ---
 
 import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
@@ -9,7 +9,9 @@ import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
 import { ListObjectsRequestViewer } from '/snippets/ListObjectsRequestViewer.jsx';
 import { ListUsersRequestViewer } from '/snippets/ListUsersRequestViewer.jsx';
 
-This guide shows how to model tool-level authorization for an [MCP server](https://modelcontextprotocol.io/) using OpenFGA, covering public tools, role-based access, group membership, temporal access, and resource-level permissions within tools. It explains how to control an agent's interactions with an MCP server based on the user's permissions.
+[Model Context Protocol (MCP)](https://modelcontextprotocol.io/) servers expose tools that AI agents can call. Without authorization, any authenticated user can invoke any tool. OpenFGA lets you control which tools each user can access, based on their role, group membership, or time-limited grants.
+
+This guide shows how to model tool-level authorization for an MCP server using OpenFGA, covering public tools, role-based access, group membership, temporal access, and resource-level permissions within tools. It explains how to control an agent's interactions with an MCP server based on the user's permissions.
 
 ## Authorization model
 

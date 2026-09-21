@@ -1,6 +1,6 @@
 ---
 title: "Direct Relationships"
-sidebarTitle: "Direct relationships"
+sidebarTitle: "Direct Relationships"
 description: 'Modeling Concepts: Direct Relationships'
 ---
 
@@ -12,7 +12,7 @@ In this guide you'll learn how to model relationships that may or may not be ass
 <Note>
 **When to use**
 
-Disabling _direct relationships_ for a certain relation on an object is useful especially in cases where you are trying to model some permissions that are not usually granted individually to a user.
+Disabling _direct relationships_ for a certain relation on an objects are useful especially in cases where you are trying to model some permissions that are not usually granted individually to a user.
 
 This is useful when:
 
@@ -21,7 +21,7 @@ This is useful when:
 
 ## Before you start
 
-To better understand this guide, you should be familiar with some [OpenFGA concepts](/docs/concepts) and know how to develop the things listed below.
+To better understand this guide, you should be familiar with some [OpenFGA Concepts](/docs/concepts) and know how to develop the things listed below.
 
 You will need to know the following:
 
@@ -38,7 +38,7 @@ You need to know how to create an authorization model and create a relationship 
 - A **[Type](/docs/concepts#what-is-a-type)**: a class of objects that have similar characteristics
 - A **[User](/docs/concepts#what-is-a-user)**: an entity in the system that can be related to an object
 - A **[Relation](/docs/concepts#what-is-a-relation)**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
-- An **[Object](/docs/concepts#what-is-an-object)**: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
+- An **[Object](/docs/concepts#what-is-an-object)**: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
 - A **[Relationship Tuple](/docs/concepts#what-is-a-relationship-tuple)**: a grouping consisting of a user, a relation and an object stored in OpenFGA
 - [Direct Relationship Type Restrictions](/docs/configuration-language#direct-relationship-type-restrictions): used in the context of the relation definition can be used to allow direct relationships to the objects of this type
 </Accordion>
@@ -534,7 +534,7 @@ A subsequent check request to see if Ingred can view the planning document will 
 
 ## Related Sections
 
-Check the following sections for more on how direct relationships can be used. Also, take a look at the access relation in the feature type in Modeling Entitlements for another use-case.
+Check the following sections for more one how direct relationships can be used. Also, take a look at the access relation in the feature type in Modeling Entitlements for another use-case.
 
 <CardGroup>
   <Card title="Modeling Roles and Permissions" href="/docs/modeling/roles-and-permissions">
@@ -544,6 +544,6 @@ Check the following sections for more on how direct relationships can be used. A
     See how Roles and Permissions can be used in an IoT use-case.
   </Card>
   <Card title="Modeling Entitlements" href="/docs/modeling/advanced/entitlements">
-    Take a look at the access relation in the feature type for an example of removing the direct relationship.
+    Take a look at the access relation in the feature type for an example of removing the direct relationship
   </Card>
 </CardGroup>

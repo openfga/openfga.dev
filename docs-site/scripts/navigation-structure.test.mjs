@@ -18,7 +18,7 @@ function fixture() {
         {
           anchor: 'Docs',
           hidden: true,
-          groups: [{ group: 'Overview', pages: ['docs/fga'] }],
+          pages: ['docs/fga'],
         },
         {
           anchor: 'API Reference',
@@ -118,7 +118,7 @@ for (const [name, mutate, expected] of [
   [
     'root groups cannot replace route-scoped anchors',
     (docs) => {
-      docs.navigation = { groups: docs.navigation.anchors.flatMap(({ groups }) => groups) };
+      docs.navigation = { groups: docs.navigation.anchors.flatMap((anchor) => anchor.pages ?? anchor.groups) };
     },
     /Root navigation must use hidden anchors/,
   ],
@@ -147,6 +147,22 @@ for (const [name, mutate, expected] of [
     'extra route sections are rejected',
     (docs) => docs.navigation.anchors.push({ anchor: 'More', hidden: true, groups: [{ group: 'More' }] }),
     /Hidden route-scoped anchors must be ordered as Docs, API Reference/,
+  ],
+  [
+    'original root pages cannot acquire an Overview wrapper',
+    (docs) => {
+      const anchor = docs.navigation.anchors[0];
+      anchor.groups = [{ group: 'Overview', pages: anchor.pages }];
+      delete anchor.pages;
+    },
+    /"Docs" route-scoped anchor must define sidebar pages/,
+  ],
+  [
+    'mixed documentation divisions cannot hide pages from downstream inventories',
+    (docs) => {
+      docs.navigation.anchors[0].groups = [{ group: 'Unexpected', pages: ['docs/extra'] }];
+    },
+    /"Docs" route-scoped anchor must use only sidebar pages/,
   ],
   [
     'missing API sidebar groups are rejected',

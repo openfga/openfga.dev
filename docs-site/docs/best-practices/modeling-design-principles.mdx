@@ -1,6 +1,6 @@
 ---
 title: Authorization Model Design Principles
-sidebarTitle: Design Principles
+sidebarTitle: "Authorization Model Design Principles"
 description: Best practices for creating clear, performant, and maintainable authorization models.
 ---
 
@@ -13,6 +13,8 @@ A well-designed authorization model is easier to understand, debug, and maintain
 The most common mistake when starting with OpenFGA is creating an overly generic model that can represent "anything." While this seems flexible, it trades clarity for abstraction and often hurts performance.
 
 <Tip>
+**Rule of Thumb**
+
 **If end-users can define it, store it in tuples. If it's built into your application, define it in the model.**
 
 For example: built-in roles like "admin" or "billing_manager" should be relations in your model. User-defined custom roles should be stored as tuples with a `role` type.
@@ -294,6 +296,8 @@ Problems with this approach:
 | Team ownership of resource types | Use modules to separate concerns |
 
 ## Related Sections
+
+Check out these related resources for more information about modeling in OpenFGA
 
 <CardGroup>
   <Card title="Custom Roles" href="/docs/modeling/custom-roles">

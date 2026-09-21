@@ -6,27 +6,27 @@
     {
       "source": "adopters/agicap.mdx",
       "productionTitle": "Agicap: Fine-grained authorization for a European fintech platform",
-      "sidebarTitle": "Agicap Case Study"
+      "sidebarTitle": "Agicap"
     },
     {
       "source": "adopters/docker.mdx",
       "productionTitle": "Docker: Centralizing permissions with ReBAC",
-      "sidebarTitle": "Docker Case Study"
+      "sidebarTitle": "Docker"
     },
     {
       "source": "adopters/grafana.mdx",
       "productionTitle": "Grafana Labs: From single-tenant engine to multi-tenant ReBAC",
-      "sidebarTitle": "Grafana Labs Case Study"
+      "sidebarTitle": "Grafana Labs"
     },
     {
       "source": "adopters/headspace.mdx",
       "productionTitle": "Headspace: Authorizing an empathetic AI companion at consumer scale",
-      "sidebarTitle": "Headspace Case Study"
+      "sidebarTitle": "Headspace"
     },
     {
       "source": "adopters/openlane.mdx",
       "productionTitle": "Openlane: Authorization at the data-access layer for compliance automation",
-      "sidebarTitle": "Openlane Case Study"
+      "sidebarTitle": "Openlane"
     },
     {
       "source": "adopters/overview.mdx",
@@ -36,17 +36,17 @@
     {
       "source": "adopters/read-ai.mdx",
       "productionTitle": "Read AI: 5 billion tuples, 20ms p99 latency",
-      "sidebarTitle": "Read AI Case Study"
+      "sidebarTitle": "Read AI"
     },
     {
       "source": "adopters/vitrolife.mdx",
       "productionTitle": "Vitrolife Group: Hybrid Entra + OpenFGA authorization for a .NET healthcare platform",
-      "sidebarTitle": "Vitrolife Group Case Study"
+      "sidebarTitle": "Vitrolife Group"
     },
     {
       "source": "adopters/zuplo.mdx",
       "productionTitle": "Zuplo: Edge authorization across multiple data centers",
-      "sidebarTitle": "Zuplo Case Study"
+      "sidebarTitle": "Zuplo"
     },
     {
       "source": "best-practices/adoption-patterns.mdx",
@@ -61,12 +61,12 @@
     {
       "source": "best-practices/modeling-design-principles.mdx",
       "productionTitle": "Authorization Model Design Principles",
-      "sidebarTitle": "Design Principles"
+      "sidebarTitle": "Authorization Model Design Principles"
     },
     {
       "source": "best-practices/modeling-roles.mdx",
       "productionTitle": "Modeling Roles",
-      "sidebarTitle": "Modeling roles"
+      "sidebarTitle": "Modeling Roles"
     },
     {
       "source": "best-practices/overview.mdx",
@@ -76,7 +76,7 @@
     {
       "source": "best-practices/running-in-production.mdx",
       "productionTitle": "Running OpenFGA in Production",
-      "sidebarTitle": "Running in Production"
+      "sidebarTitle": "Running OpenFGA in Production"
     },
     {
       "source": "best-practices/source-of-truth.mdx",
@@ -86,12 +86,12 @@
     {
       "source": "industries/applicant-tracking-system.mdx",
       "productionTitle": "ATS Authorization with OpenFGA",
-      "sidebarTitle": "Recruiting (ATS)"
+      "sidebarTitle": "Applicant Tracking"
     },
     {
       "source": "industries/banking.mdx",
       "productionTitle": "Banking Authorization with OpenFGA",
-      "sidebarTitle": "Banking & Fintech"
+      "sidebarTitle": "Banking"
     },
     {
       "source": "industries/crm.mdx",
@@ -111,27 +111,27 @@
     {
       "source": "industries/human-resources.mdx",
       "productionTitle": "HR & HRIS Authorization with OpenFGA",
-      "sidebarTitle": "HR & HRIS"
+      "sidebarTitle": "Human Resources"
     },
     {
       "source": "industries/lms.mdx",
       "productionTitle": "LMS Authorization with OpenFGA",
-      "sidebarTitle": "LMS & EdTech"
+      "sidebarTitle": "Learning Management"
     },
     {
       "source": "industries/overview.mdx",
       "productionTitle": "OpenFGA by Industry",
-      "sidebarTitle": "Overview"
+      "sidebarTitle": "Fine-Grained Authorization by Industry"
     },
     {
       "source": "interacting/authzen.mdx",
       "productionTitle": "AuthZEN API (Experimental)",
-      "sidebarTitle": "AuthZEN API (Experimental)"
+      "sidebarTitle": "AuthZEN API"
     },
     {
       "source": "interacting/consistency.mdx",
       "productionTitle": "Query Consistency Modes",
-      "sidebarTitle": "Query Consistency Modes"
+      "sidebarTitle": "Query Consistency"
     },
     {
       "source": "interacting/contextual-tuples.mdx",
@@ -141,22 +141,22 @@
     {
       "source": "interacting/managing-group-access.mdx",
       "productionTitle": "Managing Group Access",
-      "sidebarTitle": "Managing Group Access"
+      "sidebarTitle": "Manage Group Access"
     },
     {
       "source": "interacting/managing-group-membership.mdx",
       "productionTitle": "Managing Group Membership",
-      "sidebarTitle": "Managing group membership"
+      "sidebarTitle": "Manage Group Membership"
     },
     {
       "source": "interacting/managing-relationships-between-objects.mdx",
       "productionTitle": "Managing Relationships Between Objects",
-      "sidebarTitle": "Object Relationships"
+      "sidebarTitle": "Manage Relationships Between Objects"
     },
     {
       "source": "interacting/managing-user-access.mdx",
       "productionTitle": "Managing User Access",
-      "sidebarTitle": "Managing user access"
+      "sidebarTitle": "Manage User Access"
     },
     {
       "source": "interacting/overview.mdx",
@@ -166,7 +166,7 @@
     {
       "source": "interacting/read-tuple-changes.mdx",
       "productionTitle": "How to get tuple changes",
-      "sidebarTitle": "How to get tuple changes"
+      "sidebarTitle": "Get Tuple Changes"
     },
     {
       "source": "interacting/relationship-queries.mdx",
@@ -176,17 +176,17 @@
     {
       "source": "interacting/search-with-permissions.mdx",
       "productionTitle": "Search With Permissions",
-      "sidebarTitle": "Search With Permissions"
+      "sidebarTitle": "Search with Permissions"
     },
     {
       "source": "learn/abac-vs-rebac.mdx",
       "productionTitle": "ABAC vs. ReBAC",
-      "sidebarTitle": "ABAC vs. ReBAC"
+      "sidebarTitle": "ABAC vs ReBAC"
     },
     {
       "source": "learn/fine-grained-authorization.mdx",
       "productionTitle": "What is Fine-Grained Authorization?",
-      "sidebarTitle": "What is Fine-Grained Authorization?"
+      "sidebarTitle": "Fine-Grained Authorization"
     },
     {
       "source": "learn/overview.mdx",
@@ -196,12 +196,12 @@
     {
       "source": "learn/policy-engine.mdx",
       "productionTitle": "Policy Engines vs. Relationship Engines",
-      "sidebarTitle": "Policy Engines vs. Relationship Engines"
+      "sidebarTitle": "Policy vs Relationship Engines"
     },
     {
       "source": "learn/rbac-vs-rebac.mdx",
       "productionTitle": "RBAC vs. ReBAC",
-      "sidebarTitle": "RBAC vs. ReBAC"
+      "sidebarTitle": "RBAC vs ReBAC"
     },
     {
       "source": "learn/rebac.mdx",
@@ -211,27 +211,27 @@
     {
       "source": "learn/zanzibar.mdx",
       "productionTitle": "What is Google Zanzibar?",
-      "sidebarTitle": "What is Google Zanzibar?"
+      "sidebarTitle": "Zanzibar"
     },
     {
       "source": "use-cases/ai-agent-authorization.mdx",
       "productionTitle": "AI Agent Authorization",
-      "sidebarTitle": "AI Agent Authorization with OpenFGA"
+      "sidebarTitle": "AI Agent Authorization"
     },
     {
       "source": "use-cases/mcp-server-authorization.mdx",
       "productionTitle": "MCP Server Authorization",
-      "sidebarTitle": "MCP Server Authorization with OpenFGA"
+      "sidebarTitle": "MCP Server Authorization"
     },
     {
       "source": "use-cases/microservices-authorization.mdx",
       "productionTitle": "Microservices Authorization",
-      "sidebarTitle": "Microservices Authorization with OpenFGA"
+      "sidebarTitle": "Microservices Authorization"
     },
     {
       "source": "use-cases/multi-tenant-saas.mdx",
       "productionTitle": "Multi-Tenant SaaS Authorization",
-      "sidebarTitle": "Multi-Tenant SaaS Authorization with OpenFGA"
+      "sidebarTitle": "Multi-Tenant SaaS"
     },
     {
       "source": "use-cases/overview.mdx",
@@ -241,7 +241,7 @@
     {
       "source": "use-cases/rag-authorization.mdx",
       "productionTitle": "RAG Authorization",
-      "sidebarTitle": "RAG Authorization with OpenFGA"
+      "sidebarTitle": "RAG Authorization"
     }
   ]
 }

@@ -62,21 +62,6 @@
     ]
   },
   "footer": {
-    "links": [
-      {
-        "header": "LLM?",
-        "items": [
-          {
-            "label": "LLM? Read llms.txt",
-            "href": "https://openfga.dev/docs/llms.txt"
-          },
-          {
-            "label": "Read llms-full.txt",
-            "href": "https://openfga.dev/docs/llms-full.txt"
-          }
-        ]
-      }
-    ],
     "socials": {
       "x": "https://x.com/openfga",
       "github": "https://github.com/openfga",
@@ -85,7 +70,7 @@
     }
   },
   "contextual": {
-    "options": ["assistant"]
+    "options": []
   },
   "api": {
     "playground": {
@@ -97,25 +82,16 @@
       {
         "anchor": "Docs",
         "hidden": true,
-        "groups": [
+        "pages": [
+          "docs/fga",
+          "docs/authorization-concepts",
+          "docs/concepts",
+          "docs/configuration-language",
           {
-            "group": "Overview",
-            "icon": "circle-info",
-            "pages": ["docs/fga", "docs/authorization-concepts", "docs/concepts", "docs/configuration-language"]
-          },
-          {
-            "group": "Get Started",
+            "group": "Getting Started",
             "icon": "rocket",
             "pages": [
               "docs/getting-started",
-              "docs/getting-started/install-sdk",
-              "docs/getting-started/create-store",
-              "docs/getting-started/setup-sdk-client",
-              "docs/getting-started/configure-model",
-              "docs/getting-started/update-tuples",
-              "docs/getting-started/perform-check",
-              "docs/getting-started/perform-list-objects",
-              "docs/getting-started/perform-list-users",
               {
                 "group": "Setup OpenFGA",
                 "pages": [
@@ -129,20 +105,23 @@
                   "docs/getting-started/setup-openfga/reporting-runtime-issues"
                 ]
               },
-              {
-                "group": "Integrations & Practices",
-                "pages": [
-                  "docs/getting-started/cli",
-                  "docs/getting-started/framework",
-                  "docs/getting-started/immutable-models",
-                  "docs/getting-started/tuples-api-best-practices",
-                  "docs/getting-started/configure-telemetry"
-                ]
-              }
+              "docs/getting-started/install-sdk",
+              "docs/getting-started/create-store",
+              "docs/getting-started/setup-sdk-client",
+              "docs/getting-started/configure-model",
+              "docs/getting-started/update-tuples",
+              "docs/getting-started/perform-check",
+              "docs/getting-started/perform-list-objects",
+              "docs/getting-started/perform-list-users",
+              "docs/getting-started/cli",
+              "docs/getting-started/framework",
+              "docs/getting-started/immutable-models",
+              "docs/getting-started/tuples-api-best-practices",
+              "docs/getting-started/configure-telemetry"
             ]
           },
           {
-            "group": "Model Authorization",
+            "group": "Modeling Guides",
             "icon": "diagram-project",
             "pages": [
               "docs/modeling/overview",
@@ -151,6 +130,17 @@
               "docs/modeling/user-groups",
               "docs/modeling/roles-and-permissions",
               "docs/modeling/parent-child",
+              "docs/modeling/blocklists",
+              "docs/modeling/public-access",
+              "docs/modeling/multiple-restrictions",
+              "docs/modeling/custom-roles",
+              "docs/modeling/conditions",
+              "docs/modeling/token-claims-contextual-tuples",
+              "docs/modeling/contextual-time-based-authorization",
+              "docs/modeling/organization-context-authorization",
+              "docs/modeling/testing",
+              "docs/modeling/store-file-format",
+              "docs/modeling/modular-models",
               {
                 "group": "Building Blocks",
                 "pages": [
@@ -162,19 +152,8 @@
                 ]
               },
               {
-                "group": "Advanced Patterns",
+                "group": "Advanced Use-Cases",
                 "pages": [
-                  "docs/modeling/blocklists",
-                  "docs/modeling/public-access",
-                  "docs/modeling/multiple-restrictions",
-                  "docs/modeling/custom-roles",
-                  "docs/modeling/conditions",
-                  "docs/modeling/token-claims-contextual-tuples",
-                  "docs/modeling/contextual-time-based-authorization",
-                  "docs/modeling/organization-context-authorization",
-                  "docs/modeling/testing",
-                  "docs/modeling/store-file-format",
-                  "docs/modeling/modular-models",
                   "docs/modeling/advanced/overview",
                   "docs/modeling/advanced/gdrive",
                   "docs/modeling/advanced/github",
@@ -190,21 +169,22 @@
                   "docs/modeling/migrating/migrating-relations",
                   "docs/modeling/migrating/migrating-models"
                 ]
-              },
-              {
-                "group": "Authorization for Agents",
-                "pages": [
-                  "docs/modeling/agents/overview",
-                  "docs/modeling/agents/agents-as-principals",
-                  "docs/modeling/agents/rag-authorization",
-                  "docs/modeling/agents/mcp-authorization",
-                  "docs/modeling/agents/task-based-authorization"
-                ]
               }
             ]
           },
           {
-            "group": "Use the API",
+            "group": "Authorization for Agents",
+            "icon": "robot",
+            "pages": [
+              "docs/modeling/agents/overview",
+              "docs/modeling/agents/agents-as-principals",
+              "docs/modeling/agents/rag-authorization",
+              "docs/modeling/agents/mcp-authorization",
+              "docs/modeling/agents/task-based-authorization"
+            ]
+          },
+          {
+            "group": "Interacting with the API",
             "icon": "code",
             "pages": [
               "docs/interacting/overview",
@@ -221,7 +201,7 @@
             ]
           },
           {
-            "group": "Operate & Scale",
+            "group": "Best Practices",
             "icon": "server",
             "pages": [
               "docs/best-practices/overview",
@@ -234,33 +214,29 @@
             ]
           },
           {
-            "group": "Solutions",
+            "group": "Industries",
+            "icon": "building",
+            "pages": [
+              "docs/industries/overview",
+              "docs/industries/healthcare",
+              "docs/industries/banking",
+              "docs/industries/ecommerce",
+              "docs/industries/human-resources",
+              "docs/industries/crm",
+              "docs/industries/lms",
+              "docs/industries/applicant-tracking-system"
+            ]
+          },
+          {
+            "group": "Use Cases",
             "icon": "lightbulb",
             "pages": [
-              {
-                "group": "Use Cases",
-                "pages": [
-                  "docs/use-cases/overview",
-                  "docs/use-cases/ai-agent-authorization",
-                  "docs/use-cases/rag-authorization",
-                  "docs/use-cases/mcp-server-authorization",
-                  "docs/use-cases/multi-tenant-saas",
-                  "docs/use-cases/microservices-authorization"
-                ]
-              },
-              {
-                "group": "Industries",
-                "pages": [
-                  "docs/industries/overview",
-                  "docs/industries/healthcare",
-                  "docs/industries/banking",
-                  "docs/industries/ecommerce",
-                  "docs/industries/human-resources",
-                  "docs/industries/crm",
-                  "docs/industries/lms",
-                  "docs/industries/applicant-tracking-system"
-                ]
-              }
+              "docs/use-cases/overview",
+              "docs/use-cases/ai-agent-authorization",
+              "docs/use-cases/rag-authorization",
+              "docs/use-cases/mcp-server-authorization",
+              "docs/use-cases/multi-tenant-saas",
+              "docs/use-cases/microservices-authorization"
             ]
           },
           {

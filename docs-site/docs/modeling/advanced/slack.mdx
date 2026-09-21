@@ -39,7 +39,7 @@ You need to know how to update the authorization model to allow having nested re
 
 <h4 id="concepts--configuration-language">Concepts & configuration language</h4>
 
-- Some [OpenFGA concepts](/docs/concepts)
+- Some [OpenFGA Concepts](/docs/concepts)
 - [Configuration Language](/docs/configuration-language)
 </Accordion>
 
@@ -114,7 +114,7 @@ In production, it is highly recommended to use unique, immutable identifiers. Na
 
 The goal by the end of this post is to ask OpenFGA: Does person X have permission to perform action Y on channel Z? In response, you want to either get a confirmation that person X can indeed do that, or a rejection that they cannot. E.g. does David have access to view #general?
 
-OpenFGA is based on [Zanzibar](https://zanzibar.academy), a Relation Based Access Control system. This means it relies on [objects](/docs/concepts#what-is-an-object) and [user](/docs/concepts#what-is-a-user) [relations](/docs/concepts#what-is-a-relation) to perform authorization [checks](/docs/concepts#what-is-a-check-request).
+The OpenFGA is based on [Zanzibar](https://zanzibar.academy), a Relation Based Access Control system. This means it relies on [objects](/docs/concepts#what-is-an-object) and [user](/docs/concepts#what-is-a-user) [relations](/docs/concepts#what-is-a-relation) to perform authorization [checks](/docs/concepts#what-is-a-check-request).
 
 Setting aside the permissions, you will start with the roles and learn how to express the requirements in terms of relations you can feed into OpenFGA.
 
@@ -322,7 +322,7 @@ Repeat this process for the other relationships
 
 #### Verification
 
-To verify, we can issue [check requests](/docs/concepts#what-is-a-check-request) to verify it is working as expected.
+To verify, we can issue [check request](/docs/concepts#what-is-a-check-request) to verify it is working as expected.
 
 <CheckRequestViewer user={'user:amy'} relation={'legacy_admin'} object={'workspace:sandcastle'} allowed={true} />
 
@@ -347,7 +347,7 @@ As you saw before, running this query will return `amy is not a member of worksp
 
 To change this behavior, we will update our system with a [**concentric relationship**](/docs/modeling/building-blocks/concentric-relationships) model.
 
-With the following updated [authorization model](/docs/concepts#what-is-a-type-definition), you are informing OpenFGA that any user who is related to a workspace as `legacy_admin`, is also related as a `channels_admin` and a `member`.
+With the following updated [authorization model](/docs/concepts#what-is-a-type-definition), you are informing OpenFGA that any user who is related to a workspace as `legacy_admin`, is also related as a `channels_admin` and a `member` .
 
 <AuthzModelSnippetViewer
   configuration={{
@@ -837,8 +837,8 @@ Repeat this for the following relations
 
 In this tutorial, you:
 
-- were introduced to [fine-grained authorization](/docs/authorization-concepts#what-is-fine-grained-authorization) and OpenFGA.
-- learned how to build and test an OpenFGA authorization model for a communication platform like Slack.
+- were introduced to [fine grain authentication](/docs/authorization-concepts#what-is-fine-grained-authorization) and OpenFGA.
+- learned how to build and test an OpenFGA authorization model for a communication platforms like Slack.
 
 Upcoming tutorials will dive deeper into OpenFGA, introducing concepts that will improve on the model you built today, and tackling different permission systems, with other relations and requirements that need to be met.
 

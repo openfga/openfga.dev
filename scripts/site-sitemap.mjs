@@ -40,7 +40,8 @@ export function nativeSitemapRoutes({ config, schema, docFiles }) {
       }
     }
   }
-  groupPages(docsAnchor.groups);
+  assert.ok(!Object.hasOwn(docsAnchor, 'groups'), 'Documentation navigation must use pages without an added wrapper group');
+  groupPages(docsAnchor.pages);
   const sourceRoutes = docFiles.map((file) => {
     assert.match(file, /^docs\/(?:[a-z0-9][a-z0-9_-]*\/)*[a-z0-9][a-z0-9_-]*\.mdx$/, `Non-native documentation file: ${file}`);
     const route = `/${file.slice(0, -4)}`;

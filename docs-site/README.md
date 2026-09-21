@@ -52,10 +52,12 @@ The root browser bundles and [`openapi/sdk-samples.overlay.json`](./openapi/sdk-
 
 ## Authoring pages
 
+During the migration, keep existing content and navigation unchanged apart from the platform adaptations below. Propose editorial changes, new introductions, renamed categories, and content moves in a separate follow-up.
+
 ### Add, rename, or retire a page
 
 1. Add an MDX file under `docs/`, with the page headline in frontmatter `title`.
-2. Add its route once to a documentation group in `docs.json`, without the `.mdx` extension.
+2. Add its route once under the Docs anchor's `pages` in `docs.json`, in the matching category when applicable, without the `.mdx` extension.
 3. Register a new page in `source-pages.json` under `nativePages`:
 
 ```json
@@ -71,12 +73,15 @@ For a historical page rename, update its `overrides` entry and navigation, and p
 
 The two hidden navigation anchors separate Docs and API Reference sidebars. They hide the section switcher, not the pages or their search visibility. Keep the existing `/docs`, `/api-reference`, and overview entry redirects.
 
+The Docs anchor uses `pages` to mix the four original ungrouped introduction pages with the original categories. Do not add an Overview wrapper or regroup pages to suit the new theme. API Reference uses `groups` for its canonical operations.
+
 ### Write MDX that renders reliably
 
 | Situation                           | Use                                                                           |
 | ----------------------------------- | ----------------------------------------------------------------------------- |
 | Page headline                       | Frontmatter `title`; do not repeat it as a body H1                            |
 | Different sidebar label             | `sidebarTitle`, preserving the existing navigation wording                    |
+| Existing SEO description            | Keep `description` as metadata; shared CSS hides it below article titles      |
 | Literal placeholders                | Inline code such as `{object types}`, or escaped braces `\{object types\}`    |
 | Expandable tutorial content         | Native `Accordion`, with rich introductory text outside it when needed        |
 | Tutorial requests and responses     | Ordinary code fences or native `CodeGroup`, next to the relevant step         |
@@ -85,6 +90,8 @@ The two hidden navigation anchors separate Docs and API Reference sidebars. They
 Braces in prose are JavaScript expressions. `{user}` can parse successfully and still fail at runtime if `user` is not bound. Imports and expression bindings must be explicit.
 
 Do not use raw HTML `details` or `summary`: Mintlify can omit their bodies. Keep examples inside the instructional section they explain, rather than collecting them elsewhere just to satisfy a content check.
+
+Keep the original worked-example boundaries. The `openfga-modeling-example` class restores the filled containers and compact list typography used by the modeling guides. Put a blank line around the container's Markdown content so lists render as lists; keep explanatory rules outside the example. Preserve the existing highlight wording, colors, and typography.
 
 ### Preserve heading links
 
@@ -394,23 +401,55 @@ Repository checks do not run the Mintlify CLI or replace its build validation an
 
 ## Migration contracts and known differences
 
+### Migration review checklist
+
+Apply these requirements to every migrated page, not only the examples raised in review:
+
+- Keep original sidebar labels, category names, hierarchy, ordering, and overview entries. Use `sidebarTitle` when the original sidebar label differs from the article headline.
+- Keep article wording, examples, and sections in their original order and on their original pages. Do not combine migration work with summaries, factual updates, recategorization, or cross-page content moves. Retain only the technical exceptions listed below.
+- Preserve frontmatter descriptions for SEO without presenting them as new introductions. The shared article-header rule does not hide native API operation descriptions.
+- Keep LLM indexes, bundles, per-page Markdown, and machine discovery available without visible LLM footer links.
+- Keep one responsive navbar assistant entry. Disable page-context actions and hide the repeated floating prompt and code-block assistant buttons. A new Copy page or external-chat menu needs a separate decision.
+- Compare worked examples with the original page. Preserve grouping, list boundaries, highlights, diagrams, and fragment targets in light and dark themes at desktop and mobile widths.
+
+Structural checks cannot prove rendering parity. Include the affected pages in browser review, and record unavoidable platform differences below rather than silently accepting content drift.
+
+### Retained technical exceptions
+
+The migration is not an editorial update. These existing differences are retained because they preserve source content or help readers run the examples correctly:
+
+| Exception                              | Scope and reason                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SDK setup guidance and code repairs    | Keep the environment-variable, authentication, client-scope, and Read/Expand setup instructions already present in Create a Store, Configure Authorization Model, Relationship Queries, and Migrating Relations. For example, creating a store does not require an existing store ID, and Python requests must run inside the client's `async with` block. Preserve the necessary SDK code repairs without changing example inputs, authorization behavior, or expected results. |
+| SDK installation requirements          | Keep the pinned versions, matching Go/Java/.NET requirements, and HTTP-only AuthZen guidance on Install SDK Client. These explain the constraints of the working API examples, not a new tutorial.                                                                                                                                                                                                                                                                               |
+| Original contextual-tuple descriptions | Keep the three source tuple descriptions beside the examples in Task-Based Authorization. They originated in the old component props and are not new explanatory claims.                                                                                                                                                                                                                                                                                                         |
+| Rendering repairs                      | Keep the recorded malformed-Markdown and JSON-quoting repairs. Do not use this exception to rewrite source wording or correct unrelated typos.                                                                                                                                                                                                                                                                                                                                   |
+| Published server configuration         | Keep the independently captured production v1.20.0 configuration table instead of reverting it to the older Git-source table. This preserves the earlier production baseline, not a new server-version update.                                                                                                                                                                                                                                                                   |
+
+The exact prose and heading exceptions are page-scoped in `scripts/live-original-parity.test.mjs`. All other article wording, heading order, navigation, and page ownership must match the original baseline. New or expanded exceptions need separate review; general editorial improvements belong in a follow-up PR.
+
 ### Independent regression fixtures
 
 `source-pages.json` preserves a frozen inventory of 111 historical sources: 110 native pages and the Docusaurus-owned Community page. Its `docs/content/` paths are provenance, not files required in the current checkout. The legacy corpus and Git history are not needed to run the checks.
 
 The fixtures under [`tests/fixtures/mintlify/`](../tests/fixtures/mintlify/) preserve:
 
-| Fixture                                                   | Expected content                                                            |
-| --------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `historical-source-inventory.json`                        | Original paths, public slugs, and source digests                            |
-| `operation-callers.json`                                  | Operation props, expectations, descriptions, and language restrictions      |
-| `tuple-examples.json`                                     | Tuple values, conditions, descriptions, and ordering                        |
-| `tutorial-structure.json`                                 | Models, headings, instructional placement, and disclosures                  |
-| `static-requests.json`                                    | Static request/response examples, setup defaults, and SDK installation pins |
-| `prerequisite-models.json`                                | Configuration-expression structure and literal semantics                    |
-| `live-foundations/`, `live-modeling/`, `live-operations/` | Captured production headlines, prose, links, headings, and examples         |
+| Fixture                                                   | Expected content                                                                   |
+| --------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `historical-source-inventory.json`                        | Original paths, public slugs, and source digests                                   |
+| `original-content.json`                                   | Original sidebar hierarchy, labels, headlines, and ordered prose for all 110 pages |
+| `operation-callers.json`                                  | Operation props, expectations, descriptions, and language restrictions             |
+| `tuple-examples.json`                                     | Tuple values, conditions, descriptions, and ordering                               |
+| `tutorial-structure.json`                                 | Models, headings, instructional placement, and disclosures                         |
+| `static-requests.json`                                    | Static request/response examples, setup defaults, and SDK installation pins        |
+| `prerequisite-models.json`                                | Configuration-expression structure and literal semantics                           |
+| `live-foundations/`, `live-modeling/`, `live-operations/` | Captured production headlines, prose, links, headings, and examples                |
 
-The historical fixtures were extracted from `85bde5e19f7fa0b8687732c33c4f7c3a39fd83e0`, independently of native output. Do not overwrite them with current output to silence failures. Intentional changes need a reviewed update to the contract.
+The original source/component fixtures were extracted from `85bde5e19f7fa0b8687732c33c4f7c3a39fd83e0`, independently of native output. The review baseline in `original-content.json` uses the original `docs/sidebars.js` and `docs/content/` at `2dbd2be1145e5656d340816cd72d20192edcfe23`. Explicit sidebar labels take precedence over frontmatter titles.
+
+`live-original-parity.test.mjs` checks every page against that baseline and rejects added, removed, rewritten, reordered, or cross-page prose and reordered section headings. It enforces the exact page-specific technical exceptions above, including the retained setup instructions, instead of allowing arbitrary SDK-related additions. The capture script reads only the pinned original Git revision; ordinary checks use the committed fixture and do not need Git history.
+
+Do not overwrite expectations with current output to silence failures. Intentional changes need a reviewed update to the contract; migration restorations must first match the independent original-source baseline.
 
 ### Native behavior is not identical to Docusaurus
 

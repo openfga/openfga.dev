@@ -178,6 +178,42 @@ for (const row of contracts.rows) {
 }
 
 const gettingStarted = read('docs-site/docs/modeling/getting-started.mdx');
+function assertWorkedExamples(source, counts) {
+  const examples = nodes(source).filter((node) => props(node).className === 'openfga-modeling-example');
+  assert.equal(examples.length, counts.length, 'Keep each original worked example in its own container');
+  for (const [index, example] of examples.entries()) {
+    assert.equal(example.name, 'div');
+    assert.equal(descendants(example).filter((node) => node.type === 'listItem').length, counts[index],
+      'Do not merge explanatory rules into the worked-example list or lose sentences');
+    assert.ok(!descendants(example).some((node) => node.type === 'heading'), 'Keep section headings outside examples');
+  }
+}
+
+test('worked examples retain their original grouping across both affected guides', () => {
+  assertWorkedExamples(gettingStarted, [12, 12, 12, 12]);
+  assertWorkedExamples(read('docs-site/docs/modeling/building-blocks/object-to-object-relationships.mdx'), [1]);
+  const tree = nodes(gettingStarted);
+  const relationExample = tree.find((node) => props(node).className === 'openfga-modeling-example'
+    && text(node).includes('can create a document in a drive') && text(node).includes('owner of the drive')
+    && descendants(node).some((child) => styleValues(child).backgroundColor === '#fcf7e4'));
+  assert.ok(relationExample, 'Keep the relations exercise');
+  const parent = tree.find((node) => node.children?.includes(relationExample));
+  const rules = parent.children[parent.children.indexOf(relationExample) - 1];
+  assert.equal(rules.type, 'list');
+  assert.equal(rules.children.length, 2, 'The two relation rules are not example sentences');
+});
+
+test('worked-example guard rejects flattened containers', () => {
+  const flattened = gettingStarted.replace('<div className="openfga-modeling-example">', '<div>');
+  assert.throws(() => assertWorkedExamples(flattened, [12, 12, 12, 12]), /original worked example/);
+});
+
+test('worked-example lists retain the original compact spacing without changing ordinary lists', () => {
+  const css = read('docs-site/global.css');
+  assert.match(css, /#content \.openfga-modeling-example :is\(ul, li, p, \[data-as='p'\]\)\s*\{\s*margin-block:\s*0;\s*font-size:\s*14px;\s*line-height:\s*20px;\s*letter-spacing:\s*1\.5px;\s*\}/);
+  assert.match(css, /#content \.openfga-modeling-example hr\s*\{\s*margin:\s*1\.5rem 0;\s*\}/);
+});
+
 test('all three worked exercises retain their complete sentences and original highlight assignments', () => {
   assert.deepEqual(highlights(gettingStarted), contracts.highlights);
   const first = gettingStarted.indexOf("Let's highlight all object types");
@@ -222,14 +258,14 @@ test('getting-started icons are the exact original assets and the ReBAC link tar
   assert.ok(images.every((node) => props(node).alt === ''), 'Standalone type icons are decorative beside existing labels');
 });
 
-test('Slack summary preserves all outcomes in the original order without reverting accepted wording fixes', () => {
+test('Slack summary preserves all outcomes and source wording in the original order', () => {
   const source = read('docs-site/docs/modeling/advanced/slack.mdx');
   const summary = source.slice(source.indexOf('## Summary'));
   const expected = [
     'Have a basic understanding of authorization and OpenFGA Concepts.',
     'Understand how to model authorization for a communication platform like Slack using OpenFGA.',
-    'were introduced to fine-grained authorization and OpenFGA.',
-    'learned how to build and test an OpenFGA authorization model for a communication platform like Slack.',
+    'were introduced to fine grain authentication and OpenFGA.',
+    'learned how to build and test an OpenFGA authorization model for a communication platforms like Slack.',
   ];
   const content = normalized(text(processor.parse(summary)));
   let previous = -1;
@@ -247,10 +283,10 @@ test('user-groups step arrows link to the matching preserved headings', () => {
   assert.ok(links.every((node) => node.position.start.offset < allNodes.find((heading) => props(heading).id === 'step-1').position.start.offset));
 });
 
-test('MCP documentation keeps the official protocol reference without duplicating the description', () => {
+test('MCP documentation keeps the original introductory paragraph and official protocol reference', () => {
   const source = read('docs-site/docs/modeling/agents/mcp-authorization.mdx');
   const link = nodes(source).find((node) => node.type === 'link' && node.url === 'https://modelcontextprotocol.io/');
-  assert.equal(text(link), 'MCP server');
+  assert.equal(text(link), 'Model Context Protocol (MCP)');
   assert.equal(source.split('servers expose tools that AI agents can call').length, 2);
 });
 

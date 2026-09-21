@@ -13,6 +13,10 @@ Product documentation and the read-only API reference live in [`docs-site/`](doc
 
 The legacy `docs/content/` corpus and sidebar are retired. Author product documentation in `docs-site/docs/`; do not recreate the old source tree. Compact historical regression fixtures under `tests/fixtures/mintlify/` preserve independently captured migration expectations, not a second published documentation corpus.
 
+Keep this migration content-preserving. Retain the original navigation labels, grouping, order, article wording, and page boundaries. Reorganization and editorial improvements belong in separate follow-up changes. See the [migration review checklist](docs-site/README.md#migration-review-checklist) for the reader-interface and content requirements.
+
+Keep the existing SDK repairs and useful setup guidance within the [documented technical exceptions](docs-site/README.md#retained-technical-exceptions). Those exceptions do not authorize other content additions or section reordering.
+
 Shared components under `src/components/Docs/` remain in use by the Blog and the native viewer/code-generation checks. They are not obsolete solely because the product documentation moved.
 
 ### Agent-readable documentation
@@ -20,6 +24,8 @@ Shared components under `src/components/Docs/` remain in use by the Blog and the
 The root `/llms.txt` is a curated entry point linking to native docs, FAQ/concepts, the canonical OpenAPI v3 specification, and website resources. Docusaurus generates `/index.md`, `/project.md`, `/community.md`, and a website-only `/llms-full.txt` bundle. Those three pages advertise their Markdown and root index with discovery links.
 
 Mintlify owns the complete product documentation index, bundle, and per-page Markdown. Deployment must map `/docs/llms.txt` and `/docs/llms-full.txt` to its generated resources; the website build does not fabricate them or publish a duplicate docs bundle. See [split-site deployment](docs-site/README.md#split-site-deployment) for routing and sitemap ownership.
+
+These resources are for machine discovery, not additional reader navigation. Preserve Mintlify's nonvisual index notice and the website's discovery links without adding visible LLM links to the documentation footer.
 
 `npm run build` validates the website resources and cross-site links against native pages, anchors, redirects, and canonical API operations from the same checkout. External links in native MDX are also extracted for the CI link checker.
 

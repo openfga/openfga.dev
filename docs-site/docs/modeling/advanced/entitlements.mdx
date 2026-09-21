@@ -38,7 +38,7 @@ Used here to indicate that "access" to a feature cannot be directly granted to a
 
 <h4 id="concepts--configuration-language">Concepts & configuration language</h4>
 
-- Some [OpenFGA concepts](/docs/concepts)
+- Some [OpenFGA Concepts](/docs/concepts)
 - [Configuration Language](/docs/configuration-language)
 </Accordion>
 
@@ -686,7 +686,7 @@ Now ask the following query: `is anne related to feature:issues as access?`
 
 #### Disallow direct relationship
 
-So far, with just an OpenFGA authorization model, and the initial relationship tuples indicating the relations you know, you configured OpenFGA to give you the correct response.
+So far, with just a OpenFGA authorization model, and the initial relationship tuples indicating the relations you know, you configured OpenFGA to give you the correct response.
 
 Earlier on, the idea of not allowing a direct `access` relation between a user and a `feature` was discussed, e.g. adding a relationship tuple like `{ "user": "user:anne", "relation": "access", "object": "feature:y" }`. You will remove it now.
 
@@ -879,6 +879,6 @@ In this tutorial, you learned:
 - how to start with a set of requirements and scenarios and iterate on the OpenFGA authorization model until the checks match the expected scenarios
 - how to model [**parent-child relationships**](/docs/modeling/parent-child) to indicate that a user having a relationship with a certain object implies having a relationship with another object in OpenFGA
 - how to use [**the union operator**](/docs/configuration-language#the-union-operator) condition to indicate multiple possible paths for a relationship between two objects to be computed
-- using [**direct relationship type restrictions**](/docs/configuration-language#direct-relationship-type-restrictions) in an OpenFGA authorization model, and how to block direct relationships by removing it
+- using [**direct relationship type restrictions**](/docs/configuration-language#direct-relationship-type-restrictions) in a OpenFGA authorization model, and how to block direct relationships by removing it
 
 Upcoming tutorials will dive deeper into OpenFGA, introducing concepts that will improve on the model you built today, and tackling different permission systems, with other relations and requirements that need to be met.

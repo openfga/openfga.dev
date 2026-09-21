@@ -1,6 +1,6 @@
 ---
 title: "Multiple Restrictions"
-sidebarTitle: "Multiple restrictions"
+sidebarTitle: "Multiple Restrictions"
 description: Modeling system that requires multiple authorizations before allowing users to perform actions on particular objects
 ---
 
@@ -26,7 +26,7 @@ This is useful when:
 
 ## Before You Start
 
-In order to understand this guide correctly you must be familiar with some [OpenFGA concepts](/docs/concepts) and know how to develop the things that we will list below.
+In order to understand this guide correctly you must be familiar with some [OpenFGA Concepts](/docs/concepts) and know how to develop the things that we will list below.
 
 <Accordion title="Prerequisites and starting model">
 
@@ -156,7 +156,7 @@ You need to know how to model roles for users at the object level and model perm
 
 ## Step By Step
 
-With the above authorization model and relationship tuples, OpenFGA will correctly respond with `{"allowed":true}` when a [check request](/docs/concepts#what-is-a-check-request) is called to see if Carl and Becky can write this `document`.
+With the above authorization model and relationship tuples, OpenFGA will correctly respond with `{"allowed":true}` when *[check](/docs/concepts#what-is-a-check-request)* is called to see if Carl and Becky can write this `document`.
 
 We can verify that by issuing two check requests:
 
@@ -257,6 +257,8 @@ However, Carl cannot delete the planning document because although he is a write
 <CheckRequestViewer user={'user:carl'} relation={'can_delete'} object={'document:planning'} allowed={false} />
 
 ## Related Sections
+
+Check the following sections for more on how to model privileged access.
 
 <CardGroup>
   <Card title="Modeling: User Groups" href="/docs/modeling/user-groups">

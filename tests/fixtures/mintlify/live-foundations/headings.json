@@ -49,7 +49,7 @@
       "native": "docs/concepts.mdx",
       "liveURL": "https://openfga.dev/docs/concepts",
       "title": "Concepts",
-      "sidebarTitle": "Concepts",
+      "sidebarTitle": "OpenFGA Concepts",
       "headings": [
         {
           "id": "what-is-a-type",
@@ -281,7 +281,7 @@
       "native": "docs/getting-started/configure-model.mdx",
       "liveURL": "https://openfga.dev/docs/getting-started/configure-model",
       "title": "Configure Authorization Model for a Store",
-      "sidebarTitle": "Configure Model",
+      "sidebarTitle": "Configure Authorization Model",
       "headings": [
         {
           "id": "before-you-start",
@@ -532,7 +532,7 @@
       "native": "docs/getting-started/perform-list-objects.mdx",
       "liveURL": "https://openfga.dev/docs/getting-started/perform-list-objects",
       "title": "Perform a list objects call",
-      "sidebarTitle": "Perform a list objects call",
+      "sidebarTitle": "Perform a List Objects Request",
       "headings": [
         {
           "id": "before-you-start",
@@ -576,7 +576,7 @@
       "native": "docs/getting-started/perform-list-users.mdx",
       "liveURL": "https://openfga.dev/docs/getting-started/perform-list-users",
       "title": "Perform a List Users call",
-      "sidebarTitle": "Perform a List Users call",
+      "sidebarTitle": "Perform a List Users Request",
       "headings": [
         {
           "id": "before-you-start",
@@ -620,7 +620,7 @@
       "native": "docs/getting-started/setup-openfga/access-control.mdx",
       "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/access-control",
       "title": "🛡️Setup Access Control",
-      "sidebarTitle": "Setup Access Control",
+      "sidebarTitle": "🛡️Access Control",
       "headings": [
         {
           "id": "requirements",
@@ -674,7 +674,7 @@
       "native": "docs/getting-started/setup-openfga/configuration.mdx",
       "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/configuration",
       "title": "OpenFGA Configuration Options",
-      "sidebarTitle": "OpenFGA Configuration Options",
+      "sidebarTitle": "Configuration Options",
       "headings": [
         {
           "id": "passing-in-the-options",
@@ -698,7 +698,7 @@
       "native": "docs/getting-started/setup-openfga/configure-openfga.mdx",
       "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/configure-openfga",
       "title": "Configuring OpenFGA",
-      "sidebarTitle": "Configuring OpenFGA",
+      "sidebarTitle": "Configure OpenFGA",
       "headings": [
         {
           "id": "configuring-data-storage",
@@ -812,7 +812,7 @@
       "native": "docs/getting-started/setup-openfga/docker.mdx",
       "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/docker",
       "title": "🐳 Setup OpenFGA with Docker",
-      "sidebarTitle": "Docker Setup Guide",
+      "sidebarTitle": "🐳 Docker",
       "headings": [
         {
           "id": "step-by-step",
@@ -861,7 +861,7 @@
       "native": "docs/getting-started/setup-openfga/kubernetes.mdx",
       "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/kubernetes",
       "title": "☸️ Setup OpenFGA with Kubernetes",
-      "sidebarTitle": "Kubernetes Setup Guide",
+      "sidebarTitle": "☸️ Kubernetes",
       "headings": []
     },
     {
@@ -877,7 +877,7 @@
       "native": "docs/getting-started/setup-openfga/playground.mdx",
       "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/playground",
       "title": "Using the OpenFGA Playground",
-      "sidebarTitle": "Using the OpenFGA Playground",
+      "sidebarTitle": "Playground",
       "headings": [
         {
           "id": "running-the-playground-in-a-different-port",
@@ -1034,7 +1034,7 @@
       "native": "docs/getting-started/tuples-api-best-practices.mdx",
       "liveURL": "https://openfga.dev/docs/getting-started/tuples-api-best-practices",
       "title": "Best Practices of Managing Tuples and Invoking APIs",
-      "sidebarTitle": "Best Practices of Managing Tuples and Invoking APIs",
+      "sidebarTitle": "Implementation Best Practices",
       "headings": [
         {
           "id": "do-not-store-personal-identifiable-information-in-tuples",
@@ -1107,7 +1107,7 @@
       "native": "docs/fga.mdx",
       "liveURL": "https://openfga.dev/docs/fga",
       "title": "Introduction to OpenFGA",
-      "sidebarTitle": "What is OpenFGA?",
+      "sidebarTitle": "What is OpenFGA",
       "headings": [
         {
           "id": "benefits",

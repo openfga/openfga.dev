@@ -71,6 +71,8 @@ A feature, in the context of this document, is an action or related set of actio
 Start with the most important feature. It doesn't have to be the most complex one, but it should be the most important one. You're probably more familiar with the authorization requirements for this feature than other less important use cases.
 
 <Warning>
+**Important**
+
 - Requirement clarity is fundamental when defining an authorization model.
 - The scope of the feature is not important at this point. You can always iterate later.
 </Warning>
@@ -90,6 +92,8 @@ Your feature description should include the [objects](/docs/concepts#what-is-an-
 Let's look at an example of a simplified Google Drive like system. We'll focus on the feature allowing users to create, read, update, delete, and share documents with other users.
 
 This feature can be described with these sentences:
+
+<div className="openfga-modeling-example">
 
 - A user can create a document in a drive if they are the owner of the drive.
 - A user can create a folder in a drive if they are the owner of the drive.
@@ -124,11 +128,13 @@ This feature can be described with these sentences:
 
 - A user can be a member of an organization.
 
-  *(How a user is added as a member to an organization is beyond the scope of the feature we picked to write down.)*
+  *How a user is added as a member to an organization is beyond the scope of the feature we picked to write down.*
 
 ---
 
 - A user can view a folder if they are the owner of the folder, or a viewer or owner of either the parent folder of the folder, or the parent drive of the folder.
+
+</div>
 
 ### 02. List The Object Types
 
@@ -149,6 +155,8 @@ These are all the object types from the previous step (in order of appearance) b
 </CardGroup>
 
 Let's highlight all object types in <span className="openfga-modeling-highlight" style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>blue</span>:
+
+<div className="openfga-modeling-example">
 
 - A user can create a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>document</span> in a drive if they are the owner of the drive.
 - A user can create a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>folder</span> in a drive if they are the owner of the drive.
@@ -189,11 +197,15 @@ Let's highlight all object types in <span className="openfga-modeling-highlight"
 
 - A user can view a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#ddebfd', color: '#00407d' }}>folder</span> if they are the owner of the folder, or a viewer or owner of either the parent folder of the folder, or the parent drive of the folder.
 
+</div>
+
 However, the list of object types is not finished. To complete the list of object types you must also add all the second nouns that appear in conditions as part of expressions of this format: **"\{first noun\} of a/the \{second noun\}"**.
 
 > ... IF \{first noun\} of a/the \{second noun\}
 
 Let's highlight those expressions in <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>green</span>:
+
+<div className="openfga-modeling-example">
 
 - A user can create a document in a drive if they are the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the drive</span>.
 - A user can create a folder in a drive if they are the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the drive</span>.
@@ -234,9 +246,9 @@ Let's highlight those expressions in <span className="openfga-modeling-highlight
 
 - A user can view a folder if they are the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>, or a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>viewer or owner of either the parent folder of the folder, or the parent drive of the folder</span>.
 
-The only second noun we didn't have in our object type list is "Drive", so we'll add it to the list. We will also need to add "User" to the list as it establishes the type of user who can establish relations.
+</div>
 
-The complete list of object types:
+The only second noun we didn't have in our object type list is "Drive", so we'll add it to the list. We will also need to add "User" to the list as it establishes the type of user who can establish relations.
 
 <CardGroup cols={3}>
   <Card title="User" />
@@ -276,6 +288,8 @@ You're now in the process of building a version you can use. The model above is 
 </Note>
 
 <Note>
+**Important**
+
 In a few cases other users can be part of determining whether an action can be performed on an object or not. Social media is an example of this "a user can comment on a picture if they are a friend of the user that published it".
 
 In those cases [**User** should also be an object type](/docs/modeling/building-blocks/object-to-object-relationships). Following the last recommendation, we would discover the User type because it is a second noun in an expression: "friend of the user".
@@ -293,6 +307,8 @@ Relations for a type \{type\} will be all of these:
 
 - any noun that is the \{noun\} of a "\{noun\} of a/an/the \{type\}" expression. **These are typically the Foreign Keys in a database.** We'll highlight these in <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>green</span>.
 - any verb or action that is the \{action\} of a "can \{action\} (in) a/an \{type\}" expression. **These are typically the permissions for a type.** We'll highlight these in <span className="openfga-modeling-highlight" style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>yellow</span>.
+
+<div className="openfga-modeling-example">
 
 - A user <span className="openfga-modeling-highlight" style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can create a document in a drive</span> if they are the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the drive</span>.
 - A user <span className="openfga-modeling-highlight" style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can create a folder in a drive</span> if they are the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the drive</span>.
@@ -332,6 +348,8 @@ Relations for a type \{type\} will be all of these:
 ---
 
 - A user <span className="openfga-modeling-highlight" style={{ backgroundColor: '#fcf7e4', color: '#522c09' }}>can view a folder</span> if they are the <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>owner of the folder</span>, or a <span className="openfga-modeling-highlight" style={{ backgroundColor: '#def7f1', color: '#004e4e' }}>viewer or owner of either the parent folder of the folder, or the parent drive of the folder</span>.
+
+</div>
 
 The resulting list is:
 
@@ -416,7 +434,7 @@ You're now in the process of building a version you can use. The model above is 
 
 ![Define relations](./assets/getting-started-diagram-05.svg)
 
-We will use the [OpenFGA Configuration Language](/docs/configuration-language) to create a [relation definition](/docs/concepts#what-is-a-relation) for each of the relations we identified. At this stage we will encode the answers to the question we asked at the beginning of the document:
+We will use the [OpenFGA Configuration Language](/docs/configuration-language) to create a [relation definition](/docs/concepts#what-is-a-relation) for each of the relations we identified. At this stage we will encode the answers to the question we asked at the beginning of the document:.
 
 <Card title="Why could a user U, perform an action A on an object O?" icon="/docs/modeling/assets/getting-started-fga-logo.svg" />
 
@@ -433,6 +451,8 @@ We recommend starting from objects that represent groups/containers of users. Fo
 The member relation is used to tell OpenFGA about the members of an organization.
 
 <Note>
+**Important**
+
 Relation names in OpenFGA are arbitrary strings. There are no reserved relation names. You can use "member" or "part_of" or anything else to refer to a user that is part of a team/organization.
 </Note>
 
@@ -466,12 +486,14 @@ Why? This relation definition states:
   `{ user: {user-id}, relation: "member", object: "organization:{id}" }`
 
 <Note>
+**Important**
+
 Relation definitions of the form "define \{relation\}: [user, organization#member]" are fairly common. They are used to express that relationships "to the object with that relation" (e.g. "users" of type user or "member of organization") can be assigned by your system and that only the users that have that relation are those with a [direct relationship](/docs/modeling/building-blocks/direct-relationships).
 </Note>
 
 You can read more about group membership and types in [Modeling User Groups](/docs/modeling/user-groups).
 
-For the direct relationships, we need to figure out the object types that makes sense for the relationship tuples' user. In our organization example, it makes sense for member relations to have user of type:
+For the direct relationships, we need to figure out the object types that makes sense for the relationship tuples' user. In our organization example, it makes sense for member relations to have user of type
 
 - user
 - organization#member (i.e., other organization's member)
@@ -481,6 +503,8 @@ However, it will not make sense for organization member's user to be of type doc
 We will specify this logic as part of [directly related user type](/docs/concepts#what-is-a-directly-related-user-type).
 
 <Note>
+**Side note**
+
 This also automatically supports nested organizational membership if you want such a feature in your system. You could use relationship tuples like the following one to express that "members of organization A are members of organization B":
 
 ```
@@ -529,6 +553,8 @@ Defining relations for the main type lets you focus on your core use case, and w
 The owner relation is used to tell OpenFGA which users are owners of the document.
 
 <Note>
+**Important**
+
 In the current version, there is no way to state that there is only one owner in the authorization model. The application must limit this [set of users](/docs/concepts#what-is-a-user) to just one owner if that is a requirement.
 </Note>
 
@@ -639,6 +665,8 @@ The viewer relation is similar to the document's [editor relation](#relation-edi
 The parent relation is used to tell OpenFGA which folder or drive is the parent of the document.
 
 <Warning>
+**Important**
+
 Relation names in OpenFGA are arbitrary strings. There are no reserved relation names. You can use "parent", "container" or "ancestor" to refer to a "parent folder".
 </Warning>
 
@@ -671,6 +699,8 @@ Why? This relation definition states that:
 We can use [direct type restriction](/docs/configuration-language#direct-relationship-type-restrictions) to ensure a document's parent can only be an object of type either drive or folder.
 
 <Note>
+**Side note**
+
 You might have noticed that the "user" in the tuple is an object. This is a special syntax OpenFGA accepts in the "user" parameter to write [object to object relationships](/docs/modeling/building-blocks/object-to-object-relationships). You can read more about writing data to manage object to object relationships in [Managing Relationships Between Objects](/docs/interacting/managing-relationships-between-objects).
 </Note>
 
@@ -1029,7 +1059,7 @@ The complete [type definition](/docs/concepts#what-is-a-type-definition) for the
   }}
 />
 
-Combining the type definitions for document and organization, we have:
+Combining the type definitions for document and organization, we have
 
 <AuthzModelSnippetViewer
   configuration={{

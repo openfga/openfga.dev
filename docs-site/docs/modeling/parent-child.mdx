@@ -1,6 +1,6 @@
 ---
 title: "Parent-Child Objects"
-sidebarTitle: "Parent child"
+sidebarTitle: "Parent-Child Objects"
 description: Indicate relationships between objects, and how users' relationships to one object can affect their relationship with another
 ---
 
@@ -24,7 +24,7 @@ The follow are examples of simple object-to-object relationships:
 
 ## Before you start
 
-Familiarize yourself with basic [OpenFGA concepts](/docs/concepts):
+Familiarize yourself with basic [OpenFGA Concepts](/docs/concepts):
 
 Assume that you have the following [authorization model](/docs/concepts#what-is-an-authorization-model).<br />
 You have two types:
@@ -76,14 +76,14 @@ In addition:
 
 <h3 id="direct-access">Direct access</h3>
 
-Creating an authorization model and a relationship tuple can grant a user access to an object. To learn more, [read about Direct Access](/docs/modeling/direct-access).
+Creating an authorization model and a relationship tuple can grant a user access to an object. To learn more, [read about Direct Access](/docs/modeling/direct-access)
 
 <h3 id="-concepts">OpenFGA concepts</h3>
 
 - A **[Type](/docs/concepts#what-is-a-type)**: a class of objects that have similar characteristics
 - A **[User](/docs/concepts#what-is-a-user)**: an entity in the system that can be related to an object
 - A **[Relation](/docs/concepts#what-is-a-relation)**: a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
-- An **[Object](/docs/concepts#what-is-an-object)**: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
+- An **[Object](/docs/concepts#what-is-an-object)**: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
 - A **[Relationship Tuple](/docs/concepts#what-is-a-relationship-tuple)**: a group stored in OpenFGA that consists of a user, a relation, and an object
 - [Union Operator](/docs/configuration-language#the-union-operator): can be used to indicate that the user has multiple ways of being related to an object
 </Accordion>
@@ -103,7 +103,7 @@ The following three steps indicate and verify that `bob` is an `editor` of `docu
 4. Create a new _relationship tuple_ to indicate that **folder:notes** is a `parent` of **document:meeting_notes.doc**
 5. Check to see if **bob** is an `editor` of **document:meeting_notes.doc**
 
-<h3 id="01-update-the-athorization-model-to-allow-a-parent-relationship-between-folder-and-document">01. Update the Authorization Model to allow a parent relationship between folder and document</h3>
+<h3 id="01-update-the-athorization-model-to-allow-a-parent-relationship-between-folder-and-document">01. Update the Athorization Model to allow a parent relationship between folder and document</h3>
 
 As documented in [Modeling Concepts: Object to Object Relationships](/docs/modeling/building-blocks/object-to-object-relationships), the following update to the authorization model allows a `parent` relation between a `folder` and a `document`:
 
@@ -150,7 +150,7 @@ As documented in [Modeling Concepts: Object to Object Relationships](/docs/model
 />
 
 <Note>
-The `document` type now has a `parent` relation, indicating that other objects can be `parent`s of `document`s.
+The `document` type now has a `parent` relation, indicating that other objects can be `parent`s of `document`s
 </Note>
 
 ### 02. Update the editor relation in the document type definition to support cascading from folder
@@ -225,7 +225,7 @@ After making these changes, anyone related to a `folder` that is a `parent` of a
 
 ### 03. Create a new relationship tuple to indicate that `bob` is an `editor` of `folder:notes`
 
-To leverage the new cascading relation, create a relationship tuple stating that `bob` is an `editor` of `folder:notes`.
+To leverage the new cascading relation, create a relationship tuple stating that `bob` is an `editor` of `folder:notes`
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -243,7 +243,7 @@ To leverage the new cascading relation, create a relationship tuple stating that
 
 <h3 id="04-create-a-new-relationship-tuple-to-indicate-that-foldernotes-is-a-parent-of-documentmeeting_notesdoc">04. Create a new relationship tuple to indicate that `folder:notes` is a `parent` of `document:meeting_notes.doc`</h3>
 
-Now that `bob` is an `editor` of `folder:notes`, we need to indicate that **folder:notes** is a `parent` of **document:meeting_notes.doc**.
+Now that `bob` is an `editor` of `folder:notes`, we need to indicate that **folder:notes** is a `parent` of **document:meeting_notes.doc**
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -279,12 +279,14 @@ For more information on this topic, see [Referencing Relations on Related Object
 
 ## Related Sections
 
+Check the following sections for more on how to model for parent and child objects.
+
 <CardGroup>
   <Card title="Modeling Concepts: Object to Object Relationships" href="/docs/modeling/building-blocks/object-to-object-relationships">
     Learn about how to model object to object relationships in OpenFGA.
   </Card>
   <Card title="Modeling Google Drive" href="/docs/modeling/advanced/gdrive#01-individual-permissions">
-    See how to make folders parents of documents, and to make editors on the parent folders editors on documents inside them.
+    See how to make folders parents of documents, and to make editors on the parent folders editors on documents inside them..
   </Card>
   <Card title="Modeling GitHub" href="/docs/modeling/advanced/github#01-permissions-for-individuals-in-an-org">
     See how to grant users access to all repositories owned by an organization.

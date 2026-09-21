@@ -1,6 +1,7 @@
 ---
 title: Search With Permissions
 description: Integrating FGA into your search
+sidebarTitle: "Search with Permissions"
 ---
 
 Once you implement fine-grained authorization to protect your resources, search becomes a more complex problem, because the user's access to each resource now has to be validated before the resource can be shown.
@@ -45,7 +46,7 @@ Consume the `GET /changes` endpoint to create a local index you can use to do an
 
 Call the `GET /list-objects` API to get a list of object IDs the user has access to, then run the filter restricting by the object IDs returned.
 
-1. Call the [OpenFGA List Objects API](/api-reference/relationship-queries/list-all-objects-of-the-given-type-that-the-user-has-a-relation-with) to get the list of all resources a user can access.
+1. Call the [OpenFGA List Objects API](/api-reference/relationship-queries/list-all-objects-of-the-given-type-that-the-user-has-a-relation-with). to get the list of all resources a user can access.
 1. Pass in the set of object IDs to the database query to limit the search.
 1. Return the filtered result to the user.
 

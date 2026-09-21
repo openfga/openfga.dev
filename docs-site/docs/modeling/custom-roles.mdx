@@ -1,6 +1,6 @@
 ---
 title: "Custom Roles"
-sidebarTitle: "Custom roles"
+sidebarTitle: "Custom Roles"
 description: Modeling custom and dynamically changing roles in your system
 ---
 
@@ -26,7 +26,7 @@ Custom roles are useful when:
 
 ## Before you start
 
-Before you start this guide, make sure you're familiar with some [OpenFGA concepts](/docs/concepts) and know how to develop the things listed below.
+Before you start this guide, make sure you're familiar with some [OpenFGA Concepts](/docs/concepts) and know how to develop the things listed below.
 
 To start, let's say there is an application with a [type](/docs/concepts#what-is-a-type) called `asset-category`. Users can have view and/or edit access to assets in that category. Any user who can edit can also view.
 
@@ -180,7 +180,7 @@ The authorization model becomes this:
 
 With this change we can add relationship tuples indicating that a certain user is `assigned` a certain `role`.
 
-<h3 id="02use-relationship-tuples-to-tie-the-users-to-the-roles">02. Use Relationship Tuples To Tie The Users To The Roles</h3>
+<h3 id="02use-relationship-tuples-to-tie-the-users-to-the-roles">02.Use Relationship Tuples To Tie The Users To The Roles</h3>
 
 Once we've added the `role` type, we can assign roles to Anne and Beth. Anne is assigned the "media-manager" role and Beth is assigned the "media-viewer" role. We can do that by adding relationship tuples as follows:
 
@@ -209,7 +209,7 @@ We can verify they are members of said roles by issuing the following check requ
 
 ### 03. Use Relationship Tuples To Associate Permissions With The Roles
 
-With our users and roles set up, we still need to tie members of a certain role to its corresponding permission(s).
+With our users and roles set up, we still need to tie members of a certain role to it's corresponding permission(s).
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -239,6 +239,8 @@ To ensure our model works, it needs to match our expectations:
 The checks come back as we expect, so our model is working correctly.
 
 ## Related Sections
+
+Check the following sections for more on how to model with OpenFGA.
 
 <CardGroup>
   <Card title="Modeling Roles and Permissions" href="/docs/modeling/roles-and-permissions">

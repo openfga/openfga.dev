@@ -1,6 +1,6 @@
 ---
 title: "Object to Object Relationships"
-sidebarTitle: "Object to object relationships"
+sidebarTitle: "Object to Object Relationships"
 description: Modeling relationships between objects (e.g. folder parent of a document)
 ---
 
@@ -29,7 +29,7 @@ For example:
 
 ## Before you start
 
-To better follow this guide, make sure you're familiar with some [OpenFGA concepts](/docs/concepts) and know how to develop the things listed below.
+To better follow this guide, make sure you're familiar with some [OpenFGA Concepts](/docs/concepts) and know how to develop the things listed below.
 
 You will start with the _[authorization model](/docs/concepts#what-is-an-authorization-model)_ below, it represents a `document` _[type](/docs/concepts#what-is-a-type)_ that can have users **[related](/docs/concepts#what-is-a-relation)** as `editor`, and `folder` type that can have users related as `viewer`.
 
@@ -84,7 +84,7 @@ You need to know how to add users to groups and grant groups access to resources
 - A **[Type](/docs/concepts#what-is-a-type)**: a class of objects that have similar characteristics
 - A **[User](/docs/concepts#what-is-a-user)**: an entity in the system that can be related to an object
 - A **[Relation](/docs/concepts#what-is-a-relation)**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
-- An **[Object](/docs/concepts#what-is-an-object)**: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
+- An **[Object](/docs/concepts#what-is-an-object)**: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model
 - A **[Relationship Tuple](/docs/concepts#what-is-a-relationship-tuple)**: a grouping consisting of a user, a relation and an object stored in OpenFGA
 </Accordion>
 
@@ -229,12 +229,16 @@ To do this, the authorization model will have two [types](/docs/concepts#what-is
 
 Type `feature` has two relations, associated_plan and access. Relation `associated_plan` allows associating plans with features while `access` defines who can access the feature. In our case, the access can be achieved either from
 
-- [direct relationship](/docs/concepts#what-are-direct-and-implied-relationships) via [direct relationship type restrictions](/docs/configuration-language#direct-relationship-type-restrictions), or `this`
+- [direct relationship](/docs/concepts#what-are-direct-and-implied-relationships) via [direct relationship type restrictions](/docs/configuration-language#direct-relationship-type-restrictions). or `this`
 - object to object relationship where a user can access because it is a subscriber_member of a particular plan AND that plan is associated with the feature.
 
 Here, we define `plan` as the user of object `feature` with relationship `associated_plan` rather than defining `feature` as the user of object `plan` with relationship `feature`. The reason we choose the former is that we want to describe our system in the following [plain language](/docs/modeling/getting-started#write-it-in-plain-language):
 
-> A user can access a feature in a plan if they are a subscriber member of a plan that is the associated plan of a feature.
+<div className="openfga-modeling-example">
+
+- A user can access a feature in a plan if they are a subscriber member of a plan that is the associated plan of a feature.
+
+</div>
 
 This will give us a flow of user->organization->plan->feature and allows us to answer the question of whether user can access a feature rather than whether user is subscriber of a plan.
 

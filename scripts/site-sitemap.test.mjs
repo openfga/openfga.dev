@@ -23,7 +23,7 @@ const websiteXml = urlset(['https://openfga.dev/', 'https://openfga.dev/project'
 function fixture() {
   const config = {
     navigation: { anchors: [
-      { anchor: 'Docs', hidden: true, groups: [{ group: 'Docs', pages: ['docs/fga', { group: 'Modeling', pages: ['docs/modeling/testing'] }] }] },
+      { anchor: 'Docs', hidden: true, pages: ['docs/fga', { group: 'Modeling', pages: ['docs/modeling/testing'] }] },
       { anchor: 'API Reference', hidden: true, openapi: { source: metadata.canonical.url },
         groups: [{ group: 'Stores', pages: ['GET /stores', 'POST /stores'] }] },
     ] },
@@ -119,7 +119,7 @@ test('native inventory rejects missing schema, missing summaries and incomplete/
 test('native inventory rejects duplicate, retired, test, unowned and missing documentation pages', () => {
   for (const page of ['docs/fga', 'docs/test-viewer', 'test-viewer', 'docs/community', 'docs/intro', 'project', 'docs/../project']) {
     const input = fixture();
-    input.config.navigation.anchors[0].groups[0].pages.push(page);
+    input.config.navigation.anchors[0].pages.push(page);
     input.docFiles.push(`${page}.mdx`);
     assert.throws(() => nativeSitemapRoutes(input), /Duplicate|Retired|Non-native|Redirect/, page);
   }
@@ -127,6 +127,17 @@ test('native inventory rejects duplicate, retired, test, unowned and missing doc
     ['docs/fga.mdx'], ['docs/fga.mdx', 'docs/modeling/testing.mdx', 'docs/unlisted.mdx'],
     ['docs/fga.mdx', 'docs/modeling/testing.mdx', 'tests/fixture.mdx'],
   ]) assert.throws(() => nativeSitemapRoutes({ ...fixture(), docFiles }), /coverage differs|Non-native/);
+});
+
+test('native inventory rejects missing pages and an additional documentation group wrapper', () => {
+  const input = fixture();
+  const anchor = input.config.navigation.anchors[0];
+  const pages = anchor.pages;
+  delete anchor.pages;
+  assert.throws(() => nativeSitemapRoutes(input), /Missing native documentation groups\/pages/);
+  anchor.pages = pages;
+  anchor.groups = [{ group: 'Overview', pages }];
+  assert.throws(() => nativeSitemapRoutes(input), /without an added wrapper group/);
 });
 
 test('boundary validation verifies both children, exact native coverage and the root index', () => {

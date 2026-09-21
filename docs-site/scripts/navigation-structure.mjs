@@ -4,12 +4,13 @@ const rootDivisionKeys = ['products', 'languages', 'versions', 'tabs', 'dropdown
 const navigationLabelKeys = ['anchor', 'tab', 'dropdown', 'product', 'version', 'language', 'group'];
 
 export const expectedDocsGroups = [
-  'Overview',
-  'Get Started',
-  'Model Authorization',
-  'Use the API',
-  'Operate & Scale',
-  'Solutions',
+  'Getting Started',
+  'Modeling Guides',
+  'Authorization for Agents',
+  'Interacting with the API',
+  'Best Practices',
+  'Industries',
+  'Use Cases',
   'Adopters',
   'Learn',
 ];
@@ -109,8 +110,12 @@ export function validateRouteScopedNavigation(docs) {
     if (anchor.hidden !== true) {
       throw new Error(`The "${anchor.anchor}" route-scoped anchor must remain hidden`);
     }
-    if (!Array.isArray(anchor.groups) || anchor.groups.length === 0) {
-      throw new Error(`The "${anchor.anchor}" route-scoped anchor must define sidebar groups`);
+    const division = anchor === docsAnchor ? 'pages' : 'groups';
+    if (!Array.isArray(anchor[division]) || anchor[division].length === 0) {
+      throw new Error(`The "${anchor.anchor}" route-scoped anchor must define sidebar ${division}`);
+    }
+    if (rootDivisionKeys.some((key) => key !== division && Object.hasOwn(anchor, key))) {
+      throw new Error(`The "${anchor.anchor}" route-scoped anchor must use only sidebar ${division}`);
     }
   }
 

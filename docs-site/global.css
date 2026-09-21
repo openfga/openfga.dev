@@ -157,6 +157,47 @@ body:has(#api-playground-2-operation-page) #navbar a[href='/api-reference']::bef
   text-transform: none;
 }
 
+/* Docusaurus descriptions were metadata, not additional article introductions. */
+body:not(:has(#api-playground-2-operation-page)) #header .prose {
+  display: none;
+}
+
+/* Keep the responsive navbar assistant entry, not repeated article prompts. */
+[data-assistant-bar],
+#ask-assistant-code-block-button {
+  display: none;
+}
+
+/* Retain the original grouping and compact typography of worked examples. */
+#content .openfga-modeling-example {
+  margin: 2rem 0;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  background-color: #ebedf0;
+  color: #1c1e21;
+  font-family: 'Inter', sans-serif;
+}
+
+.dark #content .openfga-modeling-example {
+  background-color: #444950;
+  color: #e3e3e3;
+}
+
+#content .openfga-modeling-example :is(ul, li, p, [data-as='p']) {
+  margin-block: 0;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 1.5px;
+}
+
+#content .openfga-modeling-example ul {
+  padding-left: 2rem;
+}
+
+#content .openfga-modeling-example hr {
+  margin: 1.5rem 0;
+}
+
 /* Preserve the original visual emphasis in the three modeling exercises. */
 #content .openfga-modeling-highlight {
   padding: 1.2px 7.2px;
@@ -209,16 +250,6 @@ a[href='https://github.com/openfga/openfga'] > span:first-of-type {
   -webkit-mask: url('https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/regular/star.svg') center / contain
     no-repeat;
   mask: url('https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/regular/star.svg') center / contain no-repeat;
-}
-
-footer a[href='https://openfga.dev/docs/llms.txt'],
-footer a[href='https://openfga.dev/docs/llms-full.txt'] {
-  color: #4b5563;
-}
-
-.dark footer a[href='https://openfga.dev/docs/llms.txt'],
-.dark footer a[href='https://openfga.dev/docs/llms-full.txt'] {
-  color: #d1d5db;
 }
 
 /* Keep theme selection in the header rather than duplicating it in the footer. */

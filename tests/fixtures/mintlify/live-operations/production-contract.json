@@ -154,7 +154,7 @@
       ["h3", "OpenFGA concepts", "-concepts"]
     ],
     "interacting/read-tuple-changes.mdx": [
-      ["h3", "01. Configure the OpenFGA API client", "01-configure-the--api-client"]
+      ["h3", "01. Configure The OpenFGA API Client", "01-configure-the--api-client"]
     ],
     "interacting/relationship-queries.mdx": [
       ["h3", "OpenFGA concepts", "-concepts"],

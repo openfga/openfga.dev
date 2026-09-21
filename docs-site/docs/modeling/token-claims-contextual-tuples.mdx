@@ -1,6 +1,6 @@
 ---
 title: "Use Token Claims As Contextual Tuples"
-sidebarTitle: "Token claims contextual tuples"
+sidebarTitle: "Token claims as Contextual Tuples"
 description: Using identity token claims to define contextual relations
 ---
 
@@ -10,7 +10,7 @@ import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
 
 Contextual Tuples allow authorization checks that depend on dynamic or contextual relationships that have not been written to the OpenFGA store, enabling some Attribute Based Access Control (ABAC) use cases.
 
-To enable more ABAC use-cases that rely on specific attributes and conditions, you can also use OpenFGA's [conditions](/docs/modeling/conditions).
+To enable more ABAC use-cases that rely on specific attributes and conditions, you can also use OpenFGA`s [conditions](/docs/modeling/conditions).
 
 ## Before You Start
 
@@ -18,13 +18,13 @@ To follow this guide, familiarize yourself with the following [OpenFGA Concepts]
 
 - A **[Relation](/docs/concepts#what-is-a-relation)**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system.
 - A **[Check Request](/docs/concepts#what-is-a-check-request)**: is a call to the OpenFGA check endpoint that returns whether the user has a certain relationship with an object.
-- A **[Relationship Tuple](/docs/concepts#what-is-a-relationship-tuple)**: a grouping consisting of a user, a relation and an object stored in OpenFGA.
+- A **[Relationship Tuple](/docs/concepts#what-is-a-relationship-tuple)**: a grouping consisting of a user, a relation and an object stored in OpenFGA
 
 ## User Directories, Identity Tokens, And Relationships
 
 User directories store user information that's accessed when making authorization decisions, like the group the user belongs to, their roles, or their department. The natural way to use those relationships in a Relationship-Based Access Control system like OpenFGA is to create tuples for each relation. However, implementing a synchronization mechanism to keep the user directory data up to date with tuples in the store can be challenging.
 
-When applications implement authentication using an OIDC authorization service, they receive an ID Token or an Access token, with certain claims that can be customized based on the application's needs. Instead of writing tuples to the OpenFGA store, you can use the content of the token in Contextual Tuples to make authorization checks, understanding that, if those relationships change while the token has not expired, users will still get access to the resources the content of the token entitled them to.
+When applications implement authentication using an OIDC authorization service, they receive an ID Token or an Access token, with certain claims that can be customized based on the application's needs. Instead of writing tuples to the OpenFGA, you can use the content of the token in Contextual Tuples to make authorization checks, understanding that, if those relationships change while the token has not expired, users will still get access to the resources the content of the token entitled them to.
 
 ## Example
 
@@ -146,6 +146,8 @@ Contextual tuples:
 </Warning>
 
 ## Related Sections
+
+Check the following sections for more on how user contextual tuples can be used.
 
 <CardGroup>
   <Card title="Contextual and Time-Based Authorization" href="/docs/modeling/contextual-time-based-authorization">

@@ -10,13 +10,9 @@ const docs = JSON.parse(readFileSync(join(mintlifyDirectory, 'docs.json'), 'utf8
 
 const { docsAnchor } = validateRouteScopedNavigation(docs);
 
-const expectedFooterLinks = [
-  ['LLM? Read llms.txt', 'https://openfga.dev/docs/llms.txt'],
-  ['Read llms-full.txt', 'https://openfga.dev/docs/llms-full.txt'],
-];
-const footerLinks = docs.footer?.links?.flatMap(({ items = [] }) => items.map(({ label, href }) => [label, href]));
-if (JSON.stringify(footerLinks) !== JSON.stringify(expectedFooterLinks)) {
-  throw new Error('The footer must link to the Mintlify-owned split-site LLM resources');
+const footerLinks = docs.footer?.links?.flatMap(({ items = [] }) => items) ?? [];
+if (footerLinks.some(({ href }) => /\/llms(?:-full)?\.txt(?:[?#]|$)/.test(href))) {
+  throw new Error('LLM resources must remain machine-discoverable without visible footer links');
 }
 
 const expectedSocials = {
@@ -42,7 +38,7 @@ if (docs.favicon !== '/images/img/openfga-icon.svg') {
   throw new Error('The favicon must remain the local icon-only OpenFGA asset');
 }
 
-const groups = docsAnchor.groups;
+const groups = docsAnchor.pages.filter((page) => typeof page === 'object');
 const groupNames = groups.map(({ group }) => group);
 if (JSON.stringify(groupNames) !== JSON.stringify(expectedDocsGroups)) {
   throw new Error(

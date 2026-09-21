@@ -101,9 +101,9 @@
       ],
       "links": [
         {
-          "text": "OpenFGA concepts",
+          "text": "OpenFGA Concepts",
           "url": "/docs/concepts",
-          "context": "Some OpenFGA concepts"
+          "context": "Some OpenFGA Concepts"
         },
         {
           "text": "authorization model",
@@ -176,7 +176,7 @@
             "You need to know how to disallow granting direct relation to an object and requiring the user to have a relation with another object that would imply a relation with the first one. Learn more →",
             "Used here to indicate that \"access\" to a feature cannot be directly granted to a user, but is implied through the users organization subscribing to a plan that offers that feature.",
             "Concepts & configuration language",
-            "Some OpenFGA concepts",
+            "Some OpenFGA Concepts",
             "Configuration Language"
           ],
           "visibleLeadIn": "It would be helpful to have an understanding of some concepts of OpenFGA before you start."
@@ -191,7 +191,7 @@
         "preservedMetadata": {
           "description": "Modeling entitlements for a system"
         },
-        "bodyProseSha256": "f13e2a94f37dca26cd4c11a7b3107c060353e1e94cc42510b886a046d01c7fda"
+        "bodyProseSha256": "424b4517e8e9f3a61456d0df3230438d7c9511afbe4255435295c70a11c8e72b"
       }
     },
     {
@@ -769,29 +769,29 @@
       ],
       "links": [
         {
-          "text": "OpenFGA concepts",
+          "text": "OpenFGA Concepts",
           "url": "/docs/concepts",
-          "context": "Some OpenFGA concepts"
+          "context": "Some OpenFGA Concepts"
         },
         {
-          "text": "objects",
+          "text": "object",
           "url": "/docs/concepts#what-is-an-object",
-          "context": "The OpenFGA service is based on Zanzibar, a Relationship Based Access Control system. This means it relies on objects and user relations to perform authorization checks."
+          "context": "The OpenFGA service is based on Zanzibar, a Relationship Based Access Control system. This means it relies on object and user relations to perform authorization checks."
         },
         {
           "text": "user",
           "url": "/docs/concepts#what-is-a-user",
-          "context": "The OpenFGA service is based on Zanzibar, a Relationship Based Access Control system. This means it relies on objects and user relations to perform authorization checks."
+          "context": "The OpenFGA service is based on Zanzibar, a Relationship Based Access Control system. This means it relies on object and user relations to perform authorization checks."
         },
         {
           "text": "relations",
           "url": "/docs/concepts#what-is-a-relation",
-          "context": "The OpenFGA service is based on Zanzibar, a Relationship Based Access Control system. This means it relies on objects and user relations to perform authorization checks."
+          "context": "The OpenFGA service is based on Zanzibar, a Relationship Based Access Control system. This means it relies on object and user relations to perform authorization checks."
         },
         {
           "text": "checks",
           "url": "/docs/concepts#what-is-a-check-request",
-          "context": "The OpenFGA service is based on Zanzibar, a Relationship Based Access Control system. This means it relies on objects and user relations to perform authorization checks."
+          "context": "The OpenFGA service is based on Zanzibar, a Relationship Based Access Control system. This means it relies on object and user relations to perform authorization checks."
         },
         {
           "text": "authorization model",
@@ -898,7 +898,7 @@
             "You need to know how to add users to groups and create relationships between groups of users and an object. Learn more →",
             "Used here to indicate that security guards on a certain group are security guards on a device in that group.",
             "Concepts & configuration language",
-            "Some OpenFGA concepts",
+            "Some OpenFGA Concepts",
             "Configuration Language"
           ],
           "visibleLeadIn": "It would be helpful to have an understanding of some concepts of OpenFGA before you start."
@@ -913,7 +913,7 @@
         "preservedMetadata": {
           "description": "Modeling fine-grained authorization for an IoT security camera system"
         },
-        "bodyProseSha256": "e285ebbf25a552093ee478036d1836e7da7b8c4d03b8ec59305f005a94a9ce0e"
+        "bodyProseSha256": "ec5134ab1acd056ab9c6881adf9660987e7b8293df39ee50ed1c57749875b36a"
       }
     },
     {
@@ -1081,29 +1081,29 @@
           "context": "How to Model concentric relationship to have a certain relation on an object imply another relation on the same object. Used here to indicate that legacy admins have all the permissions of the more granular channels admin. See Modeling Concentric Relationships for more."
         },
         {
-          "text": "OpenFGA concepts",
+          "text": "OpenFGA Concepts",
           "url": "/docs/concepts",
-          "context": "Some OpenFGA concepts"
+          "context": "Some OpenFGA Concepts"
         },
         {
           "text": "objects",
           "url": "/docs/concepts#what-is-an-object",
-          "context": "OpenFGA is based on Zanzibar, a Relation Based Access Control system. This means it relies on objects and user relations to perform authorization checks."
+          "context": "The OpenFGA is based on Zanzibar, a Relation Based Access Control system. This means it relies on objects and user relations to perform authorization checks."
         },
         {
           "text": "user",
           "url": "/docs/concepts#what-is-a-user",
-          "context": "OpenFGA is based on Zanzibar, a Relation Based Access Control system. This means it relies on objects and user relations to perform authorization checks."
+          "context": "The OpenFGA is based on Zanzibar, a Relation Based Access Control system. This means it relies on objects and user relations to perform authorization checks."
         },
         {
           "text": "relations",
           "url": "/docs/concepts#what-is-a-relation",
-          "context": "OpenFGA is based on Zanzibar, a Relation Based Access Control system. This means it relies on objects and user relations to perform authorization checks."
+          "context": "The OpenFGA is based on Zanzibar, a Relation Based Access Control system. This means it relies on objects and user relations to perform authorization checks."
         },
         {
           "text": "checks",
           "url": "/docs/concepts#what-is-a-check-request",
-          "context": "OpenFGA is based on Zanzibar, a Relation Based Access Control system. This means it relies on objects and user relations to perform authorization checks."
+          "context": "The OpenFGA is based on Zanzibar, a Relation Based Access Control system. This means it relies on objects and user relations to perform authorization checks."
         },
         {
           "text": "authorization model",
@@ -1156,9 +1156,9 @@
           "context": "And verify by asking OpenFGA"
         },
         {
-          "text": "check requests",
+          "text": "check request",
           "url": "/docs/concepts#what-is-a-check-request",
-          "context": "To verify, we can issue check requests to verify it is working as expected."
+          "context": "To verify, we can issue check request to verify it is working as expected."
         },
         {
           "text": "implied",
@@ -1168,7 +1168,7 @@
         {
           "text": "authorization model",
           "url": "/docs/concepts#what-is-a-type-definition",
-          "context": "With the following updated authorization model, you are informing OpenFGA that any user who is related to a workspace as legacy_admin, is also related as a channels_admin and a member."
+          "context": "With the following updated authorization model, you are informing OpenFGA that any user who is related to a workspace as legacy_admin, is also related as a channels_admin and a member ."
         },
         {
           "text": "relations",
@@ -1201,9 +1201,9 @@
           "context": "Have a basic understanding of authorization and OpenFGA Concepts."
         },
         {
-          "text": "fine-grained authorization",
+          "text": "fine grain authentication",
           "url": "/docs/authorization-concepts#what-is-fine-grained-authorization",
-          "context": "were introduced to fine-grained authorization and OpenFGA."
+          "context": "were introduced to fine grain authentication and OpenFGA."
         }
       ],
       "anchors": [
@@ -1262,7 +1262,7 @@
             "Modeling concentric relationships",
             "You need to know how to update the authorization model to allow having nested relations such as all writers are readers. Learn more →",
             "Concepts & configuration language",
-            "Some OpenFGA concepts",
+            "Some OpenFGA Concepts",
             "Configuration Language"
           ],
           "visibleLeadIn": "It would be helpful to have an understanding of some concepts of OpenFGA before you start."
@@ -1277,7 +1277,7 @@
         "preservedMetadata": {
           "description": "Modeling authorization for Slack"
         },
-        "bodyProseSha256": "3cf9362a7165274da69aea065f65d6baf8f414403b17b4ceb64f228344edba36"
+        "bodyProseSha256": "ad5ff4a65f1c2f0a938a1bc4871373e24f1b4e8cb054583e41abdf95dfe13d50"
       }
     },
     {
@@ -1399,9 +1399,9 @@
       ],
       "links": [
         {
-          "text": "MCP server",
+          "text": "Model Context Protocol (MCP)",
           "url": "https://modelcontextprotocol.io/",
-          "context": "This guide shows how to model tool-level authorization for an MCP server using OpenFGA, covering public tools, role-based access, group membership, temporal access, and resource-level permissions within tools. It explains how to control an agent's interactions with an MCP server based on the user's permissions."
+          "context": "Model Context Protocol (MCP) servers expose tools that AI agents can call. Without authorization, any authenticated user can invoke any tool. OpenFGA lets you control which tools each user can access, based on their role, group membership, or time-limited grants."
         }
       ],
       "anchors": [],
@@ -1429,9 +1429,9 @@
         "title": "Authorization for MCP Servers",
         "sidebarLabel": "Authorization for MCP Servers",
         "preservedMetadata": {
-          "description": "Model Context Protocol (MCP) servers expose tools that AI agents can call. Without authorization, any authenticated user can invoke any tool. OpenFGA lets you control which tools each user can access, based on their role, group membership, or time-limited grants."
+          "description": "Authorize MCP server tools with OpenFGA: control which tools each user can invoke based on roles, group membership, and time-limited temporal grants."
         },
-        "bodyProseSha256": "22c83e41868033df78f839f9a62dd7bbfc596ec1d8c159c5c62064536040bf5b"
+        "bodyProseSha256": "c784c3c8b20fff8af9fe31996f75a5f10a2f87e305b3c7f14d373f145ad9f806"
       }
     },
     {
@@ -1606,7 +1606,7 @@
       "noteTitles": [],
       "headline": {
         "title": "Modeling Task-Based Authorization for Agents",
-        "sidebarLabel": "Modeling Task-Based Authorization for Agents",
+        "sidebarLabel": "Task-Based Authorization",
         "preservedMetadata": {
           "description": "Modeling task-based authorization for agents"
         },
@@ -1656,9 +1656,9 @@
       ],
       "links": [
         {
-          "text": "OpenFGA concepts",
+          "text": "OpenFGA Concepts",
           "url": "/docs/concepts",
-          "context": "Before you start this guide, make sure you're familiar with some OpenFGA concepts and know how to develop the things listed below."
+          "context": "Before you start this guide, make sure you're familiar with some OpenFGA Concepts and know how to develop the things listed below."
         },
         {
           "text": "authorization model",
@@ -1742,7 +1742,7 @@
             "A Relationship Tuple: a grouping consisting of a user, a relation and an object stored in OpenFGA",
             "Exclusion Operator: the exclusion operator can be used to exclude certain usersets from being related to an object"
           ],
-          "visibleLeadIn": "Before you start this guide, make sure you're familiar with some OpenFGA concepts and know how to develop the things listed below."
+          "visibleLeadIn": "Before you start this guide, make sure you're familiar with some OpenFGA Concepts and know how to develop the things listed below."
         }
       ],
       "replacedDetails": 0,
@@ -1772,7 +1772,7 @@
         "preservedMetadata": {
           "description": "Preventing certain users from accessing objects"
         },
-        "bodyProseSha256": "e9246e64262147f5da1b2f00660dc452ec323ce97bfe561e86aca6a98c469a2e"
+        "bodyProseSha256": "063aed89bcf2cdbaff6ffebe86a118e8ffb9fa8a7518d997ec08b09ff02e19e2"
       }
     },
     {
@@ -1803,9 +1803,9 @@
           "context": "In this short guide, you'll learn how to represent a concentric relationships."
         },
         {
-          "text": "OpenFGA concepts",
+          "text": "OpenFGA Concepts",
           "url": "/docs/concepts",
-          "context": "To better understand this guide, you should be familiar with some OpenFGA concepts and know how to develop the things listed below."
+          "context": "To better understand this guide, you should be familiar with some OpenFGA Concepts and know how to develop the things listed below."
         },
         {
           "text": "authorization model",
@@ -1875,7 +1875,7 @@
             "An Object: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model",
             "A Relationship Tuple: a grouping consisting of a user, a relation and an object stored in OpenFGA"
           ],
-          "visibleLeadIn": "To better understand this guide, you should be familiar with some OpenFGA concepts and know how to develop the things listed below."
+          "visibleLeadIn": "To better understand this guide, you should be familiar with some OpenFGA Concepts and know how to develop the things listed below."
         }
       ],
       "replacedDetails": 0,
@@ -1896,11 +1896,11 @@
       ],
       "headline": {
         "title": "Concentric Relationships",
-        "sidebarLabel": "Concentric relationships",
+        "sidebarLabel": "Concentric Relationships",
         "preservedMetadata": {
           "description": "Modeling Concepts: Concentric Relationships"
         },
-        "bodyProseSha256": "dff248a35aafb236c57ac5999f3a0abe8449c7561f9b20dc5d94237151290b1c"
+        "bodyProseSha256": "bdc65cb030795edb1669683fa58f4db232aaee995efa52bf0109976c5c153f93"
       }
     },
     {
@@ -1994,9 +1994,9 @@
       ],
       "links": [
         {
-          "text": "OpenFGA concepts",
+          "text": "OpenFGA Concepts",
           "url": "/docs/concepts",
-          "context": "To better understand this guide, you should be familiar with some OpenFGA concepts and know how to develop the things listed below."
+          "context": "To better understand this guide, you should be familiar with some OpenFGA Concepts and know how to develop the things listed below."
         },
         {
           "text": "Type",
@@ -2016,7 +2016,7 @@
         {
           "text": "Object",
           "url": "/docs/concepts#what-is-an-object",
-          "context": "An Object: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model"
+          "context": "An Object: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model"
         },
         {
           "text": "Relationship Tuple",
@@ -2105,7 +2105,7 @@
             "A Type: a class of objects that have similar characteristics",
             "A User: an entity in the system that can be related to an object",
             "A Relation: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system",
-            "An Object: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model",
+            "An Object: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model",
             "A Relationship Tuple: a grouping consisting of a user, a relation and an object stored in OpenFGA",
             "Direct Relationship Type Restrictions: used in the context of the relation definition can be used to allow direct relationships to the objects of this type"
           ],
@@ -2127,7 +2127,7 @@
         {
           "title": "Modeling Entitlements",
           "href": "/docs/modeling/advanced/entitlements",
-          "text": "Take a look at the access relation in the feature type for an example of removing the direct relationship."
+          "text": "Take a look at the access relation in the feature type for an example of removing the direct relationship"
         }
       ],
       "noteTitles": [
@@ -2135,11 +2135,11 @@
       ],
       "headline": {
         "title": "Direct Relationships",
-        "sidebarLabel": "Direct relationships",
+        "sidebarLabel": "Direct Relationships",
         "preservedMetadata": {
           "description": "Modeling Concepts: Direct Relationships"
         },
-        "bodyProseSha256": "6a641b5b24286635fd9001c527643770898cbcefb6ff535d9feaf1990666f655"
+        "bodyProseSha256": "65593ae59c886730de46f16ecf9a1133869b114d743429dc69538e060e42dea9"
       }
     },
     {
@@ -2199,9 +2199,9 @@
           "context": "This design pattern is helpful in the case where there are relationships between different objects. With OpenFGA, so long as both objects are in a type defined in the authorization model, relationship tuples can be added to indicate a relationship between them."
         },
         {
-          "text": "OpenFGA concepts",
+          "text": "OpenFGA Concepts",
           "url": "/docs/concepts",
-          "context": "To better follow this guide, make sure you're familiar with some OpenFGA concepts and know how to develop the things listed below."
+          "context": "To better follow this guide, make sure you're familiar with some OpenFGA Concepts and know how to develop the things listed below."
         },
         {
           "text": "authorization model",
@@ -2236,7 +2236,7 @@
         {
           "text": "Object",
           "url": "/docs/concepts#what-is-an-object",
-          "context": "An Object: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model"
+          "context": "An Object: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model"
         },
         {
           "text": "Relationship Tuple",
@@ -2281,7 +2281,7 @@
         {
           "text": "direct relationship",
           "url": "/docs/concepts#what-are-direct-and-implied-relationships",
-          "context": "direct relationship via direct relationship type restrictions, or this"
+          "context": "direct relationship via direct relationship type restrictions. or this"
         }
       ],
       "anchors": [
@@ -2305,7 +2305,7 @@
             "A Type: a class of objects that have similar characteristics",
             "A User: an entity in the system that can be related to an object",
             "A Relation: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system",
-            "An Object: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model",
+            "An Object: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model",
             "A Relationship Tuple: a grouping consisting of a user, a relation and an object stored in OpenFGA"
           ],
           "visibleLeadIn": "You will start with the authorization model below, it represents a document type that can have users related as editor, and folder type that can have users related as viewer."
@@ -2334,11 +2334,11 @@
       ],
       "headline": {
         "title": "Object to Object Relationships",
-        "sidebarLabel": "Object to object relationships",
+        "sidebarLabel": "Object to Object Relationships",
         "preservedMetadata": {
           "description": "Modeling relationships between objects (e.g. folder parent of a document)"
         },
-        "bodyProseSha256": "0389d51c1f689d157aedf651cfde2392fb6141659c78e0835afc16d4bd5e3ca6"
+        "bodyProseSha256": "5e7f74fe23e9df02e104c7ab26d051e3b53fc11a9dc3b29eeaefc59da1b0e0bf"
       }
     },
     {
@@ -2380,7 +2380,7 @@
         "preservedMetadata": {
           "description": "Guides on the building blocks of authorization models in OpenFGA."
         },
-        "bodyProseSha256": "10c267bd866f6d1b179e4f4cd131048825afb97cc7f8d6951b84a6da120bbad1"
+        "bodyProseSha256": "d164cf30636b6fd2eea4d89927f4b8f7de81bbba409a0c53cf8a664b8da84d3c"
       }
     },
     {
@@ -2462,7 +2462,7 @@
         "preservedMetadata": {
           "description": "Modeling with userset"
         },
-        "bodyProseSha256": "2afc78def5835f189d894cf51fc03d2db51a7a694f384c3e1e849b3bcca4ed80"
+        "bodyProseSha256": "8925c77b96e61838e3d351c80df18e145d116880e1227d59ad8125bc5bbb5baf"
       }
     },
     {
@@ -2640,9 +2640,9 @@
       ],
       "links": [
         {
-          "text": "OpenFGA concepts",
+          "text": "OpenFGA Concepts",
           "url": "/docs/concepts",
-          "context": "To follow this guide, you should be familiar with some OpenFGA concepts."
+          "context": "To follow this guide, you should be familiar with some OpenFGA Concepts."
         },
         {
           "text": "Relation",
@@ -2723,11 +2723,11 @@
       ],
       "headline": {
         "title": "Contextual and Time-Based Authorization",
-        "sidebarLabel": "Contextual time based authorization",
+        "sidebarLabel": "Contextual and Time-Based Authorization",
         "preservedMetadata": {
           "description": "Checking relations that depends on certain dynamic or contextual data (such as time, location, ip address, weather) that have not been written"
         },
-        "bodyProseSha256": "db64767df5ec1a3486878d98e1260b06c5e06ebfa2c44383fc238299a2344ca7"
+        "bodyProseSha256": "e2e1976e21991e4aac1d8214963f128dc2335f81e10c342089403805c7b90a1e"
       }
     },
     {
@@ -2761,9 +2761,9 @@
       ],
       "links": [
         {
-          "text": "OpenFGA concepts",
+          "text": "OpenFGA Concepts",
           "url": "/docs/concepts",
-          "context": "Before you start this guide, make sure you're familiar with some OpenFGA concepts and know how to develop the things listed below."
+          "context": "Before you start this guide, make sure you're familiar with some OpenFGA Concepts and know how to develop the things listed below."
         },
         {
           "text": "type",
@@ -2796,7 +2796,7 @@
         },
         {
           "id": "02use-relationship-tuples-to-tie-the-users-to-the-roles",
-          "text": "02. Use Relationship Tuples To Tie The Users To The Roles"
+          "text": "02.Use Relationship Tuples To Tie The Users To The Roles"
         }
       ],
       "disclosures": [
@@ -2835,11 +2835,11 @@
       ],
       "headline": {
         "title": "Custom Roles",
-        "sidebarLabel": "Custom roles",
+        "sidebarLabel": "Custom Roles",
         "preservedMetadata": {
           "description": "Modeling custom and dynamically changing roles in your system"
         },
-        "bodyProseSha256": "ae433d0dfd40297d106bfd2f851e6d35d9b2949c8c77d0c55d5ed777b6f24059"
+        "bodyProseSha256": "9f32e32983613620ac5c0328c966f36df731975b87bd56528705846f94950e46"
       }
     },
     {
@@ -2917,7 +2917,7 @@
         {
           "text": "Object",
           "url": "/docs/concepts#what-is-an-object",
-          "context": "An Object: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model"
+          "context": "An Object: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model"
         },
         {
           "text": "Relationship Tuple",
@@ -2970,7 +2970,7 @@
             "A Type: a class of objects that have similar characteristics",
             "A User: an entity in the system that can be related to an object",
             "A Relation: a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system",
-            "An Object: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model",
+            "An Object: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model",
             "A Relationship Tuple: a grouping consisting of a user, a relation and an object stored in OpenFGA"
           ],
           "visibleLeadIn": "Assume that you have the following authorization model. You have a type called document that can have a viewer and/or an editor."
@@ -2999,11 +2999,11 @@
       ],
       "headline": {
         "title": "Direct Access",
-        "sidebarLabel": "Direct access",
+        "sidebarLabel": "Direct Access",
         "preservedMetadata": {
           "description": "Granting a user access to an object"
         },
-        "bodyProseSha256": "9c4214175c8730fa15f60d21bc622f48c5df955b6d0f634599e88d8b9d8e4944"
+        "bodyProseSha256": "603b8536c8f7f5b209b4290fea2b1f620eacfa6d9caa200478635baf918a4229"
       }
     },
     {
@@ -3139,7 +3139,7 @@
         {
           "text": "relation definition",
           "url": "/docs/concepts#what-is-a-relation",
-          "context": "We will use the OpenFGA Configuration Language to create a relation definition for each of the relations we identified. At this stage we will encode the answers to the question we asked at the beginning of the document:"
+          "context": "We will use the OpenFGA Configuration Language to create a relation definition for each of the relations we identified. At this stage we will encode the answers to the question we asked at the beginning of the document:."
         },
         {
           "text": "directly related user type",
@@ -3304,7 +3304,7 @@
         "preservedMetadata": {
           "description": "An introduction to modeling"
         },
-        "bodyProseSha256": "22e1c42b2c2884e2632919a1850972d46e0ec2896a7bc1ef31226d1210bc9075"
+        "bodyProseSha256": "996b474512fb515c78eb28854d2ab7fc1f3aae011ab27b33a007732d8599165c"
       }
     },
     {
@@ -3319,7 +3319,7 @@
       "noteTitles": [],
       "headline": {
         "title": "Model Migrations",
-        "sidebarLabel": "Model Migrations",
+        "sidebarLabel": "Migrating Models",
         "preservedMetadata": {
           "description": "Learn how to migrate OpenFGA authorization models, including adding, removing, and renaming types and relations."
         },
@@ -3476,17 +3476,17 @@
         {
           "title": "Production Best Practices",
           "href": "/docs/best-practices/running-in-production",
-          "text": "Learn the best practices of running OpenFGA in a production environment."
+          "text": "Learn the best practices of running OpenFGA in a production environment"
         }
       ],
       "noteTitles": [],
       "headline": {
         "title": "Migrating Relations",
-        "sidebarLabel": "Migrating relations",
+        "sidebarLabel": "Migrating Relations",
         "preservedMetadata": {
           "description": "Migrating relations"
         },
-        "bodyProseSha256": "f7d3f516ec4674ac171e14ca6d52a82570eb1ea81a27fe02856eb7b536c33d69"
+        "bodyProseSha256": "e313e6275af7bbfc48704936d15edce6311ceb261b5c28e77833657158cadc57"
       }
     },
     {
@@ -3518,7 +3518,7 @@
         "preservedMetadata": {
           "description": "Guides focused on migrating models and relations in OpenFGA."
         },
-        "bodyProseSha256": "db93a802a5554d8697f5c0a70caf5652f2b9c3cd45f44db4beb2fadb348960db"
+        "bodyProseSha256": "c3849635981da5adb39527c4e7ac8c76e268b5bc7e48894604bb3916c87a3a2e"
       }
     },
     {
@@ -3583,7 +3583,7 @@
         "preservedMetadata": {
           "description": "Modular Models"
         },
-        "bodyProseSha256": "65865654fe4dc88a3a58c4d6ec8bd02a15a9de6233f2bb743aa2c9cade318505"
+        "bodyProseSha256": "88f7b6ca3811245917920e533d448d735fedd05f7f9f84eb45b86cea9390ab4f"
       }
     },
     {
@@ -3626,9 +3626,9 @@
           "context": "In this guide we are going to model system that requires multiple authorizations before allowing users to perform actions on particular objects using OpenFGA. For example, users are allowed to delete a document if both of these conditions are met:"
         },
         {
-          "text": "OpenFGA concepts",
+          "text": "OpenFGA Concepts",
           "url": "/docs/concepts",
-          "context": "In order to understand this guide correctly you must be familiar with some OpenFGA concepts and know how to develop the things that we will list below."
+          "context": "In order to understand this guide correctly you must be familiar with some OpenFGA Concepts and know how to develop the things that we will list below."
         },
         {
           "text": "authorization model",
@@ -3671,9 +3671,9 @@
           "context": "A Relationship Tuple: a grouping consisting of a user, a relation and an object stored in OpenFGA"
         },
         {
-          "text": "check request",
+          "text": "check",
           "url": "/docs/concepts#what-is-a-check-request",
-          "context": "With the above authorization model and relationship tuples, OpenFGA will correctly respond with {\"allowed\":true} when a check request is called to see if Carl and Becky can write this document."
+          "context": "With the above authorization model and relationship tuples, OpenFGA will correctly respond with {\"allowed\":true} when check is called to see if Carl and Becky can write this document."
         }
       ],
       "anchors": [
@@ -3710,7 +3710,7 @@
             "A Relationship Tuple: a grouping consisting of a user, a relation and an object stored in OpenFGA",
             "Intersection Operator: the intersection operator can be used to indicate a relationship exists if the user is in all the sets of users"
           ],
-          "visibleLeadIn": "In order to understand this guide correctly you must be familiar with some OpenFGA concepts and know how to develop the things that we will list below."
+          "visibleLeadIn": "In order to understand this guide correctly you must be familiar with some OpenFGA Concepts and know how to develop the things that we will list below."
         }
       ],
       "replacedDetails": 0,
@@ -3736,11 +3736,11 @@
       ],
       "headline": {
         "title": "Multiple Restrictions",
-        "sidebarLabel": "Multiple restrictions",
+        "sidebarLabel": "Multiple Restrictions",
         "preservedMetadata": {
           "description": "Modeling system that requires multiple authorizations before allowing users to perform actions on particular objects"
         },
-        "bodyProseSha256": "b91bfe4aaee5ceae7b1fcbc638e744bc4b9e1171288ddfbf856f79d14781e452"
+        "bodyProseSha256": "905e5cb20e03d6ff1713c8b52ba68d86abbf87deecdc6ce21b517a8d92bfe530"
       }
     },
     {
@@ -3818,9 +3818,9 @@
       ],
       "links": [
         {
-          "text": "OpenFGA concepts",
+          "text": "OpenFGA Concepts",
           "url": "/docs/concepts",
-          "context": "To follow this guide, you should be familiar with some OpenFGA concepts."
+          "context": "To follow this guide, you should be familiar with some OpenFGA Concepts."
         },
         {
           "text": "Relation",
@@ -3901,11 +3901,11 @@
       ],
       "headline": {
         "title": "Authorization Through Organization Context",
-        "sidebarLabel": "Organization context authorization",
+        "sidebarLabel": "Authorization Through Organization Context",
         "preservedMetadata": {
           "description": "Modeling authorization through organization context"
         },
-        "bodyProseSha256": "5b1ead54bf98a289f6a3a87d0103315d88a3ecb4fe05a5d6cd9a0a2a28b5b152"
+        "bodyProseSha256": "313fac4f325660aaaca9715f704180be77254d248b630b73bb9ca87e36abf2be"
       }
     },
     {
@@ -4046,9 +4046,9 @@
           "context": "In OpenFGA, a user's relationship with an object can affect their relationship with another object. For example, an editor of a folder can also be an editor of all documents that folder is a parent of."
         },
         {
-          "text": "OpenFGA concepts",
+          "text": "OpenFGA Concepts",
           "url": "/docs/concepts",
-          "context": "Familiarize yourself with basic OpenFGA concepts:"
+          "context": "Familiarize yourself with basic OpenFGA Concepts:"
         },
         {
           "text": "authorization model",
@@ -4073,7 +4073,7 @@
         {
           "text": "Object",
           "url": "/docs/concepts#what-is-an-object",
-          "context": "An Object: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model"
+          "context": "An Object: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model"
         },
         {
           "text": "Relationship Tuple",
@@ -4100,7 +4100,7 @@
         },
         {
           "id": "01-update-the-athorization-model-to-allow-a-parent-relationship-between-folder-and-document",
-          "text": "01. Update the Authorization Model to allow a parent relationship between folder and document"
+          "text": "01. Update the Athorization Model to allow a parent relationship between folder and document"
         }
       ],
       "disclosures": [
@@ -4109,12 +4109,12 @@
           "paragraphs": [
             "In addition:",
             "Direct access",
-            "Creating an authorization model and a relationship tuple can grant a user access to an object. To learn more, read about Direct Access.",
+            "Creating an authorization model and a relationship tuple can grant a user access to an object. To learn more, read about Direct Access",
             "OpenFGA concepts",
             "A Type: a class of objects that have similar characteristics",
             "A User: an entity in the system that can be related to an object",
             "A Relation: a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system",
-            "An Object: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model",
+            "An Object: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model",
             "A Relationship Tuple: a group stored in OpenFGA that consists of a user, a relation, and an object",
             "Union Operator: can be used to indicate that the user has multiple ways of being related to an object"
           ],
@@ -4131,7 +4131,7 @@
         {
           "title": "Modeling Google Drive",
           "href": "/docs/modeling/advanced/gdrive#01-individual-permissions",
-          "text": "See how to make folders parents of documents, and to make editors on the parent folders editors on documents inside them."
+          "text": "See how to make folders parents of documents, and to make editors on the parent folders editors on documents inside them.."
         },
         {
           "title": "Modeling GitHub",
@@ -4144,11 +4144,11 @@
       ],
       "headline": {
         "title": "Parent-Child Objects",
-        "sidebarLabel": "Parent child",
+        "sidebarLabel": "Parent-Child Objects",
         "preservedMetadata": {
           "description": "Indicate relationships between objects, and how users' relationships to one object can affect their relationship with another"
         },
-        "bodyProseSha256": "eb3101eb84e521cacb80729fd4d762967fc395d77ea95ab3b09001392d4e2413"
+        "bodyProseSha256": "67e7c633202b2dcb874538bcc50352aacfb4e7cc911724e2b99482ea14669e1e"
       }
     },
     {
@@ -4188,9 +4188,9 @@
           "context": "In this guide you will learn how to grant public access to an object, such as a certain document, using type bound public access."
         },
         {
-          "text": "OpenFGA concepts",
+          "text": "OpenFGA Concepts",
           "url": "/docs/concepts",
-          "context": "In order to understand this guide correctly you must be familiar with some OpenFGA concepts and know how to develop the things that we will list below."
+          "context": "In order to understand this guide correctly you must be familiar with some OpenFGA Concepts and know how to develop the things that we will list below."
         },
         {
           "text": "authorization model",
@@ -4220,7 +4220,7 @@
         {
           "text": "Object",
           "url": "/docs/concepts#what-is-an-object",
-          "context": "An Object: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model"
+          "context": "An Object: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model"
         },
         {
           "text": "Relationship Tuple",
@@ -4230,7 +4230,7 @@
         {
           "text": "Type Bound Public Access",
           "url": "/docs/concepts#what-is-type-bound-public-access",
-          "context": "Type Bound Public Access: is a special OpenFGA concept (represented by <type>:*) can be used in relationship tuples to represent every object of that type"
+          "context": "A Type Bound Public Access: is a special OpenFGA concept (represented by <type>:*) can be used in relationship tuples to represent every object of that type"
         },
         {
           "text": "type bound public access",
@@ -4240,7 +4240,7 @@
         {
           "text": "check",
           "url": "/docs/concepts#what-is-a-check-request",
-          "context": "Once the above relationship tuple is added, we can check if bob can view document:company-psa.doc. OpenFGA will return { \"allowed\": true } even though no relationship tuple linking bob to the document was added. That is because the relationship tuple with user:* as the user made it so every object of type user (such as user:bob) can view the document, making it public."
+          "context": "Once the above relationship tuple is added, we can check if bob cab view document:company-psa.doc. OpenFGA will return { \"allowed\": true } even though no relationship tuple linking bob to the document was added. That is because the relationship tuple with user:* as the user made it so every object of type user (such as user:bob) can view the document, making it public."
         }
       ],
       "anchors": [
@@ -4264,9 +4264,9 @@
             "A Type: a class of objects that have similar characteristics",
             "A User: an entity in the system that can be related to an object",
             "A Relation: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system",
-            "An Object: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model",
+            "An Object: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model",
             "A Relationship Tuple: a grouping consisting of a user, a relation and an object stored in OpenFGA",
-            "Type Bound Public Access: is a special OpenFGA concept (represented by <type>:*) can be used in relationship tuples to represent every object of that type"
+            "A Type Bound Public Access: is a special OpenFGA concept (represented by <type>:*) can be used in relationship tuples to represent every object of that type"
           ],
           "visibleLeadIn": "Assume that you have the following authorization model. You have a type called document that can have a view relation."
         }
@@ -4294,11 +4294,11 @@
       ],
       "headline": {
         "title": "Public Access",
-        "sidebarLabel": "Public access",
+        "sidebarLabel": "Public Access",
         "preservedMetadata": {
           "description": "Granting public access to an object"
         },
-        "bodyProseSha256": "7fa4984e8c99a43fe4a94aae72489574a1f624218749ee3fffc1c67df7de07e9"
+        "bodyProseSha256": "1d5ca78474055de8d06b4f7d90fae02d16104ae5e8377149d69bd8f505d9a2c8"
       }
     },
     {
@@ -4360,9 +4360,9 @@
           "context": "Permissions allow users to access certain objects based on their specific roles, like device_renamer or channel_archiver."
         },
         {
-          "text": "OpenFGA concepts",
+          "text": "OpenFGA Concepts",
           "url": "/docs/concepts",
-          "context": "Familiarize yourself with the basics of OpenFGA concepts."
+          "context": "Familiarize yourself with the basics of OpenFGA Concepts."
         },
         {
           "text": "authorization model",
@@ -4392,7 +4392,7 @@
         {
           "text": "Object",
           "url": "/docs/concepts#what-is-an-object",
-          "context": "An Object: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model"
+          "context": "An Object: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model"
         },
         {
           "text": "Relationship Tuple",
@@ -4441,12 +4441,12 @@
           "paragraphs": [
             "In addition, you need to know the following:",
             "Direct Access",
-            "Creating an authorization model and a relationship tuple can grant a user access to an object. To learn more, read about Direct Access.",
+            "Creating an authorization model and a relationship tuple can grant a user access to an object. To learn more, read about Direct Access",
             "OpenFGA Concepts",
             "A Type: a class of objects that have similar characteristics",
             "A User: an entity in the system that can be related to an object",
             "A Relation: a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system",
-            "An Object: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model",
+            "An Object: represents an entity in the system. Users' relationships to it can be define through relationship tuples and the authorization model",
             "A Relationship Tuple: a group stored in OpenFGA that consists of a user, a relation, and an object",
             "A Relationship: OpenFGA will be called to check if there is a relationship between a user and an object, indicating that the access is allowed",
             "Union Operator: can be used to indicate that the user has multiple ways of being related to an object",
@@ -4479,11 +4479,11 @@
       ],
       "headline": {
         "title": "Roles and Permissions",
-        "sidebarLabel": "Roles and permissions",
+        "sidebarLabel": "Roles and Permissions",
         "preservedMetadata": {
           "description": "Modeling basic roles and permissions"
         },
-        "bodyProseSha256": "b9902b589aa5c347dc6909cc1bd008aee5251b80a96719238db32fb08858af14"
+        "bodyProseSha256": "d86f3ae94851a631ec4d0b02f2409cca66bbdd131234d7671e8a1f2f9746b696"
       }
     },
     {
@@ -4578,11 +4578,11 @@
       "noteTitles": [],
       "headline": {
         "title": "Store File Format",
-        "sidebarLabel": "Store file format",
+        "sidebarLabel": "Store File Format",
         "preservedMetadata": {
           "description": "Store File Format (.fga.yaml)"
         },
-        "bodyProseSha256": "eb107e1d867727cba07bdfeaff58cb12ba53a2a0f5bb87b560db32901e8696a5"
+        "bodyProseSha256": "95a9adbfec5b3f1eb2a7277e44b45051f920bf2c9a2b256f546c080bf74b1ef4"
       }
     },
     {
@@ -4651,7 +4651,7 @@
         "preservedMetadata": {
           "description": "Test OpenFGA authorization models before deployment."
         },
-        "bodyProseSha256": "1fd223c6147c17f21b48ac4f4ee78313b9ecb8a1753ca2de0c634eb8b4baa1e0"
+        "bodyProseSha256": "f4270183c3bca71d67970e64483abab3cb15e2a63aa97edfac55455a05871899"
       }
     },
     {
@@ -4694,7 +4694,7 @@
         {
           "text": "Relationship Tuple",
           "url": "/docs/concepts#what-is-a-relationship-tuple",
-          "context": "A Relationship Tuple: a grouping consisting of a user, a relation and an object stored in OpenFGA."
+          "context": "A Relationship Tuple: a grouping consisting of a user, a relation and an object stored in OpenFGA"
         }
       ],
       "anchors": [],
@@ -4725,11 +4725,11 @@
       "noteTitles": [],
       "headline": {
         "title": "Use Token Claims As Contextual Tuples",
-        "sidebarLabel": "Token claims contextual tuples",
+        "sidebarLabel": "Token claims as Contextual Tuples",
         "preservedMetadata": {
           "description": "Using identity token claims to define contextual relations"
         },
-        "bodyProseSha256": "47bf1c151bbfa155fae96e042099b646035c0aa2f554b25f63e9024611eae6cb"
+        "bodyProseSha256": "a30c492a2aa7acc18924259c3aefd493563b11637e5c1186e2e56d811bdc115f"
       }
     },
     {
@@ -4764,19 +4764,19 @@
           "context": "To add users to groups and grant groups access to an object using OpenFGA."
         },
         {
-          "text": "OpenFGA concepts",
+          "text": "OpenFGA Concepts",
           "url": "/docs/concepts",
-          "context": "Familiarize yourself with the OpenFGA concepts."
+          "context": "Familiarize yourself with the OpenFGA Concepts."
         },
         {
           "text": "authorization model",
           "url": "/docs/concepts#what-is-an-authorization-model",
-          "context": "Assume you have the following authorization model: you have an object called document that users can relate to as an editor."
+          "context": "Assume you have the following authorization model. : you have an object called document that users can relate to as an editor."
         },
         {
           "text": "object",
           "url": "/docs/concepts#what-is-an-object",
-          "context": "Assume you have the following authorization model: you have an object called document that users can relate to as an editor."
+          "context": "Assume you have the following authorization model. : you have an object called document that users can relate to as an editor."
         },
         {
           "text": "Type",
@@ -4884,7 +4884,7 @@
             "An Object: represents an entity in the system. Users' relationships to it can be defined with relationship tuples and the authorization model.",
             "A Relationship Tuple: a grouping consisting of a user, a relation and an object stored in OpenFGA."
           ],
-          "visibleLeadIn": "Assume you have the following authorization model: you have an object called document that users can relate to as an editor."
+          "visibleLeadIn": "Assume you have the following authorization model. : you have an object called document that users can relate to as an editor."
         }
       ],
       "replacedDetails": 1,
@@ -4910,11 +4910,11 @@
       ],
       "headline": {
         "title": "User Groups",
-        "sidebarLabel": "User groups",
+        "sidebarLabel": "User Groups",
         "preservedMetadata": {
           "description": "Adding users to groups and granting group members access to an object"
         },
-        "bodyProseSha256": "7893a8350907a7af7a79abe5db38149f92108643217f31cfc0ef58fbb32d165c"
+        "bodyProseSha256": "83921185ace115f5247c722e38fad2a5ce43cccb42c3c8b31c1f019526dcd105"
       }
     }
   ],

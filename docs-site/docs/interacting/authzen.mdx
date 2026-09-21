@@ -1,6 +1,7 @@
 ---
 title: AuthZEN API (Experimental)
 description: Using the AuthZEN interoperability API with OpenFGA
+sidebarTitle: "AuthZEN API"
 ---
 
 OpenFGA implements the [AuthZEN](https://openid.net/specs/authorization-api-1_0.html) specification, a standard API for authorization interoperability defined by the OpenID AuthZEN working group. This allows you to use OpenFGA as an AuthZEN-compliant Policy Decision Point (PDP).
@@ -10,6 +11,8 @@ We recommend that you use the native API when integrating your application with 
 You can validate the implementation using the [AuthZEN interop scenarios for OpenFGA](https://github.com/openfga/authzen-interop), which cover the standard [AuthZEN interop scenarios](https://authzen-interop.net/docs/category/scenarios).
 
 <Warning>
+**Experimental**
+
 The AuthZEN API is experimental and must be explicitly enabled. The API surface may change in future releases.
 </Warning>
 
@@ -447,6 +450,8 @@ The spec RECOMMENDS that PEPs include an `X-Request-ID` header in requests and t
 The AuthZEN spec does not define a concept equivalent to [Contextual Tuples](/docs/interacting/contextual-tuples). If your authorization model depends on contextual tuples for certain checks, you must use the native OpenFGA API for those checks.
 
 ## Related Sections
+
+Learn more about the concepts and APIs used by the AuthZEN integration.
 
 <CardGroup>
   <Card title="Relationship Queries" href="/docs/interacting/relationship-queries">

@@ -1,6 +1,7 @@
 ---
 title: Query Consistency Modes
 description: Query Consistency Modes
+sidebarTitle: "Query Consistency"
 ---
 
 ## Background
@@ -58,11 +59,13 @@ Currently, the cache is used by Check and partially in ListObjects. It will be i
 
 ## Future work
 
-The [Zanzibar paper](/docs/authorization-concepts#what-is-zanzibar) has a feature called `Zookies`, which is a consistency token that is returned from Write operation. You can store that token in your resource table, and specify it in subsequent calls to query APIs.
+The [Zanzibar paper](/docs/authorization-concepts#what-is-zanzibar) has a feature called `Zookies`, which is a consistency token that is returned from Write operation. You can store that token in you resource table, and specify it in subsequent calls to query APIs.
 
 OpenFGA is considering a similar feature in future releases.
 
 ## Related Sections
+
+Check the following sections for more on how to check, read and expand.
 
 <CardGroup>
   <Card title="Relationship Queries" href="/docs/interacting/relationship-queries">

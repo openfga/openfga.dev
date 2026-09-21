@@ -1,6 +1,6 @@
 ---
 title: "\U0001F433 Setup OpenFGA with Docker"
-sidebarTitle: Docker Setup Guide
+sidebarTitle: "🐳 Docker"
 description: Setting up an OpenFGA server with Docker
 ---
 
@@ -348,7 +348,7 @@ docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:80
 To configure with OIDC authentication and enabling TLS in http server with Docker.
 
 1. Copy the certificate and key files to your docker container.
-2. Run the following command:
+2. Run the following command
 
 ```bash
 docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \

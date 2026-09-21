@@ -99,6 +99,10 @@ Staging uses the currently published website, so record the expected composite-s
 
 In an HTTPS browser, check docs and API navigation, direct deep links, per-page Markdown, images, custom viewers, search results, enabled assistant streaming, and analytics POSTs. Follow legacy Swagger fragments for Check, BatchCheck, and AuthZEN, including encoded tag names and the trailing-slash variant. Check response MIME types, upstream error propagation, theme changes, and reloads. Test website Home, Project, Community, Blog, search, root LLM resources, and negative prefix matches. Root `openfga.dev/` must not redirect to docs.
 
+For reader-interface acceptance, check the [migration review checklist](../../docs-site/README.md#migration-review-checklist). LLM resources must remain machine-discoverable without visible footer links. Exercise the single responsive navbar assistant entry; the removed page-context, floating, and code-block prompts are not missing functionality. API descriptions must remain visible while article SEO descriptions stay metadata-only.
+
+Content acceptance requires the original wording, section order, navigation, and page boundaries, subject only to the [documented technical exceptions](../../docs-site/README.md#retained-technical-exceptions). Retain the useful SDK setup guidance and code repairs; do not waive unrelated editorial changes as part of release approval.
+
 Before the change window, save:
 
 - The previous Worker version, routes, and applicable edge rules.

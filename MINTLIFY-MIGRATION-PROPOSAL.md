@@ -25,6 +25,28 @@ documentation navigation, search, Markdown exports, and the native OpenAPI
 playground. A path-aware reverse proxy is required because DNS cannot route
 individual paths to separate origins.
 
+### Migration review scope
+
+The migration preserves the original navigation labels, categories, ordering,
+article wording, and page boundaries. Reorganization, new summaries, and moving
+content between pages are separate follow-up work, not part of this migration.
+Platform-specific markup changes must preserve the original content and
+instructional grouping.
+
+Existing SDK code repairs and useful setup and version guidance remain within the
+[documented technical exceptions](docs-site/README.md#retained-technical-exceptions).
+They do not authorize general rewriting, extra summaries, or reordered sections.
+
+SEO descriptions remain metadata rather than becoming new article introductions.
+LLM resources remain available through machine discovery without visible footer
+links. The reader interface keeps one responsive navbar assistant entry instead
+of repeated page, floating, and code-block prompts. A Copy page or external-chat
+menu is a separate decision.
+
+Use the [migration review checklist](docs-site/README.md#migration-review-checklist)
+for current acceptance requirements. The historical spike findings below are not
+approval for editorial or navigation changes.
+
 ---
 
 ## The Two Options
@@ -105,7 +127,7 @@ Docusaurus is a Node.js application with its own build pipeline, plugins, and de
 
 ### 4. Cleaner reader experience
 
-Based on the working spike (visible on `poc/mintlify-native`), the Mintlify site is a meaningful visual upgrade: tighter typography, better dark mode, a cleaner sidebar hierarchy, and more polished code block rendering. These are observable in the running prototype, not claims from Mintlify's marketing.
+Mintlify supplies native navigation, theme switching, and code-block rendering. The migration uses those controls while preserving the original sidebar hierarchy and content. Navigation redesign and editorial improvements require separate review.
 
 ### 5. Integrated search
 
