@@ -5,6 +5,7 @@ import { pathToFileURL } from 'node:url';
 import { loadCanonical } from '../docs-site/scripts/api-code-samples.mjs';
 import { apiRoutesFromSchema } from './site-boundary.mjs';
 import { verifyDeployment } from './deployment-verification.mjs';
+import { checkNativeFingerprint, readNativeSources } from './native-deployment-fingerprint.mjs';
 
 export async function main(args = process.argv.slice(2)) {
   const { values } = parseArgs({
@@ -18,6 +19,7 @@ export async function main(args = process.argv.slice(2)) {
     'Use HTTPS, or HTTP on localhost for a local Worker');
   assert.ok(!origin.username && !origin.password && origin.pathname === '/' && !origin.search && !origin.hash,
     '--origin must contain only the scheme and hostname');
+  const expectedFingerprint = checkNativeFingerprint(await readNativeSources());
   const config = JSON.parse(await readFile(new URL('../docs-site/docs.json', import.meta.url), 'utf8'));
   const metadata = JSON.parse(await readFile(new URL('../docs-site/api-samples.json', import.meta.url), 'utf8'));
   const schema = await loadCanonical(metadata);
@@ -29,8 +31,8 @@ export async function main(args = process.argv.slice(2)) {
   };
   collect(config.navigation);
   const routes = [...docs, ...apiRoutesFromSchema(config, schema)].sort();
-  const results = await verifyDeployment({ origin: origin.origin, mode: values.mode, routes });
-  console.log(JSON.stringify({ origin: origin.origin, mode: values.mode, results }, null, 2));
+  const results = await verifyDeployment({ origin: origin.origin, mode: values.mode, routes, expectedFingerprint });
+  console.log(JSON.stringify({ origin: origin.origin, mode: values.mode, expectedFingerprint, results }, null, 2));
   if (results.some(({ ok }) => !ok)) throw new Error('Deployment acceptance failed; do not activate production routing');
 }
 

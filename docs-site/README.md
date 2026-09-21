@@ -317,7 +317,7 @@ Commit source and generated output together. The check rebuilds into a temporary
 
 Mintlify snippets cannot import npm packages. Keep constants and helper access inside the exported component function; sibling top-level bindings are not reliably available in the sandbox. Do not import one snippet from another.
 
-Shared logic lives in standalone browser helpers. Snippets must work whether Mintlify preloads those scripts or loads them on demand. Request viewers show loading and failure states; model/DSL viewers use their existing polling loaders.
+Shared logic lives in standalone browser helpers. Snippets must work whether Mintlify preloads those scripts or loads them on demand. Request viewers show loading and failure states; model/DSL viewers use script-load listeners, with plain-text DSL fallback while highlighting is unavailable.
 
 Keep author-source modules under `scripts/` as `.mjs`, not root `.js` files that Mintlify may inject into pages. [`operation-codegen.mjs`](./scripts/operation-codegen.mjs) owns pure request generation; [`viewer-runtime.mjs`](./scripts/viewer-runtime.mjs) composes shared setup and complete programs.
 
@@ -361,6 +361,21 @@ npm run build:config-page -- --release v1.20.0 --schema /path/to/schema.json
 
 Ordinary website builds do not run this generator. Review release changes against the independent content fixtures; never regenerate expected fixtures from the generated table just to make checks pass. The nightly workflow produces draft updates that still require this review.
 
+### Deployment fingerprint
+
+After editing native sources or regenerating their outputs, refresh the hidden deployment marker:
+
+```bash
+npm run generate:mintlify-deployment
+npm run check:mintlify-deployment
+```
+
+Commit the resulting `docs.json` change with the source changes. The marker is the SHA-256 fingerprint of the `docs-site/` source inventory and file contents, excluding its own metadata value. It covers pages, snippets, configuration, runtime assets, media, and authoring sources; it is not a timestamp or a Git commit ID. Ignored local files are excluded, new nonignored files are included, and tracked deletions must be staged before regeneration.
+
+Ordinary checks never refresh the marker: they fail if it is stale. Deployment acceptance recomputes it from the selected checkout, then requires the same marker in every advertised docs and API page. A previous hosted deployment with the same route inventory cannot pass. Wait for Mintlify to finish deploying the matching sources rather than bypassing this gate. Commits with identical native sources intentionally share a fingerprint.
+
+The nightly configuration-update workflow refreshes and commits the marker with its generated table; it does not regenerate independent content expectations.
+
 ## Asset storage and Git LFS
 
 | Asset location              | Storage                                                    |
@@ -382,9 +397,10 @@ Keep native overrides after the global LFS patterns. Attribute changes do not re
 
 ## Validating authoring changes
 
-Run the full repository-owned gate before submitting a change:
+Refresh the deployment fingerprint after source changes, then run the full repository-owned gate before submitting:
 
 ```bash
+npm run generate:mintlify-deployment
 npm run check:mintlify
 ```
 
@@ -402,7 +418,7 @@ During development, use the checks relevant to the change:
 | Configuration generator          | `npm run test:config-page`                                |
 | Split-site ownership contracts   | `npm run test:site-boundary`                              |
 
-The full gate checks generated artifacts, MDX, DSL, navigation, API samples, independent content fixtures, component contracts, configuration generation, and site boundaries. API checks fetch the pinned canonical schema. See the [repository CI guide](../README.md#mintlify-repository-quality-checks) for prerequisites and workflow details.
+The full gate checks the deployment fingerprint, generated artifacts, MDX, DSL, navigation, API samples, independent content fixtures, component contracts, configuration generation, and site boundaries. API checks fetch the pinned canonical schema. See the [repository CI guide](../README.md#mintlify-repository-quality-checks) for prerequisites and workflow details.
 
 Know what each result proves:
 

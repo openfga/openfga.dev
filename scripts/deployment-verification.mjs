@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { readAttribute, siteOrigin } from './agent-content.mjs';
+import { fingerprintMeta } from './native-deployment-fingerprint.mjs';
 
 async function fetchText(url) {
   const response = await fetch(url, {
@@ -12,7 +13,13 @@ async function fetchText(url) {
   };
 }
 
-export async function verifyDeployment({ origin, mode, routes, get = fetchText }) {
+export async function verifyDeployment({ origin, mode, routes, expectedFingerprint, get: fetchPage = fetchText }) {
+  assert.match(expectedFingerprint ?? '', /^[a-f0-9]{64}$/, 'A validated checkout fingerprint is required');
+  const responses = new Map();
+  const get = (url) => {
+    if (!responses.has(url)) responses.set(url, Promise.resolve().then(() => fetchPage(url)));
+    return responses.get(url);
+  };
   const checks = [];
   const check = async (name, run) => {
     try {
@@ -58,6 +65,21 @@ export async function verifyDeployment({ origin, mode, routes, get = fetchText }
     }
   };
   await Promise.all([
+    check('Native pages match the selected source revision', async () => {
+      assert.ok(routes.length > 0, 'Cannot accept an empty native inventory');
+      for (let i = 0; i < routes.length; i += 4) {
+        await Promise.all(routes.slice(i, i + 4).map(async (path) => {
+          const result = await get(`${origin}${path}`);
+          assert.equal(result.status, 200, `${path}: HTTP ${result.status}`);
+          assert.match(result.headers.get('content-type') ?? '', /text\/html/);
+          const markers = (result.text.match(/<meta\b[^>]*>/gi) ?? []).filter((tag) =>
+            readAttribute(tag, 'name') === fingerprintMeta || readAttribute(tag, 'property') === fingerprintMeta);
+          assert.equal(markers.length, 1, `${path}: missing or ambiguous deployment fingerprint`);
+          assert.equal(readAttribute(markers[0], 'content'), expectedFingerprint,
+            `${path}: hosted content does not match this checkout; wait for the matching Mintlify deployment`);
+        }));
+      }
+    }),
     check('Documentation page and runtime', () => page('/docs/fga')),
     check('API page and runtime', () => page('/api-reference/stores/list-all-stores')),
     check('Every advertised API operation resolves', operationPages),

@@ -58,7 +58,7 @@ jobs:
       - name: Validate proxy
         run: npm run check:docs-proxy
 
-      - name: Verify native deployment before production activation
+      - name: Verify native deployment matches the selected source before production activation
         if: inputs.environment == 'production'
         run: npm run verify:docs-origin
 
