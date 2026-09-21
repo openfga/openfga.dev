@@ -3,7 +3,7 @@ title: "Authorization Model Design Principles"
 description: "Best practices for creating clear, performant, and maintainable authorization models."
 canonical: "https://openfga.dev/docs/best-practices/modeling-design-principles"
 content_type: "documentation"
-last_updated: "2026-09-17T10:46:58.000Z"
+last_updated: "2026-09-21T10:27:19.000Z"
 ---
 
 # Authorization Model Design Principles

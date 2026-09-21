@@ -3,7 +3,7 @@ title: "Managing User Access"
 description: "Granting a user access to a particular object"
 canonical: "https://openfga.dev/docs/interacting/managing-user-access"
 content_type: "documentation"
-last_updated: "2026-09-17T10:46:58.000Z"
+last_updated: "2026-09-21T10:27:19.000Z"
 ---
 
 # Managing User Access

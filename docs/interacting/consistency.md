@@ -3,7 +3,7 @@ title: "Query Consistency Modes"
 description: "Query Consistency Modes"
 canonical: "https://openfga.dev/docs/interacting/consistency"
 content_type: "documentation"
-last_updated: "2026-09-17T10:46:58.000Z"
+last_updated: "2026-09-21T10:27:19.000Z"
 ---
 
 # Query Consistency Modes
