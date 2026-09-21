@@ -13,7 +13,7 @@ Product documentation and the read-only API reference live in [`docs-site/`](doc
 
 The legacy `docs/content/` corpus and sidebar are retired. Author product documentation in `docs-site/docs/`; do not recreate the old source tree. Compact historical regression fixtures under `tests/fixtures/mintlify/` preserve independently captured migration expectations, not a second published documentation corpus.
 
-Keep this migration content-preserving. Retain the original navigation labels, grouping, order, article wording, and page boundaries. Reorganization and editorial improvements belong in separate follow-up changes. See the [migration review checklist](docs-site/README.md#migration-review-checklist) for the reader-interface and content requirements.
+Keep this migration content-preserving. Retain the original visible page titles, section headings, navigation labels, grouping, order, article wording, and page boundaries. SEO-only changes must stay in non-visible metadata, not Mintlify's reader-visible `title` field. Reorganization and visible copy improvements belong in separate follow-up changes. See the [migration review checklist](docs-site/README.md#migration-review-checklist) for the reader-interface and content requirements.
 
 Keep the existing SDK repairs and useful setup guidance within the [documented technical exceptions](docs-site/README.md#retained-technical-exceptions). Those exceptions do not authorize other content additions or section reordering.
 

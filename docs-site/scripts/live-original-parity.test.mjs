@@ -102,6 +102,15 @@ function assertOriginalProse(page, native) {
     `${page.source}: retain original section/disclosure headings in their original order`);
 }
 
+function assertOriginalTitles(page, native) {
+  assert.equal(normalizedProse(native.metadata.title), page.title,
+    `${page.source}: retain the original visible frontmatter title`);
+  assert.equal(native.title, page.title,
+    `${page.source}: retain the original visible body headline`);
+  assert.equal(native.metadata.sidebarTitle ?? native.metadata.title, page.sidebarTitle,
+    `${page.source}: retain the original sidebar label`);
+}
+
 function expectedNavigation() {
   const page = (id) => originalPages.get(`${id.slice('content/'.length)}.mdx`)?.destination.replace(/\.mdx$/, '');
   const convert = (entry) => entry.type === 'doc' ? page(entry.id) : {
@@ -192,13 +201,39 @@ test('Docs keeps the original category labels, hierarchy, order, and overview de
 for (const page of baseline.pages) {
   test(`${page.source}: original headline and sidebar wording`, () => {
     const native = parseOriginalContent(read(`docs-site/${page.destination}`));
-    assert.equal(normalizedProse(native.metadata.title), page.title);
-    assert.equal(native.metadata.sidebarTitle ?? native.metadata.title, page.sidebarTitle);
+    assertOriginalTitles(page, native);
   });
   test(`${page.source}: original body content and page boundaries`, () => {
     assertOriginalProse(page, parseOriginalContent(read(`docs-site/${page.destination}`)));
   });
 }
+
+test('SEO-only metadata does not authorize visible title or sidebar rewrites', () => {
+  const page = originalPages.get('intro.mdx');
+  const source = read(`docs-site/${page.destination}`);
+  const seoOnly = parseOriginalContent(source.replace(/^---\n/,
+    '---\n"og:title": "A search-oriented title"\n"twitter:title": "A social-sharing title"\n'));
+  assertOriginalTitles(page, seoOnly);
+  assertOriginalProse(page, seoOnly);
+  for (const mutate of [
+    (native) => { native.metadata.title = 'A search-oriented title'; },
+    (native) => { native.metadata.sidebarTitle = 'A shorter navigation label'; },
+  ]) {
+    const changed = structuredClone(seoOnly);
+    mutate(changed);
+    assert.throws(() => assertOriginalTitles(page, changed), /retain the original/);
+  }
+});
+
+test('an added body headline cannot bypass the original frontmatter title guard', () => {
+  const page = originalPages.get('intro.mdx');
+  const source = read(`docs-site/${page.destination}`);
+  for (const headline of ['# A rewritten visible title', '<h1>A rewritten visible title</h1>']) {
+    const changed = parseOriginalContent(source.replace(/\n---\n/, `\n---\n\n${headline}\n`));
+    assert.equal(normalizedProse(changed.metadata.title), page.title);
+    assert.throws(() => assertOriginalTitles(page, changed), /retain the original visible body headline/);
+  }
+});
 
 test('the original prose oracle rejects added, removed, rewritten, reordered, and relocated content', () => {
   const page = originalPages.get('adopters/agicap.mdx');

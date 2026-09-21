@@ -440,6 +440,7 @@ Repository checks do not run the Mintlify CLI or replace its build validation an
 
 Apply these requirements to every migrated page, not only the examples raised in review:
 
+- Preserve the original visible article titles and section headings. Mintlify's frontmatter `title` is reader-visible, not an SEO-only field. SEO title adjustments may use supported non-visible metadata such as `og:title` and `twitter:title`, but must not change the article headline or navigation. Visible copy improvements belong in a separate follow-up PR.
 - Keep original sidebar labels, category names, hierarchy, ordering, and overview entries. Use `sidebarTitle` when the original sidebar label differs from the article headline.
 - Keep article wording, examples, and sections in their original order and on their original pages. Do not combine migration work with summaries, factual updates, recategorization, or cross-page content moves. Retain only the technical exceptions listed below.
 - Preserve frontmatter descriptions for SEO without presenting them as new introductions. The shared article-header rule does not hide native API operation descriptions.
@@ -483,7 +484,7 @@ The fixtures under [`tests/fixtures/mintlify/`](../tests/fixtures/mintlify/) pre
 
 The original source/component fixtures were extracted from `85bde5e19f7fa0b8687732c33c4f7c3a39fd83e0`, independently of native output. The review baseline in `original-content.json` uses the original `docs/sidebars.js` and `docs/content/` at `2dbd2be1145e5656d340816cd72d20192edcfe23`. Explicit sidebar labels take precedence over frontmatter titles.
 
-`live-original-parity.test.mjs` checks every page against that baseline and rejects added, removed, rewritten, reordered, or cross-page prose and reordered section headings. It enforces the exact page-specific technical exceptions above, including the retained setup instructions, instead of allowing arbitrary SDK-related additions. The capture script reads only the pinned original Git revision; ordinary checks use the committed fixture and do not need Git history.
+`live-original-parity.test.mjs` checks every page against that baseline and rejects title/sidebar rewrites (including body headlines), added, removed, rewritten, reordered, or cross-page prose, and reordered section headings. SEO-only metadata does not waive the visible-title contract. It enforces the exact page-specific technical exceptions above, including the retained setup instructions, instead of allowing arbitrary SDK-related additions. The capture script reads only the pinned original Git revision; ordinary checks use the committed fixture and do not need Git history.
 
 Do not overwrite expectations with current output to silence failures. Intentional changes need a reviewed update to the contract; migration restorations must first match the independent original-source baseline.
 

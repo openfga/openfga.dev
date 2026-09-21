@@ -32,8 +32,10 @@ requirements. The GitHub Pages publishing workflow remains unchanged.
 
 ### Migration review scope
 
-The migration preserves the original navigation labels, categories, ordering,
-article wording, and page boundaries. Reorganization, new summaries, and moving
+The migration preserves the original visible article titles, section headings,
+navigation labels, categories, ordering, article wording, and page boundaries.
+SEO-only adjustments must stay in non-visible metadata, not the reader-visible
+`title` field. Reorganization, new summaries, and moving
 content between pages are separate follow-up work, not part of this migration.
 Platform-specific markup changes must preserve the original content and
 instructional grouping.
