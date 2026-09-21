@@ -78,14 +78,59 @@ jobs:
       - name: Build site
         run: npm run build
 
-      - name: Test link-check input selection
-        run: node --test scripts/prepare-link-check-inputs.test.mjs
-
       - name: Select link-check inputs
-        run: node scripts/prepare-link-check-inputs.mjs
+        shell: bash
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          added_posts="$(mktemp)"
+          known_posts="$(mktemp)"
+          excluded_pages="$(mktemp)"
+          trap 'rm -f "$added_posts" "$known_posts" "$excluded_pages"' EXIT
+
+          git diff --name-only --diff-filter=A "${BASE_SHA}...${HEAD_SHA}" -- blog \
+            | grep -E '^blog/.+\.mdx?$' > "$added_posts" || true
+
+          base_path="${BASE_URL:-/}"
+          base_path="/${base_path#/}"
+          base_path="${base_path%/}"
+          metadata_files=(.docusaurus/docusaurus-plugin-content-blog/default/site-blog-*.json)
+
+          if [[ ! -e "${metadata_files[0]}" ]]; then
+            echo "No generated blog metadata found" >&2
+            exit 1
+          fi
+
+          for metadata in "${metadata_files[@]}"; do
+            source="$(jq -er '.source | sub("^@site/"; "")' "$metadata")"
+            permalink="$(jq -er '.permalink' "$metadata")"
+            echo "$source" >> "$known_posts"
+
+            if grep -Fxq "$source" "$added_posts"; then
+              continue
+            fi
+
+            if [[ -n "$base_path" ]]; then
+              permalink="${permalink#"$base_path"}"
+            fi
+            printf 'build%s.html\nbuild%s.html.html\n' "$permalink" "$permalink" >> "$excluded_pages"
+          done
+
+          missing_posts="$(grep -Fvx -f "$known_posts" "$added_posts" || true)"
+          if [[ -n "$missing_posts" ]]; then
+            echo "No generated blog metadata found for:" >&2
+            echo "$missing_posts" >&2
+            exit 1
+          fi
+
+          find build -type f -name '*.html' -print \
+            | sort \
+            | grep -Fvx -f "$excluded_pages" > build/lychee-inputs.txt
+
+          echo "Selected $(wc -l < build/lychee-inputs.txt) HTML files; included $(wc -l < "$added_posts") new blog post(s)."
 
       - name: Check links
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
