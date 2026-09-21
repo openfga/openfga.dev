@@ -50,12 +50,22 @@ function legacyAdmonitions(body) {
   }).replace(/^:::[ \t]*$/gm, '\n</LegacyAdmonition>');
 }
 
+function removeLegacyComments(body) {
+  let previous;
+  do {
+    previous = body;
+    // Removing a comment can join surrounding text into another comment delimiter.
+    body = body.replace(/<!--[\s\S]*?-->/g, '');
+  } while (body !== previous);
+  return body;
+}
+
 export function parseOriginalContent(source, { legacy = false } = {}) {
   const frontmatter = /^---\r?\n([\s\S]*?)\r?\n---\r?\n/.exec(source);
   const metadata = frontmatter ? parseYaml(frontmatter[1]) : {};
   let body = source.slice(frontmatter?.[0].length ?? 0);
   if (legacy) {
-    body = legacyAdmonitions(body.replace(/<!--[\s\S]*?-->/g, '').replace(/ \{#[\w-]+\}/g, ''));
+    body = legacyAdmonitions(removeLegacyComments(body).replace(/ \{#[\w-]+\}/g, ''));
   }
   const tree = processor.parse(body);
   const descendants = (node) => [node, ...(node.children ?? []).flatMap(descendants)];

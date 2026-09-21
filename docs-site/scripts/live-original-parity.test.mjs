@@ -118,6 +118,47 @@ function withoutIcons(entries) {
   }));
 }
 
+test('legacy comment removal preserves surrounding prose, headings, and metadata', () => {
+  const content = parseOriginalContent([
+    '---',
+    'title: Original metadata',
+    '---',
+    '# Original headline',
+    '',
+    '## Original section {#section}',
+    '',
+    'Before<!-- inline -->after. <!-- another -->Visible text.',
+    '',
+    '<!-- multiple',
+    'lines -->',
+    '',
+    'Retained body.',
+  ].join('\n'), { legacy: true });
+  assert.deepEqual(content, {
+    metadata: { title: 'Original metadata' },
+    title: 'Original headline',
+    blocks: ['Original section', 'Beforeafter. Visible text.', 'Retained body.'],
+    prose: ['Beforeafter. Visible text.', 'Retained body.'],
+    headings: ['Original section'],
+  });
+});
+
+test('legacy comment removal reaches a fixed point for reassembled comment delimiters', () => {
+  for (const comment of [
+    '<!<!-- removed -->-- hidden -->',
+    '<!<!<!-- removed -->-- hidden -->-- hidden again -->',
+    '<<!-- first -->!<!-- second -->-- hidden -->',
+  ]) {
+    const content = parseOriginalContent(`Before${comment}after.`, { legacy: true });
+    assert.deepEqual(content.prose, ['Beforeafter.']);
+  }
+});
+
+test('legacy comment removal still rejects an unterminated reassembled comment', () => {
+  assert.throws(() => parseOriginalContent('Before <!<!-- removed -->--', { legacy: true }),
+    /Unexpected character/);
+});
+
 test('the original baseline covers every owned historical page, independently of native content', () => {
   assert.equal(baseline.provenance.revision, originalContentRevision);
   assert.equal(baseline.pages.length, 110);
