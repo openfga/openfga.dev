@@ -525,7 +525,7 @@ The migration preserves instructional content, URLs, examples, and image bytes w
 
 Read, Expand, ReadChanges, StreamedListObjects, and model-write tutorial examples are static native conversions, not reusable viewers. Unsupported source-only exports and layout props have not been recreated merely to match the old component inventory.
 
-The [migration proposal](../MINTLIFY-MIGRATION-PROPOSAL.md) provides background. Content acceptance and source retirement do not authorize a production traffic switch.
+Content acceptance and source retirement do not authorize a production traffic switch.
 
 ## Split-site deployment
 
