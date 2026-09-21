@@ -17,7 +17,7 @@ test('separate assistant entry points are hidden without disabling native search
   assert.deepEqual(config.contextual.options, []);
   assert.match(
     css,
-    /#assistant-entry,\s*#assistant-entry-mobile,\s*\[data-assistant-bar\],\s*#ask-assistant-code-block-button\s*\{\s*display:\s*none;\s*\}/,
+    /#assistant-entry,\s*#assistant-entry-mobile,\s*\[data-assistant-bar\],\s*#ask-assistant-code-block-button,\s*button\[data-chat-payload-element-id\]\s*\{\s*display:\s*none;\s*\}/,
   );
   assert.doesNotMatch(css, /#chat-assistant-sheet\b/);
   assert.doesNotMatch(css, /#search-bar-entry(?:-mobile)?\s*\{[^{}]*display:\s*none/);
@@ -32,12 +32,23 @@ test('separate assistant entry points are hidden without disabling native search
   }
 });
 
-test('desktop navigation follows the logo while search and theme stay on the right', () => {
+test('code-block assistant hiding does not depend on an ID or hide copy and language controls', () => {
+  const assistantRule = css.match(/[^{}]*button\[data-chat-payload-element-id\][^{}]*\{[^{}]*\}/)?.[0];
+  assert.ok(assistantRule);
+  assert.match(assistantRule, /display:\s*none/);
+  assert.doesNotMatch(assistantRule, /copy-code-button|role=.tab|\.code-block|^\s*button\s*[,{}]/m);
+});
+
+test('desktop navigation follows the logo while GitHub, search, and theme stay together on the right', () => {
   assert.match(
     css,
     /@media \(min-width: 1024px\)\s*\{[\s\S]*?div:has\(> a\[href='https:\/\/openfga\.dev\/'\]\)\s*\{\s*flex:\s*0 0 auto;/,
   );
-  assert.match(css, /#navbar \.topbar-right-container > ul\s*\{\s*margin-right:\s*auto;/);
+  assert.match(css, /#navbar \.topbar-right-container > ul\s*\{\s*flex:\s*1;/);
+  assert.match(
+    css,
+    /#navbar \.topbar-right-container > ul > li:has\(> a\[href='https:\/\/github\.com\/openfga\/openfga'\]\)\s*\{\s*margin-left:\s*auto;/,
+  );
   assert.match(
     css,
     /@media \(min-width: 1100px\)\s*\{\s*#navbar #search-bar-entry\s*\{\s*width:\s*clamp\(9\.25rem, 16vw, 16rem\)/,

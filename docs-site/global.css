@@ -25,7 +25,11 @@
   }
 
   #navbar .topbar-right-container > ul {
-    margin-right: auto;
+    flex: 1;
+  }
+
+  #navbar .topbar-right-container > ul > li:has(> a[href='https://github.com/openfga/openfga']) {
+    margin-left: auto;
   }
 }
 
@@ -221,7 +225,8 @@ body:not(:has(#api-playground-2-operation-page)) #header .prose {
 #assistant-entry,
 #assistant-entry-mobile,
 [data-assistant-bar],
-#ask-assistant-code-block-button {
+#ask-assistant-code-block-button,
+button[data-chat-payload-element-id] {
   display: none;
 }
 
