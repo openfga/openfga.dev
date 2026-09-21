@@ -94,6 +94,38 @@ test('historical inventory and active overrides validate without legacy docs or 
   assert.equal(cli(root).status, 0);
 });
 
+test('the two maintainer READMEs do not become published documentation pages', (t) => {
+  const { root, put } = fixture(t);
+  put('docs-site/README.md', '# Contributor guide\n');
+  put('docs-site/scripts/README.md', '# Tooling guide\n');
+  const result = validateSourceCoverage({ repoRoot: root, logger: () => {} });
+  assert.deepEqual(result.ownedPages, ['docs/fga.mdx', 'docs/guide.mdx']);
+  assert.equal(result.destinationCount, 2);
+  assert.equal(cli(root).status, 0);
+});
+
+for (const path of ['docs/README.md', 'scripts/extra.md', 'scripts/nested/README.md']) {
+  mutation(
+    `maintainer README allowance does not hide ${path}`,
+    ({ put }) => put(`docs-site/${path}`),
+    /unexpected Markdown page/,
+  );
+}
+
+mutation(
+  'MDX under scripts still requires a published-page inventory entry',
+  ({ put }) => put('docs-site/scripts/unlisted.mdx'),
+  /scripts\/unlisted\.mdx: unexpected MDX page/,
+);
+mutation(
+  'a maintainer README cannot be a symlink',
+  ({ root, put }) => {
+    put('docs-site/scripts/helper.mjs', '');
+    symlinkSync(join(root, 'src/pages/community.mdx'), join(root, 'docs-site/scripts/README.md'));
+  },
+  /scripts\/README\.md: symlinks are not allowed/,
+);
+
 test('hidden route-section anchors keep their nested sidebar pages visible', (t) => {
   const { root, docs, save } = fixture(t);
   const [docsGroup, apiGroup] = docs.navigation.groups;

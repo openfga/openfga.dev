@@ -10,6 +10,7 @@ const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 const manifestPath = 'docs-site/source-pages.json';
 const mintlifyRoot = 'docs-site';
 const pagePattern = /^(?:[a-z0-9][a-z0-9_-]*\/)*[a-z0-9][a-z0-9_-]*\.mdx$/;
+const maintainerReadmes = new Set(['README.md', 'scripts/README.md']);
 
 function fail(message) {
   throw new Error(`${manifestPath}: ${message}`);
@@ -59,7 +60,7 @@ function listMdxFiles(repoRoot, root, published = false) {
       if (entry.isSymbolicLink()) throw new Error(`${root}/${path}: symlinks are not allowed in the page inventory`);
       if (entry.isDirectory()) return walk(path);
       if (!(published ? /\.(mdx|md)$/i : /\.mdx$/i).test(path)) return [];
-      if (published && path === 'README.md') return [];
+      if (published && maintainerReadmes.has(path)) return [];
       if (published && /\.md$/i.test(path)) {
         throw new Error(`${root}/${path}: unexpected Markdown page; published pages must be inventoried MDX`);
       }
