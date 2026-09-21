@@ -37,7 +37,7 @@ Keeping `/docs` and `/api-reference` on the existing hostname requires path-base
 
 The website build generates a composite sitemap index with separate website and native children. Cloudflare activation, Mintlify domain/discovery verification, and the website publication must be coordinated by their owners before removing the old public docs deployment. See the runbook for acceptance and complete rollback requirements.
 
-The small `/api/service` compatibility page preserves old Swagger operation fragments without restoring Swagger or duplicating the API reference. Regenerate its operation map with `npm run generate:legacy-api-routes` when changing the pinned API schema or navigation. Builds and native quality checks reject stale mappings; the compatibility page stays out of website search, sitemaps, and LLM bundles.
+The small `/api/service` compatibility page preserves old Swagger operation fragments without restoring Swagger or duplicating the API reference. Regenerate its operation map with `npm run generate:legacy-api-routes` when adopting API schema or navigation changes. Builds and native quality checks reject stale mappings; the compatibility page stays out of website search, sitemaps, and LLM bundles.
 
 ## Getting Started
 
@@ -85,7 +85,7 @@ After changing native sources, run `npm run generate:mintlify-deployment` and co
 
 This source-only gate does not fetch Git LFS objects (`lfs: false`). LFS-managed media remains as pointers, while the existing [`docs-site/` asset overrides](.gitattributes) keep native assets as ordinary Git blobs. The gate neither checks media contents nor builds or publishes assets. Existing Docusaurus build/preview/deploy workflows retain their LFS-aware checkout; use the Git LFS setup above when rendering the site locally.
 
-Validation is **not network-independent**: dependency installation uses the root lockfile, and API validation fetches the immutable canonical OpenAPI URL recorded in [`api-samples.json`](docs-site/api-samples.json), verifies its SHA-256 digest, and uses a 30-second timeout. Network, digest, or schema failures fail the gate; no cached-spec fallback masks them. SDK wire tests execute Node.js and curl programs against loopback fixtures, not a deployed OpenFGA server; other SDK samples have generator regressions, not execution coverage in this gate.
+Validation is **not network-independent**: dependency installation uses the root lockfile, and API validation fetches the canonical OpenAPI URL on `main` recorded in [`api-samples.json`](docs-site/api-samples.json), checks it against the last-generated SHA-256 digest, and uses a 30-second timeout. Network, digest, or schema failures fail the gate; no cached-spec fallback masks them. The [API updater](docs-site/README.md#automatic-upstream-updates) proposes compatible changes in draft PRs and reports incompatibilities in issues. Mintlify follows upstream `main` independently of these PRs. SDK wire tests execute Node.js and curl programs against loopback fixtures, not a deployed OpenFGA server; other SDK samples have generator regressions, not execution coverage in this gate.
 
 These are repository-owned checks, **not official Mintlify validation or reproducible Mintlify CLI QA**. They do not install or run the Mintlify CLI, compare its native MDX validator, prove browser rendering, or change branch protection. See the [Mintlify authoring guide](docs-site/README.md#validating-authoring-changes) for individual checks and their limits.
 

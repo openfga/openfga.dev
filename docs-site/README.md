@@ -39,7 +39,7 @@ All `npm run` commands in this guide run from the repository root. Mintlify CLI 
 | Location                                                  | Purpose                                                             |
 | --------------------------------------------------------- | ------------------------------------------------------------------- |
 | [`docs/`](./docs/)                                        | Product documentation in MDX                                        |
-| [`docs.json`](./docs.json)                                | Navigation, theme, redirects, and the pinned OpenAPI source         |
+| [`docs.json`](./docs.json)                                | Navigation, theme, redirects, and the canonical main-branch OpenAPI source |
 | [`snippets/`](./snippets/)                                | Eight reusable JSX viewers                                          |
 | [`global.css`](./global.css)                              | Shared documentation and API styling                                |
 | [`images/`](./images/) and page asset directories         | Native media, stored as ordinary Git files                          |
@@ -226,9 +226,9 @@ For visual testing, copy `docs-site/` to an isolated temporary directory outside
 
 ## Native API SDK samples
 
-The API reference reads the canonical OpenAPI 3.0.3 document from [`openfga/api`](https://github.com/openfga/api/tree/main/docs/openapiv3), pinned to the immutable revision from [openfga/api#259](https://github.com/openfga/api/pull/259).
+The API reference reads the canonical OpenAPI 3.0.3 document directly from [`openfga/api`'s `main` branch](https://raw.githubusercontent.com/openfga/api/refs/heads/main/docs/openapiv3/apidocs.openapi.json). Both `docs.json` and `api-samples.json` use this exact URL, not an immutable commit URL.
 
-[`api-samples.json`](./api-samples.json) is not a copy of that schema. It records the pinned URL and digest, operation identities, and reviewed example inputs used by the SDK generators. The hosted schema remains the API source of truth; this local manifest makes the SDK examples reproducible. See the [script guide](./scripts/README.md) for the generation flow and retained tooling.
+[`api-samples.json`](./api-samples.json) is not a copy of that schema. It records the canonical URL, the digest used for the last sample generation, operation identities, and reviewed example inputs used by the SDK generators. The hosted schema remains the API source of truth. The digest detects when our generated examples need updating; it does not pin what Mintlify fetches. See the [script guide](./scripts/README.md) for the generation flow and retained tooling.
 
 An explicit [OpenAPI overlay](https://www.mintlify.com/docs/api-playground/openapi-setup#transform-your-spec-with-overlays) adds `x-codeSamples` without changing the canonical operations. The reference stays in `simple`, read-only mode, without Try it or Send controls.
 
@@ -279,9 +279,19 @@ npm run validate:mintlify-api-navigation
 
 Do not hand-edit the overlay. It may add only `x-codeSamples` at the 24 exact operation targets; removing those additions must recover the unchanged canonical schema.
 
-To adopt a new schema revision, review the upstream artifact, then update the immutable URL in both `api-samples.json` and `docs.json`, its SHA-256 digest, and the operation contracts. Keep the explicit overlay configuration so overlay errors fail the build.
+The source URL stays on `main` when upstream changes. Refresh the recorded digest and generated artifacts through the updater below, rather than switching to a commit URL or changing a checksum merely to silence a failure. New or changed operations can require reviewed changes to operation contracts, SDK support, generators, navigation, and tests. Keep the explicit overlay configuration so overlay errors fail the build.
 
-Generation is deterministic but requires network access: it fetches the pinned schema with a 30-second timeout and verifies its digest. Fetch, parsing, schema, and stale-output failures are errors, not reasons to use an unverified fallback.
+Generation is deterministic for the recorded schema bytes but requires network access: it fetches `main` with a 30-second timeout and verifies its digest. Fetch, parsing, schema, and stale-output failures are errors, not reasons to use an unverified fallback.
+
+### Automatic upstream updates
+
+The [API update workflow](../.github/workflows/update-api-samples.yml) runs nightly and by manual dispatch. Compatible upstream changes update the sample metadata, SDK overlay, legacy API route map, and deployment fingerprint in a draft PR. It preserves hand-reviewed sample inputs and independent parity fixtures; it does not auto-merge.
+
+If the schema is incompatible with the current operation contracts or SDK generators, the workflow reports the source URL, old/new digests, operation changes, and validation failure in a deduplicated issue instead of proposing incomplete generated output. Maintainers resolve the incompatibility and rerun the workflow. Network failures fail the workflow without pretending to be a schema incompatibility.
+
+The workflow reuses the existing configuration updater's releaser App and signing secrets for PRs and the workflow token for issues. Scheduled runs start after it lands on the repository's default branch; issue and PR creation require the corresponding repository permissions.
+
+**The PR reviews generated examples, not the upstream schema itself.** Mintlify can fetch a newer `main` schema before the update PR merges. Repository checks deliberately report a digest mismatch until the samples catch up; the workflow cannot make the live upstream URL immutable.
 
 ### Sample behavior and limits
 
@@ -330,6 +340,20 @@ Header and runtime maintenance:
 - `navbar-layout.js` keeps native header links before search in DOM order, matching the left-aligned desktop layout and keyboard traversal. At narrow widths it preserves keyboard order while CSS exposes the native theme control on the right. Controls stay in their original parents so Mintlify retains their state and menu behavior. Check its selectors when updating the Mintlify theme.
 - Shared CSS hides code-block assistant actions by their native ID and chat-payload attribute, including API examples with different wrappers. Keep Copy buttons and language tabs available.
 - `github-star-cache.js` restores the last exact native GitHub count for up to seven days when the native request fails. It labels stale values as **last known** and makes no additional API requests.
+
+### Page modification dates
+
+`metadata.timestamp: true` in `docs.json` enables Mintlify's native **Last modified on [date]** display. Pages inherit this setting without manual dates or custom browser scripts. In Git-backed deployments, Mintlify uses the last commit that modified the page's source file; if Git metadata is unavailable, it falls back to the deployment timestamp. A migration or formatting commit can therefore change the displayed date without an editorial review.
+
+Keep `timestamp` and `lastUpdatedDate` out of article frontmatter unless a separately reviewed exception is needed. This reader-facing date is distinct from the deployment source fingerprint. See [Mintlify's timestamp documentation](https://www.mintlify.com/docs/organize/pages#last-modified-timestamp).
+
+### Suggest edits
+
+Enable **Edit suggestions** in the deployment's [Mintlify Add-ons dashboard](https://app.mintlify.com/products/addons). Mintlify documents feedback features as requiring Pro or Enterprise and edit suggestions as requiring a public repository. The current `docs.json` schema does not expose the older `feedback.suggestEdit` or `suggestEditBranch` fields; do not copy those legacy settings into this file.
+
+Use the native control rather than a custom edit-link script. Shared CSS presents feedback links as plain, 16px OpenFGA-colored links with pencil icons, readable focus outlines, and mobile-sized hit areas, matching the website's edit-link treatment. The existing Inter typography is intentional and shared with the OpenFGA website. Native labels, destinations, and interactions remain unchanged.
+
+After enabling it, verify that a documentation page links to its actual `docs-site/docs/...mdx` source in `openfga/openfga.dev`, with the intended repository branch and `/docs-site` deployment directory. Mintlify currently synthesizes nonexistent `docs-site/api-reference/...mdx` edit URLs for generated API pages; shared CSS hides only those invalid edit links. **Raise issue** remains available when enabled, and API schema changes belong in `openfga/api`. Verify the controls in both themes and at desktop/mobile widths during hosted acceptance.
 
 ### Page actions
 
@@ -419,7 +443,7 @@ During development, use the checks relevant to the change:
 | Configuration generator          | `npm run test:config-page`                                |
 | Split-site ownership contracts   | `npm run test:site-boundary`                              |
 
-The full gate checks the deployment fingerprint, generated artifacts, MDX, DSL, navigation, API samples, independent content fixtures, component contracts, configuration generation, and site boundaries. API checks fetch the pinned canonical schema. See the [repository CI guide](../README.md#mintlify-repository-quality-checks) for prerequisites and workflow details.
+The full gate checks the deployment fingerprint, generated artifacts, MDX, DSL, navigation, API samples, independent content fixtures, component contracts, configuration generation, and site boundaries. API checks fetch the canonical schema from `main` and require its digest to match the generated examples. See the [repository CI guide](../README.md#mintlify-repository-quality-checks) for prerequisites and workflow details.
 
 Know what each result proves:
 
@@ -521,7 +545,7 @@ Docusaurus also owns `/search`, `/robots.txt`, `/sitemap.xml`, `/search-index.js
 
 Website search covers Blog, Project, and Community; its search plugin excludes the homepage. Product-docs search belongs to Mintlify.
 
-The `/api/service` compatibility page preserves old links such as `#/Relationship%20Queries/Check`, routing them to the matching native operation. Unknown fragments fall back to the API index. `/api/service/` normalizes to that page rather than discarding its fragment. The shim is excluded from search, sitemaps, and LLM bundles; it is not a second API reference. Its operation map is generated from the pinned schema with `npm run generate:legacy-api-routes` and checked by ordinary builds and `check:mintlify`.
+The `/api/service` compatibility page preserves old links such as `#/Relationship%20Queries/Check`, routing them to the matching native operation. Unknown fragments fall back to the API index. `/api/service/` normalizes to that page rather than discarding its fragment. The shim is excluded from search, sitemaps, and LLM bundles; it is not a second API reference. Its operation map is generated from the checksum-verified canonical schema with `npm run generate:legacy-api-routes` and checked by ordinary builds and `check:mintlify`.
 
 ### Use the existing Cloudflare edge
 

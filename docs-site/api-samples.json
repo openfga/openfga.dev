@@ -1,6 +1,6 @@
 {
   "canonical": {
-    "url": "https://raw.githubusercontent.com/openfga/api/7a79d2abab5b9ccc962ae995a1aab70c0a1cf19d/docs/openapiv3/apidocs.openapi.json",
+    "url": "https://raw.githubusercontent.com/openfga/api/refs/heads/main/docs/openapiv3/apidocs.openapi.json",
     "sha256": "dbf0d4d2248cb7f844aaf05110a684b63c31c015092e682f57fecbd65a8088b0",
     "openapi": "3.0.3",
     "pathCount": 20,

@@ -158,7 +158,7 @@ test('boundary validation verifies both children, exact native coverage and the 
   ]) assert.throws(() => validateCompositeSitemap({ ...result, ...change, nativeRoutes: routes }));
 });
 
-// Offline route-relevant excerpts from the SHA-256-pinned OpenAPI source in api-samples.json.
+// Offline route-relevant excerpts from the last-generated OpenAPI snapshot in api-samples.json.
 const canonicalSummaries = {
   Check: 'Check whether a user is authorized to access an object',
   BatchCheck: 'Send a list of `check` operations in a single request',
@@ -199,7 +199,7 @@ const deployedPunctuationRoutes = [
 
 test('repository navigation and source files contribute exactly 110 docs and all 24 generated API pages offline', async () => {
   assert.equal(metadata.canonical.sha256, 'dbf0d4d2248cb7f844aaf05110a684b63c31c015092e682f57fecbd65a8088b0',
-    'Review the offline canonical summary fixture when updating the pinned API');
+    'Review the offline canonical summary fixture when adopting API changes');
   const config = JSON.parse(await fs.readFile(new URL('../docs-site/docs.json', import.meta.url), 'utf8'));
   const files = await fs.readdir(new URL('../docs-site', import.meta.url), { recursive: true });
   const schema = { paths: {} };
@@ -282,11 +282,11 @@ test('builder never reuses stale children for a missing/malformed root, missing 
   await assert.rejects(prepareSiteSitemap(options), /ENOENT/);
 });
 
-test('builder rejects an OpenAPI navigation source that is not the pinned canonical schema', async (t) => {
+test('builder rejects an OpenAPI navigation source that is not the canonical main-branch schema', async (t) => {
   const { options } = await buildFixture(t);
   const file = path.join(options.nativeDirectory, 'docs.json');
   const config = JSON.parse(await fs.readFile(file, 'utf8'));
   config.navigation.anchors[1].openapi.source = 'https://example.com/api.json';
   await fs.writeFile(file, JSON.stringify(config));
-  await assert.rejects(prepareSiteSitemap(options), /pinned canonical schema/);
+  await assert.rejects(prepareSiteSitemap(options), /canonical main-branch schema/);
 });

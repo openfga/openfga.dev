@@ -9,6 +9,7 @@ import {
   applySampleOverlay,
   assertCanonicalEquality,
   buildOverlay,
+  canonicalOpenApiUrl,
   checkOverlayArtifact,
   loadCanonical,
   languagesForOperation,
@@ -25,6 +26,15 @@ import { validateSampleRequests } from './api-request-validation.mjs';
 const metadata = JSON.parse(await readFile(metadataUrl, 'utf8'));
 const fixtureGenerator = (language, component, props) =>
   `// Fixture generator only: ${component} / ${language}\n${JSON.stringify(props)}`;
+
+test('API samples follow the exact main-branch URL with a recorded generation digest', () => {
+  assert.equal(
+    canonicalOpenApiUrl,
+    'https://raw.githubusercontent.com/openfga/api/refs/heads/main/docs/openapiv3/apidocs.openapi.json',
+  );
+  assert.equal(metadata.canonical.url, canonicalOpenApiUrl);
+  assert.doesNotThrow(() => validateMetadata(metadata));
+});
 
 function fixture() {
   const paths = {};
@@ -176,9 +186,21 @@ for (const [name, mutate] of [
     },
   ],
   [
-    'unpinned source',
+    'immutable revision instead of the requested main branch',
     (m) => {
-      m.canonical.url = m.canonical.url.replace(/[a-f0-9]{40}/, 'main');
+      m.canonical.url = m.canonical.url.replace('refs/heads/main', 'a'.repeat(40));
+    },
+  ],
+  [
+    'unapproved source host',
+    (m) => {
+      m.canonical.url = m.canonical.url.replace('raw.githubusercontent.com', 'example.com');
+    },
+  ],
+  [
+    'alternate main URL',
+    (m) => {
+      m.canonical.url = m.canonical.url.replace('refs/heads/main', 'main');
     },
   ],
   [
@@ -517,7 +539,7 @@ test('stale, corrupt and missing generated artifacts fail explicitly', async () 
   }
 });
 
-test('navigation explicitly uses the pinned source and overlay without disabling other HTTP examples', () => {
+test('navigation explicitly uses the main-branch source and overlay without disabling other HTTP examples', () => {
   const docs = {
     navigation: {
       anchors: [

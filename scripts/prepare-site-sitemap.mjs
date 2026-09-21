@@ -30,7 +30,7 @@ export async function prepareSiteSitemap({
   const config = JSON.parse(configText);
   const metadata = JSON.parse(metadataText);
   assert.equal(getUniqueOpenApiNavigationEntry(config.navigation).openapi.source, metadata.canonical.url,
-    'Native OpenAPI navigation must use the pinned canonical schema');
+    'Native OpenAPI navigation must use the canonical main-branch schema');
   const schema = await loadSchema(metadata);
   const inventory = nativeSitemapRoutes({
     config,

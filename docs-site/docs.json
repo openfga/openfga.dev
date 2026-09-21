@@ -26,12 +26,15 @@
     }
   },
   "favicon": "/images/img/openfga-icon.svg",
+  "metadata": {
+    "timestamp": true
+  },
   "seo": {
     "indexing": "all",
     "metatags": {
       "canonical": "https://openfga.dev",
       "og:image": "https://openfga.dev/img/og-rich-embed.png",
-      "openfga:docs-source-sha256": "0f3f94c7c4746b9e41ea6f24888eebcd7ccf5e67b2af44fff5d26c29038ae08d"
+      "openfga:docs-source-sha256": "2daea71fb35324be4fc0643d4c54805c2bc452355da979fa7b609ef30e2b31fb"
     }
   },
   "navbar": {
@@ -275,7 +278,7 @@
         "anchor": "API Reference",
         "hidden": true,
         "openapi": {
-          "source": "https://raw.githubusercontent.com/openfga/api/7a79d2abab5b9ccc962ae995a1aab70c0a1cf19d/docs/openapiv3/apidocs.openapi.json",
+          "source": "https://raw.githubusercontent.com/openfga/api/refs/heads/main/docs/openapiv3/apidocs.openapi.json",
           "overlays": ["openapi/sdk-samples.overlay.json"]
         },
         "groups": [

@@ -9,6 +9,8 @@ import { validateSampleRequests } from './api-request-validation.mjs';
 import { apiSdkSupport, validateSdkCoverage } from './api-sdk-support.mjs';
 
 export const metadataUrl = new URL('../api-samples.json', import.meta.url);
+export const canonicalOpenApiUrl =
+  'https://raw.githubusercontent.com/openfga/api/refs/heads/main/docs/openapiv3/apidocs.openapi.json';
 export const overlayPath = 'openapi/sdk-samples.overlay.json';
 export const overlayUrl = new URL(`../${overlayPath}`, import.meta.url);
 export const httpMethods = new Set(['get', 'post', 'put', 'patch', 'delete', 'options', 'head', 'trace']);
@@ -58,12 +60,10 @@ export function validateMetadata(metadata) {
   const { canonical, operations } = metadata;
   keys(canonical, ['url', 'sha256', 'openapi', 'pathCount', 'operationCount'], 'Canonical source');
   if (
-    !/^https:\/\/raw\.githubusercontent\.com\/openfga\/api\/[a-f0-9]{40}\/docs\/openapiv3\/apidocs\.openapi\.json$/.test(
-      canonical.url,
-    ) ||
+    canonical.url !== canonicalOpenApiUrl ||
     !/^[a-f0-9]{64}$/.test(canonical.sha256)
   ) {
-    throw new Error('Canonical source requires an immutable public OpenFGA API URL and SHA-256 digest');
+    throw new Error('Canonical source requires the approved OpenFGA API main-branch URL and a generation SHA-256 digest');
   }
   if (canonical.openapi !== '3.0.3' || canonical.pathCount !== 20 || canonical.operationCount !== 24) {
     throw new Error('Canonical source must retain the reviewed OpenAPI 3.0.3 / 20 path / 24 operation shape');
@@ -137,7 +137,7 @@ export async function loadCanonical(metadata, { fetchImpl = fetch, timeoutMs = 3
   if (!response.ok) throw new Error(`Failed to load canonical OpenAPI: HTTP ${response.status}`);
   const text = await response.text();
   if (createHash('sha256').update(text).digest('hex') !== metadata.canonical.sha256) {
-    throw new Error('Canonical OpenAPI SHA-256 mismatch; review the pinned source before updating its digest');
+    throw new Error('Canonical OpenAPI SHA-256 mismatch; run the API updater and review the upstream sample changes');
   }
   const spec = JSON.parse(text);
   validateCanonical(spec, metadata);
@@ -239,7 +239,7 @@ export function validateSampleNavigation(docs, metadata) {
   deepStrictEqual(
     apiNavigation.openapi,
     { source: metadata.canonical.url, overlays: [overlayPath] },
-    'API navigation must explicitly apply the generated SDK overlay to the pinned canonical source',
+    'API navigation must explicitly apply the generated SDK overlay to the canonical main-branch source',
   );
   if (docs.api?.playground?.display !== 'simple') throw new Error('API reference must remain in simple read-only mode');
   if (docs.api?.examples?.autogenerate === false || docs.api?.examples?.languages !== undefined) {

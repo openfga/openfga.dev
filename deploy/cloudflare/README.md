@@ -66,7 +66,7 @@ npm run test:site-boundary
 npm run build
 ```
 
-`check:docs-proxy` runs offline tests and a Wrangler bundle **dry run**. It does not authenticate, upload, or attach a route. The ordinary build creates a root sitemap index plus `sitemap-website.xml` and `sitemap-docs.xml`. Native locations come from this checkout's docs inventory and pinned canonical OpenAPI schema, not a second hand-maintained URL list.
+`check:docs-proxy` runs offline tests and a Wrangler bundle **dry run**. It does not authenticate, upload, or attach a route. The ordinary build creates a root sitemap index plus `sitemap-website.xml` and `sitemap-docs.xml`. Native locations come from this checkout's docs inventory and checksum-verified canonical OpenAPI schema, not a second hand-maintained URL list.
 
 Run the Worker locally without deploying:
 
@@ -116,7 +116,7 @@ npm run verify:docs-origin
 npm run verify:docs-proxy -- --origin https://APPROVED-VERIFICATION-HOST
 ```
 
-These commands make read-only HTTP requests and report nonzero failures for missing or mismatched source fingerprints, wrong canonical hosts, missing runtime assets, incomplete recursive docs indexes, bundle failures, lost redirect queries, website capture, a missing compatibility page, and incomplete composite sitemap output. They fetch the digest-pinned OpenAPI schema and check all 24 advertised API operation URLs, not just List stores. Every advertised docs and API page must carry the fingerprint of this checkout; mixed cached revisions fail too. If the hosted marker does not match, wait for the matching deployment and repeat acceptance; do not bypass the gate or substitute a hosted marker into local configuration. This source marker is not an attestation of provider internals, browser interactions, Cloudflare route precedence, permissions, or complete MCP compatibility.
+These commands make read-only HTTP requests and report nonzero failures for missing or mismatched source fingerprints, wrong canonical hosts, missing runtime assets, incomplete recursive docs indexes, bundle failures, lost redirect queries, website capture, a missing compatibility page, and incomplete composite sitemap output. They fetch OpenAPI from `main`, verify the last-generated schema digest, and check all 24 advertised API operation URLs, not just List stores. An upstream digest change requires an accepted sample update before release verification can pass. Every advertised docs and API page must carry the fingerprint of this checkout; mixed cached revisions fail too. If the hosted marker does not match, wait for the matching deployment and repeat acceptance; do not bypass the gate or substitute a hosted marker into local configuration. This source marker is not an attestation of provider internals, browser interactions, Cloudflare route precedence, permissions, or complete MCP compatibility. Mintlify can fetch newer upstream schemas independently of this repository's source marker.
 
 A verification proxy that uses the currently published website cannot serve the new composite sitemap or compatibility page until coordinated website publication. Record those expected failures, validate the compatibility page against the local website build before activation, and rerun public checks after publication. Do not waive other failures on that basis. Verify generated agent metadata and every URL it advertises manually.
 

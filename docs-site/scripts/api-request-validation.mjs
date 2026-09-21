@@ -1,6 +1,6 @@
 import { buildApiRequest } from './api-operation-codegen.mjs';
 
-// Validate the JSON subset used by our fixtures against the pinned OpenAPI,
+// Validate the JSON subset used by our fixtures against the canonical OpenAPI,
 // including nested models. This is not a general-purpose OpenAPI validator.
 function validateValue(spec, schema, value, location) {
   if (schema.$ref) {
