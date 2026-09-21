@@ -330,6 +330,23 @@ Header and runtime maintenance:
 - `github-star-cache.js` restores the last exact native GitHub count for up to seven days when the native request fails. It labels stale values as **last known** and makes no additional API requests.
 - `lib/codegen/check-reference.js.txt` is a reference extraction, not runtime code. Keep its `.txt` suffix so Mintlify does not execute it.
 
+### Page actions
+
+The native **Copy page** menu appears in the page header. Its shared `contextual` configuration in `docs.json` enables these actions in order:
+
+1. Copy page as Markdown.
+2. Open in ChatGPT.
+3. Open in Claude.
+4. Copy MCP install command.
+5. Connect to Cursor.
+6. Connect to VS Code.
+
+These are reader-initiated actions. They do not restore Mintlify's Ask Assistant buttons in the navbar or code blocks, and they do not change article content. Keep the native implementation rather than adding a separate clipboard or external-chat script. Pages inherit the shared menu without frontmatter overrides.
+
+MCP actions connect to Mintlify's hosted OpenFGA documentation service, not an OpenFGA authorization server. Copying an install command does not run it. Mintlify generates these targets from the current origin plus `/mcp`. The split-site proxy therefore forwards exact `/mcp` requests to the hosted service and retains `/docs/mcp` as an alias; it does not capture `/mcp/`, `/mcp/**`, or lookalike paths. Before release, inspect the generated install command and editor links on the deployed site and verify both endpoints with MCP initialization and tool discovery.
+
+The local Mintlify preview renders the menu but does not serve page Markdown or the hosted MCP service. Copy page requires the deployed `.md` endpoint, and localhost URLs are not usable by external chat tools or MCP clients. Verify those actions on the hosted preview and again on the public origin after activation; do not add a custom clipboard implementation to hide this preview limitation.
+
 ### Server configuration table
 
 The generator updates only the marked release/table region in [`configuration.mdx`](./docs/getting-started/setup-openfga/configuration.mdx). It preserves the surrounding authored content.
@@ -411,7 +428,8 @@ Apply these requirements to every migrated page, not only the examples raised in
 - Keep article wording, examples, and sections in their original order and on their original pages. Do not combine migration work with summaries, factual updates, recategorization, or cross-page content moves. Retain only the technical exceptions listed below.
 - Preserve frontmatter descriptions for SEO without presenting them as new introductions. The shared article-header rule does not hide native API operation descriptions.
 - Keep LLM indexes, bundles, per-page Markdown, and machine discovery available without visible LLM footer links.
-- Keep navigation links directly after the OpenFGA logo. Group the GitHub star badge, search, and theme control on the right, with the badge immediately before search. Hide desktop/mobile Ask AI navbar buttons, page-context actions, floating prompts, and code-block assistant buttons. Preserve native search and the responsive menu. A new Copy page or external-chat menu needs a separate decision.
+- Keep navigation links directly after the OpenFGA logo. Group the GitHub star badge, search, and theme control on the right, with the badge immediately before search. Hide desktop/mobile Ask AI navbar buttons, floating prompts, and code-block assistant buttons. Preserve native search and the responsive menu.
+- Keep the approved native Copy page menu and its six [page actions](#page-actions) in the article header. Do not add Ask Assistant or extra providers to that menu. Check copied Markdown and generated MCP/editor targets as part of release acceptance.
 - Compare worked examples with the original page. Preserve grouping, list boundaries, highlights, diagrams, and fragment targets in light and dark themes at desktop and mobile widths.
 
 Structural checks cannot prove rendering parity. Include the affected pages in browser review, and record unavoidable platform differences below rather than silently accepting content drift.

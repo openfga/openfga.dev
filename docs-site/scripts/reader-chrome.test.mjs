@@ -13,14 +13,21 @@ test('agent resources are not promoted in reader navigation or the footer', () =
   assert.ok(config.footer.socials.github, 'Keep the ordinary footer links');
 });
 
-test('separate assistant entry points are hidden without disabling native search or its dialog', () => {
-  assert.deepEqual(config.contextual.options, []);
+test('page actions match the requested native menu without restoring Ask Assistant', () => {
+  assert.deepEqual(config.contextual, {
+    options: ['copy', 'chatgpt', 'claude', 'add-mcp', 'cursor', 'vscode'],
+    display: 'header',
+  });
+});
+
+test('separate assistant entry points are hidden without disabling native search or page actions', () => {
   assert.match(
     css,
     /#assistant-entry,\s*#assistant-entry-mobile,\s*\[data-assistant-bar\],\s*#ask-assistant-code-block-button,\s*button\[data-chat-payload-element-id\]\s*\{\s*display:\s*none;\s*\}/,
   );
   assert.doesNotMatch(css, /#chat-assistant-sheet\b/);
   assert.doesNotMatch(css, /#search-bar-entry(?:-mobile)?\s*\{[^{}]*display:\s*none/);
+  assert.doesNotMatch(css, /#page-context-menu[^{}]*\{[^{}]*display:\s*none/);
 
   const manifest = JSON.parse(read('../source-pages.json'));
   const exclusions = new Set(manifest.exclusions.map(({ source }) => source));

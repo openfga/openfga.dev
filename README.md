@@ -27,6 +27,8 @@ Mintlify owns the complete product documentation index, bundle, and per-page Mar
 
 These resources are for machine discovery, not additional reader navigation. Preserve Mintlify's nonvisual index notice and the website's discovery links without adding visible LLM links to the documentation footer.
 
+Readers can use the native [Copy page menu](docs-site/README.md#page-actions) to copy Markdown or open the page in an external AI tool. Its MCP connection actions use the hosted documentation service through exact `/mcp`, with `/docs/mcp` retained as an alias; they do not restore the separate navbar or code-block assistant buttons.
+
 `npm run build` validates the website resources and cross-site links against native pages, anchors, redirects, and canonical API operations from the same checkout. External links in native MDX are also extracted for the CI link checker.
 
 ### Production routing

@@ -11,7 +11,7 @@ const websitePaths = [
   '/assets/app.js', '/img/logo.svg', '/css/custom.css', '/icons/icon.svg', '/search',
   '/search-index.json', '/robots.txt', '/sitemap.xml', '/sitemap-website.xml', '/sitemap-docs.xml',
   '/llms.txt', '/llms-full.txt', '/.well-known/acme-challenge/token', '/.well-known/vercel/token',
-  '/.well-known/agent-card.json', '/mcp', '/images-other/asset.png',
+  '/.well-known/agent-card.json', '/mcp/', '/mcp/other', '/mcp-other', '/mcp.json', '/images-other/asset.png',
   '/api/service', '/api/service?source=legacy', '/api/service/health', '/navbar-layout.js-other',
 ];
 
@@ -56,6 +56,7 @@ test('native routing preserves path boundaries and exact support files', () => {
   assert.deepEqual(routeRequest('/api/request'), { kind: 'mintlify', path: '/_mintlify/api/request' });
   assert.deepEqual(routeRequest('/docs/llms.txt'), { kind: 'mintlify', path: '/llms.txt' });
   assert.deepEqual(routeRequest('/docs/llms-full.txt'), { kind: 'mintlify', path: '/llms-full.txt' });
+  assert.deepEqual(routeRequest('/mcp'), { kind: 'mintlify', path: '/mcp' });
   assert.deepEqual(routeRequest('/docs/mcp'), { kind: 'mintlify', path: '/mcp' });
   assert.deepEqual(routeRequest('/docs/.well-known/mcp/server-card.json'), { kind: 'mintlify', path: '/.well-known/mcp/server-card.json' });
 });
@@ -123,6 +124,68 @@ test('untrusted forwarding headers are not used when no ingress IP is present', 
     assert.equal(options.headers.get('x-real-ip'), null);
     return new Response('docs');
   });
+});
+
+test('both exact MCP endpoints proxy transport methods and session headers without redirects', async () => {
+  for (const path of ['/mcp', '/docs/mcp']) {
+    for (const method of ['GET', 'HEAD', 'POST', 'DELETE', 'OPTIONS']) {
+      const body = method === 'POST' ? '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' : '';
+      const input = request(`${path}?transport=http`, {
+        method,
+        headers: {
+          'content-type': 'application/json',
+          accept: 'application/json, text/event-stream',
+          'mcp-protocol-version': '2025-03-26',
+          'mcp-session-id': 'test-session',
+          'last-event-id': 'test-event',
+          authorization: 'Bearer test-token',
+        },
+        ...(method === 'POST' ? { body } : {}),
+      });
+      const result = await handleRequest(input, {}, async (upstream, options) => {
+        assert.equal(upstream.url, `${mintlifyOrigin}/mcp?transport=http`);
+        assert.equal(upstream.method, method);
+        assert.equal(options.redirect, 'manual');
+        assert.equal(options.cf.cacheTtl, 0);
+        assert.equal(options.cf.cacheEverything, false);
+        for (const name of ['content-type', 'accept', 'mcp-protocol-version', 'mcp-session-id', 'last-event-id', 'authorization']) {
+          assert.equal(options.headers.get(name), input.headers.get(name), name);
+        }
+        assert.equal(await upstream.text(), body);
+        return new Response(method === 'HEAD' ? null : '{"jsonrpc":"2.0","id":1,"result":{}}', {
+          headers: { 'content-type': 'application/json', 'mcp-session-id': 'next-session' },
+        });
+      });
+      assert.equal(result.status, 200);
+      assert.equal(result.headers.get('location'), null);
+      assert.equal(result.headers.get('cache-control'), 'no-store');
+      assert.equal(result.headers.get('mcp-session-id'), 'next-session');
+      assert.equal(await result.text(), method === 'HEAD' ? '' : '{"jsonrpc":"2.0","id":1,"result":{}}');
+    }
+  }
+});
+
+test('MCP responses stream unchanged and preserve upstream errors on both endpoints', async () => {
+  for (const path of ['/mcp', '/docs/mcp']) {
+    let controller;
+    const body = new ReadableStream({ start(value) { controller = value; } });
+    const result = await handleRequest(request(path), {}, () => new Response(body, {
+      headers: { 'content-type': 'text/event-stream' },
+    }));
+    const reader = result.body.getReader();
+    const chunk = new TextEncoder().encode(`event: message\ndata: {"url":"${mintlifyOrigin}/mcp"}\n\n`);
+    controller.enqueue(chunk);
+    assert.deepEqual((await reader.read()).value, chunk);
+    controller.close();
+    assert.ok((await reader.read()).done);
+
+    const failure = await handleRequest(request(path), {}, () => new Response('Method not allowed', {
+      status: 405, headers: { allow: 'POST', 'content-type': 'text/plain' },
+    }));
+    assert.equal(failure.status, 405);
+    assert.equal(failure.headers.get('allow'), 'POST');
+    assert.equal(await failure.text(), 'Method not allowed');
+  }
 });
 
 test('native redirects stay on the proxy while external destinations remain external', async () => {

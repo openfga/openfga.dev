@@ -70,7 +70,8 @@
     }
   },
   "contextual": {
-    "options": []
+    "options": ["copy", "chatgpt", "claude", "add-mcp", "cursor", "vscode"],
+    "display": "header"
   },
   "api": {
     "playground": {

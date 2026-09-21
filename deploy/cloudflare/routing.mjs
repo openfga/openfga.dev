@@ -13,6 +13,7 @@ const files = new Set([
 const resourceAliases = new Map([
   ['/docs/llms.txt', '/llms.txt'],
   ['/docs/llms-full.txt', '/llms-full.txt'],
+  ['/mcp', '/mcp'],
   ['/docs/mcp', '/mcp'],
   ['/api/request', '/_mintlify/api/request'],
 ]);

@@ -41,10 +41,15 @@ SEO descriptions remain metadata rather than becoming new article introductions.
 LLM resources remain available through machine discovery without visible footer
 links. Navbar links sit directly after the OpenFGA logo. The GitHub star badge,
 search, and theme controls form the right-hand group, with the badge immediately
-before search. Separate Ask AI navbar buttons, page-context actions,
-floating prompts, and code-block assistant buttons are hidden; native search
-and the responsive menu remain. A Copy page or external-chat menu is a separate
-decision.
+before search. Separate Ask AI navbar buttons, floating prompts, and code-block
+assistant buttons are hidden; native search and the responsive menu remain.
+The approved native Copy page menu offers Markdown copying, Open in ChatGPT,
+Open in Claude, Copy MCP install command, Connect to Cursor, and Connect to
+VS Code. These reader-initiated actions do not change article content or restore
+Ask Assistant. Verify generated MCP targets against the deployed site before
+release. Exact `/mcp` requests proxy to the hosted documentation MCP service so
+native install links work; `/docs/mcp` remains an alias. This does not capture
+other root discovery resources or `/mcp/**`.
 
 Use the [migration review checklist](docs-site/README.md#migration-review-checklist)
 for current acceptance requirements. The historical spike findings below are not
