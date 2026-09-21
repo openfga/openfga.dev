@@ -61,14 +61,13 @@
     "check:mintlify-api-samples": "node docs-site/scripts/api-code-samples.mjs --check",
     "test:mintlify-api-samples": "node --test docs-site/scripts/api-code-samples.test.mjs docs-site/scripts/api-code-samples.integration.test.mjs",
     "validate:mintlify-source-parity": "node docs-site/scripts/validate-source-coverage.mjs",
-    "test:mintlify-source-parity": "node --test docs-site/scripts/validate-source-coverage.test.mjs",
-    "postinstall": "patch-package --error-on-fail"
+    "test:mintlify-source-parity": "node --test docs-site/scripts/validate-source-coverage.test.mjs"
   },
   "dependencies": {
     "@docusaurus/core": "3.10.2",
     "@docusaurus/plugin-client-redirects": "3.10.2",
     "@docusaurus/preset-classic": "3.10.2",
-    "@easyops-cn/docusaurus-search-local": "0.55.3",
+    "@easyops-cn/docusaurus-search-local": "0.52.2",
     "@lottiefiles/react-lottie-player": "3.6.0",
     "@openfga/frontend-utils": "^0.2.0-beta.11",
     "@openfga/sdk": "^0.9.7",
@@ -100,7 +99,6 @@
     "eslint-plugin-react": "7.37.5",
     "globals": "^17.12.0",
     "husky": "9.1.7",
-    "patch-package": "8.0.1",
     "prettier": "3.9.8",
     "prismjs": "1.30.0",
     "sax": "1.5.0",

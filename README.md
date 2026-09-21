@@ -99,7 +99,7 @@ npm run dev
 
 This starts the Docusaurus website, not the product docs. For native documentation development, follow the [Mintlify preview instructions](docs-site/README.md). Docs and API links on website previews deliberately use the public root rather than the Docusaurus preview prefix.
 
-Website search indexes Blog, Project, and Community. The local-search plugin excludes the homepage. The pinned package currently calls a docs-version hook even with `indexDocs: false`; the two-line patch in `patches/` guards that hook without changing search UI or autocomplete. `npm ci` applies it through `patch-package --error-on-fail`. Reassess the patch when upgrading `@easyops-cn/docusaurus-search-local`; do not re-enable legacy docs to satisfy that hook.
+Website search indexes Blog, Project, and Community. The local-search plugin excludes the homepage. `@easyops-cn/docusaurus-search-local` is pinned to the unmodified `0.52.2` release: later releases through `0.55.3` call a docs-version hook even with `indexDocs: false`, causing builds to fail when the docs plugin is disabled ([upstream issue](https://github.com/easyops-cn/docusaurus-search-local/issues/571)). No dependency patches or postinstall modifications are required. Upgrade after the upstream regression is fixed, and verify production/preview builds and browser search with `docs: false`; do not re-enable legacy docs to satisfy that hook.
 
 #### Building for Production
 

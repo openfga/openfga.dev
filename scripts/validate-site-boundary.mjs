@@ -72,6 +72,7 @@ const [indexXml, websiteXml, docsXml] = await Promise.all(
 validateCompositeSitemap({ indexXml, websiteXml, docsXml, nativeRoutes, baseUrl });
 const searchFiles = files.filter((file) => /^search-index(?:[.-].+)?\.json$/.test(file));
 assert.ok(searchFiles.length, 'Missing website search index');
+const indexedWebsiteRoutes = new Set();
 function validateSearchIndex(value) {
   if (!value || typeof value !== 'object') return;
   for (const [key, child] of Object.entries(value)) {
@@ -80,10 +81,15 @@ function validateSearchIndex(value) {
       const unprefixed = basePath && route.startsWith(`${basePath}/`) ? route.slice(basePath.length) : route;
       assert.ok(!isNativeRoute(unprefixed), `Website search index contains retired docs route ${child}`);
       assert.notEqual(unprefixed.replace(/\/$/, ''), '/api/service', 'Compatibility page must not appear in website search');
+      indexedWebsiteRoutes.add(unprefixed.replace(/\/$/, ''));
     } else validateSearchIndex(child);
   }
 }
 for (const file of searchFiles) validateSearchIndex(JSON.parse(await fs.readFile(path.join(buildDirectory, file), 'utf8')));
+for (const route of ['/project', '/community']) {
+  assert.ok(indexedWebsiteRoutes.has(route), `Website search index must include ${route}`);
+}
+assert.ok([...indexedWebsiteRoutes].some((route) => route.startsWith('/blog/')), 'Website search index must include Blog content');
 await fs.mkdir('.link-check', { recursive: true });
 await fs.writeFile('.link-check/native-external-links.md', [...externalLinks].sort().map((href) => `<${href}>`).join('\n') + '\n');
 console.log(`Validated ${checkedLinks} cross-site links against ${pages.size} native docs and ${apiRoutes.size} API routes; exported ${externalLinks.size} external native links for Lychee.`);

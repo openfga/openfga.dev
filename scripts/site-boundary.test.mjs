@@ -97,8 +97,22 @@ test('the repository retains only a small legacy API compatibility page, not the
     && destination === 'https://openfga.dev/community'));
   const pkg = JSON.parse(readFileSync(new URL('package.json', root), 'utf8'));
   assert.doesNotMatch(pkg.scripts.build, /build:config-page/, 'Ordinary builds must not rewrite authored docs from the latest release');
-  assert.equal(pkg.scripts.postinstall, 'patch-package --error-on-fail');
   assert.match(readFileSync(new URL('docusaurus.config.js', root), 'utf8'), /docs: false/);
   assert.doesNotMatch(readFileSync(new URL('src/pages/api/service.tsx', root), 'utf8'), /swagger-ui|SwaggerUI/);
   assert.equal(pkg.dependencies['swagger-ui-react'], undefined);
+});
+
+test('website search uses an unmodified dependency with legacy docs disabled', () => {
+  const root = new URL('../', import.meta.url);
+  const pkg = JSON.parse(readFileSync(new URL('package.json', root), 'utf8'));
+  assert.ok(pkg.dependencies['@easyops-cn/docusaurus-search-local']);
+  assert.equal(pkg.dependencies['patch-package'], undefined);
+  assert.equal(pkg.devDependencies['patch-package'], undefined);
+  assert.equal(pkg.scripts.postinstall, undefined);
+  assert.ok(!existsSync(new URL('patches', root)), 'Dependency patches must not be reintroduced');
+  const websiteConfig = readFileSync(new URL('docusaurus.config.js', root), 'utf8');
+  assert.match(websiteConfig, /docs: false/);
+  assert.match(websiteConfig, /indexDocs: false/);
+  assert.match(websiteConfig, /indexBlog: true/);
+  assert.match(websiteConfig, /indexPages: true/);
 });
