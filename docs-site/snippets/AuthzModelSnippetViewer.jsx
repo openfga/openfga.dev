@@ -21,29 +21,33 @@ export const AuthzModelSnippetViewer = ({
   // Load fga-codegen.js (transformer.transformJSONToDSL)
   useEffect(() => {
     if (window.fgaCodegen) { setCodegenReady(true); return; }
-    if (!document.querySelector('script[src="/fga-codegen.js"]')) {
-      const s = document.createElement('script');
-      s.src = '/fga-codegen.js';
-      document.head.appendChild(s);
+    let script = document.querySelector('script[src="/fga-codegen.js"]');
+    const loaded = () => {
+      if (window.fgaCodegen) setCodegenReady(true);
+    };
+    if (!script) {
+      script = document.createElement('script');
+      script.src = '/fga-codegen.js';
     }
-    const id = setInterval(() => {
-      if (window.fgaCodegen) { clearInterval(id); setCodegenReady(true); }
-    }, 50);
-    return () => clearInterval(id);
+    script.addEventListener('load', loaded);
+    if (!script.isConnected) document.head.appendChild(script);
+    return () => script.removeEventListener('load', loaded);
   }, []);
 
   // Load openfga-dsl-highlight.js (DSL syntax colouring)
   useEffect(() => {
     if (window.openfgaDsl) { setDslReady(true); return; }
-    if (!document.querySelector('script[src="/openfga-dsl-highlight.js"]')) {
-      const s = document.createElement('script');
-      s.src = '/openfga-dsl-highlight.js';
-      document.head.appendChild(s);
+    let script = document.querySelector('script[src="/openfga-dsl-highlight.js"]');
+    const loaded = () => {
+      if (window.openfgaDsl) setDslReady(true);
+    };
+    if (!script) {
+      script = document.createElement('script');
+      script.src = '/openfga-dsl-highlight.js';
     }
-    const id = setInterval(() => {
-      if (window.openfgaDsl) { clearInterval(id); setDslReady(true); }
-    }, 50);
-    return () => clearInterval(id);
+    script.addEventListener('load', loaded);
+    if (!script.isConnected) document.head.appendChild(script);
+    return () => script.removeEventListener('load', loaded);
   }, []);
 
   if (!codegenReady) {

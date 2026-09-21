@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { getEventListeners } from 'node:events';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import vm from 'node:vm';
@@ -27,6 +28,106 @@ function nodes(tree, type) {
   if (!tree || typeof tree !== 'object') return [];
   if (Array.isArray(tree)) return tree.flatMap((node) => nodes(node, type));
   return [...(tree.type === type ? [tree] : []), ...nodes(tree.children, type)];
+}
+
+function snippetBrowser(t, globals = {}) {
+  t.mock.timers.enable({ apis: ['setTimeout', 'setInterval'] });
+  const timers = new Map();
+  const scripts = [];
+  const window = { ...globals };
+  const schedule = (repeat, callback, delay) => {
+    const id = (repeat ? setInterval : setTimeout)(() => {
+      if (!repeat) timers.delete(id);
+      callback();
+    }, delay);
+    timers.set(id, repeat ? 'interval' : 'timeout');
+    return id;
+  };
+  const cancel = (id) => {
+    if (timers.get(id) === 'interval') clearInterval(id);
+    else clearTimeout(id);
+    timers.delete(id);
+  };
+  const document = {
+    querySelector: (selector) => scripts.find((script) => selector === `script[src="${script.src}"]`),
+    createElement: (tag) => {
+      assert.equal(tag, 'script');
+      return Object.assign(new EventTarget(), { src: '', isConnected: false });
+    },
+    head: {
+      appendChild: (script) => {
+        assert.equal(script.isConnected, false, 'a script is injected only once');
+        script.isConnected = true;
+        scripts.push(script);
+      },
+    },
+  };
+  const scriptFor = (src) => scripts.find((script) => script.src === src);
+  return {
+    window,
+    timers,
+    scripts,
+    scriptFor,
+    dispatch: (src, event) => scriptFor(src).dispatchEvent(new Event(event)),
+    context: {
+      window,
+      document,
+      setTimeout: (callback, delay) => schedule(false, callback, delay),
+      setInterval: (callback, delay) => schedule(true, callback, delay),
+      clearTimeout: cancel,
+      clearInterval: cancel,
+    },
+  };
+}
+
+function mountSnippet(t, name, props, browser) {
+  let state = 0;
+  let mounting = true;
+  let mounted = true;
+  const states = [];
+  const effects = [];
+  const context = {
+    ...browser.context,
+    module: { exports: {} },
+    useState: (initial) => {
+      const index = state++;
+      if (!(index in states)) states[index] = initial;
+      return [states[index], (value) => {
+        assert.ok(mounted, `${name} cannot update state after unmount`);
+        states[index] = value;
+      }];
+    },
+    useEffect: (effect) => { if (mounting) effects.push(effect); },
+    Accordion: 'Accordion',
+    CodeGroup: 'CodeGroup',
+    React: { createElement: (type, props, ...children) => ({ type, props, children }) },
+  };
+  vm.runInNewContext(transformSync(snippet(name), { loader: 'jsx', format: 'cjs' }).code, context);
+  const render = () => {
+    state = 0;
+    return context.module.exports[name](props);
+  };
+  const initial = render();
+  mounting = false;
+  const cleanups = effects.map((effect) => effect());
+  const unmount = () => {
+    if (!mounted) return;
+    cleanups.forEach((cleanup) => cleanup?.());
+    mounted = false;
+  };
+  t.after(unmount);
+  return { initial, render, unmount };
+}
+
+function loadHighlighter(browser) {
+  vm.runInNewContext(
+    readFileSync(new URL('../openfga-dsl-highlight.js', import.meta.url), 'utf8'),
+    { window: browser.window },
+  );
+}
+
+function dslTokens(tree) {
+  return nodes(nodes(tree, 'div').find(({ props }) => props?.['data-language'] === 'dsl'), 'span');
 }
 
 const tuple = { user: 'user:anne', relation: 'reader', object: 'document:planning' };
@@ -224,6 +325,151 @@ test('all helper consumers render an explicit loading state before the runtime a
     assert.match(snippet(name), /role="alert"/);
     assert.match(snippet(name), /removeEventListener\('error', failed\)/);
   }
+});
+
+for (const [name, props] of Object.entries(fixtures)) {
+  test(`${name} recovers when its shared runtime loads after the timeout`, (t) => {
+    const browser = snippetBrowser(t);
+    const viewer = mountSnippet(t, name, props, browser);
+    assert.equal(viewer.initial.props.role, 'status');
+    t.mock.timers.tick(10000);
+    assert.equal(viewer.render().props.role, 'alert');
+    assert.match(viewer.render().children[0], /Unable to load OpenFGA examples/);
+
+    browser.window.openfgaViewer = runtime;
+    browser.dispatch('/openfga-viewer.js', 'load');
+    assert.equal(viewer.render().props['data-openfga-viewer'], name);
+    assert.ok(nodes(viewer.render(), 'CodeGroup').length > 0);
+    assert.equal(browser.timers.size, 0);
+  });
+}
+
+test('request viewers share an in-flight script and cancel settled timers and unmounted listeners', (t) => {
+  const browser = snippetBrowser(t);
+  const viewers = Object.entries(fixtures).map(([name, props]) => mountSnippet(t, name, props, browser));
+  assert.equal(browser.scripts.length, 1);
+  const script = browser.scriptFor('/openfga-viewer.js');
+  assert.equal(getEventListeners(script, 'load').length, viewers.length);
+  assert.equal(getEventListeners(script, 'error').length, viewers.length);
+  browser.window.openfgaViewer = runtime;
+  browser.dispatch('/openfga-viewer.js', 'load');
+  for (const viewer of viewers) assert.ok(nodes(viewer.render(), 'CodeGroup').length > 0);
+  assert.equal(browser.timers.size, 0, 'successful loads no longer need a failure deadline');
+
+  viewers.forEach((viewer) => viewer.unmount());
+  assert.equal(getEventListeners(script, 'load').length, 0);
+  assert.equal(getEventListeners(script, 'error').length, 0);
+  browser.dispatch('/openfga-viewer.js', 'load');
+  browser.dispatch('/openfga-viewer.js', 'error');
+});
+
+test('request viewers retain explicit failure states, can recover, and clean up pending loads', (t) => {
+  const browser = snippetBrowser(t);
+  for (const [name, props] of Object.entries(fixtures)) {
+    delete browser.window.openfgaViewer;
+    const viewer = mountSnippet(t, name, props, browser);
+    browser.dispatch('/openfga-viewer.js', 'load');
+    assert.equal(viewer.render().props.role, 'alert');
+    assert.match(viewer.render().children[0], /did not initialize/);
+    assert.equal(browser.timers.size, 0);
+    browser.dispatch('/openfga-viewer.js', 'error');
+    assert.match(viewer.render().children[0], /Unable to load/);
+    browser.window.openfgaViewer = runtime;
+    browser.dispatch('/openfga-viewer.js', 'load');
+    assert.equal(viewer.render().props['data-openfga-viewer'], name);
+    viewer.unmount();
+
+    delete browser.window.openfgaViewer;
+    const pending = mountSnippet(t, name, props, browser);
+    pending.unmount();
+    assert.equal(browser.timers.size, 0, name);
+    t.mock.timers.tick(10000);
+    browser.dispatch('/openfga-viewer.js', 'load');
+    browser.dispatch('/openfga-viewer.js', 'error');
+    const script = browser.scriptFor('/openfga-viewer.js');
+    assert.equal(getEventListeners(script, 'load').length, 0, name);
+    assert.equal(getEventListeners(script, 'error').length, 0, name);
+  }
+});
+
+const modelSource = 'type user';
+const modelProps = { configuration: { type: 'user' }, syntaxesToShow: ['dsl'] };
+const codegen = { transformer: { transformJSONToDSL: () => modelSource } };
+
+test('all viewers accept Mintlify-preloaded globals without injecting scripts or scheduling work', (t) => {
+  const browser = snippetBrowser(t, { openfgaViewer: runtime, fgaCodegen: codegen });
+  loadHighlighter(browser);
+  for (const [name, props] of Object.entries(fixtures)) {
+    const viewer = mountSnippet(t, name, props, browser);
+    assert.equal(viewer.render().props['data-openfga-viewer'], name);
+  }
+  for (const [name, props] of [
+    ['OpenFGACodeBlock', { code: modelSource }],
+    ['AuthzModelSnippetViewer', modelProps],
+  ]) {
+    const viewer = mountSnippet(t, name, props, browser);
+    assert.ok(dslTokens(viewer.render()).some(({ props }) => props['data-token'] === 'keyword'), name);
+  }
+  assert.equal(browser.scripts.length, 0);
+  assert.equal(browser.timers.size, 0);
+});
+
+test('DSL viewers keep readable text without polling during an outage and highlight a late successful load', (t) => {
+  const browser = snippetBrowser(t, { fgaCodegen: codegen });
+  const viewers = [
+    mountSnippet(t, 'OpenFGACodeBlock', { code: `\n${modelSource}\n` }, browser),
+    mountSnippet(t, 'AuthzModelSnippetViewer', modelProps, browser),
+  ];
+  assert.equal(browser.scripts.length, 1, 'both viewers share the same highlighter script');
+  browser.dispatch('/openfga-dsl-highlight.js', 'error');
+  t.mock.timers.tick(60000);
+  for (const viewer of viewers) {
+    const tokens = dslTokens(viewer.render());
+    assert.equal(tokens.length, 1);
+    assert.equal(tokens[0].props['data-token'], 'default');
+    assert.equal(tokens[0].children[0], modelSource);
+  }
+  assert.equal(browser.timers.size, 0, 'an unavailable highlighter must not leave recurring work');
+  browser.dispatch('/openfga-dsl-highlight.js', 'load');
+  for (const viewer of viewers) assert.equal(dslTokens(viewer.render()).length, 1, 'no global yet');
+
+  loadHighlighter(browser);
+  browser.dispatch('/openfga-dsl-highlight.js', 'load');
+  for (const viewer of viewers) {
+    const tokens = dslTokens(viewer.render());
+    assert.ok(tokens.some(({ props }) => props['data-token'] === 'keyword'));
+    assert.equal(tokens.map(({ children }) => children[0]).join(''), modelSource);
+  }
+  viewers.forEach((viewer) => viewer.unmount());
+  assert.equal(getEventListeners(browser.scriptFor('/openfga-dsl-highlight.js'), 'load').length, 0);
+  browser.dispatch('/openfga-dsl-highlight.js', 'load');
+});
+
+test('model conversion waits for script load without polling and both model loaders clean up on unmount', (t) => {
+  const browser = snippetBrowser(t);
+  const pending = mountSnippet(t, 'AuthzModelSnippetViewer', modelProps, browser);
+  assert.equal(pending.render().props.role, 'status');
+  browser.dispatch('/fga-codegen.js', 'error');
+  t.mock.timers.tick(60000);
+  assert.equal(browser.timers.size, 0);
+  pending.unmount();
+  for (const script of browser.scripts) {
+    assert.equal(getEventListeners(script, 'load').length, 0);
+    script.dispatchEvent(new Event('load'));
+  }
+
+  const viewer = mountSnippet(t, 'AuthzModelSnippetViewer', modelProps, browser);
+  const block = mountSnippet(t, 'OpenFGACodeBlock', { code: modelSource }, browser);
+  assert.equal(browser.scripts.length, 2, 'remounts reuse pending scripts');
+  block.unmount();
+  browser.window.fgaCodegen = codegen;
+  browser.dispatch('/fga-codegen.js', 'load');
+  assert.equal(dslTokens(viewer.render())[0].children[0], modelSource);
+  loadHighlighter(browser);
+  browser.dispatch('/openfga-dsl-highlight.js', 'load');
+  assert.ok(dslTokens(viewer.render()).some(({ props }) => props['data-token'] === 'keyword'));
+  viewer.unmount();
+  for (const script of browser.scripts) assert.equal(getEventListeners(script, 'load').length, 0);
 });
 
 test('the generated shared runtime is standalone and preserves existing browser globals', () => {

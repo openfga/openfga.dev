@@ -11,25 +11,32 @@ export const WriteRequestViewer = ({
   const [selectedLanguage, setSelectedLanguage] = useState(null);
   useEffect(() => {
     if (window.openfgaViewer) {
+      setLoadError(null);
       setRuntime(window.openfgaViewer);
       return;
     }
     let script = document.querySelector('script[src="/openfga-viewer.js"]');
     const loaded = () => {
-      if (window.openfgaViewer) setRuntime(window.openfgaViewer);
-      else setLoadError('The OpenFGA example helper did not initialize. Reload this page to retry.');
+      clearTimeout(timeout);
+      if (window.openfgaViewer) {
+        setLoadError(null);
+        setRuntime(window.openfgaViewer);
+      } else setLoadError('The OpenFGA example helper did not initialize. Reload this page to retry.');
     };
-    const failed = () => setLoadError('Unable to load OpenFGA examples. Reload this page to retry.');
+    const failed = () => {
+      clearTimeout(timeout);
+      setLoadError('Unable to load OpenFGA examples. Reload this page to retry.');
+    };
     if (!script) {
       script = document.createElement('script');
       script.src = '/openfga-viewer.js';
     }
     script.addEventListener('load', loaded);
     script.addEventListener('error', failed);
-    if (!script.isConnected) document.head.appendChild(script);
     const timeout = setTimeout(() => {
       if (!window.openfgaViewer) failed();
     }, 10000);
+    if (!script.isConnected) document.head.appendChild(script);
     return () => {
       clearTimeout(timeout);
       script.removeEventListener('load', loaded);

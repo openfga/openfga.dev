@@ -58,6 +58,12 @@ test('native metadata uses the public host and indexes pages inside hidden route
   assert.equal(docs.seo.indexing, 'all');
 });
 
+test('the introduction HTTP feature link opens the native API reference', () => {
+  const introduction = readFileSync(new URL('../docs/fga.mdx', import.meta.url), 'utf8');
+  assert.match(introduction, /\[HTTP\]\(\/api-reference\)/);
+  assert.doesNotMatch(introduction, /https:\/\/docs\.fga\.dev\/api\/service/);
+});
+
 test('the homepage modeling link retains its historical slug and native redirect', () => {
   const homepage = readFileSync(
     new URL('../../src/features/LandingPage/QuickStartSection/index.tsx', import.meta.url),
