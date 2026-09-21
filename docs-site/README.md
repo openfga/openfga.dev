@@ -228,6 +228,8 @@ For visual testing, copy `docs-site/` to an isolated temporary directory outside
 
 The API reference reads the canonical OpenAPI 3.0.3 document from [`openfga/api`](https://github.com/openfga/api/tree/main/docs/openapiv3), pinned to the immutable revision from [openfga/api#259](https://github.com/openfga/api/pull/259).
 
+[`api-samples.json`](./api-samples.json) is not a copy of that schema. It records the pinned URL and digest, operation identities, and reviewed example inputs used by the SDK generators. The hosted schema remains the API source of truth; this local manifest makes the SDK examples reproducible. See the [script guide](./scripts/README.md) for the generation flow and retained tooling.
+
 An explicit [OpenAPI overlay](https://www.mintlify.com/docs/api-playground/openapi-setup#transform-your-spec-with-overlays) adds `x-codeSamples` without changing the canonical operations. The reference stays in `simple`, read-only mode, without Try it or Send controls.
 
 ### Coverage
