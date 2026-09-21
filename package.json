@@ -53,7 +53,7 @@
     "validate:mintlify-code-blocks": "node docs-site/scripts/validate-openfga-code-blocks.mjs",
     "validate:mintlify-doc-navigation": "node docs-site/scripts/validate-doc-navigation.mjs",
     "validate:mintlify-api-navigation": "node docs-site/scripts/validate-api-navigation.mjs && npm run test:mintlify-api-samples",
-    "test:mintlify-navigation": "node --test docs-site/scripts/navigation-structure.test.mjs docs-site/scripts/github-star-cache.test.mjs docs-site/scripts/reader-chrome.test.mjs",
+    "test:mintlify-navigation": "node --test docs-site/scripts/navigation-structure.test.mjs docs-site/scripts/github-star-cache.test.mjs docs-site/scripts/navbar-layout.test.mjs docs-site/scripts/reader-chrome.test.mjs",
     "generate:mintlify-api-samples": "node docs-site/scripts/api-code-samples.mjs",
     "check:mintlify-api-samples": "node docs-site/scripts/api-code-samples.mjs --check",
     "test:mintlify-api-samples": "node --test docs-site/scripts/api-code-samples.test.mjs docs-site/scripts/api-code-samples.integration.test.mjs",

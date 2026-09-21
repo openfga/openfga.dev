@@ -7,6 +7,7 @@ const files = new Set([
   '/openfga-dsl-highlight.js',
   '/openfga-viewer.js',
   '/github-star-cache.js',
+  '/navbar-layout.js',
   '/global.css',
 ]);
 const resourceAliases = new Map([

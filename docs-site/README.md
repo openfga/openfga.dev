@@ -323,8 +323,9 @@ Keep author-source modules under `scripts/` as `.mjs`, not root `.js` files that
 
 The DSL bundle uses the lockfile-pinned Prism grammar from `@openfga/frontend-utils`. Dark colors come from that package; the light palette lives in `global.css`. Do not add a second tokenizer or edit generated tokens.
 
-Two maintenance details:
+Header and runtime maintenance:
 
+- `navbar-layout.js` keeps native header links before search in DOM order, matching the left-aligned desktop layout and keyboard traversal. At narrow widths it preserves keyboard order while CSS exposes the native theme control on the right. Controls stay in their original parents so Mintlify retains their state and menu behavior. Check its selectors when updating the Mintlify theme.
 - `github-star-cache.js` restores the last exact native GitHub count for up to seven days when the native request fails. It labels stale values as **last known** and makes no additional API requests.
 - `lib/codegen/check-reference.js.txt` is a reference extraction, not runtime code. Keep its `.txt` suffix so Mintlify does not execute it.
 
@@ -409,7 +410,7 @@ Apply these requirements to every migrated page, not only the examples raised in
 - Keep article wording, examples, and sections in their original order and on their original pages. Do not combine migration work with summaries, factual updates, recategorization, or cross-page content moves. Retain only the technical exceptions listed below.
 - Preserve frontmatter descriptions for SEO without presenting them as new introductions. The shared article-header rule does not hide native API operation descriptions.
 - Keep LLM indexes, bundles, per-page Markdown, and machine discovery available without visible LLM footer links.
-- Keep one responsive navbar assistant entry. Disable page-context actions and hide the repeated floating prompt and code-block assistant buttons. A new Copy page or external-chat menu needs a separate decision.
+- Keep navigation links directly after the OpenFGA logo, with search and the theme control on the right. Hide desktop/mobile Ask AI navbar buttons, page-context actions, floating prompts, and code-block assistant buttons. Preserve native search and the responsive menu. A new Copy page or external-chat menu needs a separate decision.
 - Compare worked examples with the original page. Preserve grouping, list boundaries, highlights, diagrams, and fragment targets in light and dark themes at desktop and mobile widths.
 
 Structural checks cannot prove rendering parity. Include the affected pages in browser review, and record unavoidable platform differences below rather than silently accepting content drift.

@@ -39,9 +39,11 @@ They do not authorize general rewriting, extra summaries, or reordered sections.
 
 SEO descriptions remain metadata rather than becoming new article introductions.
 LLM resources remain available through machine discovery without visible footer
-links. The reader interface keeps one responsive navbar assistant entry instead
-of repeated page, floating, and code-block prompts. A Copy page or external-chat
-menu is a separate decision.
+links. Navbar links sit directly after the OpenFGA logo, with search and theme
+controls on the right. Separate Ask AI navbar buttons, page-context actions,
+floating prompts, and code-block assistant buttons are hidden; native search
+and the responsive menu remain. A Copy page or external-chat menu is a separate
+decision.
 
 Use the [migration review checklist](docs-site/README.md#migration-review-checklist)
 for current acceptance requirements. The historical spike findings below are not

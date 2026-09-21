@@ -13,10 +13,14 @@ test('agent resources are not promoted in reader navigation or the footer', () =
   assert.ok(config.footer.socials.github, 'Keep the ordinary footer links');
 });
 
-test('the migration disables page-context actions without disabling the navbar assistant', () => {
+test('separate assistant entry points are hidden without disabling native search or its dialog', () => {
   assert.deepEqual(config.contextual.options, []);
-  assert.match(css, /\[data-assistant-bar\],\s*#ask-assistant-code-block-button\s*\{\s*display:\s*none;\s*\}/);
-  assert.doesNotMatch(css, /#(?:assistant-entry(?:-mobile)?|chat-assistant-sheet)\b/);
+  assert.match(
+    css,
+    /#assistant-entry,\s*#assistant-entry-mobile,\s*\[data-assistant-bar\],\s*#ask-assistant-code-block-button\s*\{\s*display:\s*none;\s*\}/,
+  );
+  assert.doesNotMatch(css, /#chat-assistant-sheet\b/);
+  assert.doesNotMatch(css, /#search-bar-entry(?:-mobile)?\s*\{[^{}]*display:\s*none/);
 
   const manifest = JSON.parse(read('../source-pages.json'));
   const exclusions = new Set(manifest.exclusions.map(({ source }) => source));
@@ -26,6 +30,19 @@ test('the migration disables page-context actions without disabling the navbar a
     const frontmatter = parseYaml(/^---\n([\s\S]*?)\n---/.exec(read(`../${destination}`))[1]);
     assert.equal(frontmatter.contextual, undefined, `${destination}: inherit the shared reader controls`);
   }
+});
+
+test('desktop navigation follows the logo while search and theme stay on the right', () => {
+  assert.match(
+    css,
+    /@media \(min-width: 1024px\)\s*\{[\s\S]*?div:has\(> a\[href='https:\/\/openfga\.dev\/'\]\)\s*\{\s*flex:\s*0 0 auto;/,
+  );
+  assert.match(css, /#navbar \.topbar-right-container > ul\s*\{\s*margin-right:\s*auto;/);
+  assert.match(
+    css,
+    /@media \(min-width: 1100px\)\s*\{\s*#navbar #search-bar-entry\s*\{\s*width:\s*clamp\(9\.25rem, 16vw, 16rem\)/,
+  );
+  assert.doesNotMatch(css, /\border\s*:|tabindex\s*:/, 'Do not change visual order without native keyboard order');
 });
 
 test('metadata descriptions stay out of article introductions without hiding API descriptions', () => {

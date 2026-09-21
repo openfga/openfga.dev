@@ -12,7 +12,7 @@ const websitePaths = [
   '/search-index.json', '/robots.txt', '/sitemap.xml', '/sitemap-website.xml', '/sitemap-docs.xml',
   '/llms.txt', '/llms-full.txt', '/.well-known/acme-challenge/token', '/.well-known/vercel/token',
   '/.well-known/agent-card.json', '/mcp', '/images-other/asset.png',
-  '/api/service', '/api/service?source=legacy', '/api/service/health',
+  '/api/service', '/api/service?source=legacy', '/api/service/health', '/navbar-layout.js-other',
 ];
 
 test('website paths, discovery roots, verification, and lookalike prefixes stay on the original request', async () => {
@@ -49,7 +49,7 @@ test('native routing preserves path boundaries and exact support files', () => {
     '/docs/fga', '/docs/fga.md', '/docs/a/b.png', '/api-reference/stores/list-all-stores',
     '/mintlify-assets/_next/static/app.js', '/_mintlify/api/v1/e', '/_next/image',
     '/images/img/logo.svg', '/fga-codegen.js', '/openfga-dsl-highlight.js', '/openfga-viewer.js',
-    '/global.css', '/github-star-cache.js', '/_llms/docs.md',
+    '/global.css', '/github-star-cache.js', '/navbar-layout.js', '/_llms/docs.md',
   ]) {
     assert.deepEqual(routeRequest(path), { kind: 'mintlify', path });
   }

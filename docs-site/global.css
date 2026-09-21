@@ -15,6 +15,61 @@
   object-fit: contain;
 }
 
+@media (min-width: 1024px) {
+  #navbar div:has(> .topbar-right-container) > div:has(> a[href='https://openfga.dev/']) {
+    flex: 0 0 auto;
+  }
+
+  #navbar .topbar-right-container {
+    min-width: 0;
+  }
+
+  #navbar .topbar-right-container > ul {
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 1023px) {
+  #navbar div:has(> .topbar-right-container) {
+    display: flex;
+    position: absolute;
+    top: 0;
+    right: 1rem;
+    width: 2.25rem;
+    padding: 0;
+  }
+
+  #navbar div:has(> .topbar-right-container) > div:has(> a[href='https://openfga.dev/']),
+  #navbar .topbar-right-container > ul,
+  #navbar .topbar-right-container > div:has(> #search-bar-entry),
+  #navbar .topbar-right-container > div:has(> button[aria-label='More actions']) {
+    display: none;
+  }
+
+  #navbar div:has(> #search-bar-entry-mobile) {
+    padding-right: 3rem;
+  }
+}
+
+/* Match the layer of Mintlify's important compact-search utilities. */
+@layer utilities {
+  @media (min-width: 1100px) {
+    #navbar #search-bar-entry {
+      width: clamp(9.25rem, 16vw, 16rem) !important;
+      padding-inline: 0.875rem !important;
+      justify-content: space-between !important;
+    }
+
+    #navbar #search-bar-entry .truncate {
+      display: block;
+    }
+
+    #navbar #search-bar-entry > span {
+      display: inline-flex;
+    }
+  }
+}
+
 /* Match native control proportions without shrinking the navbar link hit areas. */
 #navbar
   :is(
@@ -162,7 +217,9 @@ body:not(:has(#api-playground-2-operation-page)) #header .prose {
   display: none;
 }
 
-/* Keep the responsive navbar assistant entry, not repeated article prompts. */
+/* Keep native search without the separate assistant entry points. */
+#assistant-entry,
+#assistant-entry-mobile,
 [data-assistant-bar],
 #ask-assistant-code-block-button {
   display: none;
