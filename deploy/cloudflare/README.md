@@ -1,6 +1,13 @@
-# Split-site routing
+# Split-site routing reference
 
 This Worker is an optional reference for serving Mintlify documentation through the existing `openfga.dev` Cloudflare zone. Docusaurus stays on GitHub Pages. The repository includes the implementation, local and dry-run checks, and sitemap builder, but no proxy deployment workflow, named deployment environments, or new repository credential requirements. The existing infrastructure owner manages routing through their established process and can use an equivalent approved proxy instead. **Merging this code does not deploy the Worker or authorize a traffic switch.**
+
+| Responsibility | Owner |
+| --- | --- |
+| Build and host product docs and API reference | Mintlify, using `/docs-site` |
+| Build and publish Home, Project, Community, and Blog | Existing GitHub Pages workflow, unchanged |
+| Route public paths to the correct origin | Existing infrastructure owner, using this optional Worker or equivalent approved routing |
+| Validate source and routing contracts | Repository checks and owner-run acceptance commands; no repository Cloudflare credentials required |
 
 ## Ownership
 
@@ -13,7 +20,7 @@ This Worker is an optional reference for serving Mintlify documentation through 
 | `/api/service/`                                                  | Normalize to `/api/service`, preserving the browser's fragment                |
 | `/docs/community`                                                | Redirect to the website's `/community`                                        |
 | `/mintlify-assets/**`, `/_mintlify/**`, `/_next/**`, `/_llms/**` | Mintlify runtime, services, and generated indexes                             |
-| `/images/**`, five exact root scripts/styles                     | Native repository assets listed in `routing.mjs`                              |
+| `/images/**`, six exact root scripts/styles                      | Native repository assets listed in `routing.mjs`                              |
 | `/docs/llms.txt`, `/docs/llms-full.txt`                          | Mintlify's root index and complete bundle                                     |
 | `/mcp`, `/docs/mcp`                                              | Exact aliases to native `/mcp`; support the page menu's generated MCP targets |
 | Selected `/docs/.well-known/**` endpoints                        | Corresponding native discovery endpoints, subject to vendor acceptance        |
@@ -25,6 +32,28 @@ The website keeps `/`, `/project`, `/community`, `/blog/**`, `/search`, `/robots
 Do not redirect `/api/service` directly to the new API index. Swagger links carry their operation in a fragment, which the Worker cannot see. Both `#Relationship%20Queries/Check` and `#/Relationship%20Queries/Check` are supported. The small website page reads that fragment and replaces the browser location with the matching native operation, preserving query parameters. Empty, unknown, and malformed fragments fall back to `/api-reference`; a link remains usable without JavaScript. The page is excluded from search, sitemaps, and website LLM bundles, and does not restore Swagger.
 
 If adopting this Worker, use a **Worker Route**, not a Worker Custom Domain or an apex DNS replacement. The owner-managed route must cover `openfga.dev/*` so bare routes with query strings also invoke the Worker. The code then applies segment-aware ownership. Website fallthrough uses the original `fetch(request)` to reach the existing origin.
+
+## Repository redirects
+
+These redirects already exist in [`docs-site/docs.json`](../../docs-site/docs.json); they do not depend on adopting this particular Worker once the request reaches Mintlify:
+
+| Old or entry URL | Destination | Native redirect |
+| --- | --- | --- |
+| `/docs/community` | `https://openfga.dev/community` | Permanent; the absolute URL also works from the Mintlify preview host |
+| `/docs` | `/docs/fga` | Temporary |
+| `/api-reference` | `/api-reference/stores/list-all-stores` | Temporary |
+| Eleven historical overview URLs, including `/docs/modeling`, `/docs/adopters`, and `/docs/best-practices` | Their corresponding `/overview` pages | Temporary; the complete set is checked against the original source slugs |
+| `/api` | `/api-reference` | Permanent on the native host; public edge policy is owner-managed |
+
+The optional Worker mirrors the Community and section-entry redirects and handles their trailing-slash forms. Its local defaults use temporary redirects so validation does not create permanent browser caches.
+
+Native-host redirects have been observed dropping query parameters. The optional Worker preserves queries on its public redirects; verify equivalent behavior in the selected routing before cutover.
+
+The native-host `/` redirect starts readers at `/docs/fga`; it must not redirect the public `openfga.dev/` homepage. Similarly, the generic native `/api/service` redirect is only a fallback on the Mintlify host. Keep the public `/api/service` request on the website compatibility page so its operation fragment is preserved.
+
+**Redirects do not replace origin routing.** A Mintlify redirect is evaluated only after a request reaches Mintlify. The infrastructure owner must still send the docs/API path families to Mintlify and retain website ownership of `/community` and the Swagger compatibility page.
+
+Community is the only historical product-docs page reassigned to the website in [`source-pages.json`](../../docs-site/source-pages.json). The other migrated docs retain their original public paths or exact overview aliases. Do not add guessed `/docs/project`, `/docs/blog`, or broad catch-all redirects: Project and Blog keep their existing website URLs.
 
 ## Local checks
 
