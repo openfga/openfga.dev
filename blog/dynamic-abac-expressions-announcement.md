@@ -1,5 +1,5 @@
 ---
-title: Dynamic Conditions: Bringing Runtime ABAC Expressions to OpenFGA
+title: 'Dynamic Conditions: Bringing Runtime ABAC Expressions to OpenFGA'
 description: Use runtime CEL expressions with OpenFGA authorization tuples for dynamic agent and MCP gateway policies.
 slug: dynamic-abac-expressions-announcement
 date: 2026-09-21
