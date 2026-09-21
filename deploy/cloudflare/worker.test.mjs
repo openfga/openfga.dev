@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 import worker, { handleRequest, rewriteOriginStream } from './worker.mjs';
 import { mintlifyOrigin, publicOrigin, routeRequest } from './routing.mjs';
@@ -312,12 +312,21 @@ test('Cloudflare handler ignores execution context instead of treating it as fet
   assert.equal(await result.text(), 'docs');
 });
 
-test('deploy defaults cannot bind the production hostname', () => {
+test('the optional proxy configuration exposes no routes or deployment environments', () => {
   const config = JSON.parse(readFileSync(new URL('./wrangler.json', import.meta.url), 'utf8'));
   assert.deepEqual(config.routes, []);
   assert.equal(config.workers_dev, false);
-  assert.deepEqual(config.env.staging.routes, []);
-  assert.equal(config.env.staging.vars.WEBSITE_ORIGIN, publicOrigin);
-  assert.deepEqual(config.env.production.routes, [{ pattern: 'openfga.dev/*', zone_name: 'openfga.dev' }]);
-  assert.ok(!config.env.production.vars.WEBSITE_ORIGIN);
+  assert.equal(config.preview_urls, false);
+  assert.equal(config.env, undefined);
+  assert.equal(config.vars.WEBSITE_ORIGIN, undefined);
+  assert.equal(config.vars.PERMANENT_API_REDIRECTS, 'false');
+});
+
+test('repository proxy commands validate or run locally without deployment automation', () => {
+  const { scripts } = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8'));
+  assert.match(scripts['check:docs-proxy'], /wrangler deploy --dry-run --config deploy\/cloudflare\/wrangler\.json$/);
+  assert.match(scripts['dev:docs-proxy'], /^wrangler dev --local --config deploy\/cloudflare\/wrangler\.json /);
+  assert.ok(scripts['dev:docs-proxy'].includes(`--var WEBSITE_ORIGIN:${publicOrigin}`));
+  assert.ok(!Object.keys(scripts).some((name) => name.startsWith('deploy:docs-proxy')));
+  assert.equal(existsSync(new URL('../../.github/workflows/docs-proxy.yml', import.meta.url)), false);
 });

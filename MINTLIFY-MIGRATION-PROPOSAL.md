@@ -21,9 +21,14 @@ website compatibility page at `/api/service` maps old Swagger operation
 fragments to the corresponding native API pages.
 
 This retains Docusaurus for the surfaces it handles well while using Mintlify for
-documentation navigation, search, Markdown exports, and the native OpenAPI
-playground. A path-aware reverse proxy is required because DNS cannot route
+documentation navigation, search, Markdown exports, and the native read-only API
+reference. A path-aware reverse proxy is required because DNS cannot route
 individual paths to separate origins.
+
+The existing infrastructure owner manages that routing through their established
+process. The repository retains an optional tested Cloudflare Worker, but adds no
+proxy deployment workflow, named deployment environments, or repository credential
+requirements. The GitHub Pages publishing workflow remains unchanged.
 
 ### Migration review scope
 
@@ -54,6 +59,10 @@ other root discovery resources or `/mcp/**`.
 Use the [migration review checklist](docs-site/README.md#migration-review-checklist)
 for current acceptance requirements. The historical spike findings below are not
 approval for editorial or navigation changes.
+
+Request code/content review with known release blockers documented. Production
+setup and cutover approval are merge gates, not prerequisites to leave draft; see
+the [review handoff policy](docs-site/README.md#review-readiness-and-pr-handoff).
 
 ---
 
@@ -247,13 +256,14 @@ deploying the Mintlify origin and routing only the documentation surfaces to it.
   repository directory. Its native `/` entry redirects to `/docs/fga`; the public
   `openfga.dev/` homepage stays on Docusaurus.
 - Keep the existing Cloudflare-fronted GitHub Pages origin for the website.
-  Implement selective routing with a Cloudflare Worker Route rather than changing
-  apex DNS or moving the website to another hosting platform.
+  Have the infrastructure owner configure selective routing through their existing
+  process, using the optional Worker Route implementation or an equivalent proxy
+  rather than changing apex DNS or moving the website to another hosting platform.
 - Confirm Mintlify's custom-domain and discovery configuration for two sibling
   prefixes before deployment. Do not blindly enable a `/docs` base path or rewrite
   only the LLM index files; neither establishes this site's complete URL contract.
 - Follow the [split-site deployment contract](docs-site/README.md#split-site-deployment)
-  for page and support paths, headers, discovery, sitemap ownership, staging,
+  for page and support paths, headers, discovery, sitemap ownership, verification,
   coordinated activation, and rollback.
 - Obtain owner approval before changing production routing. Retain the last
   complete Docusaurus deployment as well as the previous edge configuration.

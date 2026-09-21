@@ -9,31 +9,5 @@
   "send_metrics": false,
   "vars": {
     "PERMANENT_API_REDIRECTS": "false"
-  },
-  "env": {
-    "staging": {
-      "name": "openfga-docs-proxy-staging",
-      "workers_dev": true,
-      "preview_urls": false,
-      "routes": [],
-      "vars": {
-        "WEBSITE_ORIGIN": "https://openfga.dev",
-        "PERMANENT_API_REDIRECTS": "false"
-      }
-    },
-    "production": {
-      "name": "openfga-docs-proxy",
-      "workers_dev": false,
-      "preview_urls": false,
-      "routes": [
-        {
-          "pattern": "openfga.dev/*",
-          "zone_name": "openfga.dev"
-        }
-      ],
-      "vars": {
-        "PERMANENT_API_REDIRECTS": "true"
-      }
-    }
   }
 }

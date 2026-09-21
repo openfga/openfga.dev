@@ -33,7 +33,7 @@ Readers can use the native [Copy page menu](docs-site/README.md#page-actions) to
 
 ### Production routing
 
-The [Cloudflare proxy](deploy/cloudflare/README.md) forwards `/docs` and `/api-reference` to Mintlify while preserving the existing website origin. This repository includes its code, environment configuration, offline checks, and a manual deployment workflow. No ordinary build or PR check deploys it.
+Keeping `/docs` and `/api-reference` on the existing hostname requires path-based routing to Mintlify while preserving the GitHub Pages website origin. The [Cloudflare proxy](deploy/cloudflare/README.md) is an optional reference implementation with local checks, not a new deployment pipeline. The existing infrastructure owner manages routing through their established process; this repository requires no new Cloudflare credentials or GitHub deployment environments.
 
 The website build generates a composite sitemap index with separate website and native children. Cloudflare activation, Mintlify domain/discovery verification, and the website publication must be coordinated by their owners before removing the old public docs deployment. See the runbook for acceptance and complete rollback requirements.
 
@@ -166,6 +166,8 @@ https://openfga.dev/pr-preview/pr-589/project
 ```
 
 Use the separate Mintlify deployment preview for product docs and the API reference. Configure Mintlify's monorepo directory as `/docs-site` before enabling that deployment after the rename. Repository cleanup does not configure the external production edge or switch traffic.
+
+The website preview workflow runs when a PR becomes ready for review. Request code and content review with known deployment limitations documented; production configuration and cutover approval are merge gates, not prerequisites to leave draft. See the [review handoff policy](docs-site/README.md#review-readiness-and-pr-handoff).
 
 ## Contributing
 Please review the [Contributing Guidelines](https://github.com/openfga/.github/blob/main/CONTRIBUTING.md) before sending a PR or opening an issue.

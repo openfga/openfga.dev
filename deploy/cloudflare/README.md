@@ -1,6 +1,6 @@
 # Split-site routing
 
-This Worker serves Mintlify documentation through the existing `openfga.dev` Cloudflare zone. Docusaurus stays on GitHub Pages. The repository includes the implementation, dry-run checks, sitemap builder, and a manual deployment workflow. **Merging this code does not deploy the Worker or authorize a production cutover.**
+This Worker is an optional reference for serving Mintlify documentation through the existing `openfga.dev` Cloudflare zone. Docusaurus stays on GitHub Pages. The repository includes the implementation, local and dry-run checks, and sitemap builder, but no proxy deployment workflow, named deployment environments, or new repository credential requirements. The existing infrastructure owner manages routing through their established process and can use an equivalent approved proxy instead. **Merging this code does not deploy the Worker or authorize a traffic switch.**
 
 ## Ownership
 
@@ -24,7 +24,7 @@ The website keeps `/`, `/project`, `/community`, `/blog/**`, `/search`, `/robots
 
 Do not redirect `/api/service` directly to the new API index. Swagger links carry their operation in a fragment, which the Worker cannot see. Both `#Relationship%20Queries/Check` and `#/Relationship%20Queries/Check` are supported. The small website page reads that fragment and replaces the browser location with the matching native operation, preserving query parameters. Empty, unknown, and malformed fragments fall back to `/api-reference`; a link remains usable without JavaScript. The page is excluded from search, sitemaps, and website LLM bundles, and does not restore Swagger.
 
-Use a **Worker Route**, not a Worker Custom Domain or an apex DNS replacement. The named production configuration uses `openfga.dev/*` so bare routes with query strings also invoke the Worker. The code then applies segment-aware ownership. Website fallthrough uses the original `fetch(request)` to reach the existing origin.
+If adopting this Worker, use a **Worker Route**, not a Worker Custom Domain or an apex DNS replacement. The owner-managed route must cover `openfga.dev/*` so bare routes with query strings also invoke the Worker. The code then applies segment-aware ownership. Website fallthrough uses the original `fetch(request)` to reach the existing origin.
 
 ## Local checks
 
@@ -37,41 +37,34 @@ npm run test:site-boundary
 npm run build
 ```
 
-`check:docs-proxy` runs offline tests and a Wrangler production **dry run**. It does not authenticate, upload, or attach a route. The ordinary build creates a root sitemap index plus `sitemap-website.xml` and `sitemap-docs.xml`. Native locations come from this checkout's docs inventory and pinned canonical OpenAPI schema, not a second hand-maintained URL list.
+`check:docs-proxy` runs offline tests and a Wrangler bundle **dry run**. It does not authenticate, upload, or attach a route. The ordinary build creates a root sitemap index plus `sitemap-website.xml` and `sitemap-docs.xml`. Native locations come from this checkout's docs inventory and pinned canonical OpenAPI schema, not a second hand-maintained URL list.
 
 Run the Worker locally without deploying:
 
 ```bash
-npm run dev:docs-proxy -- --local --local-protocol https --port 3383
+npm run dev:docs-proxy -- --local-protocol https --port 3383
 ```
 
-Use the HTTPS URL printed by Wrangler and trust its local development certificate in your test client. The staging environment forwards website requests to the current public website; it does not serve your local Docusaurus build. Consequently, its sitemap check cannot pass until the new website sitemap is published. Local HTTP works for transport probes, but Mintlify's HTTPS-preferring client navigation should be exercised on HTTPS.
+The command explicitly runs locally and supplies `WEBSITE_ORIGIN=https://openfga.dev` only for local fallback requests; it does not authenticate or publish a public preview. Use the HTTPS URL printed by Wrangler and trust its local development certificate in your test client. Website requests reach the current public website, not your local Docusaurus build, so new sitemap and compatibility-page checks need separate local-build verification until website publication. Local HTTP works for transport probes, but Mintlify's HTTPS-preferring client navigation should be exercised on HTTPS.
 
-## Account setup
+## Infrastructure owner handoff
 
-The Cloudflare owner must:
+No new GitHub deployment environments, API-token secret, or account-ID variable are required by this repository. Mintlify continues to build and host the native docs, and the existing GitHub Pages workflow continues to publish the website. Preserving both path families on one hostname still requires routing, which the infrastructure owner configures using their existing access and tooling.
+
+Before adopting this Worker or an equivalent proxy, the owner must:
 
 1. Confirm the existing `openfga.dev` zone and orange-cloud DNS records. Retain the GitHub Pages origin and TLS setup.
 2. Inspect Worker Routes, Redirect Rules, Cache Rules, WAF, and rate limits for conflicts. The Worker adds no dynamic edge caching; existing rules must not force-cache HTML, RSC responses, POSTs, streams, or discovery.
-3. Create protected GitHub environments `docs-proxy-staging` and `docs-proxy-production`. Require reviewer approval for production and restrict its permitted deployment branches.
-4. Set environment secret `CLOUDFLARE_API_TOKEN` and environment variable `CLOUDFLARE_ACCOUNT_ID`. Scope the token to the intended account's Workers Scripts and zone's Workers Routes permissions, plus only the read permissions Wrangler requires. Never commit credentials.
-5. Confirm the staging workers.dev URL is acceptable. It is intentionally public and contains only public documentation. Use an approved Access-protected staging hostname instead if organizational policy requires one.
+3. Select the reviewed routing implementation and an approved HTTPS verification path through their existing process. This does not require a new named staging environment or public workers.dev deployment.
+4. Run source-matching native-origin acceptance before activation, retain the results for the reviewed revision, and coordinate the change window and rollback with the website and Mintlify owners.
 
-The [manual workflow](../../.github/workflows/docs-proxy.yml) has no push, schedule, or pull-request trigger. Select the reviewed revision and `staging` first. Production additionally requires the exact confirmation `ACTIVATE OPENFGA DOCS ROUTING` and runs the native-origin acceptance command before deployment. That command recomputes the selected checkout's [native source fingerprint](../../docs-site/README.md#deployment-fingerprint), rejects a stale local marker, and requires the matching marker on every advertised hosted docs and API page. A stale deployment with identical routes is not accepted. Environment protection must be configured by an administrator; a YAML environment name alone does not create an approval policy.
+`npm run verify:docs-origin` recomputes the selected checkout's [native source fingerprint](../../docs-site/README.md#deployment-fingerprint), rejects a stale local marker, and requires the matching marker on every advertised hosted docs and API page. A stale deployment with identical routes is not accepted. The owner must run and retain this check explicitly; there is no repository deployment workflow enforcing it on their behalf.
 
-For authorized operators, the equivalent CLI commands are:
-
-```bash
-npm run deploy:docs-proxy:staging
-# Run only during the approved cutover:
-npm run deploy:docs-proxy:production
-```
-
-The base Wrangler configuration has no routes, workers.dev URL, or preview URL. Only the explicitly selected production environment can attach the public route. Production uses permanent 308 legacy API redirects; staging uses 307. Both preserve methods and query strings.
+The checked-in Wrangler configuration has no routes, workers.dev URL, preview URL, or named deployment environments. It is for local checks and bundling, not a ready-to-activate deployment. It defaults legacy API redirects to temporary 307 responses. An owner adopting the Worker can set `PERMANENT_API_REDIRECTS=true` after acceptance to use permanent 308 redirects; both preserve methods and query strings. Do not copy the local `WEBSITE_ORIGIN` override to the public route: public website fallthrough must use the original request to avoid a loop.
 
 ## Mintlify owner actions
 
-Keep the project directory `/docs-site`, upstream `https://fga.mintlify.site`, and deployment base path unset. Content already has `/docs` and `/api-reference` prefixes. Enabling a global `/docs` base path would change those routes.
+Keep the project directory `/docs-site` and upstream `https://fga.mintlify.site`. The current implementation assumes the deployment base path is unset because content already has `/docs` and `/api-reference` prefixes. Confirm that two-prefix contract with Mintlify; enabling a global `/docs` base path would change those routes.
 
 Confirm the two-prefix custom-domain arrangement with Mintlify before attaching `openfga.dev` in its dashboard. The repository sets the public canonical base and `seo.indexing: all` because its section selectors use hidden anchors. Verify the resulting deployment rather than assuming the settings fixed generated resources.
 
@@ -91,12 +84,12 @@ Before activation, run:
 
 ```bash
 npm run verify:docs-origin
-npm run verify:docs-proxy -- --origin https://APPROVED-STAGING-HOST
+npm run verify:docs-proxy -- --origin https://APPROVED-VERIFICATION-HOST
 ```
 
 These commands make read-only HTTP requests and report nonzero failures for missing or mismatched source fingerprints, wrong canonical hosts, missing runtime assets, incomplete recursive docs indexes, bundle failures, lost redirect queries, website capture, a missing compatibility page, and incomplete composite sitemap output. They fetch the digest-pinned OpenAPI schema and check all 24 advertised API operation URLs, not just List stores. Every advertised docs and API page must carry the fingerprint of this checkout; mixed cached revisions fail too. If the hosted marker does not match, wait for the matching deployment and repeat acceptance; do not bypass the gate or substitute a hosted marker into local configuration. This source marker is not an attestation of provider internals, browser interactions, Cloudflare route precedence, permissions, or complete MCP compatibility.
 
-Staging uses the currently published website, so record the expected composite-sitemap and new compatibility-page failures until the coordinated website publication. Validate the compatibility page against the local website build before activation and rerun the public checks after publication. Do not waive other failures on that basis. Verify generated agent metadata and every URL it advertises manually.
+A verification proxy that uses the currently published website cannot serve the new composite sitemap or compatibility page until coordinated website publication. Record those expected failures, validate the compatibility page against the local website build before activation, and rerun public checks after publication. Do not waive other failures on that basis. Verify generated agent metadata and every URL it advertises manually.
 
 In an HTTPS browser, check docs and API navigation, direct deep links, per-page Markdown, images, custom viewers, search results, enabled assistant streaming, and analytics POSTs. Follow legacy Swagger fragments for Check, BatchCheck, and AuthZEN, including encoded tag names and the trailing-slash variant. Check response MIME types, upstream error propagation, theme changes, and reloads. Test website Home, Project, Community, Blog, search, root LLM resources, and negative prefix matches. Root `openfga.dev/` must not redirect to docs.
 
@@ -110,11 +103,13 @@ Before the change window, save:
 
 - The previous Worker version, routes, and applicable edge rules.
 - The last complete GitHub Pages deployment containing legacy docs, including its commit/artifact and a tested restoration procedure.
-- Staging evidence, accepted provider settings, the reviewed deployment commit, and the owners performing activation and rollback.
+- Verification evidence, accepted provider settings, the reviewed deployment commit, and the owners performing activation and rollback.
 
-The [website deployment workflow](../../.github/workflows/deploy.yml) runs on main pushes, manual dispatch, and a schedule. Coordinate merge and publication with the edge owner. Activate the accepted proxy before the website build removes legacy docs, then publish the website sitemap and rerun the proxy acceptance command against `https://openfga.dev`.
+The unchanged [website deployment workflow](../../.github/workflows/deploy.yml) runs on main pushes, manual dispatch, and a schedule. Coordinate merge and publication with the edge owner. Activate the accepted routing before the website build removes legacy docs, or arrange an explicit publication hold with its owner. Then publish the website sitemap and rerun proxy acceptance against `https://openfga.dev`.
 
 Do not merge and leave the new website deployed while waiting for someone to configure routing.
+
+Code/content review can begin before these deployment gates are complete. Document unresolved gates in the PR handoff; they block merge and activation, not the request for review.
 
 ## Rollback
 

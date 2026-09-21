@@ -523,11 +523,11 @@ The `/api/service` compatibility page preserves old links such as `#/Relationshi
 
 ### Use the existing Cloudflare edge
 
-The [Cloudflare Worker](../deploy/cloudflare/worker.mjs), environment configuration, offline tests, and [manual deployment workflow](../.github/workflows/docs-proxy.yml) are included in this repository. They do not activate production routing on merge. Follow the [operator runbook](../deploy/cloudflare/README.md) for account setup, staging, acceptance, cutover, and rollback.
+The [Cloudflare Worker](../deploy/cloudflare/worker.mjs) is an optional routing reference with offline tests and a local-only development command. There is no proxy deployment workflow, named staging/production environment, or requirement to add Cloudflare credentials to this repository. The existing infrastructure owner can adopt this Worker or use equivalent approved routing through their established process. Follow the [operator runbook](../deploy/cloudflare/README.md) for acceptance, cutover, and rollback.
 
-The [website deployment workflow](../.github/workflows/deploy.yml) continues to publish Docusaurus to GitHub Pages. The Worker uses a [Worker Route](https://developers.cloudflare.com/workers/configuration/routing/routes/) on the existing proxied zone, retaining that website origin.
+The [website deployment workflow](../.github/workflows/deploy.yml) continues to publish Docusaurus to GitHub Pages without deployment changes. If adopting the Worker, use a [Worker Route](https://developers.cloudflare.com/workers/configuration/routing/routes/) on the existing proxied zone, retaining that website origin. The checked-in Wrangler configuration has no routes, public preview URLs, or named deployment environments.
 
-Run `npm run check:docs-proxy` for offline tests and a production bundle dry run. It requires no Cloudflare credentials and does not deploy.
+Run `npm run check:docs-proxy` for offline tests and a bundle dry run. It requires no Cloudflare credentials and does not deploy. The local-only `npm run dev:docs-proxy` command supplies the existing website origin for fallback requests.
 
 Proxy Mintlify requests to `https://fga.mintlify.site`, never back to `https://openfga.dev`. A Worker Route can use `fetch(request)` for website fallthrough. Do not replace apex DNS with Mintlify or introduce a new website hosting platform just for this split.
 
@@ -539,7 +539,7 @@ Worker invocation patterns must cover query-bearing entries such as `/docs?sourc
 | --------------------- | --------------------------------------------------------------------------------------- |
 | Repository directory  | `/docs-site`                                                                            |
 | Upstream origin       | `https://fga.mintlify.site`                                                             |
-| Deployment base path  | Leave unset; source paths already include `docs/`, while API pages use `api-reference/` |
+| Deployment base path  | Current implementation assumes unset; confirm the two-prefix setup with Mintlify before changing it |
 | Public canonical host | `https://openfga.dev`, with the correct path for each section                           |
 
 Confirm the custom-domain setup with Mintlify before changing it. Its [subpath guide](https://www.mintlify.com/docs/deploy/docs-subpath) describes one deployment base path, while this site has two sibling prefixes. Adding a global `/docs` base path can change both URL families.
@@ -577,13 +577,21 @@ The Worker provides the two native index aliases, recursive index routing, and d
 
 ### Activate with a rollback path
 
-1. Obtain Cloudflare Worker/zone access and Mintlify domain-settings access. Confirm the two-prefix, header, and discovery contracts.
+1. Agree with the existing infrastructure and Mintlify owners on routing and the two-prefix, header, and discovery contracts. Use their established access and change-management process; no new repository deployment environments are required.
 2. Save the current edge configuration and the last complete Docusaurus deployment, including its old docs output.
-3. Stage the proxy. Check both page prefixes, entry URLs, query strings, redirects, negative prefix matches, website fallthrough, assets, viewers, search, enabled assistant streaming, analytics POST, and discovery. Native origin-root redirects can drop query parameters; check this explicitly.
+3. Validate the selected routing locally and through an owner-approved HTTPS verification path. Check both page prefixes, entry URLs, query strings, redirects, negative prefix matches, website fallthrough, assets, viewers, search, enabled assistant streaming, analytics POST, and discovery. Native origin-root redirects can drop query parameters; check this explicitly.
 4. Verify canonical URLs, sitemap coverage, robots ownership, certificate verification/renewal, and cache freshness. Public `/` must not redirect to the docs.
-5. Coordinate Worker activation with the website deployment that removes legacy docs. Enable permanent legacy API redirects after staging acceptance and owner approval.
+5. Coordinate routing activation with the website deployment that removes legacy docs. Enable permanent legacy API redirects only after acceptance and owner approval.
 6. If routing or rendering regresses, restore both the saved edge configuration and the complete prior website deployment, then invalidate affected caches.
 
 **Removing Worker routes alone is not a rollback:** the new Docusaurus build no longer contains the old docs.
 
-Production activation is an owner-approved action, not part of ordinary CI. Cloudflare credentials are not stored here. Keep the migration PR draft until the owners approve the cutover and resolve the [runbook's acceptance gates](../deploy/cloudflare/README.md#acceptance-and-cutover).
+Production activation is an owner-approved action, not part of ordinary CI. Removing repository deployment automation does not remove the need for working path routing or the [runbook's acceptance gates](../deploy/cloudflare/README.md#acceptance-and-cutover).
+
+### Review readiness and PR handoff
+
+Ready for review means the implementation is ready for code and content feedback; it does not authorize merge, website publication, or a traffic switch. Production configuration and cutover approval are merge gates, not reasons by themselves to keep the PR draft.
+
+Before requesting review, record the reviewed revision, relevant check results, docs/API preview links, content-preservation exceptions, and unresolved release blockers in the PR description. If hosted pages do not match that revision, state the limitation rather than presenting the preview as accepted. Request docs, frontend, and DX review; coordinate deployment decisions with the existing infrastructure and Mintlify owners.
+
+The website preview workflow handles `ready_for_review` while retaining its non-draft and same-repository restrictions. Keep the PR draft while implementation is incomplete, and change its state only when a maintainer chooses to request review. Do not merge until required reviews, source-matching acceptance, and a coordinated cutover/rollback plan are complete.

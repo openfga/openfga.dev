@@ -1,7 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { parse as parseYaml } from 'yaml';
 import { checkNativeFingerprint, fingerprintMeta, nativeSourceFingerprint } from './native-deployment-fingerprint.mjs';
 
 function fixture() {
@@ -70,14 +68,4 @@ test('configuration changes and added, removed, or renamed files change the sour
 test('a missing configuration or marker cannot pass deployment acceptance', () => {
   assert.throws(() => nativeSourceFingerprint(new Map()), /must include docs.json/);
   assert.throws(() => checkNativeFingerprint(fixture()), /fingerprint is stale/);
-});
-
-test('production activation verifies the selected source before invoking Wrangler', () => {
-  const workflow = parseYaml(readFileSync(new URL('../.github/workflows/docs-proxy.yml', import.meta.url), 'utf8'));
-  const steps = workflow.jobs.deploy.steps;
-  const verify = steps.findIndex((step) => step.run === 'npm run verify:docs-origin');
-  const deploy = steps.findIndex((step) => step.run?.includes('wrangler deploy'));
-  assert.ok(verify > 0 && verify < deploy);
-  assert.equal(steps[verify].if, "inputs.environment == 'production'");
-  assert.notEqual(steps[verify]['continue-on-error'], true);
 });
