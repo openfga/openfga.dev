@@ -3,7 +3,7 @@ title: "Install SDK Client"
 description: "Installing SDK client"
 canonical: "https://openfga.dev/docs/getting-started/install-sdk"
 content_type: "documentation"
-last_updated: "2026-09-21T10:39:28.000Z"
+last_updated: "2026-09-21T10:39:37.000Z"
 ---
 
 # Install SDK Client
