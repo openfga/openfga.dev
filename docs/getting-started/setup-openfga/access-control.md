@@ -3,7 +3,7 @@ title: "Setup Access Control"
 description: "How to enable and setup the built-in access control OpenFGA server (experimental)"
 canonical: "https://openfga.dev/docs/getting-started/setup-openfga/access-control"
 content_type: "documentation"
-last_updated: "2026-09-21T10:27:19.000Z"
+last_updated: "2026-09-21T10:39:28.000Z"
 ---
 
 # 🛡️Setup Access Control

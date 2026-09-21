@@ -3,7 +3,7 @@ title: "Testing Models"
 description: "Testing Models"
 canonical: "https://openfga.dev/docs/modeling/testing"
 content_type: "documentation"
-last_updated: "2026-09-21T10:27:19.000Z"
+last_updated: "2026-09-21T10:39:28.000Z"
 ---
 
 # Testing Models

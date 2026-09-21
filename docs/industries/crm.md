@@ -3,7 +3,7 @@ title: "Fine-Grained Authorization for CRM with FGA"
 description: "Model accounts, contacts, leads, opportunities, and territory-based access in FGA for Salesforce-style and HubSpot-style CRM platforms."
 canonical: "https://openfga.dev/docs/industries/crm"
 content_type: "documentation"
-last_updated: "2026-09-21T10:27:19.000Z"
+last_updated: "2026-09-21T10:39:28.000Z"
 ---
 
 # CRM Authorization with OpenFGA

@@ -3,7 +3,7 @@ title: "What is Google Zanzibar?"
 description: "Google Zanzibar is the paper behind Google's global authorization system. Learn what Zanzibar is, what it solved, and how OpenFGA implements it."
 canonical: "https://openfga.dev/docs/learn/zanzibar"
 content_type: "documentation"
-last_updated: "2026-09-21T10:27:19.000Z"
+last_updated: "2026-09-21T10:39:28.000Z"
 ---
 
 # What is Google Zanzibar?
