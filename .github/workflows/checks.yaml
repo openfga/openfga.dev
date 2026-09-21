@@ -92,7 +92,7 @@ jobs:
           trap 'rm -f "$added_posts" "$known_posts" "$excluded_pages"' EXIT
 
           git diff --name-only --diff-filter=A "${BASE_SHA}...${HEAD_SHA}" -- blog \
-            | grep -E '^blog/.+\.mdx?$' > "$added_posts" || true
+            | awk '/^blog\/.+\.mdx?$/' > "$added_posts"
 
           base_path="${BASE_URL:-/}"
           base_path="/${base_path#/}"
