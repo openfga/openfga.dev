@@ -3,7 +3,7 @@ title: 'Dynamic Conditions: Bringing Runtime ABAC Expressions to OpenFGA'
 description: Use runtime CEL expressions with OpenFGA authorization tuples for dynamic agent and MCP gateway policies.
 slug: dynamic-abac-expressions-announcement
 date: 2026-09-21
-last_update: { date: '2026-09-21' }
+last_update: { date: '2026-09-22' }
 authors: aaguiar
 tags: [openfga, features, agents, mcp]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -38,6 +38,8 @@ type agent
 
 type tool
   relations
+    # Agents can be granted permission to call a tool
+    # either unconditionally or subject to a condition.
     define can_call: [agent, agent with can_send_message]
 
 condition can_send_message(channel: string, allowed_channel: string) {
@@ -68,7 +70,7 @@ A check can then supply the request context:
     can_call: true
 ```
 
-But every time a new tool is introduced or a new parameter is allowed by the tool, you may need to update the relation or condition.
+When a policy needs a new runtime parameter, you must update the condition definition and model.
 
 With **Dynamic Conditions**, the expression itself can be stored as part of the tuple and evaluated when the authorization check is made:
 
@@ -80,6 +82,8 @@ type agent
 
 type tool
   relations
+    # Agents can be granted permission to call a tool
+    # either unrestricted or with specific parameters.
     define can_call: [agent, agent with $expression]
 ```
 
@@ -112,7 +116,9 @@ The relationship grants `agent:alice-claude` the ability to call the tool, while
 
 The same pattern can be used for other request attributes, including tenant identifiers, regions, resource properties, and tool parameters.
 
-In an environment with dynamic MCP servers, predicting every tool or policy requirement in advance is nearly impossible. The standard OpenFGA model is designed to be maintained by developers through schema updates, rather than dynamically modified as end users introduce new runtime constraints.
+In an environment with dynamic MCP servers, predicting every tool or policy requirement in advance is nearly impossible. The standard OpenFGA model is designed to be maintained by developers through schema updates, rather than dynamically modified as users who configure agents introduce new runtime constraints.
+
+To write dynamic expressions, developers need to build user interfaces that allow users to define them. Developers should carefully consider what users are allowed to configure and validate those expressions appropriately.
 
 ## How Dynamic Conditions work
 
@@ -130,7 +136,9 @@ Dynamic Conditions are designed for these scenarios. Rather than requiring every
 
 This can reduce the need for constantly changing model definitions while preserving OpenFGA's relationship-based approach.
 
-The [MCP Gateway examples in the `openfga/sample-stores` repository](https://github.com/openfga/sample-stores/tree/main/stores/mcp-gateway) include employee-facing, multi-tenant, and intent-based examples using this pattern.
+## Beyond MCP gateways
+
+Dynamic Conditions also apply to multi-tenant B2B applications. Authorized tenant administrators can define constraints based on subscription tiers, departments, resource attributes, or other runtime context without requiring a new model for every policy variation. These expressions should be written through a trusted control plane.
 
 ## An experimental feature
 
@@ -147,20 +155,14 @@ We are especially interested in learning about:
 
 ## Try it today
 
-To try Dynamic Conditions, run OpenFGA with the experimental feature flag enabled:
+The [MCP Gateway examples in the `openfga/sample-stores` repository](https://github.com/openfga/sample-stores/tree/main/stores/mcp-gateway) include employee-facing, multi-tenant, and intent-based examples using this pattern.
+
+Test it with the latest version of the CLI, or with OpenFGA v1.21.0 or later with the experimental feature flag enabled:
 
 ```shell
 openfga run --experimentals inline_expressions
 ```
 
-You can also use the OpenFGA CLI in standalone mode:
-
-1. Save a model and test definition as `model.fga.yaml`.
-2. Run:
-
-```shell
-fga model test --tests model.fga.yaml
-```
 
 ## Help shape the future of policy authoring
 
