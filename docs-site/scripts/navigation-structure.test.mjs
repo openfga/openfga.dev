@@ -25,6 +25,7 @@ function fixture() {
           hidden: true,
           openapi: {
             source: 'https://example.com/openapi.json',
+            directory: 'api/service',
             overlays: ['openapi/sdk-samples.overlay.json'],
           },
           groups: [{ group: 'Stores', pages: ['GET /stores'] }],
@@ -34,8 +35,8 @@ function fixture() {
     redirects: [
       { source: '/docs', destination: '/docs/fga', permanent: false },
       {
-        source: '/api-reference',
-        destination: '/api-reference/stores/list-all-stores',
+        source: '/api/service',
+        destination: '/api/service/stores/list-all-stores',
         permanent: false,
       },
       ...expectedOverviewRoutes.map((source) => ({ source, destination: `${source}/overview`, permanent: false })),
@@ -58,9 +59,23 @@ test('native metadata uses the public host and indexes pages inside hidden route
   assert.equal(docs.seo.indexing, 'all');
 });
 
+test('native preview aliases preserve old API paths without redirecting the service prefix back', () => {
+  const docs = JSON.parse(readFileSync(new URL('../docs.json', import.meta.url), 'utf8'));
+  assert.equal(getUniqueOpenApiNavigationEntry(docs.navigation).openapi.directory, 'api/service');
+  assert.equal(new Set(docs.redirects.map(({ source }) => source)).size, docs.redirects.length);
+  for (const [source, destination] of [
+    ['/api-reference', '/api/service'],
+    ['/api-reference/:path*', '/api/service/:path*'],
+  ]) {
+    assert.deepEqual(docs.redirects.find((redirect) => redirect.source === source),
+      { source, destination, permanent: true });
+  }
+  assert.ok(!docs.redirects.some(({ destination }) => destination.startsWith('/api-reference')));
+});
+
 test('the introduction HTTP feature link opens the native API reference', () => {
   const introduction = readFileSync(new URL('../docs/fga.mdx', import.meta.url), 'utf8');
-  assert.match(introduction, /\[HTTP\]\(\/api-reference\)/);
+  assert.match(introduction, /\[HTTP\]\(\/api\/service\)/);
   assert.doesNotMatch(introduction, /https:\/\/docs\.fga\.dev\/api\/service/);
 });
 
@@ -239,9 +254,9 @@ for (const [name, mutate, expected] of [
   [
     'stable API entry requires its native redirect',
     (docs) => {
-      docs.redirects[1].destination = '/api-reference/stores/create-a-store';
+      docs.redirects[1].destination = '/api/service/stores/create-a-store';
     },
-    /stable "\/api-reference" entry must redirect temporarily/,
+    /stable "\/api\/service" entry must redirect temporarily/,
   ],
   [
     'stable modeling entry requires its native redirect',

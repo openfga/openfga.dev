@@ -17,7 +17,7 @@ export const expectedDocsGroups = [
 
 export const expectedHeaderLinks = [
   { label: 'Docs', href: '/docs' },
-  { label: 'API Reference', href: '/api-reference' },
+  { label: 'API Reference', href: '/api/service' },
   { label: 'Project', href: 'https://openfga.dev/project' },
   { label: 'Community', href: 'https://openfga.dev/community' },
   { label: 'Blog', href: 'https://openfga.dev/blog' },
@@ -122,11 +122,12 @@ export function validateRouteScopedNavigation(docs) {
   if (getUniqueOpenApiNavigationEntry(navigation) !== apiAnchor) {
     throw new Error('The API Reference anchor must own the only OpenAPI navigation source');
   }
+  deepStrictEqual(apiAnchor.openapi.directory, 'api/service', 'Generated API pages must retain the /api/service prefix');
 
   deepStrictEqual(docs.navbar?.links, expectedHeaderLinks, 'Navbar links must retain the approved exact order');
   assertRedirect(docs, '/', '/docs/fga');
   assertRedirect(docs, '/docs', '/docs/fga');
-  assertRedirect(docs, '/api-reference', '/api-reference/stores/list-all-stores');
+  assertRedirect(docs, '/api/service', '/api/service/stores/list-all-stores');
   for (const route of expectedOverviewRoutes) assertRedirect(docs, route, `${route}/overview`);
   return { docsAnchor, apiAnchor };
 }

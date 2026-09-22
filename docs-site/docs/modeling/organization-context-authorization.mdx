@@ -675,8 +675,8 @@ Using this, you can check that the following requirements are satisfied:
 Contextual tuples:
 
 - Are not persisted in the store.
-- Are only supported on the [Check API endpoint](/api-reference/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object) and [ListObjects API endpoint](/api-reference/relationship-queries/list-all-objects-of-the-given-type-that-the-user-has-a-relation-with). They are not supported on read, expand and other endpoints.
-- If you are using the [Read Changes API endpoint](/api-reference/relationship-tuples/return-a-list-of-all-the-tuple-changes) to build a permission aware search index, note that it will not be trivial to take contextual tuples into account.
+- Are only supported on the [Check API endpoint](/api/service/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object) and [ListObjects API endpoint](/api/service/relationship-queries/list-all-objects-of-the-given-type-that-the-user-has-a-relation-with). They are not supported on read, expand and other endpoints.
+- If you are using the [Read Changes API endpoint](/api/service/relationship-tuples/return-a-list-of-all-the-tuple-changes) to build a permission aware search index, note that it will not be trivial to take contextual tuples into account.
 </Warning>
 
 ## Related Sections
@@ -690,7 +690,7 @@ Check the following sections for more on how user groups can be used.
   <Card title="Contextual and Time-Based Authorization" href="/docs/modeling/contextual-time-based-authorization">
     Learn how to authorize access that depends on dynamic or contextual criteria.
   </Card>
-  <Card title="OpenFGA Check API" href="/api-reference/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object">
+  <Card title="OpenFGA Check API" href="/api/service/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object">
     Details on the Check API in the OpenFGA reference guide.
   </Card>
 </CardGroup>

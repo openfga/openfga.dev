@@ -7,12 +7,13 @@ import { mintlifyOrigin, publicOrigin, routeRequest } from './routing.mjs';
 const request = (path, init) => new Request(`${publicOrigin}${path}`, init);
 const websitePaths = [
   '/', '/?utm_source=docs', '/project', '/community', '/blog', '/blog/news',
-  '/docs-other', '/api-reference-other', '/api/not-an-alias', '/api/request-other',
+  '/docs-other', '/api/service-other', '/api/not-an-alias', '/api/request-other',
   '/assets/app.js', '/img/logo.svg', '/css/custom.css', '/icons/icon.svg', '/search',
   '/search-index.json', '/robots.txt', '/sitemap.xml', '/sitemap-website.xml', '/sitemap-docs.xml',
   '/llms.txt', '/llms-full.txt', '/.well-known/acme-challenge/token', '/.well-known/vercel/token',
   '/.well-known/agent-card.json', '/mcp/', '/mcp/other', '/mcp-other', '/mcp.json', '/images-other/asset.png',
-  '/api/service', '/api/service?source=legacy', '/api/service/health', '/navbar-layout.js-other',
+  '/api/service', '/api/service?source=legacy', '/api/authzen', '/api/authzen/evaluation',
+  '/api/management', '/api/management/stores', '/api-reference-other', '/navbar-layout.js-other',
 ];
 
 test('website paths, discovery roots, verification, and lookalike prefixes stay on the original request', async () => {
@@ -46,7 +47,7 @@ test('staging fallback cannot change its upstream host through leading slashes',
 
 test('native routing preserves path boundaries and exact support files', () => {
   for (const path of [
-    '/docs/fga', '/docs/fga.md', '/docs/a/b.png', '/api-reference/stores/list-all-stores',
+    '/docs/fga', '/docs/fga.md', '/docs/a/b.png', '/api/service/stores/list-all-stores',
     '/mintlify-assets/_next/static/app.js', '/_mintlify/api/v1/e', '/_next/image',
     '/images/img/logo.svg', '/fga-codegen.js', '/openfga-dsl-highlight.js', '/openfga-viewer.js',
     '/global.css', '/github-star-cache.js', '/navbar-layout.js', '/_llms/docs.md',
@@ -65,9 +66,13 @@ test('entry and legacy redirects preserve query strings and methods without fetc
   for (const method of ['GET', 'HEAD', 'POST']) {
     for (const [path, target] of [
       ['/docs', '/docs/fga'], ['/docs/', '/docs/fga'],
-      ['/api-reference', '/api-reference/stores/list-all-stores'],
-      ['/api-reference/', '/api-reference/stores/list-all-stores'],
-      ['/api', '/api-reference'], ['/api/', '/api-reference'],
+      ['/api-reference', '/api/service'], ['/api-reference/', '/api/service/'],
+      ['/api-reference/stores/list-all-stores', '/api/service/stores/list-all-stores'],
+      ['/api-reference/relationship-queries/send-a-list-of-%60check%60-operations-in-a-single-request',
+        '/api/service/relationship-queries/send-a-list-of-%60check%60-operations-in-a-single-request'],
+      ['/api-reference/authzenservice/[experimental]-get-authzen-pdp-configuration-and-capabilities.md',
+        '/api/service/authzenservice/[experimental]-get-authzen-pdp-configuration-and-capabilities.md'],
+      ['/api', '/api/service'], ['/api/', '/api/service'],
       ['/api/service/', '/api/service'],
       ['/docs/community', '/community'],
     ]) {
@@ -192,7 +197,7 @@ test('native redirects stay on the proxy while external destinations remain exte
   for (const [location, expected] of [
     ['/docs/fga?x=1#heading', '/docs/fga?x=1#heading'],
     [`${mintlifyOrigin}/docs/fga`, '/docs/fga'],
-    ['https://fga.mintlify.app/api-reference', '/api-reference'],
+    ['https://fga.mintlify.app/api/service', '/api/service'],
     ['https://openfga.dev/community', '/community'],
     ['https://example.org/help', 'https://example.org/help'],
     ['https://fga.mintlify.site.evil.invalid/docs', 'https://fga.mintlify.site.evil.invalid/docs'],

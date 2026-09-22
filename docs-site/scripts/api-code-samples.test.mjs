@@ -545,7 +545,7 @@ test('navigation explicitly uses the main-branch source and overlay without disa
       anchors: [
         {
           anchor: 'API Reference',
-          openapi: { source: metadata.canonical.url, overlays: [overlayPath] },
+          openapi: { source: metadata.canonical.url, directory: 'api/service', overlays: [overlayPath] },
         },
       ],
     },
@@ -553,6 +553,12 @@ test('navigation explicitly uses the main-branch source and overlay without disa
   };
   validateSampleNavigation(docs, metadata);
   for (const mutate of [
+    (d) => {
+      delete d.navigation.anchors[0].openapi.directory;
+    },
+    (d) => {
+      d.navigation.anchors[0].openapi.directory = 'api';
+    },
     (d) => {
       d.navigation.anchors[0].openapi = metadata.canonical.url;
     },

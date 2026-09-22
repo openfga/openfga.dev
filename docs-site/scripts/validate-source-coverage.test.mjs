@@ -195,7 +195,7 @@ mutation(
   ({ put }) => put('docs-site/docs/intro.mdx'),
   /docs\/intro\.mdx: unexpected MDX page/,
 );
-for (const path of ['docs/orphan.mdx', 'orphan.mdx', 'snippets/orphan.mdx', 'api-reference/orphan.mdx']) {
+for (const path of ['docs/orphan.mdx', 'orphan.mdx', 'snippets/orphan.mdx', 'api/service/orphan.mdx']) {
   mutation(
     `unassigned MDX is rejected at ${path}`,
     ({ put }) => put(`docs-site/${path}`),
@@ -383,7 +383,7 @@ for (const path of [
   '../guide.mdx',
   'docs/../guide.mdx',
   '/docs/guide.mdx',
-  'api-reference/guide.mdx',
+  'api/service/guide.mdx',
   'docs/*.mdx',
   'docs/guide',
 ]) {
@@ -542,7 +542,7 @@ for (const [name, entry, expected] of [
   ['reasonless', { destination: 'docs/new.mdx' }, /nativePages.reason is required/],
   ['blank reason', { destination: 'docs/new.mdx', reason: ' ' }, /requires a nonempty reason/],
   ['traversal', { destination: 'docs/../new.mdx', reason: 'Guide' }, /invalid page path/],
-  ['non-doc route', { destination: 'api-reference/new.mdx', reason: 'Guide' }, /invalid page path/],
+  ['non-doc route', { destination: 'api/service/new.mdx', reason: 'Guide' }, /invalid page path/],
   ['duplicate historical destination', { destination: 'docs/guide.mdx', reason: 'Guide' }, /duplicate destination/],
   ['excluded destination', { destination: 'docs/community.mdx', reason: 'Guide' }, /cannot also be excluded/],
   ['retired fixture', { destination: 'docs/test-viewer.mdx', reason: 'Guide' }, /retired fixture cannot/],

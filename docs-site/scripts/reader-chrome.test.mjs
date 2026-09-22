@@ -68,7 +68,7 @@ test('native feedback links use OpenFGA typography and theme colors without a bu
 test('only nonexistent generated API edit links are hidden; native docs and issue links remain available', () => {
   assert.match(
     css,
-    /body:has\(#api-playground-2-operation-page\)\s*\.feedback-toolbar\s*a\[href\^='https:\/\/github\.com\/openfga\/openfga\.dev\/edit\/'\]\[href\*='\/docs-site\/api-reference\/'\]\s*\{\s*display:\s*none;\s*\}/,
+    /body:has\(#api-playground-2-operation-page\)\s*\.feedback-toolbar\s*a\[href\^='https:\/\/github\.com\/openfga\/openfga\.dev\/edit\/'\]\[href\*='\/docs-site\/api\/service\/'\]\s*\{\s*display:\s*none;\s*\}/,
   );
   assert.doesNotMatch(css, /\.feedback-toolbar\s*(?:a)?\s*\{[^}]*display:\s*none/);
   assert.doesNotMatch(css, /a\[href[^{}]*\/issues[^{}]*\{[^}]*display:\s*none/);

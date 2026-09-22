@@ -78,7 +78,7 @@
 #navbar
   :is(
     a[href='/docs'],
-    a[href='/api-reference'],
+    a[href='/api/service'],
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
@@ -96,7 +96,7 @@
 #navbar
   :is(
     a[href='/docs'],
-    a[href='/api-reference'],
+    a[href='/api/service'],
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
@@ -113,7 +113,7 @@
 #navbar
   :is(
     a[href='/docs'],
-    a[href='/api-reference'],
+    a[href='/api/service'],
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
@@ -124,7 +124,7 @@
 #navbar
   :is(
     a[href='/docs'],
-    a[href='/api-reference'],
+    a[href='/api/service'],
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
@@ -136,7 +136,7 @@
   #navbar
   :is(
     a[href='/docs'],
-    a[href='/api-reference'],
+    a[href='/api/service'],
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
@@ -147,7 +147,7 @@
 #navbar
   :is(
     a[href='/docs'],
-    a[href='/api-reference'],
+    a[href='/api/service'],
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
@@ -158,7 +158,7 @@
 #navbar
   :is(
     a[href='/docs'],
-    a[href='/api-reference'],
+    a[href='/api/service'],
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
@@ -170,7 +170,7 @@
   #navbar
   :is(
     a[href='/docs'],
-    a[href='/api-reference'],
+    a[href='/api/service'],
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
@@ -182,7 +182,7 @@
   #navbar
   :is(
     a[href='/docs'],
-    a[href='/api-reference'],
+    a[href='/api/service'],
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
@@ -191,23 +191,23 @@
 }
 
 body:not(:has(#api-playground-2-operation-page)) #navbar a[href='/docs'],
-body:has(#api-playground-2-operation-page) #navbar a[href='/api-reference'] {
+body:has(#api-playground-2-operation-page) #navbar a[href='/api/service'] {
   color: rgb(var(--primary)) !important;
   font-weight: 600;
 }
 
 body:not(:has(#api-playground-2-operation-page)) #navbar a[href='/docs']::before,
-body:has(#api-playground-2-operation-page) #navbar a[href='/api-reference']::before {
+body:has(#api-playground-2-operation-page) #navbar a[href='/api/service']::before {
   background-color: rgb(var(--primary) / 10%);
 }
 
 .dark body:not(:has(#api-playground-2-operation-page)) #navbar a[href='/docs'],
-.dark body:has(#api-playground-2-operation-page) #navbar a[href='/api-reference'] {
+.dark body:has(#api-playground-2-operation-page) #navbar a[href='/api/service'] {
   color: rgb(var(--primary-light)) !important;
 }
 
 .dark body:not(:has(#api-playground-2-operation-page)) #navbar a[href='/docs']::before,
-.dark body:has(#api-playground-2-operation-page) #navbar a[href='/api-reference']::before {
+.dark body:has(#api-playground-2-operation-page) #navbar a[href='/api/service']::before {
   background-color: rgb(var(--primary-light) / 12%);
 }
 
@@ -264,7 +264,7 @@ body:not(:has(#api-playground-2-operation-page)) #header .prose {
 /* Generated API pages have no MDX file at Mintlify's synthesized edit URL. */
 body:has(#api-playground-2-operation-page)
   .feedback-toolbar
-  a[href^='https://github.com/openfga/openfga.dev/edit/'][href*='/docs-site/api-reference/'] {
+  a[href^='https://github.com/openfga/openfga.dev/edit/'][href*='/docs-site/api/service/'] {
   display: none;
 }
 

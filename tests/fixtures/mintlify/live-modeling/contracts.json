@@ -2714,7 +2714,7 @@
         },
         {
           "title": "OpenFGA API",
-          "href": "/api-reference/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object",
+          "href": "/api/service/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object",
           "text": "Details on the Check API in the OpenFGA reference guide."
         }
       ],
@@ -3892,7 +3892,7 @@
         },
         {
           "title": "OpenFGA Check API",
-          "href": "/api-reference/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object",
+          "href": "/api/service/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object",
           "text": "Details on the Check API in the OpenFGA reference guide."
         }
       ],
@@ -4718,7 +4718,7 @@
         },
         {
           "title": "OpenFGA API",
-          "href": "/api-reference/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object",
+          "href": "/api/service/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object",
           "text": "Details on the Check API in the OpenFGA reference guide."
         }
       ],

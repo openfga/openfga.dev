@@ -1,16 +1,18 @@
+export const apiEntryPage = '/api/service/stores/list-all-stores';
+
 /**
  * @param {string} hash
  * @param {Record<string, Record<string, string>>} routes
  * @returns {{destination: string, warning?: string}}
  */
 export function resolveLegacyApiFragment(hash, routes) {
-  if (!hash || hash === '#') return { destination: '/api-reference' };
+  if (!hash || hash === '#') return { destination: apiEntryPage };
   let fragment;
   try {
     fragment = decodeURIComponent(hash);
   } catch (error) {
     if (!(error instanceof URIError)) throw error;
-    return { destination: '/api-reference', warning: 'Malformed legacy API fragment' };
+    return { destination: apiEntryPage, warning: 'Malformed legacy API fragment' };
   }
   const match = /^#\/?([^/]+)\/([^/]+)$/.exec(fragment);
   if (match) {
@@ -19,5 +21,5 @@ export function resolveLegacyApiFragment(hash, routes) {
       return { destination: routes[tag][operationId] };
     }
   }
-  return { destination: '/api-reference', warning: 'Unknown legacy API fragment' };
+  return { destination: apiEntryPage, warning: 'Unknown legacy API fragment' };
 }

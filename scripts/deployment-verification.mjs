@@ -48,7 +48,7 @@ export async function verifyDeployment({ origin, mode, routes, expectedFingerpri
     }
   };
   const operationPages = async () => {
-    const paths = routes.filter((path) => path.startsWith('/api-reference/'));
+    const paths = routes.filter((path) => path.startsWith('/api/service/'));
     for (let i = 0; i < paths.length; i += 4) {
       await Promise.all(paths.slice(i, i + 4).map(async (path) => {
         const result = await get(`${origin}${path}`);
@@ -81,7 +81,7 @@ export async function verifyDeployment({ origin, mode, routes, expectedFingerpri
       }
     }),
     check('Documentation page and runtime', () => page('/docs/fga')),
-    check('API page and runtime', () => page('/api-reference/stores/list-all-stores')),
+    check('API page and runtime', () => page('/api/service/stores/list-all-stores')),
     check('Every advertised API operation resolves', operationPages),
     check('Native discovery covers every page', async () => {
       const path = mode === 'native' ? '/llms.txt' : '/docs/llms.txt';
@@ -100,7 +100,7 @@ export async function verifyDeployment({ origin, mode, routes, expectedFingerpri
         for (const [, href] of text.matchAll(/\]\(([^)]+)\)/g)) {
           const url = new URL(href, origin);
           const isIndex = /^\/_llms\/.*\.md$/.test(url.pathname);
-          const isPage = /^\/(?:docs|api-reference)\/.*\.md$/.test(url.pathname);
+          const isPage = /^\/(?:docs|api\/service)\/.*\.md$/.test(url.pathname);
           if (!isIndex && !isPage) continue;
           assert.ok(allowedOrigins.has(url.origin), `Discovery points to an unapproved origin: ${url.href}`);
           if (isPage) {
@@ -130,7 +130,7 @@ export async function verifyDeployment({ origin, mode, routes, expectedFingerpri
       assert.equal(bundle.status, 200);
       assert.match(bundle.headers.get('content-type') ?? '', /^text\/(?:plain|markdown)/);
       assert.ok(bundle.text.includes('/docs/fga'), 'Missing introduction in documentation bundle');
-      assert.ok(bundle.text.includes('/api-reference/'), 'Missing API documentation in bundle');
+      assert.ok(bundle.text.includes('/api/service/'), 'Missing API documentation in bundle');
       if (mode === 'proxy') assert.doesNotMatch(bundle.text, /https:\/\/fga\.mintlify\.(?:site|app)\//);
     }),
   ]);
@@ -144,8 +144,9 @@ export async function verifyDeployment({ origin, mode, routes, expectedFingerpri
       }),
       check('Entry URLs preserve query parameters', async () => {
         for (const [path, destination] of [
-          ['/docs', '/docs/fga'], ['/api-reference', '/api-reference/stores/list-all-stores'],
-          ['/api', '/api-reference'], ['/api/service/', '/api/service'],
+          ['/docs', '/docs/fga'], ['/api-reference', '/api/service'],
+          ['/api-reference/stores/list-all-stores', '/api/service/stores/list-all-stores'],
+          ['/api', '/api/service'], ['/api/service/', '/api/service'],
         ]) {
           const result = await get(`${origin}${path}?acceptance=1`);
           assert.ok([307, 308].includes(result.status), `${path}: expected method-preserving redirect`);

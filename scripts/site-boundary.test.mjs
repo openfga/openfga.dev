@@ -7,7 +7,7 @@ const config = {
   redirects: [
     { source: '/docs', destination: '/docs/fga' },
     { source: '/docs/modeling', destination: '/docs/modeling/overview' },
-    { source: '/api-reference', destination: '/api-reference/stores/list-all-stores' },
+    { source: '/api/service', destination: '/api/service/stores/list-all-stores' },
     { source: '/docs/community', destination: 'https://openfga.dev/community' },
   ],
 };
@@ -15,12 +15,15 @@ const pages = new Map([
   ['/docs/fga', inspectNativePage('## Introduction\n<h3 id="explicit">Exact heading</h3>\n##### <span id="deep">Deep heading</span>')],
   ['/docs/modeling/overview', inspectNativePage('## Models')],
 ]);
-const apiRoutes = new Set(['/api-reference/stores/list-all-stores']);
+const apiRoutes = new Set(['/api/service/stores/list-all-stores']);
 const options = { config, pages, apiRoutes };
 
 test('ownership matches complete path segments', () => {
-  assert.ok(isNativeRoute('/docs') && isNativeRoute('/docs/fga') && isNativeRoute('/api-reference/stores'));
-  assert.ok(!isNativeRoute('/docs-extra') && !isNativeRoute('/api-reference-other') && !isNativeRoute('/blog'));
+  assert.ok(isNativeRoute('/docs') && isNativeRoute('/docs/fga') && isNativeRoute('/api/service/stores'));
+  for (const route of ['/docs-extra', '/api/service-other', '/api/authzen', '/api/authzen/evaluation',
+    '/api/management', '/api/request', '/api-reference', '/blog']) {
+    assert.ok(!isNativeRoute(route), route);
+  }
 });
 test('the Mintlify origin root redirect does not take ownership of the public website', () => {
   const native = JSON.parse(readFileSync(new URL('../docs-site/docs.json', import.meta.url), 'utf8'));
@@ -47,13 +50,15 @@ test('same-PR documentation pages, original redirects and exact anchors resolve 
 test('missing pages and fragments are not hidden by the split-site boundary', () => {
   assert.throws(() => validateNativeLink('/docs/missing', options), /no native documentation page/);
   assert.throws(() => validateNativeLink('/docs/fga#missing', options), /missing native anchor/);
-  assert.throws(() => validateNativeLink('/api-reference/stores/missing', options), /no configured native API operation/);
-  assert.throws(() => validateNativeLink('/api-reference/stores/list-all-stores#unverified', options), /explicit native anchor contract/);
+  assert.throws(() => validateNativeLink('/api/service/stores/missing', options), /no configured native API operation/);
+  assert.throws(() => validateNativeLink('/api/service/stores/list-all-stores#unverified', options), /explicit native anchor contract/);
 });
-test('legacy API root resolves natively while Swagger fragment links retain their compatibility page', () => {
-  for (const href of ['/api', '/api/', '/api-reference']) {
-    assert.deepEqual(validateNativeLink(href, options), { api: '/api-reference/stores/list-all-stores' });
+test('legacy API entry links retain their compatibility page and preview operation links resolve natively', () => {
+  for (const href of ['/api', '/api/', '/api-reference', '/api-reference/']) {
+    assert.deepEqual(validateNativeLink(href, options), { website: '/api/service' });
   }
+  assert.deepEqual(validateNativeLink('/api-reference/stores/list-all-stores', options),
+    { api: '/api/service/stores/list-all-stores' });
   for (const href of ['/api/service', '/api/service/', '/api/service#/Relationship%20Queries/Check']) {
     assert.deepEqual(validateNativeLink(href, options), { website: '/api/service' });
   }
@@ -77,10 +82,19 @@ test('native parsing preserves JSX IDs and excludes links inside literal code', 
 });
 test('API route contracts come from configured canonical operation summaries', () => {
   const routes = apiRoutesFromSchema({ navigation: { anchors: [{
-    openapi: { source: 'https://example.com/schema' },
+    openapi: { source: 'https://example.com/schema', directory: 'api/service' },
     groups: [{ group: 'Stores', pages: ['GET /stores'] }],
   }] } }, { paths: { '/stores': { get: { summary: 'List all stores' } } } });
-  assert.deepEqual([...routes], ['/api-reference/stores/list-all-stores']);
+  assert.deepEqual([...routes], ['/api/service/stores/list-all-stores']);
+});
+
+test('API route generation rejects a missing, broad, or changed service directory', () => {
+  for (const directory of [undefined, 'api', 'api-reference', '/api/service', 'api/authzen']) {
+    assert.throws(() => apiRoutesFromSchema({ navigation: { anchors: [{
+      openapi: { source: 'https://example.com/schema', directory },
+      groups: [{ group: 'Stores', pages: ['GET /stores'] }],
+    }] } }, { paths: { '/stores': { get: { summary: 'List all stores' } } } }), /retain the \/api\/service prefix/);
+  }
 });
 
 test('the repository retains only a small legacy API compatibility page, not the old Swagger implementation', () => {

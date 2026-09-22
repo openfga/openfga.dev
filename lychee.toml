@@ -33,7 +33,7 @@ exclude = [
   # Absolute self-domain links are remapped to the local build via --remap in
   # checks.yaml (https://openfga.dev/... -> file://.../build/...) so they
   # validate against the PR build rather than the live site. Mintlify-owned
-  # /docs and /api-reference plus the legacy /api/service alias are validated by
+  # /docs and /api/service plus the earlier /api-reference aliases are validated by
   # check:site-boundary, not excluded from validation entirely. /search has a
   # template query URL. No self-domain pattern is needed in this list.
 

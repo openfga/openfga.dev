@@ -2,7 +2,7 @@
 
 This directory contains the Mintlify source for 110 product documentation pages and a read-only reference for 24 API operations. The homepage, Project, Community, and Blog stay on Docusaurus.
 
-The [hosted Mintlify site](https://fga.mintlify.site/docs/fga) is available. Serving it through `openfga.dev/docs` and `openfga.dev/api-reference` requires the separate [split-site deployment](#split-site-deployment). Publishing this directory does not configure that routing.
+The [hosted Mintlify site](https://fga.mintlify.site/docs/fga) is available. Serving it through `openfga.dev/docs` and `openfga.dev/api/service` requires the separate [split-site deployment](#split-site-deployment). Publishing this directory does not configure that routing.
 
 ## In this guide
 
@@ -28,7 +28,7 @@ cd docs-site
 npx mint dev --port 3333
 ```
 
-Open `http://localhost:3333/`. It redirects to `/docs/fga`; the API reference starts at `/api-reference`.
+Open `http://localhost:3333/`. It redirects to `/docs/fga`; the API reference starts at `/api/service`.
 
 Use the project's tested Mintlify CLI version when comparing rendering behavior. See the [Mintlify CLI guide](https://www.mintlify.com/docs/cli/index) for installation and startup help. Avoid clearing a shared CLI cache while other previews are running.
 
@@ -71,7 +71,7 @@ Add independent content or behavioral expectations with the page. Do not generat
 
 For a historical page rename, update its `overrides` entry and navigation, and preserve the old URL with a redirect. Do not edit the frozen `sources` list. Retiring a page requires an explicit exclusion and reason; a Docusaurus-owned page also needs its owner, route, and existing `ownerPage`. Community remains at `/community`, not in the native docs tree.
 
-The two hidden navigation anchors separate Docs and API Reference sidebars. They hide the section switcher, not the pages or their search visibility. Keep the existing `/docs`, `/api-reference`, and overview entry redirects.
+The two hidden navigation anchors separate Docs and API Reference sidebars. They hide the section switcher, not the pages or their search visibility. Keep the existing `/docs`, `/api/service`, and overview entry redirects.
 
 The Docs anchor uses `pages` to mix the four original ungrouped introduction pages with the original categories. Do not add an Overview wrapper or regroup pages to suit the new theme. API Reference uses `groups` for its canonical operations.
 
@@ -353,7 +353,7 @@ Enable **Edit suggestions** in the deployment's [Mintlify Add-ons dashboard](htt
 
 Use the native control rather than a custom edit-link script. Shared CSS presents feedback links as plain, 16px OpenFGA-colored links with pencil icons, readable focus outlines, and mobile-sized hit areas, matching the website's edit-link treatment. The existing Inter typography is intentional and shared with the OpenFGA website. Native labels, destinations, and interactions remain unchanged.
 
-After enabling it, verify that a documentation page links to its actual `docs-site/docs/...mdx` source in `openfga/openfga.dev`, with the intended repository branch and `/docs-site` deployment directory. Mintlify currently synthesizes nonexistent `docs-site/api-reference/...mdx` edit URLs for generated API pages; shared CSS hides only those invalid edit links. **Raise issue** remains available when enabled, and API schema changes belong in `openfga/api`. Verify the controls in both themes and at desktop/mobile widths during hosted acceptance.
+After enabling it, verify that a documentation page links to its actual `docs-site/docs/...mdx` source in `openfga/openfga.dev`, with the intended repository branch and `/docs-site` deployment directory. Mintlify currently synthesizes nonexistent `docs-site/api/service/...mdx` edit URLs for generated API pages; shared CSS hides only those invalid edit links. **Raise issue** remains available when enabled, and API schema changes belong in `openfga/api`. Verify the controls in both themes and at desktop/mobile widths during hosted acceptance.
 
 ### Page actions
 
@@ -537,15 +537,18 @@ The Mintlify origin `https://fga.mintlify.site/` redirects temporarily to `/docs
 | ----------------------------------------- | ---------------------------------------------------------- |
 | `/`, `/project`, `/community`, `/blog/**` | Docusaurus                                                 |
 | `/docs`, `/docs/**`                       | Mintlify                                                   |
-| `/api-reference`, `/api-reference/**`     | Mintlify                                                   |
-| Exact `/api`, including trailing slash    | Edge redirect to `/api-reference`                          |
+| `/api/service/**` (except the trailing-slash entry) | Mintlify-generated service API pages                     |
+| Exact `/api`, including trailing slash    | Edge redirect to `/api/service`                          |
 | `/api/service`                            | Website compatibility page for Swagger operation fragments |
+| `/api-reference`, `/api-reference/**`      | Redirect earlier preview links to corresponding `/api/service` paths |
 
 Docusaurus also owns `/search`, `/robots.txt`, `/sitemap.xml`, `/search-index.json`, root LLM indexes, and `/assets/**`, `/img/**`, `/css/**`, and `/icons/**`. Paths not explicitly assigned to Mintlify or a redirect fall through to the website.
 
 Website search covers Blog, Project, and Community; its search plugin excludes the homepage. Product-docs search belongs to Mintlify.
 
-The `/api/service` compatibility page preserves old links such as `#/Relationship%20Queries/Check`, routing them to the matching native operation. Unknown fragments fall back to the API index. `/api/service/` normalizes to that page rather than discarding its fragment. The shim is excluded from search, sitemaps, and LLM bundles; it is not a second API reference. Its operation map is generated from the checksum-verified canonical schema with `npm run generate:legacy-api-routes` and checked by ordinary builds and `check:mintlify`.
+The `/api/service` compatibility page preserves old links such as `#/Relationship%20Queries/Check`, routing them to the matching native operation under `/api/service/`. Empty, unknown, or malformed fragments go directly to `/api/service/stores/list-all-stores`, never back to the compatibility page itself. `/api/service/` normalizes to that page rather than discarding its fragment. The shim is excluded from search, sitemaps, and LLM bundles; it is not a second API reference. Its operation map is generated from the checksum-verified canonical schema with `npm run generate:legacy-api-routes` and checked by ordinary builds and `check:mintlify`.
+
+Keep `openapi.directory: "api/service"` on the API Reference navigation anchor. This preserves the historical public prefix while giving each operation its own native page. It does not change API server endpoints or guarantee unchanged search rankings. Do not broaden routing to `/api/**`: sibling namespaces such as `/api/authzen` and `/api/management` remain unclaimed. The existing AuthZEN operations in this service schema still appear within the service reference; this change does not create a separate AuthZEN reference.
 
 ### Use the existing Cloudflare edge
 
@@ -557,7 +560,7 @@ Run `npm run check:docs-proxy` for offline tests and a bundle dry run. It requir
 
 Proxy Mintlify requests to `https://fga.mintlify.site`, never back to `https://openfga.dev`. A Worker Route can use `fetch(request)` for website fallthrough. Do not replace apex DNS with Mintlify or introduce a new website hosting platform just for this split.
 
-Worker invocation patterns must cover query-bearing entries such as `/docs?source=nav`. Inside the Worker, match complete path segments: `/docs-other` and `/api-reference-other` are not native routes.
+Worker invocation patterns must cover query-bearing entries such as `/docs?source=nav`. Inside the Worker, match complete path segments: `/docs-other` and `/api/service-other` are not native routes.
 
 ### Configure Mintlify
 
@@ -565,10 +568,11 @@ Worker invocation patterns must cover query-bearing entries such as `/docs?sourc
 | --------------------- | --------------------------------------------------------------------------------------- |
 | Repository directory  | `/docs-site`                                                                            |
 | Upstream origin       | `https://fga.mintlify.site`                                                             |
+| Generated API directory | `api/service` in the API Reference anchor's `openapi` object; not a dashboard deployment base path |
 | Deployment base path  | Current implementation assumes unset; confirm the two-prefix setup with Mintlify before changing it |
 | Public canonical host | `https://openfga.dev`, with the correct path for each section                           |
 
-Confirm the custom-domain setup with Mintlify before changing it. Its [subpath guide](https://www.mintlify.com/docs/deploy/docs-subpath) describes one deployment base path, while this site has two sibling prefixes. Adding a global `/docs` base path can change both URL families.
+Confirm the custom-domain setup with Mintlify before changing it. Its [subpath guide](https://www.mintlify.com/docs/deploy/docs-subpath) describes one deployment base path, while this site uses `/docs` and `/api/service`. Adding a global `/docs` or `/api/service` base path can change both URL families.
 
 Also confirm `Origin` forwarding, domain-verification ownership, and generated search, assistant, MCP, and discovery endpoints. The generic proxy and Cloudflare examples differ on some of these details.
 
@@ -578,7 +582,7 @@ The [Mintlify Cloudflare guide](https://www.mintlify.com/docs/deploy/cloudflare)
 
 | Request                                                                     | Edge behavior                                                                                                                          |
 | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `/docs`, `/docs/**`, `/api-reference`, `/api-reference/**`                  | Preserve the path and query when proxying to Mintlify.                                                                                 |
+| `/docs/**`, `/api/service/**` (except the trailing-slash entry)         | Preserve the path and query when proxying to Mintlify; keep exact `/api/service` on the website compatibility page. |
 | `/mintlify-assets/**`, `/_mintlify/**`                                      | Forward Mintlify runtime assets and service requests.                                                                                  |
 | Images, custom scripts, OpenAPI assets, and additional `/_next/**` requests | Allow only verified, nonconflicting paths emitted by the hosted site; check status and MIME type.                                      |
 | Exact `/api/request`, if emitted                                            | Rewrite to `/_mintlify/api/request`, as in the [Vercel recipe](https://www.mintlify.com/docs/deploy/vercel). Do not capture `/api/**`. |
@@ -607,8 +611,8 @@ The Worker provides the two native index aliases, recursive index routing, and d
 2. Save the current edge configuration and the last complete Docusaurus deployment, including its old docs output.
 3. Validate the selected routing locally and through an owner-approved HTTPS verification path. Check both page prefixes, entry URLs, query strings, redirects, negative prefix matches, website fallthrough, assets, viewers, search, enabled assistant streaming, analytics POST, and discovery. Native origin-root redirects can drop query parameters; check this explicitly.
 4. Verify canonical URLs, sitemap coverage, robots ownership, certificate verification/renewal, and cache freshness. Public `/` must not redirect to the docs.
-5. Coordinate routing activation with the website deployment that removes legacy docs. Enable permanent legacy API redirects only after acceptance and owner approval.
-6. If routing or rendering regresses, restore both the saved edge configuration and the complete prior website deployment, then invalidate affected caches.
+5. Coordinate merge, Mintlify's production branch/configuration, routing activation, and the website publication. Merging this migration retires the legacy docs and Swagger source; the resulting website build omits them. There is no separate manual deletion step. Enable routing before that website publication, or agree a publication hold with the owner.
+6. If routing or rendering regresses, restore both the saved edge configuration and the complete prior website deployment, then invalidate affected caches. Revert the migration on `main` and restore the corresponding provider configuration, or hold subsequent publications until recovery is complete, so a scheduled website build cannot remove the restored docs again. The revert is a rollback action, not part of normal cutover.
 
 **Removing Worker routes alone is not a rollback:** the new Docusaurus build no longer contains the old docs.
 

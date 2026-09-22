@@ -58,7 +58,7 @@ export function nativeSitemapRoutes({ config, schema, docFiles }) {
   assert.deepEqual(sorted(references), sorted(operations), 'Native API navigation must cover every canonical operation exactly once');
   const apiRoutes = apiRoutesFromSchema(config, schema);
   for (const route of apiRoutes) {
-    assert.match(route, /^\/api-reference\/[^/]+\/[^/]+$/, `Invalid generated native API route: ${route}`);
+    assert.match(route, /^\/api\/service\/[^/]+\/[^/]+$/, `Invalid generated native API route: ${route}`);
     assert.ok(!redirects.has(route), `Redirect cannot enter the native API sitemap: ${route}`);
   }
   return { docsRoutes, apiRoutes, routes: new Set([...docsRoutes, ...apiRoutes]) };

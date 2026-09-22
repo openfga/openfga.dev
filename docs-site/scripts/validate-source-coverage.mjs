@@ -141,7 +141,7 @@ function loadManifest(repoRoot) {
           if (entry.route !== `/${entry.ownerPage.slice('src/pages/'.length, -4)}`) {
             fail(`${source}: route must match the Docusaurus ownerPage path`);
           }
-          if (/^\/(?:docs|api-reference)(?:\/|$)/.test(entry.route)) {
+          if (/^\/(?:docs|api\/service)(?:\/|$)/.test(entry.route)) {
             fail(`${source}: Docusaurus cannot own the Mintlify route ${entry.route}`);
           }
           regularPath(repoRoot, entry.ownerPage);
@@ -241,7 +241,7 @@ function navigationReferences(navigation) {
       }
       route = route.replace(/^\//, '').split(/[?#]/, 1)[0];
       if (!route.startsWith('docs/')) {
-        if (/^\/api-reference(?:\/|$)/.test(value)) return;
+        if (/^\/api\/service(?:\/|$)/.test(value)) return;
         throw new Error(
           `docs-site/docs.json ${location}: unexpected documentation reference ${JSON.stringify(value)}`,
         );

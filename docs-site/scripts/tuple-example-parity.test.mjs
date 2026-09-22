@@ -481,7 +481,7 @@ test('tutorial fixture rejects an orphan native step rather than accepting its s
 
 test('API-reference example slots and literal x-codeSamples are outside the tutorial slot restriction', () => {
   const apiPage = '<RequestExample>\n\n```bash\ncurl "$FGA_API_URL/stores"\n```\n\n</RequestExample>\n\n<ResponseExample>\n\n```json\n{"stores":[]}\n```\n\n</ResponseExample>';
-  assert.doesNotThrow(() => assertTutorialInlineExamples(apiPage, 'api-reference/stores/list-all-stores.mdx'));
+  assert.doesNotThrow(() => assertTutorialInlineExamples(apiPage, 'api/service/stores/list-all-stores.mdx'));
   assert.doesNotThrow(() => assertTutorialInlineExamples(
     '```mdx\n<RequestExample />\n<ResponseExample />\n```\n\n```json\n{"x-codeSamples":[{"lang":"Shell","source":"curl example"}]}\n```',
     'docs/openapi-fixture.mdx',

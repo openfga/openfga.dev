@@ -24,7 +24,7 @@ function fixture() {
   const config = {
     navigation: { anchors: [
       { anchor: 'Docs', hidden: true, pages: ['docs/fga', { group: 'Modeling', pages: ['docs/modeling/testing'] }] },
-      { anchor: 'API Reference', hidden: true, openapi: { source: metadata.canonical.url },
+      { anchor: 'API Reference', hidden: true, openapi: { source: metadata.canonical.url, directory: 'api/service' },
         groups: [{ group: 'Stores', pages: ['GET /stores', 'POST /stores'] }] },
     ] },
     redirects: [
@@ -49,8 +49,8 @@ test('the composite index preserves the website XML and includes canonical nativ
     'https://openfga.dev/sitemap-website.xml', 'https://openfga.dev/sitemap-docs.xml',
   ] });
   assert.deepEqual(parseSitemap(result.docsXml).locations, [
-    'https://openfga.dev/api-reference/stores/create-a-store',
-    'https://openfga.dev/api-reference/stores/list-all-stores',
+    'https://openfga.dev/api/service/stores/create-a-store',
+    'https://openfga.dev/api/service/stores/list-all-stores',
     'https://openfga.dev/docs/fga',
     'https://openfga.dev/docs/modeling/testing',
   ]);
@@ -91,7 +91,7 @@ test('malformed XML, empty documents, unknown entities and missing/duplicate loc
 
 test('website ownership rejects native, retired, test, foreign and duplicate canonical routes', () => {
   for (const location of [
-    'https://openfga.dev/docs/fga', 'https://openfga.dev/api-reference/stores/list-all-stores',
+    'https://openfga.dev/docs/fga', 'https://openfga.dev/api/service/stores/list-all-stores',
     'https://openfga.dev/api', 'https://openfga.dev/api/service', 'https://openfga.dev/api.html',
     'https://openfga.dev/%64ocs/fga', 'https://openfga.dev/test-viewer', 'https://openfga.dev/tests/fixtures/example',
     'https://openfga.dev/mintlify-native/docs/fga', 'https://openfga.dev/project?preview=1',
@@ -153,7 +153,7 @@ test('boundary validation verifies both children, exact native coverage and the 
     { docsXml: result.docsXml.replace('/docs/fga', '/docs/test-viewer') },
     { docsXml: result.docsXml.replace('/docs/fga', '/project') },
     { docsXml: result.docsXml.replace('/docs/fga', '/preview/docs/fga') },
-    { docsXml: result.docsXml.replace('/docs/fga', '/api-reference/stores/create-a-store') },
+    { docsXml: result.docsXml.replace('/docs/fga', '/api/service/stores/create-a-store') },
     { docsXml: result.docsXml.replace('https://openfga.dev/docs/fga', 'https://preview.example/docs/fga') },
   ]) assert.throws(() => validateCompositeSitemap({ ...result, ...change, nativeRoutes: routes }));
 });
@@ -186,15 +186,15 @@ const canonicalSummaries = {
   SubjectSearch: '[Experimental] Search for subjects with access to a resource',
 };
 
-// Captured from the deployed Mintlify sitemap and checked against the operation pages.
+// Operation slugs captured from Mintlify, with the explicitly configured service prefix.
 const deployedPunctuationRoutes = [
-  '/api-reference/relationship-queries/send-a-list-of-%60check%60-operations-in-a-single-request',
-  '/api-reference/authzenservice/[experimental]-get-authzen-pdp-configuration-and-capabilities',
-  '/api-reference/authzenservice/[experimental]-evaluate-whether-a-subject-can-perform-an-action-on-a-resource',
-  '/api-reference/authzenservice/[experimental]-check-whether-one-or-more-users-are-authorized-to-access-resources',
-  '/api-reference/authzenservice/[experimental]-search-for-actions-a-subject-can-perform-on-a-resource',
-  '/api-reference/authzenservice/[experimental]-search-for-resources-a-subject-has-access-to',
-  '/api-reference/authzenservice/[experimental]-search-for-subjects-with-access-to-a-resource',
+  '/api/service/relationship-queries/send-a-list-of-%60check%60-operations-in-a-single-request',
+  '/api/service/authzenservice/[experimental]-get-authzen-pdp-configuration-and-capabilities',
+  '/api/service/authzenservice/[experimental]-evaluate-whether-a-subject-can-perform-an-action-on-a-resource',
+  '/api/service/authzenservice/[experimental]-check-whether-one-or-more-users-are-authorized-to-access-resources',
+  '/api/service/authzenservice/[experimental]-search-for-actions-a-subject-can-perform-on-a-resource',
+  '/api/service/authzenservice/[experimental]-search-for-resources-a-subject-has-access-to',
+  '/api/service/authzenservice/[experimental]-search-for-subjects-with-access-to-a-resource',
 ];
 
 test('repository navigation and source files contribute exactly 110 docs and all 24 generated API pages offline', async () => {

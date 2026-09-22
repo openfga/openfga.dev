@@ -238,7 +238,7 @@ export function validateSampleNavigation(docs, metadata) {
   const apiNavigation = getUniqueOpenApiNavigationEntry(docs.navigation);
   deepStrictEqual(
     apiNavigation.openapi,
-    { source: metadata.canonical.url, overlays: [overlayPath] },
+    { source: metadata.canonical.url, directory: 'api/service', overlays: [overlayPath] },
     'API navigation must explicitly apply the generated SDK overlay to the canonical main-branch source',
   );
   if (docs.api?.playground?.display !== 'simple') throw new Error('API reference must remain in simple read-only mode');

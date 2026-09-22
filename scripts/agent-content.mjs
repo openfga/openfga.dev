@@ -71,7 +71,7 @@ export function createAgentIndex({ baseUrl = '/', openapiUrl }) {
       section(title, entries.map(([label, route]) => [label, `${siteOrigin}${route}`])), '',
     ]),
     section('API', [
-      ['OpenFGA API reference', `${siteOrigin}/api-reference`],
+      ['OpenFGA API reference', `${siteOrigin}/api/service`],
       ['OpenFGA API specification', openapiUrl],
       ['Relationship Queries', `${siteOrigin}/docs/interacting/relationship-queries.md`],
       ['Install SDK Client', `${siteOrigin}/docs/getting-started/install-sdk.md`],

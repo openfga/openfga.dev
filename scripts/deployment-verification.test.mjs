@@ -5,7 +5,7 @@ import { fingerprintMeta } from './native-deployment-fingerprint.mjs';
 
 const origin = 'https://staging.workers.dev';
 const publicOrigin = 'https://openfga.dev';
-const routes = ['/api-reference/stores/list-all-stores', '/docs/fga'];
+const routes = ['/api/service/stores/list-all-stores', '/docs/fga'];
 const expectedFingerprint = 'a'.repeat(64);
 const marker = `<meta name="${fingerprintMeta}" content="${expectedFingerprint}">`;
 function response(text, type = 'text/plain', status = 200, headers = {}) {
@@ -19,7 +19,7 @@ function fixture() {
     ['/docs/llms.txt', response('[First index](/_llms/first.md)')],
     ['/_llms/first.md', response('[Second index](/_llms/second.md)')],
     ['/_llms/second.md', response(`${routes.map((route) => `[Page](${publicOrigin}${route}.md)`).join('\n')}\n[Cycle](/_llms/first.md)`)],
-    ['/docs/llms-full.txt', response(`Source: ${publicOrigin}/docs/fga\nSource: ${publicOrigin}/api-reference/stores/list-all-stores`)],
+    ['/docs/llms-full.txt', response(`Source: ${publicOrigin}/docs/fga\nSource: ${publicOrigin}/api/service/stores/list-all-stores`)],
     ['/sitemap.xml', response(`<sitemapindex><sitemap><loc>${publicOrigin}/sitemap-website.xml</loc></sitemap><sitemap><loc>${publicOrigin}/sitemap-docs.xml</loc></sitemap></sitemapindex>`, 'application/xml')],
     ['/sitemap-website.xml', response('<urlset></urlset>', 'application/xml')],
     ['/sitemap-docs.xml', response(`<urlset>${routes.map((route) => `<url><loc>${publicOrigin}${route}</loc></url>`).join('')}</urlset>`, 'application/xml')],
@@ -28,8 +28,9 @@ function fixture() {
     files.set(route, response(`${marker}<link rel="canonical" href="${publicOrigin}${route}"><h1>Page</h1><script src="/mintlify-assets/app.js"></script>`, 'text/html', 200, { 'x-llms-txt': '/docs/llms.txt' }));
   }
   for (const [path, destination] of [
-    ['/docs', '/docs/fga'], ['/api-reference', '/api-reference/stores/list-all-stores'],
-    ['/api', '/api-reference'], ['/api/service/', '/api/service'],
+    ['/docs', '/docs/fga'], ['/api-reference', '/api/service'],
+    ['/api-reference/stores/list-all-stores', '/api/service/stores/list-all-stores'],
+    ['/api', '/api/service'], ['/api/service/', '/api/service'],
   ]) {
     files.set(`${path}?acceptance=1`, response('', 'text/plain', 307, { location: `${destination}?acceptance=1` }));
   }
@@ -63,7 +64,7 @@ for (const [name, path, value] of [
   ['off-origin page links', '/_llms/second.md', response(routes.map((route) => `[Page](https://missing.example${route}.md)`).join('\n'))],
   ['off-origin recursive links', '/docs/llms.txt', response('[Index](https://missing.example/_llms/first.md)')],
   ['page paths present only as plain text', '/docs/llms.txt', response(routes.map((route) => `${publicOrigin}${route}.md`).join('\n'))],
-  ['legacy fragments lost to an edge redirect', '/api/service', response('', 'text/html', 308, { location: '/api-reference' })],
+  ['legacy fragments lost to an edge redirect', '/api/service', response('', 'text/html', 308, { location: '/api/service/stores/list-all-stores' })],
 ]) {
   test(`deployment acceptance reports ${name} instead of a green fallback`, async () => {
     const files = fixture();
@@ -75,7 +76,7 @@ for (const [name, path, value] of [
 
 test('deployment acceptance detects an extra advertised API operation that returns 404', async () => {
   const files = fixture();
-  const missingRoute = '/api-reference/relationship-queries/send-a-list-of-check-operations-in-a-single-request';
+  const missingRoute = '/api/service/relationship-queries/send-a-list-of-check-operations-in-a-single-request';
   files.set(missingRoute, response('Not found', 'text/html', 404));
   const results = await verifyDeployment({
     origin, mode: 'native', routes: [...routes, missingRoute], expectedFingerprint,

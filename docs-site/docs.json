@@ -34,7 +34,7 @@
     "metatags": {
       "canonical": "https://openfga.dev",
       "og:image": "https://openfga.dev/img/og-rich-embed.png",
-      "openfga:docs-source-sha256": "895a649523a6b255350a719bbcf64086347c9b2a63e11f24a6c74378d21b12c5"
+      "openfga:docs-source-sha256": "73a0f2304267b3415a757e91591c17295c8f2b3e901154c3e0323e54d5684b5a"
     }
   },
   "navbar": {
@@ -45,7 +45,7 @@
       },
       {
         "label": "API Reference",
-        "href": "/api-reference"
+        "href": "/api/service"
       },
       {
         "label": "Project",
@@ -279,6 +279,7 @@
         "hidden": true,
         "openapi": {
           "source": "https://raw.githubusercontent.com/openfga/api/refs/heads/main/docs/openapiv3/apidocs.openapi.json",
+          "directory": "api/service",
           "overlays": ["openapi/sdk-samples.overlay.json"]
         },
         "groups": [
@@ -345,12 +346,17 @@
     },
     {
       "source": "/api",
-      "destination": "/api-reference",
+      "destination": "/api/service",
       "permanent": true
     },
     {
-      "source": "/api/service",
-      "destination": "/api-reference",
+      "source": "/api-reference",
+      "destination": "/api/service",
+      "permanent": true
+    },
+    {
+      "source": "/api-reference/:path*",
+      "destination": "/api/service/:path*",
       "permanent": true
     },
     {
@@ -359,8 +365,8 @@
       "permanent": false
     },
     {
-      "source": "/api-reference",
-      "destination": "/api-reference/stores/list-all-stores",
+      "source": "/api/service",
+      "destination": "/api/service/stores/list-all-stores",
       "permanent": false
     },
     {

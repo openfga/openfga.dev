@@ -395,27 +395,27 @@
       "requiredLinks": [
         {
           "text": "ReadAuthorizationModels",
-          "href": "/api-reference/authorization-models/return-all-the-authorization-models-for-a-particular-store"
+          "href": "/api/service/authorization-models/return-all-the-authorization-models-for-a-particular-store"
         },
         {
           "text": "Check",
-          "href": "/api-reference/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object"
+          "href": "/api/service/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object"
         },
         {
           "text": "ListObjects",
-          "href": "/api-reference/relationship-queries/list-all-objects-of-the-given-type-that-the-user-has-a-relation-with"
+          "href": "/api/service/relationship-queries/list-all-objects-of-the-given-type-that-the-user-has-a-relation-with"
         },
         {
           "text": "ListUsers",
-          "href": "/api-reference/relationship-queries/list-the-users-matching-the-provided-filter-who-have-a-certain-relation-to-a-particular-type"
+          "href": "/api/service/relationship-queries/list-the-users-matching-the-provided-filter-who-have-a-certain-relation-to-a-particular-type"
         },
         {
           "text": "Expand",
-          "href": "/api-reference/relationship-queries/expand-all-relationships-in-userset-tree-format-and-following-userset-rewrite-rules-useful-to-reason-about-and-debug-a-certain-relationship"
+          "href": "/api/service/relationship-queries/expand-all-relationships-in-userset-tree-format-and-following-userset-rewrite-rules-useful-to-reason-about-and-debug-a-certain-relationship"
         },
         {
           "text": "Write",
-          "href": "/api-reference/relationship-tuples/add-or-delete-tuples-from-the-store"
+          "href": "/api/service/relationship-tuples/add-or-delete-tuples-from-the-store"
         },
         {
           "text": "here",

@@ -13,11 +13,12 @@ This Worker is an optional reference for serving Mintlify documentation through 
 
 | Paths                                                            | Destination                                                                   |
 | ---------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `/docs/**`, `/api-reference/**`                                  | `https://fga.mintlify.site`, preserving path and query                        |
-| `/docs`, `/api-reference`                                        | Redirect to each section's first page                                         |
-| `/api`, with optional trailing slash                             | Redirect to `/api-reference`                                                  |
+| `/docs/**`, `/api/service/**` (except the trailing-slash entry) | `https://fga.mintlify.site`, preserving path and query                        |
+| `/docs`                                                       | Redirect to `/docs/fga`                                                       |
+| `/api`, with optional trailing slash                             | Redirect to `/api/service`                                                  |
 | `/api/service`                                                   | Website compatibility page maps legacy Swagger fragments to native operations |
 | `/api/service/`                                                  | Normalize to `/api/service`, preserving the browser's fragment                |
+| `/api-reference`, `/api-reference/**`                             | Redirect earlier preview links to corresponding `/api/service` paths         |
 | `/docs/community`                                                | Redirect to the website's `/community`                                        |
 | `/mintlify-assets/**`, `/_mintlify/**`, `/_next/**`, `/_llms/**` | Mintlify runtime, services, and generated indexes                             |
 | `/images/**`, six exact root scripts/styles                      | Native repository assets listed in `routing.mjs`                              |
@@ -27,9 +28,9 @@ This Worker is an optional reference for serving Mintlify documentation through 
 | Exact `/api/request`                                             | `/_mintlify/api/request`                                                      |
 | Everything else                                                  | Existing Docusaurus origin                                                    |
 
-The website keeps `/`, `/project`, `/community`, `/blog/**`, `/search`, `/robots.txt`, all sitemap files, root LLM resources, and its asset directories. Root `/.well-known/**` and certificate-verification routes are not captured. `/docs-other`, `/api-reference-other`, and arbitrary `/api/**` paths are not native routes. The `/mcp` exception is exact: `/mcp/`, `/mcp/**`, `/mcp-other`, and `/mcp.json` remain website-owned.
+The website keeps `/`, `/project`, `/community`, `/blog/**`, `/search`, `/robots.txt`, all sitemap files, root LLM resources, and its asset directories. Root `/.well-known/**` and certificate-verification routes are not captured. `/docs-other`, `/api/service-other`, `/api-reference-other`, and sibling `/api/**` paths such as `/api/authzen` and `/api/management` are not native routes. The `/mcp` exception is exact: `/mcp/`, `/mcp/**`, `/mcp-other`, and `/mcp.json` remain website-owned.
 
-Do not redirect `/api/service` directly to the new API index. Swagger links carry their operation in a fragment, which the Worker cannot see. Both `#Relationship%20Queries/Check` and `#/Relationship%20Queries/Check` are supported. The small website page reads that fragment and replaces the browser location with the matching native operation, preserving query parameters. Empty, unknown, and malformed fragments fall back to `/api-reference`; a link remains usable without JavaScript. The page is excluded from search, sitemaps, and website LLM bundles, and does not restore Swagger.
+Do not edge-redirect `/api/service` directly to the first operation. Swagger links carry their operation in a fragment, which the Worker cannot see. Both `#Relationship%20Queries/Check` and `#/Relationship%20Queries/Check` are supported. The small website page reads that fragment and replaces the browser location with the matching native operation under `/api/service/`, preserving query parameters. Empty, unknown, and malformed fragments go directly to `/api/service/stores/list-all-stores`, avoiding a self-redirect; a link remains usable without JavaScript. The page is excluded from search, sitemaps, and website LLM bundles, and does not restore Swagger.
 
 If adopting this Worker, use a **Worker Route**, not a Worker Custom Domain or an apex DNS replacement. The owner-managed route must cover `openfga.dev/*` so bare routes with query strings also invoke the Worker. The code then applies segment-aware ownership. Website fallthrough uses the original `fetch(request)` to reach the existing origin.
 
@@ -41,11 +42,12 @@ These redirects already exist in [`docs-site/docs.json`](../../docs-site/docs.js
 | --- | --- | --- |
 | `/docs/community` | `https://openfga.dev/community` | Permanent; the absolute URL also works from the Mintlify preview host |
 | `/docs` | `/docs/fga` | Temporary |
-| `/api-reference` | `/api-reference/stores/list-all-stores` | Temporary |
+| `/api/service` | `/api/service/stores/list-all-stores` | Temporary |
 | Eleven historical overview URLs, including `/docs/modeling`, `/docs/adopters`, and `/docs/best-practices` | Their corresponding `/overview` pages | Temporary; the complete set is checked against the original source slugs |
-| `/api` | `/api-reference` | Permanent on the native host; public edge policy is owner-managed |
+| `/api` | `/api/service` | Permanent on the native host; public edge policy is owner-managed |
+| `/api-reference`, `/api-reference/:path*` | `/api/service`, `/api/service/:path*` | Permanent native aliases for the earlier preview paths |
 
-The optional Worker mirrors the Community and section-entry redirects and handles their trailing-slash forms. Its local defaults use temporary redirects so validation does not create permanent browser caches.
+The optional Worker mirrors the Community, docs-entry, and earlier API-preview redirects and handles trailing-slash entries. The public service entry remains website-owned for fragment handling. Edge redirects initially use temporary responses with `Cache-Control: no-store`.
 
 Native-host redirects have been observed dropping query parameters. The optional Worker preserves queries on its public redirects; verify equivalent behavior in the selected routing before cutover.
 
@@ -93,7 +95,9 @@ The checked-in Wrangler configuration has no routes, workers.dev URL, preview UR
 
 ## Mintlify owner actions
 
-Keep the project directory `/docs-site` and upstream `https://fga.mintlify.site`. The current implementation assumes the deployment base path is unset because content already has `/docs` and `/api-reference` prefixes. Confirm that two-prefix contract with Mintlify; enabling a global `/docs` base path would change those routes.
+Keep the project directory `/docs-site` and upstream `https://fga.mintlify.site`. The current implementation assumes the deployment base path is unset because content already has `/docs` and `/api/service` prefixes. Confirm that two-prefix contract with Mintlify; enabling a global `/docs` base path would change those routes.
+
+The API Reference anchor explicitly sets `openapi.directory` to `api/service`; this is a generated-page directory, not the dashboard base path. Retain it when switching the connected production branch to `main` after approval. There are no API-server or OpenAPI-specification changes associated with this URL decision.
 
 Confirm the two-prefix custom-domain arrangement with Mintlify before attaching `openfga.dev` in its dashboard. The repository sets the public canonical base and `seo.indexing: all` because its section selectors use hidden anchors. Verify the resulting deployment rather than assuming the settings fixed generated resources.
 
@@ -134,7 +138,7 @@ Before the change window, save:
 - The last complete GitHub Pages deployment containing legacy docs, including its commit/artifact and a tested restoration procedure.
 - Verification evidence, accepted provider settings, the reviewed deployment commit, and the owners performing activation and rollback.
 
-The unchanged [website deployment workflow](../../.github/workflows/deploy.yml) runs on main pushes, manual dispatch, and a schedule. Coordinate merge and publication with the edge owner. Activate the accepted routing before the website build removes legacy docs, or arrange an explicit publication hold with its owner. Then publish the website sitemap and rerun proxy acceptance against `https://openfga.dev`.
+The unchanged [website deployment workflow](../../.github/workflows/deploy.yml) runs on main pushes, manual dispatch, and a schedule. Coordinate merge, Mintlify's production branch/configuration, and publication with the edge owner. The migration PR itself removes the old docs and Swagger source; the subsequent website build no longer publishes them. No separate manual deletion or PR revert is part of normal cutover. Activate the accepted routing before that website publication, or arrange an explicit publication hold with its owner. Then publish the website sitemap and rerun proxy acceptance against `https://openfga.dev`.
 
 Do not merge and leave the new website deployed while waiting for someone to configure routing.
 
@@ -145,6 +149,8 @@ Code/content review can begin before these deployment gates are complete. Docume
 Restore the saved complete website deployment and edge configuration, then purge affected caches and verify the old docs and website URLs. Restore the website content before removing native routing where possible. A Worker version rollback must also account for routes and rules changed outside that version.
 
 **Removing the Worker route alone does not restore the retired Docusaurus docs.** Pause or revert the website deployment source as agreed with its owner so a scheduled publish cannot overwrite the restored artifact.
+
+If the migration has merged, an approved revert on `main` restores the legacy source for future builds; restore the corresponding Mintlify configuration and Cloudflare routing as part of that same recovery. A source revert alone is not an immediate deployment rollback: verify that the restored complete website is actually published.
 
 ## References
 

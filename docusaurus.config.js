@@ -271,7 +271,7 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
             label: 'Home',
           },
           { href: 'https://openfga.dev/docs/fga', label: 'Docs', position: 'left' },
-          { href: 'https://openfga.dev/api-reference', label: 'API', position: 'left' },
+          { href: 'https://openfga.dev/api/service', label: 'API', position: 'left' },
           { to: '/project', label: 'Project', position: 'left' },
           { to: '/blog', label: 'Blog', position: 'left' },
           {

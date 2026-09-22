@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import Head from '@docusaurus/Head';
 import Layout from '@theme/Layout';
 import routes from '../../data/legacy-api-routes.json';
-import { resolveLegacyApiFragment } from '../../utils/legacy-api-redirect.mjs';
+import { apiEntryPage, resolveLegacyApiFragment } from '../../utils/legacy-api-redirect.mjs';
 
 export default function LegacyApiReference() {
-  const [destination, setDestination] = useState('/api-reference');
+  const [destination, setDestination] = useState(apiEntryPage);
 
   useEffect(() => {
     const result = resolveLegacyApiFragment(window.location.hash, routes);
@@ -16,12 +16,12 @@ export default function LegacyApiReference() {
   }, []);
 
   return (
-    <Layout title="API reference moved">
+    <Layout title="OpenFGA API reference">
       <Head>
         <meta name="robots" content="noindex, follow" />
       </Head>
       <main className="container margin-vert--xl" data-legacy-api-compatibility>
-        <h1>The API reference has moved</h1>
+        <h1>OpenFGA API reference</h1>
         <p>Redirecting to the corresponding API documentation.</p>
         <p>
           <a href={destination}>Open the API reference</a>

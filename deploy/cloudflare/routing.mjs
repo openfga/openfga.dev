@@ -1,7 +1,7 @@
 export const publicOrigin = 'https://openfga.dev';
 export const mintlifyOrigin = 'https://fga.mintlify.site';
 
-const prefixes = ['/docs', '/api-reference', '/mintlify-assets', '/_mintlify', '/_next', '/_llms', '/images'];
+const prefixes = ['/docs', '/api/service', '/mintlify-assets', '/_mintlify', '/_next', '/_llms', '/images'];
 const files = new Set([
   '/fga-codegen.js',
   '/openfga-dsl-highlight.js',
@@ -28,14 +28,17 @@ const discoveryPaths = new Set([
 const discoveryPrefixes = ['/.well-known/agent-skills/', '/.well-known/skills/'];
 const entries = new Map([
   ['/docs', '/docs/fga'],
-  ['/api-reference', '/api-reference/stores/list-all-stores'],
 ]);
 const legacyApiRoutes = new Set(['/api']);
 
 export function routeRequest(pathname) {
+  if (pathname === '/api/service') return { kind: 'website' };
   if (pathname === '/api/service/') return { kind: 'redirect', destination: '/api/service' };
   const entry = pathname.replace(/\/$/, '');
-  if (legacyApiRoutes.has(entry)) return { kind: 'legacy-redirect', destination: '/api-reference' };
+  if (legacyApiRoutes.has(entry)) return { kind: 'legacy-redirect', destination: '/api/service' };
+  if (entry === '/api-reference' || pathname.startsWith('/api-reference/')) {
+    return { kind: 'redirect', destination: `/api/service${pathname.slice('/api-reference'.length)}` };
+  }
   if (entries.has(entry)) return { kind: 'redirect', destination: entries.get(entry) };
   if (entry === '/docs/community') return { kind: 'redirect', destination: '/community' };
   if (resourceAliases.has(pathname)) return { kind: 'mintlify', path: resourceAliases.get(pathname) };

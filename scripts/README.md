@@ -30,6 +30,14 @@ Generated files under `build/` include
 `sitemap*.xml` files. `.link-check/native-external-links.md` is also generated.
 Do not hand-edit these outputs. Mintlify owns the full product-docs Markdown/bundle.
 
+The API inventory uses the explicit `openapi.directory: "api/service"` from
+`docs-site/docs.json`. Generated operation links, sitemap entries, and legacy
+Swagger destinations must agree on `/api/service/...`. The exact `/api/service`
+entry remains a website fragment-compatibility page; empty/invalid fragments
+lead directly to List stores, not back to that entry. `/api-reference/...`
+redirects preserve earlier preview links, while sibling namespaces such as
+`/api/authzen` and `/api/management` remain outside this routing.
+
 ## Explicit updates to committed generated content
 
 | File | When to run; generated output |

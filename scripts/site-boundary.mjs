@@ -4,10 +4,10 @@ import GithubSlugger from 'github-slugger';
 import { normalizeBasePath, siteOrigin } from './agent-content.mjs';
 
 export const nativeResources = new Set(['/docs/llms.txt', '/docs/llms-full.txt']);
-export const legacyApiRedirects = new Map([['/api', '/api-reference']]);
+export const legacyApiRedirects = new Map([['/api', '/api/service'], ['/api-reference', '/api/service']]);
 
 export function isNativeRoute(route) {
-  return /^\/(?:docs|api-reference)(?:\/|$)/.test(route);
+  return /^\/(?:docs|api\/service)(?:\/|$)/.test(route);
 }
 
 export function visit(node, callback) {
@@ -42,12 +42,13 @@ export function apiOperationsFromSchema(config, schema) {
   const slug = (value) => value.toLowerCase().replace(/[^\p{L}\p{N}\s`[\]-]/gu, '').trim().replace(/\s+/g, '-');
   const anchor = config.navigation.anchors.find((entry) => entry.openapi);
   assert.ok(anchor, 'Missing native OpenAPI navigation');
+  assert.equal(anchor.openapi.directory, 'api/service', 'Generated API pages must retain the /api/service prefix');
   for (const group of anchor.groups) {
     for (const reference of group.pages) {
       const [method, ...parts] = reference.split(' ');
       const operation = schema.paths[parts.join(' ')]?.[method.toLowerCase()];
       assert.ok(operation?.summary, `${reference}: missing canonical operation summary`);
-      const route = new URL(`/api-reference/${slug(group.group)}/${slug(operation.summary)}`, siteOrigin).pathname;
+      const route = new URL(`/${anchor.openapi.directory}/${slug(group.group)}/${slug(operation.summary)}`, siteOrigin).pathname;
       assert.ok(!routes.has(route), `Duplicate native API route ${route}`);
       routes.add(route);
       operations.push({ operationId: operation.operationId, tags: operation.tags, route });
@@ -67,13 +68,16 @@ export function validateNativeLink(href, { config, pages, apiRoutes, baseUrl = '
   const strippedPath = basePath && url.pathname.startsWith(`${basePath}/`)
     ? url.pathname.slice(basePath.length) : url.pathname;
   if (strippedPath.replace(/\/$/, '') === '/api/service') return { website: '/api/service' };
-  if (!isNativeRoute(strippedPath) && !legacyApiRedirects.has(strippedPath.replace(/\/$/, ''))) return false;
+  if (!isNativeRoute(strippedPath) && !legacyApiRedirects.has(strippedPath.replace(/\/$/, ''))
+      && !strippedPath.startsWith('/api-reference/')) return false;
   assert.equal(url.pathname, strippedPath, `${href}: native links must not use the Docusaurus preview prefix`);
   const redirects = new Map(config.redirects.map(({ source, destination }) => [source, destination]));
   let route = url.pathname.replace(/\/$/, '').replace(/\.md$/, '');
+  if (route.startsWith('/api-reference/')) route = `/api/service${route.slice('/api-reference'.length)}`;
   let fragment = url.hash;
   const visited = new Set();
   while (redirects.has(route) || legacyApiRedirects.has(route)) {
+    if (route === '/api/service') return { website: route };
     assert.ok(!visited.has(route), `${href}: redirect cycle at ${route}`);
     visited.add(route);
     const destination = new URL(redirects.get(route) ?? legacyApiRedirects.get(route), siteOrigin);
@@ -83,7 +87,7 @@ export function validateNativeLink(href, { config, pages, apiRoutes, baseUrl = '
   }
   if (!isNativeRoute(route)) return { website: route };
   if (nativeResources.has(route)) return { resource: route };
-  if (route.startsWith('/api-reference/')) {
+  if (route.startsWith('/api/service/')) {
     assert.ok(apiRoutes.has(route), `${href}: no configured native API operation at ${route}`);
     assert.equal(fragment, '', `${href}: API fragments require an explicit native anchor contract`);
     return { api: route };
