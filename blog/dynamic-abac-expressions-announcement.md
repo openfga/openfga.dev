@@ -144,7 +144,7 @@ Dynamic Conditions also apply to multi-tenant B2B applications. Authorized tenan
 
 Dynamic Conditions are being released as an **experimental feature**. We are making them available early so that we can learn from real-world use cases, identify common policy patterns, and improve the implementation.
 
-As with any experimental capability, syntax, behavior, and integration details may evolve based on feedback.
+As with any experimental capability, the syntax, behavior, API, and tuple format may evolve based on feedback.
 
 We are especially interested in learning about:
 
