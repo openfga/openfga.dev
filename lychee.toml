@@ -61,6 +61,9 @@ exclude = [
   "^https://(www\\.)?medium\\.com",
   "^https://[a-z0-9-]+\\.medium\\.com",
   "^https://levelup\\.gitconnected\\.com",
+  # This live article returns 202 to GitHub's checker. Preserve the exact
+  # markdown-link-check exemption in blog/fine-grained-news-2024-11.md.
+  "^https://towardsdatascience\\.com/overcoming-security-challenges-in-protecting-shared-generative-ai-environments-1ffb27da1bde/?$",
   # Gartner — 403 to bots.
   "^https://(www\\.)?gartner\\.com",
 
