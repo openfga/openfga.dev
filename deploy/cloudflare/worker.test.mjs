@@ -12,6 +12,8 @@ const websitePaths = [
   '/search-index.json', '/robots.txt', '/sitemap.xml', '/sitemap-website.xml', '/sitemap-docs.xml',
   '/llms.txt', '/llms-full.txt', '/.well-known/acme-challenge/token', '/.well-known/vercel/token',
   '/.well-known/agent-card.json', '/mcp/', '/mcp/other', '/mcp-other', '/mcp.json', '/images-other/asset.png',
+  '/images', '/images/', '/images/website-banner.png', '/images/img/other.svg',
+  '/images/img/openfga_logo.svg/extra', '/images/img/openfga_logo.svg-other',
   '/api/service', '/api/service?source=legacy', '/api/authzen', '/api/authzen/evaluation',
   '/api/management', '/api/management/stores', '/api-reference-other', '/navbar-layout.js-other',
 ];
@@ -49,7 +51,8 @@ test('native routing preserves path boundaries and exact support files', () => {
   for (const path of [
     '/docs/fga', '/docs/fga.md', '/docs/a/b.png', '/api/service/stores/list-all-stores',
     '/mintlify-assets/_next/static/app.js', '/_mintlify/api/v1/e', '/_next/image',
-    '/images/img/logo.svg', '/fga-codegen.js', '/openfga-dsl-highlight.js', '/openfga-viewer.js',
+    '/images/img/openfga_logo.svg', '/images/img/openfga_logo-white.svg', '/images/img/openfga-icon.svg',
+    '/fga-codegen.js', '/openfga-dsl-highlight.js', '/openfga-viewer.js',
     '/global.css', '/github-star-cache.js', '/navbar-layout.js', '/_llms/docs.md',
   ]) {
     assert.deepEqual(routeRequest(path), { kind: 'mintlify', path });
@@ -129,6 +132,127 @@ test('untrusted forwarding headers are not used when no ingress IP is present', 
     assert.equal(options.headers.get('x-real-ip'), null);
     return new Response('docs');
   });
+});
+
+test('request gateway rejects foreign or invalid browser origins before rewriting or fetching', async (t) => {
+  const errors = t.mock.method(console, 'error', () => {});
+  const origins = [
+    'https://untrusted.example', 'null', '', 'not-an-origin', `${publicOrigin}/`,
+    `${publicOrigin}?query=1`, `${publicOrigin}#fragment`, 'https://user@openfga.dev',
+    `${publicOrigin} https://untrusted.example`, mintlifyOrigin, 'https://localhost:3383',
+  ];
+  for (const path of ['/api/request', '/_mintlify/api/request']) {
+    for (const method of ['POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']) {
+      for (const origin of origins) {
+        const response = await handleRequest(request(path, {
+          method,
+          headers: { origin, 'sec-fetch-site': 'same-site', 'access-control-request-method': 'POST' },
+        }), {}, () => assert.fail('Rejected request must not reach either origin'));
+        assert.equal(response.status, 403, `${path}: ${method}: ${origin}`);
+        assert.equal(response.headers.get('cache-control'), 'no-store');
+        assert.equal(response.headers.get('access-control-allow-origin'), null);
+        assert.match(await response.text(), /Request origin is not allowed/);
+      }
+    }
+  }
+  assert.equal(errors.mock.callCount(), origins.length * 10);
+  assert.deepEqual(errors.mock.calls[0].arguments, [
+    'Rejected native request gateway origin',
+    { path: '/api/request', method: 'POST', reason: 'disallowed-origin' },
+  ]);
+});
+
+test('request gateway rejects cross-site Fetch Metadata even with a missing or allowed Origin', async (t) => {
+  const errors = t.mock.method(console, 'error', () => {});
+  for (const path of ['/api/request', '/_mintlify/api/request']) {
+    for (const method of ['POST', 'OPTIONS']) {
+      for (const origin of [undefined, publicOrigin]) {
+        const headers = { 'sec-fetch-site': 'cross-site', 'access-control-request-method': 'POST' };
+        if (origin !== undefined) headers.origin = origin;
+        const response = await handleRequest(request(path, { method, headers }), {}, () => assert.fail('Unexpected fetch'));
+        assert.equal(response.status, 403);
+      }
+    }
+  }
+  assert.equal(errors.mock.callCount(), 8);
+  assert.equal(errors.mock.calls[0].arguments[1].reason, 'cross-site-request');
+});
+
+test('request gateway preserves same-origin requests, non-browser clients, and approved preflights', async () => {
+  for (const path of ['/api/request', '/_mintlify/api/request']) {
+    for (const method of ['POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']) {
+      for (const origin of [undefined, publicOrigin]) {
+        const headers = { 'content-type': 'application/json' };
+        if (origin !== undefined) headers.origin = origin;
+        if (method === 'OPTIONS') {
+          headers['access-control-request-method'] = 'POST';
+          headers['access-control-request-headers'] = 'content-type';
+        }
+        const body = method === 'OPTIONS' ? undefined : '{"sample":true}';
+        const result = await handleRequest(request(`${path}?x=1`, { method, headers, body }), {}, async (upstream, options) => {
+          assert.equal(upstream.url, `${mintlifyOrigin}/_mintlify/api/request?x=1`);
+          assert.equal(upstream.method, method);
+          assert.equal(options.headers.get('origin'), mintlifyOrigin);
+          assert.equal(options.headers.get('x-forwarded-host'), 'openfga.dev');
+          assert.equal(await upstream.text(), body ?? '');
+          if (method === 'OPTIONS') {
+            assert.equal(options.headers.get('access-control-request-method'), 'POST');
+            assert.equal(options.headers.get('access-control-request-headers'), 'content-type');
+          }
+          return new Response(null, { status: 204, headers: { 'access-control-allow-origin': publicOrigin } });
+        });
+        assert.equal(result.status, 204);
+        assert.equal(result.headers.get('access-control-allow-origin'), publicOrigin);
+      }
+    }
+  }
+});
+
+test('request gateway accepts only the exact local origin under the explicit local override', async (t) => {
+  const errors = t.mock.method(console, 'error', () => {});
+  for (const path of ['/api/request', '/_mintlify/api/request']) {
+    for (const origin of ['https://localhost:3383', 'https://localhost:3384', 'http://localhost:3383']) {
+      const accepted = origin === 'https://localhost:3383';
+      const result = await handleRequest(new Request(`https://localhost:3383${path}`, {
+        method: 'POST', headers: { origin },
+      }), { WEBSITE_ORIGIN: publicOrigin }, () => {
+        assert.ok(accepted, 'A mismatched local origin must not be forwarded');
+        return new Response('local request');
+      });
+      assert.equal(result.status, accepted ? 200 : 403);
+    }
+  }
+  assert.equal(errors.mock.callCount(), 4);
+});
+
+test('gateway origin policy does not capture public reads, MCP, reporting, analytics, or website requests', async () => {
+  const headers = { origin: 'https://client.example', 'sec-fetch-site': 'cross-site' };
+  for (const path of ['/api/request', '/_mintlify/api/request']) {
+    for (const method of ['GET', 'HEAD']) {
+      const response = await handleRequest(request(path, { method, headers }), {}, () => new Response(null, { status: 204 }));
+      assert.equal(response.status, 204);
+    }
+  }
+  for (const path of ['/mcp', '/docs/mcp', '/_mintlify/api/v1/e', '/_mintlify/api/csp-report']) {
+    for (const origin of [undefined, 'null', 'https://client.example']) {
+      const input = request(path, {
+        method: 'POST', headers: { 'sec-fetch-site': 'cross-site', ...(origin === undefined ? {} : { origin }) },
+        body: '{"message":"preserved"}',
+      });
+      const response = await handleRequest(input, {}, async (upstream) => {
+        assert.equal(await upstream.text(), '{"message":"preserved"}');
+        return new Response(null, { status: 204 });
+      });
+      assert.equal(response.status, 204);
+    }
+  }
+  const input = request('/api/service', { method: 'POST', headers });
+  const original = new Response('website');
+  const response = await handleRequest(input, {}, (upstream) => {
+    assert.equal(upstream, input);
+    return original;
+  });
+  assert.equal(response, original);
 });
 
 test('native pages preserve enforced and report-only CSP with reporting headers', async () => {
@@ -243,6 +367,27 @@ test('malformed upstream response URLs fail explicitly without a fallback', asyn
   assert.equal(errors.mock.calls.length, 1);
 });
 
+test('unapproved internal Mintlify redirects fail explicitly instead of leaking or inventing aliases', async (t) => {
+  const errors = t.mock.method(console, 'error', () => {});
+  for (const location of [
+    'https://fga.main-kill-isr.mintlify.me/docs/fga',
+    'https://FGA.MAIN-KILL-ISR.MINTLIFY.ME./api/service/stores/list-all-stores',
+    '//another-preview.mintlify.me/docs/fga',
+  ]) {
+    let cancelled = false;
+    const body = new ReadableStream({ cancel() { cancelled = true; } });
+    const response = await handleRequest(request('/docs/fga'), {}, () => new Response(body, {
+      status: 307, headers: { location },
+    }));
+    assert.equal(response.status, 502);
+    assert.equal(response.headers.get('location'), null);
+    assert.equal(response.headers.get('cache-control'), 'no-store');
+    assert.match(await response.text(), /Invalid documentation origin response/);
+    assert.ok(cancelled);
+  }
+  assert.equal(errors.mock.callCount(), 3);
+});
+
 test('discovery headers refer to native indexes without changing website index ownership', async () => {
   const result = await handleRequest(request('/docs/fga'), {}, () => new Response('docs', { headers: {
     link: '</llms.txt>; rel="llms-txt", <https://fga.mintlify.app/llms-full.txt>; rel="llms-full-txt", </_llms/docs.md>; rel="alternate", </.well-known/mcp/server-card.json>; rel="mcp-server-card"',
@@ -304,6 +449,8 @@ test('SSE and binary assets stream without body rewriting or buffering', async (
 test('only immutable native chunks retain upstream cache policy', async () => {
   for (const [path, expected] of [
     ['/mintlify-assets/_next/static/app.js', 'public, max-age=31536000, immutable'],
+    ['/_next/static/app.js', 'public, max-age=31536000, immutable'],
+    ['/_next/static-other/app.js', 'no-store'], ['/_next/image', 'no-store'],
     ['/docs/fga', 'no-store'], ['/_mintlify/api/v1/e', 'no-store'],
   ]) {
     const result = await handleRequest(request(path), {}, () => new Response('data', { headers: {
@@ -311,6 +458,25 @@ test('only immutable native chunks retain upstream cache policy', async () => {
     } }));
     assert.equal(result.headers.get('cache-control'), expected);
     assert.equal(result.headers.get('cdn-cache-control'), null);
+  }
+});
+
+test('native static assets do not gain caching for errors, non-GET requests, or restrictive upstream policies', async () => {
+  for (const path of ['/mintlify-assets/_next/static/app.js', '/_next/static/app.js']) {
+    for (const [method, status, upstreamPolicy, expected] of [
+      ['GET', 404, 'public, max-age=31536000, immutable', 'no-store'],
+      ['GET', 503, 'public, max-age=31536000, immutable', 'no-store'],
+      ['HEAD', 200, 'public, max-age=31536000, immutable', 'no-store'],
+      ['POST', 200, 'public, max-age=31536000, immutable', 'no-store'],
+      ['GET', 200, 'private, no-store', 'private, no-store'],
+      ['GET', 200, undefined, null],
+    ]) {
+      const result = await handleRequest(request(path, { method }), {}, () => new Response(null, {
+        status, headers: upstreamPolicy === undefined ? {} : { 'cache-control': upstreamPolicy },
+      }));
+      assert.equal(result.status, status);
+      assert.equal(result.headers.get('cache-control'), expected);
+    }
   }
 });
 

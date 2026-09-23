@@ -21,14 +21,14 @@ This Worker is an optional reference for serving Mintlify documentation through 
 | `/api-reference`, `/api-reference/**`                             | Redirect earlier preview links to corresponding `/api/service` paths         |
 | `/docs/community`                                                | Redirect to the website's `/community`                                        |
 | `/mintlify-assets/**`, `/_mintlify/**`, `/_next/**`, `/_llms/**` | Mintlify runtime, services, and generated indexes                             |
-| `/images/**`, six exact root scripts/styles                      | Native repository assets listed in `routing.mjs`                              |
+| Three exact `/images/img/` branding files and six root scripts/styles | Native repository assets explicitly listed in `routing.mjs`               |
 | `/docs/llms.txt`, `/docs/llms-full.txt`                          | Mintlify's root index and complete bundle                                     |
 | `/mcp`, `/docs/mcp`                                              | Exact aliases to native `/mcp`; support the page menu's generated MCP targets |
 | Selected `/docs/.well-known/**` endpoints                        | Corresponding native discovery endpoints, subject to vendor acceptance        |
 | Exact `/api/request`                                             | `/_mintlify/api/request`                                                      |
 | Everything else                                                  | Existing Docusaurus origin                                                    |
 
-The website keeps `/`, `/project`, `/community`, `/blog/**`, `/search`, `/robots.txt`, all sitemap files, root LLM resources, and its asset directories. Root `/.well-known/**` and certificate-verification routes are not captured. `/docs-other`, `/api/service-other`, `/api-reference-other`, and sibling `/api/**` paths such as `/api/authzen` and `/api/management` are not native routes. The `/mcp` exception is exact: `/mcp/`, `/mcp/**`, `/mcp-other`, and `/mcp.json` remain website-owned.
+The website keeps `/`, `/project`, `/community`, `/blog/**`, `/search`, `/robots.txt`, all sitemap files, root LLM resources, and its asset directories. Under `/images/`, only `/images/img/openfga_logo.svg`, `/images/img/openfga_logo-white.svg`, and `/images/img/openfga-icon.svg` are native; other image paths remain website-owned. Add an exact route when introducing a new root-level native asset rather than claiming the entire image namespace. Root `/.well-known/**` and certificate-verification routes are not captured. `/docs-other`, `/api/service-other`, `/api-reference-other`, and sibling `/api/**` paths such as `/api/authzen` and `/api/management` are not native routes. The `/mcp` exception is exact: `/mcp/`, `/mcp/**`, `/mcp-other`, and `/mcp.json` remain website-owned.
 
 Do not edge-redirect `/api/service` directly to the first operation. Swagger links carry their operation in a fragment, which the Worker cannot see. Both `#Relationship%20Queries/Check` and `#/Relationship%20Queries/Check` are supported. The small website page reads that fragment and replaces the browser location with the matching native operation under `/api/service/`, preserving query parameters. Empty, unknown, and malformed fragments go directly to `/api/service/stores/list-all-stores`, avoiding a self-redirect; a link remains usable without JavaScript. The page is excluded from search, sitemaps, and website LLM bundles, and does not restore Swagger.
 
@@ -99,12 +99,12 @@ The checked-in [`wrangler.json`](./wrangler.json) is an undeployed reference for
 | --- | --- |
 | Worker name | `openfga-docs-proxy`; confirm that an existing Worker with this name belongs to this deployment before updating it |
 | Entry point | `deploy/cloudflare/worker.mjs`, bundled with its `routing.mjs` import |
-| Compatibility date | `2026-09-18`, matching the reviewed reference configuration |
+| Compatibility date | `2026-09-18` under **Settings > Runtime**, matching the reviewed reference configuration |
 | Zone and route | Zone `openfga.dev`, **Worker Route** `openfga.dev/*`; not a Worker Custom Domain |
 | Native upstream | `https://fga.mintlify.site`, defined in `routing.mjs` |
-| `PERMANENT_API_REDIRECTS` | String `"false"` initially |
+| `PERMANENT_API_REDIRECTS` | Add a **Text** variable with value `false` under **Settings > Variables and Secrets** |
 | `WEBSITE_ORIGIN` | Absent; this override is only for local verification |
-| `workers_dev` / `preview_urls` | Both `false` |
+| `workers_dev` / `preview_urls` | Disable **workers.dev** and **Preview URLs** under **Settings > Domains & Routes** |
 | Additional bindings, runtime secrets, or cron triggers | None |
 
 No new framework, Cloudflare Pages application, database, seed data, or starter script is required. Deploy the repository's modules with Wrangler through the owner's authenticated tooling; do not paste `worker.mjs` alone into a single-file editor or substitute the generic Mintlify example.
@@ -122,6 +122,16 @@ Preserve the native origin's `Content-Security-Policy`, `Content-Security-Policy
 If an existing Cloudflare rule overwrites native policies, narrow that rule using the ownership map above. A separately approved stricter native policy should be evaluated in report-only mode before enforcement, with allowances based on the resources actually used. Adding another enforced CSP does not loosen the original policy; browsers enforce both.
 
 The existing `/_mintlify/**` route includes the provider's `/_mintlify/api/csp-report` endpoint. Preserve its POST requests and exclude them from forced caching. Keep WAF protections enabled and use narrow exceptions only for demonstrated failures. Do not disable the domain's HTTPS redirects or Cloudflare proxy merely to complete a whole-domain Mintlify setup flow.
+
+Successful GET responses under `/mintlify-assets/_next/static/` and `/_next/static/` retain the upstream `Cache-Control` policy, including any restrictive policy; the Worker does not invent a cache lifetime. Errors, non-GET requests, and dynamic paths remain `no-store`.
+
+### Request origins and upstream redirects
+
+Before rewriting the upstream Origin, non-GET/HEAD requests to `/api/request` and `/_mintlify/api/request`, including OPTIONS preflights, reject a present Origin other than exact `https://openfga.dev`. Empty, opaque (`null`), malformed, and foreign origins receive a logged, uncached 403 without an upstream request. Explicit `Sec-Fetch-Site: cross-site` is rejected even when Origin is absent. Origin-less non-browser clients remain supported; the explicit local verification mode also accepts its exact local request origin, including scheme and port. The Worker preserves accepted preflights rather than inventing CORS allowances.
+
+This ingress check is scoped to the request gateway. It does not impose a new origin policy on public reads, website requests, MCP clients, analytics, or CSP reports. Confirm those services' supported browser-origin and authentication contracts with Mintlify before broadening enforcement. Accepted requests still receive Mintlify's required upstream Host/Origin headers; the ingress guard is defense in depth, not evidence of a demonstrated upstream CSRF exploit.
+
+HTTP redirects to internal `*.mintlify.me` preview hosts are rejected with a logged 502 instead of exposing that destination or treating it as an approved alias. Known `.site` and `.app` origins retain their existing redirect mapping; other external redirects are preserved. This containment does not rewrite MCP JSON or fix provider-generated discovery metadata. Mintlify must still correct or confirm that metadata before release.
 
 ## Mintlify owner actions
 

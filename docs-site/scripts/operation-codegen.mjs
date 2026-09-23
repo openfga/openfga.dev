@@ -430,21 +430,30 @@ function expectedResponse(operation, props, language) {
   }
 }
 
-function annotations(operation, props, language) {
+function commentLines(text, language) {
   const comment = [LANG.PYTHON_SDK, LANG.CLI, LANG.CURL, LANG.PLAYGROUND].includes(language) ? '#' : '//';
+  return text
+    .split(/\r\n|[\r\n\u2028\u2029]/u)
+    .map((line) => `${comment} ${line}`)
+    .join('\n');
+}
+
+function annotations(operation, props, language) {
   const response = expectedResponse(operation, props, language);
-  if (defined(response)) return `\n\n${comment} Expected response: ${compact(response)}`;
+  if (defined(response)) return `\n\n${commentLines(`Expected response: ${compact(response)}`, language)}`;
   if (operation === 'batchCheck') {
     return props.checks
       .filter((check) => defined(check.allowed))
-      .map((check) => `\n${comment} Expected allowed for ${quote(check.correlation_id)}: ${check.allowed}`)
+      .map(
+        (check) =>
+          `\n${commentLines(`Expected allowed for ${quote(check.correlation_id)}: ${check.allowed}`, language)}`,
+      )
       .join('');
   }
   return '';
 }
 
 function descriptions(props, language) {
-  const comment = [LANG.CLI, LANG.CURL, LANG.PYTHON_SDK].includes(language) ? '#' : '//';
   return [
     ...(props.relationshipTuples ?? []),
     ...(props.deleteRelationshipTuples ?? []),
@@ -455,10 +464,7 @@ function descriptions(props, language) {
     .filter((entry) => defined(entry._description))
     .map(
       (entry) =>
-        `${comment} ${entry.user} ${entry.relation} ${entry.object}\n${entry._description
-          .split('\n')
-          .map((line) => `${comment} ${line}`)
-          .join('\n')}\n`,
+        `${commentLines(`${entry.user} ${entry.relation} ${entry.object}\n${string(entry._description, '_description')}`, language)}\n`,
     )
     .join('');
 }

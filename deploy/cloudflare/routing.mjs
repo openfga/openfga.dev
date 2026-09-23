@@ -1,8 +1,11 @@
 export const publicOrigin = 'https://openfga.dev';
 export const mintlifyOrigin = 'https://fga.mintlify.site';
 
-const prefixes = ['/docs', '/api/service', '/mintlify-assets', '/_mintlify', '/_next', '/_llms', '/images'];
+const prefixes = ['/docs', '/api/service', '/mintlify-assets', '/_mintlify', '/_next', '/_llms'];
 const files = new Set([
+  '/images/img/openfga_logo.svg',
+  '/images/img/openfga_logo-white.svg',
+  '/images/img/openfga-icon.svg',
   '/fga-codegen.js',
   '/openfga-dsl-highlight.js',
   '/openfga-viewer.js',

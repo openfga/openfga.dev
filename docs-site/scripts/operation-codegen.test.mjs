@@ -189,6 +189,71 @@ test('request-only output never claims a result, and denied checks never fabrica
     assert.doesNotMatch(buildOperationCode('batchCheck', language, rich.batchCheck), /Error|error|undefined/);
 });
 
+test('tuple fields and descriptions cannot introduce uncommented lines in generated examples', () => {
+  for (const separator of ['\n', '\r', '\r\n', '\u2028', '\u2029']) {
+    for (const field of ['user', 'relation', 'object']) {
+      const entry = { ...tuple, [field]: `${tuple[field]}${separator}COMMENT_MARKER` };
+      const props = {
+        relationshipTuples: [{ ...entry, _description: `First line${separator}DESCRIPTION_MARKER` }],
+      };
+      assert.deepEqual(buildOperationRequest('write', props).writes.tuple_keys, [entry]);
+      for (const language of defaultLanguages.WriteRequestViewer) {
+        const code = buildOperationCode('write', language, props);
+        const comment = [LANG.CLI, LANG.CURL, LANG.PYTHON_SDK].includes(language) ? '#' : '//';
+        const prefix = code.slice(
+          0,
+          code.indexOf(`${comment} DESCRIPTION_MARKER`) + `${comment} DESCRIPTION_MARKER`.length,
+        );
+        assert.ok(prefix.includes(`${comment} COMMENT_MARKER`), `${language}: tuple ${field}`);
+        assert.ok(prefix.includes(`${comment} First line\n${comment} DESCRIPTION_MARKER`));
+        assert.ok(prefix.split('\n').every((line) => line.startsWith(`${comment} `)));
+        assert.doesNotMatch(prefix, /[\r\u2028\u2029]/u);
+        if (language === LANG.JS_SDK) transformSync(code, { loader: 'js' });
+      }
+    }
+  }
+  assert.throws(
+    () =>
+      buildOperationCode('write', LANG.JS_SDK, {
+        relationshipTuples: [{ ...tuple, _description: false }],
+      }),
+    /_description must be a string/,
+  );
+});
+
+test('expected-response and partial-check annotations keep Unicode separators inside comments', () => {
+  for (const separator of ['\u2028', '\u2029']) {
+    for (const [operation, props, marker] of [
+      [
+        'listObjects',
+        { ...fixtures.listObjects, expectedResults: [`document:a${separator}COMMENT_MARKER`] },
+        'Expected response',
+      ],
+      [
+        'batchCheck',
+        {
+          checks: [
+            { ...tuple, correlation_id: `first${separator}COMMENT_MARKER`, allowed: false },
+            { ...tuple, correlation_id: 'second' },
+          ],
+        },
+        'Expected allowed',
+      ],
+    ]) {
+      for (const language of defaultLanguages[operationComponents[operation]]) {
+        const comment = [LANG.CLI, LANG.CURL, LANG.PYTHON_SDK].includes(language) ? '#' : '//';
+        const code = buildOperationCode(operation, language, props);
+        const annotation = code.slice(code.indexOf(`${comment} ${marker}`));
+        assert.ok(annotation.startsWith(`${comment} ${marker}`));
+        assert.ok(annotation.includes(`\n${comment} COMMENT_MARKER`));
+        assert.ok(annotation.split('\n').every((line) => line.startsWith(`${comment} `)));
+        assert.doesNotMatch(annotation, /[\r\u2028\u2029]/u);
+        if (language === LANG.JS_SDK) transformSync(code, { loader: 'js' });
+      }
+    }
+  }
+});
+
 function evaluate(node, bindings) {
   if (node.type === 'Literal') return node.value;
   if (node.type === 'ArrayExpression') return node.elements.map((item) => evaluate(item, bindings));
@@ -237,10 +302,12 @@ function calls(text) {
 test('native caller parsing preserves comment-like attribute data and accepts MDX comments', () => {
   const source = `{/* An author comment, not an operation caller. */}
 <CheckRequestViewer user="user:anne" relation="reader" object="document:a<!--note-->b" />`;
-  assert.deepEqual(calls(source), [{
-    component: 'CheckRequestViewer',
-    props: { user: 'user:anne', relation: 'reader', object: 'document:a<!--note-->b' },
-  }]);
+  assert.deepEqual(calls(source), [
+    {
+      component: 'CheckRequestViewer',
+      props: { user: 'user:anne', relation: 'reader', object: 'document:a<!--note-->b' },
+    },
+  ]);
 });
 
 test('native caller parsing rejects unsupported HTML comments instead of rewriting them', () => {

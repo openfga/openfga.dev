@@ -104,6 +104,18 @@ export async function handleRequest(request, env = {}, fetcher = fetch) {
     });
   }
 
+  if (route.path === '/_mintlify/api/request' && !['GET', 'HEAD'].includes(request.method)) {
+    const origin = request.headers.get('origin');
+    const allowedOrigin = origin === null || origin === publicOrigin
+      || (env.WEBSITE_ORIGIN === publicOrigin && origin === url.origin);
+    const rejection = !allowedOrigin ? 'disallowed-origin'
+      : request.headers.get('sec-fetch-site') === 'cross-site' ? 'cross-site-request' : null;
+    if (rejection) {
+      console.error('Rejected native request gateway origin', { path: url.pathname, method: request.method, reason: rejection });
+      return errorResponse(403, 'Request origin is not allowed', request);
+    }
+  }
+
   const target = new URL(`${route.path}${url.search}`, mintlifyOrigin);
   const upstreamRequest = new Request(target, request);
   const options = { redirect: 'manual', headers: proxyHeaders(request), cf: { cacheTtl: 0, cacheEverything: false } };
@@ -121,7 +133,12 @@ export async function handleRequest(request, env = {}, fetcher = fetch) {
 
   const headers = new Headers(upstream.headers);
   try {
-    if (headers.has('location')) headers.set('location', publicLocation(headers.get('location'), target));
+    if (headers.has('location')) {
+      const location = headers.get('location');
+      const hostname = new URL(location, target).hostname.replace(/\.$/, '');
+      if (hostname.endsWith('.mintlify.me')) throw new TypeError('Unapproved internal Mintlify redirect');
+      headers.set('location', publicLocation(location, target));
+    }
     discoveryHeaders(headers, target);
   } catch (error) {
     if (!(error instanceof TypeError)) throw error;
@@ -129,7 +146,8 @@ export async function handleRequest(request, env = {}, fetcher = fetch) {
     if (upstream.body) await upstream.body.cancel();
     return errorResponse(502, 'Invalid documentation origin response', request);
   }
-  const immutableAsset = request.method === 'GET' && url.pathname.startsWith('/mintlify-assets/_next/static/');
+  const immutableAsset = request.method === 'GET' && upstream.ok
+    && ['/mintlify-assets/_next/static/', '/_next/static/'].some((prefix) => url.pathname.startsWith(prefix));
   if (!immutableAsset) headers.set('cache-control', 'no-store');
   headers.delete('cdn-cache-control');
   headers.delete('cloudflare-cdn-cache-control');
