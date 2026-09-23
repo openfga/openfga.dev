@@ -14,7 +14,7 @@ The [hosted Mintlify site](https://fga.mintlify.site/docs/fga) is available. Ser
 - [Add media safely](#asset-storage-and-git-lfs)
 - [Validate changes](#validating-authoring-changes)
 - [Understand migration limits](#migration-contracts-and-known-differences)
-- [Configure deployment](#split-site-deployment)
+- [Understand deployment](#split-site-deployment)
 
 ## Running locally
 
@@ -529,102 +529,8 @@ Content acceptance and source retirement do not authorize a production traffic s
 
 ## Split-site deployment
 
-### Route ownership
+Mintlify serves product docs under `/docs` and generated API operations under `/api/service/`. Home, Project, Community, and Blog remain on Docusaurus/GitHub Pages. The exact `/api/service` entry preserves old Swagger bookmarks.
 
-The Mintlify origin `https://fga.mintlify.site/` redirects temporarily to `/docs/fga`. The public `https://openfga.dev/` must continue serving the Docusaurus homepage.
+Keep `openapi.directory: "api/service"` in `docs.json`. When API schema or navigation changes affect operation URLs, regenerate the compatibility map with `npm run generate:legacy-api-routes`.
 
-| Public route                              | Owner                                                      |
-| ----------------------------------------- | ---------------------------------------------------------- |
-| `/`, `/project`, `/community`, `/blog/**` | Docusaurus                                                 |
-| `/docs`, `/docs/**`                       | Mintlify                                                   |
-| `/api/service/**` (except the trailing-slash entry) | Mintlify-generated service API pages                     |
-| Exact `/api`, including trailing slash    | Edge redirect to `/api/service`                          |
-| `/api/service`                            | Website compatibility page for Swagger operation fragments |
-| `/api-reference`, `/api-reference/**`      | Redirect earlier preview links to corresponding `/api/service` paths |
-
-Docusaurus also owns `/search`, `/robots.txt`, `/sitemap.xml`, `/search-index.json`, root LLM indexes, and `/assets/**`, `/img/**`, `/css/**`, and `/icons/**`. Paths not explicitly assigned to Mintlify or a redirect fall through to the website.
-
-Website search covers Blog, Project, and Community; its search plugin excludes the homepage. Product-docs search belongs to Mintlify.
-
-The `/api/service` compatibility page preserves old links such as `#/Relationship%20Queries/Check`, routing them to the matching native operation under `/api/service/`. Empty, unknown, or malformed fragments go directly to `/api/service/stores/list-all-stores`, never back to the compatibility page itself. `/api/service/` normalizes to that page rather than discarding its fragment. The shim is excluded from search, sitemaps, and LLM bundles; it is not a second API reference. Its operation map is generated from the checksum-verified canonical schema with `npm run generate:legacy-api-routes` and checked by ordinary builds and `check:mintlify`.
-
-Keep `openapi.directory: "api/service"` on the API Reference navigation anchor. This preserves the historical public prefix while giving each operation its own native page. It does not change API server endpoints or guarantee unchanged search rankings. Do not broaden routing to `/api/**`: sibling namespaces such as `/api/authzen` and `/api/management` remain unclaimed. The existing AuthZEN operations in this service schema still appear within the service reference; this change does not create a separate AuthZEN reference.
-
-### Use the existing Cloudflare edge
-
-The [Cloudflare Worker](../deploy/cloudflare/worker.mjs) is an optional routing reference with offline tests and a local-only development command. There is no proxy deployment workflow, named staging/production environment, or requirement to add Cloudflare credentials to this repository. The existing infrastructure owner can adopt this Worker or use equivalent approved routing through their established process. Follow the [operator runbook](../deploy/cloudflare/README.md) for acceptance, cutover, and rollback.
-
-The [website deployment workflow](../.github/workflows/deploy.yml) continues to publish Docusaurus to GitHub Pages without deployment changes. If adopting the Worker, use a [Worker Route](https://developers.cloudflare.com/workers/configuration/routing/routes/) on the existing proxied zone, retaining that website origin. The checked-in Wrangler configuration has no routes, public preview URLs, or named deployment environments.
-
-Run `npm run check:docs-proxy` for offline tests and a bundle dry run. It requires no Cloudflare credentials and does not deploy. The local-only `npm run dev:docs-proxy` command supplies the existing website origin for fallback requests.
-
-Proxy Mintlify requests to `https://fga.mintlify.site`, never back to `https://openfga.dev`. A Worker Route can use `fetch(request)` for website fallthrough. Do not replace apex DNS with Mintlify or introduce a new website hosting platform just for this split.
-
-Worker invocation patterns must cover query-bearing entries such as `/docs?source=nav`. Inside the Worker, match complete path segments: `/docs-other` and `/api/service-other` are not native routes.
-
-### Configure Mintlify
-
-| Setting               | Required value or review                                                                |
-| --------------------- | --------------------------------------------------------------------------------------- |
-| Repository directory  | `/docs-site`                                                                            |
-| Custom-domain field   | `openfga.dev`, without `/docs`; the combined field also sets the deployment base path |
-| Upstream origin       | `https://fga.mintlify.site`                                                             |
-| Generated API directory | `api/service` in the API Reference anchor's `openapi` object; not a dashboard deployment base path |
-| Deployment base path  | Unset: routes already contain `/docs` or `/api/service`; verify both families after rebuilding |
-| Public canonical host | `https://openfga.dev`, with the correct path for each section                           |
-
-Mintlify's [subpath guide](https://www.mintlify.com/docs/deploy/docs-subpath) describes one deployment-wide base path, while this site uses `/docs` and `/api/service`. Entering `openfga.dev/docs` adds another `/docs` to both families; do not change the repository directory or content routes to compensate. The dashboard may show a generated Worker only for subpath settings, but the repository's split-site Worker does not depend on that example.
-
-Keep the existing Cloudflare-proxied GitHub Pages origin. Do not add the dashboard's apex CNAME to Mintlify or attach a Worker Custom Domain; the Worker Route controls which requests reach Mintlify. Confirm required TXT ownership/certificate verification with Mintlify and the infrastructure owner separately. A working native preview is not proof that domain verification is complete or optional. See the [operator handoff](../deploy/cloudflare/README.md#mintlify-owner-actions) before acting on DNS setup prompts. This dashboard configuration does not require changes to website workflows or their `BASE_URL`.
-
-Also confirm `Origin` forwarding, domain-verification ownership, and generated search, assistant, MCP, and discovery endpoints. The generic proxy and Cloudflare examples differ on some of these details.
-
-### Forward support requests, not just pages
-
-The [Mintlify Cloudflare guide](https://www.mintlify.com/docs/deploy/cloudflare) requires runtime and service routes alongside the page prefixes.
-
-| Request                                                                     | Edge behavior                                                                                                                          |
-| --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `/docs/**`, `/api/service/**` (except the trailing-slash entry)         | Preserve the path and query when proxying to Mintlify; keep exact `/api/service` on the website compatibility page. |
-| `/mintlify-assets/**`, `/_mintlify/**`                                      | Forward Mintlify runtime assets and service requests.                                                                                  |
-| Images, custom scripts, OpenAPI assets, and additional `/_next/**` requests | Allow only verified, nonconflicting paths emitted by the hosted site; check status and MIME type.                                      |
-| Exact `/api/request`, if emitted                                            | Rewrite to `/_mintlify/api/request`, as in the [Vercel recipe](https://www.mintlify.com/docs/deploy/vercel). Do not capture `/api/**`. |
-| MCP and agent discovery                                                     | Allow confirmed endpoint paths, not all `/.well-known/**`.                                                                             |
-| Certificate/domain challenges                                               | Preserve the existing owner unless a specific Mintlify verification path is approved.                                                  |
-
-Repository assets include `/images/**`, `/fga-codegen.js`, `/openfga-dsl-highlight.js`, and `/openfga-viewer.js`; hosted loaders may use different URLs. Do not route all JavaScript or image requests to Mintlify.
-
-The proxy must preserve methods, queries, bodies, response streams, content types, security headers, and `Vary`. Use the Mintlify upstream for outbound Host/TLS, retain public `X-Forwarded-Host` and HTTPS information, and derive client-IP headers from trusted ingress.
-
-Do not automatically follow upstream redirects, buffer assistant streams, or apply an HTML cache policy to POST requests, dynamic responses, discovery files, or verification challenges. Check `Location` for loops and unintended Mintlify-host URLs. Confirm the required `Origin` behavior before release.
-
-### Resolve discovery and sitemap ownership
-
-Native docs should expose `/docs/llms.txt` and `/docs/llms-full.txt`. Root `/llms.txt` and `/llms-full.txt` remain website-owned; the root full bundle contains Home, Project, and Community content only.
-
-Rewriting only the two native index files is insufficient. Follow the [reverse-proxy requirements](https://www.mintlify.com/docs/deploy/reverse-proxy) and verify recursive `/_llms/**` links, per-page Markdown, `Link` and `X-Llms-Txt` headers, MCP discovery, and `.well-known` aliases. A docs page must not advertise the website-only full bundle as its documentation corpus.
-
-The Worker provides the two native index aliases, recursive index routing, and discovery-header rewriting. MCP and selected `.well-known` aliases are namespaced under `/docs`; generated metadata still needs provider validation. The proxy does not fabricate missing resources or rewrite unknown vendor hosts.
-
-`npm run build` creates a composite root `/sitemap.xml` referencing `sitemap-website.xml` and `sitemap-docs.xml`. The native child covers all owned docs and API pages from the same checkout. Website preview prefixes apply only to website URLs. The website's root `/robots.txt` remains authoritative; `/docs/robots.txt` does not govern the whole hostname.
-
-### Activate with a rollback path
-
-1. Agree with the existing infrastructure and Mintlify owners on routing and the two-prefix, header, and discovery contracts. Use their established access and change-management process; no new repository deployment environments are required.
-2. Save the current edge configuration and the last complete Docusaurus deployment, including its old docs output.
-3. Validate the selected routing locally and through an owner-approved HTTPS verification path. Check both page prefixes, entry URLs, query strings, redirects, negative prefix matches, website fallthrough, assets, viewers, search, enabled assistant streaming, analytics POST, and discovery. Native origin-root redirects can drop query parameters; check this explicitly.
-4. Verify canonical URLs, sitemap coverage, robots ownership, certificate verification/renewal, and cache freshness. Public `/` must not redirect to the docs.
-5. Coordinate merge, Mintlify's production branch/configuration, routing activation, and the website publication. Merging this migration retires the legacy docs and Swagger source; the resulting website build omits them. There is no separate manual deletion step. Enable routing before that website publication, or agree a publication hold with the owner.
-6. If routing or rendering regresses, restore both the saved edge configuration and the complete prior website deployment, then invalidate affected caches. Revert the migration on `main` and restore the corresponding provider configuration, or hold subsequent publications until recovery is complete, so a scheduled website build cannot remove the restored docs again. The revert is a rollback action, not part of normal cutover.
-
-**Removing Worker routes alone is not a rollback:** the new Docusaurus build no longer contains the old docs.
-
-Production activation is an owner-approved action, not part of ordinary CI. Removing repository deployment automation does not remove the need for working path routing or the [runbook's acceptance gates](../deploy/cloudflare/README.md#acceptance-and-cutover).
-
-### Review readiness and PR handoff
-
-Ready for review means the implementation is ready for code and content feedback; it does not authorize merge, website publication, or a traffic switch. Production configuration and cutover approval are merge gates, not reasons by themselves to keep the PR draft.
-
-Before requesting review, record the reviewed revision, relevant check results, docs/API preview links, content-preservation exceptions, and unresolved release blockers in the PR description. If hosted pages do not match that revision, state the limitation rather than presenting the preview as accepted. Request docs, frontend, and DX review; coordinate deployment decisions with the existing infrastructure and Mintlify owners.
-
-The website preview workflow handles `ready_for_review` while retaining its non-draft and same-repository restrictions. Keep the PR draft while implementation is incomplete, and change its state only when a maintainer chooses to request review. Do not merge until required reviews, source-matching acceptance, and a coordinated cutover/rollback plan are complete.
+DNS, Mintlify domain settings, Cloudflare routing, verification, cutover, and rollback belong in the [deployment runbook](../deploy/cloudflare/README.md). Publishing this directory does not activate public routing; deployment requires coordination with the infrastructure and website owners.

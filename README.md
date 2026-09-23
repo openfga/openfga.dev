@@ -21,27 +21,11 @@ Shared components under `src/components/Docs/` remain in use by the Blog and the
 
 ### Agent-readable documentation
 
-The root `/llms.txt` is a curated entry point linking to native docs, FAQ/concepts, the canonical OpenAPI v3 specification, and website resources. Docusaurus generates `/index.md`, `/project.md`, `/community.md`, and a website-only `/llms-full.txt` bundle. Those three pages advertise their Markdown and root index with discovery links.
-
-Mintlify owns the complete product documentation index, bundle, and per-page Markdown. Deployment must map `/docs/llms.txt` and `/docs/llms-full.txt` to its generated resources; the website build does not fabricate them or publish a duplicate docs bundle. See [split-site deployment](docs-site/README.md#split-site-deployment) for routing and sitemap ownership.
-
-These resources are for machine discovery, not additional reader navigation. Preserve Mintlify's nonvisual index notice and the website's discovery links without adding visible LLM links to the documentation footer.
-
-Readers can use the native [Copy page menu](docs-site/README.md#page-actions) to copy Markdown or open the page in an external AI tool. Its MCP connection actions use the hosted documentation service through exact `/mcp`, with `/docs/mcp` retained as an alias; they do not restore the separate navbar or code-block assistant buttons.
-
-`npm run build` validates the website resources and cross-site links against native pages, anchors, redirects, and canonical API operations from the same checkout. External links in native MDX are also extracted for the CI link checker.
+The website and Mintlify publish separate Markdown and LLM resources, linked from the root `/llms.txt`. See the [build scripts](scripts/README.md) for generated website resources and the [native page actions](docs-site/README.md#page-actions) for reader controls.
 
 ### Production routing
 
-Keeping `/docs` and `/api/service` on the existing hostname requires path-based routing to Mintlify while preserving the GitHub Pages website origin. The [Cloudflare proxy](deploy/cloudflare/README.md) is an optional reference implementation with local checks, not a new deployment pipeline. The existing infrastructure owner manages routing through their established process; this repository requires no new Cloudflare credentials or GitHub deployment environments.
-
-Mintlify's custom-domain field is `openfga.dev` without a deployment-wide `/docs` suffix; its repository directory remains `/docs-site`. Do not point the apex DNS at Mintlify: retain the existing website origin and selectively proxy native routes through a Worker Route. Provider ownership/certificate verification is separate from traffic routing and must be confirmed before activation.
-
-The website build generates a composite sitemap index with separate website and native children. Cloudflare activation, Mintlify domain/discovery verification, and the website publication must be coordinated by their owners before removing the old public docs deployment. See the runbook for acceptance and complete rollback requirements.
-
-The small `/api/service` compatibility page preserves old Swagger operation fragments without restoring Swagger or duplicating the API reference. Regenerate its operation map with `npm run generate:legacy-api-routes` when adopting API schema or navigation changes. Builds and native quality checks reject stale mappings; the compatibility page stays out of website search, sitemaps, and LLM bundles.
-
-Mintlify's OpenAPI `directory` is explicitly `api/service`, preserving the existing public service-reference prefix instead of its default `/api-reference`. Generated operations live below `/api/service/`; the exact entry page reads old Swagger fragments and forwards to the matching operation, or List stores when no operation is specified. Earlier `/api-reference` preview links redirect to the corresponding service paths. Other `/api/**` namespaces, including `/api/authzen` and `/api/management`, are not claimed by this migration.
+Cloudflare routes `/docs` and the service API reference to Mintlify while Home, Project, Community, and Blog remain on Docusaurus/GitHub Pages. Routing activation and website publication require owner coordination; see the [deployment runbook](deploy/cloudflare/README.md) for domain settings, DNS, verification, and rollback.
 
 ## Getting Started
 
@@ -171,7 +155,7 @@ https://openfga.dev/pr-preview/pr-589/project
 
 Use the separate Mintlify deployment preview for product docs and the API reference. Configure Mintlify's monorepo directory as `/docs-site` before enabling that deployment after the rename. Repository cleanup does not configure the external production edge or switch traffic.
 
-The website preview workflow runs when a PR becomes ready for review. Request code and content review with known deployment limitations documented; production configuration and cutover approval are merge gates, not prerequisites to leave draft. See the [review handoff policy](docs-site/README.md#review-readiness-and-pr-handoff).
+The website preview workflow runs when a PR becomes ready for review. Request code and content review with known deployment limitations documented; production configuration and cutover approval are merge gates, not prerequisites to leave draft. See the [review handoff policy](deploy/cloudflare/README.md#review-readiness-and-pr-handoff).
 
 ## Contributing
 Please review the [Contributing Guidelines](https://github.com/openfga/.github/blob/main/CONTRIBUTING.md) before sending a PR or opening an issue.

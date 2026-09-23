@@ -150,6 +150,12 @@ Do not merge and leave the new website deployed while waiting for someone to con
 
 Code/content review can begin before these deployment gates are complete. Document unresolved gates in the PR handoff; they block merge and activation, not the request for review.
 
+### Review readiness and PR handoff
+
+Ready for review requests code and content feedback; it does not authorize merge, website publication, or a traffic switch. Record the reviewed revision, relevant check results, docs/API preview links, content-preservation exceptions, and unresolved release blockers in the PR description. If hosted pages do not match that revision, state the limitation rather than presenting the preview as accepted.
+
+Request docs, frontend, and DX review, and coordinate deployment with the existing infrastructure and Mintlify owners. The website preview workflow handles `ready_for_review` while retaining its non-draft and same-repository restrictions. Keep the PR draft while implementation is incomplete, and change its state only when a maintainer chooses to request review. Do not merge until required reviews, source-matching acceptance, and a coordinated cutover/rollback plan are complete.
+
 ## Rollback
 
 Restore the saved complete website deployment and edge configuration, then purge affected caches and verify the old docs and website URLs. Restore the website content before removing native routing where possible. A Worker version rollback must also account for routes and rules changed outside that version.
