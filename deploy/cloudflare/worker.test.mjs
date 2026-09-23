@@ -131,6 +131,30 @@ test('untrusted forwarding headers are not used when no ingress IP is present', 
   });
 });
 
+test('native pages preserve enforced and report-only CSP with reporting headers', async () => {
+  const headers = {
+    'content-type': 'text/html',
+    'content-security-policy': "script-src 'nonce-native-page'; frame-ancestors 'self'",
+    'content-security-policy-report-only': "default-src 'self'; report-uri /_mintlify/api/csp-report; report-to mintlify-csp",
+    'report-to': JSON.stringify({
+      group: 'mintlify-csp',
+      max_age: 86400,
+      endpoints: [{ url: `${mintlifyOrigin}/_mintlify/api/csp-report` }],
+    }),
+    'reporting-endpoints': 'mintlify-csp="/_mintlify/api/csp-report"',
+  };
+  for (const path of ['/docs/fga', '/api/service/stores/list-all-stores']) {
+    for (const status of [200, 429]) {
+      const response = await handleRequest(request(path), {}, () => new Response('native page', { status, headers }));
+      assert.equal(response.status, status);
+      for (const [name, value] of Object.entries(headers)) {
+        assert.equal(response.headers.get(name), value, `${path}: ${name}`);
+      }
+      assert.equal(await response.text(), 'native page');
+    }
+  }
+});
+
 test('both exact MCP endpoints proxy transport methods and session headers without redirects', async () => {
   for (const path of ['/mcp', '/docs/mcp']) {
     for (const method of ['GET', 'HEAD', 'POST', 'DELETE', 'OPTIONS']) {

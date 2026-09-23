@@ -84,14 +84,44 @@ No new GitHub deployment environments, API-token secret, or account-ID variable 
 
 Before adopting this Worker or an equivalent proxy, the owner must:
 
-1. Confirm the existing `openfga.dev` zone and orange-cloud DNS records. Retain the GitHub Pages origin and TLS setup.
+1. Confirm the existing `openfga.dev` zone and orange-cloud DNS records. Retain the GitHub Pages origin and TLS setup. Ensure HTTP requests redirect to HTTPS before reaching this Worker; production requests must use `https://openfga.dev`. Retain any existing `www` redirect rather than attaching this hostname-specific Worker to another host.
 2. Inspect Worker Routes, Redirect Rules, Cache Rules, WAF, and rate limits for conflicts. The Worker adds no dynamic edge caching; existing rules must not force-cache HTML, RSC responses, POSTs, streams, or discovery.
 3. Select the reviewed routing implementation and an approved HTTPS verification path through their existing process. This does not require a new named staging environment or public workers.dev deployment.
 4. Run source-matching native-origin acceptance before activation, retain the results for the reviewed revision, and coordinate the change window and rollback with the website and Mintlify owners.
 
 `npm run verify:docs-origin` recomputes the selected checkout's [native source fingerprint](../../docs-site/README.md#deployment-fingerprint), rejects a stale local marker, and requires the matching marker on every advertised hosted docs and API page. A stale deployment with identical routes is not accepted. The owner must run and retain this check explicitly; there is no repository deployment workflow enforcing it on their behalf.
 
-The checked-in Wrangler configuration has no routes, workers.dev URL, preview URL, or named deployment environments. It is for local checks and bundling, not a ready-to-activate deployment. It defaults legacy API redirects to temporary 307 responses. An owner adopting the Worker can set `PERMANENT_API_REDIRECTS=true` after acceptance to use permanent 308 redirects; both preserve methods and query strings. Do not copy the local `WEBSITE_ORIGIN` override to the public route: public website fallthrough must use the original request to avoid a loop.
+### Production Worker settings
+
+The checked-in [`wrangler.json`](./wrangler.json) is an undeployed reference for local checks and bundling, not a production deployment configuration. The infrastructure owner supplies the live route through their established process:
+
+| Setting | Production value |
+| --- | --- |
+| Worker name | `openfga-docs-proxy`; confirm that an existing Worker with this name belongs to this deployment before updating it |
+| Entry point | `deploy/cloudflare/worker.mjs`, bundled with its `routing.mjs` import |
+| Compatibility date | `2026-09-18`, matching the reviewed reference configuration |
+| Zone and route | Zone `openfga.dev`, **Worker Route** `openfga.dev/*`; not a Worker Custom Domain |
+| Native upstream | `https://fga.mintlify.site`, defined in `routing.mjs` |
+| `PERMANENT_API_REDIRECTS` | String `"false"` initially |
+| `WEBSITE_ORIGIN` | Absent; this override is only for local verification |
+| `workers_dev` / `preview_urls` | Both `false` |
+| Additional bindings, runtime secrets, or cron triggers | None |
+
+No new framework, Cloudflare Pages application, database, seed data, or starter script is required. Deploy the repository's modules with Wrangler through the owner's authenticated tooling; do not paste `worker.mjs` alone into a single-file editor or substitute the generic Mintlify example.
+
+The dashboard route lives under **Workers & Pages > Worker > Settings > Domains & Routes > Add > Route**. Record the live route in the infrastructure owner's deployment source of truth. Keep the repository reference's `routes: []` and lack of named environments unchanged; future production deployments must preserve the approved live route rather than reapply that empty list. A bundle dry run does not publish code or attach traffic.
+
+The route executes the Worker for all `openfga.dev` requests, including website fallthrough. Confirm account capacity, request limits, error monitoring, and rollback access for total website traffic, not only docs traffic. Preserving the website origin does not make it independent of Worker availability.
+
+Do not copy the local `WEBSITE_ORIGIN` override to production: website fallthrough must use the original request to avoid a loop. After redirect acceptance, the owner can set `PERMANENT_API_REDIRECTS=true` to change only the legacy `/api` redirect from temporary 307 to permanent 308; both preserve methods and query strings.
+
+### Security headers and edge rules
+
+Preserve the native origin's `Content-Security-Policy`, `Content-Security-Policy-Report-Only`, and any `Report-To` or `Reporting-Endpoints` headers. The Worker already copies these headers without replacing their values. Keep the Docusaurus website policy separate; do not apply a website-wide CSP override to native pages, scripts, workers, or assets. No blanket response-header replacement is required.
+
+If an existing Cloudflare rule overwrites native policies, narrow that rule using the ownership map above. A separately approved stricter native policy should be evaluated in report-only mode before enforcement, with allowances based on the resources actually used. Adding another enforced CSP does not loosen the original policy; browsers enforce both.
+
+The existing `/_mintlify/**` route includes the provider's `/_mintlify/api/csp-report` endpoint. Preserve its POST requests and exclude them from forced caching. Keep WAF protections enabled and use narrow exceptions only for demonstrated failures. Do not disable the domain's HTTPS redirects or Cloudflare proxy merely to complete a whole-domain Mintlify setup flow.
 
 ## Mintlify owner actions
 
@@ -107,8 +137,9 @@ The API Reference anchor explicitly sets `openapi.directory` to `api/service`; t
 
 The repository sets the public canonical base and `seo.indexing: all` because its section selectors use hidden anchors. After a domain/base-path change finishes rebuilding, verify `/docs/fga`, `/api/service/stores/list-all-stores`, and the complete discovery inventory on `fga.mintlify.site` before activating routing. The index must retain `/docs/...` for articles and `/api/service/...` for operations; merely removing an extra prefix from API links is insufficient. Do not substitute `fga.mintlify.app`, change the source routes to fit an incorrect index, or weaken acceptance to hide inconsistent provider output.
 
-Confirm these provider-owned details:
+Confirm these provider-owned details before production activation; requesting confirmation is not approval:
 
+- The root-based deployment supports both `/docs/**` and `/api/service/**` behind the selective proxy without replacing the GitHub Pages origin.
 - Public canonicals and social URLs use `https://openfga.dev` with the correct section path.
 - The generated documentation index includes every owned docs and API page, directly or through recursive `/_llms/**` indexes. An empty `llms.txt` or sitemap is a deployment failure, not acceptable discovery.
 - The forwarded `Origin`, `Host`, and `X-Forwarded-*` contract supports search, assistant sessions, and analytics. The Worker targets Mintlify for Host/Origin and retains the public forwarded host/protocol.
@@ -119,16 +150,15 @@ The Worker rewrites native index origins and discovery headers to the public doc
 
 ## Acceptance and cutover
 
-Before activation, run:
+Before activation, run from the reviewed checkout:
 
 ```bash
 npm run verify:docs-origin
-npm run verify:docs-proxy -- --origin https://APPROVED-VERIFICATION-HOST
 ```
 
-These commands make read-only HTTP requests and report nonzero failures for missing or mismatched source fingerprints, wrong canonical hosts, missing runtime assets, incomplete recursive docs indexes, bundle failures, lost redirect queries, website capture, a missing compatibility page, and incomplete composite sitemap output. They fetch OpenAPI from `main`, verify the last-generated schema digest, and check all 24 advertised API operation URLs, not just List stores. An upstream digest change requires an accepted sample update before release verification can pass. Every advertised docs and API page must carry the fingerprint of this checkout; mixed cached revisions fail too. If the hosted marker does not match, wait for the matching deployment and repeat acceptance; do not bypass the gate or substitute a hosted marker into local configuration. This source marker is not an attestation of provider internals, browser interactions, Cloudflare route precedence, permissions, or complete MCP compatibility. Mintlify can fetch newer upstream schemas independently of this repository's source marker.
+The native and proxy acceptance commands make read-only HTTP requests and report nonzero failures for missing or mismatched source fingerprints, wrong canonical hosts, missing runtime assets, incomplete recursive docs indexes, bundle failures, lost redirect queries, website capture, a missing compatibility page, and incomplete composite sitemap output. They fetch OpenAPI from `main`, verify the last-generated schema digest, and check all 24 advertised API operation URLs, not just List stores. An upstream digest change requires an accepted sample update before release verification can pass. Every advertised docs and API page must carry the fingerprint of this checkout; mixed cached revisions fail too. If the hosted marker does not match, wait for the matching deployment and repeat acceptance; do not bypass the gate or substitute a hosted marker into local configuration. This source marker is not an attestation of provider internals, browser interactions, Cloudflare route precedence, permissions, or complete MCP compatibility. Mintlify can fetch newer upstream schemas independently of this repository's source marker.
 
-A verification proxy that uses the currently published website cannot serve the new composite sitemap or compatibility page until coordinated website publication. Record those expected failures, validate the compatibility page against the local website build before activation, and rerun public checks after publication. Do not waive other failures on that basis. Verify generated agent metadata and every URL it advertises manually.
+If the infrastructure owner provides an approved HTTPS verification proxy, check it with `npm run verify:docs-proxy -- --origin <approved-origin>` before activation. This does not authorize a public preview deployment or use of the local `WEBSITE_ORIGIN` override in production. A proxy that uses the currently published website cannot serve the new composite sitemap or compatibility page until coordinated website publication. Record those expected failures, validate the compatibility page against the local website build before activation, and rerun public checks after publication. Do not waive other failures on that basis. Verify generated agent metadata and every URL it advertises manually.
 
 In an HTTPS browser, check docs and API navigation, direct deep links, per-page Markdown, images, custom viewers, search results, enabled assistant streaming, and analytics POSTs. Follow legacy Swagger fragments for Check, BatchCheck, and AuthZEN, including encoded tag names and the trailing-slash variant. Check response MIME types, upstream error propagation, theme changes, and reloads. Test website Home, Project, Community, Blog, search, root LLM resources, and negative prefix matches. Root `openfga.dev/` must not redirect to docs.
 
@@ -144,9 +174,25 @@ Before the change window, save:
 - The last complete GitHub Pages deployment containing legacy docs, including its commit/artifact and a tested restoration procedure.
 - Verification evidence, accepted provider settings, the reviewed deployment commit, and the owners performing activation and rollback.
 
-The unchanged [website deployment workflow](../../.github/workflows/deploy.yml) runs on main pushes, manual dispatch, and a schedule. Coordinate merge, Mintlify's production branch/configuration, and publication with the edge owner. The migration PR itself removes the old docs and Swagger source; the subsequent website build no longer publishes them. No separate manual deletion or PR revert is part of normal cutover. Activate the accepted routing before that website publication, or arrange an explicit publication hold with its owner. Then publish the website sitemap and rerun proxy acceptance against `https://openfga.dev`.
+### Production release sequence
 
-Do not merge and leave the new website deployed while waiting for someone to configure routing.
+The unchanged [website deployment workflow](../../.github/workflows/deploy.yml) runs on main pushes, manual dispatch, and a schedule. The migration PR removes the old docs and Swagger source, so its website build no longer publishes them. Use an owner-approved publication hold for this sequence; the PR does not add an automated deployment gate.
+
+1. **Clear pre-merge gates.** Obtain required reviews, provider confirmation, successful source-matching native acceptance, and owner agreement on activation and rollback. A successful Mintlify build alone does not accept discovery or the proxy configuration.
+2. **Hold website publishing.** Save the rollback material above and prevent push, scheduled, and manual publishing during the window. Confirm no existing or queued deployment can publish while the hold is active.
+3. **Merge and deploy Mintlify.** Keep the website hold active. Merge the reviewed revision, switch the connected Mintlify production branch to `main`, and wait for its deployment. Keep the repository directory, domain, and route prefixes unchanged.
+4. **Accept the merged native deployment.** From the merged checkout, run `npm run verify:docs-origin` again. Stop if source markers, docs/API pages, discovery, or required provider endpoints fail.
+5. **Activate the reviewed Worker.** Publish the bundled modules and attach the approved production Worker Route. Check docs and API operation pages, website fallthrough, HTTPS handling, and edge errors while the old website is still published. If these fail, restore the previous edge configuration and keep website publishing held.
+6. **Publish the website.** Release the hold and dispatch the GitHub Pages deployment for the agreed `main` revision. Confirm that the new compatibility page and composite sitemap are published, then run the public acceptance command below and complete the browser checks above. A failure after website publication requires the coordinated rollback below, not just removing the Worker route.
+7. **Monitor the release.** Check Worker errors, upstream failures, and request limits. Retain the rollback artifacts and leave `PERMANENT_API_REDIRECTS=false` until redirect acceptance is complete.
+
+After website publication, run from the released checkout:
+
+```bash
+npm run verify:docs-proxy -- --origin https://openfga.dev
+```
+
+Do not merge and leave the new website deployed while waiting for someone to configure routing. No separate manual deletion of legacy docs or PR revert is part of normal cutover.
 
 Code/content review can begin before these deployment gates are complete. Document unresolved gates in the PR handoff; they block merge and activation, not the request for review.
 
@@ -169,4 +215,6 @@ If the migration has merged, an approved revert on `main` restores the legacy so
 - [Mintlify Cloudflare deployment](https://www.mintlify.com/docs/deploy/cloudflare)
 - [Mintlify reverse-proxy requirements](https://www.mintlify.com/docs/deploy/reverse-proxy)
 - [Mintlify subpath hosting](https://www.mintlify.com/docs/deploy/docs-subpath)
+- [Mintlify custom-domain verification](https://www.mintlify.com/docs/customize/custom-domain)
+- [Mintlify CSP guidance](https://www.mintlify.com/docs/deploy/csp-configuration)
 - [Cloudflare Worker Routes](https://developers.cloudflare.com/workers/configuration/routing/routes/)
