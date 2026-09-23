@@ -567,12 +567,15 @@ Worker invocation patterns must cover query-bearing entries such as `/docs?sourc
 | Setting               | Required value or review                                                                |
 | --------------------- | --------------------------------------------------------------------------------------- |
 | Repository directory  | `/docs-site`                                                                            |
+| Custom-domain field   | `openfga.dev`, without `/docs`; the combined field also sets the deployment base path |
 | Upstream origin       | `https://fga.mintlify.site`                                                             |
 | Generated API directory | `api/service` in the API Reference anchor's `openapi` object; not a dashboard deployment base path |
-| Deployment base path  | Current implementation assumes unset; confirm the two-prefix setup with Mintlify before changing it |
+| Deployment base path  | Unset: routes already contain `/docs` or `/api/service`; verify both families after rebuilding |
 | Public canonical host | `https://openfga.dev`, with the correct path for each section                           |
 
-Confirm the custom-domain setup with Mintlify before changing it. Its [subpath guide](https://www.mintlify.com/docs/deploy/docs-subpath) describes one deployment base path, while this site uses `/docs` and `/api/service`. Adding a global `/docs` or `/api/service` base path can change both URL families.
+Mintlify's [subpath guide](https://www.mintlify.com/docs/deploy/docs-subpath) describes one deployment-wide base path, while this site uses `/docs` and `/api/service`. Entering `openfga.dev/docs` adds another `/docs` to both families; do not change the repository directory or content routes to compensate. The dashboard may show a generated Worker only for subpath settings, but the repository's split-site Worker does not depend on that example.
+
+Keep the existing Cloudflare-proxied GitHub Pages origin. Do not add the dashboard's apex CNAME to Mintlify or attach a Worker Custom Domain; the Worker Route controls which requests reach Mintlify. Confirm required TXT ownership/certificate verification with Mintlify and the infrastructure owner separately. A working native preview is not proof that domain verification is complete or optional. See the [operator handoff](../deploy/cloudflare/README.md#mintlify-owner-actions) before acting on DNS setup prompts. This dashboard configuration does not require changes to website workflows or their `BASE_URL`.
 
 Also confirm `Origin` forwarding, domain-verification ownership, and generated search, assistant, MCP, and discovery endpoints. The generic proxy and Cloudflare examples differ on some of these details.
 

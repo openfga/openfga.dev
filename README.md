@@ -35,6 +35,8 @@ Readers can use the native [Copy page menu](docs-site/README.md#page-actions) to
 
 Keeping `/docs` and `/api/service` on the existing hostname requires path-based routing to Mintlify while preserving the GitHub Pages website origin. The [Cloudflare proxy](deploy/cloudflare/README.md) is an optional reference implementation with local checks, not a new deployment pipeline. The existing infrastructure owner manages routing through their established process; this repository requires no new Cloudflare credentials or GitHub deployment environments.
 
+Mintlify's custom-domain field is `openfga.dev` without a deployment-wide `/docs` suffix; its repository directory remains `/docs-site`. Do not point the apex DNS at Mintlify: retain the existing website origin and selectively proxy native routes through a Worker Route. Provider ownership/certificate verification is separate from traffic routing and must be confirmed before activation.
+
 The website build generates a composite sitemap index with separate website and native children. Cloudflare activation, Mintlify domain/discovery verification, and the website publication must be coordinated by their owners before removing the old public docs deployment. See the runbook for acceptance and complete rollback requirements.
 
 The small `/api/service` compatibility page preserves old Swagger operation fragments without restoring Swagger or duplicating the API reference. Regenerate its operation map with `npm run generate:legacy-api-routes` when adopting API schema or navigation changes. Builds and native quality checks reject stale mappings; the compatibility page stays out of website search, sitemaps, and LLM bundles.

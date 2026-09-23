@@ -95,11 +95,17 @@ The checked-in Wrangler configuration has no routes, workers.dev URL, preview UR
 
 ## Mintlify owner actions
 
-Keep the project directory `/docs-site` and upstream `https://fga.mintlify.site`. The current implementation assumes the deployment base path is unset because content already has `/docs` and `/api/service` prefixes. Confirm that two-prefix contract with Mintlify; enabling a global `/docs` base path would change those routes.
+Keep the project directory `/docs-site` and upstream `https://fga.mintlify.site`. Configure the public hostname as `openfga.dev` with no deployment-wide base path because content already has `/docs` and `/api/service` prefixes. In the dashboard's combined domain/path field, enter `openfga.dev`, not `openfga.dev/docs`. The latter mounts the entire deployment under another `/docs`, producing `/docs/docs/...` and `/docs/api/service/...`. Keep the repository directory and content paths unchanged.
+
+The dashboard's generated Cloudflare example may appear only when a subpath is entered. That example is not required to deploy the repository's split-site Worker, and its docs-only routing is not a substitute for this implementation. Saving a custom domain configures Mintlify's deployment; public traffic still follows the existing DNS and Cloudflare routing.
+
+**Do not add the dashboard's apex `@` CNAME to `cname.mintlify.builders`.** That is the whole-domain hosting path, not this split-site design. Retain the existing proxied GitHub Pages origin, use a Worker Route rather than a Worker Custom Domain, and leave non-native requests on the original website request. The native `/` redirect cannot capture the public homepage through this Worker because public `/` is website-owned.
+
+Treat DNS routing and provider verification separately. The Worker connects to the TLS-protected `fga.mintlify.site` origin while visitors use the existing Cloudflare HTTPS endpoint for `openfga.dev`. The dashboard's `_cf-custom-hostname` and `_acme-challenge` TXT records concern domain ownership and certificate authorization, not URL-path routing. Confirm which records and renewal arrangements Mintlify requires for this proxied setup with the infrastructure owner; use the complete provider-issued values and preserve existing verification records. Native pages rendering successfully does not prove that verification can be omitted. If the dashboard requires an apex-origin replacement to complete setup, resolve the proxy-verification flow with Mintlify rather than repointing the website or disabling its Cloudflare proxy.
 
 The API Reference anchor explicitly sets `openapi.directory` to `api/service`; this is a generated-page directory, not the dashboard base path. Retain it when switching the connected production branch to `main` after approval. There are no API-server or OpenAPI-specification changes associated with this URL decision.
 
-Confirm the two-prefix custom-domain arrangement with Mintlify before attaching `openfga.dev` in its dashboard. The repository sets the public canonical base and `seo.indexing: all` because its section selectors use hidden anchors. Verify the resulting deployment rather than assuming the settings fixed generated resources.
+The repository sets the public canonical base and `seo.indexing: all` because its section selectors use hidden anchors. After a domain/base-path change finishes rebuilding, verify `/docs/fga`, `/api/service/stores/list-all-stores`, and the complete discovery inventory on `fga.mintlify.site` before activating routing. The index must retain `/docs/...` for articles and `/api/service/...` for operations; merely removing an extra prefix from API links is insufficient. Do not substitute `fga.mintlify.app`, change the source routes to fit an incorrect index, or weaken acceptance to hide inconsistent provider output.
 
 Confirm these provider-owned details:
 
