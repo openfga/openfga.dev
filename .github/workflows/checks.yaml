@@ -55,8 +55,8 @@ jobs:
   # skipped — and it can never break just because a new page was added.
   # External links are checked over the network; excluded hosts live in
   # lychee.toml. (Internal routing is additionally enforced by Docusaurus'
-  # `onBrokenLinks: 'throw'` during the build step below.) Historical blog
-  # posts are omitted from the inputs, while posts added by the PR are checked.
+  # `onBrokenLinks: 'throw'` during the build step below.) Generated blog pages
+  # are omitted from the inputs, then posts added by the PR are checked directly.
   link-check:
     runs-on: ubuntu-latest
     steps:
@@ -88,8 +88,8 @@ jobs:
 
           added_posts="$(mktemp)"
           known_posts="$(mktemp)"
-          excluded_pages="$(mktemp)"
-          trap 'rm -f "$added_posts" "$known_posts" "$excluded_pages"' EXIT
+          new_post_pages="$(mktemp)"
+          trap 'rm -f "$added_posts" "$known_posts" "$new_post_pages"' EXIT
 
           git diff --name-only --diff-filter=A "${BASE_SHA}...${HEAD_SHA}" -- blog \
             | awk '/^blog\/.+\.mdx?$/' > "$added_posts"
@@ -109,14 +109,14 @@ jobs:
             permalink="$(jq -er '.permalink' "$metadata")"
             echo "$source" >> "$known_posts"
 
-            if grep -Fxq "$source" "$added_posts"; then
+            if ! grep -Fxq "$source" "$added_posts"; then
               continue
             fi
 
             if [[ -n "$base_path" ]]; then
               permalink="${permalink#"$base_path"}"
             fi
-            printf 'build%s.html\nbuild%s.html.html\n' "$permalink" "$permalink" >> "$excluded_pages"
+            printf 'build%s.html\nbuild%s.html.html\n' "$permalink" "$permalink" >> "$new_post_pages"
           done
 
           missing_posts="$(grep -Fvx -f "$known_posts" "$added_posts" || true)"
@@ -128,7 +128,9 @@ jobs:
 
           find build -type f -name '*.html' -print \
             | sort \
-            | grep -Fvx -f "$excluded_pages" > build/lychee-inputs.txt
+            | awk '!/^build\/blog([.]|\/|$)/' > build/lychee-inputs.txt
+          cat "$new_post_pages" >> build/lychee-inputs.txt
+          sort -u -o build/lychee-inputs.txt build/lychee-inputs.txt
 
           echo "Selected $(wc -l < build/lychee-inputs.txt) HTML files; included $(wc -l < "$added_posts") new blog post(s)."
 
