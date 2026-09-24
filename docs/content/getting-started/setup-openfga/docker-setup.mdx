@@ -24,9 +24,23 @@ If you want to run OpenFGA locally as a Docker container, follow these steps:
 
 1. [Install Docker](https://docs.docker.com/get-docker/) (if not already installed).
 2. Run `docker pull openfga/openfga` to get the latest docker image.
-3. Run `docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 openfga/openfga run`.
+3. Run `docker run -p 8080:8080 -p 8081:8081 openfga/openfga run`.
 
-This will start an HTTP server and gRPC server with the default configuration options. Port 8080 is used to serve the HTTP API, 8081 is used to serve the gRPC API, and 3000 is used for the [Playground](./playground.mdx).
+This will start an HTTP server and gRPC server with the default configuration options. Port 8080 is used to serve the HTTP API and 8081 is used to serve the gRPC API.
+
+The [Playground](./playground.mdx) is disabled by default. To serve it from a container, enable it and bind it to all interfaces, then publish port 3000:
+
+```shell
+docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 openfga/openfga run \
+    --playground-enabled \
+    --playground-addr 0.0.0.0:3000
+```
+
+:::caution Warning
+Without `--playground-addr`, the Playground listens on `127.0.0.1:3000` inside the container, which a published port cannot reach. Do not enable the Playground in production.
+:::
+
+It is then available at http://localhost:3000/playground.
 
 ## Using Postgres
 
@@ -58,7 +72,9 @@ Finally, start OpenFGA:
 ```shell
 docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
     --datastore-engine postgres \
-    --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
+    --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable' \
+    --playground-enabled \
+    --playground-addr 0.0.0.0:3000
 ```
 
 </TabItem>
@@ -111,6 +127,11 @@ services:
       - OPENFGA_DATASTORE_ENGINE=postgres
       - OPENFGA_DATASTORE_URI=postgres://postgres:password@postgres:5432/postgres?sslmode=disable
       - OPENFGA_LOG_FORMAT=json
+      # Needed for the playground (Do not enable in prod!)
+      - OPENFGA_PLAYGROUND_ENABLED=true
+      # The playground binds to 127.0.0.1 unless an address is given,
+      # which the published port below cannot reach
+      - OPENFGA_PLAYGROUND_ADDR=0.0.0.0:3000
     command: run
     networks:
       - openfga
@@ -162,7 +183,9 @@ Finally, start OpenFGA:
 ```shell
 docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
     --datastore-engine mysql \
-    --datastore-uri 'root:secret@tcp(mysql:3306)/openfga?parseTime=true'
+    --datastore-uri 'root:secret@tcp(mysql:3306)/openfga?parseTime=true' \
+    --playground-enabled \
+    --playground-addr 0.0.0.0:3000
 ```
 
 </TabItem>
@@ -214,6 +237,11 @@ services:
       - OPENFGA_DATASTORE_ENGINE=mysql
       - OPENFGA_DATASTORE_URI=root:secret@tcp(mysql:3306)/openfga?parseTime=true
       - OPENFGA_LOG_FORMAT=json
+      # Needed for the playground (Do not enable in prod!)
+      - OPENFGA_PLAYGROUND_ENABLED=true
+      # The playground binds to 127.0.0.1 unless an address is given,
+      # which the published port below cannot reach
+      - OPENFGA_PLAYGROUND_ADDR=0.0.0.0:3000
     command: run
     networks:
       - openfga
@@ -273,7 +301,9 @@ docker run --name openfga --network=openfga \
     -u nonroot \
     openfga/openfga run \
     --datastore-engine sqlite \
-    --datastore-uri 'file:/home/nonroot/openfga.db'
+    --datastore-uri 'file:/home/nonroot/openfga.db' \
+    --playground-enabled \
+    --playground-addr 0.0.0.0:3000
 ```
 
 </TabItem>
@@ -314,6 +344,11 @@ services:
       - OPENFGA_DATASTORE_ENGINE=sqlite
       - OPENFGA_DATASTORE_URI=file:/home/nonroot/openfga.db
       - OPENFGA_LOG_FORMAT=json
+      # Needed for the playground (Do not enable in prod!)
+      - OPENFGA_PLAYGROUND_ENABLED=true
+      # The playground binds to 127.0.0.1 unless an address is given,
+      # which the published port below cannot reach
+      - OPENFGA_PLAYGROUND_ADDR=0.0.0.0:3000
     command: run
     networks:
       - openfga
@@ -346,7 +381,7 @@ To configure with pre-shared authentication and enabling TLS in http server with
 1. Copy the certificate and key files to your Docker container.
 2. Run with the following command:
 ```shell
-docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
+docker run --name openfga --network=openfga -p 8080:8080 -p 8081:8081 openfga/openfga run \
     --authn-method=preshared \
     --authn-preshared-keys="key1,key2" \
     --http-tls-enabled=true \
@@ -362,7 +397,7 @@ To configure with OIDC authentication and enabling TLS in http server with Docke
 2. Run the following command
 
 ```shell
-docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
+docker run --name openfga --network=openfga -p 8080:8080 -p 8081:8081 openfga/openfga run \
     --authn-method=oidc \
     --authn-oidc-issuer="oidc-issuer" \
     --authn-oidc-audience="oidc-audience" \

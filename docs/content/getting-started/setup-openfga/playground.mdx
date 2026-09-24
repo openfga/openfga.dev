@@ -8,7 +8,9 @@ slug: /getting-started/setup-openfga/playground
 
 The Playground facilitates rapid development by allowing you to visualize and model your application's authorization models and manage relationship tuples with a locally running OpenFGA instance.
 
-It is enabled on port 3000 by default and accessible at http://localhost:3000/playground. 
+It is disabled by default. Enable it with `--playground-enabled`, and it is served on port 3000, accessible at http://localhost:3000/playground.
+
+When running OpenFGA in a container, also pass `--playground-addr 0.0.0.0:3000`. The Playground otherwise listens on `127.0.0.1:3000` inside the container, which a published port cannot reach. See the [Docker setup guide](./docker-setup.mdx).
 
 The Playground is designed for early prototyping and learning. It has several limitations:
 
