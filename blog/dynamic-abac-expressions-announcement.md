@@ -118,7 +118,7 @@ The same pattern can be used for other request attributes, including tenant iden
 
 In an environment with dynamic MCP servers, predicting every tool or policy requirement in advance is nearly impossible. The standard OpenFGA model is designed to be maintained by developers through schema updates, rather than dynamically modified as users who configure agents introduce new runtime constraints.
 
-To write dynamic expressions, developers need to build user interfaces that allow users to define them. Developers should carefully consider what users are allowed to configure and validate those expressions appropriately.
+To use Dynamic Conditions, developers need to build user interfaces that allow users to define the expressions. Developers should carefully consider what users are allowed to configure and validate those expressions appropriately.
 
 ## How Dynamic Conditions work
 
