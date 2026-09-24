@@ -3,7 +3,7 @@ title: "Direct Relationships"
 description: "Modeling Concepts: Direct Relationships"
 canonical: "https://openfga.dev/docs/modeling/building-blocks/direct-relationships"
 content_type: "documentation"
-last_updated: "2026-09-21T10:39:37.000Z"
+last_updated: "2026-09-24T22:18:34.000Z"
 ---
 
 # Direct Relationships

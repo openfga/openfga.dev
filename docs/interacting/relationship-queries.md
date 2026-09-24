@@ -3,7 +3,7 @@ title: "Relationship Queries: Check, Read, Expand, and ListObjects"
 description: "An overview of how to use the Check, Read, Expand, and ListObject APIs"
 canonical: "https://openfga.dev/docs/interacting/relationship-queries"
 content_type: "documentation"
-last_updated: "2026-09-21T10:39:37.000Z"
+last_updated: "2026-09-24T22:18:34.000Z"
 ---
 
 # Relationship Queries: Check, Read, Expand, ListObjects and ListUsers

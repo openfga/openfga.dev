@@ -3,7 +3,7 @@ title: "Entitlements"
 description: "Modeling entitlements for a system"
 canonical: "https://openfga.dev/docs/modeling/advanced/entitlements"
 content_type: "documentation"
-last_updated: "2026-09-21T10:39:37.000Z"
+last_updated: "2026-09-24T22:18:34.000Z"
 ---
 
 # Modeling Entitlements for a System with OpenFGA
