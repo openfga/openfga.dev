@@ -3,7 +3,7 @@ title: "Zuplo Case Study"
 description: "How API management platform Zuplo runs OpenFGA across multiple data centers with PostgreSQL global replication for edge authorization."
 canonical: "https://openfga.dev/docs/adopters/zuplo"
 content_type: "documentation"
-last_updated: "2026-09-24T22:18:34.000Z"
+last_updated: "2026-09-24T22:41:22.000Z"
 ---
 
 # Zuplo: Edge authorization across multiple data centers

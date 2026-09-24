@@ -3,7 +3,7 @@ title: "Kubernetes Setup Guide"
 description: "Setting up an OpenFGA server with Kubernetes"
 canonical: "https://openfga.dev/docs/getting-started/setup-openfga/kubernetes"
 content_type: "documentation"
-last_updated: "2026-09-24T22:18:34.000Z"
+last_updated: "2026-09-24T22:41:22.000Z"
 ---
 
 # ☸️ Setup OpenFGA with Kubernetes

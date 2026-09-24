@@ -3,7 +3,7 @@ title: "Authorization Through Organization Context"
 description: "Modeling authorization through organization context"
 canonical: "https://openfga.dev/docs/modeling/organization-context-authorization"
 content_type: "documentation"
-last_updated: "2026-09-24T22:18:34.000Z"
+last_updated: "2026-09-24T22:41:22.000Z"
 ---
 
 # Authorization Through Organization Context
