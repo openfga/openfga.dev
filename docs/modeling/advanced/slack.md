@@ -3,7 +3,7 @@ title: "Slack"
 description: "Modeling authorization for Slack"
 canonical: "https://openfga.dev/docs/modeling/advanced/slack"
 content_type: "documentation"
-last_updated: "2026-09-24T22:41:22.000Z"
+last_updated: "2026-09-25T02:09:04.000Z"
 ---
 
 # Modeling Authorization for Slack with OpenFGA

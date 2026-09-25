@@ -3,7 +3,7 @@ title: "Fine-Grained Authorization for LMS & EdTech with FGA"
 description: "Model courses, classes, enrollments, content authorship, and grading workflows in FGA for Canvas-style and Moodle-style learning management systems."
 canonical: "https://openfga.dev/docs/industries/lms"
 content_type: "documentation"
-last_updated: "2026-09-24T22:41:22.000Z"
+last_updated: "2026-09-25T02:09:04.000Z"
 ---
 
 # LMS Authorization with OpenFGA

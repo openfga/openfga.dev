@@ -3,7 +3,7 @@ title: "Docker Setup Guide"
 description: "Setting up an OpenFGA server with Docker"
 canonical: "https://openfga.dev/docs/getting-started/setup-openfga/docker"
 content_type: "documentation"
-last_updated: "2026-09-24T22:41:22.000Z"
+last_updated: "2026-09-25T02:09:04.000Z"
 ---
 
 # 🐳 Setup OpenFGA with Docker
