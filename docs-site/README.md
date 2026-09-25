@@ -2,6 +2,8 @@
 
 This directory contains the Mintlify source for 110 product documentation pages and a read-only reference for 24 API operations. The homepage, Project, Community, and Blog stay on Docusaurus.
 
+Target `docs-next` for migration and follow-up pull requests. It is the planned temporary default/production branch; deployment and GitHub Actions configuration remain separate [owner actions](../deploy/cloudflare/README.md#temporary-docs-next-release).
+
 The [hosted Mintlify site](https://fga.mintlify.site/docs/fga) is available. Serving it through `openfga.dev/docs` and `openfga.dev/api/service` requires the separate [split-site deployment](#split-site-deployment). Publishing this directory does not configure that routing.
 
 ## In this guide
@@ -397,7 +399,7 @@ npm run check:mintlify-deployment
 
 Commit the resulting `docs.json` change with the source changes. The marker is the SHA-256 fingerprint of the `docs-site/` source inventory and file contents, excluding its own metadata value. It covers pages, snippets, configuration, runtime assets, media, and authoring sources; it is not a timestamp or a Git commit ID. Ignored local files are excluded, new nonignored files are included, and tracked deletions must be staged before regeneration.
 
-Ordinary checks never refresh the marker: they fail if it is stale. Deployment acceptance recomputes it from the selected checkout, then requires the same marker in every advertised docs and API page. A previous hosted deployment with the same route inventory cannot pass. Wait for Mintlify to finish deploying the matching sources rather than bypassing this gate. Commits with identical native sources intentionally share a fingerprint.
+Ordinary checks never refresh the marker: they fail if it is stale. Source reads also reject LFS pointers under `docs-site/` in both the Git index and working tree, so a locally hydrated asset cannot hide a committed pointer. Deployment acceptance recomputes the marker from the selected checkout, then requires the same marker in every advertised docs and API page. A previous hosted deployment with the same route inventory cannot pass. Wait for Mintlify to finish deploying the matching sources rather than bypassing this gate. Commits with identical native sources intentionally share a fingerprint.
 
 The nightly configuration-update workflow refreshes and commits the marker with its generated table; it does not regenerate independent content expectations.
 
@@ -418,7 +420,11 @@ git check-attr --cached filter -- docs-site/images/img/openfga_logo.svg
 
 A native asset should report `filter: unset`. Inspect the staged blob, not just the working copy. A file beginning with `version https://git-lfs.github.com/spec/v1` is a pointer, not image data.
 
+After staging asset changes, run `npm run check:mintlify-deployment`; regenerate the fingerprint first if the actual bytes changed. The check reads the staged blobs as well as working files and rejects unresolved pointers.
+
 Keep native overrides after the global LFS patterns. Attribute changes do not repair an already committed pointer: retrieve the original object, restage its bytes, and verify the asset renders. Do not remove global LFS rules or rewrite history to fix a native asset.
+
+Keep inline assets deployable throughout the `docs-next` period. The eventual return to `main` uses a [clean LFS-backed integration](../deploy/cloudflare/README.md#returning-to-main), not a merge of the temporary branch's history or an assumption that skipping one conversion commit removes every inline asset.
 
 ## Validating authoring changes
 

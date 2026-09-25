@@ -115,7 +115,7 @@ All nine `*.test.mjs` files remain wired into package commands:
 - `npm run test:site-boundary`: agent content, site boundary, sitemap, and legacy API routes.
 - `npm run test:config-page`: configuration generation, including preservation/error cases.
 - `npm run test:update-api-samples`: offline source updates, no-change/incompatibility/transport handling, no partial incompatible writes, issue deduplication, and workflow gates.
-- `npm run test:docs-proxy`: deployment verification and fingerprints, plus Worker tests.
+- `npm run test:docs-proxy`: deployment verification, fingerprints, native Git-index/working-tree LFS-pointer rejection, and Worker tests.
 
 ## Owner-run live acceptance (not deployment)
 

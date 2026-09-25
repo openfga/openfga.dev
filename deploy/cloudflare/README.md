@@ -5,7 +5,7 @@ This Worker is an optional reference for serving Mintlify documentation through 
 | Responsibility | Owner |
 | --- | --- |
 | Build and host product docs and API reference | Mintlify, using `/docs-site` |
-| Build and publish Home, Project, Community, and Blog | Existing GitHub Pages workflow, unchanged |
+| Build and publish Home, Project, Community, and Blog | Existing GitHub Pages workflow; temporary source-branch configuration requires owner action |
 | Route public paths to the correct origin | Existing infrastructure owner, using this optional Worker or equivalent approved routing |
 | Validate source and routing contracts | Repository checks and owner-run acceptance commands; no repository Cloudflare credentials required |
 
@@ -133,9 +133,43 @@ This ingress check is scoped to the request gateway. It does not impose a new or
 
 HTTP redirects to internal `*.mintlify.me` preview hosts are rejected with a logged 502 instead of exposing that destination or treating it as an approved alias. Known `.site` and `.app` origins retain their existing redirect mapping; other external redirects are preserved. This containment does not rewrite MCP JSON or fix provider-generated discovery metadata. Mintlify must still correct or confirm that metadata before release.
 
+## Temporary docs-next release
+
+The migration targets `docs-next`. Keep native assets as ordinary Git blobs so this branch remains deployable until Mintlify's LFS support is accepted. There is no separate post-merge asset-conversion prerequisite for this release. Preserve upstream commits when bringing in `main` changes, but use the clean integration described below when eventually returning the migration to `main`.
+
+| Setting | Required value at cutover |
+| --- | --- |
+| Repository default branch | `docs-next`, changed by a repository administrator while publishing is held |
+| Mintlify production source | `openfga/openfga.dev`, branch `docs-next`, directory `/docs-site` |
+| Docusaurus production build source | The reviewed `docs-next` revision |
+| GitHub Pages settings | Deploy from a branch: `gh-pages`, `/ (root)`, custom domain `openfga.dev` |
+| Contributor PR target | `docs-next`; protect it with required reviews and checks |
+
+Do not change GitHub Pages to publish source files from `docs-next`. The website build still writes its generated output to `gh-pages`. The branch change does not change the canonical OpenAPI URL in `openfga/api`, which continues to use that repository's `main`.
+
+### Outstanding workflow owner actions
+
+The migration handoff does **not** implement the branch-specific GitHub Actions changes below. The upstream new-blog-only link-check change is retained, alongside native external-link coverage. Owners must complete the remaining configuration separately before relying on production publishing or scheduled updates:
+
+| Workflow | Required owner action |
+| --- | --- |
+| `deploy.yml` | Select `docs-next` for production pushes and approved manual runs, add a publication hold and branch guard, and serialize production publishes. Keep output on `gh-pages`. |
+| Old `main` copy of `deploy.yml` | Prevent its push/manual runs from overwriting production. A change merged only into `docs-next` cannot change the workflow still on `main`. |
+| `checks.yaml`, `test-deploy.yml` | Cover PRs targeting `docs-next`, retaining appropriate `main` coverage. |
+| `mintlify-quality.yml` | Cover `docs-next` PRs and pushes rather than relying on the temporary `poc/mintlify-native` filter. |
+| `scorecard.yml` | Include `docs-next` pushes; keep its default-branch restriction for publishing results. |
+| `update-docs.yml` | Ensure checkout matches the default-branch PR base, guard manual execution from unintended refs, and retarget existing updater PRs. |
+| `update-api-samples.yml` | Fix the four job-level `${{ runner.temp }}` expressions: GitHub rejects this context before jobs start. Initialize paths in a step with `$RUNNER_TEMP` and `$GITHUB_ENV`, update the regression expectations, and guard unintended manual refs. |
+
+Both updaters already derive new PR bases from the repository's default branch; the API updater also explicitly checks out that branch. Scheduled workflows follow the new default branch, but changing the default does not disable the old `main` push/manual publisher. The website preview workflow already accepts all PR bases and retains its non-draft, same-repository restrictions.
+
+Hold publishing before either merging or changing the default branch, and drain or cancel in-flight and queued deployment runs. The checked-in workflow has no publication gate; setting an arbitrary repository variable alone will not stop it. Record the owner-managed hold and release mechanism. During the temporary period, route new contributions to `docs-next` and bring any remaining `main` website/dependency fixes into it before expecting those changes in production.
+
 ## Mintlify owner actions
 
 Keep the project directory `/docs-site` and upstream `https://fga.mintlify.site`. Configure the public hostname as `openfga.dev` with no deployment-wide base path because content already has `/docs` and `/api/service` prefixes. In the dashboard's combined domain/path field, enter `openfga.dev`, not `openfga.dev/docs`. The latter mounts the entire deployment under another `/docs`, producing `/docs/docs/...` and `/docs/api/service/...`. Keep the repository directory and content paths unchanged.
+
+At the approved release step, select `docs-next` in Git Settings for the existing project. Confirm editor-created PRs and automatic previews use the selected deployment branch; no replacement project or upstream hostname is needed.
 
 The dashboard's generated Cloudflare example may appear only when a subpath is entered. That example is not required to deploy the repository's split-site Worker, and its docs-only routing is not a substitute for this implementation. Saving a custom domain configures Mintlify's deployment; public traffic still follows the existing DNS and Cloudflare routing.
 
@@ -143,7 +177,7 @@ The dashboard's generated Cloudflare example may appear only when a subpath is e
 
 Treat DNS routing and provider verification separately. The Worker connects to the TLS-protected `fga.mintlify.site` origin while visitors use the existing Cloudflare HTTPS endpoint for `openfga.dev`. The dashboard's `_cf-custom-hostname` and `_acme-challenge` TXT records concern domain ownership and certificate authorization, not URL-path routing. Confirm which records and renewal arrangements Mintlify requires for this proxied setup with the infrastructure owner; use the complete provider-issued values and preserve existing verification records. Native pages rendering successfully does not prove that verification can be omitted. If the dashboard requires an apex-origin replacement to complete setup, resolve the proxy-verification flow with Mintlify rather than repointing the website or disabling its Cloudflare proxy.
 
-The API Reference anchor explicitly sets `openapi.directory` to `api/service`; this is a generated-page directory, not the dashboard base path. Retain it when switching the connected production branch to `main` after approval. There are no API-server or OpenAPI-specification changes associated with this URL decision.
+The API Reference anchor explicitly sets `openapi.directory` to `api/service`; this is a generated-page directory, not the dashboard base path. Retain it when switching the connected production branch to `docs-next` after approval. There are no API-server or OpenAPI-specification changes associated with this URL decision.
 
 The repository sets the public canonical base and `seo.indexing: all` because its section selectors use hidden anchors. After a domain/base-path change finishes rebuilding, verify `/docs/fga`, `/api/service/stores/list-all-stores`, and the complete discovery inventory on `fga.mintlify.site` before activating routing. The index must retain `/docs/...` for articles and `/api/service/...` for operations; merely removing an extra prefix from API links is insufficient. Do not substitute `fga.mintlify.app`, change the source routes to fit an incorrect index, or weaken acceptance to hide inconsistent provider output.
 
@@ -186,14 +220,14 @@ Before the change window, save:
 
 ### Production release sequence
 
-The unchanged [website deployment workflow](../../.github/workflows/deploy.yml) runs on main pushes, manual dispatch, and a schedule. The migration PR removes the old docs and Swagger source, so its website build no longer publishes them. Use an owner-approved publication hold for this sequence; the PR does not add an automated deployment gate.
+The checked-in [website deployment workflow](../../.github/workflows/deploy.yml) still runs on main pushes, manual dispatch, and a schedule. The migration removes the old docs and Swagger source, so its website build no longer publishes them. Complete the [workflow owner actions](#outstanding-workflow-owner-actions) before automatic production publication. Use an owner-approved publication hold for this sequence; the PR does not add an automated deployment gate.
 
-1. **Clear pre-merge gates.** Obtain required reviews, provider confirmation, successful source-matching native acceptance, and owner agreement on activation and rollback. A successful Mintlify build alone does not accept discovery or the proxy configuration.
-2. **Hold website publishing.** Save the rollback material above and prevent push, scheduled, and manual publishing during the window. Confirm no existing or queued deployment can publish while the hold is active.
-3. **Merge and deploy Mintlify.** Keep the website hold active. Merge the reviewed revision, switch the connected Mintlify production branch to `main`, and wait for its deployment. Keep the repository directory, domain, and route prefixes unchanged.
+1. **Review the release scope.** Obtain required content/code reviews, source checks, and owner agreement on the publication hold and rollback. Record whether this is native-host staging only or a public cutover. Public activation additionally requires provider confirmation and successful source-matching native acceptance; a successful Mintlify build alone does not accept discovery or the proxy configuration.
+2. **Hold website publishing.** Save the rollback material above and prevent push, scheduled, and manual publishing before merging or changing the default branch. Confirm no existing or queued deployment can publish while the hold is active.
+3. **Merge and deploy Mintlify.** Keep the website hold active. Merge the reviewed revision into `docs-next`, configure its branch protections, and coordinate the administrator's default-branch switch to `docs-next`. Select `docs-next` in Mintlify Git Settings and wait for its deployment. Keep the inline assets, repository directory, domain, and route prefixes unchanged.
 4. **Accept the merged native deployment.** From the merged checkout, run `npm run verify:docs-origin` again. Stop if source markers, docs/API pages, discovery, or required provider endpoints fail.
-5. **Activate the reviewed Worker.** Publish the bundled modules and attach the approved production Worker Route. Check docs and API operation pages, website fallthrough, HTTPS handling, and edge errors while the old website is still published. If these fail, restore the previous edge configuration and keep website publishing held.
-6. **Publish the website.** Release the hold and dispatch the GitHub Pages deployment for the agreed `main` revision. Confirm that the new compatibility page and composite sitemap are published, then run the public acceptance command below and complete the browser checks above. A failure after website publication requires the coordinated rollback below, not just removing the Worker route.
+5. **Activate the reviewed Worker for public cutover.** After all public-release gates are cleared, publish the bundled modules and attach the approved production Worker Route. Check docs and API operation pages, website fallthrough, HTTPS handling, and edge errors while the old website is still published. If these fail, restore the previous edge configuration and keep website publishing held.
+6. **Publish the website.** Release only the approved production publisher and dispatch the GitHub Pages deployment for the agreed `docs-next` revision. Confirm that the new compatibility page and composite sitemap are published, then run the public acceptance command below and complete the browser checks above. A failure after website publication requires the coordinated rollback below, not just removing the Worker route.
 7. **Monitor the release.** Check Worker errors, upstream failures, and request limits. Retain the rollback artifacts and leave `PERMANENT_API_REDIRECTS=false` until redirect acceptance is complete.
 
 After website publication, run from the released checkout:
@@ -202,15 +236,25 @@ After website publication, run from the released checkout:
 npm run verify:docs-proxy -- --origin https://openfga.dev
 ```
 
-Do not merge and leave the new website deployed while waiting for someone to configure routing. No separate manual deletion of legacy docs or PR revert is part of normal cutover.
+For a Mintlify-only release, stop after native acceptance and keep website publishing held; do not activate the Worker. Changing the default branch also moves scheduled runs, so it is not safe to omit the hold. Do not leave the new website deployed while waiting for routing. No separate manual deletion of legacy docs or PR revert is part of normal cutover.
 
-Code/content review can begin before these deployment gates are complete. Document unresolved gates in the PR handoff; they block merge and activation, not the request for review.
+Code/content review can begin before deployment gates are complete. A reviewed merge to `docs-next` for native-host staging is separate from public activation and requires a verified publication hold. Document unresolved provider and routing gates in the handoff; they block Worker activation and publication of the migrated website.
 
 ### Review readiness and PR handoff
 
 Ready for review requests code and content feedback; it does not authorize merge, website publication, or a traffic switch. Record the reviewed revision, relevant check results, docs/API preview links, content-preservation exceptions, and unresolved release blockers in the PR description. If hosted pages do not match that revision, state the limitation rather than presenting the preview as accepted.
 
-Request docs, frontend, and DX review, and coordinate deployment with the existing infrastructure and Mintlify owners. The website preview workflow handles `ready_for_review` while retaining its non-draft and same-repository restrictions. Keep the PR draft while implementation is incomplete, and change its state only when a maintainer chooses to request review. Do not merge until required reviews, source-matching acceptance, and a coordinated cutover/rollback plan are complete.
+Request docs, frontend, and DX review, and coordinate deployment with the existing infrastructure and Mintlify owners. The website preview workflow handles `ready_for_review` while retaining its non-draft and same-repository restrictions. Keep the PR draft while implementation is incomplete, and change its state only when a maintainer chooses to request review. Before merging, complete required reviews and source checks and confirm the publication hold, release scope, and rollback owner. Record source-matching hosted acceptance before public activation.
+
+### Returning to main
+
+Accept Mintlify LFS support through an actual LFS-backed deployment, including newly added/changed assets, rather than an ETA. Keep `docs-next` deployable until that acceptance is complete.
+
+Prepare a fresh integration branch from the latest `main` and apply the accepted migration state without merging the temporary branch's ancestry. Restore native LFS attributes and convert every native media file before creating the integration commits. Include all intervening docs, website, and dependency changes; preserve existing upstream commits already on `main`. Verify staged blobs and LFS object availability, not only a hydrated working copy.
+
+As part of that reviewed integration, replace the temporary native-index pointer prohibition with appropriate LFS object/hydration checks, retain rejection of unresolved pointers in rendered sources, and make native CI hydrate LFS media. Update contributor instructions and branch-specific workflows, regenerate the source fingerprint, and compare the hydrated site with the accepted `docs-next` release.
+
+Use the same publication hold to switch the repository default, Mintlify source, website publisher, and updater PR targets back to `main`. Verify the resulting deployments before retiring `docs-next` from active use. Do not later merge its original history wholesale or assume skipping a single asset-conversion commit excludes subsequent inline assets. Ordinary blobs remain in temporary-branch history; this procedure avoids importing that ancestry into `main`, not all repository storage growth.
 
 ## Rollback
 
@@ -218,7 +262,7 @@ Restore the saved complete website deployment and edge configuration, then purge
 
 **Removing the Worker route alone does not restore the retired Docusaurus docs.** Pause or revert the website deployment source as agreed with its owner so a scheduled publish cannot overwrite the restored artifact.
 
-If the migration has merged, an approved revert on `main` restores the legacy source for future builds; restore the corresponding Mintlify configuration and Cloudflare routing as part of that same recovery. A source revert alone is not an immediate deployment rollback: verify that the restored complete website is actually published.
+Restore the saved pre-cutover website artifact, then select an approved complete legacy source revision for any future builds. During the `docs-next` period, a revert or change on `main` alone does not change the active deployment source. Record and restore default-branch, publisher, Mintlify, and Cloudflare settings together as appropriate. Do not re-enable old scheduled/push publishers until their source and behavior have been checked. A source or settings change alone is not an immediate rollback: verify the complete legacy website is actually published.
 
 ## References
 

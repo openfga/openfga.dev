@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { lstat, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -10,6 +10,33 @@ import { format, resolveConfig } from 'prettier';
 export const fingerprintMeta = 'openfga:docs-source-sha256';
 const repositoryRoot = new URL('../', import.meta.url);
 const configUrl = new URL('docs-site/docs.json', repositoryRoot);
+const lfsVersion = 'version https://git-lfs.github.com/spec/v1';
+
+function assertNativeBytes(path, content, location) {
+  assert.notEqual(
+    content.subarray(0, 128).toString().split(/\r?\n/u)[0],
+    lfsVersion,
+    `Native source is a Git LFS pointer in the ${location}: ${path}. Hydrate and stage the actual bytes; Mintlify currently requires ordinary Git assets.`,
+  );
+}
+
+function checkIndexedNativeBytes(root) {
+  // A hydrated working tree can hide a pointer that Mintlify will read from Git.
+  const matches = spawnSync(
+    'git',
+    ['grep', '--cached', '--text', '--fixed-strings', '--files-with-matches', '--null', '--', lfsVersion, 'docs-site'],
+    { cwd: root, encoding: 'utf8' },
+  );
+  assert.ifError(matches.error);
+  assert.ok(
+    matches.status === 0 || matches.status === 1,
+    `Cannot inspect native Git blobs: ${matches.stderr || `git grep exited ${matches.status}`}`,
+  );
+  for (const path of matches.stdout.split('\0').filter(Boolean)) {
+    const content = execFileSync('git', ['show', `:${path}`], { cwd: root, maxBuffer: 16 * 1024 * 1024 });
+    assertNativeBytes(path, content, 'Git index');
+  }
+}
 
 export function nativeSourceFingerprint(sources) {
   assert.ok(sources.has('docs.json'), 'Native source inventory must include docs.json');
@@ -38,20 +65,23 @@ export function checkNativeFingerprint(sources) {
   return expected;
 }
 
-export async function readNativeSources() {
+export async function readNativeSources(root = fileURLToPath(repositoryRoot)) {
+  checkIndexedNativeBytes(root);
   const paths = execFileSync(
     'git',
     ['ls-files', '--cached', '--others', '--exclude-standard', '-z', '--', 'docs-site'],
-    { cwd: repositoryRoot, encoding: 'utf8' },
+    { cwd: root, encoding: 'utf8' },
   )
     .split('\0')
     .filter(Boolean);
   return new Map(
     await Promise.all(
       [...new Set(paths)].map(async (path) => {
-        const filepath = join(fileURLToPath(repositoryRoot), path);
+        const filepath = join(root, path);
         assert.ok((await lstat(filepath)).isFile(), `Native source must be an ordinary file: ${path}`);
-        return [path.slice('docs-site/'.length), await readFile(filepath)];
+        const content = await readFile(filepath);
+        assertNativeBytes(path, content, 'working tree');
+        return [path.slice('docs-site/'.length), content];
       }),
     ),
   );
