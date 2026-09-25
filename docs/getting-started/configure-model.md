@@ -3,7 +3,7 @@ title: "Configure Authorization Model"
 description: "Configuring authorization model for a store"
 canonical: "https://openfga.dev/docs/getting-started/configure-model"
 content_type: "documentation"
-last_updated: "2026-09-25T02:09:04.000Z"
+last_updated: "2026-09-25T05:12:42.000Z"
 ---
 
 # Configure Authorization Model for a Store

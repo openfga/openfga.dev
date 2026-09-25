@@ -3,7 +3,7 @@ title: "Create a Store"
 description: "Creating a store"
 canonical: "https://openfga.dev/docs/getting-started/create-store"
 content_type: "documentation"
-last_updated: "2026-09-25T02:09:04.000Z"
+last_updated: "2026-09-25T05:12:42.000Z"
 ---
 
 # Create a Store

@@ -3,7 +3,7 @@ title: "Docker Case Study"
 description: "How Docker migrated to OpenFGA with a parallel-run strategy and now uses ReBAC to centralize permissions across products."
 canonical: "https://openfga.dev/docs/adopters/docker"
 content_type: "documentation"
-last_updated: "2026-09-25T02:09:04.000Z"
+last_updated: "2026-09-25T05:12:42.000Z"
 ---
 
 # Docker: Centralizing permissions with ReBAC

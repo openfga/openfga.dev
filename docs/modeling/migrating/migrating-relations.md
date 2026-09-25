@@ -3,7 +3,7 @@ title: "Migrating Relations"
 description: "Migrating relations"
 canonical: "https://openfga.dev/docs/modeling/migrating/migrating-relations"
 content_type: "documentation"
-last_updated: "2026-09-25T02:09:04.000Z"
+last_updated: "2026-09-25T05:12:42.000Z"
 ---
 
 # Migrating Relations
