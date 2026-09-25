@@ -116,7 +116,7 @@ jobs:
             if [[ -n "$base_path" ]]; then
               permalink="${permalink#"$base_path"}"
             fi
-            printf 'build%s.html\nbuild%s.html.html\n' "$permalink" "$permalink" >> "$new_post_pages"
+            printf 'build%s.html\n' "$permalink" >> "$new_post_pages"
           done
 
           missing_posts="$(grep -Fvx -f "$known_posts" "$added_posts" || true)"
