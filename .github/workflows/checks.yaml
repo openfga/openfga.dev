@@ -50,17 +50,19 @@ jobs:
 
   # Check links against the *built* site rather than raw Markdown.
   #
-  # Internal links (/docs/…, ./…, ../…) resolve to the generated pages in
-  # ./build, so a link to a page added in the same PR is validated instead of
-  # skipped — and it can never break just because a new page was added.
-  # External links are checked over the network; excluded hosts live in
-  # lychee.toml. (Internal routing is additionally enforced by Docusaurus'
-  # `onBrokenLinks: 'throw'` during the build step below.)
+  # Website links resolve against ./build. Before Lychee runs, npm run build
+  # validates cross-site docs/API links against native pages, anchors, redirects
+  # and canonical OpenAPI operations from this checkout. It also extracts native
+  # external links, preserving their network coverage after legacy docs removal.
+  # Generated blog pages are omitted from the inputs, then posts added by the PR
+  # are checked directly.
   link-check:
     runs-on: ubuntu-latest
     steps:
       - name: Cached LFS checkout
         uses: nschloe/action-cached-lfs-checkout@385a8ecc719e50b8c71af6ab01a624b486b7c3bc
+        with:
+          fetch-depth: 0
 
       - name: Set up node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
@@ -75,6 +77,62 @@ jobs:
       - name: Build site
         run: npm run build
 
+      - name: Select link-check inputs
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          added_posts="$(mktemp)"
+          known_posts="$(mktemp)"
+          new_post_pages="$(mktemp)"
+          trap 'rm -f "$added_posts" "$known_posts" "$new_post_pages"' EXIT
+
+          git diff --name-only --diff-filter=A "${BASE_SHA}...${HEAD_SHA}" -- blog \
+            | awk '/^blog\/.+\.mdx?$/' > "$added_posts"
+
+          base_path="${BASE_URL:-/}"
+          base_path="/${base_path#/}"
+          base_path="${base_path%/}"
+          metadata_files=(.docusaurus/docusaurus-plugin-content-blog/default/site-blog-*.json)
+
+          if [[ ! -e "${metadata_files[0]}" ]]; then
+            echo "No generated blog metadata found" >&2
+            exit 1
+          fi
+
+          for metadata in "${metadata_files[@]}"; do
+            source="$(jq -er '.source | sub("^@site/"; "")' "$metadata")"
+            permalink="$(jq -er '.permalink' "$metadata")"
+            echo "$source" >> "$known_posts"
+
+            if ! grep -Fxq "$source" "$added_posts"; then
+              continue
+            fi
+
+            if [[ -n "$base_path" ]]; then
+              permalink="${permalink#"$base_path"}"
+            fi
+            printf 'build%s.html\n' "$permalink" >> "$new_post_pages"
+          done
+
+          missing_posts="$(grep -Fvx -f "$known_posts" "$added_posts" || true)"
+          if [[ -n "$missing_posts" ]]; then
+            echo "No generated blog metadata found for:" >&2
+            echo "$missing_posts" >&2
+            exit 1
+          fi
+
+          find build -type f -name '*.html' -print \
+            | sort \
+            | awk '!/^build\/blog([.]|\/|$)/' > build/lychee-inputs.txt
+          cat "$new_post_pages" >> build/lychee-inputs.txt
+          sort -u -o build/lychee-inputs.txt build/lychee-inputs.txt
+
+          echo "Selected $(wc -l < build/lychee-inputs.txt) HTML files; included $(wc -l < "$added_posts") new blog post(s)."
+
       - name: Check links
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:
@@ -82,8 +140,12 @@ jobs:
             --config lychee.toml
             --root-dir "${{ github.workspace }}/build"
             --remap "https://openfga\\.dev/(.*) file://${{ github.workspace }}/build/\$1"
-            --exclude "^file://${{ github.workspace }}/build/api/service"
+            --exclude "^file://${{ github.workspace }}/build/docs(?:/|$)"
+            --exclude "^file://${{ github.workspace }}/build/api/?(?:[?#].*)?$"
+            --exclude "^file://${{ github.workspace }}/build/api/service(?:/|$)"
+            --exclude "^file://${{ github.workspace }}/build/api-reference(?:/|$)"
             --exclude "^file://${{ github.workspace }}/build/search"
             --no-progress
-            "build/**/*.html"
+            --files-from build/lychee-inputs.txt
+            ".link-check/native-external-links.md"
           fail: true

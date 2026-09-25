@@ -1,0 +1,27 @@
+---
+title: "Create a Store"
+description: "Creating a store"
+---
+
+import { CreateStoreViewer } from '/snippets/CreateStoreViewer.jsx';
+
+A [store](/docs/concepts#what-is-a-store) is a OpenFGA entity that contains your authorization data. You will need to create a store in OpenFGA before adding an [authorization model](/docs/concepts#what-is-an-authorization-model) and [relationship tuples](/docs/concepts#what-is-a-relationship-tuple) to it.
+
+This article explains how to set up an OpenFGA store.
+
+## Step by step
+
+Deploy an OpenFGA server, [install an SDK or the CLI](/docs/getting-started/install-sdk),
+and set `FGA_API_URL` to your server's URL. Creating a store does not require
+`FGA_STORE_ID` or `FGA_MODEL_ID`.
+
+These examples use a server with authentication disabled. If your server requires
+authentication, configure the credentials described in
+[Setup SDK Client](/docs/getting-started/setup-sdk-client).
+
+<CreateStoreViewer storeName="FGA Demo Store" />
+
+```bash
+# To create the store and directly put the Store ID into an env variable:
+# export FGA_STORE_ID=$(fga store create --name "FGA Demo Store" | jq -r .store.id)
+```

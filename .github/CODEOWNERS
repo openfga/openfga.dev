@@ -1,7 +1,7 @@
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 * @openfga/frontend @openfga/dx
-docs/ @openfga/docs
+docs-site/docs/ @openfga/docs
 blog/ @openfga/docs @openfga/community
 src/components/Docs @openfga/frontend @openfga/dx
 README.md @openfga/product @openfga/community
-docs/content/community.mdx @openfga/product @openfga/community
+src/pages/community.mdx @openfga/product @openfga/community

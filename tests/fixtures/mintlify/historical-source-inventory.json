@@ -1,0 +1,564 @@
+{
+  "provenance": {
+    "revision": "85bde5e19f7fa0b8687732c33c4f7c3a39fd83e0",
+    "sourceRoot": "docs/content",
+    "method": "Extracted from legacy source, never from native output."
+  },
+  "pages": [
+    {
+      "source": "adopters/agicap.mdx",
+      "slug": "/adopters/agicap",
+      "sha256": "f37b8a44cdcb345cdae8fd966e93d5fb32e35e0a0c074b470e6713ce61b3cc21"
+    },
+    {
+      "source": "adopters/docker.mdx",
+      "slug": "/adopters/docker",
+      "sha256": "a6ccbfdac94f699e23972f4755672c6428f3b62cf302d9479a1daf09ca55cbf1"
+    },
+    {
+      "source": "adopters/grafana.mdx",
+      "slug": "/adopters/grafana",
+      "sha256": "1e8cf9e549c8489f87ee9bede87efe0d521c294358ac0fe473c91f1206f6cf54"
+    },
+    {
+      "source": "adopters/headspace.mdx",
+      "slug": "/adopters/headspace",
+      "sha256": "55f4c96d80673ef5c2c6fd6de8dca754f2eeb73c2fc92977702c524065892e4b"
+    },
+    {
+      "source": "adopters/openlane.mdx",
+      "slug": "/adopters/openlane",
+      "sha256": "f7b00285fe70e40eee7bc3a4ee52c9fe21abd44f2cf519f667f97ec1a1ddcf61"
+    },
+    {
+      "source": "adopters/overview.mdx",
+      "slug": "/adopters",
+      "sha256": "697fbc5a02d24b6730bff3e7e11c16c38aa21775bd5a0bba33b24e2c73c69385"
+    },
+    {
+      "source": "adopters/read-ai.mdx",
+      "slug": "/adopters/read-ai",
+      "sha256": "fcb86691f6c620f5a80493845c4188b8f8a0e6276616604a59ddba6acd34ae74"
+    },
+    {
+      "source": "adopters/vitrolife.mdx",
+      "slug": "/adopters/vitrolife",
+      "sha256": "5e63f3cf747c252ebb1d1aaca10864b850790fc34549d87b1dfcf1613ceae087"
+    },
+    {
+      "source": "adopters/zuplo.mdx",
+      "slug": "/adopters/zuplo",
+      "sha256": "12d9cdc0550d1cd299c3b74919208d7c3448f80fd07b17f89c8f4e28db66a5b5"
+    },
+    {
+      "source": "authorization-concepts.mdx",
+      "slug": "/authorization-concepts",
+      "sha256": "be5f0865c540e4fbd655b623ed333c5df0088dd9d75a6119113ad93746dd95c8"
+    },
+    {
+      "source": "best-practices/adoption-patterns.mdx",
+      "slug": "/best-practices/adoption-patterns",
+      "sha256": "1846180e8d16c6b8a83fee4f57c43b2c1c4755ff6334db6462442096a941fbd1"
+    },
+    {
+      "source": "best-practices/modeling-abac.mdx",
+      "slug": "/best-practices/modeling-abac",
+      "sha256": "e5741b42aef700209ebea94411babc7e2838752380e7901dd0e9de1cf2aafe6a"
+    },
+    {
+      "source": "best-practices/modeling-design-principles.mdx",
+      "slug": "/best-practices/modeling-design-principles",
+      "sha256": "38108b49d6730ae0d3ff53fd00601ba399f2d13d6f60d218a27dc48d00fb52cf"
+    },
+    {
+      "source": "best-practices/modeling-roles.mdx",
+      "slug": "/best-practices/modeling-roles",
+      "sha256": "bae92c5d0f024606ad98b4a8c9a17c2ed72f98f1344874e7b2a9300f6d62e821"
+    },
+    {
+      "source": "best-practices/overview.mdx",
+      "slug": "/best-practices",
+      "sha256": "95943b4b203a1fc49865f48a309b11c176d3486cb99f4129aa58b54d8f04f365"
+    },
+    {
+      "source": "best-practices/running-in-production.mdx",
+      "slug": "/best-practices/running-in-production",
+      "sha256": "844c4b5c609c0cdc3caaa8632a198cf7fa76be50bc2413a6caaf7fdb91a7ae92"
+    },
+    {
+      "source": "best-practices/source-of-truth.mdx",
+      "slug": "/best-practices/source-of-truth",
+      "sha256": "1f7df57f658d8ce064a5b84628170cf32ea4e21205f1f4dc11067dbdab9797a1"
+    },
+    {
+      "source": "community.mdx",
+      "slug": "/community",
+      "sha256": "9fca9a05a7531e1b5710ccc057dfc98870f2dbfa86069b02c53603817c95341e"
+    },
+    {
+      "source": "concepts.mdx",
+      "slug": "/concepts",
+      "sha256": "9cbaa90736b8485c6fcaf44d569f2cf5a59a78310cefa865ef10d63f3cec3249"
+    },
+    {
+      "source": "configuration-language.mdx",
+      "slug": "/configuration-language",
+      "sha256": "0be20c1793a4a115610ce27f8cabe5f2736e65303d9d0a0ca17308e1519a1812"
+    },
+    {
+      "source": "getting-started/cli.mdx",
+      "slug": "/getting-started/cli",
+      "sha256": "6e3f6ebaeeb5c2728064b3538ee7a298577d884c24cca9b0e3f2b49e08360cd6"
+    },
+    {
+      "source": "getting-started/configure-model.mdx",
+      "slug": "/getting-started/configure-model",
+      "sha256": "525dc88b34548f131c7ef7bce301d39bf27403b128e35a3f7e084fcd78dd09f4"
+    },
+    {
+      "source": "getting-started/configure-telemetry.mdx",
+      "slug": "/getting-started/configure-telemetry",
+      "sha256": "b4f6f27c3f113894b05e683cb4532d5ec9fb6235896c2456be5cba24404fe75a"
+    },
+    {
+      "source": "getting-started/create-store.mdx",
+      "slug": "/getting-started/create-store",
+      "sha256": "14ace3c1f262202e4b33b10db9f744db915635a64f7bf09816dcad1303c44925"
+    },
+    {
+      "source": "getting-started/framework.mdx",
+      "slug": "/getting-started/framework",
+      "sha256": "fc88060c274a2ab524c3d057306745815528071e5ed830b417a65b3e73154927"
+    },
+    {
+      "source": "getting-started/immutable-models.mdx",
+      "slug": "/getting-started/immutable-models",
+      "sha256": "c8868cdaf4fe8d5c17a6b8ff41da6388cc0e7696fdb888b3de0eb76f2f1b43de"
+    },
+    {
+      "source": "getting-started/install-sdk.mdx",
+      "slug": "/getting-started/install-sdk",
+      "sha256": "d27ce6c400e28cf706c791e4d346ec3f9ec375c272b27c61398390b85727e70b"
+    },
+    {
+      "source": "getting-started/overview.mdx",
+      "slug": "/getting-started",
+      "sha256": "4ff8f9df144bb154e6527f0c83310423ce632df70b1b0c945ddae26725e8477b"
+    },
+    {
+      "source": "getting-started/perform-check.mdx",
+      "slug": "/getting-started/perform-check",
+      "sha256": "c54e81abb8256b7968c309235f9c68bd5e5e4fb0a54cf6b07d8b44c9db6ded70"
+    },
+    {
+      "source": "getting-started/perform-list-objects.mdx",
+      "slug": "/getting-started/perform-list-objects",
+      "sha256": "efdefe75cae9ef1a49c0d90304ea95e152806403a0e432a3845a323ce22df0a9"
+    },
+    {
+      "source": "getting-started/perform-list-users.mdx",
+      "slug": "/getting-started/perform-list-users",
+      "sha256": "480254981a730fbe9997581b39b18c7e40625218fe6c83b837097db253748660"
+    },
+    {
+      "source": "getting-started/setup-openfga/access-control.mdx",
+      "slug": "/getting-started/setup-openfga/access-control",
+      "sha256": "77c7fcd7bbdb423ac78486755cdcbdce391d01fc586fa094bd63c26db277a4bb"
+    },
+    {
+      "source": "getting-started/setup-openfga/configuration.mdx",
+      "slug": "/getting-started/setup-openfga/configuration",
+      "sha256": "905e47dd903b0de5c08a6474cb00df23c22d219c202b3666823fce1a674d3780"
+    },
+    {
+      "source": "getting-started/setup-openfga/configure-openfga.mdx",
+      "slug": "/getting-started/setup-openfga/configure-openfga",
+      "sha256": "35e873c471d0f1664f6c6660f296076fddf5482a0af23c3b0ec9559f1cc6c41d"
+    },
+    {
+      "source": "getting-started/setup-openfga/docker-setup.mdx",
+      "slug": "/getting-started/setup-openfga/docker",
+      "sha256": "6f57bad64e375c68b84a97ad1dff1b4311d60f42799e6a08785a6bf0d2aeaa0f"
+    },
+    {
+      "source": "getting-started/setup-openfga/kubernetes-setup.mdx",
+      "slug": "/getting-started/setup-openfga/kubernetes",
+      "sha256": "9dc010986d3b21bebb9b6faa757142201af237622ddba62a482509c3fda1c458"
+    },
+    {
+      "source": "getting-started/setup-openfga/overview.mdx",
+      "slug": "/getting-started/setup-openfga/overview",
+      "sha256": "9c123f35cbc8bcf330719c147e69a6b5e5000c249ba795c147220934bdaaa853"
+    },
+    {
+      "source": "getting-started/setup-openfga/playground.mdx",
+      "slug": "/getting-started/setup-openfga/playground",
+      "sha256": "f55ac3b246c274afc479ce072395d77acee06a814860d54772df808ec107ca5c"
+    },
+    {
+      "source": "getting-started/setup-openfga/reporting-runtime-issues.mdx",
+      "slug": "/getting-started/setup-openfga/reporting-runtime-issues",
+      "sha256": "7832a783a49137489f426db5a771456d6457570967c1e9264af1e8f36109225e"
+    },
+    {
+      "source": "getting-started/setup-sdk-client.mdx",
+      "slug": "/getting-started/setup-sdk-client",
+      "sha256": "2598c581888e3b9287e1733083eec664b36c1f21e9bd17d28774c98d896e20f8"
+    },
+    {
+      "source": "getting-started/tuples-api-best-practices.mdx",
+      "slug": "/getting-started/tuples-api-best-practices",
+      "sha256": "836527b129589230585af63c3e76126b07e263b295986cc7e149610eeb87d137"
+    },
+    {
+      "source": "getting-started/update-tuples.mdx",
+      "slug": "/getting-started/update-tuples",
+      "sha256": "85e6ef0569a5430ccdf2b4c15c985f3224f3b9a4dca511375c337fcc9cd0991e"
+    },
+    {
+      "source": "industries/applicant-tracking-system.mdx",
+      "slug": "/industries/applicant-tracking-system",
+      "sha256": "fdae3b3a2ce15c8c978c1c72785bead858587f38e94cd01a385c6a25c731c0aa"
+    },
+    {
+      "source": "industries/banking.mdx",
+      "slug": "/industries/banking",
+      "sha256": "632da23b20799be5cb7905395affb3065aff3215d9e0032cb9235d75c2866bac"
+    },
+    {
+      "source": "industries/crm.mdx",
+      "slug": "/industries/crm",
+      "sha256": "9a87d68a7374cd1206b96db19a416f985961d68961ff22f5f4faf9d545434121"
+    },
+    {
+      "source": "industries/ecommerce.mdx",
+      "slug": "/industries/ecommerce",
+      "sha256": "cb11019d0b53ebb30b530d17b6663c098f66e60e8df63b08d1d6ceb9c49f7463"
+    },
+    {
+      "source": "industries/healthcare.mdx",
+      "slug": "/industries/healthcare",
+      "sha256": "95fefca2f6800bcdad822170ac780ba47e545b7b0911c1036bc8582586ea233d"
+    },
+    {
+      "source": "industries/human-resources.mdx",
+      "slug": "/industries/human-resources",
+      "sha256": "4596be565cf4e43a954c21c188f79b8b328362c7d1b862afe409bce9a904838f"
+    },
+    {
+      "source": "industries/lms.mdx",
+      "slug": "/industries/lms",
+      "sha256": "c5da6205fcc8384cb8962a97d21c9a74e16d09f01b821a7c272bac57f705b3e0"
+    },
+    {
+      "source": "industries/overview.mdx",
+      "slug": "/industries",
+      "sha256": "39ded435b4abbae5e79c2cc959b6d6d6cccaafcea6b9dd1e66eec122e4a68706"
+    },
+    {
+      "source": "interacting/authzen.mdx",
+      "slug": "/interacting/authzen",
+      "sha256": "e9cc84839150d82d634c76746ffd90e1eac2d8d3f757f8664990b8d10475ea17"
+    },
+    {
+      "source": "interacting/consistency.mdx",
+      "slug": "/interacting/consistency",
+      "sha256": "faec3c4c1b36c2c8af6de99ec145bb76d181fe3620791e225ad4760aed3efd61"
+    },
+    {
+      "source": "interacting/contextual-tuples.mdx",
+      "slug": "/interacting/contextual-tuples",
+      "sha256": "ce1970a632271ba67c096d3515ae85f4b6eac03b2ccbb86dd44ad29c5c6023f3"
+    },
+    {
+      "source": "interacting/managing-group-access.mdx",
+      "slug": "/interacting/managing-group-access",
+      "sha256": "62645c88bc19f403dc2ced78c0aa85f4b3f432bdb0f2bc4e10a0a3a8bc583fff"
+    },
+    {
+      "source": "interacting/managing-group-membership.mdx",
+      "slug": "/interacting/managing-group-membership",
+      "sha256": "16f1ee6582af239babf079b07263c75892fe04cb177afd9e7aa963a67c10d7f4"
+    },
+    {
+      "source": "interacting/managing-relationships-between-objects.mdx",
+      "slug": "/interacting/managing-relationships-between-objects",
+      "sha256": "7a489ed90a0303d7a1a50f8f2546c4c576c92e93be3b3a22e1a1eaa544e096d4"
+    },
+    {
+      "source": "interacting/managing-user-access.mdx",
+      "slug": "/interacting/managing-user-access",
+      "sha256": "0512064c1ba0a6d0d85bd72629bde92171aec578362f8bee201e7dac0933bc4c"
+    },
+    {
+      "source": "interacting/overview.mdx",
+      "slug": "/interacting",
+      "sha256": "ca5416a0775683965853c6090a784a25cf1568219e13f78eff4132a8fcce155b"
+    },
+    {
+      "source": "interacting/read-tuple-changes.mdx",
+      "slug": "/interacting/read-tuple-changes",
+      "sha256": "d75493f66f6ee2bc7966bddd45cd8abc0557a4596996cdfa06689c729133063c"
+    },
+    {
+      "source": "interacting/relationship-queries.mdx",
+      "slug": "/interacting/relationship-queries",
+      "sha256": "54a67a8cfdd6f15f6178cb6f9af4e48979bb73d2a078400656dbdcde9bb3dbb2"
+    },
+    {
+      "source": "interacting/search-with-permissions.mdx",
+      "slug": "/interacting/search-with-permissions",
+      "sha256": "7038feebc2f6b52b02f59155b210a781c52420d82cb07d884572fbfb2a020f7a"
+    },
+    {
+      "source": "intro.mdx",
+      "slug": "/fga",
+      "sha256": "01847570dcab1030d14d6627bf69aadfd118dbb840c1e86a26e4a77a23603802"
+    },
+    {
+      "source": "learn/abac-vs-rebac.mdx",
+      "slug": "/learn/abac-vs-rebac",
+      "sha256": "b966cc9a306ff0b43d57f4a6d715b032dda5b006e8016d43023369745d21b7fb"
+    },
+    {
+      "source": "learn/fine-grained-authorization.mdx",
+      "slug": "/learn/fine-grained-authorization",
+      "sha256": "a8ed56fcbe3ad81e2dce707ff776b61b99b13e29aa7d5110714a7218c2a82120"
+    },
+    {
+      "source": "learn/overview.mdx",
+      "slug": "/learn",
+      "sha256": "0489bc0f80fa3a59ce13684ef1a5f55d39cc86ce0d0820c05cb59f7201134608"
+    },
+    {
+      "source": "learn/policy-engine.mdx",
+      "slug": "/learn/policy-engine",
+      "sha256": "59f380075d0660e46df0585c8812c23c10112fbae2dce8dee22e931ad777a2fe"
+    },
+    {
+      "source": "learn/rbac-vs-rebac.mdx",
+      "slug": "/learn/rbac-vs-rebac",
+      "sha256": "b632b77e7ca8fa1839ac84f67d2e5260e7b66a876c76d770ac65b063bcd5559f"
+    },
+    {
+      "source": "learn/rebac.mdx",
+      "slug": "/learn/rebac",
+      "sha256": "b21a03b93443816aa2109d2fd3064b3c949f5af72425accd1b99a0d59daeb75c"
+    },
+    {
+      "source": "learn/zanzibar.mdx",
+      "slug": "/learn/zanzibar",
+      "sha256": "9cb7ca5c89a88c9036a596f356a7166d995b4fb61aba168f537131249375e403"
+    },
+    {
+      "source": "modeling/advanced/entitlements.mdx",
+      "slug": "/modeling/advanced/entitlements",
+      "sha256": "ec57ddf19e8c1bced7b901babd7b015055e29e053f712f8ec0b68d810e290bc5"
+    },
+    {
+      "source": "modeling/advanced/gdrive.mdx",
+      "slug": "/modeling/advanced/gdrive",
+      "sha256": "abe4af1a49ea4691195eeb2d32b5b57af2b45a034966cd67c8d7fe79b1f4928c"
+    },
+    {
+      "source": "modeling/advanced/github.mdx",
+      "slug": "/modeling/advanced/github",
+      "sha256": "d21cd0a39cabf4b0e7360ec70ced3e2beed9b135f359a0264d81f0168c4b10ab"
+    },
+    {
+      "source": "modeling/advanced/iot.mdx",
+      "slug": "/modeling/advanced/iot",
+      "sha256": "df2999a3ea6c828f9b10c181f06057fb506f22b2b43f89b53762c11bdfbfae92"
+    },
+    {
+      "source": "modeling/advanced/overview.mdx",
+      "slug": "/modeling/advanced",
+      "sha256": "8b510fa305ecd08280f7bb71a02c29307b4af25bc3d7860026f61cc854de0286"
+    },
+    {
+      "source": "modeling/advanced/slack.mdx",
+      "slug": "/modeling/advanced/slack",
+      "sha256": "c0079f247558d4164a21389e9ac4e2a82c267281f16d31f669930dec94bafc7c"
+    },
+    {
+      "source": "modeling/agents/agents-as-principals.mdx",
+      "slug": "/modeling/agents/agents-as-principals",
+      "sha256": "9143f505be01e3d84ebe95cf81aa608748747bb60005cc79a22d6b5f99069a71"
+    },
+    {
+      "source": "modeling/agents/mcp-authorization.mdx",
+      "slug": "/modeling/agents/mcp-authorization",
+      "sha256": "ab27bd5875b7c0d6937c962479766bfe130468115aa51e584a2a8a679c9edc7f"
+    },
+    {
+      "source": "modeling/agents/overview.mdx",
+      "slug": "/modeling/agents",
+      "sha256": "73aaa75e7fe72ecff015bfb3125017505221e1ede65e8d5d5af2c63d891a22c1"
+    },
+    {
+      "source": "modeling/agents/rag-authorization.mdx",
+      "slug": "/modeling/agents/rag-authorization",
+      "sha256": "499f5847ee02637aefb2813798ac89d27108d397aaccd2224eaa49dcd38c1334"
+    },
+    {
+      "source": "modeling/agents/task-based-authorization.mdx",
+      "slug": "/modeling/agents/task-based-authorization",
+      "sha256": "d41b1664a064fcefc5649a40a9ee933fc84c1572e2abf8df8f3465538dccbc34"
+    },
+    {
+      "source": "modeling/blocklists.mdx",
+      "slug": "/modeling/blocklists",
+      "sha256": "d0a2415552c14ad579143cb3a035299fbf8a30114b9cd3d9631b4b1a57e4331a"
+    },
+    {
+      "source": "modeling/building-blocks/concentric-relationships.mdx",
+      "slug": "/modeling/building-blocks/concentric-relationships",
+      "sha256": "b8cf7321aef05a1d7b3d82fae791a86a659cd68d1dc11126de0dede9f19fcab8"
+    },
+    {
+      "source": "modeling/building-blocks/direct-relationships.mdx",
+      "slug": "/modeling/building-blocks/direct-relationships",
+      "sha256": "04db395292845f769bc7547d7550dcda45d02ffba86dae304170b17e01d9b395"
+    },
+    {
+      "source": "modeling/building-blocks/object-to-object-relationships.mdx",
+      "slug": "/modeling/building-blocks/object-to-object-relationships",
+      "sha256": "b4c0795786c3328f99827f96e031c14f347736139a9f8ebac7ac4059b421ecbe"
+    },
+    {
+      "source": "modeling/building-blocks/overview.mdx",
+      "slug": "/modeling/building-blocks",
+      "sha256": "d2a0f0ec6a40fa22370188a845406f370fd839ea354bb6c6f867a18b2c2529c3"
+    },
+    {
+      "source": "modeling/building-blocks/usersets.mdx",
+      "slug": "/modeling/building-blocks/usersets",
+      "sha256": "7f46e24502e456276d61d8f708a2c1c3c0a1aae8f5fcb9972da145d9f9155164"
+    },
+    {
+      "source": "modeling/conditions.mdx",
+      "slug": "/modeling/conditions",
+      "sha256": "eb868960e8a597045ada4e96e7556fee5d236dad7caf8cda82d7fb7e39ad60d9"
+    },
+    {
+      "source": "modeling/contextual-time-based-authorization.mdx",
+      "slug": "/modeling/contextual-time-based-authorization",
+      "sha256": "a26f6fe4ded59085aa95f085f1e817fff168512e3b54ff5f0428411a907ec8fb"
+    },
+    {
+      "source": "modeling/custom-roles.mdx",
+      "slug": "/modeling/custom-roles",
+      "sha256": "5787d159d59d07bc6bb1b9ab9ac73682fd0596102c8810077699b874d1a947ca"
+    },
+    {
+      "source": "modeling/direct-access.mdx",
+      "slug": "/modeling/direct-access",
+      "sha256": "16f3f41f200e6ef2b6c1f524e7bee9ba12f15537ff5d6596b65fca840604c532"
+    },
+    {
+      "source": "modeling/getting-started.mdx",
+      "slug": "/modeling/getting-started",
+      "sha256": "c8f50b4fe2df9c41d70f90d7cdeda3a780ae23c4ed963efbc4b92554361cfb1d"
+    },
+    {
+      "source": "modeling/migrating/migrating-models.mdx",
+      "slug": "/modeling/migrating/migrating-models",
+      "sha256": "f10433ef076cd11c6b3549d987582bc161cd4ffd412ec01eea0ba6b9050fbcdd"
+    },
+    {
+      "source": "modeling/migrating/migrating-relations.mdx",
+      "slug": "/modeling/migrating/migrating-relations",
+      "sha256": "e60c544cbd03e459d53992f93f91238e5b9777c528994a3b2d162f96c901562f"
+    },
+    {
+      "source": "modeling/migrating/overview.mdx",
+      "slug": "/modeling/migrating",
+      "sha256": "2ae581b73b2549a152509f17cc6b6da2df06c5ecfce7458c5e5fa9ede41ffb1d"
+    },
+    {
+      "source": "modeling/modular-models.mdx",
+      "slug": "/modeling/modular-models",
+      "sha256": "f9b81493811bfa9d3f52ee639cb0a1d32b857bad8276462d54b039d70fa1e271"
+    },
+    {
+      "source": "modeling/multiple-restrictions.mdx",
+      "slug": "/modeling/multiple-restrictions",
+      "sha256": "f019c3dc4aaac542bc4fadf23603d5a140f3bb5c9ecc2371757daa1f6f947761"
+    },
+    {
+      "source": "modeling/organization-context-authorization.mdx",
+      "slug": "/modeling/organization-context-authorization",
+      "sha256": "2a64b7059fea7545ee17505a0ddeac3b38dfbdf398de96b8476ed76c6740bb69"
+    },
+    {
+      "source": "modeling/overview.mdx",
+      "slug": "/modeling",
+      "sha256": "f79401f69b887ead07b3cd47e226f741961b36c38421f4ee93d2f5d9f94c96af"
+    },
+    {
+      "source": "modeling/parent-child.mdx",
+      "slug": "/modeling/parent-child",
+      "sha256": "baeb06a2492b854d4c9adc3cb011bb45a3cb070e88c0f48813188d494495da5a"
+    },
+    {
+      "source": "modeling/public-access.mdx",
+      "slug": "/modeling/public-access",
+      "sha256": "090e5c306d216d654e29350fe2ae6deb445382f444f81dc32abc0fe5cca3c1af"
+    },
+    {
+      "source": "modeling/roles-and-permissions.mdx",
+      "slug": "/modeling/roles-and-permissions",
+      "sha256": "06094b24bd9700ec3799729d50b8134b8aab9174edb6b44a9ed2d51a02003ed1"
+    },
+    {
+      "source": "modeling/store-file-format.mdx",
+      "slug": "/modeling/store-file-format",
+      "sha256": "721ea3b847a643a163a2a5a18f9f4cdeb8aaa9528022835a5caf4bdf3a8c3b4c"
+    },
+    {
+      "source": "modeling/testing-models.mdx",
+      "slug": "/modeling/testing",
+      "sha256": "fe8a0e28bdc8bf60f397064234898043e1401b213f48f4eff1a9ca02552553fc"
+    },
+    {
+      "source": "modeling/token-claims-contextual-tuples.mdx",
+      "slug": "/modeling/token-claims-contextual-tuples",
+      "sha256": "1449d2e64dd48cbfbe3274f30b8608bb98483aa75fd7fbd06cdb27abf63e5e99"
+    },
+    {
+      "source": "modeling/user-groups.mdx",
+      "slug": "/modeling/user-groups",
+      "sha256": "6bac5e9ad21b1b2315a9fe0e38a732291b5706bc0441941d97c49dfcf12faf57"
+    },
+    {
+      "source": "use-cases/ai-agent-authorization.mdx",
+      "slug": "/use-cases/ai-agent-authorization",
+      "sha256": "459653ef0b4e2c5085589e8f01fe57c388b95e7deec0165a191223fd04fb0537"
+    },
+    {
+      "source": "use-cases/mcp-server-authorization.mdx",
+      "slug": "/use-cases/mcp-server-authorization",
+      "sha256": "c37029fecf5c6295989cf4d729fa9a0eed9d6b79f5ec2fcd320329eb4fe1de36"
+    },
+    {
+      "source": "use-cases/microservices-authorization.mdx",
+      "slug": "/use-cases/microservices-authorization",
+      "sha256": "991eb0b086e0f9b12f7cf1c4cd485b2e79c00b12359e541cd8fc689db4569562"
+    },
+    {
+      "source": "use-cases/multi-tenant-saas.mdx",
+      "slug": "/use-cases/multi-tenant-saas",
+      "sha256": "0f930848ee8e424f0c5481c1ae842aec477a11c1a2a6944e320f0640d364d5f5"
+    },
+    {
+      "source": "use-cases/overview.mdx",
+      "slug": "/use-cases",
+      "sha256": "90c4d0b42ea383db68b5aad55f1bbc7cc64e651ff8f903f8e7fa57b2a53b496d"
+    },
+    {
+      "source": "use-cases/rag-authorization.mdx",
+      "slug": "/use-cases/rag-authorization",
+      "sha256": "4403f1ad711445b377706dd3e3e8f0fd6caa617d76e8f4d3e0a04e21db887a2c"
+    }
+  ]
+}

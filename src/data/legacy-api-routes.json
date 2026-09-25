@@ -1,0 +1,38 @@
+{
+  "Stores": {
+    "ListStores": "/api/service/stores/list-all-stores",
+    "CreateStore": "/api/service/stores/create-a-store",
+    "GetStore": "/api/service/stores/get-a-store",
+    "DeleteStore": "/api/service/stores/delete-a-store"
+  },
+  "Authorization Models": {
+    "ReadAuthorizationModels": "/api/service/authorization-models/return-all-the-authorization-models-for-a-particular-store",
+    "WriteAuthorizationModel": "/api/service/authorization-models/create-a-new-authorization-model",
+    "ReadAuthorizationModel": "/api/service/authorization-models/return-a-particular-version-of-an-authorization-model"
+  },
+  "Relationship Tuples": {
+    "ReadChanges": "/api/service/relationship-tuples/return-a-list-of-all-the-tuple-changes",
+    "Read": "/api/service/relationship-tuples/get-tuples-from-the-store-that-matches-a-query-without-following-userset-rewrite-rules",
+    "Write": "/api/service/relationship-tuples/add-or-delete-tuples-from-the-store"
+  },
+  "Relationship Queries": {
+    "BatchCheck": "/api/service/relationship-queries/send-a-list-of-%60check%60-operations-in-a-single-request",
+    "Check": "/api/service/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object",
+    "Expand": "/api/service/relationship-queries/expand-all-relationships-in-userset-tree-format-and-following-userset-rewrite-rules-useful-to-reason-about-and-debug-a-certain-relationship",
+    "ListObjects": "/api/service/relationship-queries/list-all-objects-of-the-given-type-that-the-user-has-a-relation-with",
+    "ListUsers": "/api/service/relationship-queries/list-the-users-matching-the-provided-filter-who-have-a-certain-relation-to-a-particular-type",
+    "StreamedListObjects": "/api/service/relationship-queries/stream-all-objects-of-the-given-type-that-the-user-has-a-relation-with"
+  },
+  "Assertions": {
+    "ReadAssertions": "/api/service/assertions/read-assertions-for-an-authorization-model-id",
+    "WriteAssertions": "/api/service/assertions/upsert-assertions-for-an-authorization-model-id"
+  },
+  "AuthZenService": {
+    "GetConfiguration": "/api/service/authzenservice/[experimental]-get-authzen-pdp-configuration-and-capabilities",
+    "Evaluation": "/api/service/authzenservice/[experimental]-evaluate-whether-a-subject-can-perform-an-action-on-a-resource",
+    "Evaluations": "/api/service/authzenservice/[experimental]-check-whether-one-or-more-users-are-authorized-to-access-resources",
+    "ActionSearch": "/api/service/authzenservice/[experimental]-search-for-actions-a-subject-can-perform-on-a-resource",
+    "ResourceSearch": "/api/service/authzenservice/[experimental]-search-for-resources-a-subject-has-access-to",
+    "SubjectSearch": "/api/service/authzenservice/[experimental]-search-for-subjects-with-access-to-a-resource"
+  }
+}

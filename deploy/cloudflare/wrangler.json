@@ -1,0 +1,13 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "openfga-docs-proxy",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-09-18",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [],
+  "send_metrics": false,
+  "vars": {
+    "PERMANENT_API_REDIRECTS": "false"
+  }
+}
