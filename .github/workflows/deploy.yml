@@ -1,19 +1,20 @@
 name: Deploy to GitHub Pages
 
 on:
-  # Nightly @ 5AM UTC
-  schedule:
-    - cron: '0 5 * * *'
   # When triggered manually
   workflow_dispatch:
-  # When a commit is pushed to the main branch
+  # When a commit is pushed to the docs-next branch
   push:
     branches:
-      - main
+      - docs-next
 
 jobs:
   deploy:
     name: Deploy to GitHub Pages
+    if: ${{ github.ref == 'refs/heads/docs-next' && vars.WEBSITE_DEPLOY_ENABLED == 'true' }}
+    concurrency:
+      group: website-production
+      cancel-in-progress: false
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -45,6 +46,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           # Build output to publish to the `gh-pages` branch:
           publish_dir: ./build
+          publish_branch: gh-pages
           cname: openfga.dev
           # The following lines assign commit authorship to the official
           # GH-Actions bot for deploys to `gh-pages` branch:
