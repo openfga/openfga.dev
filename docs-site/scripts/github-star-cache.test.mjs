@@ -170,7 +170,7 @@ function setup({ cache = cached, native = null, storageFails = false } = {}) {
   };
 }
 
-test('cached counts become visibly and accessibly last known only after native loading expires', () => {
+test('cached counts appear without visible status text and retain accessible details after loading expires', () => {
   const fixture = setup();
   assert.equal(fixture.link.querySelector(fallbackSelector), null);
   fixture.advance(2499);
@@ -178,7 +178,8 @@ test('cached counts become visibly and accessibly last known only after native l
   fixture.advance(100);
   const fallback = fixture.link.querySelector(fallbackSelector);
   assert.equal(fallback.querySelector('.openfga-github-stars-fallback__count').textContent, '5,756');
-  assert.equal(fallback.querySelector('.openfga-github-stars-fallback__status').textContent, 'last known');
+  assert.equal(fallback.textContent, '5,756');
+  assert.equal(fallback.querySelector('.openfga-github-stars-fallback__icon').attributes['aria-hidden'], 'true');
   assert.match(fixture.link.attributes['aria-label'], /5,756 stars \(last known\)\. Current count unavailable\./);
   assert.ok(fixture.link.attributes.title.includes(new Date(cached.timestamp).toLocaleString()));
   assert.equal(fixture.link.attributes.title, fixture.link.attributes['aria-label']);
@@ -194,6 +195,7 @@ test('fallback mutations never turn cached nested spans into a fresh native valu
     fixture.advance(20);
   }
   assert.equal(fixture.link.querySelectorAll(fallbackSelector).length, 1);
+  assert.equal(fixture.link.querySelector(fallbackSelector).textContent, '5,756');
   assert.deepEqual(fixture.cache(), cached);
   assert.equal(fixture.writes(), 0);
   assert.match(fixture.link.attributes.title, /last known/);
@@ -266,6 +268,7 @@ test('navigation remounts retain the cache age and repeat script loads keep one 
   fixture.advance(2700);
   assert.match(nextLink.attributes.title, /last known/);
   assert.equal(nextLink.querySelectorAll(fallbackSelector).length, 1);
+  assert.equal(nextLink.querySelector(fallbackSelector).textContent, '5,756');
   assert.equal(fixture.observationCount(), 1);
   assert.equal(fixture.writes(), 0);
   assert.deepEqual(fixture.cache(), cached);

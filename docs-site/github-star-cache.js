@@ -97,14 +97,7 @@
       var count = document.createElement('span');
       count.className = 'openfga-github-stars-fallback__count';
 
-      var status = document.createElement('span');
-      status.className = 'openfga-github-stars-fallback__status';
-      status.textContent = 'last known';
-
-      var value = document.createElement('span');
-      value.className = 'openfga-github-stars-fallback__value';
-      value.append(count, status);
-      fallback.append(icon, value);
+      fallback.append(icon, count);
       link.append(fallback);
     }
 

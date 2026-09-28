@@ -343,7 +343,7 @@ Header and runtime maintenance:
 
 - `navbar-layout.js` keeps native header links before search in DOM order, matching the left-aligned desktop layout and keyboard traversal. At narrow widths it preserves keyboard order while CSS exposes the native theme control on the right. Controls stay in their original parents so Mintlify retains their state and menu behavior. Check its selectors when updating the Mintlify theme.
 - Shared CSS hides code-block assistant actions by their native ID and chat-payload attribute, including API examples with different wrappers. Keep Copy buttons and language tabs available.
-- `github-star-cache.js` restores the last exact native GitHub count for up to seven days when the native request fails. It labels stale values as **last known** and makes no additional API requests.
+- `github-star-cache.js` restores the last exact native GitHub count for up to seven days when the native request fails. Only the star icon and count are visible; **last known** status and the observation time remain in the tooltip and accessible label. It makes no additional API requests.
 
 ### Page modification dates
 
