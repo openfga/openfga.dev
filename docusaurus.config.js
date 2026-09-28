@@ -4,6 +4,7 @@
 import { themes } from "prism-react-renderer";
 import * as path from "path";
 import cleanAgentMarkdown from './scripts/clean-agent-markdown.mjs';
+import { readFileSync } from 'node:fs';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -12,6 +13,8 @@ const baseUrl = configuredBasePath ? `/${configuredBasePath}/` : '/';
 const basePath = baseUrl === '/' ? '' : baseUrl.slice(0, -1);
 /** @param {string} route */
 const agentRoute = (route) => `${basePath}${route}`;
+const legacyApiRoutes = JSON.parse(readFileSync(new URL('./src/data/legacy-api-routes.json', import.meta.url), 'utf8'));
+const apiRedirects = [...new Set(Object.values(legacyApiRoutes).flatMap((operations) => Object.values(operations)))];
 
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').Config} */
@@ -59,11 +62,6 @@ const config = {
       defaultButtonText: 'Join Slack',
       defaultLink: 'https://openfga.dev/community',
     },
-    // location of the swagger file
-    apiDocsBasePath: process.env.API_DOCS_PATH
-      ? process.env.API_DOCS_PATH
-      : 'https://raw.githubusercontent.com/openfga/api/main/docs/openapiv2/apidocs.swagger.json',
-
     // Customization for product information
     description: `OpenFGA is an open source Fine-Grained Authorization solution based on Google's Zanzibar.`,
     productName: `OpenFGA`,
@@ -142,8 +140,9 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
         // ```
         // language: ["en", "zh"],
         // ```
-        docsDir: 'docs/content',
-        docsRouteBasePath: '/',
+        indexDocs: false,
+        indexBlog: true,
+        indexPages: true,
       },
     ],
   ],
@@ -152,12 +151,12 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
     [
       '@signalwire/docusaurus-plugin-llms-txt',
       {
-        siteTitle: 'OpenFGA Documentation',
+        siteTitle: 'OpenFGA Website',
         siteDescription:
           'OpenFGA is a CNCF open source authorization system for fine-grained, relationship-based access control.',
         depth: 1,
         enableDescriptions: true,
-        includeOrder: [agentRoute('/docs/**')],
+        includeOrder: [agentRoute('/'), agentRoute('/project'), agentRoute('/community')],
         optionalLinks: [
           {
             title: 'OpenFGA source repository',
@@ -175,11 +174,11 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
           enableLlmsFullTxt: true,
           relativePaths: false,
           includeBlog: false,
-          includePages: false,
-          includeDocs: true,
+          includePages: true,
+          includeDocs: false,
           includeVersionedDocs: false,
           includeGeneratedIndex: false,
-          excludeRoutes: [agentRoute('/search')],
+          excludeRoutes: [agentRoute('/search'), agentRoute('/api/service')],
           remarkStringify: {
             bullet: '-',
             emphasis: '_',
@@ -199,21 +198,12 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
       /** @type {import('@docusaurus/plugin-client-redirects').Options} */
       ({
         fromExtensions: ['html'],
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        createRedirects: (path) => { },
         redirects: [
-          {
-            to: '/api/service',
-            from: ['/api'],
-          },
-          {
-            to: '/docs/community',
-            from: '/community',
-          },
-          {
-            to: '/docs/fga',
-            from: '/docs',
-          }
+          { from: ['/api', '/api-reference'], to: '/api/service' },
+          ...apiRedirects.map((route) => ({
+            from: [route.replace(/^\/docs/, ''), route.replace(/^\/docs\/api\/service/, '/api-reference')].map(decodeURIComponent),
+            to: `https://openfga.dev${decodeURIComponent(route)}`,
+          })),
         ],
       }),
     ],
@@ -235,13 +225,9 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         debug: isDev,
-        docs: {
-          sidebarPath: require.resolve('./docs/sidebars.js'),
-          routeBasePath: '/docs',
-          exclude: ['**/README.md'],
-          showLastUpdateAuthor: false,
-          showLastUpdateTime: true,
-          editUrl: 'https://github.com/openfga/openfga.dev/edit/main/',
+        docs: false,
+        sitemap: {
+          ignorePatterns: ['**/api/service', '**/api/service/'],
         },
         blog: {
           blogTitle: 'OpenFGA Blog — ReBAC, Fine-Grained Authorization & CNCF Updates',
@@ -294,13 +280,8 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
             to: '/',
             label: 'Home',
           },
-          {
-            type: 'docSidebar',
-            sidebarId: 'docs',
-            position: 'left',
-            label: 'Docs',
-          },
-          { to: '/api/service', label: 'API', position: 'left' },
+          { href: 'https://openfga.dev/docs/fga', label: 'Docs', position: 'left' },
+          { href: 'https://openfga.dev/docs/api/service', label: 'API', position: 'left' },
           { to: '/project', label: 'Project', position: 'left' },
           { to: '/blog', label: 'Blog', position: 'left' },
           {

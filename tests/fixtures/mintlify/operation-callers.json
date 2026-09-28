@@ -1,0 +1,3225 @@
+{
+  "provenance": {
+    "revision": "85bde5e19f7fa0b8687732c33c4f7c3a39fd83e0",
+    "sourceRoot": "docs/content",
+    "method": "Extracted from legacy source, never from native output."
+  },
+  "pages": {
+    "adopters/agicap.mdx": [],
+    "adopters/docker.mdx": [],
+    "adopters/grafana.mdx": [],
+    "adopters/headspace.mdx": [],
+    "adopters/openlane.mdx": [],
+    "adopters/overview.mdx": [],
+    "adopters/read-ai.mdx": [],
+    "adopters/vitrolife.mdx": [],
+    "adopters/zuplo.mdx": [],
+    "authorization-concepts.mdx": [],
+    "best-practices/adoption-patterns.mdx": [],
+    "best-practices/modeling-abac.mdx": [],
+    "best-practices/modeling-design-principles.mdx": [],
+    "best-practices/modeling-roles.mdx": [],
+    "best-practices/overview.mdx": [],
+    "best-practices/running-in-production.mdx": [],
+    "best-practices/source-of-truth.mdx": [],
+    "concepts.mdx": [
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "viewer",
+          "object": "document:new-roadmap",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "viewer",
+          "object": "document:new-roadmap",
+          "allowed": true
+        }
+      },
+      {
+        "component": "ListObjectsRequestViewer",
+        "props": {
+          "authorizationModelId": "01HVMMBCMGZNT3SED4Z17ECXCA",
+          "objectType": "document",
+          "relation": "viewer",
+          "user": "user:anne",
+          "expectedResults": [
+            "document:otherdoc",
+            "document:planning"
+          ]
+        }
+      },
+      {
+        "component": "ListUsersRequestViewer",
+        "props": {
+          "authorizationModelId": "01HVMMBCMGZNT3SED4Z17ECXCA",
+          "objectType": "document",
+          "objectId": "planning",
+          "relation": "viewer",
+          "userFilterType": "user",
+          "expectedResults": {
+            "users": [
+              {
+                "object": {
+                  "type": "user",
+                  "id": "anne"
+                }
+              },
+              {
+                "object": {
+                  "type": "user",
+                  "id": "beth"
+                }
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "configuration-language.mdx": [],
+    "getting-started/cli.mdx": [],
+    "getting-started/configure-model.mdx": [],
+    "getting-started/configure-telemetry.mdx": [],
+    "getting-started/create-store.mdx": [],
+    "getting-started/framework.mdx": [],
+    "getting-started/immutable-models.mdx": [],
+    "getting-started/install-sdk.mdx": [],
+    "getting-started/overview.mdx": [],
+    "getting-started/perform-check.mdx": [
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "reader",
+          "object": "document:Z",
+          "allowed": true,
+          "skipSetup": true,
+          "allowedLanguages": [
+            "js-sdk",
+            "go-sdk",
+            "dotnet-sdk",
+            "python-sdk",
+            "java-sdk",
+            "cli",
+            "curl"
+          ]
+        }
+      },
+      {
+        "component": "BatchCheckRequestViewer",
+        "props": {
+          "checks": [
+            {
+              "user": "user:anne",
+              "relation": "writer",
+              "object": "document:Z",
+              "correlation_id": "886224f6-04ae-4b13-bd8e-559c7d3754e1",
+              "allowed": false
+            },
+            {
+              "user": "user:anne",
+              "relation": "reader",
+              "object": "document:Z",
+              "correlation_id": "da452239-a4e0-4791-b5d1-fb3d451ac078",
+              "allowed": true
+            }
+          ],
+          "skipSetup": true
+        }
+      }
+    ],
+    "getting-started/perform-list-objects.mdx": [
+      {
+        "component": "ListObjectsRequestViewer",
+        "props": {
+          "authorizationModelId": "01HVMMBCMGZNT3SED4Z17ECXCA",
+          "objectType": "document",
+          "relation": "reader",
+          "user": "user:anne",
+          "expectedResults": [
+            "document:otherdoc",
+            "document:planning"
+          ],
+          "skipSetup": true,
+          "allowedLanguages": [
+            "js-sdk",
+            "go-sdk",
+            "dotnet-sdk",
+            "python-sdk",
+            "java-sdk",
+            "cli",
+            "curl"
+          ]
+        }
+      }
+    ],
+    "getting-started/perform-list-users.mdx": [
+      {
+        "component": "ListUsersRequestViewer",
+        "props": {
+          "authorizationModelId": "01HVMMBCMGZNT3SED4Z17ECXCA",
+          "objectType": "document",
+          "objectId": "planning",
+          "relation": "reader",
+          "userFilterType": "user",
+          "expectedResults": {
+            "users": [
+              {
+                "object": {
+                  "type": "user",
+                  "id": "anne"
+                }
+              },
+              {
+                "object": {
+                  "type": "user",
+                  "id": "beth"
+                }
+              }
+            ]
+          },
+          "skipSetup": true,
+          "allowedLanguages": [
+            "js-sdk",
+            "go-sdk",
+            "dotnet-sdk",
+            "python-sdk",
+            "java-sdk",
+            "cli",
+            "curl"
+          ]
+        }
+      },
+      {
+        "component": "ListUsersRequestViewer",
+        "props": {
+          "authorizationModelId": "01HXHK5D1Z6SCG1SV7M3BVZVCV",
+          "objectType": "document",
+          "objectId": "1",
+          "relation": "viewer",
+          "userFilterType": "group",
+          "userFilterRelation": "member",
+          "expectedResults": {
+            "users": [
+              {
+                "userset": {
+                  "id": "engineering",
+                  "relation": "member",
+                  "type": "group"
+                }
+              },
+              {
+                "userset": {
+                  "id": "product",
+                  "relation": "member",
+                  "type": "group"
+                }
+              }
+            ]
+          },
+          "skipSetup": true,
+          "allowedLanguages": [
+            "js-sdk",
+            "go-sdk",
+            "dotnet-sdk",
+            "python-sdk",
+            "java-sdk",
+            "cli",
+            "curl"
+          ]
+        }
+      }
+    ],
+    "getting-started/setup-openfga/access-control.mdx": [],
+    "getting-started/setup-openfga/configuration.mdx": [],
+    "getting-started/setup-openfga/configure-openfga.mdx": [],
+    "getting-started/setup-openfga/docker-setup.mdx": [],
+    "getting-started/setup-openfga/kubernetes-setup.mdx": [],
+    "getting-started/setup-openfga/overview.mdx": [],
+    "getting-started/setup-openfga/playground.mdx": [],
+    "getting-started/setup-openfga/reporting-runtime-issues.mdx": [],
+    "getting-started/setup-sdk-client.mdx": [],
+    "getting-started/tuples-api-best-practices.mdx": [],
+    "getting-started/update-tuples.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "reader",
+              "object": "document:Z"
+            }
+          ],
+          "skipSetup": true,
+          "allowedLanguages": [
+            "js-sdk",
+            "go-sdk",
+            "dotnet-sdk",
+            "python-sdk",
+            "java-sdk",
+            "cli",
+            "curl"
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "deleteRelationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "reader",
+              "object": "document:Z"
+            }
+          ],
+          "skipSetup": true,
+          "allowedLanguages": [
+            "js-sdk",
+            "go-sdk",
+            "dotnet-sdk",
+            "python-sdk",
+            "java-sdk",
+            "cli",
+            "curl"
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "reader",
+              "object": "document:Z"
+            }
+          ],
+          "deleteRelationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "writer",
+              "object": "document:Z"
+            }
+          ],
+          "skipSetup": true,
+          "allowedLanguages": [
+            "js-sdk",
+            "go-sdk",
+            "dotnet-sdk",
+            "python-sdk",
+            "java-sdk",
+            "cli",
+            "curl"
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "reader",
+              "object": "document:Z"
+            }
+          ],
+          "conflictOptions": {
+            "onDuplicateWrites": "ignore"
+          },
+          "skipSetup": true,
+          "allowedLanguages": [
+            "js-sdk",
+            "go-sdk",
+            "dotnet-sdk",
+            "python-sdk",
+            "java-sdk",
+            "cli",
+            "curl"
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "skipSetup": true,
+          "deleteRelationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "writer",
+              "object": "document:Z"
+            }
+          ],
+          "conflictOptions": {
+            "onMissingDeletes": "ignore"
+          },
+          "expectedResponse": {
+            "data": {}
+          },
+          "allowedLanguages": [
+            "js-sdk",
+            "go-sdk",
+            "dotnet-sdk",
+            "python-sdk",
+            "java-sdk",
+            "cli",
+            "curl"
+          ]
+        }
+      }
+    ],
+    "industries/applicant-tracking-system.mdx": [],
+    "industries/banking.mdx": [],
+    "industries/crm.mdx": [],
+    "industries/ecommerce.mdx": [],
+    "industries/healthcare.mdx": [],
+    "industries/human-resources.mdx": [],
+    "industries/lms.mdx": [],
+    "industries/overview.mdx": [],
+    "interacting/authzen.mdx": [],
+    "interacting/consistency.mdx": [],
+    "interacting/contextual-tuples.mdx": [],
+    "interacting/managing-group-access.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "employee",
+              "object": "company:xyz"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "reader",
+          "object": "document:planning",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:becky",
+          "relation": "reader",
+          "object": "document:planning",
+          "allowed": false
+        }
+      }
+    ],
+    "interacting/managing-group-membership.mdx": [
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "anne",
+          "relation": "reader",
+          "object": "document:planning",
+          "allowed": false
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Anne is a member of the contoso org",
+              "user": "user:anne",
+              "relation": "member",
+              "object": "org:contoso"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "reader",
+          "object": "document:planning",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:becky",
+          "relation": "reader",
+          "object": "document:planning",
+          "allowed": false
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "deleteRelationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "member",
+              "object": "org:contoso"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "reader",
+          "object": "document:planning",
+          "allowed": false
+        }
+      }
+    ],
+    "interacting/managing-relationships-between-objects.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "admin",
+              "object": "repo:1"
+            },
+            {
+              "user": "user:anne",
+              "relation": "admin",
+              "object": "repo:2"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "org:xyz",
+              "relation": "owner",
+              "object": "repo:1"
+            },
+            {
+              "user": "org:xyz",
+              "relation": "owner",
+              "object": "repo:2"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:becky",
+              "relation": "repo_admin",
+              "object": "org:xyz"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:becky",
+          "relation": "admin",
+          "object": "repo:1",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:becky",
+          "relation": "admin",
+          "object": "repo:2",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "deleteRelationshipTuples": [
+            {
+              "user": "org:xyz",
+              "relation": "owner",
+              "object": "repo:1"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:becky",
+          "relation": "admin",
+          "object": "repo:1",
+          "allowed": false
+        }
+      }
+    ],
+    "interacting/managing-user-access.mdx": [
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "reader",
+          "object": "tweet:1",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "deleteRelationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "reader",
+              "object": "tweet:1"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "reader",
+          "object": "tweet:1",
+          "allowed": false
+        }
+      }
+    ],
+    "interacting/overview.mdx": [],
+    "interacting/read-tuple-changes.mdx": [],
+    "interacting/relationship-queries.mdx": [
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:bob",
+          "relation": "reader",
+          "object": "document:planning",
+          "allowed": true
+        }
+      },
+      {
+        "component": "BatchCheckRequestViewer",
+        "props": {
+          "checks": [
+            {
+              "user": "user:bob",
+              "relation": "can_view_name",
+              "object": "patient_record:1",
+              "correlation_id": "1",
+              "allowed": true
+            },
+            {
+              "user": "user:bob",
+              "relation": "can_view_dob",
+              "object": "patient_record:1",
+              "correlation_id": "2",
+              "allowed": true
+            },
+            {
+              "user": "user:bob",
+              "relation": "can_view_ssn",
+              "object": "patient_record:1",
+              "correlation_id": "3",
+              "allowed": false
+            }
+          ],
+          "skipSetup": true
+        }
+      },
+      {
+        "component": "ListObjectsRequestViewer",
+        "props": {
+          "authorizationModelId": "01HVMMBCMGZNT3SED4Z17ECXCA",
+          "objectType": "document",
+          "relation": "reader",
+          "user": "user:bob",
+          "contextualTuples": [
+            {
+              "object": "document:otherdoc",
+              "relation": "reader",
+              "user": "user:bob"
+            }
+          ],
+          "expectedResults": [
+            "document:otherdoc",
+            "document:planning"
+          ]
+        }
+      },
+      {
+        "component": "ListUsersRequestViewer",
+        "props": {
+          "authorizationModelId": "01HVMMBCMGZNT3SED4Z17ECXCA",
+          "objectType": "document",
+          "objectId": "planning",
+          "relation": "viewer",
+          "userFilterType": "user",
+          "expectedResults": {
+            "users": [
+              {
+                "object": {
+                  "type": "user",
+                  "id": "anne"
+                }
+              },
+              {
+                "object": {
+                  "type": "user",
+                  "id": "beth"
+                }
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "interacting/search-with-permissions.mdx": [],
+    "intro.mdx": [],
+    "learn/abac-vs-rebac.mdx": [],
+    "learn/fine-grained-authorization.mdx": [],
+    "learn/overview.mdx": [],
+    "learn/policy-engine.mdx": [],
+    "learn/rbac-vs-rebac.mdx": [],
+    "learn/rebac.mdx": [],
+    "learn/zanzibar.mdx": [],
+    "modeling/advanced/entitlements.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "the free plan is the associated plan of the issues feature",
+              "user": "plan:free",
+              "relation": "associated_plan",
+              "object": "feature:issues"
+            },
+            {
+              "_description": "the team plan is the associated plan of the issues feature",
+              "user": "plan:team",
+              "relation": "associated_plan",
+              "object": "feature:issues"
+            },
+            {
+              "_description": "the team plan is the associated plan of the draft pull requests feature",
+              "user": "plan:team",
+              "relation": "associated_plan",
+              "object": "feature:draft_prs"
+            },
+            {
+              "_description": "the enterprise plan is the associated plan of the issues feature",
+              "user": "plan:enterprise",
+              "relation": "associated_plan",
+              "object": "feature:issues"
+            },
+            {
+              "_description": "the enterprise plan is the associated plan of the draft pull requests feature",
+              "user": "plan:enterprise",
+              "relation": "associated_plan",
+              "object": "feature:draft_prs"
+            },
+            {
+              "_description": "the enterprise plan is the associated plan of the SAML Single Sign-on feature",
+              "user": "plan:enterprise",
+              "relation": "associated_plan",
+              "object": "feature:sso"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "the Alpha Beta Gamma organization is a subscriber of the free plan",
+              "user": "organization:alpha",
+              "relation": "subscriber",
+              "object": "plan:free"
+            },
+            {
+              "_description": "the Bayer Water Supplies organization is a subscriber of the team plan",
+              "user": "organization:bayer",
+              "relation": "subscriber",
+              "object": "plan:team"
+            },
+            {
+              "_description": "the Cups and Dishes organization is a subscriber of the enterprise plan",
+              "user": "organization:cups",
+              "relation": "subscriber",
+              "object": "plan:enterprise"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "anne is a member of the Alpha Beta Gamma organization",
+              "user": "user:anne",
+              "relation": "member",
+              "object": "organization:alpha"
+            },
+            {
+              "_description": "beth is a member of the Bayer Water Supplies",
+              "user": "user:beth",
+              "relation": "member",
+              "object": "organization:bayer"
+            },
+            {
+              "_description": "charles is a member of the Cups and Dishes organization",
+              "user": "user:charles",
+              "relation": "member",
+              "object": "organization:cups"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "member",
+          "object": "organization:alpha",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "member",
+          "object": "organization:bayer",
+          "allowed": false
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "organization:bayer",
+          "relation": "subscriber",
+          "object": "plan:team",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "plan:free",
+          "relation": "associated_plan",
+          "object": "feature:issues",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "access",
+          "object": "feature:issues"
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "access",
+          "object": "feature:issues",
+          "allowed": false
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "organization:alpha",
+          "relation": "access",
+          "object": "feature:issues",
+          "allowed": false
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "organization:alpha",
+          "relation": "access",
+          "object": "feature:issues",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "access",
+          "object": "feature:issues",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "access",
+          "object": "feature:issues",
+          "allowed": true
+        }
+      }
+    ],
+    "modeling/advanced/gdrive.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:beth",
+              "relation": "commenter",
+              "object": "document:2021-budget"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:beth",
+          "relation": "commenter",
+          "object": "document:2021-budget",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "owner",
+              "object": "document:2021-budget"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "owner",
+          "object": "document:2021-budget",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "writer",
+          "object": "document:2021-budget",
+          "allowed": false
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "owner",
+          "object": "document:2021-budget",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "writer",
+          "object": "document:2021-budget",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "make anne, beth, charles a member of the xyz domain",
+              "user": "user:anne",
+              "relation": "member",
+              "object": "domain:xyz"
+            },
+            {
+              "user": "user:beth",
+              "relation": "member",
+              "object": "domain:xyz"
+            },
+            {
+              "user": "user:charles",
+              "relation": "member",
+              "object": "domain:xyz"
+            },
+            {
+              "_description": "make members of xyz domain viewers of document:2021-budget",
+              "user": "domain:xyz#member",
+              "relation": "viewer",
+              "object": "document:2021-budget"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:charles",
+          "relation": "viewer",
+          "object": "document:2021-budget",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Diane is a viewer of document:2021-planning",
+              "user": "user:diane",
+              "relation": "viewer",
+              "object": "document:2021-planning"
+            },
+            {
+              "_description": "document:2021-planning is a parent of document:2021-budget",
+              "user": "document:2021-planning",
+              "relation": "parent",
+              "object": "document:2021-budget"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:diane",
+          "relation": "viewer",
+          "object": "document:2021-budget"
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Anne is the owner of document:2021-public-roadmap",
+              "user": "user:anne",
+              "relation": "owner",
+              "object": "document:2021-public-roadmap"
+            },
+            {
+              "_description": "Members of the domain:xyz can comment on document:2021-public-roadmap",
+              "user": "domain:xyz#member",
+              "relation": "commenter",
+              "object": "document:2021-public-roadmap"
+            },
+            {
+              "_description": "Everyone with type `user` can view document:2021-public-roadmap",
+              "user": "user:*",
+              "relation": "viewer",
+              "object": "document:2021-public-roadmap"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "owner",
+          "object": "document:2021-public-roadmap",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:beth",
+          "relation": "writer",
+          "object": "document:2021-public-roadmap",
+          "allowed": false
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:beth",
+          "relation": "commenter",
+          "object": "document:2021-public-roadmap",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:erik",
+          "relation": "writer",
+          "object": "document:2021-public-roadmap",
+          "allowed": false
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:erik",
+          "relation": "viewer",
+          "object": "document:2021-public-roadmap",
+          "allowed": true
+        }
+      }
+    ],
+    "modeling/advanced/github.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "reader",
+              "object": "repo:contoso/tooling"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "reader",
+          "object": "repo:contoso/tooling",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:beth",
+              "relation": "writer",
+              "object": "repo:contoso/tooling"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:beth",
+          "relation": "writer",
+          "object": "repo:contoso/tooling",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:beth",
+          "relation": "reader",
+          "object": "repo:contoso/tooling",
+          "allowed": false
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:beth",
+          "relation": "writer",
+          "object": "repo:contoso/tooling",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:beth",
+          "relation": "reader",
+          "object": "repo:contoso/tooling",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "make charles a member of the contoso/engineering team",
+              "user": "user:charles",
+              "relation": "member",
+              "object": "team:contoso/engineering"
+            },
+            {
+              "_description": "make members of contoso/engineering team admins of contoso/tooling",
+              "user": "team:contoso/engineering#member",
+              "relation": "admin",
+              "object": "repo:contoso/tooling"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:charles",
+          "relation": "admin",
+          "object": "repo:contoso/tooling",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "team:contoso/protocols#member",
+              "relation": "member",
+              "object": "team:contoso/engineering"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "make diane a member of the contoso/protocols team",
+              "user": "user:diane",
+              "relation": "member",
+              "object": "team:contoso/protocols"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:diane",
+          "relation": "admin",
+          "object": "repo:contoso/tooling",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:erik",
+              "relation": "member",
+              "object": "organization:contoso"
+            },
+            {
+              "user": "organization:contoso",
+              "relation": "owner",
+              "object": "repo:contoso/tooling"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:erik",
+          "relation": "admin",
+          "object": "repo:contoso/tooling"
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "organization:contoso#member",
+              "relation": "repo_admin",
+              "object": "organization:contoso"
+            }
+          ]
+        }
+      }
+    ],
+    "modeling/advanced/iot.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "live_video_viewer",
+              "object": "device:1"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "recorded_video_viewer",
+              "object": "device:1"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:beth",
+              "relation": "live_video_viewer",
+              "object": "device:1"
+            },
+            {
+              "user": "user:beth",
+              "relation": "recorded_video_viewer",
+              "object": "device:1"
+            },
+            {
+              "user": "user:beth",
+              "relation": "device_renamer",
+              "object": "device:1"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "live_video_viewer",
+          "object": "device:1",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "device_renamer",
+          "object": "device:1",
+          "allowed": false
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "security_guard",
+              "object": "device:1"
+            },
+            {
+              "user": "user:beth",
+              "relation": "it_admin",
+              "object": "device:1"
+            },
+            {
+              "user": "user:charles",
+              "relation": "security_guard",
+              "object": "device:1"
+            },
+            {
+              "user": "user:dianne",
+              "relation": "it_admin",
+              "object": "device:1"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:charles",
+          "relation": "live_video_viewer",
+          "object": "device:1",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:charles",
+              "relation": "security_guard",
+              "object": "device_group:group1"
+            },
+            {
+              "user": "user:dianne",
+              "relation": "it_admin",
+              "object": "device_group:group1"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "device_group:group1#security_guard",
+              "relation": "security_guard",
+              "object": "device:2"
+            },
+            {
+              "user": "device_group:group1#security_guard",
+              "relation": "security_guard",
+              "object": "device:3"
+            },
+            {
+              "user": "device_group:group1#it_admin",
+              "relation": "it_admin",
+              "object": "device:2"
+            },
+            {
+              "user": "device_group:group1#it_admin",
+              "relation": "it_admin",
+              "object": "device:3"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "dianne",
+          "relation": "live_video_viewer",
+          "object": "device:2",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:emily",
+              "relation": "live_video_viewer",
+              "object": "device:1"
+            },
+            {
+              "user": "user:emily",
+              "relation": "recorded_video_viewer",
+              "object": "device:1"
+            },
+            {
+              "user": "user:emily",
+              "relation": "device_renamer",
+              "object": "device:1"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:emily",
+          "relation": "live_video_viewer",
+          "object": "device:1",
+          "allowed": false
+        }
+      }
+    ],
+    "modeling/advanced/overview.mdx": [],
+    "modeling/advanced/slack.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Amy is a Legacy Admin in the Sandcastle workspace",
+              "user": "user:amy",
+              "relation": "legacy_admin",
+              "object": "workspace:sandcastle"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:amy",
+          "relation": "legacy_admin",
+          "object": "workspace:sandcastle",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Catherine is a Member in the Sandcastle workspace",
+              "user": "user:catherine",
+              "relation": "member",
+              "object": "workspace:sandcastle"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:catherine",
+          "relation": "member",
+          "object": "workspace:sandcastle",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:catherine",
+          "relation": "legacy_admin",
+          "object": "workspace:sandcastle",
+          "allowed": false
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Bob is a Channels Admin in the Sandcastle workspace",
+              "user": "user:bob",
+              "relation": "channels_admin",
+              "object": "workspace:sandcastle"
+            },
+            {
+              "_description": "David is a guest in the Sandcastle workspace",
+              "user": "user:david",
+              "relation": "guest",
+              "object": "workspace:sandcastle"
+            },
+            {
+              "_description": "Emily is a Member in the Sandcastle workspace",
+              "user": "user:emily",
+              "relation": "member",
+              "object": "workspace:sandcastle"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:amy",
+          "relation": "legacy_admin",
+          "object": "workspace:sandcastle",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:amy",
+          "relation": "member",
+          "object": "workspace:sandcastle",
+          "allowed": false
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:amy",
+          "relation": "member",
+          "object": "workspace:sandcastle",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "workspace:sandcastle",
+              "relation": "parent_workspace",
+              "object": "channel:general"
+            },
+            {
+              "user": "workspace:sandcastle",
+              "relation": "parent_workspace",
+              "object": "channel:marketing_internal"
+            },
+            {
+              "user": "workspace:sandcastle",
+              "relation": "parent_workspace",
+              "object": "channel:proj_marketing_campaign"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "The set of users related to `workspace:sandcastle` as member are also related to `channel:general` as `viewer`",
+              "user": "workspace:sandcastle#member",
+              "relation": "viewer",
+              "object": "channel:general"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Due to the configuration update you added earlier, writer relation is enough to imply a viewer relation",
+              "user": "user:amy",
+              "relation": "writer",
+              "object": "channel:general"
+            },
+            {
+              "user": "user:emily",
+              "relation": "writer",
+              "object": "channel:general"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:bob",
+              "relation": "writer",
+              "object": "channel:marketing_internal"
+            },
+            {
+              "user": "user:emily",
+              "relation": "writer",
+              "object": "channel:marketing_internal"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "workspace:sandcastle#member",
+              "relation": "writer",
+              "object": "channel:proj_marketing_campaign"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:david",
+              "relation": "writer",
+              "object": "channel:proj_marketing_campaign"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:david",
+          "relation": "viewer",
+          "object": "channel:general",
+          "allowed": false
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:david",
+          "relation": "viewer",
+          "object": "channel:proj_marketing_campaign",
+          "allowed": true
+        }
+      }
+    ],
+    "modeling/agents/agents-as-principals.mdx": [
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "agent:triage-bot",
+          "relation": "can_read",
+          "object": "issue:issue-123",
+          "allowed": true,
+          "skipSetup": true,
+          "pseudoCodeMode": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "agent:triage-bot",
+          "relation": "can_delete",
+          "object": "issue:issue-123",
+          "allowed": false,
+          "skipSetup": true,
+          "pseudoCodeMode": true
+        }
+      }
+    ],
+    "modeling/agents/mcp-authorization.mdx": [
+      {
+        "component": "ListObjectsRequestViewer",
+        "props": {
+          "objectType": "tool",
+          "relation": "can_call",
+          "user": "user:carl",
+          "expectedResults": [
+            "tool:get_datetime"
+          ],
+          "skipSetup": true
+        }
+      },
+      {
+        "component": "ListObjectsRequestViewer",
+        "props": {
+          "objectType": "tool",
+          "relation": "can_call",
+          "user": "user:anne",
+          "expectedResults": [
+            "tool:get_datetime",
+            "tool:greet",
+            "tool:whoami",
+            "tool:get_documents"
+          ],
+          "skipSetup": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:carl",
+          "relation": "can_call",
+          "object": "tool:greet",
+          "allowed": true,
+          "skipSetup": true,
+          "context": {
+            "current_time": "2026-04-03T10:30:00Z"
+          }
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:carl",
+          "relation": "can_call",
+          "object": "tool:greet",
+          "allowed": false,
+          "skipSetup": true,
+          "context": {
+            "current_time": "2026-04-03T11:30:00Z"
+          }
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "can_view_private_documents",
+          "object": "tool:get_documents",
+          "allowed": true,
+          "skipSetup": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:beth",
+          "relation": "can_view_private_documents",
+          "object": "tool:get_documents",
+          "allowed": false,
+          "skipSetup": true
+        }
+      }
+    ],
+    "modeling/agents/overview.mdx": [],
+    "modeling/agents/rag-authorization.mdx": [
+      {
+        "component": "BatchCheckRequestViewer",
+        "props": {
+          "checks": [
+            {
+              "_description": "carl can view roadmap (direct access)",
+              "user": "user:carl",
+              "relation": "viewer",
+              "object": "document:roadmap",
+              "correlation_id": "roadmap",
+              "allowed": true
+            },
+            {
+              "_description": "carl cannot view api_design",
+              "user": "user:carl",
+              "relation": "viewer",
+              "object": "document:api_design",
+              "correlation_id": "api-design",
+              "allowed": false
+            },
+            {
+              "_description": "carl cannot view architecture",
+              "user": "user:carl",
+              "relation": "viewer",
+              "object": "document:architecture",
+              "correlation_id": "architecture",
+              "allowed": false
+            }
+          ],
+          "skipSetup": true
+        }
+      },
+      {
+        "component": "ListObjectsRequestViewer",
+        "props": {
+          "objectType": "document",
+          "relation": "viewer",
+          "user": "user:carl",
+          "expectedResults": [
+            "document:roadmap"
+          ],
+          "skipSetup": true
+        }
+      }
+    ],
+    "modeling/agents/task-based-authorization.mdx": [
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "task:2",
+          "relation": "can_call",
+          "object": "tool_resource:slack_send_message/XGA14FG",
+          "allowed": true,
+          "skipSetup": true,
+          "contextualTuples": [
+            {
+              "_description": "Link the tool_resource to its parent tool",
+              "user": "tool:slack_send_message",
+              "relation": "tool",
+              "object": "tool_resource:slack_send_message/XGA14FG"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "task:1",
+          "relation": "can_call",
+          "object": "tool:slack_send_message",
+          "allowed": true,
+          "skipSetup": true,
+          "contextualTuples": [
+            {
+              "_description": "The agent making the call",
+              "user": "agent:1",
+              "relation": "calling_agent",
+              "object": "tool:slack_send_message"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "task:1",
+          "relation": "can_call",
+          "object": "tool:slack_send_message",
+          "allowed": false,
+          "skipSetup": true,
+          "contextualTuples": [
+            {
+              "_description": "A different agent making the call",
+              "user": "agent:2",
+              "relation": "calling_agent",
+              "object": "tool:slack_send_message"
+            }
+          ]
+        }
+      }
+    ],
+    "modeling/blocklists.mdx": [
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:becky",
+          "relation": "editor",
+          "object": "document:planning",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:carl",
+          "relation": "editor",
+          "object": "document:planning",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Carl is blocked from editing the planning document",
+              "user": "user:carl",
+              "relation": "blocked",
+              "object": "document:planning"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:carl",
+          "relation": "editor",
+          "object": "document:planning",
+          "allowed": false
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:becky",
+          "relation": "editor",
+          "object": "document:planning",
+          "allowed": true
+        }
+      }
+    ],
+    "modeling/building-blocks/concentric-relationships.mdx": [
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:bob",
+          "relation": "viewer",
+          "object": "document:meeting_notes.doc",
+          "allowed": true
+        }
+      }
+    ],
+    "modeling/building-blocks/direct-relationships.mdx": [
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "viewer",
+          "object": "document:planning",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:beth",
+          "relation": "viewer",
+          "object": "document:planning",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:charlie",
+          "relation": "viewer",
+          "object": "document:planning",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:dany",
+          "relation": "viewer",
+          "object": "document:planning",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:emily",
+          "relation": "viewer",
+          "object": "document:planning",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:fred",
+          "relation": "viewer",
+          "object": "document:planning",
+          "allowed": false
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:gabriel",
+          "relation": "viewer",
+          "object": "document:planning",
+          "allowed": false
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:henry",
+          "relation": "viewer",
+          "object": "document:planning",
+          "allowed": false
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:ingred",
+          "relation": "viewer",
+          "object": "document:planning",
+          "allowed": true
+        }
+      }
+    ],
+    "modeling/building-blocks/object-to-object-relationships.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "The user in this case is another object where the type is `folder` and the object_id is `budgets`",
+              "user": "folder:budgets",
+              "relation": "parent",
+              "object": "document:may_budget.doc"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "folder:budgets",
+          "relation": "parent",
+          "object": "document:may_budget.doc",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "make anne as subscriber_member for plan:advanced",
+              "user": "user:anne",
+              "relation": "subscriber_member",
+              "object": "plan:advanced"
+            },
+            {
+              "_description": "The advanced plan is associated with the data preview feature",
+              "user": "plan:advanced",
+              "relation": "associated_plan",
+              "object": "feature:data_preview"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "access",
+          "object": "feature:data_preview",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "deleteRelationshipTuples": [
+            {
+              "_description": "Remove advanced plan from data preview feature",
+              "user": "plan:advanced",
+              "relation": "associated_plan",
+              "object": "feature:data_preview"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "access",
+          "object": "feature:data_preview",
+          "allowed": false
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "subscriber_member",
+          "object": "plan:advanced",
+          "allowed": true
+        }
+      }
+    ],
+    "modeling/building-blocks/overview.mdx": [],
+    "modeling/building-blocks/usersets.mdx": [
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "reader",
+          "object": "document:budget",
+          "allowed": true
+        }
+      }
+    ],
+    "modeling/conditions.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "viewer",
+              "object": "document:1",
+              "condition": {
+                "name": "non_expired_grant",
+                "context": {
+                  "grant_time": "2023-01-01T00:00:00Z",
+                  "grant_duration": "10m"
+                }
+              }
+            }
+          ],
+          "skipSetup": true,
+          "allowedLanguages": [
+            "js-sdk",
+            "go-sdk",
+            "dotnet-sdk",
+            "python-sdk",
+            "java-sdk",
+            "cli",
+            "curl"
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "viewer",
+          "object": "document:1",
+          "context": {
+            "current_time": "2023-01-01T00:09:50Z"
+          },
+          "allowed": true,
+          "skipSetup": true,
+          "allowedLanguages": [
+            "js-sdk",
+            "go-sdk",
+            "dotnet-sdk",
+            "python-sdk",
+            "java-sdk",
+            "cli",
+            "curl"
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "viewer",
+          "object": "document:1",
+          "context": {
+            "current_time": "2023-01-01T00:10:01Z"
+          },
+          "allowed": false,
+          "skipSetup": true,
+          "allowedLanguages": [
+            "js-sdk",
+            "go-sdk",
+            "dotnet-sdk",
+            "python-sdk",
+            "java-sdk",
+            "cli",
+            "curl"
+          ]
+        }
+      },
+      {
+        "component": "ListObjectsRequestViewer",
+        "props": {
+          "objectType": "document",
+          "relation": "viewer",
+          "user": "user:anne",
+          "context": {
+            "current_time": "2023-01-01T00:09:50Z"
+          },
+          "expectedResults": [
+            "document:1"
+          ],
+          "skipSetup": true,
+          "allowedLanguages": [
+            "js-sdk",
+            "go-sdk",
+            "dotnet-sdk",
+            "python-sdk",
+            "java-sdk",
+            "cli",
+            "curl"
+          ]
+        }
+      },
+      {
+        "component": "ListObjectsRequestViewer",
+        "props": {
+          "objectType": "document",
+          "relation": "viewer",
+          "user": "user:anne",
+          "context": {
+            "current_time": "2023-01-01T00:10:01Z"
+          },
+          "expectedResults": [],
+          "skipSetup": true,
+          "allowedLanguages": [
+            "js-sdk",
+            "go-sdk",
+            "dotnet-sdk",
+            "python-sdk",
+            "java-sdk",
+            "cli",
+            "curl"
+          ]
+        }
+      }
+    ],
+    "modeling/contextual-time-based-authorization.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Anne is the Account Manager at the West-Side branch",
+              "user": "user:anne",
+              "relation": "account_manager",
+              "object": "branch:west-side"
+            },
+            {
+              "_description": "Caroline is the customer for checking account number 526",
+              "user": "user:caroline",
+              "relation": "customer",
+              "object": "account:checking-526"
+            },
+            {
+              "_description": "The West-Side branch is the branch that the Checking account number 526 has been created at",
+              "user": "branch:west-side",
+              "relation": "branch",
+              "object": "account:checking-526"
+            },
+            {
+              "_description": "Checking account number 526 is the account for transaction A",
+              "user": "account:checking-526",
+              "relation": "account",
+              "object": "transaction:A"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "can_view",
+          "object": "transaction:A",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:caroline",
+          "relation": "can_view",
+          "object": "transaction:A",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Mary is an account manager at the East-Side branch",
+              "user": "user:mary",
+              "relation": "account_manager",
+              "object": "branch:east-side"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:mary",
+          "relation": "can_view",
+          "object": "transaction:A",
+          "allowed": false
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "can_view",
+          "object": "transaction:A",
+          "allowed": false
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "11am to 12pm is within the office hours of the West-Side branch",
+              "user": "timeslot:11_12",
+              "relation": "approved_timeslot",
+              "object": "branch:west-side"
+            },
+            {
+              "_description": "12pm to 1pm is within the office hours of the West-Side branch",
+              "user": "timeslot:12_13",
+              "relation": "approved_timeslot",
+              "object": "branch:west-side"
+            },
+            {
+              "_description": "The office VPN w/ the 10.0.0.0/16 address range is approved for the West-Side branch",
+              "user": "ip-address-range:10.0.0.0/16",
+              "relation": "approved_ip_address_range",
+              "object": "branch:west-side"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Anne is connecting from within the 10.0.0.0/16 ip address range",
+              "user": "user:anne",
+              "relation": "user",
+              "object": "ip-address-range:10.0.0.0/16"
+            },
+            {
+              "_description": "Anne is connecting between 12pm and 1pm",
+              "user": "user:anne",
+              "relation": "user",
+              "object": "timeslot:12_13"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "can_view",
+          "object": "transaction:A",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "deleteRelationshipTuples": [
+            {
+              "_description": "Remove stored tuples where Anne is connecting from within the 10.0.0.0/16 ip address range",
+              "user": "user:anne",
+              "relation": "user",
+              "object": "ip-address-range:10.0.0.0/16"
+            },
+            {
+              "_description": "Remove stored tuples where Anne is connecting between 12pm and 1pm",
+              "user": "user:anne",
+              "relation": "user",
+              "object": "timeslot:12_13"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "can_view",
+          "object": "transaction:A",
+          "allowed": true,
+          "contextualTuples": [
+            {
+              "_description": "Anne is connecting from within the 10.0.0.0/16 ip address range",
+              "user": "user:anne",
+              "relation": "user",
+              "object": "ip-address-range:10.0.0.0/16"
+            },
+            {
+              "_description": "Anne is connecting between 12pm and 1pm",
+              "user": "user:anne",
+              "relation": "user",
+              "object": "timeslot:12_13"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "can_view",
+          "object": "transaction:A",
+          "allowed": false,
+          "contextualTuples": [
+            {
+              "_description": "Anne is connecting from within the 10.0.0.0/16 ip address range",
+              "user": "user:anne",
+              "relation": "user",
+              "object": "ip-address-range:10.0.0.0/16"
+            },
+            {
+              "_description": "Anne is connecting between 6pm and 7pm",
+              "user": "user:anne",
+              "relation": "user",
+              "object": "timeslot:18_19"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Anne is the Account Manager at the West-Side branch",
+              "user": "user:anne",
+              "relation": "account_manager",
+              "object": "branch:west-side"
+            },
+            {
+              "_description": "Caroline is the customer for checking account number 526",
+              "user": "user:caroline",
+              "relation": "customer",
+              "object": "account:checking-526"
+            },
+            {
+              "_description": "The West-Side branch is the branch that the Checking account number 526 has been created at",
+              "user": "branch:west-side",
+              "relation": "branch",
+              "object": "account:checking-526"
+            },
+            {
+              "_description": "Checking account number 526 is the account for transaction A",
+              "user": "account:checking-526",
+              "relation": "account",
+              "object": "transaction:A"
+            },
+            {
+              "_description": "8am to 9am is within the office hours of the West-Side branch",
+              "user": "timeslot:8_9",
+              "relation": "approved_timeslot",
+              "object": "branch:west-side"
+            },
+            {
+              "_description": "9am to 10am is within the office hours of the West-Side branch",
+              "user": "timeslot:9_10",
+              "relation": "approved_timeslot",
+              "object": "branch:west-side"
+            },
+            {
+              "_description": "10am to 11am is within the office hours of the West-Side branch",
+              "user": "timeslot:10_11",
+              "relation": "approved_timeslot",
+              "object": "branch:west-side"
+            },
+            {
+              "_description": "11am to 12pm is within the office hours of the West-Side branch",
+              "user": "timeslot:11_12",
+              "relation": "approved_timeslot",
+              "object": "branch:west-side"
+            },
+            {
+              "_description": "12pm to 1pm is within the office hours of the West-Side branch",
+              "user": "timeslot:12_13",
+              "relation": "approved_timeslot",
+              "object": "branch:west-side"
+            },
+            {
+              "_description": "1pm to 2pm is within the office hours of the West-Side branch",
+              "user": "timeslot:13_14",
+              "relation": "approved_timeslot",
+              "object": "branch:west-side"
+            },
+            {
+              "_description": "2pm to 3pm is within the office hours of the West-Side branch",
+              "user": "timeslot:14_15",
+              "relation": "approved_timeslot",
+              "object": "branch:west-side"
+            },
+            {
+              "_description": "The office VPN w/ the 10.0.0.0/16 address range is approved for the West-Side branch",
+              "user": "ip-address-range:10.0.0.0/16",
+              "relation": "approved_ip_address_range",
+              "object": "branch:west-side"
+            }
+          ]
+        }
+      }
+    ],
+    "modeling/custom-roles.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Anne is assigned the media-manager role",
+              "user": "user:anne",
+              "relation": "assignee",
+              "object": "role:media-manager"
+            },
+            {
+              "_description": "Beth is assigned the media-viewer role",
+              "user": "user:beth",
+              "relation": "assignee",
+              "object": "role:media-viewer"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "assignee",
+          "object": "role:media-manager",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Users assigned the media-manager role can edit in the Logos assets category",
+              "user": "role:media-manager#assignee",
+              "relation": "editor",
+              "object": "asset-category:logos"
+            },
+            {
+              "_description": "Users assigned the media-viewer role can view from the Logos assets category",
+              "user": "role:media-viewer#assignee",
+              "relation": "viewer",
+              "object": "asset-category:logos"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "editor",
+          "object": "asset-category:logos",
+          "allowed": true
+        }
+      }
+    ],
+    "modeling/direct-access.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:bob",
+              "relation": "editor",
+              "object": "document:meeting_notes.doc"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:bob",
+          "relation": "editor",
+          "object": "document:meeting_notes.doc",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:bob",
+          "relation": "viewer",
+          "object": "document:meeting_notes.doc",
+          "allowed": false
+        }
+      }
+    ],
+    "modeling/getting-started.mdx": [],
+    "modeling/migrating/migrating-models.mdx": [],
+    "modeling/migrating/migrating-relations.mdx": [
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "can_write",
+          "object": "document:roadmap",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "can_edit",
+          "object": "document:roadmap",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Bethany assigned writer instead of editor",
+              "user": "user:bethany",
+              "relation": "writer",
+              "object": "document:roadmap"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:bethany",
+          "relation": "can_write",
+          "object": "document:roadmap",
+          "allowed": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "writer",
+              "object": "document:roadmap"
+            },
+            {
+              "user": "user:charles",
+              "relation": "writer",
+              "object": "document:roadmap"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "deleteRelationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "editor",
+              "object": "document:roadmap"
+            },
+            {
+              "user": "user:charles",
+              "relation": "editor",
+              "object": "document:roadmap"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "can_write",
+          "object": "document:roadmap",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "editor",
+          "object": "document:roadmap",
+          "allowed": false
+        }
+      }
+    ],
+    "modeling/migrating/overview.mdx": [],
+    "modeling/modular-models.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "admin",
+              "object": "organization:acme"
+            },
+            {
+              "user": "organization:acme",
+              "relation": "organization",
+              "object": "space:acme"
+            },
+            {
+              "user": "organization:acme",
+              "relation": "organization",
+              "object": "project:acme"
+            }
+          ],
+          "skipSetup": true,
+          "allowedLanguages": [
+            "js-sdk",
+            "go-sdk",
+            "dotnet-sdk",
+            "python-sdk",
+            "java-sdk",
+            "cli",
+            "curl"
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "can_create_space",
+          "object": "organization:acme",
+          "allowed": true
+        }
+      }
+    ],
+    "modeling/multiple-restrictions.mdx": [
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:becky",
+          "relation": "can_write",
+          "object": "document:planning",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:carl",
+          "relation": "can_write",
+          "object": "document:planning",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:becky",
+          "relation": "can_delete",
+          "object": "document:planning",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:carl",
+          "relation": "can_delete",
+          "object": "document:planning",
+          "allowed": false
+        }
+      }
+    ],
+    "modeling/organization-context-authorization.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Anne has a `project manager` role at organization A",
+              "user": "user:anne",
+              "relation": "project_manager",
+              "object": "organization:A"
+            },
+            {
+              "_description": "Anne has a `project manager` role at organization B",
+              "user": "user:anne",
+              "relation": "project_manager",
+              "object": "organization:B"
+            },
+            {
+              "_description": "Anne has a `project manager` role at organization C",
+              "user": "user:anne",
+              "relation": "project_manager",
+              "object": "organization:C"
+            },
+            {
+              "_description": "Beth has a `project manager` role at organization B",
+              "user": "user:beth",
+              "relation": "project_manager",
+              "object": "organization:B"
+            },
+            {
+              "_description": "Carl has a `project manager` role at organization C",
+              "user": "user:carl",
+              "relation": "project_manager",
+              "object": "organization:C"
+            },
+            {
+              "_description": "Organization A owns Project X",
+              "user": "organization:A",
+              "relation": "owner",
+              "object": "project:X"
+            },
+            {
+              "_description": "Project X is shared with Organization B",
+              "user": "organization:B",
+              "relation": "partner",
+              "object": "project:X"
+            }
+          ],
+          "skipSetup": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "can_view",
+          "object": "project:X",
+          "allowed": true,
+          "skipSetup": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "can_delete",
+          "object": "project:X",
+          "allowed": true,
+          "skipSetup": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:beth",
+          "relation": "can_view",
+          "object": "project:X",
+          "allowed": true,
+          "skipSetup": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:beth",
+          "relation": "can_delete",
+          "object": "project:X",
+          "allowed": false,
+          "skipSetup": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:carl",
+          "relation": "can_view",
+          "object": "project:X",
+          "allowed": false,
+          "skipSetup": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:carl",
+          "relation": "can_delete",
+          "object": "project:X",
+          "allowed": false,
+          "skipSetup": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "can_view",
+          "object": "project:X",
+          "allowed": false,
+          "skipSetup": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Anne is authorizing from the context of organization:A",
+              "user": "user:anne",
+              "relation": "user_in_context",
+              "object": "organization:A"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "can_view",
+          "object": "project:X",
+          "allowed": true,
+          "skipSetup": true
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "deleteRelationshipTuples": [
+            {
+              "_description": "Delete stored tuples where Anne is authorizing from the context of organization:A",
+              "user": "user:anne",
+              "relation": "user_in_context",
+              "object": "organization:A"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "can_view",
+          "object": "project:X",
+          "allowed": true,
+          "skipSetup": true,
+          "contextualTuples": [
+            {
+              "_description": "Anne is authorizing from the context of organization:A",
+              "user": "user:anne",
+              "relation": "user_in_context",
+              "object": "organization:A"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:anne",
+          "relation": "can_view",
+          "object": "project:X",
+          "allowed": false,
+          "skipSetup": true,
+          "contextualTuples": [
+            {
+              "_description": "Anne is authorizing from the context of organization:C",
+              "user": "user:anne",
+              "relation": "user_in_context",
+              "object": "organization:C"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Anne has a `project manager` role at organization A",
+              "user": "user:anne",
+              "relation": "project_manager",
+              "object": "organization:A"
+            },
+            {
+              "_description": "Anne has a `project manager` role at organization B",
+              "user": "user:anne",
+              "relation": "project_manager",
+              "object": "organization:B"
+            },
+            {
+              "_description": "Anne has a `project manager` role at organization C",
+              "user": "user:anne",
+              "relation": "project_manager",
+              "object": "organization:C"
+            },
+            {
+              "_description": "Beth has a `project manager` role at organization B",
+              "user": "user:beth",
+              "relation": "project_manager",
+              "object": "organization:B"
+            },
+            {
+              "_description": "Carl has a `project manager` role at organization C",
+              "user": "user:carl",
+              "relation": "project_manager",
+              "object": "organization:C"
+            },
+            {
+              "_description": "Organization A owns Project X",
+              "user": "organization:A",
+              "relation": "owner",
+              "object": "project:X"
+            },
+            {
+              "_description": "Project X is shared with Organization B",
+              "user": "organization:B",
+              "relation": "partner",
+              "object": "project:X"
+            }
+          ],
+          "skipSetup": true
+        }
+      }
+    ],
+    "modeling/overview.mdx": [],
+    "modeling/parent-child.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:bob",
+              "relation": "editor",
+              "object": "folder:notes"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "the notes folder is a parent of the meeting notes document",
+              "user": "folder:notes",
+              "relation": "parent",
+              "object": "document:meeting_notes.doc"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:bob",
+          "relation": "editor",
+          "object": "document:meeting_notes.doc",
+          "allowed": true
+        }
+      }
+    ],
+    "modeling/public-access.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "user:* denotes every object of type user",
+              "user": "user:*",
+              "relation": "view",
+              "object": "document:company-psa.doc"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:bob",
+          "relation": "view",
+          "object": "document:company-psa.doc",
+          "allowed": true
+        }
+      }
+    ],
+    "modeling/roles-and-permissions.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Add bob as viewer on trip:Europe",
+              "user": "user:bob",
+              "relation": "viewer",
+              "object": "trip:Europe"
+            },
+            {
+              "_description": "Add alice as owner on trip:Europe",
+              "user": "user:alice",
+              "relation": "owner",
+              "object": "trip:Europe"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:bob",
+          "relation": "booking_viewer",
+          "object": "trip:Europe",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:bob",
+          "relation": "booking_adder",
+          "object": "trip:Europe",
+          "allowed": false
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:alice",
+          "relation": "booking_viewer",
+          "object": "trip:Europe",
+          "allowed": true
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:alice",
+          "relation": "booking_adder",
+          "object": "trip:Europe",
+          "allowed": true
+        }
+      }
+    ],
+    "modeling/store-file-format.mdx": [],
+    "modeling/testing-models.mdx": [],
+    "modeling/token-claims-contextual-tuples.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Members of the marketing group can view the product-launch document",
+              "user": "group:marketing#member",
+              "relation": "viewer",
+              "object": "document:product-launch"
+            },
+            {
+              "_description": "Members of the everyone group can view the welcome document",
+              "user": "group:everyone#member",
+              "relation": "viewer",
+              "object": "document:welcome"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:6b0b14af-59dc-4ff3-a46f-ad351f428726",
+          "relation": "viewer",
+          "object": "document:product-launch",
+          "allowed": true,
+          "contextualTuples": [
+            {
+              "_description": "user 6b0b14af-59dc-4ff3-a46f-ad351f428726 is a member of the marketing group",
+              "user": "user:6b0b14af-59dc-4ff3-a46f-ad351f428726",
+              "relation": "member",
+              "object": "group:marketing"
+            },
+            {
+              "_description": "user 6b0b14af-59dc-4ff3-a46f-ad351f428726 is a member of the everyone group",
+              "user": "user:6b0b14af-59dc-4ff3-a46f-ad351f428726",
+              "relation": "member",
+              "object": "group:everyone"
+            }
+          ]
+        }
+      }
+    ],
+    "modeling/user-groups.mdx": [
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:alice",
+              "relation": "member",
+              "object": "team:writers"
+            }
+          ]
+        }
+      },
+      {
+        "component": "WriteRequestViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Set of users related to 'team:writers' as 'member'",
+              "user": "team:writers#member",
+              "relation": "editor",
+              "object": "document:meeting_notes.doc"
+            }
+          ]
+        }
+      },
+      {
+        "component": "CheckRequestViewer",
+        "props": {
+          "user": "user:alice",
+          "relation": "editor",
+          "object": "document:meeting_notes.doc",
+          "allowed": true
+        }
+      }
+    ],
+    "use-cases/ai-agent-authorization.mdx": [],
+    "use-cases/mcp-server-authorization.mdx": [],
+    "use-cases/microservices-authorization.mdx": [],
+    "use-cases/multi-tenant-saas.mdx": [],
+    "use-cases/overview.mdx": [],
+    "use-cases/rag-authorization.mdx": []
+  }
+}

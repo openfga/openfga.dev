@@ -7,3 +7,16 @@
 *.jpeg filter=lfs diff=lfs merge=lfs -text
 *jpeg filter=lfs diff=lfs merge=lfs -text
 *jpg filter=lfs diff=lfs merge=lfs -text
+# docs-site/ overrides — must appear AFTER global LFS rules so they win.
+# Mintlify's deployment does not resolve LFS objects; assets must be regular blobs.
+docs-site/*.svg -filter -diff -merge text=auto
+docs-site/*.png -filter -diff -merge text=auto
+docs-site/*.mp4 -filter -diff -merge
+docs-site/*.webm -filter -diff -merge
+docs-site/**/*.svg -filter -diff -merge text=auto
+docs-site/**/*.png -filter -diff -merge text=auto
+docs-site/**/*.mp4 -filter -diff -merge
+docs-site/**/*.webm -filter -diff -merge
+docs-site/**/*.jpg -filter -diff -merge text=auto
+docs-site/**/*.jpeg -filter -diff -merge text=auto
+docs-site/**/*.gif -filter -diff -merge text=auto

@@ -1,0 +1,1130 @@
+{
+  "headingPages": [
+    {
+      "source": "authorization-concepts.mdx",
+      "native": "docs/authorization-concepts.mdx",
+      "liveURL": "https://openfga.dev/docs/authorization-concepts",
+      "title": "Authorization Concepts",
+      "sidebarTitle": "Authorization Concepts",
+      "headings": [
+        {
+          "id": "authentication-and-authorization",
+          "level": 2,
+          "text": "Authentication and Authorization"
+        },
+        {
+          "id": "what-is-fine-grained-authorization",
+          "level": 2,
+          "text": "What is Fine-Grained Authorization?"
+        },
+        {
+          "id": "what-is-role-based-access-control",
+          "level": 2,
+          "text": "What is Role-Based Access Control?"
+        },
+        {
+          "id": "what-is-attribute-based-access-control",
+          "level": 2,
+          "text": "What is Attribute-Based Access Control?"
+        },
+        {
+          "id": "what-is-policy-based-access-control",
+          "level": 2,
+          "text": "What is Policy-Based Access Control?"
+        },
+        {
+          "id": "what-is-relationship-based-access-control",
+          "level": 2,
+          "text": "What is Relationship-Based Access Control?"
+        },
+        {
+          "id": "what-is-zanzibar",
+          "level": 2,
+          "text": "What is Zanzibar?"
+        }
+      ]
+    },
+    {
+      "source": "concepts.mdx",
+      "native": "docs/concepts.mdx",
+      "liveURL": "https://openfga.dev/docs/concepts",
+      "title": "Concepts",
+      "sidebarTitle": "OpenFGA Concepts",
+      "headings": [
+        {
+          "id": "what-is-a-type",
+          "level": 2,
+          "text": "What Is A Type?"
+        },
+        {
+          "id": "what-is-a-type-definition",
+          "level": 2,
+          "text": "What Is A Type Definition?"
+        },
+        {
+          "id": "what-is-an-authorization-model",
+          "level": 2,
+          "text": "What Is An Authorization Model?"
+        },
+        {
+          "id": "what-is-a-store",
+          "level": 2,
+          "text": "What Is A Store?"
+        },
+        {
+          "id": "what-is-an-object",
+          "level": 2,
+          "text": "What Is An Object?"
+        },
+        {
+          "id": "what-is-a-user",
+          "level": 2,
+          "text": "What Is A User?"
+        },
+        {
+          "id": "what-is-a-relation",
+          "level": 2,
+          "text": "What Is A Relation?"
+        },
+        {
+          "id": "what-is-a-relation-definition",
+          "level": 2,
+          "text": "What Is A Relation Definition?"
+        },
+        {
+          "id": "what-is-a-directly-related-user-type",
+          "level": 2,
+          "text": "What Is A Directly Related User Type?"
+        },
+        {
+          "id": "what-is-a-condition",
+          "level": 2,
+          "text": "What is a Condition?"
+        },
+        {
+          "id": "what-is-a-relationship-tuple",
+          "level": 2,
+          "text": "What Is A Relationship Tuple?"
+        },
+        {
+          "id": "what-is-a-conditional-relationship-tuple",
+          "level": 2,
+          "text": "What Is A Conditional Relationship Tuple?"
+        },
+        {
+          "id": "what-is-a-relationship",
+          "level": 2,
+          "text": "What Is A Relationship?"
+        },
+        {
+          "id": "what-are-direct-and-implied-relationships",
+          "level": 2,
+          "text": "What Are Direct And Implied Relationships?"
+        },
+        {
+          "id": "what-is-a-check-request",
+          "level": 2,
+          "text": "What Is A Check Request?"
+        },
+        {
+          "id": "what-is-a-list-objects-request",
+          "level": 2,
+          "text": "What Is A List Objects Request?"
+        },
+        {
+          "id": "what-is-a-list-users-request",
+          "level": 2,
+          "text": "What Is A List Users Request?"
+        },
+        {
+          "id": "what-are-contextual-tuples",
+          "level": 2,
+          "text": "What Are Contextual Tuples?"
+        },
+        {
+          "id": "what-is-type-bound-public-access",
+          "level": 2,
+          "text": "What Is Type Bound Public Access?"
+        },
+        {
+          "id": "related-sections",
+          "level": 2,
+          "text": "Related Sections"
+        }
+      ]
+    },
+    {
+      "source": "configuration-language.mdx",
+      "native": "docs/configuration-language.mdx",
+      "liveURL": "https://openfga.dev/docs/configuration-language",
+      "title": "Configuration Language",
+      "sidebarTitle": "Configuration Language",
+      "headings": [
+        {
+          "id": "what-does-the-configuration-language-look-like",
+          "level": 2,
+          "text": "What Does The Configuration Language Look Like?"
+        },
+        {
+          "id": "direct-relationship-type-restrictions",
+          "level": 3,
+          "text": "Direct Relationship Type Restrictions"
+        },
+        {
+          "id": "referencing-other-relations-on-the-same-object",
+          "level": 3,
+          "text": "Referencing Other Relations On The Same Object"
+        },
+        {
+          "id": "referencing-relations-on-related-objects",
+          "level": 3,
+          "text": "Referencing Relations On Related Objects"
+        },
+        {
+          "id": "the-union-operator",
+          "level": 3,
+          "text": "The Union Operator"
+        },
+        {
+          "id": "the-intersection-operator",
+          "level": 3,
+          "text": "The Intersection Operator"
+        },
+        {
+          "id": "the-exclusion-operator",
+          "level": 3,
+          "text": "The Exclusion Operator"
+        },
+        {
+          "id": "grouping-and-nesting-operators",
+          "level": 3,
+          "text": "Grouping and nesting operators"
+        },
+        {
+          "id": "conditional-relationships",
+          "level": 3,
+          "text": "Conditional relationships"
+        },
+        {
+          "id": "equivalent-zanzibar-concepts",
+          "level": 2,
+          "text": "Equivalent Zanzibar Concepts"
+        },
+        {
+          "id": "related-sections",
+          "level": 2,
+          "text": "Related Sections"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/cli.mdx",
+      "native": "docs/getting-started/cli.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/cli",
+      "title": "Use the FGA CLI",
+      "sidebarTitle": "Use the FGA CLI",
+      "headings": [
+        {
+          "id": "configuration",
+          "level": 2,
+          "text": "Configuration"
+        },
+        {
+          "id": "basic-operations",
+          "level": 2,
+          "text": "Basic operations"
+        },
+        {
+          "id": "work-with-authorization-model-versions",
+          "level": 2,
+          "text": "Work with authorization model versions"
+        },
+        {
+          "id": "import-tuples",
+          "level": 2,
+          "text": "Import tuples"
+        },
+        {
+          "id": "yaml",
+          "level": 3,
+          "text": "yaml"
+        },
+        {
+          "id": "json",
+          "level": 3,
+          "text": "JSON"
+        },
+        {
+          "id": "csv",
+          "level": 3,
+          "text": "CSV"
+        },
+        {
+          "id": "delete-tuples",
+          "level": 2,
+          "text": "Delete Tuples"
+        },
+        {
+          "id": "import-stores",
+          "level": 2,
+          "text": "Import stores"
+        },
+        {
+          "id": "related-sections",
+          "level": 2,
+          "text": "Related Sections"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/configure-model.mdx",
+      "native": "docs/getting-started/configure-model.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/configure-model",
+      "title": "Configure Authorization Model for a Store",
+      "sidebarTitle": "Configure Authorization Model",
+      "headings": [
+        {
+          "id": "before-you-start",
+          "level": 2,
+          "text": "Before you start"
+        },
+        {
+          "id": "step-by-step",
+          "level": 2,
+          "text": "Step by step"
+        },
+        {
+          "id": "related-sections",
+          "level": 2,
+          "text": "Related Sections"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/configure-telemetry.mdx",
+      "native": "docs/getting-started/configure-telemetry.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/configure-telemetry",
+      "title": "Configure SDK Client Telemetry",
+      "sidebarTitle": "Configure SDK Client Telemetry",
+      "headings": [
+        {
+          "id": "enabling-telemetry",
+          "level": 2,
+          "text": "Enabling Telemetry"
+        },
+        {
+          "id": "customizing-telemetry",
+          "level": 2,
+          "text": "Customizing Telemetry"
+        },
+        {
+          "id": "examples",
+          "level": 2,
+          "text": "Examples"
+        },
+        {
+          "id": "supported-metrics",
+          "level": 2,
+          "text": "Supported Metrics"
+        },
+        {
+          "id": "supported-attributes",
+          "level": 2,
+          "text": "Supported Attributes"
+        },
+        {
+          "id": "tracing",
+          "level": 2,
+          "text": "Tracing"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/create-store.mdx",
+      "native": "docs/getting-started/create-store.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/create-store",
+      "title": "Create a Store",
+      "sidebarTitle": "Create a Store",
+      "headings": [
+        {
+          "id": "step-by-step",
+          "level": 2,
+          "text": "Step by step"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/framework.mdx",
+      "native": "docs/getting-started/framework.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/framework",
+      "title": "Integrate Within a Framework",
+      "sidebarTitle": "Integrate Within a Framework",
+      "headings": [
+        {
+          "id": "before-you-start",
+          "level": 2,
+          "text": "Before you start"
+        },
+        {
+          "id": "step-by-step",
+          "level": 2,
+          "text": "Step by step"
+        },
+        {
+          "id": "01-install-and-setup-framework",
+          "level": 3,
+          "text": "01. Install and setup framework"
+        },
+        {
+          "id": "02-authenticate-and-get-user-id",
+          "level": 3,
+          "text": "02. Authenticate and get user ID"
+        },
+        {
+          "id": "03-integrate-the--check-api-into-the-service",
+          "level": 3,
+          "text": "03. Integrate the OpenFGA check API into the service"
+        },
+        {
+          "id": "related-sections",
+          "level": 2,
+          "text": "Related Sections"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/immutable-models.mdx",
+      "native": "docs/getting-started/immutable-models.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/immutable-models",
+      "title": "Immutable Authorization Models",
+      "sidebarTitle": "Immutable Authorization Models",
+      "headings": [
+        {
+          "id": "viewing-all-the-authorization-models",
+          "level": 2,
+          "text": "Viewing all the authorization models"
+        },
+        {
+          "id": "how-to-target-a-particular-model",
+          "level": 2,
+          "text": "How to target a particular model"
+        },
+        {
+          "id": "benefits-of-passing-in-an-authorization-model-id",
+          "level": 2,
+          "text": "Benefits of passing in an authorization model ID"
+        },
+        {
+          "id": "potential-use-cases",
+          "level": 2,
+          "text": "Potential use-cases"
+        },
+        {
+          "id": "complex-model-migrations",
+          "level": 3,
+          "text": "Complex model migrations"
+        },
+        {
+          "id": "progresivelly-rollout-changes",
+          "level": 3,
+          "text": "Progresivelly rollout changes"
+        },
+        {
+          "id": "related-sections",
+          "level": 2,
+          "text": "Related Sections"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/install-sdk.mdx",
+      "native": "docs/getting-started/install-sdk.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/install-sdk",
+      "title": "Install SDK Client",
+      "sidebarTitle": "Install SDK Client",
+      "headings": [
+        {
+          "id": "brew",
+          "level": 3,
+          "text": "Brew"
+        },
+        {
+          "id": "linux-deb-rpm-and-apk-packages",
+          "level": 3,
+          "text": "Linux (deb, rpm and apk) packages"
+        },
+        {
+          "id": "docker",
+          "level": 3,
+          "text": "Docker"
+        },
+        {
+          "id": "go",
+          "level": 3,
+          "text": "Go"
+        },
+        {
+          "id": "manually",
+          "level": 3,
+          "text": "Manually"
+        },
+        {
+          "id": "related-sections",
+          "level": 2,
+          "text": "Related Sections"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/overview.mdx",
+      "native": "docs/getting-started.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started",
+      "title": "Getting Started",
+      "sidebarTitle": "Getting Started",
+      "headings": []
+    },
+    {
+      "source": "getting-started/perform-check.mdx",
+      "native": "docs/getting-started/perform-check.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/perform-check",
+      "title": "Perform a Check",
+      "sidebarTitle": "Perform a Check",
+      "headings": [
+        {
+          "id": "before-you-start",
+          "level": 2,
+          "text": "Before you start"
+        },
+        {
+          "id": "step-by-step",
+          "level": 2,
+          "text": "Step by step"
+        },
+        {
+          "id": "01-configure-the--api-client",
+          "level": 3,
+          "text": "01. Configure the OpenFGA API client"
+        },
+        {
+          "id": "02-calling-check-api",
+          "level": 3,
+          "text": "02. Calling Check API"
+        },
+        {
+          "id": "03-calling-batch-check-api",
+          "level": 3,
+          "text": "03. Calling Batch Check API"
+        },
+        {
+          "id": "configuring-batch-check",
+          "level": 4,
+          "text": "Configuring Batch Check"
+        },
+        {
+          "id": "related-sections",
+          "level": 2,
+          "text": "Related Sections"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/perform-list-objects.mdx",
+      "native": "docs/getting-started/perform-list-objects.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/perform-list-objects",
+      "title": "Perform a list objects call",
+      "sidebarTitle": "Perform a List Objects Request",
+      "headings": [
+        {
+          "id": "before-you-start",
+          "level": 2,
+          "text": "Before you start"
+        },
+        {
+          "id": "step-by-step",
+          "level": 2,
+          "text": "Step by step"
+        },
+        {
+          "id": "01-configure-the--api-client",
+          "level": 3,
+          "text": "01. Configure the OpenFGA API client"
+        },
+        {
+          "id": "02-calling-list-objects-api",
+          "level": 3,
+          "text": "02. Calling list objects API"
+        },
+        {
+          "id": "streamed-list-objects",
+          "level": 2,
+          "text": "Streamed List Objects"
+        },
+        {
+          "id": "using-streamed-list-objects",
+          "level": 3,
+          "text": "Using Streamed List Objects"
+        },
+        {
+          "id": "related-sections",
+          "level": 2,
+          "text": "Related Sections"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/perform-list-users.mdx",
+      "native": "docs/getting-started/perform-list-users.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/perform-list-users",
+      "title": "Perform a List Users call",
+      "sidebarTitle": "Perform a List Users Request",
+      "headings": [
+        {
+          "id": "before-you-start",
+          "level": 2,
+          "text": "Before You Start"
+        },
+        {
+          "id": "step-by-step",
+          "level": 2,
+          "text": "Step by step"
+        },
+        {
+          "id": "01-configure-the--api-client",
+          "level": 3,
+          "text": "01. Configure the OpenFGA API client"
+        },
+        {
+          "id": "02-calling-list-users-api",
+          "level": 3,
+          "text": "02. Calling List Users API"
+        },
+        {
+          "id": "usersets",
+          "level": 2,
+          "text": "Usersets"
+        },
+        {
+          "id": "type-bound-public-access",
+          "level": 2,
+          "text": "Type-bound public access"
+        },
+        {
+          "id": "related-sections",
+          "level": 2,
+          "text": "Related Sections"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/setup-openfga/access-control.mdx",
+      "native": "docs/getting-started/setup-openfga/access-control.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/access-control",
+      "title": "🛡️Setup Access Control",
+      "sidebarTitle": "🛡️Access Control",
+      "headings": [
+        {
+          "id": "requirements",
+          "level": 2,
+          "text": "Requirements"
+        },
+        {
+          "id": "01-ensure-the-server-is-running-with-access-control-disabled",
+          "level": 2,
+          "text": "01. Ensure the server is running (with access control disabled)"
+        },
+        {
+          "id": "02-create-the-access-control-store-and-model",
+          "level": 2,
+          "text": "02. Create the access control store and model"
+        },
+        {
+          "id": "03-enable-access-control",
+          "level": 2,
+          "text": "03. Enable access control"
+        },
+        {
+          "id": "i-enable-access-control-in-the-server",
+          "level": 3,
+          "text": "i. Enable access control in the server"
+        },
+        {
+          "id": "ii-customize-what-claim-you-want-the-api-to-use-optional",
+          "level": 3,
+          "text": "ii. Customize what claim you want the API to use (optional)"
+        },
+        {
+          "id": "iii-restart-the-server",
+          "level": 2,
+          "text": "iii. Restart the server"
+        },
+        {
+          "id": "04-grant-access-to-a-store",
+          "level": 2,
+          "text": "04. Grant access to a store"
+        },
+        {
+          "id": "related-sections",
+          "level": 2,
+          "text": "Related Sections"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/setup-openfga/configuration.mdx",
+      "native": "docs/getting-started/setup-openfga/configuration.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/configuration",
+      "title": "OpenFGA Configuration Options",
+      "sidebarTitle": "Configuration Options",
+      "headings": [
+        {
+          "id": "passing-in-the-options",
+          "level": 2,
+          "text": "Passing in the options"
+        },
+        {
+          "id": "list-of-options",
+          "level": 2,
+          "text": "List of options"
+        },
+        {
+          "id": "related-sections",
+          "level": 2,
+          "text": "Related Sections"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/setup-openfga/configure-openfga.mdx",
+      "native": "docs/getting-started/setup-openfga/configure-openfga.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/configure-openfga",
+      "title": "Configuring OpenFGA",
+      "sidebarTitle": "Configure OpenFGA",
+      "headings": [
+        {
+          "id": "configuring-data-storage",
+          "level": 2,
+          "text": "Configuring data storage"
+        },
+        {
+          "id": "postgres",
+          "level": 3,
+          "text": "Postgres"
+        },
+        {
+          "id": "postgresql-read-replicas-configuration",
+          "level": 4,
+          "text": "PostgreSQL Read Replicas Configuration"
+        },
+        {
+          "id": "setting-up-read-replicas",
+          "level": 5,
+          "text": "Setting Up Read Replicas"
+        },
+        {
+          "id": "synchronous-vs-asynchronous-replication",
+          "level": 5,
+          "text": "Synchronous vs Asynchronous Replication"
+        },
+        {
+          "id": "consistency-preferences",
+          "level": 5,
+          "text": "Consistency Preferences"
+        },
+        {
+          "id": "best-practices",
+          "level": 5,
+          "text": "Best Practices"
+        },
+        {
+          "id": "example-postgresql-replication-setup",
+          "level": 5,
+          "text": "Example PostgreSQL Replication Setup"
+        },
+        {
+          "id": "mysql",
+          "level": 3,
+          "text": "MySQL"
+        },
+        {
+          "id": "sqlite",
+          "level": 3,
+          "text": "SQLite"
+        },
+        {
+          "id": "configuring-authentication",
+          "level": 2,
+          "text": "Configuring authentication"
+        },
+        {
+          "id": "pre-shared-key-authentication",
+          "level": 3,
+          "text": "Pre-shared key authentication"
+        },
+        {
+          "id": "oidc",
+          "level": 3,
+          "text": "OIDC"
+        },
+        {
+          "id": "profiler-pprof",
+          "level": 2,
+          "text": "Profiler (pprof)"
+        },
+        {
+          "id": "health-check",
+          "level": 2,
+          "text": "Health check"
+        },
+        {
+          "id": "experimental-features",
+          "level": 2,
+          "text": "Experimental features"
+        },
+        {
+          "id": "telemetry",
+          "level": 2,
+          "text": "Telemetry"
+        },
+        {
+          "id": "metrics",
+          "level": 2,
+          "text": "Metrics"
+        },
+        {
+          "id": "tracing",
+          "level": 2,
+          "text": "Tracing"
+        },
+        {
+          "id": "logging",
+          "level": 2,
+          "text": "Logging"
+        },
+        {
+          "id": "related-sections",
+          "level": 2,
+          "text": "Related Sections"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/setup-openfga/docker-setup.mdx",
+      "native": "docs/getting-started/setup-openfga/docker.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/docker",
+      "title": "🐳 Setup OpenFGA with Docker",
+      "sidebarTitle": "🐳 Docker",
+      "headings": [
+        {
+          "id": "step-by-step",
+          "level": 2,
+          "text": "Step by step"
+        },
+        {
+          "id": "using-postgres",
+          "level": 2,
+          "text": "Using Postgres"
+        },
+        {
+          "id": "using-mysql",
+          "level": 2,
+          "text": "Using MySQL"
+        },
+        {
+          "id": "using-sqlite",
+          "level": 2,
+          "text": "Using SQLite"
+        },
+        {
+          "id": "pre-shared-key-authentication",
+          "level": 2,
+          "text": "Pre-shared key authentication"
+        },
+        {
+          "id": "oidc-authentication",
+          "level": 2,
+          "text": "OIDC authentication"
+        },
+        {
+          "id": "enabling-profiling",
+          "level": 2,
+          "text": "Enabling profiling"
+        },
+        {
+          "id": "related-sections",
+          "level": 2,
+          "text": "Related sections"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/setup-openfga/kubernetes-setup.mdx",
+      "native": "docs/getting-started/setup-openfga/kubernetes.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/kubernetes",
+      "title": "☸️ Setup OpenFGA with Kubernetes",
+      "sidebarTitle": "☸️ Kubernetes",
+      "headings": []
+    },
+    {
+      "source": "getting-started/setup-openfga/overview.mdx",
+      "native": "docs/getting-started/setup-openfga/overview.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/overview",
+      "title": "Setup OpenFGA",
+      "sidebarTitle": "Setup OpenFGA",
+      "headings": []
+    },
+    {
+      "source": "getting-started/setup-openfga/playground.mdx",
+      "native": "docs/getting-started/setup-openfga/playground.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/playground",
+      "title": "Using the OpenFGA Playground",
+      "sidebarTitle": "Playground",
+      "headings": [
+        {
+          "id": "running-the-playground-in-a-different-port",
+          "level": 2,
+          "text": "Running the Playground in a different port"
+        },
+        {
+          "id": "disabling-the-playground",
+          "level": 2,
+          "text": "Disabling the Playground"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/setup-openfga/reporting-runtime-issues.mdx",
+      "native": "docs/getting-started/setup-openfga/reporting-runtime-issues.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/setup-openfga/reporting-runtime-issues",
+      "title": "Reporting Runtime Issues",
+      "sidebarTitle": "Reporting Runtime Issues",
+      "headings": [
+        {
+          "id": "full-reproduction",
+          "level": 2,
+          "text": "Full Reproduction"
+        },
+        {
+          "id": "runtime-investigation-requirements",
+          "level": 2,
+          "text": "Runtime Investigation Requirements"
+        },
+        {
+          "id": "timeline-of-events",
+          "level": 3,
+          "text": "Timeline Of Events"
+        },
+        {
+          "id": "authorization-data",
+          "level": 3,
+          "text": "Authorization Data"
+        },
+        {
+          "id": "authorization-model",
+          "level": 4,
+          "text": "Authorization Model"
+        },
+        {
+          "id": "relationship-tuples",
+          "level": 4,
+          "text": "Relationship Tuples"
+        },
+        {
+          "id": "alternative-simplified-reproduction",
+          "level": 4,
+          "text": "Alternative: Simplified Reproduction"
+        },
+        {
+          "id": "openfga-configuration",
+          "level": 3,
+          "text": "OpenFGA Configuration"
+        },
+        {
+          "id": "version-information",
+          "level": 4,
+          "text": "Version Information"
+        },
+        {
+          "id": "configuration-settings",
+          "level": 4,
+          "text": "Configuration Settings"
+        },
+        {
+          "id": "infrastructure-details",
+          "level": 4,
+          "text": "Infrastructure Details"
+        },
+        {
+          "id": "testing-scenario",
+          "level": 3,
+          "text": "Testing Scenario"
+        },
+        {
+          "id": "load-testing-script",
+          "level": 4,
+          "text": "Load Testing Script"
+        },
+        {
+          "id": "request-examples",
+          "level": 4,
+          "text": "Request Examples"
+        },
+        {
+          "id": "performance-expectations",
+          "level": 4,
+          "text": "Performance Expectations"
+        },
+        {
+          "id": "observability",
+          "level": 3,
+          "text": "Observability"
+        },
+        {
+          "id": "key-metrics",
+          "level": 4,
+          "text": "Key Metrics"
+        },
+        {
+          "id": "traces",
+          "level": 4,
+          "text": "Traces"
+        },
+        {
+          "id": "logs",
+          "level": 4,
+          "text": "Logs"
+        },
+        {
+          "id": "how-to-share-this-information",
+          "level": 3,
+          "text": "How to Share This Information"
+        },
+        {
+          "id": "related-sections",
+          "level": 2,
+          "text": "Related Sections"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/setup-sdk-client.mdx",
+      "native": "docs/getting-started/setup-sdk-client.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/setup-sdk-client",
+      "title": "Setup SDK Client for Store",
+      "sidebarTitle": "Setup SDK Client for Store",
+      "headings": [
+        {
+          "id": "using-no-authentication",
+          "level": 2,
+          "text": "Using No Authentication"
+        },
+        {
+          "id": "using-shared-key-authentication",
+          "level": 2,
+          "text": "Using shared key authentication"
+        },
+        {
+          "id": "using-client-credentials-flow",
+          "level": 2,
+          "text": "Using client credentials flow"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/tuples-api-best-practices.mdx",
+      "native": "docs/getting-started/tuples-api-best-practices.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/tuples-api-best-practices",
+      "title": "Best Practices of Managing Tuples and Invoking APIs",
+      "sidebarTitle": "Implementation Best Practices",
+      "headings": [
+        {
+          "id": "do-not-store-personal-identifiable-information-in-tuples",
+          "level": 2,
+          "text": "Do Not Store Personal Identifiable Information in Tuples"
+        },
+        {
+          "id": "always-specify-authorization-model-id-whenever-possible",
+          "level": 2,
+          "text": "Always specify authorization model ID whenever possible"
+        },
+        {
+          "id": "related-sections",
+          "level": 2,
+          "text": "Related Sections"
+        }
+      ]
+    },
+    {
+      "source": "getting-started/update-tuples.mdx",
+      "native": "docs/getting-started/update-tuples.mdx",
+      "liveURL": "https://openfga.dev/docs/getting-started/update-tuples",
+      "title": "Update Relationship Tuples",
+      "sidebarTitle": "Update Relationship Tuples",
+      "headings": [
+        {
+          "id": "before-you-start",
+          "level": 2,
+          "text": "Before you start"
+        },
+        {
+          "id": "step-by-step",
+          "level": 2,
+          "text": "Step by step"
+        },
+        {
+          "id": "01-configure-the--api-client",
+          "level": 3,
+          "text": "01. Configure the OpenFGA API client"
+        },
+        {
+          "id": "02-calling-write-api-to-add-new-relationship-tuples",
+          "level": 3,
+          "text": "02. Calling write API to add new relationship tuples"
+        },
+        {
+          "id": "03-calling-write-api-to-delete-relationship-tuples",
+          "level": 3,
+          "text": "03. Calling write API to delete relationship tuples"
+        },
+        {
+          "id": "04-writing-and-deleting-relationship-tuples-in-the-same-request",
+          "level": 3,
+          "text": "04. Writing and deleting relationship tuples in the same request"
+        },
+        {
+          "id": "05-ignoring-duplicate-or-missing-tuples",
+          "level": 3,
+          "text": "05. Ignoring duplicate or missing tuples"
+        },
+        {
+          "id": "related-sections",
+          "level": 2,
+          "text": "Related Sections"
+        }
+      ]
+    },
+    {
+      "source": "intro.mdx",
+      "native": "docs/fga.mdx",
+      "liveURL": "https://openfga.dev/docs/fga",
+      "title": "Introduction to OpenFGA",
+      "sidebarTitle": "What is OpenFGA",
+      "headings": [
+        {
+          "id": "benefits",
+          "level": 2,
+          "text": "Benefits"
+        },
+        {
+          "id": "features",
+          "level": 2,
+          "text": "Features"
+        },
+        {
+          "id": "related-sections",
+          "level": 2,
+          "text": "Related Sections"
+        }
+      ]
+    }
+  ]
+}

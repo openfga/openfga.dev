@@ -1,0 +1,491 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "luma",
+  "name": "OpenFGA",
+  "description": "OpenFGA is a CNCF open source authorization system for fine-grained, relationship-based access control.",
+  "logo": {
+    "light": "https://raw.githubusercontent.com/openfga/community/22a5668e729b2d5453c6520e6f00c44a99fcd4fc/brand-assets/horizontal/color/black/openfga-horizontal-color_black.svg",
+    "dark": "https://raw.githubusercontent.com/openfga/community/22a5668e729b2d5453c6520e6f00c44a99fcd4fc/brand-assets/horizontal/color/white/openfga-horizontal-color_white.svg",
+    "href": "https://openfga.dev/"
+  },
+  "colors": {
+    "primary": "#2c7a3f",
+    "light": "#d3ffd7",
+    "dark": "#558f69"
+  },
+  "appearance": {
+    "default": "dark",
+    "strict": false
+  },
+  "styling": {
+    "codeblocks": "system"
+  },
+  "background": {
+    "color": {
+      "dark": "#272b33"
+    }
+  },
+  "favicon": "/images/img/openfga-icon.svg",
+  "metadata": {
+    "timestamp": true
+  },
+  "seo": {
+    "indexing": "all",
+    "metatags": {
+      "canonical": "https://openfga.dev/docs",
+      "og:image": "https://openfga.dev/img/og-rich-embed.png",
+      "openfga:docs-source-sha256": "ab655a379fdc6fe3d305e6cf78b73f4b1a4ef4356950def4d69a6f6cdf280aa6"
+    }
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Docs",
+        "href": "/"
+      },
+      {
+        "label": "API Reference",
+        "href": "/api/service"
+      },
+      {
+        "label": "Project",
+        "href": "https://openfga.dev/project"
+      },
+      {
+        "label": "Community",
+        "href": "https://openfga.dev/community"
+      },
+      {
+        "label": "Blog",
+        "href": "https://openfga.dev/blog"
+      },
+      {
+        "type": "github",
+        "href": "https://github.com/openfga/openfga"
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/openfga",
+      "github": "https://github.com/openfga",
+      "linkedin": "https://www.linkedin.com/company/openfga/",
+      "youtube": "https://www.youtube.com/@OpenFGA"
+    }
+  },
+  "contextual": {
+    "options": ["copy", "chatgpt", "claude", "add-mcp", "cursor", "vscode"],
+    "display": "header"
+  },
+  "api": {
+    "playground": {
+      "display": "simple"
+    }
+  },
+  "navigation": {
+    "anchors": [
+      {
+        "anchor": "Docs",
+        "hidden": true,
+        "pages": [
+          "fga",
+          "authorization-concepts",
+          "concepts",
+          "configuration-language",
+          {
+            "group": "Getting Started",
+            "icon": "rocket",
+            "pages": [
+              "getting-started",
+              {
+                "group": "Setup OpenFGA",
+                "pages": [
+                  "getting-started/setup-openfga/overview",
+                  "getting-started/setup-openfga/configure-openfga",
+                  "getting-started/setup-openfga/configuration",
+                  "getting-started/setup-openfga/docker",
+                  "getting-started/setup-openfga/kubernetes",
+                  "getting-started/setup-openfga/access-control",
+                  "getting-started/setup-openfga/playground",
+                  "getting-started/setup-openfga/reporting-runtime-issues"
+                ]
+              },
+              "getting-started/install-sdk",
+              "getting-started/create-store",
+              "getting-started/setup-sdk-client",
+              "getting-started/configure-model",
+              "getting-started/update-tuples",
+              "getting-started/perform-check",
+              "getting-started/perform-list-objects",
+              "getting-started/perform-list-users",
+              "getting-started/cli",
+              "getting-started/framework",
+              "getting-started/immutable-models",
+              "getting-started/tuples-api-best-practices",
+              "getting-started/configure-telemetry"
+            ]
+          },
+          {
+            "group": "Modeling Guides",
+            "icon": "diagram-project",
+            "pages": [
+              "modeling/overview",
+              "modeling/getting-started",
+              "modeling/direct-access",
+              "modeling/user-groups",
+              "modeling/roles-and-permissions",
+              "modeling/parent-child",
+              "modeling/blocklists",
+              "modeling/public-access",
+              "modeling/multiple-restrictions",
+              "modeling/custom-roles",
+              "modeling/conditions",
+              "modeling/token-claims-contextual-tuples",
+              "modeling/contextual-time-based-authorization",
+              "modeling/organization-context-authorization",
+              "modeling/testing",
+              "modeling/store-file-format",
+              "modeling/modular-models",
+              {
+                "group": "Building Blocks",
+                "pages": [
+                  "modeling/building-blocks/overview",
+                  "modeling/building-blocks/direct-relationships",
+                  "modeling/building-blocks/concentric-relationships",
+                  "modeling/building-blocks/object-to-object-relationships",
+                  "modeling/building-blocks/usersets"
+                ]
+              },
+              {
+                "group": "Advanced Use-Cases",
+                "pages": [
+                  "modeling/advanced/overview",
+                  "modeling/advanced/gdrive",
+                  "modeling/advanced/github",
+                  "modeling/advanced/slack",
+                  "modeling/advanced/iot",
+                  "modeling/advanced/entitlements"
+                ]
+              },
+              {
+                "group": "Migrations",
+                "pages": [
+                  "modeling/migrating/overview",
+                  "modeling/migrating/migrating-relations",
+                  "modeling/migrating/migrating-models"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Authorization for Agents",
+            "icon": "robot",
+            "pages": [
+              "modeling/agents/overview",
+              "modeling/agents/agents-as-principals",
+              "modeling/agents/rag-authorization",
+              "modeling/agents/mcp-authorization",
+              "modeling/agents/task-based-authorization"
+            ]
+          },
+          {
+            "group": "Interacting with the API",
+            "icon": "code",
+            "pages": [
+              "interacting/overview",
+              "interacting/managing-user-access",
+              "interacting/managing-group-access",
+              "interacting/managing-group-membership",
+              "interacting/managing-relationships-between-objects",
+              "interacting/contextual-tuples",
+              "interacting/consistency",
+              "interacting/relationship-queries",
+              "interacting/read-tuple-changes",
+              "interacting/search-with-permissions",
+              "interacting/authzen"
+            ]
+          },
+          {
+            "group": "Best Practices",
+            "icon": "server",
+            "pages": [
+              "best-practices/overview",
+              "best-practices/adoption-patterns",
+              "best-practices/modeling-design-principles",
+              "best-practices/modeling-abac",
+              "best-practices/modeling-roles",
+              "best-practices/source-of-truth",
+              "best-practices/running-in-production"
+            ]
+          },
+          {
+            "group": "Industries",
+            "icon": "building",
+            "pages": [
+              "industries/overview",
+              "industries/healthcare",
+              "industries/banking",
+              "industries/ecommerce",
+              "industries/human-resources",
+              "industries/crm",
+              "industries/lms",
+              "industries/applicant-tracking-system"
+            ]
+          },
+          {
+            "group": "Use Cases",
+            "icon": "lightbulb",
+            "pages": [
+              "use-cases/overview",
+              "use-cases/ai-agent-authorization",
+              "use-cases/rag-authorization",
+              "use-cases/mcp-server-authorization",
+              "use-cases/multi-tenant-saas",
+              "use-cases/microservices-authorization"
+            ]
+          },
+          {
+            "group": "Adopters",
+            "icon": "handshake",
+            "pages": [
+              "adopters/overview",
+              "adopters/agicap",
+              "adopters/docker",
+              "adopters/grafana",
+              "adopters/read-ai",
+              "adopters/headspace",
+              "adopters/zuplo",
+              "adopters/openlane",
+              "adopters/vitrolife"
+            ]
+          },
+          {
+            "group": "Learn",
+            "icon": "graduation-cap",
+            "pages": [
+              "learn/overview",
+              "learn/zanzibar",
+              "learn/rebac",
+              "learn/rbac-vs-rebac",
+              "learn/abac-vs-rebac",
+              "learn/fine-grained-authorization",
+              "learn/policy-engine"
+            ]
+          }
+        ]
+      },
+      {
+        "anchor": "API Reference",
+        "hidden": true,
+        "openapi": {
+          "source": "https://raw.githubusercontent.com/openfga/api/refs/heads/main/docs/openapiv3/apidocs.openapi.json",
+          "directory": "api/service",
+          "overlays": ["openapi/sdk-samples.overlay.json"]
+        },
+        "groups": [
+          {
+            "group": "Stores",
+            "pages": ["GET /stores", "POST /stores", "GET /stores/{store_id}", "DELETE /stores/{store_id}"]
+          },
+          {
+            "group": "Authorization Models",
+            "pages": [
+              "GET /stores/{store_id}/authorization-models",
+              "POST /stores/{store_id}/authorization-models",
+              "GET /stores/{store_id}/authorization-models/{id}"
+            ]
+          },
+          {
+            "group": "Relationship Tuples",
+            "pages": ["GET /stores/{store_id}/changes", "POST /stores/{store_id}/read", "POST /stores/{store_id}/write"]
+          },
+          {
+            "group": "Relationship Queries",
+            "pages": [
+              "POST /stores/{store_id}/batch-check",
+              "POST /stores/{store_id}/check",
+              "POST /stores/{store_id}/expand",
+              "POST /stores/{store_id}/list-objects",
+              "POST /stores/{store_id}/list-users",
+              "POST /stores/{store_id}/streamed-list-objects"
+            ]
+          },
+          {
+            "group": "Assertions",
+            "pages": [
+              "GET /stores/{store_id}/assertions/{authorization_model_id}",
+              "PUT /stores/{store_id}/assertions/{authorization_model_id}"
+            ]
+          },
+          {
+            "group": "AuthZenService",
+            "tag": "Experimental",
+            "pages": [
+              "GET /.well-known/authzen-configuration/{store_id}",
+              "POST /stores/{store_id}/access/v1/evaluation",
+              "POST /stores/{store_id}/access/v1/evaluations",
+              "POST /stores/{store_id}/access/v1/search/action",
+              "POST /stores/{store_id}/access/v1/search/resource",
+              "POST /stores/{store_id}/access/v1/search/subject"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/fga",
+      "permanent": false
+    },
+    {
+      "source": "/community",
+      "destination": "https://openfga.dev/community",
+      "permanent": true
+    },
+    {
+      "source": "/api",
+      "destination": "/api/service",
+      "permanent": true
+    },
+    {
+      "source": "/api-reference",
+      "destination": "/api/service",
+      "permanent": true
+    },
+    {
+      "source": "/api-reference/:path*",
+      "destination": "/api/service/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/api/service",
+      "destination": "/api/service/stores/list-all-stores",
+      "permanent": false
+    },
+    {
+      "source": "/api/service/authorization-models/return-all-the-authorization-models-for-a-particular-store",
+      "destination": "/api/service/authorization-models/get-all-authorization-models",
+      "permanent": true
+    },
+    {
+      "source": "/api/service/authorization-models/return-a-particular-version-of-an-authorization-model",
+      "destination": "/api/service/authorization-models/get-an-authorization-model-by-its-id",
+      "permanent": true
+    },
+    {
+      "source": "/api/service/relationship-tuples/return-a-list-of-all-the-tuple-changes",
+      "destination": "/api/service/relationship-tuples/get-all-tuple-changes",
+      "permanent": true
+    },
+    {
+      "source": "/api/service/relationship-tuples/get-tuples-from-the-store-that-matches-a-query-without-following-userset-rewrite-rules",
+      "destination": "/api/service/relationship-tuples/get-stored-relationship-tuples",
+      "permanent": true
+    },
+    {
+      "source": "/api/service/relationship-tuples/add-or-delete-tuples-from-the-store",
+      "destination": "/api/service/relationship-tuples/add-or-delete-tuples",
+      "permanent": true
+    },
+    {
+      "source": "/api/service/relationship-queries/send-a-list-of-%60check%60-operations-in-a-single-request",
+      "destination": "/api/service/relationship-queries/check-multiple-authorizations-in-a-single-request",
+      "permanent": true
+    },
+    {
+      "source": "/api/service/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object",
+      "destination": "/api/service/relationship-queries/check-user-authorization",
+      "permanent": true
+    },
+    {
+      "source": "/api/service/relationship-queries/expand-all-relationships-in-userset-tree-format-and-following-userset-rewrite-rules-useful-to-reason-about-and-debug-a-certain-relationship",
+      "destination": "/api/service/relationship-queries/expand-relationships-in-userset-tree-format",
+      "permanent": true
+    },
+    {
+      "source": "/api/service/relationship-queries/list-all-objects-of-the-given-type-that-the-user-has-a-relation-with",
+      "destination": "/api/service/relationship-queries/list-objects-a-user-is-related-to",
+      "permanent": true
+    },
+    {
+      "source": "/api/service/relationship-queries/list-the-users-matching-the-provided-filter-who-have-a-certain-relation-to-a-particular-type",
+      "destination": "/api/service/relationship-queries/list-all-users-with-a-relationship-to-an-object",
+      "permanent": true
+    },
+    {
+      "source": "/api/service/relationship-queries/stream-all-objects-of-the-given-type-that-the-user-has-a-relation-with",
+      "destination": "/api/service/relationship-queries/stream-all-objects-with-a-user-relationship",
+      "permanent": true
+    },
+    {
+      "source": "/api/service/assertions/read-assertions-for-an-authorization-model-id",
+      "destination": "/api/service/assertions/get-assertions-for-a-model",
+      "permanent": true
+    },
+    {
+      "source": "/api/service/assertions/upsert-assertions-for-an-authorization-model-id",
+      "destination": "/api/service/assertions/upsert-assertions-for-a-model",
+      "permanent": true
+    },
+    {
+      "source": "/modeling",
+      "destination": "/modeling/overview",
+      "permanent": false
+    },
+    {
+      "source": "/adopters",
+      "destination": "/adopters/overview",
+      "permanent": false
+    },
+    {
+      "source": "/best-practices",
+      "destination": "/best-practices/overview",
+      "permanent": false
+    },
+    {
+      "source": "/industries",
+      "destination": "/industries/overview",
+      "permanent": false
+    },
+    {
+      "source": "/interacting",
+      "destination": "/interacting/overview",
+      "permanent": false
+    },
+    {
+      "source": "/learn",
+      "destination": "/learn/overview",
+      "permanent": false
+    },
+    {
+      "source": "/modeling/advanced",
+      "destination": "/modeling/advanced/overview",
+      "permanent": false
+    },
+    {
+      "source": "/modeling/agents",
+      "destination": "/modeling/agents/overview",
+      "permanent": false
+    },
+    {
+      "source": "/modeling/building-blocks",
+      "destination": "/modeling/building-blocks/overview",
+      "permanent": false
+    },
+    {
+      "source": "/modeling/migrating",
+      "destination": "/modeling/migrating/overview",
+      "permanent": false
+    },
+    {
+      "source": "/use-cases",
+      "destination": "/use-cases/overview",
+      "permanent": false
+    }
+  ],
+  "search": {
+    "prompt": "Ask about OpenFGA"
+  }
+}

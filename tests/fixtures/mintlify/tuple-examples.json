@@ -1,0 +1,752 @@
+{
+  "provenance": {
+    "revision": "85bde5e19f7fa0b8687732c33c4f7c3a39fd83e0",
+    "sourceRoot": "docs/content",
+    "method": "Extracted from legacy source, never from native output."
+  },
+  "pages": {
+    "concepts.mdx": [
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "editor",
+              "object": "document:new-roadmap"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "editor",
+              "object": "document:new-roadmap",
+              "condition": {
+                "name": "less_than_hundred",
+                "context": {
+                  "x": 20
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Anne of type user is directly related to the document",
+              "user": "user:anne",
+              "relation": "viewer",
+              "object": "document:new-roadmap"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Everyone (`*`) of type user is directly related to the document",
+              "user": "user:*",
+              "relation": "viewer",
+              "object": "document:new-roadmap"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "The userset is directly related to this document",
+              "user": "team:product#member",
+              "relation": "viewer",
+              "object": "document:new-roadmap"
+            },
+            {
+              "_description": "AND Anne of type user is a member of the userset team:product#member",
+              "user": "user:anne",
+              "relation": "member",
+              "object": "team:product"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "editor",
+              "object": "document:new-roadmap"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:*",
+              "relation": "editor",
+              "object": "document:new-roadmap"
+            }
+          ]
+        }
+      }
+    ],
+    "configuration-language.mdx": [
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "member",
+              "object": "team:product",
+              "_description": "Anne is directly related to the product team as a member"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:*",
+              "relation": "member",
+              "object": "team:product",
+              "_description": "Everyone (`*`) is directly related to the product team as a member"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "team:contoso#member",
+              "relation": "member",
+              "object": "team:product",
+              "_description": "Members of the contoso team are members of the product team"
+            },
+            {
+              "user": "user:anne",
+              "relation": "member",
+              "object": "team:contoso",
+              "_description": "Anne is a member of the contoso team"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "editor",
+              "object": "document:new-roadmap",
+              "_description": "Anne is an editor of the new-roadmap document"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "viewer",
+              "object": "document:new-roadmap",
+              "_description": "Anne is a viewer of the new-roadmap document"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "editor",
+              "object": "document:new-roadmap",
+              "_description": "Anne is an editor of thew new-roadmap document"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "folder:planning",
+              "relation": "parent_folder",
+              "object": "document:new-roadmap",
+              "_description": "planning folder is the parent folder of the new-roadmap document"
+            },
+            {
+              "user": "user:anne",
+              "relation": "viewer",
+              "object": "folder:planning",
+              "_description": "anne is a viewer of the planning folder"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "viewer",
+              "object": "document:new-roadmap",
+              "_description": "anne is a viewer of the new-roadmap document"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "editor",
+              "object": "document:new-roadmap"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "viewer",
+              "object": "document:new-roadmap"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "editor",
+              "object": "document:new-roadmap"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "authorized_user",
+              "object": "document:new-roadmap"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "viewer",
+              "object": "document:new-roadmap"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "blocked",
+              "object": "document:new-roadmap"
+            }
+          ]
+        }
+      }
+    ],
+    "interacting/managing-group-access.mdx": [
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Every employee in the company can read document:planning",
+              "user": "company:xyz#employee",
+              "relation": "reader",
+              "object": "document:planning"
+            }
+          ]
+        }
+      }
+    ],
+    "interacting/managing-group-membership.mdx": [
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Members of the contoso org can read the planning document",
+              "user": "org:contoso#member",
+              "relation": "reader",
+              "object": "document:planning"
+            }
+          ]
+        }
+      }
+    ],
+    "interacting/managing-user-access.mdx": [
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Anne can read tweet:1",
+              "user": "user:anne",
+              "relation": "reader",
+              "object": "tweet:1"
+            }
+          ]
+        }
+      }
+    ],
+    "interacting/relationship-queries.mdx": [
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Bob has writer relationship with planning document",
+              "user": "user:bob",
+              "relation": "writer",
+              "object": "document:planning"
+            }
+          ]
+        }
+      }
+    ],
+    "modeling/agents/task-based-authorization.mdx": [
+      {
+        "component": "TupleViewer",
+        "props": {
+          "tuples": [
+            {
+              "user": "task:*",
+              "relation": "can_call",
+              "object": "tool:slack_list_channels"
+            },
+            {
+              "user": "task:1",
+              "relation": "can_call",
+              "object": "tool:slack_send_message"
+            },
+            {
+              "user": "task:2",
+              "relation": "can_call",
+              "object": "tool_resource:slack_send_message/XGA14FG"
+            }
+          ]
+        }
+      },
+      {
+        "component": "TupleViewer",
+        "props": {
+          "tuples": [
+            {
+              "user": "task:1",
+              "relation": "task",
+              "object": "agent:1"
+            },
+            {
+              "user": "task:1",
+              "relation": "task",
+              "object": "session:1"
+            },
+            {
+              "user": "session:1#task",
+              "relation": "can_call",
+              "object": "tool:slack_send_message"
+            }
+          ]
+        }
+      },
+      {
+        "component": "TupleViewer",
+        "props": {
+          "tuples": [
+            {
+              "user": "task:1",
+              "relation": "can_call",
+              "object": "tool:slack_send_message",
+              "condition": {
+                "name": "expiration",
+                "context": {
+                  "grant_time": "2026-03-22T00:00:00Z",
+                  "grant_duration": "10m"
+                }
+              }
+            }
+          ],
+          "rightColumnTuples": [
+            {
+              "user": "task:2",
+              "relation": "can_call",
+              "object": "tool:slack_send_message",
+              "condition": {
+                "name": "max_call_count",
+                "context": {
+                  "max_tool_calls": 2
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "component": "TupleViewer",
+        "props": {
+          "tuples": [
+            {
+              "user": "task:1",
+              "relation": "task",
+              "object": "agent:1"
+            },
+            {
+              "user": "task:1",
+              "relation": "can_call",
+              "object": "tool:slack_send_message"
+            }
+          ]
+        }
+      }
+    ],
+    "modeling/blocklists.mdx": [
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Members of the product team can edit the planning document",
+              "user": "team:product#member",
+              "relation": "editor",
+              "object": "document:planning"
+            },
+            {
+              "_description": "Becky is a member of the product team",
+              "user": "user:becky",
+              "relation": "member",
+              "object": "team:product"
+            },
+            {
+              "_description": "Carl is a member of the product team",
+              "user": "user:carl",
+              "relation": "member",
+              "object": "team:product"
+            }
+          ]
+        }
+      }
+    ],
+    "modeling/building-blocks/concentric-relationships.mdx": [
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:bob",
+              "relation": "editor",
+              "object": "document:meeting_notes.doc"
+            }
+          ]
+        }
+      }
+    ],
+    "modeling/building-blocks/direct-relationships.mdx": [
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "viewer",
+              "object": "document:planning"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:*",
+              "relation": "viewer",
+              "object": "document:planning"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:charlie",
+              "relation": "member",
+              "object": "team:product"
+            },
+            {
+              "user": "team:product#member",
+              "relation": "viewer",
+              "object": "document:planning"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:dany",
+              "relation": "member",
+              "object": "team:product-leads"
+            },
+            {
+              "user": "team:product-leads#member",
+              "relation": "member",
+              "object": "team:product"
+            },
+            {
+              "user": "team:product#member",
+              "relation": "member",
+              "object": "team:contoso"
+            },
+            {
+              "user": "team:contoso#member",
+              "relation": "viewer",
+              "object": "document:planning"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:emily",
+              "relation": "editor",
+              "object": "document:planning"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:fred",
+              "relation": "viewer",
+              "object": "document:planning"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:*",
+              "relation": "viewer",
+              "object": "document:planning"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:henry",
+              "relation": "member",
+              "object": "team:product"
+            },
+            {
+              "user": "team:product#member",
+              "relation": "viewer",
+              "object": "document:planning"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:ingred",
+              "relation": "editor",
+              "object": "document:planning"
+            }
+          ]
+        }
+      }
+    ],
+    "modeling/building-blocks/usersets.mdx": [
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "Userset \"Members of the xyz org\" can read the budget document",
+              "user": "org:xyz#member",
+              "relation": "reader",
+              "object": "document:budget"
+            },
+            {
+              "_description": "Anne is part of the userset \"Members of the xyz org\"",
+              "user": "user:anne",
+              "relation": "member",
+              "object": "org:xyz"
+            }
+          ]
+        }
+      }
+    ],
+    "modeling/getting-started.mdx": [
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "organization:A#member",
+              "relation": "editor",
+              "object": "document:0001"
+            }
+          ]
+        }
+      }
+    ],
+    "modeling/migrating/migrating-relations.mdx": [
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "editor",
+              "object": "document:roadmap"
+            },
+            {
+              "user": "user:charles",
+              "relation": "editor",
+              "object": "document:roadmap"
+            }
+          ]
+        }
+      }
+    ],
+    "modeling/multiple-restrictions.mdx": [
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "organization ABC is the owner of planning document",
+              "user": "organization:ABC",
+              "relation": "owner",
+              "object": "document:planning"
+            },
+            {
+              "_description": "Becky is a writer to the planning document",
+              "user": "user:becky",
+              "relation": "writer",
+              "object": "document:planning"
+            },
+            {
+              "_description": "Carl is a writer to the planning document",
+              "user": "user:carl",
+              "relation": "writer",
+              "object": "document:planning"
+            },
+            {
+              "_description": "Becky is a member of the organization ABC",
+              "user": "user:becky",
+              "relation": "member",
+              "object": "organization:ABC"
+            },
+            {
+              "_description": "Carl is a member of the organization XYZ",
+              "user": "user:carl",
+              "relation": "member",
+              "object": "organization:XYZ"
+            }
+          ]
+        }
+      }
+    ],
+    "modeling/public-access.mdx": [
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "It is invalid to use this syntax in the object field. The below relationship tuple is invalid and does not mean that Bob can view all documents.",
+              "user": "user:bob",
+              "relation": "view",
+              "object": "document:*"
+            }
+          ]
+        }
+      },
+      {
+        "component": "RelationshipTuplesViewer",
+        "props": {
+          "relationshipTuples": [
+            {
+              "_description": "It is invalid to use this syntax as part of a userset. The below relationship tuple is invalid and does not mean that members of any org can view the company-psa document.",
+              "user": "org:*#member",
+              "relation": "view",
+              "object": "document:company-psa.doc"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
