@@ -1,4 +1,4 @@
-import { relocateNativeFixture } from './regression-fixtures.mjs';
+import { parentChildHeadingCorrection, relocateNativeFixture } from './regression-fixtures.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -9,6 +9,15 @@ import { parse as parseYaml } from 'yaml';
 const repoRoot = new URL('../../', import.meta.url);
 const read = (file) => readFileSync(new URL(file, repoRoot), 'utf8');
 const contracts = relocateNativeFixture(JSON.parse(read('tests/fixtures/mintlify/live-modeling/contracts.json')));
+const parentChild = contracts.rows.find((row) => row.source === parentChildHeadingCorrection.source);
+assert.equal(parentChild.headline.bodyProseSha256, parentChildHeadingCorrection.previousBodyProseSha256);
+parentChild.headline = { ...parentChild.headline, bodyProseSha256: parentChildHeadingCorrection.bodyProseSha256 };
+assert.equal(parentChild.anchors.filter((heading) => heading.id === parentChildHeadingCorrection.id).length, 1);
+parentChild.anchors = parentChild.anchors.map((heading) => {
+  if (heading.id !== parentChildHeadingCorrection.id) return heading;
+  assert.equal(heading.text, parentChildHeadingCorrection.before);
+  return { ...heading, text: parentChildHeadingCorrection.after };
+});
 const processor = createProcessor();
 const exampleName = /^(AuthzModelSnippetViewer|OpenFGACodeBlock|\w*RequestViewer)$/;
 
@@ -177,6 +186,23 @@ for (const row of contracts.rows) {
         .map((child) => normalized(text(child)))), row.noteTitles, 'Note titles must be visible content, not unsupported props');
   });
 }
+
+test('the upstream parent-child heading correction preserves its legacy H3 target and exact prose digest', () => {
+  const source = read(`docs-site/${parentChild.native}`);
+  const { id, before, after } = parentChildHeadingCorrection;
+  const heading = nodes(source).find((node) => props(node).id === id);
+  assert.equal(heading.name, 'h3');
+  assert.equal(text(heading), after);
+  for (const changed of [
+    source.replace(after, before),
+    source.replace(after, after.replace('folder', 'file')),
+    source.replace('In OpenFGA,', 'In another system,'),
+  ]) {
+    assert.throws(() => assertHeadline(changed, parentChild.headline), /every paragraph/);
+  }
+  assert.throws(() => assertAnchors(nodes(source.replace(id, id.replace('athorization', 'authorization'))),
+    parentChild.anchors), /Missing legacy heading/);
+});
 
 const gettingStarted = read('docs-site/modeling/getting-started.mdx');
 function assertWorkedExamples(source, counts) {
