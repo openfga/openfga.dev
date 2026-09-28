@@ -3,177 +3,107 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fopenfga%2Fopenfga.dev.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fopenfga%2Fopenfga.dev?ref=badge_shield)
 
 ## About OpenFGA
-<!-- markdown-link-check-disable -->
-[OpenFGA](https://github.com/openfga/openfga) is an open source Fine-Grained Authorization solution based on Google's Zanzibar. It was created by the Auth0 FGA team and welcomes community contribution. OpenFGA is designed to make it easy for application builders to quickly add fine-grained authorization to their applications. It offers an HTTP API and has SDKs for programming languages including [JavaScript](https://github.com/openfga/js-sdk), [GoLang](https://github.com/openfga/go-sdk) and [.NET](https://github.com/openfga/dotnet-sdk). More SDKs and integrations such as Rego are planned for the future. OpenFGA is designed and optimized for reliability and low latency at a high scale.
-<!-- markdown-link-check-enable-->
+
+[OpenFGA](https://github.com/openfga/openfga) is an open source fine-grained authorization solution based on Google's Zanzibar. This repository contains the website and documentation for [openfga.dev](https://openfga.dev).
 
 ## About OpenFGA docs
 
-Product documentation and the read-only API reference live in [`docs-site/`](docs-site/README.md) and are published with [Mintlify](https://mintlify.com/). [Docusaurus](https://docusaurus.io/) builds Home, Project, Community, Blog, and website search.
-
-The migration targets `docs-next`, which will temporarily become the default and production source branch. Base follow-up work on `docs-next` and target it with pull requests. The branch switch and outstanding workflow configuration are separate [owner actions](docs-site/README.md#split-site-deployment); changing a PR's base does not configure deployment.
-
-The legacy `docs/content/` corpus and sidebar are retired. Author product documentation directly in `docs-site/`; do not recreate either nested docs tree. Compact historical regression fixtures under `tests/fixtures/mintlify/` preserve independently captured migration expectations, not a second published documentation corpus.
-
-Keep this migration content-preserving. Retain the original visible page titles, section headings, navigation labels, grouping, order, article wording, and page boundaries. SEO-only changes must stay in non-visible metadata, not Mintlify's reader-visible `title` field. Reorganization and visible copy improvements belong in separate follow-up changes. See the [migration review checklist](docs-site/README.md#migration-review-checklist) for the reader-interface and content requirements.
-
-Keep the existing SDK repairs and useful setup guidance within the [documented technical exceptions](docs-site/README.md#retained-technical-exceptions). Those exceptions do not authorize other content additions or section reordering.
-
-Shared components under `src/components/Docs/` remain in use by the Blog and the native viewer/code-generation checks. They are not obsolete solely because the product documentation moved.
-
-### Agent-readable documentation
-
-The website and Mintlify publish separate Markdown and LLM resources, linked from the root `/llms.txt`. See the [build scripts](scripts/README.md) for generated website resources and the [native page actions](docs-site/README.md#page-actions) for reader controls.
-
-### Production routing
-
-After the coordinated cutover, Mintlify's supplied Cloudflare Worker serves `/docs`, including `/docs/api/service`. This repository does not maintain or deploy a Worker.
-
-| Content | Repository source | Public URL |
+| Content | Source | Publishing |
 | --- | --- | --- |
-| Product documentation | `docs-site/fga.mdx`, `docs-site/modeling/`, and other topic directories | `/docs/fga`, `/docs/modeling/...` |
-| Generated API reference | `docs-site/docs.json`, OpenAPI directory `api/service` | `/docs/api/service/...` |
-| Legacy API bookmarks | Docusaurus compatibility page and generated redirects | `/api/service` and old operation URLs redirect to `/docs/api/service/...` |
-| Home, Project, Community, Blog | Docusaurus website sources | Existing website URLs, unchanged |
+| Product documentation | [`docs-site/`](docs-site/README.md) | Mintlify at `/docs/...` |
+| Read-only API reference | [`docs-site/docs.json`](docs-site/docs.json) and the upstream OpenAPI schema | Mintlify at `/docs/api/service/...` |
+| Home, Project, Community, Blog, and website search | `src/`, `blog/`, and `static/` | Docusaurus on GitHub Pages |
 
-Configure Mintlify with directory `/docs-site` and **Host at `/docs`**; do not put `docs/` back into native page IDs. GitHub Pages still publishes `gh-pages`, not `docs-next`. See the [dashboard settings and release sequence](docs-site/README.md#split-site-deployment), including the publication hold required before merging or switching the default branch.
+The Mintlify URLs above describe the planned `/docs` deployment. Legacy `/api/service` URLs and Swagger bookmarks remain supported through the website compatibility page and redirects.
+
+See the [Mintlify contributor guide](docs-site/README.md) for authoring, API samples, media, and migration requirements. The [maintenance scripts guide](scripts/README.md) covers generated files, sitemaps, LLM resources, and upstream updates.
 
 ## Getting Started
 
-### Setup and Installation
+Use Node.js 22. Git, Bash, Python 3, and curl are also required for the repository quality checks.
 
-#### Clone the repo locally
+```bash
+git clone https://github.com/openfga/openfga.dev.git
+cd openfga.dev
+npm ci
+```
 
-Run `git clone https://github.com/openfga/openfga.dev.git` to clone the repo to your machine.
+### Setup Git LFS (Large File Storage)
 
-#### Setup Git LFS (Large File Storage)
-
-Install [Git LFS](https://git-lfs.github.com/), then run these commands from the repository root:
+Install [Git LFS](https://git-lfs.github.com/) and hydrate website/Blog media before rendering the website:
 
 ```bash
 git lfs install
 git lfs pull
 ```
 
-`git lfs pull` downloads and checks out the LFS media for the current ref. If the objects are already downloaded but the working tree still contains pointers, `git lfs checkout` restores those local objects without downloading them.
+If objects are already downloaded but files still contain pointers, run `git lfs checkout`. Assets under `docs-site/` intentionally use ordinary Git files; see the [asset-storage policy](docs-site/README.md#asset-storage-and-git-lfs).
 
-The default rules in [`.gitattributes`](.gitattributes) cover SVG, PNG, JPG, JPEG, GIF, MP4, and WebM media. **Assets under `docs-site/` are an intentional exception:** they are committed as ordinary Git blobs, so a Mintlify checkout does not need to resolve LFS objects. See [Mintlify asset storage](docs-site/README.md#asset-storage-and-git-lfs) before copying or adding media. Keep native overrides after global LFS rules when introducing a new format; do not replace the repository's existing LFS policy.
+### Product docs and API preview
 
-#### Install Dependencies
-
-To run the docs locally you will need to first install dependencies:
-
-```
-npm install
-```
-
-#### Mintlify repository quality checks
-
-From the repository root, use Node.js 22 with Git, Bash, Python 3, and curl available:
+Run the Mintlify CLI from `docs-site/`:
 
 ```bash
-npm ci
-npm run check:mintlify
+cd docs-site
+npx mint dev --port 3333
 ```
 
-The aggregate checks generated browser artifact freshness and codegen/runtime/semantic regressions; MDX parsing; OpenFGA DSL blocks; documentation/API navigation and historical source inventory; native API samples; production-content parity fixtures; custom components; configuration generation; and split-site resource contracts. Shared viewer-runtime tests run once. Invalid content, stale artifacts, or failed checks exit nonzero without regenerating committed output.
+Open `http://localhost:3333/`. Local pages use source-root paths such as `/fga` and `/api/service`; Mintlify adds `/docs` on the configured hosted deployment.
 
-The [Mintlify repository quality workflow](.github/workflows/mintlify-quality.yml) runs on pull requests targeting `main` or `poc/mintlify-native`, pushes to `poc/mintlify-native`, and manual dispatch. It has read-only repository permissions, a 15-minute job timeout, and no path exclusions or deployment steps. Docusaurus build, lint, and audit workflows remain separate; their link checks enforce the split-site boundary.
+### Website and Blog preview
 
-Adding `docs-next` workflow coverage and changing production publishers remain separate owner actions. The subpath migration changes only the configuration updater's moved output path; it does not change workflow branch filters or enable a publication hold.
+From the repository root:
 
-After changing native sources, run `npm run generate:mintlify-deployment` and commit the updated hidden marker in `docs-site/docs.json`. Checks reject stale markers; production acceptance requires the selected checkout's fingerprint on every hosted docs/API page, not merely a matching route inventory. See the [deployment fingerprint guide](docs-site/README.md#deployment-fingerprint).
-
-This source-only gate does not fetch Git LFS objects (`lfs: false`). Website/Blog media may remain as pointers, while [`docs-site/` asset overrides](.gitattributes) keep native assets as ordinary Git blobs. Native source checks reject pointers in both the Git index and working tree, but do not decode or render media. Existing Docusaurus build/preview/deploy workflows retain their LFS-aware checkout; use the Git LFS setup above when rendering the site locally.
-
-Validation is **not network-independent**: dependency installation uses the root lockfile, and API validation fetches the canonical OpenAPI URL on `main` recorded in [`api-samples.json`](docs-site/api-samples.json), checks it against the last-generated SHA-256 digest, and uses a 30-second timeout. Network, digest, or schema failures fail the gate; no cached-spec fallback masks them. The [API updater](docs-site/README.md#automatic-upstream-updates) proposes compatible changes in draft PRs and reports incompatibilities in issues. Mintlify follows upstream `main` independently of these PRs. SDK wire tests execute Node.js and curl programs against loopback fixtures, not a deployed OpenFGA server; other SDK samples have generator regressions, not execution coverage in this gate.
-
-These are repository-owned checks, **not official Mintlify validation or reproducible Mintlify CLI QA**. They do not install or run the Mintlify CLI, compare its native MDX validator, prove browser rendering, or change branch protection. See the [Mintlify authoring guide](docs-site/README.md#validating-authoring-changes) for individual checks and their limits.
-
-#### Running in Development
-
-You can then run 
-
-```
+```bash
 npm run dev
 ```
 
-This starts the Docusaurus website, not the product docs. For native documentation development, follow the [Mintlify preview instructions](docs-site/README.md). Docs and API links on website previews deliberately use the public root rather than the Docusaurus preview prefix.
+Open `http://localhost:3000/`. This runs Docusaurus, not the Mintlify docs. Website previews link to docs/API pages at their public URLs.
 
-Website search indexes Blog, Project, and Community. The local-search plugin excludes the homepage. `@easyops-cn/docusaurus-search-local` is pinned to the unmodified `0.52.2` release: later releases through `0.55.3` call a docs-version hook even with `indexDocs: false`, causing builds to fail when the docs plugin is disabled ([upstream issue](https://github.com/easyops-cn/docusaurus-search-local/issues/571)). No dependency patches or postinstall modifications are required. Upgrade after the upstream regression is fixed, and verify production/preview builds and browser search with `docs: false`; do not re-enable legacy docs to satisfy that hook.
+### Mintlify repository quality checks
 
-#### Building for Production
+After editing native sources, run from the repository root:
 
-To generate a production build
-
-##### NPM
-`npm run build` # Docusaurus website files will be in ./build; Mintlify deploys docs-site separately
-
-Ordinary builds do not regenerate configuration content or fetch the latest server release. Run `npm run build:config-page` explicitly to update the native configuration table, or use the nightly configuration-update workflow. Generated updates require review against the independently captured content fixtures.
-
-To launch a server with the build files, run 
-
+```bash
+npm run generate:mintlify-deployment
+npm run check:mintlify
 ```
+
+Commit the updated fingerprint in `docs-site/docs.json` with native-source changes. API checks require network access and reject an upstream schema that differs from the recorded digest.
+
+The [quality workflow](.github/workflows/mintlify-quality.yml) runs repository checks, not Mintlify CLI or hosted acceptance. See [validation details and limits](docs-site/README.md#validating-authoring-changes).
+
+## Building and deployment
+
+Build and serve the Docusaurus website from the repository root:
+
+```bash
+npm run build
 npm run serve
 ```
 
-<!-- markdown-link-check-disable -->
-You will then be able to browse the website at http://localhost:3000/
-<!-- markdown-link-check-enable-->
+Output goes to `build/`; Mintlify deploys `docs-site/` separately. GitHub Pages continues publishing `gh-pages`. Hosting Mintlify at `/docs` does not require changing the repository's default branch.
 
-#### Docker
-
-
-##### Build
-
-To build in development mode
-
-```
-docker build --target development . -t fga-docs-dev
-```
-
-To run in development mode
-
-```
-docker run --init --rm -p 3000:3000 fga-docs-dev
-```
-
-The generated webpages will be available in http://localhost:3000.
-
-##### Production
-
-To build in production mode
-
-
-```
-docker build . -t fga-docs
-```
-
-Run
-
-```
-docker run --init --rm -p 3000:80 fga-docs
-```
+The planned public setup uses Mintlify's dashboard-provided Cloudflare Worker; this repository does not maintain a Worker. Deployment settings, workflow changes, and public cutover remain owner-managed. Follow the [deployment guide](docs-site/README.md#split-site-deployment) before publishing the migrated website.
 
 ## PR Preview
-GitHub Action [Deploy PR Preview](https://github.com/marketplace/actions/deploy-pr-preview) allows previewing of proposed changes. The URL for the changes can be previewed via
-```
-https://openfga.dev/pr-preview/pr-[number]
+
+Website previews use:
+
+```text
+https://openfga.dev/pr-preview/pr-[number]/
 ```
 
-For example, the Project page for PR-589 is available at
-```
-https://openfga.dev/pr-preview/pr-589/project
-```
-
-Use the separate Mintlify deployment preview for product docs and the API reference. Configure Mintlify's monorepo directory as `/docs-site` before enabling that deployment after the rename. Repository cleanup does not configure the external production edge or switch traffic.
-
-The website preview workflow runs when a PR becomes ready for review. Request code and content review with known deployment limitations documented; production configuration and cutover approval are separate owner gates, not prerequisites to leave draft.
+Use the separate Mintlify deployment preview for product docs and the API reference; they are not included in the Docusaurus preview.
 
 ## Contributing
+
 Please review the [Contributing Guidelines](https://github.com/openfga/.github/blob/main/CONTRIBUTING.md) before sending a PR or opening an issue.
 
+Migration pull requests target `docs-next`. Preserve existing article content and navigation during migration; propose editorial changes separately. See the [migration review checklist](docs-site/README.md#migration-review-checklist).
+
 ## Issue Reporting
+
 If you find a bug or inaccuracy in the documentation content, please report it in this repository's [issues section](https://github.com/openfga/openfga.dev/issues). Please do not report security vulnerabilities on the public GitHub issue tracker. Refer to [the security policy](https://github.com/openfga/.github/blob/main/SECURITY.md) for disclosing security issues.
 
 <!-- markdown-link-check-disable -->
