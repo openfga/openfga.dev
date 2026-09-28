@@ -326,7 +326,7 @@ test('every existing source operation caller keeps its exact request, expectatio
   for (const [source, original] of Object.entries(baseline)) {
     try {
       const migrated = calls(
-        readFileSync(new URL(`../${overrides.get(source) ?? `docs/${source}`}`, import.meta.url), 'utf8'),
+        readFileSync(new URL(`../${overrides.get(source) ?? source}`, import.meta.url), 'utf8'),
       );
       // CreateStore was an ordinary source code group, not a source viewer.
       const expected = original.filter((call) => call.component !== 'CreateStoreViewer');

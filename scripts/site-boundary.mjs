@@ -2,12 +2,13 @@ import assert from 'node:assert/strict';
 import { createProcessor } from '@mdx-js/mdx';
 import GithubSlugger from 'github-slugger';
 import { normalizeBasePath, siteOrigin } from './agent-content.mjs';
+import { publicDocsRoute } from './native-routes.mjs';
 
 export const nativeResources = new Set(['/docs/llms.txt', '/docs/llms-full.txt']);
 export const legacyApiRedirects = new Map([['/api', '/api/service'], ['/api-reference', '/api/service']]);
 
 export function isNativeRoute(route) {
-  return /^\/(?:docs|api\/service)(?:\/|$)/.test(route);
+  return /^\/docs(?:\/|$)/.test(route);
 }
 
 export function visit(node, callback) {
@@ -48,7 +49,7 @@ export function apiOperationsFromSchema(config, schema) {
       const [method, ...parts] = reference.split(' ');
       const operation = schema.paths[parts.join(' ')]?.[method.toLowerCase()];
       assert.ok(operation?.summary, `${reference}: missing canonical operation summary`);
-      const route = new URL(`/${anchor.openapi.directory}/${slug(group.group)}/${slug(operation.summary)}`, siteOrigin).pathname;
+      const route = new URL(publicDocsRoute(`${anchor.openapi.directory}/${slug(group.group)}/${slug(operation.summary)}`), siteOrigin).pathname;
       assert.ok(!routes.has(route), `Duplicate native API route ${route}`);
       routes.add(route);
       operations.push({ operationId: operation.operationId, tags: operation.tags, route });
@@ -61,7 +62,7 @@ export function apiRoutesFromSchema(config, schema) {
   return new Set(apiOperationsFromSchema(config, schema).map(({ route }) => route));
 }
 
-export function validateNativeLink(href, { config, pages, apiRoutes, baseUrl = '/', from = '/' }) {
+export function validateNativeLink(href, { config, pages, apiRoutes, assets = new Set(), baseUrl = '/', from = '/' }) {
   const url = new URL(href, `${siteOrigin}${from}`);
   if (url.origin !== siteOrigin) return false;
   const basePath = normalizeBasePath(baseUrl);
@@ -69,11 +70,14 @@ export function validateNativeLink(href, { config, pages, apiRoutes, baseUrl = '
     ? url.pathname.slice(basePath.length) : url.pathname;
   if (strippedPath.replace(/\/$/, '') === '/api/service') return { website: '/api/service' };
   if (!isNativeRoute(strippedPath) && !legacyApiRedirects.has(strippedPath.replace(/\/$/, ''))
-      && !strippedPath.startsWith('/api-reference/')) return false;
+      && !strippedPath.startsWith('/api-reference/') && !strippedPath.startsWith('/api/service/')) return false;
   assert.equal(url.pathname, strippedPath, `${href}: native links must not use the Docusaurus preview prefix`);
-  const redirects = new Map(config.redirects.map(({ source, destination }) => [source, destination]));
+  const redirects = new Map(config.redirects.map(({ source, destination }) => [
+    publicDocsRoute(source), destination.startsWith('/') ? publicDocsRoute(destination) : destination,
+  ]));
   let route = url.pathname.replace(/\/$/, '').replace(/\.md$/, '');
-  if (route.startsWith('/api-reference/')) route = `/api/service${route.slice('/api-reference'.length)}`;
+  if (route.startsWith('/api-reference/')) route = `/docs/api/service${route.slice('/api-reference'.length)}`;
+  else if (route.startsWith('/api/service/')) route = publicDocsRoute(route);
   let fragment = url.hash;
   const visited = new Set();
   while (redirects.has(route) || legacyApiRedirects.has(route)) {
@@ -86,11 +90,12 @@ export function validateNativeLink(href, { config, pages, apiRoutes, baseUrl = '
     fragment = destination.hash || fragment;
   }
   if (!isNativeRoute(route)) return { website: route };
-  if (nativeResources.has(route)) return { resource: route };
-  if (route.startsWith('/api/service/')) {
-    assert.ok(apiRoutes.has(route), `${href}: no configured native API operation at ${route}`);
+  if (nativeResources.has(route) || assets.has(route)) return { resource: route };
+  if (route.startsWith('/docs/api/service/')) {
+    const canonical = [...apiRoutes].find((candidate) => decodeURI(candidate) === decodeURI(route));
+    assert.ok(canonical, `${href}: no configured native API operation at ${route}`);
     assert.equal(fragment, '', `${href}: API fragments require an explicit native anchor contract`);
-    return { api: route };
+    return { api: canonical };
   }
   const page = pages.get(route);
   assert.ok(page, `${href}: no native documentation page at ${route}`);

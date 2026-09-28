@@ -5,7 +5,7 @@ import { parseArgs } from 'node:util';
 import { validateMdxSource } from '../docs-site/scripts/validate-mdx.mjs';
 
 export const OUTPUT_FILE = fileURLToPath(new URL(
-  '../docs-site/docs/getting-started/setup-openfga/configuration.mdx', import.meta.url,
+  '../docs-site/getting-started/setup-openfga/configuration.mdx', import.meta.url,
 ));
 export const START_MARKER = '{/* BEGIN GENERATED CONFIGURATION OPTIONS */}';
 export const END_MARKER = '{/* END GENERATED CONFIGURATION OPTIONS */}';

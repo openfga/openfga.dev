@@ -9,7 +9,7 @@ import vm from 'node:vm';
 import { componentFixturePath, previousComponentFixturePath, previousDocsPath, readComponentFixture } from './component-fixtures.mjs';
 
 const mintlifyDirectory = join(dirname(fileURLToPath(import.meta.url)), '..');
-const docsDirectory = join(mintlifyDirectory, 'docs');
+const docsDirectory = mintlifyDirectory;
 const repositoryRoot = resolve(mintlifyDirectory, '..');
 const expectedImport = "import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx'";
 const processor = createProcessor({ format: 'mdx' });

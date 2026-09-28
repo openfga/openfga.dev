@@ -23,21 +23,21 @@ const websiteXml = urlset(['https://openfga.dev/', 'https://openfga.dev/project'
 function fixture() {
   const config = {
     navigation: { anchors: [
-      { anchor: 'Docs', hidden: true, pages: ['docs/fga', { group: 'Modeling', pages: ['docs/modeling/testing'] }] },
+      { anchor: 'Docs', hidden: true, pages: ['fga', { group: 'Modeling', pages: ['modeling/testing'] }] },
       { anchor: 'API Reference', hidden: true, openapi: { source: metadata.canonical.url, directory: 'api/service' },
         groups: [{ group: 'Stores', pages: ['GET /stores', 'POST /stores'] }] },
     ] },
     redirects: [
-      { source: '/docs', destination: '/docs/fga' },
-      { source: '/docs/community', destination: 'https://openfga.dev/community' },
-      { source: '/docs/intro', destination: '/docs/fga' },
+      { source: '/', destination: '/fga' },
+      { source: '/community', destination: 'https://openfga.dev/community' },
+      { source: '/intro', destination: '/fga' },
     ],
   };
   const schema = { paths: { '/stores': {
     get: { summary: 'List all stores' }, post: { summary: 'Create a store' },
     parameters: [],
   } } };
-  const docFiles = ['docs/fga.mdx', 'docs/modeling/testing.mdx'];
+  const docFiles = ['fga.mdx', 'modeling/testing.mdx'];
   return { config, schema, docFiles };
 }
 
@@ -49,8 +49,8 @@ test('the composite index preserves the website XML and includes canonical nativ
     'https://openfga.dev/sitemap-website.xml', 'https://openfga.dev/sitemap-docs.xml',
   ] });
   assert.deepEqual(parseSitemap(result.docsXml).locations, [
-    'https://openfga.dev/api/service/stores/create-a-store',
-    'https://openfga.dev/api/service/stores/list-all-stores',
+    'https://openfga.dev/docs/api/service/stores/create-a-store',
+    'https://openfga.dev/docs/api/service/stores/list-all-stores',
     'https://openfga.dev/docs/fga',
     'https://openfga.dev/docs/modeling/testing',
   ]);
@@ -117,16 +117,16 @@ test('native inventory rejects missing schema, missing summaries and incomplete/
 });
 
 test('native inventory rejects duplicate, retired, test, unowned and missing documentation pages', () => {
-  for (const page of ['docs/fga', 'docs/test-viewer', 'test-viewer', 'docs/community', 'docs/intro', 'project', 'docs/../project']) {
+  for (const page of ['fga', 'docs/test-viewer', 'test-viewer', 'community', 'intro', 'project', '../project']) {
     const input = fixture();
     input.config.navigation.anchors[0].pages.push(page);
     input.docFiles.push(`${page}.mdx`);
     assert.throws(() => nativeSitemapRoutes(input), /Duplicate|Retired|Non-native|Redirect/, page);
   }
   for (const docFiles of [
-    ['docs/fga.mdx'], ['docs/fga.mdx', 'docs/modeling/testing.mdx', 'docs/unlisted.mdx'],
-    ['docs/fga.mdx', 'docs/modeling/testing.mdx', 'tests/fixture.mdx'],
-  ]) assert.throws(() => nativeSitemapRoutes({ ...fixture(), docFiles }), /coverage differs|Non-native/);
+    ['fga.mdx'], ['fga.mdx', 'modeling/testing.mdx', 'unlisted.mdx'],
+    ['fga.mdx', 'modeling/testing.mdx', 'tests/fixture.mdx'],
+  ]) assert.throws(() => nativeSitemapRoutes({ ...fixture(), docFiles }), /coverage differs|Non-native|Retired/);
 });
 
 test('native inventory rejects missing pages and an additional documentation group wrapper', () => {
@@ -153,7 +153,7 @@ test('boundary validation verifies both children, exact native coverage and the 
     { docsXml: result.docsXml.replace('/docs/fga', '/docs/test-viewer') },
     { docsXml: result.docsXml.replace('/docs/fga', '/project') },
     { docsXml: result.docsXml.replace('/docs/fga', '/preview/docs/fga') },
-    { docsXml: result.docsXml.replace('/docs/fga', '/api/service/stores/create-a-store') },
+    { docsXml: result.docsXml.replace('/docs/fga', '/docs/api/service/stores/create-a-store') },
     { docsXml: result.docsXml.replace('https://openfga.dev/docs/fga', 'https://preview.example/docs/fga') },
   ]) assert.throws(() => validateCompositeSitemap({ ...result, ...change, nativeRoutes: routes }));
 });
@@ -188,13 +188,13 @@ const canonicalSummaries = {
 
 // Operation slugs captured from Mintlify, with the explicitly configured service prefix.
 const deployedPunctuationRoutes = [
-  '/api/service/relationship-queries/send-a-list-of-%60check%60-operations-in-a-single-request',
-  '/api/service/authzenservice/[experimental]-get-authzen-pdp-configuration-and-capabilities',
-  '/api/service/authzenservice/[experimental]-evaluate-whether-a-subject-can-perform-an-action-on-a-resource',
-  '/api/service/authzenservice/[experimental]-check-whether-one-or-more-users-are-authorized-to-access-resources',
-  '/api/service/authzenservice/[experimental]-search-for-actions-a-subject-can-perform-on-a-resource',
-  '/api/service/authzenservice/[experimental]-search-for-resources-a-subject-has-access-to',
-  '/api/service/authzenservice/[experimental]-search-for-subjects-with-access-to-a-resource',
+  '/docs/api/service/relationship-queries/send-a-list-of-%60check%60-operations-in-a-single-request',
+  '/docs/api/service/authzenservice/[experimental]-get-authzen-pdp-configuration-and-capabilities',
+  '/docs/api/service/authzenservice/[experimental]-evaluate-whether-a-subject-can-perform-an-action-on-a-resource',
+  '/docs/api/service/authzenservice/[experimental]-check-whether-one-or-more-users-are-authorized-to-access-resources',
+  '/docs/api/service/authzenservice/[experimental]-search-for-actions-a-subject-can-perform-on-a-resource',
+  '/docs/api/service/authzenservice/[experimental]-search-for-resources-a-subject-has-access-to',
+  '/docs/api/service/authzenservice/[experimental]-search-for-subjects-with-access-to-a-resource',
 ];
 
 test('repository navigation and source files contribute exactly 110 docs and all 24 generated API pages offline', async () => {

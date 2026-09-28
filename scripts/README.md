@@ -1,6 +1,6 @@
 # Repository maintenance scripts
 
-These 24 `.mjs` files (15 implementations/helpers and 9 test files) support the
+These scripts support the
 continuing split site: GitHub Pages hosts the Docusaurus website, while Mintlify
 hosts product docs and the API reference. They are not disposable migration
 imports; removing them would remove build output, regression checks, or owner tooling.
@@ -15,7 +15,7 @@ Native authoring/codegen tooling lives separately in
 then prepares and validates website resources. Build, preview, and GitHub Pages
 workflows use it. `npm run check:mintlify`, run by the
 [quality workflow](../.github/workflows/mintlify-quality.yml), includes the root
-regression suites, freshness checks, and optional proxy bundle dry run.
+regression suites and freshness checks; it does not build or deploy edge infrastructure.
 
 | Files | Role and root commands |
 | --- | --- |
@@ -23,6 +23,7 @@ regression suites, freshness checks, and optional proxy bundle dry run.
 | `clean-agent-markdown.mjs` | Docusaurus config imports this Markdown-export plugin to remove framework markup; it runs within the website build, not as a standalone command. |
 | `prepare-site-sitemap.mjs`, `site-sitemap.mjs` | Build a sitemap index with separate website/native children from the actual page inventory and digest-checked live API schema: `npm run build:site-sitemap`. |
 | `validate-site-boundary.mjs`, `site-boundary.mjs` | Check cross-site links/anchors, redirects, search, sitemaps, and retired-route ownership; export native external links for CI's Lychee check: `npm run check:site-boundary`. |
+| `native-routes.mjs` | Map source-root page IDs to public `/docs/...` routes without repeating the deployment mount. |
 
 These commands require preceding build outputs; normally run the complete `npm run build`.
 Generated files under `build/` include
@@ -32,9 +33,9 @@ Do not hand-edit these outputs. Mintlify owns the full product-docs Markdown/bun
 
 The API inventory uses the explicit `openapi.directory: "api/service"` from
 `docs-site/docs.json`. Generated operation links, sitemap entries, and legacy
-Swagger destinations must agree on `/api/service/...`. The exact `/api/service`
+Swagger destinations must agree on `/docs/api/service/...`. The exact `/api/service`
 entry remains a website fragment-compatibility page; empty/invalid fragments
-lead directly to List stores, not back to that entry. `/api-reference/...`
+lead to `/docs/api/service`, never back to the old entry. `/api-reference/...`
 redirects preserve earlier preview links, while sibling namespaces such as
 `/api/authzen` and `/api/management` remain outside this routing.
 
@@ -44,7 +45,7 @@ redirects preserve earlier preview links, while sibling namespaces such as
 | --- | --- |
 | `generate-legacy-api-routes.mjs` | After reviewed API schema/navigation changes, run `npm run generate:legacy-api-routes`; commit `src/data/legacy-api-routes.json`, used by `/api/service` to preserve old Swagger fragments. `npm run check:legacy-api-routes` rejects stale output. |
 | `native-deployment-fingerprint.mjs` | After native-source changes, run `npm run generate:mintlify-deployment`; commit the hidden source marker in `docs-site/docs.json`. `npm run check:mintlify-deployment` rejects stale markers. The digest covers tracked and unignored files under `docs-site/`, excluding the marker itself. |
-| `update-config-page.mjs` | Run `npm run build:config-page` to fetch the latest official server release/schema and replace only the marked version/table region of `docs-site/docs/getting-started/setup-openfga/configuration.mdx`, preserving authored content. |
+| `update-config-page.mjs` | Run `npm run build:config-page` to fetch the latest official server release/schema and replace only the marked version/table region of `docs-site/getting-started/setup-openfga/configuration.mdx`, preserving authored content. |
 | `update-api-samples.mjs`, `report-api-samples.mjs` | Run `npm run update:api-samples -- --report .api-samples-report.json` to fetch the exact live API URL once, validate unchanged reviewed sample inputs, and prepare compatible metadata/overlay/legacy-map/fingerprint updates. Reports must stay outside `docs-site/`; remove local reports after review. Reporting to GitHub is a separate, explicitly invoked command. |
 
 Ordinary builds check freshness; they do not regenerate those committed outputs
@@ -115,16 +116,16 @@ All nine `*.test.mjs` files remain wired into package commands:
 - `npm run test:site-boundary`: agent content, site boundary, sitemap, and legacy API routes.
 - `npm run test:config-page`: configuration generation, including preservation/error cases.
 - `npm run test:update-api-samples`: offline source updates, no-change/incompatibility/transport handling, no partial incompatible writes, issue deduplication, and workflow gates.
-- `npm run test:docs-proxy`: deployment verification, fingerprints, native Git-index/working-tree LFS-pointer rejection, and Worker tests.
+- `npm run test:docs-deployment`: read-only deployment verification, fingerprints, and native Git-index/working-tree LFS-pointer rejection.
 
 ## Owner-run live acceptance (not deployment)
 
 `verify-docs-deployment.mjs` uses `deployment-verification.mjs` and the fingerprint
 helper for read-only HTTP checks of hosted revision, routes, runtime, discovery,
-and proxy/website separation. Run `npm run verify:docs-origin` for the native host,
-or `npm run verify:docs-proxy -- --origin https://APPROVED-VERIFICATION-HOST`.
+and docs/website separation. Both modes expect Mintlify's configured `/docs` mount.
+Run `npm run verify:docs-origin` for the native host,
+or `npm run verify:docs-deployment -- --origin https://openfga.dev`.
 These are explicit owner-run checks, not automatic CI deployment or traffic switches.
-`npm run check:docs-proxy` only tests and bundles the optional Worker in a dry run.
-No new Cloudflare secrets, environments, or deployment workflow are required.
-Follow the [routing/acceptance runbook](../deploy/cloudflare/README.md), including
+No repository Worker, Cloudflare secrets, or deployment workflow is required.
+Follow the [deployment settings](../docs-site/README.md#split-site-deployment), including
 browser checks and coordinated publication; passing repository tests is not cutover approval.

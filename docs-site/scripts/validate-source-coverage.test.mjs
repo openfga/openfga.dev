@@ -19,7 +19,7 @@ function fixture(t) {
     version: 2,
     nativePages: [],
     sources: ['community.mdx', 'guide.mdx', 'intro.mdx'],
-    overrides: [{ source: 'intro.mdx', destination: 'docs/fga.mdx' }],
+    overrides: [{ source: 'intro.mdx', destination: 'fga.mdx' }],
     exclusions: [
       {
         source: 'community.mdx',
@@ -33,7 +33,7 @@ function fixture(t) {
   const docs = {
     navigation: {
       groups: [
-        { group: 'Docs', pages: ['docs/fga', 'docs/guide'] },
+        { group: 'Docs', pages: ['fga', 'guide'] },
         {
           group: 'API Reference',
           hidden: true,
@@ -57,7 +57,7 @@ function fixture(t) {
     provenance: { revision: historicalRevision, sourceRoot: 'docs/content' },
     pages: manifest.sources.map((source) => ({ source, slug: `/${source.slice(0, -4)}`, sha256: 'a'.repeat(64) })),
   }));
-  for (const destination of ['docs/fga.mdx', 'docs/guide.mdx']) {
+  for (const destination of ['fga.mdx', 'guide.mdx']) {
     put(`docs-site/${destination}`);
   }
   put('src/pages/community.mdx');
@@ -86,7 +86,7 @@ test('historical inventory and active overrides validate without legacy docs or 
   const output = [];
   assert.deepEqual(validateSourceCoverage({ repoRoot: root, logger: (line) => output.push(line) }), {
     sourceCount: 3,
-    ownedPages: ['docs/fga.mdx', 'docs/guide.mdx'],
+    ownedPages: ['fga.mdx', 'guide.mdx'],
     exclusionCount: 1,
     destinationCount: 2,
   });
@@ -99,12 +99,12 @@ test('the two maintainer READMEs do not become published documentation pages', (
   put('docs-site/README.md', '# Contributor guide\n');
   put('docs-site/scripts/README.md', '# Tooling guide\n');
   const result = validateSourceCoverage({ repoRoot: root, logger: () => {} });
-  assert.deepEqual(result.ownedPages, ['docs/fga.mdx', 'docs/guide.mdx']);
+  assert.deepEqual(result.ownedPages, ['fga.mdx', 'guide.mdx']);
   assert.equal(result.destinationCount, 2);
   assert.equal(cli(root).status, 0);
 });
 
-for (const path of ['docs/README.md', 'scripts/extra.md', 'scripts/nested/README.md']) {
+for (const path of ['guide/README.md', 'scripts/extra.md', 'scripts/nested/README.md']) {
   mutation(
     `maintainer README allowance does not hide ${path}`,
     ({ put }) => put(`docs-site/${path}`),
@@ -146,16 +146,16 @@ test('hidden route-section anchors keep their nested sidebar pages visible', (t)
 
 mutation(
   'new native page requires an inventory entry',
-  ({ put }) => put('docs-site/docs/new.mdx'),
-  /docs\/new\.mdx: unexpected MDX page/,
+  ({ put }) => put('docs-site/new.mdx'),
+  /new\.mdx: unexpected MDX page/,
 );
 mutation(
   'new destination and navigation still require an explicit inventory entry',
   ({ put, docs }) => {
-    put('docs-site/docs/new.mdx');
-    docs.navigation.groups[0].pages.push('docs/new');
+    put('docs-site/new.mdx');
+    docs.navigation.groups[0].pages.push('new');
   },
-  /docs\/new\.mdx: unexpected MDX page/,
+  /new\.mdx: unexpected MDX page/,
 );
 mutation(
   'missing independent baseline fails rather than accepting the native output as its own oracle',
@@ -173,7 +173,7 @@ mutation(
   'coordinated inventory, native page, and navigation deletions cannot erase history',
   ({ manifest, remove, docs }) => {
     manifest.sources = manifest.sources.filter((source) => source !== 'guide.mdx');
-    remove('docs-site/docs/guide.mdx');
+    remove('docs-site/guide.mdx');
     docs.navigation.groups[0].pages.pop();
   },
   /guide\.mdx: historical source has no manifest entry/,
@@ -183,17 +183,17 @@ mutation(
   ({ manifest }) => {
     manifest.overrides = [];
   },
-  /docs\/intro\.mdx: missing destination for historical source docs\/content\/intro\.mdx/,
+  /intro\.mdx: missing destination for historical source docs\/content\/intro\.mdx/,
 );
 mutation(
   'missing target identifies its source',
-  ({ remove }) => remove('docs-site/docs/fga.mdx'),
-  /docs\/fga\.mdx: missing destination for historical source docs\/content\/intro\.mdx/,
+  ({ remove }) => remove('docs-site/fga.mdx'),
+  /fga\.mdx: missing destination for historical source docs\/content\/intro\.mdx/,
 );
 mutation(
   'stale pre-rename target is not ignored',
-  ({ put }) => put('docs-site/docs/intro.mdx'),
-  /docs\/intro\.mdx: unexpected MDX page/,
+  ({ put }) => put('docs-site/intro.mdx'),
+  /intro\.mdx: unexpected MDX page/,
 );
 for (const path of ['docs/orphan.mdx', 'orphan.mdx', 'snippets/orphan.mdx', 'api/service/orphan.mdx']) {
   mutation(
@@ -215,43 +215,43 @@ mutation(
 mutation(
   'two sources cannot map to one destination',
   ({ manifest }) => {
-    manifest.overrides.push({ source: 'guide.mdx', destination: 'docs/fga.mdx' });
+    manifest.overrides.push({ source: 'guide.mdx', destination: 'fga.mdx' });
   },
-  /duplicate destination docs\/fga\.mdx: historical source docs\/content\/guide\.mdx and historical source docs\/content\/intro\.mdx/,
+  /duplicate destination fga\.mdx: historical source docs\/content\/guide\.mdx and historical source docs\/content\/intro\.mdx/,
 );
 mutation(
   'old fixture exemptions cannot restore a published prototype',
   ({ manifest, put }) => {
-    manifest.fixtures = [{ destination: 'docs/test-viewer.mdx', reason: 'Local component harness.' }];
-    put('docs-site/docs/test-viewer.mdx');
+    manifest.fixtures = [{ destination: 'test-viewer.mdx', reason: 'Local component harness.' }];
+    put('docs-site/test-viewer.mdx');
   },
   /manifest.fixtures is not a supported field/,
 );
 mutation(
   'a fixture cannot exempt a production destination',
   ({ manifest }) => {
-    manifest.fixtures = [{ destination: 'docs/guide.mdx', reason: 'Component fixture.' }];
+    manifest.fixtures = [{ destination: 'guide.mdx', reason: 'Component fixture.' }];
   },
   /manifest.fixtures is not a supported field/,
 );
 mutation(
   'a source override cannot reclaim the retired harness route',
   ({ manifest }) => {
-    manifest.overrides[0].destination = 'docs/test-viewer.mdx';
+    manifest.overrides[0].destination = 'test-viewer.mdx';
   },
   /retired fixture cannot be a published destination/,
 );
 mutation(
   'retained copies cannot reclaim the retired harness route',
   ({ manifest }) => {
-    manifest.exclusions[0].retainedPage = 'docs/test-viewer.mdx';
+    manifest.exclusions[0].retainedPage = 'test-viewer.mdx';
   },
   /retainedPage is not a supported field/,
 );
 mutation(
   'an exclusion cannot also override a source',
   ({ manifest }) => {
-    manifest.overrides.push({ source: 'community.mdx', destination: 'docs/community.mdx' });
+    manifest.overrides.push({ source: 'community.mdx', destination: 'community.mdx' });
   },
   /duplicate mapping or exclusion for community\.mdx/,
 );
@@ -288,19 +288,19 @@ mutation(
 );
 mutation(
   'excluded community copy cannot remain even outside navigation',
-  ({ put }) => put('docs-site/docs/community.mdx'),
-  /docs\/community\.mdx: unexpected MDX page/,
+  ({ put }) => put('docs-site/community.mdx'),
+  /community\.mdx: unexpected MDX page/,
 );
 mutation(
   'a retired fixture cannot reappear without navigation',
-  ({ put }) => put('docs-site/docs/test-viewer.mdx'),
-  /docs\/test-viewer\.mdx: unexpected MDX page/,
+  ({ put }) => put('docs-site/test-viewer.mdx'),
+  /test-viewer\.mdx: unexpected MDX page/,
 );
 mutation(
   'new source inventory cannot turn the retired fixture into documentation',
   ({ manifest, put }) => {
     manifest.sources.push('test-viewer.mdx');
-    put('docs-site/docs/test-viewer.mdx');
+    put('docs-site/test-viewer.mdx');
   },
   /test-viewer\.mdx: not a historical source/,
 );
@@ -360,9 +360,9 @@ for (const path of [
   '**/*.mdx',
   '../guide.mdx',
   '/guide.mdx',
-  'docs/../../guide.mdx',
+  '../../guide.mdx',
   './guide.mdx',
-  'docs//guide.mdx',
+  '/guide.mdx',
   'docs\\guide.mdx',
   'https://example.com/guide.mdx',
   'guide.mdx\n',
@@ -381,11 +381,11 @@ for (const path of [
 }
 for (const path of [
   '../guide.mdx',
-  'docs/../guide.mdx',
+  '../guide.mdx',
   '/docs/guide.mdx',
   'api/service/guide.mdx',
-  'docs/*.mdx',
-  'docs/guide',
+  '*.mdx',
+  'guide',
 ]) {
   mutation(
     `invalid destination ${path} fails`,
@@ -440,13 +440,13 @@ mutation(
 );
 
 for (const page of [
-  'docs/test-viewer',
+  'test-viewer',
   '/docs/test-viewer',
   'https://openfga.dev/docs/test-viewer#examples',
   'http://openfga.dev/docs/test-viewer',
   '//openfga.dev/docs/test-viewer',
   'https://OPENFGA.DEV/docs/test-viewer',
-  'docs/community',
+  'community',
 ]) {
   for (const group of [0, 1]) {
     mutation(
@@ -468,51 +468,51 @@ mutation(
 mutation(
   'fixture cannot enter a group root',
   ({ docs }) => {
-    docs.navigation.groups[0].root = 'docs/test-viewer';
+    docs.navigation.groups[0].root = 'test-viewer';
   },
-  /navigation.groups\[0\].root: docs\/test-viewer\.mdx must not enter production navigation/,
+  /navigation.groups\[0\].root: test-viewer\.mdx must not enter production navigation/,
 );
 mutation(
   'hidden production pages do not satisfy visible documentation coverage',
   ({ docs }) => {
     docs.navigation.groups[0].hidden = true;
   },
-  /docs\/fga\.mdx is missing from visible documentation navigation/,
+  /fga\.mdx is missing from visible documentation navigation/,
 );
 mutation(
   'duplicate navigation including hidden groups fails',
   ({ docs }) => {
-    docs.navigation.groups[1].pages.push('docs/guide');
+    docs.navigation.groups[1].pages.push('guide');
   },
-  /duplicate navigation reference docs\/guide\.mdx/,
+  /duplicate navigation reference guide\.mdx/,
 );
 mutation(
   'unmapped page in navigation fails',
-  ({ docs }) => docs.navigation.groups[0].pages.push('docs/missing'),
-  /docs\/missing\.mdx is not a mapped Mintlify-owned page/,
+  ({ docs }) => docs.navigation.groups[0].pages.push('missing'),
+  /missing\.mdx is not a mapped Mintlify-owned page/,
 );
 mutation(
   'traversing navigation path fails',
-  ({ docs }) => docs.navigation.groups[0].pages.push('docs/../docs/test-viewer'),
+  ({ docs }) => docs.navigation.groups[0].pages.push('../guide'),
   /docs.json navigation.groups\[0\].pages\[2\]: invalid page path/,
 );
 mutation(
   'encoded navigation path fails',
-  ({ docs }) => docs.navigation.groups[0].pages.push('docs/%74est-viewer'),
+  ({ docs }) => docs.navigation.groups[0].pages.push('%67uide'),
   /invalid page path/,
 );
 
 mutation(
   'absolute navigation URLs cannot normalize traversal into fixture links',
   ({ docs }) => docs.navigation.groups[0].pages.push('https://openfga.dev/other/../docs/test-viewer'),
-  /navigation.groups\[0\].pages\[2\]: unexpected documentation reference/,
+  /retired component fixture/,
 );
 
 test('a future native page requires a maintained inventory entry, existing destination, and visible navigation', (t) => {
   const { root, put, manifest, docs, save } = fixture(t);
-  manifest.nativePages.push({ destination: 'docs/new-route.mdx', reason: 'New native guide reviewed after migration.' });
-  put('docs-site/docs/new-route.mdx');
-  docs.navigation.groups[0].pages.push('docs/new-route');
+  manifest.nativePages.push({ destination: 'new-route.mdx', reason: 'New native guide reviewed after migration.' });
+  put('docs-site/new-route.mdx');
+  docs.navigation.groups[0].pages.push('new-route');
   save();
   const result = cli(root);
   assert.equal(result.status, 0, result.stderr);
@@ -532,21 +532,21 @@ mutation(
   'coordinated native additions must not masquerade as historical source pages',
   ({ manifest, put, docs }) => {
     manifest.sources.push('new.mdx');
-    put('docs-site/docs/new.mdx');
-    docs.navigation.groups[0].pages.push('docs/new');
+    put('docs-site/new.mdx');
+    docs.navigation.groups[0].pages.push('new');
   },
   /new\.mdx: not a historical source; register future content in nativePages/,
 );
 
 for (const [name, entry, expected] of [
-  ['reasonless', { destination: 'docs/new.mdx' }, /nativePages.reason is required/],
-  ['blank reason', { destination: 'docs/new.mdx', reason: ' ' }, /requires a nonempty reason/],
-  ['traversal', { destination: 'docs/../new.mdx', reason: 'Guide' }, /invalid page path/],
+  ['reasonless', { destination: 'new.mdx' }, /nativePages.reason is required/],
+  ['blank reason', { destination: 'new.mdx', reason: ' ' }, /requires a nonempty reason/],
+  ['traversal', { destination: '../new.mdx', reason: 'Guide' }, /invalid page path/],
   ['non-doc route', { destination: 'api/service/new.mdx', reason: 'Guide' }, /invalid page path/],
-  ['duplicate historical destination', { destination: 'docs/guide.mdx', reason: 'Guide' }, /duplicate destination/],
-  ['excluded destination', { destination: 'docs/community.mdx', reason: 'Guide' }, /cannot also be excluded/],
-  ['retired fixture', { destination: 'docs/test-viewer.mdx', reason: 'Guide' }, /retired fixture cannot/],
-  ['missing destination', { destination: 'docs/new.mdx', reason: 'Guide' }, /missing destination for native page/],
+  ['duplicate historical destination', { destination: 'guide.mdx', reason: 'Guide' }, /duplicate destination/],
+  ['excluded destination', { destination: 'community.mdx', reason: 'Guide' }, /cannot also be excluded/],
+  ['retired fixture', { destination: 'test-viewer.mdx', reason: 'Guide' }, /retired fixture cannot/],
+  ['missing destination', { destination: 'new.mdx', reason: 'Guide' }, /missing destination for native page/],
 ]) {
   mutation(`future native inventory rejects ${name}`, ({ manifest }) => manifest.nativePages.push(entry), expected);
 }
@@ -554,17 +554,17 @@ for (const [name, entry, expected] of [
 mutation(
   'future native inventory cannot contain duplicate destinations',
   ({ manifest }) => {
-    manifest.nativePages.push({ destination: 'docs/new.mdx', reason: 'Guide' }, { destination: 'docs/new.mdx', reason: 'Duplicate' });
+    manifest.nativePages.push({ destination: 'new.mdx', reason: 'Guide' }, { destination: 'new.mdx', reason: 'Duplicate' });
   },
   /duplicate destination/,
 );
 mutation(
   'a registered future native page still requires visible navigation',
   ({ manifest, put }) => {
-    manifest.nativePages.push({ destination: 'docs/new.mdx', reason: 'Guide' });
-    put('docs-site/docs/new.mdx');
+    manifest.nativePages.push({ destination: 'new.mdx', reason: 'Guide' });
+    put('docs-site/new.mdx');
   },
-  /docs\/new\.mdx is missing from visible documentation navigation/,
+  /new\.mdx is missing from visible documentation navigation/,
 );
 mutation(
   'unsupported historical provenance fails closed',
@@ -576,17 +576,17 @@ test('real manifest preserves all five route transformations and explicit non-pr
   const root = fileURLToPath(new URL('../', import.meta.url));
   const manifest = JSON.parse(readFileSync(join(root, 'source-pages.json'), 'utf8'));
   const knownOverrides = [
-    { source: 'intro.mdx', destination: 'docs/fga.mdx' },
-    { source: 'getting-started/overview.mdx', destination: 'docs/getting-started.mdx' },
+    { source: 'intro.mdx', destination: 'fga.mdx' },
+    { source: 'getting-started/overview.mdx', destination: 'getting-started.mdx' },
     {
       source: 'getting-started/setup-openfga/docker-setup.mdx',
-      destination: 'docs/getting-started/setup-openfga/docker.mdx',
+      destination: 'getting-started/setup-openfga/docker.mdx',
     },
     {
       source: 'getting-started/setup-openfga/kubernetes-setup.mdx',
-      destination: 'docs/getting-started/setup-openfga/kubernetes.mdx',
+      destination: 'getting-started/setup-openfga/kubernetes.mdx',
     },
-    { source: 'modeling/testing-models.mdx', destination: 'docs/modeling/testing.mdx' },
+    { source: 'modeling/testing-models.mdx', destination: 'modeling/testing.mdx' },
   ];
   for (const expected of knownOverrides) {
     assert.deepEqual(

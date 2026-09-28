@@ -1,3 +1,4 @@
+import { relocateNativeFixture } from './regression-fixtures.mjs';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import test from 'node:test';
@@ -11,7 +12,7 @@ const root = new URL('../../', import.meta.url);
 const fixtures = new URL('tests/fixtures/mintlify/live-foundations/', root);
 const processor = createProcessor({ remarkPlugins: [remarkGfm] });
 const fixtureDocuments = readdirSync(fixtures).filter((file) => file.endsWith('.json')).map((file) =>
-  JSON.parse(readFileSync(new URL(file, fixtures), 'utf8')));
+  relocateNativeFixture(JSON.parse(readFileSync(new URL(file, fixtures), 'utf8'))));
 const pages = fixtureDocuments.flatMap((fixture) => fixture.pages ?? []);
 const headingPages = fixtureDocuments.flatMap((fixture) => fixture.headingPages ?? []);
 const descendants = (node) => [node, ...(node.children ?? []).flatMap(descendants)];
@@ -54,7 +55,7 @@ function links(nodes) {
   });
 }
 
-function assertLinks(actual, expected, location, nativePath = 'docs/concepts.mdx') {
+function assertLinks(actual, expected, location, nativePath = 'concepts.mdx') {
   const url = (href) => new URL(href, `https://openfga.dev/${nativePath.replace(/\.mdx$/, '')}`).href;
   for (const link of expected ?? []) assert.ok(actual.some((item) =>
     normalized(item.text) === normalized(link.text) && url(item.href) === url(link.href)),
@@ -77,7 +78,7 @@ function headings(nodes) {
 }
 
 test('the Go SDK tab cannot shadow the published Go CLI installation heading', () => {
-  const source = readFileSync(new URL('docs-site/docs/getting-started/install-sdk.mdx', root), 'utf8');
+  const source = readFileSync(new URL('docs-site/getting-started/install-sdk.mdx', root), 'utf8');
   const nodes = descendants(parse(source));
   const tab = nodes.find((node) => node.name === 'Tab' && attribute(node, 'title') === 'Go');
   assert.ok(tab);

@@ -184,7 +184,7 @@ function extractBalancedObject(source, start) {
 async function collectMigratedCorpus() {
   const corpus = [];
   const counts = { authorizationModels: 0, dslFences: 0, openFgaCodeBlocks: 0 };
-  const files = await walk(path.join(REPO_ROOT, 'docs-site/docs'));
+  const files = await walk(path.join(REPO_ROOT, 'docs-site'));
   files.push(readComponentFixture().file);
 
   for (const file of files) {

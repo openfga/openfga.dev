@@ -15,6 +15,9 @@ async function fetchText(url) {
 
 export async function verifyDeployment({ origin, mode, routes, expectedFingerprint, get: fetchPage = fetchText }) {
   assert.match(expectedFingerprint ?? '', /^[a-f0-9]{64}$/, 'A validated checkout fingerprint is required');
+  assert.ok(['native', 'public'].includes(mode), 'Expected native or public acceptance mode');
+  assert.ok(routes.every((route) => route.startsWith('/docs/') && !route.startsWith('/docs/docs/')),
+    'Every native route must be mounted exactly once beneath /docs');
   const responses = new Map();
   const get = (url) => {
     if (!responses.has(url)) responses.set(url, Promise.resolve().then(() => fetchPage(url)));
@@ -43,12 +46,9 @@ export async function verifyDeployment({ origin, mode, routes, expectedFingerpri
     const script = await get(`${origin}${asset}`);
     assert.equal(script.status, 200, 'Native runtime asset must load');
     assert.match(script.headers.get('content-type') ?? '', /(?:java|ecma)script/, 'Native runtime must not be an HTML fallback');
-    if (mode === 'proxy') {
-      assert.equal(result.headers.get('x-llms-txt'), '/docs/llms.txt', 'Docs discovery must not advertise the website-only bundle');
-    }
   };
   const operationPages = async () => {
-    const paths = routes.filter((path) => path.startsWith('/api/service/'));
+    const paths = routes.filter((path) => path.startsWith('/docs/api/service/'));
     for (let i = 0; i < paths.length; i += 4) {
       await Promise.all(paths.slice(i, i + 4).map(async (path) => {
         const result = await get(`${origin}${path}`);
@@ -81,10 +81,10 @@ export async function verifyDeployment({ origin, mode, routes, expectedFingerpri
       }
     }),
     check('Documentation page and runtime', () => page('/docs/fga')),
-    check('API page and runtime', () => page('/api/service/stores/list-all-stores')),
+    check('API page and runtime', () => page('/docs/api/service/stores/list-all-stores')),
     check('Every advertised API operation resolves', operationPages),
     check('Native discovery covers every page', async () => {
-      const path = mode === 'native' ? '/llms.txt' : '/docs/llms.txt';
+      const path = '/docs/llms.txt';
       const index = await get(`${origin}${path}`);
       assert.equal(index.status, 200);
       assert.match(index.headers.get('content-type') ?? '', /^text\/(?:plain|markdown)/);
@@ -99,8 +99,8 @@ export async function verifyDeployment({ origin, mode, routes, expectedFingerpri
       const discover = (text) => {
         for (const [, href] of text.matchAll(/\]\(([^)]+)\)/g)) {
           const url = new URL(href, origin);
-          const isIndex = /^\/_llms\/.*\.md$/.test(url.pathname);
-          const isPage = /^\/(?:docs|api\/service)\/.*\.md$/.test(url.pathname);
+          const isIndex = /^\/docs\/_llms\/.*\.md$/.test(url.pathname);
+          const isPage = !isIndex && /^\/docs\/.*\.md$/.test(url.pathname);
           if (!isIndex && !isPage) continue;
           assert.ok(allowedOrigins.has(url.origin), `Discovery points to an unapproved origin: ${url.href}`);
           if (isPage) {
@@ -125,16 +125,16 @@ export async function verifyDeployment({ origin, mode, routes, expectedFingerpri
       assert.deepEqual(missing, [], `Discovery omits ${missing.length} native pages`);
     }),
     check('Native full-text bundle', async () => {
-      const path = mode === 'native' ? '/llms-full.txt' : '/docs/llms-full.txt';
+      const path = '/docs/llms-full.txt';
       const bundle = await get(`${origin}${path}`);
       assert.equal(bundle.status, 200);
       assert.match(bundle.headers.get('content-type') ?? '', /^text\/(?:plain|markdown)/);
       assert.ok(bundle.text.includes('/docs/fga'), 'Missing introduction in documentation bundle');
-      assert.ok(bundle.text.includes('/api/service/'), 'Missing API documentation in bundle');
-      if (mode === 'proxy') assert.doesNotMatch(bundle.text, /https:\/\/fga\.mintlify\.(?:site|app)\//);
+      assert.ok(bundle.text.includes('/docs/api/service/'), 'Missing API documentation in bundle');
+      if (mode === 'public') assert.doesNotMatch(bundle.text, /https:\/\/fga\.mintlify\.(?:site|app)\//);
     }),
   ]);
-  if (mode === 'proxy') {
+  if (mode === 'public') {
     await Promise.all([
       check('Website homepage is not captured', async () => {
         const result = await get(`${origin}/`);
@@ -143,14 +143,24 @@ export async function verifyDeployment({ origin, mode, routes, expectedFingerpri
         assert.equal(result.headers.get('location'), null);
       }),
       check('Entry URLs preserve query parameters', async () => {
-        for (const [path, destination] of [
-          ['/docs', '/docs/fga'], ['/api-reference', '/api/service'],
-          ['/api-reference/stores/list-all-stores', '/api/service/stores/list-all-stores'],
-          ['/api', '/api/service'], ['/api/service/', '/api/service'],
-        ]) {
-          const result = await get(`${origin}${path}?acceptance=1`);
-          assert.ok([307, 308].includes(result.status), `${path}: expected method-preserving redirect`);
-          assert.equal(result.headers.get('location'), `${destination}?acceptance=1`);
+        for (const [path, destination] of [['/docs', '/docs/fga'], ['/docs/api/service', '/docs/api/service/stores/list-all-stores']]) {
+          let target = new URL(`${origin}${path}?acceptance=1`);
+          for (let hop = 0; hop < 5 && target.pathname !== destination; hop++) {
+            const result = await get(target.href);
+            assert.ok([301, 302, 307, 308].includes(result.status), `${path}: expected provider redirect`);
+            const location = result.headers.get('location');
+            assert.ok(location, `${path}: redirect requires a location`);
+            target = new URL(location, target);
+            assert.equal(target.origin, origin);
+            assert.equal(target.search, '?acceptance=1');
+          }
+          assert.equal(target.pathname, destination, `${path}: redirect cycle or incorrect destination`);
+        }
+        for (const path of ['/api', '/api-reference', '/api/service/stores/list-all-stores']) {
+          const result = await get(`${origin}${path}`);
+          assert.equal(result.status, 200, `${path}: expected Docusaurus redirect HTML`);
+          assert.match(result.text, /window\.location\.search \+ window\.location\.hash/,
+            `${path}: redirect must retain query and fragment`);
         }
       }),
       check('Legacy Swagger compatibility page preserves fragment handling', async () => {

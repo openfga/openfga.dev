@@ -4,6 +4,7 @@
 import { themes } from "prism-react-renderer";
 import * as path from "path";
 import cleanAgentMarkdown from './scripts/clean-agent-markdown.mjs';
+import { readFileSync } from 'node:fs';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -12,6 +13,8 @@ const baseUrl = configuredBasePath ? `/${configuredBasePath}/` : '/';
 const basePath = baseUrl === '/' ? '' : baseUrl.slice(0, -1);
 /** @param {string} route */
 const agentRoute = (route) => `${basePath}${route}`;
+const legacyApiRoutes = JSON.parse(readFileSync(new URL('./src/data/legacy-api-routes.json', import.meta.url), 'utf8'));
+const apiRedirects = [...new Set(Object.values(legacyApiRoutes).flatMap((operations) => Object.values(operations)))];
 
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').Config} */
@@ -195,6 +198,13 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
       /** @type {import('@docusaurus/plugin-client-redirects').Options} */
       ({
         fromExtensions: ['html'],
+        redirects: [
+          { from: ['/api', '/api-reference'], to: '/api/service' },
+          ...apiRedirects.map((route) => ({
+            from: [route.replace(/^\/docs/, ''), route.replace(/^\/docs\/api\/service/, '/api-reference')].map(decodeURIComponent),
+            to: `https://openfga.dev${decodeURIComponent(route)}`,
+          })),
+        ],
       }),
     ],
     [
@@ -271,7 +281,7 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
             label: 'Home',
           },
           { href: 'https://openfga.dev/docs/fga', label: 'Docs', position: 'left' },
-          { href: 'https://openfga.dev/api/service', label: 'API', position: 'left' },
+          { href: 'https://openfga.dev/docs/api/service', label: 'API', position: 'left' },
           { to: '/project', label: 'Project', position: 'left' },
           { to: '/blog', label: 'Blog', position: 'left' },
           {

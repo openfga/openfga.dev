@@ -214,7 +214,7 @@ test('canonical template encoding is lossless and rejects ambiguous source', () 
 
 test('compare-ref covers every source fence and rejects deleted or renamed files', () => {
   const root = mkdtempSync(path.join(tmpdir(), 'openfga-code-blocks-'));
-  const docs = path.join(root, 'docs-site/docs');
+  const docs = path.join(root, 'docs-site');
   const originalPath = path.join(docs, 'example.mdx');
   const renamedPath = path.join(docs, 'renamed.mdx');
 
@@ -254,7 +254,7 @@ test('compare-ref covers every source fence and rejects deleted or renamed files
 
 test('compare-ref preserves plain, alias, JSX, and pre-existing canonical model bytes and order', () => {
   const root = mkdtempSync(path.join(tmpdir(), 'openfga-legacy-dsl-'));
-  const docs = path.join(root, 'docs-site/docs');
+  const docs = path.join(root, 'docs-site');
   const filename = path.join(docs, 'example.mdx');
   const existing = path.join(docs, 'existing.mdx');
   const codes = [model, 'type user', 'define reader: [user]'];
@@ -303,7 +303,7 @@ test('compare-ref preserves plain, alias, JSX, and pre-existing canonical model 
 test('compare-ref follows only the explicit fixture relocation and preserves all fixture bytes', (t) => {
   const root = mkdtempSync(path.join(tmpdir(), 'openfga-relocated-fixture-'));
   t.after(() => rmSync(root, { force: true, recursive: true }));
-  const docs = path.join(root, 'docs-site/docs');
+  const docs = path.join(root, 'docs-site');
   const previous = path.join(root, previousComponentFixturePath);
   const current = path.join(root, componentFixturePath);
   const existing = path.join(docs, 'existing.mdx');
@@ -351,7 +351,7 @@ test('compare-ref follows the explicit native root rename without losing model c
   const root = mkdtempSync(path.join(tmpdir(), 'openfga-renamed-docs-'));
   t.after(() => rmSync(root, { force: true, recursive: true }));
   const previous = path.join(root, previousDocsPath);
-  const docs = path.join(root, 'docs-site/docs');
+  const docs = path.join(root, 'docs-site');
   mkdirSync(previous, { recursive: true });
   writeFileSync(path.join(previous, 'example.mdx'), `${IMPORT}\n\n${component('type user')}\n`);
   const git = (...args) => execFileSync('git', args, { cwd: root }).toString().trim();

@@ -37,7 +37,7 @@ test('articles inherit the native page actions and Git-based modification dates'
   const exclusions = new Set(manifest.exclusions.map(({ source }) => source));
   const overrides = new Map(manifest.overrides.map(({ source, destination }) => [source, destination]));
   for (const source of manifest.sources.filter((source) => !exclusions.has(source))) {
-    const destination = overrides.get(source) ?? `docs/${source}`;
+    const destination = overrides.get(source) ?? source;
     const frontmatter = parseYaml(/^---\n([\s\S]*?)\n---/.exec(read(`../${destination}`))[1]);
     assert.equal(frontmatter.contextual, undefined, `${destination}: inherit the shared reader controls`);
     assert.equal(frontmatter.timestamp, undefined, `${destination}: inherit the native timestamp setting`);
@@ -96,7 +96,7 @@ test('metadata descriptions stay out of article introductions without hiding API
     css,
     /body:not\(:has\(#api-playground-2-operation-page\)\) #header \.prose\s*\{\s*display:\s*none;\s*\}/,
   );
-  const frontmatter = parseYaml(/^---\n([\s\S]*?)\n---/.exec(read('../docs/adopters/agicap.mdx'))[1]);
+  const frontmatter = parseYaml(/^---\n([\s\S]*?)\n---/.exec(read('../adopters/agicap.mdx'))[1]);
   assert.equal(
     frontmatter.description,
     'How European fintech Agicap runs OpenFGA in production for 8,000+ customers at 250 RPS with conditional ReBAC across every backend service.',

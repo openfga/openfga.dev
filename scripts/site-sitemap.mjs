@@ -5,6 +5,7 @@ import { retiredFixturePages } from '../docs-site/scripts/component-fixtures.mjs
 import { getUniqueNavigationEntry, getUniqueOpenApiNavigationEntry } from '../docs-site/scripts/navigation-structure.mjs';
 import { normalizeBasePath, siteOrigin } from './agent-content.mjs';
 import { apiRoutesFromSchema, isNativeRoute } from './site-boundary.mjs';
+import { publicDocsRoute } from './native-routes.mjs';
 
 const namespace = 'http://www.sitemaps.org/schemas/sitemap/0.9';
 export const sitemapFiles = { index: 'sitemap.xml', website: 'sitemap-website.xml', docs: 'sitemap-docs.xml' };
@@ -12,7 +13,7 @@ const retiredPages = new Set(retiredFixturePages.map((file) => `/${file.replace(
 const sorted = (values) => [...values].sort();
 
 function rejectTestPage(route) {
-  assert.ok(!retiredPages.has(route) && !/^\/(?:tests?|fixtures?|snippets|mintlify-native)(?:\/|$)/.test(route),
+  assert.ok(!retiredPages.has(route) && !/^\/(?:docs\/)?(?:tests?|fixtures?|snippets|mintlify-native)(?:\/|$)/.test(route),
     `Retired or test page cannot enter a sitemap: ${route}`);
 }
 
@@ -23,10 +24,11 @@ export function nativeSitemapRoutes({ config, schema, docFiles }) {
   const docsRoutes = new Set();
   const redirects = new Set(config.redirects.map(({ source }) => source));
   function addPage(page) {
-    assert.match(page, /^docs\/(?:[a-z0-9][a-z0-9_-]*\/)*[a-z0-9][a-z0-9_-]*$/, `Non-native documentation page: ${page}`);
-    const route = `/${page}`;
+    assert.match(page, /^(?!docs\/|api\/)(?:[a-z0-9][a-z0-9_-]*\/)*[a-z0-9][a-z0-9_-]*$/, `Non-native documentation page: ${page}`);
+    const route = publicDocsRoute(page);
+    assert.ok(!/^(?:project|community|blog)(?:\/|$)/.test(page), `Non-native documentation page: ${page}`);
     rejectTestPage(route);
-    assert.ok(!redirects.has(route), `Redirect/retired route cannot enter the native sitemap: ${route}`);
+    assert.ok(!redirects.has(`/${page}`), `Redirect/retired route cannot enter the native sitemap: ${route}`);
     assert.ok(!docsRoutes.has(route), `Duplicate native documentation route ${route}`);
     docsRoutes.add(route);
   }
@@ -43,8 +45,8 @@ export function nativeSitemapRoutes({ config, schema, docFiles }) {
   assert.ok(!Object.hasOwn(docsAnchor, 'groups'), 'Documentation navigation must use pages without an added wrapper group');
   groupPages(docsAnchor.pages);
   const sourceRoutes = docFiles.map((file) => {
-    assert.match(file, /^docs\/(?:[a-z0-9][a-z0-9_-]*\/)*[a-z0-9][a-z0-9_-]*\.mdx$/, `Non-native documentation file: ${file}`);
-    const route = `/${file.slice(0, -4)}`;
+    assert.match(file, /^(?!docs\/|api\/)(?:[a-z0-9][a-z0-9_-]*\/)*[a-z0-9][a-z0-9_-]*\.mdx$/, `Non-native documentation file: ${file}`);
+    const route = publicDocsRoute(file.slice(0, -4));
     rejectTestPage(route);
     return route;
   });
@@ -58,8 +60,8 @@ export function nativeSitemapRoutes({ config, schema, docFiles }) {
   assert.deepEqual(sorted(references), sorted(operations), 'Native API navigation must cover every canonical operation exactly once');
   const apiRoutes = apiRoutesFromSchema(config, schema);
   for (const route of apiRoutes) {
-    assert.match(route, /^\/api\/service\/[^/]+\/[^/]+$/, `Invalid generated native API route: ${route}`);
-    assert.ok(!redirects.has(route), `Redirect cannot enter the native API sitemap: ${route}`);
+    assert.match(route, /^\/docs\/api\/service\/[^/]+\/[^/]+$/, `Invalid generated native API route: ${route}`);
+    assert.ok(!redirects.has(route.slice('/docs'.length)), `Redirect cannot enter the native API sitemap: ${route}`);
   }
   return { docsRoutes, apiRoutes, routes: new Set([...docsRoutes, ...apiRoutes]) };
 }

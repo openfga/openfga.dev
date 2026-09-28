@@ -115,17 +115,17 @@
     "use-cases/rag-authorization.mdx"
   ],
   "overrides": [
-    { "source": "intro.mdx", "destination": "docs/fga.mdx" },
-    { "source": "getting-started/overview.mdx", "destination": "docs/getting-started.mdx" },
+    { "source": "intro.mdx", "destination": "fga.mdx" },
+    { "source": "getting-started/overview.mdx", "destination": "getting-started.mdx" },
     {
       "source": "getting-started/setup-openfga/docker-setup.mdx",
-      "destination": "docs/getting-started/setup-openfga/docker.mdx"
+      "destination": "getting-started/setup-openfga/docker.mdx"
     },
     {
       "source": "getting-started/setup-openfga/kubernetes-setup.mdx",
-      "destination": "docs/getting-started/setup-openfga/kubernetes.mdx"
+      "destination": "getting-started/setup-openfga/kubernetes.mdx"
     },
-    { "source": "modeling/testing-models.mdx", "destination": "docs/modeling/testing.mdx" }
+    { "source": "modeling/testing-models.mdx", "destination": "modeling/testing.mdx" }
   ],
   "exclusions": [
     {

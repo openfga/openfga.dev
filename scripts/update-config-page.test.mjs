@@ -151,7 +151,7 @@ for (const newline of ['\n', '\r\n']) test(`preserves unrelated bytes and is ide
 });
 
 test('the accepted page is the default native target, with unchanged examples/cards after a schema update', async () => {
-  assert.equal(OUTPUT_FILE, fileURLToPath(new URL('../docs-site/docs/getting-started/setup-openfga/configuration.mdx', import.meta.url)));
+  assert.equal(OUTPUT_FILE, fileURLToPath(new URL('../docs-site/getting-started/setup-openfga/configuration.mdx', import.meta.url)));
   const source = await readFile(OUTPUT_FILE, 'utf8');
   const generated = generateConfigurationPage(source, 'v1.21.0', schema);
   assert.deepEqual(outside(generated), outside(source));
@@ -336,7 +336,7 @@ test('nightly hard-stops invalid generation, creates drafts, and fails on indepe
   assert.equal(steps[parity]['continue-on-error'], true);
   assert.equal(steps[parity].run, 'npm run test:mintlify-content-parity');
   assert.equal(steps[report].if, "steps.parity.outcome == 'failure'");
-  assert.equal(job.env.UPDATE_FILE, 'docs-site/docs/getting-started/setup-openfga/configuration.mdx');
+  assert.equal(job.env.UPDATE_FILE, 'docs-site/getting-started/setup-openfga/configuration.mdx');
   assert.equal(job.env.DEPLOYMENT_FILE, 'docs-site/docs.json');
   assert.match(steps[commit].run, /git add "\$UPDATE_FILE" "\$DEPLOYMENT_FILE"/);
   assert.match(steps[commit].run, /--draft/);

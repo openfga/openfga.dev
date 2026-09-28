@@ -4,16 +4,16 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { createProcessor } from '@mdx-js/mdx';
 import { parseDocument } from 'yaml';
-import { readRegressionFixture } from './regression-fixtures.mjs';
+import { readRegressionFixture, relocateNativeFixture } from './regression-fixtures.mjs';
 
 const root = new URL('../../', import.meta.url);
-const contract = JSON.parse(readFileSync(new URL('tests/fixtures/mintlify/live-operations/production-contract.json', root)));
+const contract = relocateNativeFixture(JSON.parse(readFileSync(new URL('tests/fixtures/mintlify/live-operations/production-contract.json', root))));
 const titleContract = JSON.parse(readFileSync(new URL('tests/fixtures/mintlify/live-operations/single-title-contract.json', root)));
 const processor = createProcessor({ format: 'mdx' });
 const prerequisiteModels = readRegressionFixture('prerequisite-models').pages;
 
 function parse(page) {
-  const source = readFileSync(new URL(`docs-site/docs/${page}`, root), 'utf8');
+  const source = readFileSync(new URL(`docs-site/${page}`, root), 'utf8');
   return processor.parse(source.replace(/^---[\s\S]*?---/, ''));
 }
 
@@ -67,7 +67,7 @@ test('the single-title contract covers every assigned operations source page exa
 
 for (const { source, productionTitle, sidebarTitle } of titleContract.pages) {
   test(`${source} uses one production headline without changing the native sidebar label`, () => {
-    const content = readFileSync(new URL(`docs-site/docs/${source}`, root), 'utf8');
+    const content = readFileSync(new URL(`docs-site/${source}`, root), 'utf8');
     const frontmatter = /^---\n([\s\S]*?)\n---\n/.exec(content);
     assert.ok(frontmatter, 'The native renderer requires the page title in frontmatter');
     const document = parseDocument(frontmatter[1]);
@@ -88,7 +88,7 @@ test('the single-title check distinguishes real H1s from code examples', () => {
 
 for (const [page, expected] of Object.entries(contract.conceptLinks)) {
   test(`${page} retains every production concept link in reading order`, () => {
-    const actual = links(descendants(parse(page))).filter(([, url]) => url.startsWith('/docs/concepts'));
+    const actual = links(descendants(parse(page))).filter(([, url]) => url.startsWith('/concepts'));
     assert.deepEqual(actual, expected);
   });
 }
@@ -171,9 +171,9 @@ for (const page of contract.calloutPages) {
 
 test('production database recommendations preserve all nine configuration deep links', () => {
   const actual = links(descendants(parse('best-practices/running-in-production.mdx')))
-    .filter(([, url]) => url.startsWith('/docs/getting-started/setup-openfga/configuration'));
+    .filter(([, url]) => url.startsWith('/getting-started/setup-openfga/configuration'));
   assert.deepEqual(actual, contract.configurationLinks.map((name) => [
-    name, `/docs/getting-started/setup-openfga/configuration#${name}`,
+    name, `/getting-started/setup-openfga/configuration#${name}`,
   ]));
 });
 
@@ -185,5 +185,5 @@ test('concurrency flags remain literal double-hyphen code instead of typographic
 
 test('consistency guidance retains the explanatory Zanzibar paper link', () => {
   assert.ok(links(descendants(parse('interacting/consistency.mdx'))).some(([label, url]) =>
-    label === 'Zanzibar paper' && url === '/docs/authorization-concepts#what-is-zanzibar'));
+    label === 'Zanzibar paper' && url === '/authorization-concepts#what-is-zanzibar'));
 });

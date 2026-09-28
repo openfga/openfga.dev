@@ -2,9 +2,9 @@
 
 This directory contains the Mintlify source for 110 product documentation pages and a read-only reference for 24 API operations. The homepage, Project, Community, and Blog stay on Docusaurus.
 
-Target `docs-next` for migration and follow-up pull requests. It is the planned temporary default/production branch; deployment and GitHub Actions configuration remain separate [owner actions](../deploy/cloudflare/README.md#temporary-docs-next-release).
+Target `docs-next` for migration and follow-up pull requests. It is the planned temporary default/production branch; deployment and GitHub Actions configuration remain separate [owner actions](#split-site-deployment).
 
-The [hosted Mintlify site](https://fga.mintlify.site/docs/fga) is available. Serving it through `openfga.dev/docs` and `openfga.dev/api/service` requires the separate [split-site deployment](#split-site-deployment). Publishing this directory does not configure that routing.
+The [hosted Mintlify site](https://fga.mintlify.site/docs/fga) must be configured for the `/docs` base path. Both articles and `/docs/api/service` belong to that mount. Publishing this directory does not configure the [public deployment](#split-site-deployment).
 
 ## In this guide
 
@@ -30,7 +30,7 @@ cd docs-site
 npx mint dev --port 3333
 ```
 
-Open `http://localhost:3333/`. It redirects to `/docs/fga`; the API reference starts at `/api/service`.
+Open `http://localhost:3333/`. The local source-root preview redirects to `/fga`; the API reference starts at `/api/service`. Hosted deployments add the configured `/docs` base path.
 
 Use the project's tested Mintlify CLI version when comparing rendering behavior. See the [Mintlify CLI guide](https://www.mintlify.com/docs/cli/index) for installation and startup help. Avoid clearing a shared CLI cache while other previews are running.
 
@@ -40,7 +40,7 @@ All `npm run` commands in this guide run from the repository root. Mintlify CLI 
 
 | Location                                                  | Purpose                                                             |
 | --------------------------------------------------------- | ------------------------------------------------------------------- |
-| [`docs/`](./docs/)                                        | Product documentation in MDX                                        |
+| Root MDX files and topic directories                     | Product documentation; for example, `fga.mdx` and `modeling/`        |
 | [`docs.json`](./docs.json)                                | Navigation, theme, redirects, and the canonical main-branch OpenAPI source |
 | [`snippets/`](./snippets/)                                | Eight reusable JSX viewers                                          |
 | [`global.css`](./global.css)                              | Shared documentation and API styling                                |
@@ -58,13 +58,13 @@ During the migration, keep existing content and navigation unchanged apart from 
 
 ### Add, rename, or retire a page
 
-1. Add an MDX file under `docs/`, with the page headline in frontmatter `title`.
+1. Add an MDX file directly in this directory or a topic directory, with the page headline in frontmatter `title`.
 2. Add its route once under the Docs anchor's `pages` in `docs.json`, in the matching category when applicable, without the `.mdx` extension.
 3. Register a new page in `source-pages.json` under `nativePages`:
 
 ```json
 {
-  "destination": "docs/new-page.mdx",
+  "destination": "new-page.mdx",
   "reason": "Explain the purpose of the new guide"
 }
 ```
@@ -73,7 +73,7 @@ Add independent content or behavioral expectations with the page. Do not generat
 
 For a historical page rename, update its `overrides` entry and navigation, and preserve the old URL with a redirect. Do not edit the frozen `sources` list. Retiring a page requires an explicit exclusion and reason; a Docusaurus-owned page also needs its owner, route, and existing `ownerPage`. Community remains at `/community`, not in the native docs tree.
 
-The two hidden navigation anchors separate Docs and API Reference sidebars. They hide the section switcher, not the pages or their search visibility. Keep the existing `/docs`, `/api/service`, and overview entry redirects.
+The two hidden navigation anchors separate Docs and API Reference sidebars. They hide the section switcher, not the pages or their search visibility. Keep the source-root `/`, `/api/service`, and overview redirects. Navigation, Markdown links, and redirects are relative to the Mintlify source root: use `modeling/overview` in navigation and `/modeling/overview` in links, not `docs/modeling/overview`. Mintlify adds `/docs` once on the hosted site; website links use the full public `/docs/...` path.
 
 The Docs anchor uses `pages` to mix the four original ungrouped introduction pages with the original categories. Do not add an Overview wrapper or regroup pages to suit the new theme. API Reference uses `groups` for its canonical operations.
 
@@ -214,9 +214,9 @@ Playground cannot represent contextual tuples, context, headers, or consistency 
 
 ### Running the examples
 
-Install a compatible [SDK or CLI](./docs/getting-started/install-sdk.mdx), start an OpenFGA server, and set `FGA_API_URL`. Store-scoped examples also need `FGA_STORE_ID`; complete samples use `FGA_MODEL_ID` where the operation requires it.
+Install a compatible [SDK or CLI](./getting-started/install-sdk.mdx), start an OpenFGA server, and set `FGA_API_URL`. Store-scoped examples also need `FGA_STORE_ID`; complete samples use `FGA_MODEL_ID` where the operation requires it.
 
-The shared setup uses **no authentication**, for a self-hosted server with authentication disabled. Follow the [SDK setup guide](./docs/getting-started/setup-sdk-client.mdx) for pre-shared keys or client credentials. Never add credentials to documentation.
+The shared setup uses **no authentication**, for a self-hosted server with authentication disabled. Follow the [SDK setup guide](./getting-started/setup-sdk-client.mdx) for pre-shared keys or client credentials. Never add credentials to documentation.
 
 Tutorial request tabs contain fragments: keep imports at file scope, Go code inside `main`, Java requests inside an exception-handling method, and Python requests inside an async function that closes the client. API-reference samples, described below, contain complete programs.
 
@@ -224,7 +224,7 @@ Tutorial request tabs contain fragments: keep imports at file scope, Go code ins
 
 [`viewers.mdx`](../tests/fixtures/mintlify/viewers.mdx) exercises all eight viewers outside the Mintlify content root. It is not a page to publish. `/docs/test-viewer` must remain a 404, without a replacement redirect.
 
-For visual testing, copy `docs-site/` to an isolated temporary directory outside the repository, add the fixture to that copy's `docs/` directory, and preview it on a separate port. Stop the preview and remove the temporary copy afterward. Never add the fixture to the working content root or production navigation.
+For visual testing, copy `docs-site/` to an isolated temporary directory outside the repository, add the fixture at that copy's root, and preview it on a separate port. Stop the preview and remove the temporary copy afterward. Never add the fixture to the working content root or production navigation.
 
 ## Native API SDK samples
 
@@ -355,7 +355,7 @@ Enable **Edit suggestions** in the deployment's [Mintlify Add-ons dashboard](htt
 
 Use the native control rather than a custom edit-link script. Shared CSS presents feedback links as plain, 16px OpenFGA-colored links with pencil icons, readable focus outlines, and mobile-sized hit areas, matching the website's edit-link treatment. The existing Inter typography is intentional and shared with the OpenFGA website. Native labels, destinations, and interactions remain unchanged.
 
-After enabling it, verify that a documentation page links to its actual `docs-site/docs/...mdx` source in `openfga/openfga.dev`, with the intended repository branch and `/docs-site` deployment directory. Mintlify currently synthesizes nonexistent `docs-site/api/service/...mdx` edit URLs for generated API pages; shared CSS hides only those invalid edit links. **Raise issue** remains available when enabled, and API schema changes belong in `openfga/api`. Verify the controls in both themes and at desktop/mobile widths during hosted acceptance.
+After enabling it, verify that a documentation page links to its actual `docs-site/...mdx` source in `openfga/openfga.dev`, with the intended repository branch and `/docs-site` deployment directory. Mintlify currently synthesizes nonexistent `docs-site/api/service/...mdx` edit URLs for generated API pages; shared CSS hides only those invalid edit links. **Raise issue** remains available when enabled, and API schema changes belong in `openfga/api`. Verify the controls in both themes and at desktop/mobile widths during hosted acceptance.
 
 ### Page actions
 
@@ -370,13 +370,13 @@ The native **Copy page** menu appears in the page header. Its shared `contextual
 
 These are reader-initiated actions. They do not restore Mintlify's Ask Assistant buttons in the navbar or code blocks, and they do not change article content. Keep the native implementation rather than adding a separate clipboard or external-chat script. Pages inherit the shared menu without frontmatter overrides.
 
-MCP actions connect to Mintlify's hosted OpenFGA documentation service, not an OpenFGA authorization server. Copying an install command does not run it. Mintlify generates these targets from the current origin plus `/mcp`. The split-site proxy therefore forwards exact `/mcp` requests to the hosted service and retains `/docs/mcp` as an alias; it does not capture `/mcp/`, `/mcp/**`, or lookalike paths. Before release, inspect the generated install command and editor links on the deployed site and verify both endpoints with MCP initialization and tool discovery.
+MCP actions connect to Mintlify's hosted OpenFGA documentation service, not an OpenFGA authorization server. Copying an install command does not run it. With the `/docs` mount, generated MCP/editor links must point to a provider-supported endpoint reachable through the scoped routes. Verify initialization and tool discovery before release; if Mintlify still generates an unmounted root `/mcp` URL, ask Mintlify to correct the subpath configuration rather than restoring a custom proxy.
 
 The local Mintlify preview renders the menu but does not serve page Markdown or the hosted MCP service. Copy page requires the deployed `.md` endpoint, and localhost URLs are not usable by external chat tools or MCP clients. Verify those actions on the hosted preview and again on the public origin after activation; do not add a custom clipboard implementation to hide this preview limitation.
 
 ### Server configuration table
 
-The generator updates only the marked release/table region in [`configuration.mdx`](./docs/getting-started/setup-openfga/configuration.mdx). It preserves the surrounding authored content.
+The generator updates only the marked release/table region in [`configuration.mdx`](./getting-started/setup-openfga/configuration.mdx). It preserves the surrounding authored content.
 
 ```bash
 # Fetch the latest official release
@@ -424,7 +424,7 @@ After staging asset changes, run `npm run check:mintlify-deployment`; regenerate
 
 Keep native overrides after the global LFS patterns. Attribute changes do not repair an already committed pointer: retrieve the original object, restage its bytes, and verify the asset renders. Do not remove global LFS rules or rewrite history to fix a native asset.
 
-Keep inline assets deployable throughout the `docs-next` period. The eventual return to `main` uses a [clean LFS-backed integration](../deploy/cloudflare/README.md#returning-to-main), not a merge of the temporary branch's history or an assumption that skipping one conversion commit removes every inline asset.
+Keep inline assets deployable throughout the `docs-next` period. The eventual return to `main` uses a [clean LFS-backed integration](#split-site-deployment), not a merge of the temporary branch's history or an assumption that skipping one conversion commit removes every inline asset.
 
 ## Validating authoring changes
 
@@ -440,7 +440,7 @@ During development, use the checks relevant to the change:
 | Change                           | Command                                                   |
 | -------------------------------- | --------------------------------------------------------- |
 | MDX prose and expressions        | `npm run validate:mintlify-mdx`                           |
-| Specific MDX files               | `npm run validate:mintlify-mdx -- docs-site/docs/fga.mdx` |
+| Specific MDX files               | `npm run validate:mintlify-mdx -- docs-site/fga.mdx` |
 | Standalone DSL                   | `npm run validate:mintlify-code-blocks`                   |
 | Pages, navigation, and redirects | `npm run validate:mintlify-navigation`                    |
 | Viewer imports and props         | `npm run validate:mintlify-components`                    |
@@ -535,8 +535,17 @@ Content acceptance and source retirement do not authorize a production traffic s
 
 ## Split-site deployment
 
-Mintlify serves product docs under `/docs` and generated API operations under `/api/service/`. Home, Project, Community, and Blog remain on Docusaurus/GitHub Pages. The exact `/api/service` entry preserves old Swagger bookmarks.
+Mintlify serves product docs and generated API operations beneath **`https://openfga.dev/docs`**. Home, Project, Community, and Blog remain on Docusaurus/GitHub Pages. Docusaurus retains `/api/service` for fragment-aware redirects to `/docs/api/service` or the matching operation, and generates aliases for `/api`, `/api-reference`, and all old operation URLs. Query strings and Swagger bookmarks are preserved.
 
 Keep `openapi.directory: "api/service"` in `docs.json`. When API schema or navigation changes affect operation URLs, regenerate the compatibility map with `npm run generate:legacy-api-routes`.
 
-DNS, Mintlify domain settings, Cloudflare routing, verification, cutover, and rollback belong in the [deployment runbook](../deploy/cloudflare/README.md). Publishing this directory does not activate public routing; deployment requires coordination with the infrastructure and website owners.
+Use the **Mintlify-provided Worker from the dashboard**, following [Mintlify's Cloudflare guide](https://www.mintlify.com/docs/deploy/cloudflare). No repository Worker, Wrangler configuration, or edge deployment workflow is needed.
+
+1. **GitHub owners:** merge into `docs-next`, configure it as the temporary default/source branch, and apply equivalent branch protections. Keep Pages publishing from `gh-pages` at `/` with domain `openfga.dev`. Review website publisher/updater branch filters separately; switching the default branch does not stop old `main` push/manual publishers. The API updater's invalid job-level `runner.temp` expressions also need an owner-approved workflow fix before enabling it. This change only corrects the configuration updater's moved output path.
+2. **Mintlify owners:** select `openfga/openfga.dev`, branch `docs-next`, directory `/docs-site`, and custom domain `openfga.dev` with **Host at `/docs`**. Recheck edit links against the flattened sources. Keep media as ordinary Git until Mintlify's promised LFS support is verified end-to-end.
+3. **Cloudflare owners:** install the dashboard-generated Worker and attach scoped Worker Routes for `openfga.dev/docs/*`, `openfga.dev/mintlify-assets/*`, and `openfga.dev/_mintlify/*`. Add a Single Redirect matching host `openfga.dev` and exact path `/docs`, redirecting temporarily (307) to `https://openfga.dev/docs/` with **Preserve query string** enabled. This covers `/docs?query` without using `/docs*`, which also captures lookalike website paths. An exact Worker Route without a trailing wildcard does not match query strings. Do not use a whole-domain Worker Custom Domain, `openfga.dev/*`, or replace the website's existing origin/DNS records. Retain the existing proxied hostname.
+4. **Release owners:** save the current Pages revision and Cloudflare settings, stage both builds, then coordinate website publication and route activation. Run `npm run verify:docs-origin` against the newly configured Mintlify deployment and `npm run verify:docs-deployment -- --origin https://openfga.dev` after activation. Verify native navigation, API bookmarks, images, search, page Markdown, MCP/editor actions, canonical URLs, and unchanged website routes in a browser. Source checks alone are not hosted acceptance.
+
+Rollback is a coordinated restoration of the previous website build and edge configuration. Removing the docs routes alone after publishing a docs-free website leaves documentation unavailable. Keep ownership and the saved revisions agreed before cutover.
+
+When LFS support is confirmed, integrate the accepted final migration onto a fresh branch from current `main`, converting native media back to LFS before integration commits. Do not import temporary inline-asset history wholesale or assume omitting one commit removes every ordinary-Git asset.

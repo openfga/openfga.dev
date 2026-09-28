@@ -89,7 +89,7 @@ test('installed Node SDK matches the exact audited version', () => {
 });
 
 test('historical and native installation instructions name the audited SDK versions', async () => {
-  const source = await readFile(new URL('../docs/getting-started/install-sdk.mdx', import.meta.url), 'utf8');
+  const source = await readFile(new URL('../getting-started/install-sdk.mdx', import.meta.url), 'utf8');
   const historicalInstalls = readRegressionFixture('static-requests').sdkInstalls;
   for (const [language, { version }] of Object.entries(sdkVersions)) {
     const install = {

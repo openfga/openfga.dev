@@ -34,7 +34,7 @@ function sourceLanguages(name, fixture) {
 }
 
 function nativePage(page) {
-  const text = read(`docs-site/docs/${page}.mdx`);
+  const text = read(`docs-site/${page}.mdx`);
   const tree = parse(text);
   return { text, tree };
 }
@@ -344,6 +344,6 @@ for (const page of [...readPages, 'modeling/conditions', 'getting-started/config
     }
   });
   test(`${page}: edited native MDX remains valid`, () => {
-    validateMdxSource(read(`docs-site/docs/${page}.mdx`), `${page}.mdx`);
+    validateMdxSource(read(`docs-site/${page}.mdx`), `${page}.mdx`);
   });
 }

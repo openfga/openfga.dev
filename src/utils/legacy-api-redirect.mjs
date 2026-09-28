@@ -1,4 +1,4 @@
-export const apiEntryPage = '/api/service/stores/list-all-stores';
+export const apiEntryPage = '/docs/api/service';
 
 /**
  * @param {string} hash

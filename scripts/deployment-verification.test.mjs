@@ -3,9 +3,9 @@ import test from 'node:test';
 import { verifyDeployment } from './deployment-verification.mjs';
 import { fingerprintMeta } from './native-deployment-fingerprint.mjs';
 
-const origin = 'https://staging.workers.dev';
+const origin = 'https://preview.openfga.dev';
 const publicOrigin = 'https://openfga.dev';
-const routes = ['/api/service/stores/list-all-stores', '/docs/fga'];
+const routes = ['/docs/api/service/stores/list-all-stores', '/docs/fga'];
 const expectedFingerprint = 'a'.repeat(64);
 const marker = `<meta name="${fingerprintMeta}" content="${expectedFingerprint}">`;
 function response(text, type = 'text/plain', status = 200, headers = {}) {
@@ -16,28 +16,29 @@ function fixture() {
     ['/', response('<html><div id="__docusaurus"></div></html>', 'text/html')],
     ['/api/service', response('<main data-legacy-api-compatibility>API reference moved</main>', 'text/html')],
     ['/mintlify-assets/app.js', response('console.log("native")', 'application/javascript')],
-    ['/docs/llms.txt', response('[First index](/_llms/first.md)')],
-    ['/_llms/first.md', response('[Second index](/_llms/second.md)')],
-    ['/_llms/second.md', response(`${routes.map((route) => `[Page](${publicOrigin}${route}.md)`).join('\n')}\n[Cycle](/_llms/first.md)`)],
-    ['/docs/llms-full.txt', response(`Source: ${publicOrigin}/docs/fga\nSource: ${publicOrigin}/api/service/stores/list-all-stores`)],
+    ['/docs/llms.txt', response('[First index](/docs/_llms/first.md)')],
+    ['/docs/_llms/first.md', response('[Second index](/docs/_llms/second.md)')],
+    ['/docs/_llms/second.md', response(`${routes.map((route) => `[Page](${publicOrigin}${route}.md)`).join('\n')}\n[Cycle](/docs/_llms/first.md)`)],
+    ['/docs/llms-full.txt', response(`Source: ${publicOrigin}/docs/fga\nSource: ${publicOrigin}/docs/api/service/stores/list-all-stores`)],
     ['/sitemap.xml', response(`<sitemapindex><sitemap><loc>${publicOrigin}/sitemap-website.xml</loc></sitemap><sitemap><loc>${publicOrigin}/sitemap-docs.xml</loc></sitemap></sitemapindex>`, 'application/xml')],
     ['/sitemap-website.xml', response('<urlset></urlset>', 'application/xml')],
     ['/sitemap-docs.xml', response(`<urlset>${routes.map((route) => `<url><loc>${publicOrigin}${route}</loc></url>`).join('')}</urlset>`, 'application/xml')],
   ]);
   for (const route of routes) {
-    files.set(route, response(`${marker}<link rel="canonical" href="${publicOrigin}${route}"><h1>Page</h1><script src="/mintlify-assets/app.js"></script>`, 'text/html', 200, { 'x-llms-txt': '/docs/llms.txt' }));
+    files.set(route, response(`${marker}<link rel="canonical" href="${publicOrigin}${route}"><h1>Page</h1><script src="/mintlify-assets/app.js"></script>`, 'text/html'));
   }
   for (const [path, destination] of [
-    ['/docs', '/docs/fga'], ['/api-reference', '/api/service'],
-    ['/api-reference/stores/list-all-stores', '/api/service/stores/list-all-stores'],
-    ['/api', '/api/service'], ['/api/service/', '/api/service'],
+    ['/docs', '/docs/fga'], ['/docs/api/service', '/docs/api/service/stores/list-all-stores'],
   ]) {
     files.set(`${path}?acceptance=1`, response('', 'text/plain', 307, { location: `${destination}?acceptance=1` }));
+  }
+  for (const route of ['/api', '/api-reference', '/api/service/stores/list-all-stores']) {
+    files.set(route, response('<script>window.location.href = "https://openfga.dev/docs/api/service" + window.location.search + window.location.hash;</script>', 'text/html'));
   }
   return files;
 }
 const run = (files) => verifyDeployment({
-  origin, mode: 'proxy', routes, expectedFingerprint,
+  origin, mode: 'public', routes, expectedFingerprint,
   get: async (url) => {
     const target = new URL(url);
     assert.equal(target.origin, origin);
@@ -53,6 +54,15 @@ test('deployment acceptance follows nested discovery indexes and validates all s
   assert.ok(results.every(({ ok }) => ok), JSON.stringify(results));
 });
 
+test('the exact docs-entry redirect can normalize its slash before the provider redirect', async () => {
+  const files = fixture();
+  files.set('/docs?acceptance=1', response('', 'text/plain', 307, { location: '/docs/?acceptance=1' }));
+  files.set('/docs/?acceptance=1', response('', 'text/plain', 307, { location: '/docs/fga?acceptance=1' }));
+  assert.ok((await run(files)).every(({ ok }) => ok));
+  files.set('/docs/?acceptance=1', response('', 'text/plain', 307, { location: '/docs?acceptance=1' }));
+  assert.ok((await run(files)).some(({ name, ok }) => name === 'Entry URLs preserve query parameters' && !ok));
+});
+
 for (const [name, path, value] of [
   ['empty native index', '/docs/llms.txt', response('# OpenFGA\nOnly an OpenAPI link')],
   ['HTML returned as an asset', '/mintlify-assets/app.js', response('<html>fallback</html>', 'text/html')],
@@ -60,11 +70,11 @@ for (const [name, path, value] of [
   ['captured website root', '/', response('', 'text/html', 307, { location: '/docs/fga' })],
   ['lost query string', '/docs?acceptance=1', response('', 'text/plain', 307, { location: '/docs/fga' })],
   ['missing native sitemap route', '/sitemap-docs.xml', response('<urlset/>', 'text/xml')],
-  ['broken nested index', '/_llms/second.md', response('Not found', 'text/plain', 404)],
-  ['off-origin page links', '/_llms/second.md', response(routes.map((route) => `[Page](https://missing.example${route}.md)`).join('\n'))],
-  ['off-origin recursive links', '/docs/llms.txt', response('[Index](https://missing.example/_llms/first.md)')],
+  ['broken nested index', '/docs/_llms/second.md', response('Not found', 'text/plain', 404)],
+  ['off-origin page links', '/docs/_llms/second.md', response(routes.map((route) => `[Page](https://missing.example${route}.md)`).join('\n'))],
+  ['off-origin recursive links', '/docs/llms.txt', response('[Index](https://missing.example/docs/_llms/first.md)')],
   ['page paths present only as plain text', '/docs/llms.txt', response(routes.map((route) => `${publicOrigin}${route}.md`).join('\n'))],
-  ['legacy fragments lost to an edge redirect', '/api/service', response('', 'text/html', 308, { location: '/api/service/stores/list-all-stores' })],
+  ['legacy fragments lost to an edge redirect', '/api/service', response('', 'text/html', 308, { location: '/docs/api/service/stores/list-all-stores' })],
 ]) {
   test(`deployment acceptance reports ${name} instead of a green fallback`, async () => {
     const files = fixture();
@@ -76,7 +86,7 @@ for (const [name, path, value] of [
 
 test('deployment acceptance detects an extra advertised API operation that returns 404', async () => {
   const files = fixture();
-  const missingRoute = '/api/service/relationship-queries/send-a-list-of-check-operations-in-a-single-request';
+  const missingRoute = '/docs/api/service/relationship-queries/send-a-list-of-check-operations-in-a-single-request';
   files.set(missingRoute, response('Not found', 'text/html', 404));
   const results = await verifyDeployment({
     origin, mode: 'native', routes: [...routes, missingRoute], expectedFingerprint,
@@ -119,7 +129,7 @@ test('the checkout marker is mandatory and shared page requests are fetched only
   const files = fixture();
   const counts = new Map();
   await verifyDeployment({
-    origin, mode: 'proxy', routes, expectedFingerprint,
+    origin, mode: 'public', routes, expectedFingerprint,
     get: async (url) => {
       counts.set(url, (counts.get(url) ?? 0) + 1);
       const target = new URL(url);

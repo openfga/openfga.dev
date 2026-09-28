@@ -1,3 +1,4 @@
+import { relocateNativeFixture } from './regression-fixtures.mjs';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
@@ -5,7 +6,7 @@ import { originalContentRevision, normalizedProse, parseOriginalContent } from '
 
 const root = new URL('../../', import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), 'utf8');
-const baseline = JSON.parse(read('tests/fixtures/mintlify/original-content.json'));
+const baseline = relocateNativeFixture(JSON.parse(read('tests/fixtures/mintlify/original-content.json')));
 const manifest = JSON.parse(read('docs-site/source-pages.json'));
 const originalPages = new Map(baseline.pages.map((page) => [page.source, page]));
 
@@ -175,7 +176,7 @@ test('the original baseline covers every owned historical page, independently of
   const overrides = new Map(manifest.overrides.map(({ source, destination }) => [source, destination]));
   assert.deepEqual(baseline.pages.map(({ source, destination }) => ({ source, destination })),
     manifest.sources.filter((source) => !exclusions.has(source))
-      .map((source) => ({ source, destination: overrides.get(source) ?? `docs/${source}` })));
+      .map((source) => ({ source, destination: overrides.get(source) ?? source })));
   for (const page of baseline.pages) assert.match(page.sha256, /^[0-9a-f]{64}$/);
 });
 

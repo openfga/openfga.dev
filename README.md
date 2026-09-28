@@ -11,9 +11,9 @@
 
 Product documentation and the read-only API reference live in [`docs-site/`](docs-site/README.md) and are published with [Mintlify](https://mintlify.com/). [Docusaurus](https://docusaurus.io/) builds Home, Project, Community, Blog, and website search.
 
-The migration targets `docs-next`, which will temporarily become the default and production source branch. Base follow-up work on `docs-next` and target it with pull requests. The branch switch and outstanding workflow configuration are owner actions in the [deployment runbook](deploy/cloudflare/README.md#temporary-docs-next-release); changing a PR's base does not configure deployment.
+The migration targets `docs-next`, which will temporarily become the default and production source branch. Base follow-up work on `docs-next` and target it with pull requests. The branch switch and outstanding workflow configuration are separate [owner actions](docs-site/README.md#split-site-deployment); changing a PR's base does not configure deployment.
 
-The legacy `docs/content/` corpus and sidebar are retired. Author product documentation in `docs-site/docs/`; do not recreate the old source tree. Compact historical regression fixtures under `tests/fixtures/mintlify/` preserve independently captured migration expectations, not a second published documentation corpus.
+The legacy `docs/content/` corpus and sidebar are retired. Author product documentation directly in `docs-site/`; do not recreate either nested docs tree. Compact historical regression fixtures under `tests/fixtures/mintlify/` preserve independently captured migration expectations, not a second published documentation corpus.
 
 Keep this migration content-preserving. Retain the original visible page titles, section headings, navigation labels, grouping, order, article wording, and page boundaries. SEO-only changes must stay in non-visible metadata, not Mintlify's reader-visible `title` field. Reorganization and visible copy improvements belong in separate follow-up changes. See the [migration review checklist](docs-site/README.md#migration-review-checklist) for the reader-interface and content requirements.
 
@@ -27,7 +27,7 @@ The website and Mintlify publish separate Markdown and LLM resources, linked fro
 
 ### Production routing
 
-Cloudflare routes `/docs` and the service API reference to Mintlify while Home, Project, Community, and Blog remain on Docusaurus/GitHub Pages. Routing activation and website publication require owner coordination; see the [deployment runbook](deploy/cloudflare/README.md) for domain settings, DNS, verification, and rollback.
+Mintlify's supplied Cloudflare Worker serves `/docs`, including `/docs/api/service`, while Home, Project, Community, and Blog remain on Docusaurus/GitHub Pages. Docusaurus redirects old API URLs and preserves Swagger-fragment bookmarks. This repository does not maintain or deploy a Worker; see the [deployment settings](docs-site/README.md#split-site-deployment).
 
 ## Getting Started
 
@@ -157,7 +157,7 @@ https://openfga.dev/pr-preview/pr-589/project
 
 Use the separate Mintlify deployment preview for product docs and the API reference. Configure Mintlify's monorepo directory as `/docs-site` before enabling that deployment after the rename. Repository cleanup does not configure the external production edge or switch traffic.
 
-The website preview workflow runs when a PR becomes ready for review. Request code and content review with known deployment limitations documented; production configuration and cutover approval are merge gates, not prerequisites to leave draft. See the [review handoff policy](deploy/cloudflare/README.md#review-readiness-and-pr-handoff).
+The website preview workflow runs when a PR becomes ready for review. Request code and content review with known deployment limitations documented; production configuration and cutover approval are separate owner gates, not prerequisites to leave draft.
 
 ## Contributing
 Please review the [Contributing Guidelines](https://github.com/openfga/.github/blob/main/CONTRIBUTING.md) before sending a PR or opening an issue.

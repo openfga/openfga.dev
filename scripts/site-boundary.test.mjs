@@ -2,24 +2,39 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 import { apiRoutesFromSchema, inspectNativePage, isNativeRoute, validateNativeLink } from './site-boundary.mjs';
+import { nativeDocPages, publicDocsRoute } from './native-routes.mjs';
 
 const config = {
   redirects: [
-    { source: '/docs', destination: '/docs/fga' },
-    { source: '/docs/modeling', destination: '/docs/modeling/overview' },
+    { source: '/', destination: '/fga' },
+    { source: '/modeling', destination: '/modeling/overview' },
     { source: '/api/service', destination: '/api/service/stores/list-all-stores' },
-    { source: '/docs/community', destination: 'https://openfga.dev/community' },
+    { source: '/community', destination: 'https://openfga.dev/community' },
   ],
 };
 const pages = new Map([
   ['/docs/fga', inspectNativePage('## Introduction\n<h3 id="explicit">Exact heading</h3>\n##### <span id="deep">Deep heading</span>')],
   ['/docs/modeling/overview', inspectNativePage('## Models')],
 ]);
-const apiRoutes = new Set(['/api/service/stores/list-all-stores']);
+const apiRoutes = new Set(['/docs/api/service/stores/list-all-stores']);
 const options = { config, pages, apiRoutes };
 
+test('source pages mount once while the website keeps every legacy API URL', () => {
+  const native = JSON.parse(readFileSync(new URL('../docs-site/docs.json', import.meta.url), 'utf8'));
+  assert.equal(publicDocsRoute('/'), '/docs');
+  assert.equal(publicDocsRoute('fga'), '/docs/fga');
+  assert.equal(publicDocsRoute('/api/service'), '/docs/api/service');
+  assert.equal(nativeDocPages(native).length, 110);
+  for (const source of nativeDocPages(native)) assert.ok(!source.startsWith('docs/'));
+  assert.throws(() => publicDocsRoute('/docs/fga'), /must not repeat/);
+  for (const route of ['/api', '/api-reference', '/api/service', '/api/service/stores/list-all-stores']) {
+    assert.equal(isNativeRoute(route), false);
+  }
+  assert.deepEqual(validateNativeLink('/docs/api/service', options), { api: '/docs/api/service/stores/list-all-stores' });
+  assert.deepEqual(validateNativeLink('/api/service/stores/list-all-stores', options), { api: '/docs/api/service/stores/list-all-stores' });
+});
 test('ownership matches complete path segments', () => {
-  assert.ok(isNativeRoute('/docs') && isNativeRoute('/docs/fga') && isNativeRoute('/api/service/stores'));
+  assert.ok(isNativeRoute('/docs') && isNativeRoute('/docs/fga') && isNativeRoute('/docs/api/service/stores'));
   for (const route of ['/docs-extra', '/api/service-other', '/api/authzen', '/api/authzen/evaluation',
     '/api/management', '/api/request', '/api-reference', '/blog']) {
     assert.ok(!isNativeRoute(route), route);
@@ -28,7 +43,7 @@ test('ownership matches complete path segments', () => {
 test('the Mintlify origin root redirect does not take ownership of the public website', () => {
   const native = JSON.parse(readFileSync(new URL('../docs-site/docs.json', import.meta.url), 'utf8'));
   assert.deepEqual(native.redirects.filter(({ source }) => source === '/'), [
-    { source: '/', destination: '/docs/fga', permanent: false },
+    { source: '/', destination: '/fga', permanent: false },
   ]);
   const nativeOptions = { ...options, config: native };
   for (const href of [
@@ -50,15 +65,20 @@ test('same-PR documentation pages, original redirects and exact anchors resolve 
 test('missing pages and fragments are not hidden by the split-site boundary', () => {
   assert.throws(() => validateNativeLink('/docs/missing', options), /no native documentation page/);
   assert.throws(() => validateNativeLink('/docs/fga#missing', options), /missing native anchor/);
-  assert.throws(() => validateNativeLink('/api/service/stores/missing', options), /no configured native API operation/);
-  assert.throws(() => validateNativeLink('/api/service/stores/list-all-stores#unverified', options), /explicit native anchor contract/);
+  assert.throws(() => validateNativeLink('/docs/api/service/stores/missing', options), /no configured native API operation/);
+  assert.throws(() => validateNativeLink('/docs/api/service/stores/list-all-stores#unverified', options), /explicit native anchor contract/);
+});
+test('moved media links require a real file under the native source root', () => {
+  const media = { ...options, from: '/docs/modeling/overview', assets: new Set(['/docs/modeling/assets/model.svg']) };
+  assert.deepEqual(validateNativeLink('./assets/model.svg', media), { resource: '/docs/modeling/assets/model.svg' });
+  assert.throws(() => validateNativeLink('./assets/missing.svg', media), /no native documentation page/);
 });
 test('legacy API entry links retain their compatibility page and preview operation links resolve natively', () => {
   for (const href of ['/api', '/api/', '/api-reference', '/api-reference/']) {
     assert.deepEqual(validateNativeLink(href, options), { website: '/api/service' });
   }
   assert.deepEqual(validateNativeLink('/api-reference/stores/list-all-stores', options),
-    { api: '/api/service/stores/list-all-stores' });
+    { api: '/docs/api/service/stores/list-all-stores' });
   for (const href of ['/api/service', '/api/service/', '/api/service#/Relationship%20Queries/Check']) {
     assert.deepEqual(validateNativeLink(href, options), { website: '/api/service' });
   }
@@ -72,7 +92,7 @@ test('preview builds keep native links on the public root', () => {
 test('redirect cycles fail explicitly', () => {
   assert.throws(() => validateNativeLink('/docs/a', {
     ...options,
-    config: { redirects: [{ source: '/docs/a', destination: '/docs/b' }, { source: '/docs/b', destination: '/docs/a' }] },
+    config: { redirects: [{ source: '/a', destination: '/b' }, { source: '/b', destination: '/a' }] },
   }), /redirect cycle/);
 });
 test('native parsing preserves JSX IDs and excludes links inside literal code', () => {
@@ -85,7 +105,21 @@ test('API route contracts come from configured canonical operation summaries', (
     openapi: { source: 'https://example.com/schema', directory: 'api/service' },
     groups: [{ group: 'Stores', pages: ['GET /stores'] }],
   }] } }, { paths: { '/stores': { get: { summary: 'List all stores' } } } });
-  assert.deepEqual([...routes], ['/api/service/stores/list-all-stores']);
+  assert.deepEqual([...routes], ['/docs/api/service/stores/list-all-stores']);
+});
+
+test('Docusaurus-encoded API punctuation resolves without accepting double encoding', () => {
+  const routes = new Set([
+    '/docs/api/service/authzenservice/[experimental]-configuration',
+    '/docs/api/service/relationship-queries/%60check%60',
+  ]);
+  const punctuation = { ...options, apiRoutes: routes };
+  assert.deepEqual(validateNativeLink('/docs/api/service/authzenservice/%5Bexperimental%5D-configuration', punctuation),
+    { api: '/docs/api/service/authzenservice/[experimental]-configuration' });
+  assert.deepEqual(validateNativeLink('/docs/api/service/relationship-queries/%60check%60', punctuation),
+    { api: '/docs/api/service/relationship-queries/%60check%60' });
+  assert.throws(() => validateNativeLink('/docs/api/service/relationship-queries/%2560check%2560', punctuation),
+    /no configured native API operation/);
 });
 
 test('API route generation rejects a missing, broad, or changed service directory', () => {
@@ -102,12 +136,12 @@ test('the repository retains only a small legacy API compatibility page, not the
   for (const retired of ['docs', 'mintlify-native', 'src/components/SwaggerUI']) {
     assert.ok(!existsSync(new URL(retired, root)), `${retired} must remain retired`);
   }
-  for (const retained of ['docs-site/docs/fga.mdx', 'src/pages/index.tsx', 'src/pages/project.mdx', 'src/pages/community.mdx', 'src/pages/api/service.tsx', 'blog/ignore-duplicate-writes-announcement.md', 'src/components/Docs']) {
+  for (const retained of ['docs-site/fga.mdx', 'src/pages/index.tsx', 'src/pages/project.mdx', 'src/pages/community.mdx', 'src/pages/api/service.tsx', 'blog/ignore-duplicate-writes-announcement.md', 'src/components/Docs']) {
     assert.ok(existsSync(new URL(retained, root)), `${retained} must remain available`);
   }
-  assert.ok(!existsSync(new URL('docs-site/docs/community.mdx', root)), 'Do not duplicate the Community page');
+  assert.ok(!existsSync(new URL('docs-site/community.mdx', root)), 'Do not duplicate the Community page');
   const native = JSON.parse(readFileSync(new URL('docs-site/docs.json', root), 'utf8'));
-  assert.ok(native.redirects.some(({ source, destination }) => source === '/docs/community'
+  assert.ok(native.redirects.some(({ source, destination }) => source === '/community'
     && destination === 'https://openfga.dev/community'));
   const pkg = JSON.parse(readFileSync(new URL('package.json', root), 'utf8'));
   assert.doesNotMatch(pkg.scripts.build, /build:config-page/, 'Ordinary builds must not rewrite authored docs from the latest release');

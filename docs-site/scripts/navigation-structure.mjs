@@ -16,7 +16,7 @@ export const expectedDocsGroups = [
 ];
 
 export const expectedHeaderLinks = [
-  { label: 'Docs', href: '/docs' },
+  { label: 'Docs', href: '/' },
   { label: 'API Reference', href: '/api/service' },
   { label: 'Project', href: 'https://openfga.dev/project' },
   { label: 'Community', href: 'https://openfga.dev/community' },
@@ -25,17 +25,17 @@ export const expectedHeaderLinks = [
 ];
 
 export const expectedOverviewRoutes = [
-  '/docs/modeling',
-  '/docs/adopters',
-  '/docs/best-practices',
-  '/docs/industries',
-  '/docs/interacting',
-  '/docs/learn',
-  '/docs/modeling/advanced',
-  '/docs/modeling/agents',
-  '/docs/modeling/building-blocks',
-  '/docs/modeling/migrating',
-  '/docs/use-cases',
+  '/modeling',
+  '/adopters',
+  '/best-practices',
+  '/industries',
+  '/interacting',
+  '/learn',
+  '/modeling/advanced',
+  '/modeling/agents',
+  '/modeling/building-blocks',
+  '/modeling/migrating',
+  '/use-cases',
 ];
 
 function collectNavigationEntries(value, predicate, location = 'navigation', results = []) {
@@ -125,8 +125,7 @@ export function validateRouteScopedNavigation(docs) {
   deepStrictEqual(apiAnchor.openapi.directory, 'api/service', 'Generated API pages must retain the /api/service prefix');
 
   deepStrictEqual(docs.navbar?.links, expectedHeaderLinks, 'Navbar links must retain the approved exact order');
-  assertRedirect(docs, '/', '/docs/fga');
-  assertRedirect(docs, '/docs', '/docs/fga');
+  assertRedirect(docs, '/', '/fga');
   assertRedirect(docs, '/api/service', '/api/service/stores/list-all-stores');
   for (const route of expectedOverviewRoutes) assertRedirect(docs, route, `${route}/overview`);
   return { docsAnchor, apiAnchor };

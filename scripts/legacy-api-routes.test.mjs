@@ -9,10 +9,10 @@ const metadata = JSON.parse(readFileSync(new URL('../docs-site/api-samples.json'
 
 test('the compatibility fallback matches the native entry and cannot redirect back to itself', () => {
   const config = JSON.parse(readFileSync(new URL('../docs-site/docs.json', import.meta.url), 'utf8'));
-  assert.equal(apiEntryPage, '/api/service/stores/list-all-stores');
-  assert.equal(routes.Stores.ListStores, apiEntryPage);
+  assert.equal(apiEntryPage, '/docs/api/service');
+  assert.equal(routes.Stores.ListStores, `${apiEntryPage}/stores/list-all-stores`);
   assert.deepEqual(config.redirects.filter(({ source }) => source === '/api/service'),
-    [{ source: '/api/service', destination: apiEntryPage, permanent: false }]);
+    [{ source: '/api/service', destination: '/api/service/stores/list-all-stores', permanent: false }]);
   for (const hash of ['', '#', '#missing', '#%ZZ']) {
     assert.notEqual(resolveLegacyApiFragment(hash, routes).destination, '/api/service');
   }
@@ -29,7 +29,7 @@ test('every canonical operation accepts raw and encoded tags with or without a l
           assert.deepEqual(resolveLegacyApiFragment(fragment, routes), { destination }, fragment);
         }
       }
-      assert.match(destination, /^\/api\/service\/[^/]+\/[^/]+$/);
+      assert.match(destination, /^\/docs\/api\/service\/[^/]+\/[^/]+$/);
     }
   }
   assert.equal(operations.length, 24);
@@ -38,10 +38,10 @@ test('every canonical operation accepts raw and encoded tags with or without a l
 
 test('Check, BatchCheck, and AuthZEN use the matching deployed operation, not List stores', () => {
   for (const [fragment, destination] of [
-    ['#Relationship%20Queries/Check', '/api/service/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object'],
-    ['#/Relationship%20Queries/Check', '/api/service/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object'],
-    ['#/Relationship%20Queries/BatchCheck', '/api/service/relationship-queries/send-a-list-of-%60check%60-operations-in-a-single-request'],
-    ['#/AuthZenService/GetConfiguration', '/api/service/authzenservice/[experimental]-get-authzen-pdp-configuration-and-capabilities'],
+    ['#Relationship%20Queries/Check', '/docs/api/service/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object'],
+    ['#/Relationship%20Queries/Check', '/docs/api/service/relationship-queries/check-whether-a-user-is-authorized-to-access-an-object'],
+    ['#/Relationship%20Queries/BatchCheck', '/docs/api/service/relationship-queries/send-a-list-of-%60check%60-operations-in-a-single-request'],
+    ['#/AuthZenService/GetConfiguration', '/docs/api/service/authzenservice/[experimental]-get-authzen-pdp-configuration-and-capabilities'],
   ]) assert.deepEqual(resolveLegacyApiFragment(fragment, routes), { destination });
 });
 
@@ -66,7 +66,7 @@ test('map generation preserves multiple tags and rejects missing or ambiguous le
   const schema = { paths: { '/check': { post: operation } } };
   const generated = createLegacyApiRoutes(config, schema);
   assert.deepEqual(Object.keys(generated), operation.tags);
-  assert.equal(generated.Queries.Check, '/api/service/queries/check-a-relationship');
+  assert.equal(generated.Queries.Check, '/docs/api/service/queries/check-a-relationship');
   for (const fields of [{ operationId: undefined }, { tags: [] }, { tags: ['Queries', 'Queries'] }]) {
     assert.throws(() => createLegacyApiRoutes(config, {
       paths: { '/check': { post: { ...operation, ...fields } } },

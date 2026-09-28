@@ -31,7 +31,7 @@ const pages = manifest.sources.filter((source) => !exclusions.has(source)).map((
   const { metadata, title, prose, headings } = parseOriginalContent(body, { legacy: true });
   return {
     source,
-    destination: overrides.get(source) ?? `docs/${source}`,
+    destination: overrides.get(source) ?? source,
     sha256: sha256(body),
     title,
     sidebarTitle: labels.get(source) ?? metadata.sidebar_label ?? metadata.title ?? title,

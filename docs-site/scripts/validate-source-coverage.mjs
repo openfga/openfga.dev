@@ -35,6 +35,14 @@ function pagePath(value, location, prefix = '') {
   return value;
 }
 
+function nativePagePath(value, location) {
+  pagePath(value, location);
+  if (/^(?:docs|api|scripts|snippets|images|lib|openapi)\//.test(value)) {
+    fail(`${location}: invalid page path ${JSON.stringify(value)}; use a documentation page relative to docs-site/`);
+  }
+  return value;
+}
+
 function reason(value, location) {
   if (typeof value !== 'string' || !value.trim()) fail(`${location} requires a nonempty reason`);
 }
@@ -132,7 +140,7 @@ function loadManifest(repoRoot) {
       if (!sources.has(source)) fail(`${kind}: ${source} is not in sources`);
       if (overrides.has(source) || exclusions.has(source)) fail(`duplicate mapping or exclusion for ${source}`);
       if (kind === 'overrides') {
-        pagePath(entry.destination, `${source} destination`, 'docs/');
+        nativePagePath(entry.destination, `${source} destination`);
       } else {
         reason(entry.reason, source);
         if (['owner', 'route', 'ownerPage'].some((key) => Object.hasOwn(entry, key))) {
@@ -141,7 +149,7 @@ function loadManifest(repoRoot) {
           if (entry.route !== `/${entry.ownerPage.slice('src/pages/'.length, -4)}`) {
             fail(`${source}: route must match the Docusaurus ownerPage path`);
           }
-          if (/^\/(?:docs|api\/service)(?:\/|$)/.test(entry.route)) {
+          if (/^\/docs(?:\/|$)/.test(entry.route)) {
             fail(`${source}: Docusaurus cannot own the Mintlify route ${entry.route}`);
           }
           regularPath(repoRoot, entry.ownerPage);
@@ -165,16 +173,16 @@ function loadManifest(repoRoot) {
   for (const source of sources) {
     const exclusion = exclusions.get(source);
     if (exclusion) {
-      prohibitedPages.set(`docs/${source}`, `excluded source ${source}: ${exclusion.reason}`);
+      prohibitedPages.set(source, `excluded source ${source}: ${exclusion.reason}`);
     } else {
-      const destination = overrides.get(source)?.destination ?? `docs/${source}`;
+      const destination = overrides.get(source)?.destination ?? source;
       claim(destination, `historical source docs/content/${source}`);
       ownedPages.push(destination);
     }
   }
   for (const entry of manifest.nativePages) {
     fields(entry, ['destination', 'reason'], [], 'nativePages');
-    pagePath(entry.destination, 'nativePages.destination', 'docs/');
+    nativePagePath(entry.destination, 'nativePages.destination');
     reason(entry.reason, `nativePages ${entry.destination}`);
     claim(entry.destination, `native page: ${entry.reason}`);
     ownedPages.push(entry.destination);
@@ -237,16 +245,11 @@ function navigationReferences(navigation) {
         }
         if (url.hostname !== 'openfga.dev' || !url.pathname.startsWith('/docs/')) return;
         // Validate the original path, before URL parsing can normalize traversal.
-        route = value.replace(/^(?:https?:)?\/\/[^/]+/i, '');
+        route = value.replace(/^(?:https?:)?\/\/[^/]+\/docs/i, '');
       }
       route = route.replace(/^\//, '').split(/[?#]/, 1)[0];
-      if (!route.startsWith('docs/')) {
-        if (/^\/api\/service(?:\/|$)/.test(value)) return;
-        throw new Error(
-          `docs-site/docs.json ${location}: unexpected documentation reference ${JSON.stringify(value)}`,
-        );
-      }
-      pagePath(`${route}.mdx`, `docs.json ${location}`, 'docs/');
+      if (/^\/api\/service(?:\/|$)/.test(value)) return;
+      nativePagePath(`${route}.mdx`, `docs.json ${location}`);
       references.push({ page: `${route}.mdx`, location, hidden });
       return;
     }
@@ -282,8 +285,8 @@ export function validateSourceCoverage({ repoRoot = repositoryRoot, logger = con
   }
 
   const docs = readJson(repoRoot, `${mintlifyRoot}/docs.json`);
-  const references = navigationReferences(docs.navigation);
   rejectRetiredRoutes(docs);
+  const references = navigationReferences(docs.navigation);
   const visibleCounts = new Map();
   const allCounts = new Map();
   for (const { page, location, hidden } of references) {

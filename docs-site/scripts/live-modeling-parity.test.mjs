@@ -1,3 +1,4 @@
+import { relocateNativeFixture } from './regression-fixtures.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -7,7 +8,7 @@ import { parse as parseYaml } from 'yaml';
 
 const repoRoot = new URL('../../', import.meta.url);
 const read = (file) => readFileSync(new URL(file, repoRoot), 'utf8');
-const contracts = JSON.parse(read('tests/fixtures/mintlify/live-modeling/contracts.json'));
+const contracts = relocateNativeFixture(JSON.parse(read('tests/fixtures/mintlify/live-modeling/contracts.json')));
 const processor = createProcessor();
 const exampleName = /^(AuthzModelSnippetViewer|OpenFGACodeBlock|\w*RequestViewer)$/;
 
@@ -157,7 +158,7 @@ test('modeling contracts cover the exact owned manifest, including the testing p
   const overrides = new Map(manifest.overrides.map((entry) => [entry.source, entry.destination]));
   assert.deepEqual(contracts.rows.map(({ source, native }) => ({ source, native })),
     manifest.sources.filter((source) => source.startsWith('modeling/'))
-      .map((source) => ({ source, native: overrides.get(source) ?? `docs/${source}` })));
+      .map((source) => ({ source, native: overrides.get(source) ?? source })));
 });
 
 for (const row of contracts.rows) {
@@ -177,7 +178,7 @@ for (const row of contracts.rows) {
   });
 }
 
-const gettingStarted = read('docs-site/docs/modeling/getting-started.mdx');
+const gettingStarted = read('docs-site/modeling/getting-started.mdx');
 function assertWorkedExamples(source, counts) {
   const examples = nodes(source).filter((node) => props(node).className === 'openfga-modeling-example');
   assert.equal(examples.length, counts.length, 'Keep each original worked example in its own container');
@@ -191,7 +192,7 @@ function assertWorkedExamples(source, counts) {
 
 test('worked examples retain their original grouping across both affected guides', () => {
   assertWorkedExamples(gettingStarted, [12, 12, 12, 12]);
-  assertWorkedExamples(read('docs-site/docs/modeling/building-blocks/object-to-object-relationships.mdx'), [1]);
+  assertWorkedExamples(read('docs-site/modeling/building-blocks/object-to-object-relationships.mdx'), [1]);
   const tree = nodes(gettingStarted);
   const relationExample = tree.find((node) => props(node).className === 'openfga-modeling-example'
     && text(node).includes('can create a document in a drive') && text(node).includes('owner of the drive')
@@ -252,14 +253,14 @@ test('getting-started icons are the exact original assets and the ReBAC link tar
     assert.equal(hash(read(`docs-site/${asset.path}`)), asset.sha256, asset.path);
     assert.ok(gettingStarted.includes(`/${asset.path}`), `Missing ${asset.path}`);
   }
-  assert.ok(gettingStarted.includes('/docs/authorization-concepts#what-is-relationship-based-access-control)'));
+  assert.ok(gettingStarted.includes('/authorization-concepts#what-is-relationship-based-access-control)'));
   assert.ok(!gettingStarted.includes('#what-is-relationship-based-access-control-rebac'));
   const images = nodes(gettingStarted).filter((node) => node.name === 'img');
   assert.ok(images.every((node) => props(node).alt === ''), 'Standalone type icons are decorative beside existing labels');
 });
 
 test('Slack summary preserves all outcomes and source wording in the original order', () => {
-  const source = read('docs-site/docs/modeling/advanced/slack.mdx');
+  const source = read('docs-site/modeling/advanced/slack.mdx');
   const summary = source.slice(source.indexOf('## Summary'));
   const expected = [
     'Have a basic understanding of authorization and OpenFGA Concepts.',
@@ -277,21 +278,24 @@ test('Slack summary preserves all outcomes and source wording in the original or
 });
 
 test('user-groups step arrows link to the matching preserved headings', () => {
-  const allNodes = nodes(read('docs-site/docs/modeling/user-groups.mdx'));
+  const allNodes = nodes(read('docs-site/modeling/user-groups.mdx'));
   const links = allNodes.filter((node) => node.type === 'link' && text(node) === '→');
   assert.deepEqual(links.map((node) => node.url), ['#step-1', '#step-2', '#step-3', '#step-4']);
   assert.ok(links.every((node) => node.position.start.offset < allNodes.find((heading) => props(heading).id === 'step-1').position.start.offset));
+  const alias = allNodes.find((node) => props(node).id === '03-assign-the-team-members-a-relation-to-an-object');
+  assert.ok(alias, 'Preserve the published incoming link from the parent-child guide');
+  assert.ok(allNodes.find((node) => props(node).id === 'step-3').children.includes(alias));
 });
 
 test('MCP documentation keeps the original introductory paragraph and official protocol reference', () => {
-  const source = read('docs-site/docs/modeling/agents/mcp-authorization.mdx');
+  const source = read('docs-site/modeling/agents/mcp-authorization.mdx');
   const link = nodes(source).find((node) => node.type === 'link' && node.url === 'https://modelcontextprotocol.io/');
   assert.equal(text(link), 'Model Context Protocol (MCP)');
   assert.equal(source.split('servers expose tools that AI agents can call').length, 2);
 });
 
 test('the direct-relationships disclosure does not reuse the Before you start heading ID', () => {
-  const allNodes = nodes(read('docs-site/docs/modeling/building-blocks/direct-relationships.mdx'));
+  const allNodes = nodes(read('docs-site/modeling/building-blocks/direct-relationships.mdx'));
   const heading = allNodes.find((node) => node.type === 'heading' && node.depth === 2 && text(node) === 'Before you start');
   assert.ok(heading, 'Retain the original H2 and its automatic before-you-start ID');
   const disclosure = allNodes.find((node) => node.name === 'Accordion' && props(node).title === 'Before you start');
@@ -316,7 +320,7 @@ test('headline guard allows shell comments inside fenced examples without interp
 test('semantic-link guard rejects removing a link but keeping its label', () => {
   const row = contracts.rows.find((entry) => entry.source === 'modeling/advanced/entitlements.mdx');
   const source = read(`docs-site/${row.native}`);
-  const changed = source.replace('[authorization model](/docs/concepts#what-is-an-authorization-model)', 'authorization model');
+  const changed = source.replace('[authorization model](/concepts#what-is-an-authorization-model)', 'authorization model');
   assert.notEqual(changed, source);
   assert.throws(() => assertLinks(nodes(changed), row.links), /Missing semantic link/);
 });

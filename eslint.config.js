@@ -64,15 +64,6 @@ export default [
     },
   },
   {
-    files: ['deploy/cloudflare/**/*.mjs'],
-    languageOptions: {
-      globals: {
-        ...globals.node,
-        ...globals.serviceworker,
-      },
-    },
-  },
-  {
     files: ['docs-site/snippets/**/*.jsx'],
     languageOptions: {
       globals: {

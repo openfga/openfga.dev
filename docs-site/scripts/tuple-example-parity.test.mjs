@@ -162,7 +162,7 @@ function assertTupleParity(callers, migrated, location = 'fixture') {
 }
 
 function assertTutorialInlineExamples(source, route) {
-  if (!route.startsWith('docs/')) return;
+  if (route.startsWith('api/')) return;
   const allNodes = nodes(source);
   for (const node of allNodes) {
     const location = `${route}:${node.position.start.line}`;
@@ -519,7 +519,7 @@ function sourceFiles(directory) {
 
 test('all migrated tutorial pages keep native examples inline and properly nested', () => {
   const nativeRoot = path.join(repoRoot, 'docs-site');
-  for (const filename of sourceFiles(path.join(nativeRoot, 'docs'))) {
+  for (const filename of sourceFiles(nativeRoot)) {
     assertTutorialInlineExamples(readFileSync(filename, 'utf8'), path.relative(nativeRoot, filename).split(path.sep).join('/'));
   }
 });
@@ -533,14 +533,14 @@ test('the independent tuple oracle covers all 46 source callers across 15 pages'
 
 for (const [relative, callers] of Object.entries(tupleExamples)) {
   test(`actual tuple caller parity: ${relative}`, () => {
-    assertTupleParity(callers, readFileSync(path.join(repoRoot, 'docs-site/docs', relative), 'utf8'), relative);
+    assertTupleParity(callers, readFileSync(path.join(repoRoot, 'docs-site', relative), 'utf8'), relative);
   });
 }
 
 test('task examples retain their instructional sections, contextual descriptions, and shared request props', () => {
   const relative = 'modeling/agents/task-based-authorization.mdx';
   const expected = tutorialStructure.task;
-  const migrated = readFileSync(path.join(repoRoot, 'docs-site/docs', relative), 'utf8');
+  const migrated = readFileSync(path.join(repoRoot, 'docs-site', relative), 'utf8');
   const migratedNodes = nodes(migrated);
   const models = (content) => examplePlacements(content)
     .filter((example) => example.language === 'dsl.openfga')
@@ -573,7 +573,7 @@ test('task examples retain their instructional sections, contextual descriptions
 
 test('design-principle Accordions preserve each warning, example DSL, and content order from details', () => {
   const relative = 'best-practices/modeling-design-principles.mdx';
-  const migrated = readFileSync(path.join(repoRoot, 'docs-site/docs', relative), 'utf8');
+  const migrated = readFileSync(path.join(repoRoot, 'docs-site', relative), 'utf8');
   const migratedNodes = nodes(migrated);
   assert.ok(!migratedNodes.some((node) => node.name === 'details' || node.name === 'summary'));
   const content = (node) => {
@@ -626,7 +626,7 @@ function assertConceptAnchors(sourceTitles, migrated) {
 }
 
 const sourceConcepts = tutorialStructure.conceptTitles;
-const migratedConcepts = readFileSync(path.join(repoRoot, 'docs-site/docs/concepts.mdx'), 'utf8');
+const migratedConcepts = readFileSync(path.join(repoRoot, 'docs-site/concepts.mdx'), 'utf8');
 
 test('visible concept headings expose all original anchors before their collapsed examples', () => {
   assertConceptAnchors(sourceConcepts, migratedConcepts);

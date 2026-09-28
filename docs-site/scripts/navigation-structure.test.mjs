@@ -2,7 +2,6 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { readRegressionFixture } from './regression-fixtures.mjs';
-
 import {
   expectedHeaderLinks,
   expectedOverviewRoutes,
@@ -18,7 +17,7 @@ function fixture() {
         {
           anchor: 'Docs',
           hidden: true,
-          pages: ['docs/fga'],
+          pages: ['fga'],
         },
         {
           anchor: 'API Reference',
@@ -33,14 +32,13 @@ function fixture() {
       ],
     },
     redirects: [
-      { source: '/docs', destination: '/docs/fga', permanent: false },
       {
         source: '/api/service',
         destination: '/api/service/stores/list-all-stores',
         permanent: false,
       },
       ...expectedOverviewRoutes.map((source) => ({ source, destination: `${source}/overview`, permanent: false })),
-      { source: '/', destination: '/docs/fga', permanent: false },
+      { source: '/', destination: '/fga', permanent: false },
     ],
   };
 }
@@ -55,7 +53,7 @@ test('hidden anchors provide the exact route-scoped sidebar and header contract'
 
 test('native metadata uses the public host and indexes pages inside hidden route selectors', () => {
   const docs = JSON.parse(readFileSync(new URL('../docs.json', import.meta.url), 'utf8'));
-  assert.equal(docs.seo.metatags.canonical, 'https://openfga.dev');
+  assert.equal(docs.seo.metatags.canonical, 'https://openfga.dev/docs');
   assert.equal(docs.seo.indexing, 'all');
 });
 
@@ -74,7 +72,7 @@ test('native preview aliases preserve old API paths without redirecting the serv
 });
 
 test('the introduction HTTP feature link opens the native API reference', () => {
-  const introduction = readFileSync(new URL('../docs/fga.mdx', import.meta.url), 'utf8');
+  const introduction = readFileSync(new URL('../fga.mdx', import.meta.url), 'utf8');
   assert.match(introduction, /\[HTTP\]\(\/api\/service\)/);
   assert.doesNotMatch(introduction, /https:\/\/docs\.fga\.dev\/api\/service/);
 });
@@ -101,8 +99,8 @@ test('all source documentation slugs retain a page or exact native redirect', ()
   for (const { source, slug } of readRegressionFixture('historical-source-inventory').pages) {
     if (exclusions.has(source)) continue;
     assert.equal(typeof slug, 'string', `${source}: expected explicit public slug`);
-    const publicRoute = `/docs${slug}`;
-    const destination = `/${(overrides.get(source) ?? `docs/${source}`).slice(0, -4)}`;
+    const publicRoute = slug;
+    const destination = `/${(overrides.get(source) ?? source).slice(0, -4)}`;
     if (publicRoute === destination) continue;
     assert.deepEqual(
       docs.redirects.filter(({ source }) => source === publicRoute),
@@ -234,7 +232,7 @@ for (const [name, mutate, expected] of [
   ],
   [
     'the Mintlify origin root redirect cannot be duplicated',
-    (docs) => docs.redirects.push({ source: '/', destination: '/docs/fga', permanent: false }),
+    (docs) => docs.redirects.push({ source: '/', destination: '/fga', permanent: false }),
     /stable "\/" entry must redirect temporarily/,
   ],
   [
@@ -247,40 +245,40 @@ for (const [name, mutate, expected] of [
   [
     'stable Docs entry requires its native redirect',
     (docs) => {
-      docs.redirects[0].destination = '/docs/getting-started';
+      docs.redirects.find(({ source }) => source === '/').destination = '/getting-started';
     },
-    /stable "\/docs" entry must redirect temporarily/,
+    /stable "\/" entry must redirect temporarily/,
   ],
   [
     'stable API entry requires its native redirect',
     (docs) => {
-      docs.redirects[1].destination = '/api/service/stores/create-a-store';
+      docs.redirects[0].destination = '/api/service/stores/create-a-store';
     },
     /stable "\/api\/service" entry must redirect temporarily/,
   ],
   [
     'stable modeling entry requires its native redirect',
-    (docs) => docs.redirects.splice(2, 1),
-    /stable "\/docs\/modeling" entry must redirect temporarily/,
+    (docs) => docs.redirects.splice(1, 1),
+    /stable "\/modeling" entry must redirect temporarily/,
   ],
   [
     'modeling redirect must retain its overview destination',
     (docs) => {
-      docs.redirects[2].destination = '/docs/modeling/getting-started';
+      docs.redirects[1].destination = '/modeling/getting-started';
     },
-    /stable "\/docs\/modeling" entry must redirect temporarily/,
+    /stable "\/modeling" entry must redirect temporarily/,
   ],
   [
     'modeling redirect cannot be duplicated',
-    (docs) => docs.redirects.push(structuredClone(docs.redirects[2])),
-    /stable "\/docs\/modeling" entry must redirect temporarily/,
+    (docs) => docs.redirects.push(structuredClone(docs.redirects[1])),
+    /stable "\/modeling" entry must redirect temporarily/,
   ],
   [
     'modeling redirect must remain temporary during migration',
     (docs) => {
-      docs.redirects[2].permanent = true;
+      docs.redirects[1].permanent = true;
     },
-    /stable "\/docs\/modeling" entry must redirect temporarily/,
+    /stable "\/modeling" entry must redirect temporarily/,
   ],
 ]) {
   test(name, () => {

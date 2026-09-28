@@ -37,9 +37,3 @@ entities.json
 .lycheecache
 /lychee/
 /.link-check/
-
-# Local Cloudflare Worker state and secrets
-/.wrangler/
-/deploy/cloudflare/.wrangler/
-/deploy/cloudflare/.dev.vars*
-/deploy/cloudflare/.env*

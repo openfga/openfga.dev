@@ -22,11 +22,9 @@
     "test:site-boundary": "node --test scripts/site-boundary.test.mjs scripts/agent-content.test.mjs scripts/site-sitemap.test.mjs scripts/legacy-api-routes.test.mjs",
     "generate:legacy-api-routes": "node scripts/generate-legacy-api-routes.mjs",
     "check:legacy-api-routes": "node scripts/generate-legacy-api-routes.mjs --check",
-    "test:docs-proxy": "node --test deploy/cloudflare/*.test.mjs scripts/deployment-verification.test.mjs scripts/native-deployment-fingerprint.test.mjs",
-    "check:docs-proxy": "npm run test:docs-proxy && wrangler deploy --dry-run --config deploy/cloudflare/wrangler.json",
-    "dev:docs-proxy": "wrangler dev --local --config deploy/cloudflare/wrangler.json --var WEBSITE_ORIGIN:https://openfga.dev",
+    "test:docs-deployment": "node --test scripts/deployment-verification.test.mjs scripts/native-deployment-fingerprint.test.mjs",
     "verify:docs-origin": "node scripts/verify-docs-deployment.mjs --mode native --origin https://fga.mintlify.site",
-    "verify:docs-proxy": "node scripts/verify-docs-deployment.mjs --mode proxy",
+    "verify:docs-deployment": "node scripts/verify-docs-deployment.mjs --mode public",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
@@ -40,7 +38,7 @@
     "lint:fix": "npm run lint -- --fix",
     "format:check": "prettier --check src/**",
     "format:fix": "prettier --write src/**",
-    "check:mintlify": "npm run check:mintlify-deployment && npm run check:mintlify-codegen && npm run validate:mintlify-navigation && npm run test:mintlify-mdx && npm run test:mintlify-content-parity && npm run validate:mintlify-components && npm run test:mintlify-component-usage && npm run test:config-page && npm run test:update-api-samples && npm run test:site-boundary && npm run check:legacy-api-routes && npm run check:docs-proxy",
+    "check:mintlify": "npm run check:mintlify-deployment && npm run check:mintlify-codegen && npm run validate:mintlify-navigation && npm run test:mintlify-mdx && npm run test:mintlify-content-parity && npm run validate:mintlify-components && npm run test:mintlify-component-usage && npm run test:config-page && npm run test:update-api-samples && npm run test:site-boundary && npm run check:legacy-api-routes && npm run test:docs-deployment",
     "generate:mintlify-deployment": "node scripts/native-deployment-fingerprint.mjs",
     "check:mintlify-deployment": "node scripts/native-deployment-fingerprint.mjs --check",
     "generate:mintlify-codegen": "bash docs-site/scripts/build-fga-codegen.sh",
@@ -102,8 +100,7 @@
     "prettier": "3.9.8",
     "prismjs": "1.30.0",
     "sax": "1.5.0",
-    "typescript": "npm:@typescript/typescript6@6.0.2",
-    "wrangler": "4.134.0"
+    "typescript": "npm:@typescript/typescript6@6.0.2"
   },
   "overrides": {
     "semver": "^7.7.1"

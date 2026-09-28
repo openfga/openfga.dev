@@ -77,8 +77,8 @@
 /* Match native control proportions without shrinking the navbar link hit areas. */
 #navbar
   :is(
-    a[href='/docs'],
-    a[href='/api/service'],
+    a:is([href='/'], [href='/docs'], [href='/docs/']),
+    a:is([href='/api/service'], [href='/docs/api/service']),
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
@@ -95,8 +95,8 @@
 
 #navbar
   :is(
-    a[href='/docs'],
-    a[href='/api/service'],
+    a:is([href='/'], [href='/docs'], [href='/docs/']),
+    a:is([href='/api/service'], [href='/docs/api/service']),
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
@@ -112,8 +112,8 @@
 
 #navbar
   :is(
-    a[href='/docs'],
-    a[href='/api/service'],
+    a:is([href='/'], [href='/docs'], [href='/docs/']),
+    a:is([href='/api/service'], [href='/docs/api/service']),
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
@@ -123,8 +123,8 @@
 
 #navbar
   :is(
-    a[href='/docs'],
-    a[href='/api/service'],
+    a:is([href='/'], [href='/docs'], [href='/docs/']),
+    a:is([href='/api/service'], [href='/docs/api/service']),
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
@@ -135,8 +135,8 @@
 .dark
   #navbar
   :is(
-    a[href='/docs'],
-    a[href='/api/service'],
+    a:is([href='/'], [href='/docs'], [href='/docs/']),
+    a:is([href='/api/service'], [href='/docs/api/service']),
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
@@ -146,8 +146,8 @@
 
 #navbar
   :is(
-    a[href='/docs'],
-    a[href='/api/service'],
+    a:is([href='/'], [href='/docs'], [href='/docs/']),
+    a:is([href='/api/service'], [href='/docs/api/service']),
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
@@ -157,8 +157,8 @@
 
 #navbar
   :is(
-    a[href='/docs'],
-    a[href='/api/service'],
+    a:is([href='/'], [href='/docs'], [href='/docs/']),
+    a:is([href='/api/service'], [href='/docs/api/service']),
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
@@ -169,8 +169,8 @@
 .dark
   #navbar
   :is(
-    a[href='/docs'],
-    a[href='/api/service'],
+    a:is([href='/'], [href='/docs'], [href='/docs/']),
+    a:is([href='/api/service'], [href='/docs/api/service']),
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
@@ -181,8 +181,8 @@
 .dark
   #navbar
   :is(
-    a[href='/docs'],
-    a[href='/api/service'],
+    a:is([href='/'], [href='/docs'], [href='/docs/']),
+    a:is([href='/api/service'], [href='/docs/api/service']),
     a[href='https://openfga.dev/project'],
     a[href='https://openfga.dev/community'],
     a[href='https://openfga.dev/blog']
@@ -190,24 +190,24 @@
   color: #f0f6fc !important;
 }
 
-body:not(:has(#api-playground-2-operation-page)) #navbar a[href='/docs'],
-body:has(#api-playground-2-operation-page) #navbar a[href='/api/service'] {
+body:not(:has(#api-playground-2-operation-page)) #navbar a:is([href='/'], [href='/docs'], [href='/docs/']),
+body:has(#api-playground-2-operation-page) #navbar a:is([href='/api/service'], [href='/docs/api/service']) {
   color: rgb(var(--primary)) !important;
   font-weight: 600;
 }
 
-body:not(:has(#api-playground-2-operation-page)) #navbar a[href='/docs']::before,
-body:has(#api-playground-2-operation-page) #navbar a[href='/api/service']::before {
+body:not(:has(#api-playground-2-operation-page)) #navbar a:is([href='/'], [href='/docs'], [href='/docs/'])::before,
+body:has(#api-playground-2-operation-page) #navbar a:is([href='/api/service'], [href='/docs/api/service'])::before {
   background-color: rgb(var(--primary) / 10%);
 }
 
-.dark body:not(:has(#api-playground-2-operation-page)) #navbar a[href='/docs'],
-.dark body:has(#api-playground-2-operation-page) #navbar a[href='/api/service'] {
+.dark body:not(:has(#api-playground-2-operation-page)) #navbar a:is([href='/'], [href='/docs'], [href='/docs/']),
+.dark body:has(#api-playground-2-operation-page) #navbar a:is([href='/api/service'], [href='/docs/api/service']) {
   color: rgb(var(--primary-light)) !important;
 }
 
-.dark body:not(:has(#api-playground-2-operation-page)) #navbar a[href='/docs']::before,
-.dark body:has(#api-playground-2-operation-page) #navbar a[href='/api/service']::before {
+.dark body:not(:has(#api-playground-2-operation-page)) #navbar a:is([href='/'], [href='/docs'], [href='/docs/'])::before,
+.dark body:has(#api-playground-2-operation-page) #navbar a:is([href='/api/service'], [href='/docs/api/service'])::before {
   background-color: rgb(var(--primary-light) / 12%);
 }
 

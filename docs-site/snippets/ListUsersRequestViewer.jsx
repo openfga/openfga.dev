@@ -88,9 +88,9 @@ export const ListUsersRequestViewer = ({
       {!skipSetup && runtime.hasSetup(activeLang) && (
         <Accordion title="Initialize the SDK">
           <p>
-            Install the <a href="/docs/getting-started/install-sdk">SDK or CLI</a> and deploy an OpenFGA server. Set
+            Install the <a href="https://openfga.dev/docs/getting-started/install-sdk">SDK or CLI</a> and deploy an OpenFGA server. Set
             FGA_API_URL, FGA_STORE_ID, and optionally FGA_MODEL_ID. These examples use no authentication; see{' '}
-            <a href="/docs/getting-started/setup-sdk-client">client setup</a> for authentication and runtime
+            <a href="https://openfga.dev/docs/getting-started/setup-sdk-client">client setup</a> for authentication and runtime
             prerequisites. Go snippets run inside main; Python requests run inside an async function and the client must
             be closed afterward.
           </p>
