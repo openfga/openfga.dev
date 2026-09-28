@@ -3,7 +3,7 @@ title: "Parent-Child Objects"
 description: "Indicate relationships between objects, and how users' relationships to one object can affect their relationship with another"
 canonical: "https://openfga.dev/docs/modeling/parent-child"
 content_type: "documentation"
-last_updated: "2026-09-25T05:12:42.000Z"
+last_updated: "2026-09-28T14:24:32.000Z"
 ---
 
 # Parent-Child Objects
@@ -85,7 +85,7 @@ The following three steps indicate and verify that `bob` is an `editor` of `docu
 4. Create a new _relationship tuple_ to indicate that **folder:notes** is a `parent` of **document:meeting\_notes.doc**
 5. Check to see if **bob** is an `editor` of **document:meeting\_notes.doc**
 
-### 01. Update the Athorization Model to allow a parent relationship between folder and document
+### 01. Update the Authorization Model to allow a parent relationship between folder and document
 
 As documented in [Modeling Concepts: Object to Object Relationships](https://openfga.dev/docs/modeling/building-blocks/object-to-object-relationships.md), the following update to the authorization model allows a `parent` relation between a `folder` and a `document`:
 
