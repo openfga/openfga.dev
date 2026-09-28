@@ -3,7 +3,7 @@ title: "Fine-Grained Authorization for E-commerce with FGA"
 description: "Model multi-store organizations, staff roles, products, orders, and refunds in FGA for Shopify-style and BigCommerce-style e-commerce platforms."
 canonical: "https://openfga.dev/docs/industries/ecommerce"
 content_type: "documentation"
-last_updated: "2026-09-28T14:24:32.000Z"
+last_updated: "2026-09-28T14:29:54.000Z"
 ---
 
 # E-commerce Authorization with OpenFGA

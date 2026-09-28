@@ -3,7 +3,7 @@ title: "Fine-Grained Authorization, ReBAC, ABAC & Zanzibar Explained"
 description: "Learn fine-grained authorization concepts: ReBAC, RBAC, ABAC, PBAC, and Google Zanzibar. Understand how OpenFGA models permissions for modern apps."
 canonical: "https://openfga.dev/docs/authorization-concepts"
 content_type: "documentation"
-last_updated: "2026-09-28T14:24:32.000Z"
+last_updated: "2026-09-28T14:29:54.000Z"
 ---
 
 # Authorization Concepts

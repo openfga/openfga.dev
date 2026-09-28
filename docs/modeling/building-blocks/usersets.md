@@ -3,7 +3,7 @@ title: "Usersets"
 description: "Modeling with userset"
 canonical: "https://openfga.dev/docs/modeling/building-blocks/usersets"
 content_type: "documentation"
-last_updated: "2026-09-28T14:24:32.000Z"
+last_updated: "2026-09-28T14:29:54.000Z"
 ---
 
 # Usersets

@@ -3,7 +3,7 @@ title: "Direct Access"
 description: "Granting a user access to an object"
 canonical: "https://openfga.dev/docs/modeling/direct-access"
 content_type: "documentation"
-last_updated: "2026-09-28T14:24:32.000Z"
+last_updated: "2026-09-28T14:29:54.000Z"
 ---
 
 # Direct Access
