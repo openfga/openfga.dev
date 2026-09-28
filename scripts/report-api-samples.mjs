@@ -42,8 +42,8 @@ export function renderReport(report, { runUrl } = {}) {
     incompatible
       ? 'The fetched source is incompatible with the reviewed API sample contract. No generated artifact changes were retained ' +
         'and no pull request was proposed for this source. The workflow intentionally remains failed after reporting.'
-      : 'This **draft** updates the last-generated source digest, SDK sample overlay, legacy API routes when needed, ' +
-        'and native-source fingerprint. Existing sample inputs, SDK support decisions and independent fixtures were preserved.',
+      : 'This **draft** updates the last-generated source digest, SDK sample overlay, and native-source fingerprint. ' +
+        'Historical API aliases, existing sample inputs, SDK support decisions and independent fixtures were preserved.',
     report.comparisonScope,
     jsonBlock(details),
     incompatible

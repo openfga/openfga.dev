@@ -41,18 +41,19 @@ redirects preserve earlier preview links, while sibling namespaces such as
 
 Pass source-root page IDs to `publicDocsRoute` in `native-routes.mjs`; never pass
 already-mounted `/docs/...` URLs. Docusaurus generates legacy aliases from
-`src/data/legacy-api-routes.json`, so an API route change requires regenerating that
-map, not maintaining a separate Cloudflare redirect table. Browser fragments are
+`src/data/legacy-api-routes.json`, so preserve that map's historical paths when an
+API summary changes. Add old-to-new source-root redirects in `docs-site/docs.json`,
+not a separate Cloudflare redirect table. Browser fragments are
 resolved by `src/pages/api/service.tsx`; they are not visible to an HTTP redirect.
 
 ## Explicit updates to committed generated content
 
 | File | When to run; generated output |
 | --- | --- |
-| `generate-legacy-api-routes.mjs` | After reviewed API schema/navigation changes, run `npm run generate:legacy-api-routes`; commit `src/data/legacy-api-routes.json`, used by `/api/service` to preserve old Swagger fragments. `npm run check:legacy-api-routes` rejects stale output. |
+| `generate-legacy-api-routes.mjs` | `npm run check:legacy-api-routes` verifies that every historical Swagger/path alias reaches the same current operation, following explicit Mintlify redirects. `npm run generate:legacy-api-routes` preserves existing aliases rather than overwriting them with new summary slugs; operation additions/removals require manual review. |
 | `native-deployment-fingerprint.mjs` | After native-source changes, run `npm run generate:mintlify-deployment`; commit the hidden source marker in `docs-site/docs.json`. `npm run check:mintlify-deployment` rejects stale markers. The digest covers tracked and unignored files under `docs-site/`, excluding the marker itself. |
 | `update-config-page.mjs` | Run `npm run build:config-page` to fetch the latest official server release/schema and replace only the marked version/table region of `docs-site/getting-started/setup-openfga/configuration.mdx`, preserving authored content. |
-| `update-api-samples.mjs`, `report-api-samples.mjs` | Run `npm run update:api-samples -- --report .api-samples-report.json` to fetch the exact live API URL once, validate unchanged reviewed sample inputs, and prepare compatible metadata/overlay/legacy-map/fingerprint updates. Reports must stay outside `docs-site/`; remove local reports after review. Reporting to GitHub is a separate, explicitly invoked command. |
+| `update-api-samples.mjs`, `report-api-samples.mjs` | Run `npm run update:api-samples -- --report .api-samples-report.json` to fetch the exact live API URL once, validate unchanged reviewed sample inputs and historical aliases, and prepare compatible metadata/overlay/fingerprint updates. Reports must stay outside `docs-site/`; remove local reports after review. Reporting to GitHub is a separate, explicitly invoked command. |
 
 Ordinary builds check freshness; they do not regenerate those committed outputs
 or fetch the latest server release. The [nightly updater](../.github/workflows/update-docs.yml)
@@ -76,7 +77,7 @@ repository default branch. It uses the reserved branch
 `docs/update-openfga-api-samples` and serializes runs without cancellation:
 
 - **`updated` (exit 0):** validate and serialize everything before writing the
-  metadata, SDK overlay, changed legacy map, and source fingerprint. Offline
+  metadata, SDK overlay, and source fingerprint while preserving the legacy map. Offline
   regression checks must pass before creating/updating a **draft PR**. Identical
   candidate trees already on the reserved branch are not committed again.
 - **`unchanged` (exit 0):** no writes, PR, or issue.
@@ -92,6 +93,11 @@ The workflow also checks artifact regressions before and after a compatible
 candidate update. If only the candidate fails, it restores all four generated
 files, records a `generated-validation` incompatibility with the test output,
 and follows the same issue-only, failed-run path instead of proposing a broken draft.
+
+Summary changes must have explicit old-to-new redirects in `docs-site/docs.json`
+before adoption. Missing redirects, wrong-operation targets, and redirect cycles
+are incompatibilities, not reasons to overwrite historical aliases. The updater
+reports current destinations but leaves `src/data/legacy-api-routes.json` unchanged.
 
 JSON reports contain `status`, `sourceUrl`, `oldSha256`, `newSha256`,
 `previousShape`, `proposedShape`, operation `added`/`removed`/`changed` inventories,

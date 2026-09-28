@@ -289,7 +289,7 @@ Generation is deterministic for the recorded schema bytes but requires network a
 
 ### Automatic upstream updates
 
-The [API update workflow](../.github/workflows/update-api-samples.yml) runs nightly and by manual dispatch. Compatible upstream changes update the sample metadata, SDK overlay, legacy API route map, and deployment fingerprint in a draft PR. It preserves hand-reviewed sample inputs and independent parity fixtures; it does not auto-merge.
+The [API update workflow](../.github/workflows/update-api-samples.yml) runs nightly and by manual dispatch. Compatible upstream changes update the sample metadata, SDK overlay, and deployment fingerprint in a draft PR. It preserves hand-reviewed sample inputs, historical API aliases, and independent parity fixtures; it does not auto-merge. Summary changes that rename operation URLs require explicit old-to-new redirects in `docs.json` before the updater can accept them.
 
 If the schema is incompatible with the current operation contracts or SDK generators, the workflow reports the source URL, old/new digests, operation changes, and validation failure in a deduplicated issue instead of proposing incomplete generated output. Maintainers resolve the incompatibility and rerun the workflow. Network failures fail the workflow without pretending to be a schema incompatibility.
 
@@ -539,7 +539,7 @@ Content acceptance and source retirement do not authorize a production traffic s
 
 Mintlify serves product docs and generated API operations beneath **`https://openfga.dev/docs`**. Home, Project, Community, and Blog remain on Docusaurus/GitHub Pages. Docusaurus retains `/api/service` for fragment-aware redirects to `/docs/api/service` or the matching operation, and generates aliases for `/api`, `/api-reference`, and all old operation URLs. Query strings and Swagger bookmarks are preserved.
 
-Keep `openapi.directory: "api/service"` in `docs.json`. When API schema or navigation changes affect operation URLs, regenerate the compatibility map with `npm run generate:legacy-api-routes`.
+Keep `openapi.directory: "api/service"` in `docs.json`. Operation summaries determine page slugs. When upstream summaries change, add source-root old-to-new redirects under `redirects` in `docs.json` and run `npm run check:legacy-api-routes`. Keep the existing compatibility map: Docusaurus uses its historical paths for both Swagger bookmarks and generated aliases. The redirects for the summary changes in [openfga/api#263](https://github.com/openfga/api/pull/263) preserve those paths without changing Docusaurus or existing article/Blog links.
 
 Use the **Mintlify-provided Worker from the dashboard**, following [Mintlify's Cloudflare guide](https://www.mintlify.com/docs/deploy/cloudflare). No repository Worker, Wrangler configuration, or edge deployment workflow is needed.
 

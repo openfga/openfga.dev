@@ -122,6 +122,25 @@ test('Docusaurus-encoded API punctuation resolves without accepting double encod
     /no configured native API operation/);
 });
 
+test('native redirects match once-encoded punctuation and reject ambiguous equivalent sources', () => {
+  const destination = '/api/service/stores/list-all-stores';
+  for (const source of ['/api/service/queries/`check`', '/api/service/queries/[experimental]-check']) {
+    for (const configuredSource of [source, encodeURI(source)]) {
+      const config = { redirects: [{ source: configuredSource, destination }] };
+      for (const href of [source, encodeURI(source)]) {
+        assert.deepEqual(validateNativeLink(`/docs${href}`, { ...options, config }),
+          { api: `/docs${destination}` });
+      }
+      assert.throws(() => validateNativeLink(`/docs${encodeURI(encodeURI(source))}`, { ...options, config }),
+        /no configured native API operation/);
+      assert.throws(() => validateNativeLink(`/docs${source}`, {
+        ...options,
+        config: { redirects: [...config.redirects, { source, destination: '/api/service/queries/wrong' }] },
+      }), /Duplicate native redirect source/);
+    }
+  }
+});
+
 test('API route generation rejects a missing, broad, or changed service directory', () => {
   for (const directory of [undefined, 'api', 'api-reference', '/api/service', 'api/authzen']) {
     assert.throws(() => apiRoutesFromSchema({ navigation: { anchors: [{

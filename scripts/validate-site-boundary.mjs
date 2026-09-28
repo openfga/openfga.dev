@@ -6,6 +6,7 @@ import { normalizeBasePath, readAttribute, siteOrigin } from './agent-content.mj
 import { apiRoutesFromSchema, inspectNativePage, isNativeRoute, validateNativeLink } from './site-boundary.mjs';
 import { nativeSitemapRoutes, sitemapFiles, validateCompositeSitemap } from './site-sitemap.mjs';
 import { publicDocsRoute } from './native-routes.mjs';
+import { createLegacyApiRoutes } from './generate-legacy-api-routes.mjs';
 
 const nativeDirectory = path.resolve('docs-site');
 const buildDirectory = path.resolve('build');
@@ -15,6 +16,8 @@ const config = JSON.parse(await fs.readFile(path.join(nativeDirectory, 'docs.jso
 const metadata = JSON.parse(await fs.readFile(path.join(nativeDirectory, 'api-samples.json'), 'utf8'));
 const schema = await loadCanonical(metadata);
 const apiRoutes = apiRoutesFromSchema(config, schema);
+const legacyRoutes = createLegacyApiRoutes(config, schema,
+  JSON.parse(await fs.readFile(new URL('../src/data/legacy-api-routes.json', import.meta.url), 'utf8')));
 const pages = new Map();
 const externalLinks = new Set();
 const nativeFiles = await fs.readdir(nativeDirectory, { recursive: true, withFileTypes: true });
@@ -38,7 +41,7 @@ assert.equal(compatibilityFiles.length, 1, 'Docusaurus must emit exactly one leg
 const apiAliases = new Map([
   ['/api', `${basePath}/api/service`],
   ['/api-reference', `${basePath}/api/service`],
-  ...[...apiRoutes].flatMap((route) => [
+  ...[...new Set(Object.values(legacyRoutes).flatMap(Object.values))].flatMap((route) => [
     [decodeURIComponent(route.slice('/docs'.length)), `${siteOrigin}${route}`],
     [decodeURIComponent(route.replace('/docs/api/service', '/api-reference')), `${siteOrigin}${route}`],
   ]),

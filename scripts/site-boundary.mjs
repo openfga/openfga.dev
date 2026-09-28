@@ -72,10 +72,13 @@ export function validateNativeLink(href, { config, pages, apiRoutes, assets = ne
   if (!isNativeRoute(strippedPath) && !legacyApiRedirects.has(strippedPath.replace(/\/$/, ''))
       && !strippedPath.startsWith('/api-reference/') && !strippedPath.startsWith('/api/service/')) return false;
   assert.equal(url.pathname, strippedPath, `${href}: native links must not use the Docusaurus preview prefix`);
-  const redirects = new Map(config.redirects.map(({ source, destination }) => [
-    publicDocsRoute(source), destination.startsWith('/') ? publicDocsRoute(destination) : destination,
-  ]));
-  let route = url.pathname.replace(/\/$/, '').replace(/\.md$/, '');
+  const redirects = new Map();
+  for (const { source, destination } of config.redirects) {
+    const route = decodeURI(new URL(publicDocsRoute(source), siteOrigin).pathname).replace(/\/$/, '');
+    assert.ok(!redirects.has(route), `Duplicate native redirect source ${source}`);
+    redirects.set(route, destination.startsWith('/') ? publicDocsRoute(destination) : destination);
+  }
+  let route = decodeURI(url.pathname).replace(/\/$/, '').replace(/\.md$/, '');
   if (route.startsWith('/api-reference/')) route = `/docs/api/service${route.slice('/api-reference'.length)}`;
   else if (route.startsWith('/api/service/')) route = publicDocsRoute(route);
   let fragment = url.hash;
@@ -86,13 +89,13 @@ export function validateNativeLink(href, { config, pages, apiRoutes, assets = ne
     visited.add(route);
     const destination = new URL(redirects.get(route) ?? legacyApiRedirects.get(route), siteOrigin);
     if (destination.origin !== siteOrigin) return { external: destination.href };
-    route = destination.pathname.replace(/\/$/, '');
+    route = decodeURI(destination.pathname).replace(/\/$/, '');
     fragment = destination.hash || fragment;
   }
   if (!isNativeRoute(route)) return { website: route };
   if (nativeResources.has(route) || assets.has(route)) return { resource: route };
   if (route.startsWith('/docs/api/service/')) {
-    const canonical = [...apiRoutes].find((candidate) => decodeURI(candidate) === decodeURI(route));
+    const canonical = [...apiRoutes].find((candidate) => decodeURI(candidate) === route);
     assert.ok(canonical, `${href}: no configured native API operation at ${route}`);
     assert.equal(fragment, '', `${href}: API fragments require an explicit native anchor contract`);
     return { api: canonical };

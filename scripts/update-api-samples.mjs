@@ -156,11 +156,12 @@ export async function updateApiSamples({
     const overlay = buildOverlay(spec, proposedMetadata, buildApiExample);
     const routes = createLegacyApiRoutes(config, spec);
     report.routes = compareRoutes(oldRoutes, routes);
+    createLegacyApiRoutes(config, spec, oldRoutes);
 
     phase = 'prepare-artifacts';
     const prettierOptions = await resolveConfig(resolve(root, artifactPaths.config));
     const serialize = (data, key) =>
-      format(JSON.stringify(data), {
+      format(JSON.stringify(data, null, 2), {
         ...prettierOptions,
         filepath: resolve(root, artifactPaths[key]),
       });
@@ -178,7 +179,7 @@ export async function updateApiSamples({
     const proposed = {
       metadata: metadataText,
       overlay: serializeOverlay(overlay),
-      routes: `${JSON.stringify(routes, null, 2)}\n`,
+      routes: original.routes,
       config: original.config,
     };
     const sources = await readSources();

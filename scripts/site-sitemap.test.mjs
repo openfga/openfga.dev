@@ -160,24 +160,24 @@ test('boundary validation verifies both children, exact native coverage and the 
 
 // Offline route-relevant excerpts from the last-generated OpenAPI snapshot in api-samples.json.
 const canonicalSummaries = {
-  Check: 'Check whether a user is authorized to access an object',
-  BatchCheck: 'Send a list of `check` operations in a single request',
-  Write: 'Add or delete tuples from the store',
-  ListObjects: 'List all objects of the given type that the user has a relation with',
-  ListUsers: 'List the users matching the provided filter who have a certain relation to a particular type.',
+  Check: 'Check user authorization',
+  BatchCheck: 'Check multiple authorizations in a single request',
+  Write: 'Add or delete tuples',
+  ListObjects: 'List objects a user is related to',
+  ListUsers: 'List all users with a relationship to an object',
   CreateStore: 'Create a store',
   ListStores: 'List all stores',
   GetStore: 'Get a store',
   DeleteStore: 'Delete a store',
-  ReadAuthorizationModels: 'Return all the authorization models for a particular store',
-  ReadAuthorizationModel: 'Return a particular version of an authorization model',
+  ReadAuthorizationModels: 'Get all authorization models',
+  ReadAuthorizationModel: 'Get an authorization model by its ID',
   WriteAuthorizationModel: 'Create a new authorization model',
-  Read: 'Get tuples from the store that matches a query, without following userset rewrite rules',
-  ReadChanges: 'Return a list of all the tuple changes',
-  Expand: 'Expand all relationships in userset tree format, and following userset rewrite rules.  Useful to reason about and debug a certain relationship',
-  ReadAssertions: 'Read assertions for an authorization model ID',
-  WriteAssertions: 'Upsert assertions for an authorization model ID',
-  StreamedListObjects: 'Stream all objects of the given type that the user has a relation with',
+  Read: 'Get stored relationship tuples',
+  ReadChanges: 'Get all tuple changes',
+  Expand: 'Expand relationships in userset tree format',
+  ReadAssertions: 'Get assertions for a model',
+  WriteAssertions: 'Upsert assertions for a model',
+  StreamedListObjects: 'Stream all objects with a user relationship',
   GetConfiguration: '[Experimental] Get AuthZEN PDP configuration and capabilities',
   Evaluation: '[Experimental] Evaluate whether a subject can perform an action on a resource',
   Evaluations: '[Experimental] Check whether one or more users are authorized to access resources',
@@ -188,7 +188,6 @@ const canonicalSummaries = {
 
 // Operation slugs captured from Mintlify, with the explicitly configured service prefix.
 const deployedPunctuationRoutes = [
-  '/docs/api/service/relationship-queries/send-a-list-of-%60check%60-operations-in-a-single-request',
   '/docs/api/service/authzenservice/[experimental]-get-authzen-pdp-configuration-and-capabilities',
   '/docs/api/service/authzenservice/[experimental]-evaluate-whether-a-subject-can-perform-an-action-on-a-resource',
   '/docs/api/service/authzenservice/[experimental]-check-whether-one-or-more-users-are-authorized-to-access-resources',
@@ -198,7 +197,7 @@ const deployedPunctuationRoutes = [
 ];
 
 test('repository navigation and source files contribute exactly 110 docs and all 24 generated API pages offline', async () => {
-  assert.equal(metadata.canonical.sha256, 'dbf0d4d2248cb7f844aaf05110a684b63c31c015092e682f57fecbd65a8088b0',
+  assert.equal(metadata.canonical.sha256, 'b2cdbdf0878ea278d198ab8bf21a8c3dc0bd6381f412e1f0a9d543791693fc3e',
     'Review the offline canonical summary fixture when adopting API changes');
   const config = JSON.parse(await fs.readFile(new URL('../docs-site/docs.json', import.meta.url), 'utf8'));
   const files = await fs.readdir(new URL('../docs-site', import.meta.url), { recursive: true });
@@ -214,6 +213,10 @@ test('repository navigation and source files contribute exactly 110 docs and all
   assert.equal(inventory.routes.size, 134);
   const composite = createCompositeSitemap({ websiteXml, nativeRoutes: inventory.routes });
   assert.equal(parseSitemap(composite.docsXml).locations.length, 134);
+  for (const { source, destination } of config.redirects.filter(({ source }) => source.startsWith('/api/service/'))) {
+    assert.ok(!inventory.apiRoutes.has(`/docs${source}`), `Historical URL must not enter the sitemap: ${source}`);
+    assert.ok(inventory.apiRoutes.has(`/docs${destination}`), `Missing renamed canonical API URL: ${destination}`);
+  }
   for (const route of deployedPunctuationRoutes) {
     assert.ok(inventory.apiRoutes.has(route), `Missing deployed API route ${route}`);
     assert.ok(parseSitemap(composite.docsXml).locations.includes(`https://openfga.dev${route}`));

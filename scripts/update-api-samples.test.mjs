@@ -123,13 +123,23 @@ test('unchanged and repeated sources are idempotent, with no artifact writes', a
   assert.equal(h.requests.length, 3, 'one download per invocation');
 });
 
-test('compatible upstream summary/tag changes refresh and report the legacy API map', async () => {
+test('summary/tag changes require native redirects and preserve the historical API map byte-for-byte', async () => {
   const h = harness();
+  const originalRoutes = h.files.get(resolve(root, artifactPaths.routes));
+  const config = JSON.parse(h.files.get(resolve(root, artifactPaths.config)));
+  config.redirects.push({
+    source: '/api/service/stores/liststores',
+    destination: '/api/service/stores/list-stores-with-updated-summary',
+    permanent: true,
+  });
+  h.files.set(resolve(root, artifactPaths.config), json(config));
   h.spec.paths['/stores'].get.summary = 'List stores with updated summary';
   h.spec.paths['/stores'].get.tags = ['Updated tag'];
   const result = await updateApiSamples(h.options);
   assert.equal(result.status, 'updated');
-  assert.ok(result.changedFiles.includes(artifactPaths.routes));
+  assert.deepEqual(result.changedFiles, [artifactPaths.metadata, artifactPaths.config]);
+  assert.equal(h.files.get(resolve(root, artifactPaths.routes)), originalRoutes);
+  assert.ok(!h.writes.includes(resolve(root, artifactPaths.routes)));
   assert.deepEqual(
     result.routes.map(({ operationId }) => operationId),
     ['ListStores'],
@@ -144,7 +154,49 @@ test('compatible upstream summary/tag changes refresh and report the legacy API 
   );
   assert.match(result.routes[0].after[0].route, /list-stores-with-updated-summary$/);
   assert.doesNotThrow(() => checkNativeFingerprint(h.snapshot()));
+  h.writes.length = 0;
+  assert.equal((await updateApiSamples(h.options)).status, 'unchanged');
+  assert.deepEqual(h.writes, []);
 });
+
+for (const [name, redirects, diagnostic] of [
+  [
+    'wrong operation',
+    [{ source: '/api/service/stores/liststores', destination: '/api/service/stores/createstore' }],
+    /Historical ListStores must reach its current operation/,
+  ],
+  [
+    'redirect cycle',
+    [
+      { source: '/api/service/stores/liststores', destination: '/api/service/stores/renamed-stores' },
+      { source: '/api/service/stores/renamed-stores', destination: '/api/service/stores/liststores' },
+    ],
+    /redirect cycle/,
+  ],
+  [
+    'duplicate redirect',
+    [
+      { source: '/api/service/stores/liststores', destination: '/api/service/stores/createstore' },
+      { source: '/api/service/stores/liststores', destination: '/api/service/stores/renamed-stores' },
+    ],
+    /Duplicate native redirect source/,
+  ],
+]) {
+  test(`incompatible ${name} preserves all artifacts`, async () => {
+    const h = harness();
+    h.spec.paths['/stores'].get.summary = 'Renamed stores';
+    const config = JSON.parse(h.files.get(resolve(root, artifactPaths.config)));
+    config.redirects.push(...redirects);
+    h.files.set(resolve(root, artifactPaths.config), json(config));
+    const original = new Map(h.files);
+    const result = await updateApiSamples(h.options);
+    assert.equal(result.status, 'incompatible');
+    assert.match(result.diagnostic.message, diagnostic);
+    assert.deepEqual(result.changedFiles, []);
+    assert.deepEqual(h.writes, []);
+    assert.deepEqual(h.files, original);
+  });
+}
 
 test('compatible validation regenerates stale overlay content without mutating hand-authored inputs', async () => {
   const h = harness();
@@ -160,6 +212,13 @@ test('compatible validation regenerates stale overlay content without mutating h
 });
 
 for (const [name, mutate, diagnostic] of [
+  [
+    'summary rename without a native redirect',
+    (spec) => {
+      spec.paths['/stores'].get.summary = 'Renamed stores';
+    },
+    /no configured native API operation/,
+  ],
   [
     'operation addition',
     (spec) => {
