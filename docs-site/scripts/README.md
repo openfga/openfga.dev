@@ -26,6 +26,8 @@ Repository tools that need public URLs use [`native-routes.mjs`](../../scripts/n
 
 Historical `docs/content/` paths and the old destination metadata in frozen fixtures remain provenance. `relocateNativeFixture` adapts source locations and internal-link prefixes when reading those fixtures; it does not authorize regenerating their prose, examples, or digests.
 
+The parent-child heading correction from [upstream commit `aa6248ff1`](https://github.com/openfga/openfga.dev/commit/aa6248ff1d0c85361e9b4cb58a6756f22863704b) is an explicit, page-scoped expectation in `regression-fixtures.mjs`. Its updated prose digest was verified by matching the pre-edit guide at `18c8ff991` to the frozen digest, then applying only the upstream heading edit. The parity readers require the corrected wording while retaining the old `athorization` fragment ID; fixtures and their original provenance remain unchanged. Other headings, prose, examples, and anchors still use the original contracts.
+
 ## Common commands
 
 | Task | Command |

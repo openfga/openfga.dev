@@ -1,4 +1,4 @@
-import { relocateNativeFixture } from './regression-fixtures.mjs';
+import { parentChildHeadingCorrection, relocateNativeFixture } from './regression-fixtures.mjs';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
@@ -99,7 +99,13 @@ function assertOriginalProse(page, native) {
   const additions = sdkHeadings[page.source] ?? [];
   assert.deepEqual(native.headings.filter((heading) => additions.includes(heading)), additions,
     `${page.source}: retain only the exact page-specific SDK setup headings`);
-  assert.deepEqual(native.headings.filter((heading) => !additions.includes(heading)), page.headings,
+  let expectedHeadings = page.headings;
+  if (page.source === parentChildHeadingCorrection.source) {
+    const { before, after } = parentChildHeadingCorrection;
+    assert.equal(page.headings.filter((heading) => heading === before).length, 1);
+    expectedHeadings = page.headings.map((heading) => heading === before ? after : heading);
+  }
+  assert.deepEqual(native.headings.filter((heading) => !additions.includes(heading)), expectedHeadings,
     `${page.source}: retain original section/disclosure headings in their original order`);
 }
 
@@ -208,6 +214,20 @@ for (const page of baseline.pages) {
     assertOriginalProse(page, parseOriginalContent(read(`docs-site/${page.destination}`)));
   });
 }
+
+test('the upstream parent-child correction requires the exact new heading without relaxing other content', () => {
+  const page = originalPages.get(parentChildHeadingCorrection.source);
+  const source = read(`docs-site/${page.destination}`);
+  const { before, after } = parentChildHeadingCorrection;
+  assertOriginalProse(page, parseOriginalContent(source));
+  for (const replacement of [before, after.replace('folder', 'file'), '']) {
+    assert.throws(() => assertOriginalProse(page, parseOriginalContent(source.replace(after, replacement))),
+      /original section\/disclosure headings/);
+  }
+  const native = parseOriginalContent(source);
+  native.prose[0] += ' Unapproved addition.';
+  assert.throws(() => assertOriginalProse(page, native), /original word/);
+});
 
 test('SEO-only metadata does not authorize visible title or sidebar rewrites', () => {
   const page = originalPages.get('intro.mdx');
