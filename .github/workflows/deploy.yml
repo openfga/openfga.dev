@@ -11,7 +11,7 @@ on:
 jobs:
   deploy:
     name: Deploy to GitHub Pages
-    if: ${{ github.ref == 'refs/heads/docs-next' && vars.WEBSITE_DEPLOY_ENABLED == 'true' }}
+    if: ${{ github.ref == 'refs/heads/docs-next' }}
     concurrency:
       group: website-production
       cancel-in-progress: false
