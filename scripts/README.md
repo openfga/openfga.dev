@@ -39,6 +39,12 @@ lead to `/docs/api/service`, never back to the old entry. `/api-reference/...`
 redirects preserve earlier preview links, while sibling namespaces such as
 `/api/authzen` and `/api/management` remain outside this routing.
 
+Pass source-root page IDs to `publicDocsRoute` in `native-routes.mjs`; never pass
+already-mounted `/docs/...` URLs. Docusaurus generates legacy aliases from
+`src/data/legacy-api-routes.json`, so an API route change requires regenerating that
+map, not maintaining a separate Cloudflare redirect table. Browser fragments are
+resolved by `src/pages/api/service.tsx`; they are not visible to an HTTP redirect.
+
 ## Explicit updates to committed generated content
 
 | File | When to run; generated output |

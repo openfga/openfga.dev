@@ -27,7 +27,16 @@ The website and Mintlify publish separate Markdown and LLM resources, linked fro
 
 ### Production routing
 
-Mintlify's supplied Cloudflare Worker serves `/docs`, including `/docs/api/service`, while Home, Project, Community, and Blog remain on Docusaurus/GitHub Pages. Docusaurus redirects old API URLs and preserves Swagger-fragment bookmarks. This repository does not maintain or deploy a Worker; see the [deployment settings](docs-site/README.md#split-site-deployment).
+After the coordinated cutover, Mintlify's supplied Cloudflare Worker serves `/docs`, including `/docs/api/service`. This repository does not maintain or deploy a Worker.
+
+| Content | Repository source | Public URL |
+| --- | --- | --- |
+| Product documentation | `docs-site/fga.mdx`, `docs-site/modeling/`, and other topic directories | `/docs/fga`, `/docs/modeling/...` |
+| Generated API reference | `docs-site/docs.json`, OpenAPI directory `api/service` | `/docs/api/service/...` |
+| Legacy API bookmarks | Docusaurus compatibility page and generated redirects | `/api/service` and old operation URLs redirect to `/docs/api/service/...` |
+| Home, Project, Community, Blog | Docusaurus website sources | Existing website URLs, unchanged |
+
+Configure Mintlify with directory `/docs-site` and **Host at `/docs`**; do not put `docs/` back into native page IDs. GitHub Pages still publishes `gh-pages`, not `docs-next`. See the [dashboard settings and release sequence](docs-site/README.md#split-site-deployment), including the publication hold required before merging or switching the default branch.
 
 ## Getting Started
 
@@ -70,6 +79,8 @@ npm run check:mintlify
 The aggregate checks generated browser artifact freshness and codegen/runtime/semantic regressions; MDX parsing; OpenFGA DSL blocks; documentation/API navigation and historical source inventory; native API samples; production-content parity fixtures; custom components; configuration generation; and split-site resource contracts. Shared viewer-runtime tests run once. Invalid content, stale artifacts, or failed checks exit nonzero without regenerating committed output.
 
 The [Mintlify repository quality workflow](.github/workflows/mintlify-quality.yml) runs on pull requests targeting `main` or `poc/mintlify-native`, pushes to `poc/mintlify-native`, and manual dispatch. It has read-only repository permissions, a 15-minute job timeout, and no path exclusions or deployment steps. Docusaurus build, lint, and audit workflows remain separate; their link checks enforce the split-site boundary.
+
+Adding `docs-next` workflow coverage and changing production publishers remain separate owner actions. The subpath migration changes only the configuration updater's moved output path; it does not change workflow branch filters or enable a publication hold.
 
 After changing native sources, run `npm run generate:mintlify-deployment` and commit the updated hidden marker in `docs-site/docs.json`. Checks reject stale markers; production acceptance requires the selected checkout's fingerprint on every hosted docs/API page, not merely a matching route inventory. See the [deployment fingerprint guide](docs-site/README.md#deployment-fingerprint).
 

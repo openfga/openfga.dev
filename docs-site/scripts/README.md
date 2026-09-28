@@ -18,6 +18,14 @@ Most files run locally or in CI. Documentation pages load the generated browser 
 
 The build, package commands, and tests use these modules. Keep the manual capture tool so reviewers can reproduce the baseline; do not run it to make changed content pass, or regenerate independent expectations from the migrated docs.
 
+## Source paths and hosted routes
+
+Article paths are relative to `docs-site/`: use `fga.mdx` or `modeling/overview.mdx`, not a nested `docs/` directory. Navigation uses those paths without `.mdx`. Keep the generated OpenAPI directory as `api/service`; Mintlify's configured `/docs` mount produces `/docs/api/service/...`.
+
+Repository tools that need public URLs use [`native-routes.mjs`](../../scripts/native-routes.mjs) to add the mount once. Do not prepend `/docs` in source mappings, native navigation, or API generator inputs.
+
+Historical `docs/content/` paths and the old destination metadata in frozen fixtures remain provenance. `relocateNativeFixture` adapts source locations and internal-link prefixes when reading those fixtures; it does not authorize regenerating their prose, examples, or digests.
+
 ## Common commands
 
 | Task | Command |
