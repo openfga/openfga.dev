@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 import { apiRoutesFromSchema, inspectNativePage, isNativeRoute, validateNativeLink } from './site-boundary.mjs';
 import { nativeDocPages, publicDocsRoute } from './native-routes.mjs';
+import { parseOriginalContent } from '../docs-site/scripts/original-content-parity.mjs';
 
 const config = {
   redirects: [
@@ -167,6 +168,18 @@ test('the repository retains only a small legacy API compatibility page, not the
   assert.match(readFileSync(new URL('docusaurus.config.js', root), 'utf8'), /docs: false/);
   assert.doesNotMatch(readFileSync(new URL('src/pages/api/service.tsx', root), 'utf8'), /swagger-ui|SwaggerUI/);
   assert.equal(pkg.dependencies['swagger-ui-react'], undefined);
+});
+
+test('the website-owned Community page preserves original copy, headings, metadata, and links', () => {
+  const root = new URL('../', import.meta.url);
+  // Snapshot of docs/content/community.mdx at 2dbd2be1145e5656d340816cd72d20192edcfe23, not the migrated output.
+  const original = readFileSync(new URL('tests/fixtures/mintlify/community.mdx', root), 'utf8');
+  const source = readFileSync(new URL('src/pages/community.mdx', root), 'utf8');
+  const { metadata: originalMetadata, ...expected } = parseOriginalContent(original, { legacy: true });
+  const { metadata, ...actual } = parseOriginalContent(source);
+  assert.deepEqual(actual, expected, 'Docusaurus ownership does not waive the content-preservation contract');
+  assert.deepEqual(metadata, { title: originalMetadata.title, description: originalMetadata.description });
+  assert.deepEqual(inspectNativePage(source), inspectNativePage(original));
 });
 
 test('website search uses an unmodified dependency with legacy docs disabled', () => {
