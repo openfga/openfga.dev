@@ -344,6 +344,7 @@ When deciding between these approaches, consider:
 - **Data volatility**: Use stored attributes for stable data, request-time attributes for dynamic data
 - **Model complexity**: Start with simpler patterns (like `user:*`) and evolve to more complex ones as needed
 - **Attribute types**: Use conditions when you need typed values beyond booleans
+- **Enumeration queries**: Stored-attribute patterns (relationship tuples) work fully with [ListObjects](../getting-started/perform-list-objects.mdx) and [ListUsers](../getting-started/perform-list-users.mdx) without requiring context. Conditional relationship tuples have limitations with these queries — if a condition parameter varies per user, ListUsers cannot supply the correct value for each candidate, and similarly for ListObjects with per-object attributes not stored in the tuple context. See [Conditions: Limitations](../modeling/conditions.mdx#conditions-and-enumeration-queries-listobjects--listusers) for details
 
 ## Related Sections
 

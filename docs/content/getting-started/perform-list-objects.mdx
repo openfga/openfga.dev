@@ -183,6 +183,10 @@ The result `document:otherdoc` and `document:planning` are the document objects 
 The performance characteristics of the ListObjects endpoint vary drastically depending on the model complexity, number of tuples, and the relations it needs to evaluate. Relations with 'and' or 'but not' are more expensive to evaluate than relations with 'or'.
 :::
 
+:::info Conditions and List Objects
+When a relation uses a [condition](../modeling/conditions.mdx) with a per-object attribute that is NOT stored in the tuple context, the List Objects API may not return correct results. The API accepts a single `context` per call, but each candidate object may have a different value for that attribute. If the per-object attribute is stored in the tuple context (written alongside the relationship tuple), ListObjects works correctly because the value is resolved per tuple. See [Conditions: Limitations](../modeling/conditions.mdx#conditions-and-enumeration-queries-listobjects--listusers) for details.
+:::
+
 ## Streamed List Objects
 
 The Streamed ListObjects API is similar to the ListObjects API, with two key differences:
