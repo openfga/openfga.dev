@@ -52,7 +52,7 @@ All `npm run` commands in this guide run from the repository root. Mintlify CLI 
 
 The root browser bundles and [`openapi/sdk-samples.overlay.json`](./openapi/sdk-samples.overlay.json) are generated files. Edit their source or inputs, then regenerate them.
 
-On desktop, `global.css` centers navigation, content, and the right-hand rail in a frame capped at `100rem`. The fixed sidebar shares that frame's offset, accounting for the native assistant panel. Ordinary article containers are capped at `48rem` (720px of text with the native padding); API containers retain their native width and equal gutters between navigation and examples. Preserve the native mobile layout, sidebar and rail widths, sticky behavior, and local code scrolling when adjusting these rules.
+On desktop, `global.css` centers navigation, content, and the right-hand rail in a frame capped at `100rem`. The navbar's inner content shares this cap while its sticky background and border remain full width. The fixed sidebar shares the frame's offset, accounting for the native assistant panel. Ordinary article containers are capped at `48rem` (720px of text with the native padding); API containers retain their native width and equal gutters between navigation and examples. Preserve the native mobile layout, sidebar and rail widths, sticky behavior, and local code scrolling when adjusting these rules.
 
 ## Authoring pages
 

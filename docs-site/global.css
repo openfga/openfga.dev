@@ -15,6 +15,11 @@
     padding-left: 16rem !important;
   }
 
+  #navbar > div:has(.topbar-right-container) {
+    max-width: var(--openfga-reader-width);
+    margin-inline: auto;
+  }
+
   #content-container:not(:has(> [data-api-example])) #content-area {
     max-width: 48rem;
     margin-inline: auto;

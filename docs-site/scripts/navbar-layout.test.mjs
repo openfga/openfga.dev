@@ -4,6 +4,17 @@ import test from 'node:test';
 import vm from 'node:vm';
 
 const source = readFileSync(new URL('../navbar-layout.js', import.meta.url), 'utf8');
+const css = readFileSync(new URL('../global.css', import.meta.url), 'utf8');
+
+test('desktop navbar content shares the reader frame without capping full-width chrome or changing mobile rows', () => {
+  const desktop = css.match(/^@media \(min-width: 1024px\)\s*\{([\s\S]*?)^\}/m)?.[1];
+  assert.ok(desktop);
+  assert.match(
+    desktop,
+    /#navbar > div:has\(\.topbar-right-container\)\s*\{\s*max-width:\s*var\(--openfga-reader-width\);\s*margin-inline:\s*auto;\s*\}/,
+  );
+  assert.doesNotMatch(css, /#navbar\s*\{[^}]*max-width:/, 'Keep the sticky header background and border full width');
+});
 
 function harness({ missing = false, nestedSearch = false, mobile = false } = {}) {
   const search = { name: 'search' };
