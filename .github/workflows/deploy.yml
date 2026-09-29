@@ -14,6 +14,7 @@ on:
 jobs:
   deploy:
     name: Deploy to GitHub Pages
+    if: ${{ github.ref == 'refs/heads/docs-next' }}
     permissions:
       contents: write
     runs-on: ubuntu-latest
