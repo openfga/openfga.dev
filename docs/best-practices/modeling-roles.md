@@ -3,7 +3,7 @@ title: "Modeling roles"
 description: "Various ways of modeling static and dynamic roles in FGA - both coarse and fine-grained."
 canonical: "https://openfga.dev/docs/best-practices/modeling-roles"
 content_type: "documentation"
-last_updated: "2026-09-28T14:29:54.000Z"
+last_updated: "2026-09-29T06:25:56.000Z"
 ---
 
 # Modeling Roles

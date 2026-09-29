@@ -3,7 +3,7 @@ title: "Conditions"
 description: "Modeling relationships with Conditions"
 canonical: "https://openfga.dev/docs/modeling/conditions"
 content_type: "documentation"
-last_updated: "2026-09-28T14:29:54.000Z"
+last_updated: "2026-09-29T06:25:56.000Z"
 ---
 
 # Conditions

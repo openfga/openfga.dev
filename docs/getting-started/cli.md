@@ -3,7 +3,7 @@ title: "Use the FGA CLI"
 description: "Use the FGA CLI"
 canonical: "https://openfga.dev/docs/getting-started/cli"
 content_type: "documentation"
-last_updated: "2026-09-28T14:29:54.000Z"
+last_updated: "2026-09-29T06:25:56.000Z"
 ---
 
 # Use the FGA CLI

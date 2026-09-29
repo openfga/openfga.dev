@@ -3,7 +3,7 @@ title: "Authorization for MCP Servers"
 description: "Authorize MCP server tools with OpenFGA: control which tools each user can invoke based on roles, group membership, and time-limited temporal grants."
 canonical: "https://openfga.dev/docs/modeling/agents/mcp-authorization"
 content_type: "documentation"
-last_updated: "2026-09-28T14:29:54.000Z"
+last_updated: "2026-09-29T06:25:56.000Z"
 ---
 
 # Authorization for MCP Servers

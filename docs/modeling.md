@@ -3,7 +3,7 @@ title: "Modeling Guides"
 description: "This section has guides, concepts and examples that help you define an authorization model."
 canonical: "https://openfga.dev/docs/modeling"
 content_type: "documentation"
-last_updated: "2026-09-28T14:29:54.000Z"
+last_updated: "2026-09-29T06:25:56.000Z"
 ---
 
 This section has guides, concepts and examples that help you define an authorization model.

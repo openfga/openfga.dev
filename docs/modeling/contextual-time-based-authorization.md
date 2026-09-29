@@ -3,7 +3,7 @@ title: "Contextual and Time-Based Authorization"
 description: "Checking relations that depends on certain dynamic or contextual data (such as time, location, ip address, weather) that have not been written"
 canonical: "https://openfga.dev/docs/modeling/contextual-time-based-authorization"
 content_type: "documentation"
-last_updated: "2026-09-28T14:29:54.000Z"
+last_updated: "2026-09-29T06:25:56.000Z"
 ---
 
 # Contextual and Time-Based Authorization

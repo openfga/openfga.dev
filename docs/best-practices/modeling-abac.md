@@ -3,7 +3,7 @@ title: "Modeling Attribute Based Access Control"
 description: "Learn how to model Attribute-Based Access Control (ABAC) patterns using stored and dynamic attributes in OpenFGA."
 canonical: "https://openfga.dev/docs/best-practices/modeling-abac"
 content_type: "documentation"
-last_updated: "2026-09-28T14:29:54.000Z"
+last_updated: "2026-09-29T06:25:56.000Z"
 ---
 
 # Modeling ABAC with OpenFGA

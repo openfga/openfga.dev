@@ -3,7 +3,7 @@ title: "Google Drive"
 description: "Modeling Google Drive permissions"
 canonical: "https://openfga.dev/docs/modeling/advanced/gdrive"
 content_type: "documentation"
-last_updated: "2026-09-28T14:29:54.000Z"
+last_updated: "2026-09-29T06:25:56.000Z"
 ---
 
 # Modeling Google Drive permissions with OpenFGA
