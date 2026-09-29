@@ -7,6 +7,12 @@ const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
 const config = JSON.parse(read('../docs.json'));
 const css = read('../global.css');
 
+test('API reading columns use equal gutters without changing native widths or ordinary article layout', () => {
+  const rule = css.match(/#content-container:has\(> \[data-api-example\]\) #content-area\s*\{([^}]+)\}/)?.[1];
+  assert.equal(rule?.trim(), 'margin-inline: auto;');
+  assert.equal(css.match(/#content-area\b/g)?.length, 1, 'Keep content-area overrides scoped to the API example layout');
+});
+
 test('agent resources are not promoted in reader navigation or the footer', () => {
   const navigation = JSON.stringify([config.navbar, config.navigation, config.footer]);
   assert.doesNotMatch(navigation, /llms(?:-full)?\.txt|LLM\?/);

@@ -8,6 +8,11 @@
   }
 }
 
+/* Center API prose in its own column, not against Mintlify's viewport offset. */
+#content-container:has(> [data-api-example]) #content-area {
+  margin-inline: auto;
+}
+
 /* Keep the canonical light and dark wordmarks at identical header dimensions. */
 #navbar a[href='https://openfga.dev/'] img {
   width: 6.3125rem;

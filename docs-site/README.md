@@ -52,6 +52,8 @@ All `npm run` commands in this guide run from the repository root. Mintlify CLI 
 
 The root browser bundles and [`openapi/sdk-samples.overlay.json`](./openapi/sdk-samples.overlay.json) are generated files. Edit their source or inputs, then regenerate them.
 
+API reading columns use equal gutters within the space between navigation and examples. Keep the centering rule in `global.css` scoped to `#content-container:has(> [data-api-example]) #content-area`, preserving native widths, responsive stacking, and ordinary article layout.
+
 ## Authoring pages
 
 During the migration, keep existing content and navigation unchanged apart from the platform adaptations below. Propose editorial changes, new introductions, renamed categories, and content moves in a separate follow-up.
