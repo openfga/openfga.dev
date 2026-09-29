@@ -4,10 +4,10 @@ on:
   pull_request:
     branches:
       - main
-      - poc/mintlify-native
+      - docs-next
   push:
     branches:
-      - poc/mintlify-native
+      - docs-next
   workflow_dispatch:
 
 permissions:
