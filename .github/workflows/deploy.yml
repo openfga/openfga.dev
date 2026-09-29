@@ -1,6 +1,9 @@
 name: Deploy to GitHub Pages
 
 on:
+  # Nightly @ 5AM UTC
+  schedule:
+    - cron: '0 5 * * *'
   # When triggered manually
   workflow_dispatch:
   # When a commit is pushed to the docs-next branch
