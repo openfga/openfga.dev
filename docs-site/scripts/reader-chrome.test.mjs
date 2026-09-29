@@ -7,10 +7,33 @@ const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
 const config = JSON.parse(read('../docs.json'));
 const css = read('../global.css');
 
-test('API reading columns use equal gutters without changing native widths or ordinary article layout', () => {
+test('API reading columns retain native widths and equal gutters inside the centered reader', () => {
   const rule = css.match(/#content-container:has\(> \[data-api-example\]\) #content-area\s*\{([^}]+)\}/)?.[1];
   assert.equal(rule?.trim(), 'margin-inline: auto;');
-  assert.equal(css.match(/#content-area\b/g)?.length, 1, 'Keep content-area overrides scoped to the API example layout');
+});
+
+test('desktop docs gain a capped reading width without widening API examples or changing mobile layout', () => {
+  const desktop = css.match(/^@media \(min-width: 1024px\)\s*\{([\s\S]*?)^\}/m)?.[1];
+  assert.ok(desktop);
+  const rule = desktop.match(/#content-container:not\(:has\(> \[data-api-example\]\)\) #content-area\s*\{([^}]+)\}/)?.[1];
+  assert.match(rule ?? '', /max-width:\s*48rem;/);
+  assert.match(rule ?? '', /margin-inline:\s*auto;/);
+  assert.equal(css.match(/#content-area\b/g)?.length, 2, 'Only the article and API centering rules should override content-area');
+});
+
+test('the desktop reader and fixed navigation share a centered frame that accounts for the assistant panel', () => {
+  const desktop = css.match(/^@media \(min-width: 1024px\)\s*\{([\s\S]*?)^\}/m)?.[1];
+  assert.ok(desktop);
+  assert.match(desktop, /--openfga-reader-width:\s*100rem;/);
+  assert.match(
+    desktop,
+    /#body-content\s*\{\s*max-width:\s*var\(--openfga-reader-width\);\s*margin-inline:\s*auto;\s*padding-left:\s*16rem !important;\s*\}/,
+  );
+  assert.match(
+    desktop,
+    /#sidebar-content\s*\{[^}]*width:\s*16rem !important;[^}]*left:\s*max\(0px, calc\(\(100% - var\(--assistant-sheet-width, 0px\) - var\(--openfga-reader-width\)\) \/ 2\)\);/,
+  );
+  assert.doesNotMatch(desktop, /overflow|position\s*:|#content-side-layout/, 'Keep native scrolling, sticky positioning and rail sizing');
 });
 
 test('agent resources are not promoted in reader navigation or the footer', () => {

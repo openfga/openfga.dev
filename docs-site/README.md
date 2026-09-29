@@ -52,7 +52,7 @@ All `npm run` commands in this guide run from the repository root. Mintlify CLI 
 
 The root browser bundles and [`openapi/sdk-samples.overlay.json`](./openapi/sdk-samples.overlay.json) are generated files. Edit their source or inputs, then regenerate them.
 
-API reading columns use equal gutters within the space between navigation and examples. Keep the centering rule in `global.css` scoped to `#content-container:has(> [data-api-example]) #content-area`, preserving native widths, responsive stacking, and ordinary article layout.
+On desktop, `global.css` centers navigation, content, and the right-hand rail in a frame capped at `100rem`. The fixed sidebar shares that frame's offset, accounting for the native assistant panel. Ordinary article containers are capped at `48rem` (720px of text with the native padding); API containers retain their native width and equal gutters between navigation and examples. Preserve the native mobile layout, sidebar and rail widths, sticky behavior, and local code scrolling when adjusting these rules.
 
 ## Authoring pages
 
