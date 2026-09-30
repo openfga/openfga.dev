@@ -341,7 +341,7 @@ The DSL bundle uses the lockfile-pinned Prism grammar from `@openfga/frontend-ut
 
 Header and runtime maintenance:
 
-- `navbar-layout.js` keeps native header links before search in DOM order, matching the left-aligned desktop layout and keyboard traversal. At narrow widths it preserves keyboard order while CSS exposes the native theme control on the right. Controls stay in their original parents so Mintlify retains their state and menu behavior. Check its selectors when updating the Mintlify theme.
+- `navbar-layout.js` keeps native header links before search in DOM order, matching the left-aligned desktop layout and keyboard traversal. At narrow widths it preserves keyboard order while CSS exposes the native theme control on the right. Controls stay in their original parents so Mintlify retains their state and menu behavior. Check its selectors when updating the Mintlify theme. Its existing scan also keeps Project, Community, and Blog header/mobile-menu links in the same tab because Mintlify's navbar schema has no target setting. Docusaurus uses explicit `_self` targets; keep hrefs, external/body/footer links, and browser modifier behavior unchanged.
 - Shared CSS hides code-block assistant actions by their native ID and chat-payload attribute, including API examples with different wrappers. Keep Copy buttons and language tabs available.
 - `github-star-cache.js` restores the last exact native GitHub count for up to seven days when the native request fails. Only the star icon and count are visible; **last known** status and the observation time remain in the tooltip and accessible label. It makes no additional API requests.
 
