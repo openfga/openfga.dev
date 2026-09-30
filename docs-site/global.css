@@ -1,11 +1,34 @@
 @media (min-width: 1024px) {
+  :root {
+    --openfga-reader-width: 100rem;
+  }
+
   #sidebar-content {
     width: 16rem !important;
+    /* The native assistant panel reduces the space available to the reader. */
+    left: max(0px, calc((100% - var(--assistant-sheet-width, 0px) - var(--openfga-reader-width)) / 2));
   }
 
   #body-content {
+    max-width: var(--openfga-reader-width);
+    margin-inline: auto;
     padding-left: 16rem !important;
   }
+
+  #navbar > div:has(.topbar-right-container) {
+    max-width: var(--openfga-reader-width);
+    margin-inline: auto;
+  }
+
+  #content-container:not(:has(> [data-api-example])) #content-area {
+    max-width: 48rem;
+    margin-inline: auto;
+  }
+}
+
+/* Center API prose in its own column, not against Mintlify's viewport offset. */
+#content-container:has(> [data-api-example]) #content-area {
+  margin-inline: auto;
 }
 
 /* Keep the canonical light and dark wordmarks at identical header dimensions. */
