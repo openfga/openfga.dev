@@ -78,6 +78,7 @@ function harness({ missing = false, nestedSearch = false, mobile = false } = {})
         return mobileSearch;
       },
       querySelectorAll(selector) {
+        if (selector === '#navbar .navbar-link > a, nav[aria-label="Mobile menu"] .navbar-link > a') return [];
         assert.equal(selector, '#navbar .topbar-right-container');
         return containers;
       },

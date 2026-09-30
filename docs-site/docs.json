@@ -34,7 +34,7 @@
     "metatags": {
       "canonical": "https://openfga.dev/docs",
       "og:image": "https://openfga.dev/img/og-rich-embed.png",
-      "openfga:docs-source-sha256": "7ba993fb0cba0ac7453f7d25653040f58d30e3a09d9d568fbc20c0e509480e6b"
+      "openfga:docs-source-sha256": "757784ee417764d8bee84c223b284fbb2cff8d7457392b7dafb09b2a689d4e9f"
     }
   },
   "navbar": {

@@ -8,7 +8,19 @@
   var scanQueued = false;
   var mobile = window.matchMedia('(max-width: 1023px)');
 
+  function keepHeaderLinksInSameTab() {
+    document.querySelectorAll('#navbar .navbar-link > a, nav[aria-label="Mobile menu"] .navbar-link > a').forEach(function (link) {
+      if (
+        ['https://openfga.dev/project', 'https://openfga.dev/community', 'https://openfga.dev/blog'].indexOf(link.getAttribute('href')) !== -1 &&
+        link.getAttribute('target') !== '_self'
+      ) {
+        link.setAttribute('target', '_self');
+      }
+    });
+  }
+
   function scan() {
+    keepHeaderLinksInSameTab();
     document.querySelectorAll('#navbar .topbar-right-container').forEach(function (container) {
       var links = container.querySelector(':scope > ul');
       var search = container.querySelector('#search-bar-entry');
@@ -43,6 +55,8 @@
   }
 
   var observer = new MutationObserver(function () {
+    // Newly mounted menu links must be corrected before the deferred layout pass.
+    keepHeaderLinksInSameTab();
     if (scanQueued) {
       return;
     }
