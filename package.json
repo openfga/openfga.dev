@@ -81,7 +81,7 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.10.2",
-    "@mdx-js/mdx": "3.1.0",
+    "@mdx-js/mdx": "3.1.1",
     "@signalwire/docusaurus-plugin-llms-txt": "1.2.2",
     "@types/prismjs": "1.26.6",
     "@types/react": "18.3.9",
@@ -91,7 +91,7 @@
     "@typescript-eslint/parser": "8.70.1",
     "@typescript/native": "npm:typescript@7.0.2",
     "docusaurus-plugin-module-alias": "0.0.2",
-    "esbuild": "0.25.12",
+    "esbuild": "0.28.2",
     "eslint": "9.29.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-react": "7.37.5",
@@ -99,7 +99,7 @@
     "husky": "9.1.7",
     "prettier": "3.9.9",
     "prismjs": "1.30.0",
-    "sax": "1.5.0",
+    "sax": "1.6.1",
     "typescript": "npm:@typescript/typescript6@6.0.2"
   },
   "overrides": {
