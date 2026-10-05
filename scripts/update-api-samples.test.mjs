@@ -379,9 +379,23 @@ test('nightly/manual workflow gates issues, signed draft PRs, failure status, an
   const job = workflow.jobs['update-api-samples'];
   assert.equal(job.permissions.issues, 'write');
   assert.equal(job.env.BASE_BRANCH, '${{ github.event.repository.default_branch }}');
-  assert.match(job.env.API_SAMPLE_REPORT, /^\$\{\{ runner.temp \}\}\//);
+  assert.doesNotMatch(JSON.stringify(job.env), /\$\{\{\s*runner\./, 'Runner context is unavailable at job scope');
   const step = (name) => job.steps.find((entry) => entry.name === name);
   const update = job.steps.find(({ id }) => id === 'update');
+  const runtimePaths = step('Initialize runtime paths');
+  assert.equal(runtimePaths.shell, 'bash');
+  assert.ok(job.steps.indexOf(runtimePaths) < job.steps.indexOf(update));
+  assert.match(runtimePaths.run, /printf '%s\\n'/);
+  assert.match(runtimePaths.run, />> "\$GITHUB_ENV"/);
+  for (const [name, file] of Object.entries({
+    API_SAMPLE_REPORT: 'api-samples-report.json',
+    API_VALIDATION_LOG: 'api-samples-validation.log',
+    PR_BODY: 'api-samples-pr.md',
+    PR_PAYLOAD: 'api-samples-pr.json',
+  })) {
+    assert.equal(job.env[name], undefined);
+    assert.ok(runtimePaths.run.includes(`"${name}=$RUNNER_TEMP/${file}"`));
+  }
   assert.equal(update['continue-on-error'], true);
   const issue = step('Create or reuse an incompatibility issue');
   assert.equal(issue.if, "steps.update.outputs.status == 'incompatible' || steps.validation.outcome == 'failure'");
