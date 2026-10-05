@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { loadCanonical } from '../docs-site/scripts/api-code-samples.mjs';
 import { normalizeBasePath, readAttribute, siteOrigin } from './agent-content.mjs';
-import { apiRoutesFromSchema, inspectNativePage, isNativeRoute, validateNativeLink } from './site-boundary.mjs';
+import { apiRoutesFromSchema, inspectNativePage, validateNativeLink } from './site-boundary.mjs';
 import { nativeSitemapRoutes, sitemapFiles, validateCompositeSitemap } from './site-sitemap.mjs';
 import { publicDocsRoute } from './native-routes.mjs';
 import { createLegacyApiRoutes } from './generate-legacy-api-routes.mjs';
@@ -85,6 +85,10 @@ for (const [route, page] of pages) {
 }
 for (const file of files.filter((file) => file.endsWith('.html'))) {
   const html = await fs.readFile(path.join(buildDirectory, file), 'utf8');
+  assert.doesNotMatch(html, /navbar__search-input|SearchAction/, `Local website search must stay disabled: ${file}`);
+  if (html.includes('navbar__brand')) {
+    assert.match(html, /class="[^"]*\bask-ai-button\b/, `Ask AI must remain in the navbar: ${file}`);
+  }
   const from = `${basePath}/${file.replace(/\.html$/, '').replace(/(^|\/)index$/, '')}`;
   for (const tag of html.match(/<(?:a|link)\b[^>]*>/gi) ?? []) {
     const href = readAttribute(tag, 'href');
@@ -101,25 +105,8 @@ const [indexXml, websiteXml, docsXml] = await Promise.all(
 );
 validateCompositeSitemap({ indexXml, websiteXml, docsXml, nativeRoutes, baseUrl });
 const searchFiles = files.filter((file) => /^search-index(?:[.-].+)?\.json$/.test(file));
-assert.ok(searchFiles.length, 'Missing website search index');
-const indexedWebsiteRoutes = new Set();
-function validateSearchIndex(value) {
-  if (!value || typeof value !== 'object') return;
-  for (const [key, child] of Object.entries(value)) {
-    if (key === 'u' && typeof child === 'string') {
-      const route = new URL(child, siteOrigin).pathname;
-      const unprefixed = basePath && route.startsWith(`${basePath}/`) ? route.slice(basePath.length) : route;
-      assert.ok(!isNativeRoute(unprefixed), `Website search index contains retired docs route ${child}`);
-      assert.notEqual(unprefixed.replace(/\/$/, ''), '/api/service', 'Compatibility page must not appear in website search');
-      indexedWebsiteRoutes.add(unprefixed.replace(/\/$/, ''));
-    } else validateSearchIndex(child);
-  }
-}
-for (const file of searchFiles) validateSearchIndex(JSON.parse(await fs.readFile(path.join(buildDirectory, file), 'utf8')));
-for (const route of ['/project', '/community']) {
-  assert.ok(indexedWebsiteRoutes.has(route), `Website search index must include ${route}`);
-}
-assert.ok([...indexedWebsiteRoutes].some((route) => route.startsWith('/blog/')), 'Website search index must include Blog content');
+assert.equal(searchFiles.length, 0, 'Local website search indexes must not be generated');
+assert.ok(!websiteRoutes.has('/search'), 'The local website search page must not be generated');
 await fs.mkdir('.link-check', { recursive: true });
 await fs.writeFile('.link-check/native-external-links.md', [...externalLinks].sort().map((href) => `<${href}>`).join('\n') + '\n');
 console.log(`Validated ${checkedLinks} cross-site links against ${pages.size} native docs and ${apiRoutes.size} API routes; exported ${externalLinks.size} external native links for Lychee.`);

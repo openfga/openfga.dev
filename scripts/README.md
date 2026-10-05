@@ -22,7 +22,7 @@ regression suites and freshness checks; it does not build or deploy edge infrast
 | `prepare-agent-content.mjs`, `agent-content.mjs`, `validate-agent-content.mjs` | Prepare/check the curated root LLM index, website-only bundle, and Home/Project/Community Markdown: `npm run build:agent-content`, `npm run check:agent-content`. |
 | `clean-agent-markdown.mjs` | Docusaurus config imports this Markdown-export plugin to remove framework markup; it runs within the website build, not as a standalone command. |
 | `prepare-site-sitemap.mjs`, `site-sitemap.mjs` | Build a sitemap index with separate website/native children from the actual page inventory and digest-checked live API schema: `npm run build:site-sitemap`. |
-| `validate-site-boundary.mjs`, `site-boundary.mjs` | Check cross-site links/anchors, redirects, search, sitemaps, and retired-route ownership; export native external links for CI's Lychee check: `npm run check:site-boundary`. |
+| `validate-site-boundary.mjs`, `site-boundary.mjs` | Check cross-site links/anchors, redirects, sitemaps, retired-route ownership, and local search removal; export native external links for CI's Lychee check: `npm run check:site-boundary`. |
 | `native-routes.mjs` | Map source-root page IDs to public `/docs/...` routes without repeating the deployment mount. |
 
 These commands require preceding build outputs; normally run the complete `npm run build`.

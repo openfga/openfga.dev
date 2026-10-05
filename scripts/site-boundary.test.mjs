@@ -49,7 +49,7 @@ test('the Mintlify origin root redirect does not take ownership of the public we
   const nativeOptions = { ...options, config: native };
   for (const href of [
     '/', 'https://openfga.dev/', 'https://openfga.dev/?utm_source=docs#quick-start',
-    '/project', '/community', '/blog', '/search', '/llms.txt', '/llms-full.txt', '/sitemap.xml',
+    '/project', '/community', '/blog', '/llms.txt', '/llms-full.txt', '/sitemap.xml',
   ]) {
     assert.equal(validateNativeLink(href, nativeOptions), false, `${href} must remain website-owned`);
   }
@@ -182,17 +182,21 @@ test('the website-owned Community page preserves original copy, headings, metada
   assert.deepEqual(inspectNativePage(source), inspectNativePage(original));
 });
 
-test('website search uses an unmodified dependency with legacy docs disabled', () => {
+test('website search stays disabled while Ask AI remains available', () => {
   const root = new URL('../', import.meta.url);
   const pkg = JSON.parse(readFileSync(new URL('package.json', root), 'utf8'));
-  assert.ok(pkg.dependencies['@easyops-cn/docusaurus-search-local']);
+  const lock = JSON.parse(readFileSync(new URL('package-lock.json', root), 'utf8'));
+  assert.equal(pkg.dependencies['@easyops-cn/docusaurus-search-local'], undefined);
+  assert.equal(lock.packages['node_modules/@easyops-cn/docusaurus-search-local'], undefined);
   assert.equal(pkg.dependencies['patch-package'], undefined);
   assert.equal(pkg.devDependencies['patch-package'], undefined);
   assert.equal(pkg.scripts.postinstall, undefined);
   assert.ok(!existsSync(new URL('patches', root)), 'Dependency patches must not be reintroduced');
   const websiteConfig = readFileSync(new URL('docusaurus.config.js', root), 'utf8');
   assert.match(websiteConfig, /docs: false/);
-  assert.match(websiteConfig, /indexDocs: false/);
-  assert.match(websiteConfig, /indexBlog: true/);
-  assert.match(websiteConfig, /indexPages: true/);
+  assert.doesNotMatch(websiteConfig, /docusaurus-search-local/);
+  assert.match(websiteConfig, /className: 'ask-ai-nav-item'/);
+  assert.match(websiteConfig, /"data-modal-override-open-selector": "\.ask-ai-button"/);
+  assert.match(websiteConfig, /"data-modal-open-on-command-k": "true"/);
+  assert.doesNotMatch(readFileSync(new URL('src/theme/Root.tsx', root), 'utf8'), /SearchAction/);
 });

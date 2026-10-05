@@ -21,14 +21,19 @@ jobs:
     env:
       UPDATE_BRANCH: docs/update-openfga-api-samples
       BASE_BRANCH: ${{ github.event.repository.default_branch }}
-      API_SAMPLE_REPORT: ${{ runner.temp }}/api-samples-report.json
-      API_VALIDATION_LOG: ${{ runner.temp }}/api-samples-validation.log
-      PR_BODY: ${{ runner.temp }}/api-samples-pr.md
-      PR_PAYLOAD: ${{ runner.temp }}/api-samples-pr.json
       PR_TITLE: 'docs: auto-update OpenFGA API samples'
     steps:
       - name: Cached LFS checkout
         uses: nschloe/action-cached-lfs-checkout@385a8ecc719e50b8c71af6ab01a624b486b7c3bc
+
+      - name: Initialize runtime paths
+        shell: bash
+        run: |
+          printf '%s\n' \
+            "API_SAMPLE_REPORT=$RUNNER_TEMP/api-samples-report.json" \
+            "API_VALIDATION_LOG=$RUNNER_TEMP/api-samples-validation.log" \
+            "PR_BODY=$RUNNER_TEMP/api-samples-pr.md" \
+            "PR_PAYLOAD=$RUNNER_TEMP/api-samples-pr.json" >> "$GITHUB_ENV"
 
       - name: Start from the explicit default branch
         run: |

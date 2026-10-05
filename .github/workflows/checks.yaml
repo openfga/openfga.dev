@@ -144,7 +144,6 @@ jobs:
             --exclude "^file://${{ github.workspace }}/build/api/?(?:[?#].*)?$"
             --exclude "^file://${{ github.workspace }}/build/api/service(?:/|$)"
             --exclude "^file://${{ github.workspace }}/build/api-reference(?:/|$)"
-            --exclude "^file://${{ github.workspace }}/build/search"
             --no-progress
             --files-from build/lychee-inputs.txt
             ".link-check/native-external-links.md"
