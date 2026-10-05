@@ -303,6 +303,5 @@ listUsers("document:d1", "viewer") → [user:alice, user:bob]
 
 We want to hear from you. If these changes affect your deployment, reach out in our community channels and we'll help you migrate.
 
-- [OpenFGA Community Slack](https://openfga.dev/docs/community)
+- [OpenFGA Community Slack](https://openfga.dev/community)
 - [GitHub Discussions](https://github.com/orgs/openfga/discussions)
-

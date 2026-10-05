@@ -1,0 +1,188 @@
+name: Update OpenFGA API Samples
+
+on:
+  # Offset from the configuration updater's 05:00 UTC run.
+  schedule:
+    - cron: '30 5 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: update-openfga-api-samples
+  cancel-in-progress: false
+
+jobs:
+  update-api-samples:
+    name: Update OpenFGA API Samples
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      issues: write # Report incompatible sources with the built-in token.
+    env:
+      UPDATE_BRANCH: docs/update-openfga-api-samples
+      BASE_BRANCH: ${{ github.event.repository.default_branch }}
+      API_SAMPLE_REPORT: ${{ runner.temp }}/api-samples-report.json
+      API_VALIDATION_LOG: ${{ runner.temp }}/api-samples-validation.log
+      PR_BODY: ${{ runner.temp }}/api-samples-pr.md
+      PR_PAYLOAD: ${{ runner.temp }}/api-samples-pr.json
+      PR_TITLE: 'docs: auto-update OpenFGA API samples'
+    steps:
+      - name: Cached LFS checkout
+        uses: nschloe/action-cached-lfs-checkout@385a8ecc719e50b8c71af6ab01a624b486b7c3bc
+
+      - name: Start from the explicit default branch
+        run: |
+          git fetch --no-tags origin "$BASE_BRANCH"
+          git checkout --detach FETCH_HEAD
+
+      - name: Set up node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test API update automation offline
+        run: npm run test:update-api-samples
+
+      - name: Check baseline artifact regressions offline
+        run: npm run test:mintlify-api-samples && npm run test:site-boundary
+
+      - name: Fetch and validate the live API sample source
+        id: update
+        continue-on-error: true
+        run: npm run update:api-samples -- --report "$API_SAMPLE_REPORT"
+
+      - name: Validate compatible generated changes offline
+        if: steps.update.outcome == 'success' && steps.update.outputs.status == 'updated'
+        id: validation
+        continue-on-error: true
+        shell: bash
+        run: |
+          {
+            npm run test:mintlify-api-samples &&
+            npm run test:site-boundary &&
+            npm run check:mintlify-deployment
+          } 2>&1 | tee "$API_VALIDATION_LOG"
+
+      - name: Restore rejected artifacts and record regression incompatibility
+        if: steps.validation.outcome == 'failure'
+        run: |
+          git restore --worktree -- docs-site/api-samples.json docs-site/openapi/sdk-samples.overlay.json \
+            src/data/legacy-api-routes.json docs-site/docs.json
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+          const report = JSON.parse(await readFile(process.env.API_SAMPLE_REPORT, 'utf8'));
+          const log = await readFile(process.env.API_VALIDATION_LOG, 'utf8');
+          report.status = 'incompatible';
+          report.diagnostic = {
+            phase: 'generated-validation',
+            message: 'The baseline passed, but generated artifacts failed offline regression checks. All candidate changes were restored.\n' + log.slice(-16000),
+          };
+          report.changedFiles = [];
+          await writeFile(process.env.API_SAMPLE_REPORT, JSON.stringify(report, null, 2) + '\n');
+          NODE
+
+      - name: Record the update report
+        if: always() && steps.update.outputs.status != ''
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFile, appendFile } from 'node:fs/promises';
+          const report = JSON.parse(await readFile(process.env.API_SAMPLE_REPORT, 'utf8'));
+          const text = JSON.stringify(report, null, 2);
+          const longest = Math.max(2, ...[...text.matchAll(/`+/g)].map(([run]) => run.length));
+          const fence = '`'.repeat(longest + 1);
+          await appendFile(process.env.GITHUB_STEP_SUMMARY, `## API sample update\n\n${fence}json\n${text}\n${fence}\n`);
+          NODE
+
+      - name: Create or reuse an incompatibility issue
+        if: steps.update.outputs.status == 'incompatible' || steps.validation.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: npm run report:api-samples -- --report "$API_SAMPLE_REPORT" --issue
+
+      - name: Generate token
+        if: steps.update.outcome == 'success' && steps.update.outputs.status == 'updated' && steps.validation.outcome == 'success'
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ secrets.RELEASER_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASER_APP_PRIVATE_KEY }}
+
+      - name: Import GPG key
+        if: steps.update.outcome == 'success' && steps.update.outputs.status == 'updated' && steps.validation.outcome == 'success'
+        id: import-gpg
+        uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
+      - name: Configure Git
+        if: steps.update.outcome == 'success' && steps.update.outputs.status == 'updated' && steps.validation.outcome == 'success'
+        env:
+          GPG_EMAIL: ${{ steps.import-gpg.outputs.email }}
+        run: |
+          git config user.name openfga-releaser-bot
+          git config user.email "$GPG_EMAIL"
+
+      - name: Create or update a compatible draft pull request
+        if: steps.update.outcome == 'success' && steps.update.outputs.status == 'updated' && steps.validation.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          # Refuse to repurpose this workflow to force-push any other branch.
+          test "$UPDATE_BRANCH" = "docs/update-openfga-api-samples"
+          test "$UPDATE_BRANCH" != "$BASE_BRANCH"
+          npm run report:api-samples -- --report "$API_SAMPLE_REPORT" --body "$PR_BODY"
+          # Do not let checkout's read-only token override the releaser App credentials.
+          git config --local --unset-all http.https://github.com/.extraheader || true
+          repo_url="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          remote_sha="$(git ls-remote --heads "$repo_url" "$UPDATE_BRANCH" | awk '{print $1}')"
+          identical=false
+          if [ -n "$remote_sha" ]; then
+            git fetch --no-tags "$repo_url" "refs/heads/$UPDATE_BRANCH"
+            remote_sha="$(git rev-parse FETCH_HEAD)"
+            if git diff --quiet "$remote_sha" --; then
+              identical=true
+            fi
+          fi
+          if [ "$identical" != "true" ]; then
+            git checkout -B "$UPDATE_BRANCH"
+            git add docs-site/api-samples.json docs-site/openapi/sdk-samples.overlay.json \
+              src/data/legacy-api-routes.json docs-site/docs.json
+            git commit -m "$PR_TITLE"
+            if [ -n "$remote_sha" ]; then
+              git push --force-with-lease="refs/heads/${UPDATE_BRANCH}:${remote_sha}" \
+                "$repo_url" "HEAD:${UPDATE_BRANCH}"
+            else
+              git push "$repo_url" "HEAD:${UPDATE_BRANCH}"
+            fi
+          else
+            echo "The reserved update branch already contains the exact proposed files; not creating another commit."
+          fi
+
+          pr_number="$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$UPDATE_BRANCH" \
+            --state open --json number --jq '.[0].number')"
+          if [ -n "$pr_number" ]; then
+            jq -n --arg title "$PR_TITLE" --arg base "$BASE_BRANCH" --rawfile body "$PR_BODY" \
+              '{title: $title, base: $base, body: $body}' > "$PR_PAYLOAD"
+            gh api --method PATCH "repos/$GITHUB_REPOSITORY/pulls/$pr_number" --input "$PR_PAYLOAD" > /dev/null
+            pr_is_draft="$(gh pr view "$pr_number" --repo "$GITHUB_REPOSITORY" --json isDraft --jq '.isDraft')"
+            if [ "$pr_is_draft" != "true" ]; then
+              gh pr ready "$pr_number" --undo --repo "$GITHUB_REPOSITORY"
+            fi
+          else
+            gh pr create --repo "$GITHUB_REPOSITORY" --base "$BASE_BRANCH" --head "$UPDATE_BRANCH" \
+              --draft --title "$PR_TITLE" --body-file "$PR_BODY"
+          fi
+
+      - name: Keep unsuccessful source updates failed after reporting
+        if: always() && (steps.update.outcome == 'failure' || steps.validation.outcome == 'failure')
+        run: |
+          echo "::error::API sample update failed. Review the report and any incompatibility issue. Network/HTTP errors never create schema issues; incompatible sources never create pull requests."
+          exit 1

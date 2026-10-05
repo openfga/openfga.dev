@@ -1,0 +1,13 @@
+{
+  "provenance": {
+    "revision": "85bde5e19f7fa0b8687732c33c4f7c3a39fd83e0",
+    "sourceRoot": "docs/content",
+    "method": "Extracted from legacy source, never from native output."
+  },
+  "comparison": "SHA-256 of JSON.stringify(expressionAst(configuration ESTree)); strips only positions/raw/comments, preserves definitions, property and array order.",
+  "pages": {
+    "interacting/managing-group-access.mdx": "51d536f351acdfff8f0d59ed4d118e5c2d74778c6d27443567134edeca1af1a2",
+    "interacting/managing-relationships-between-objects.mdx": "0480eb6f866d257c7cd68e1654f627023724436db988fba0b38a275299a6e5ea",
+    "interacting/managing-user-access.mdx": "a57cf3eac140b302d66a7c0a8da052099c94c1423641f9daa1dc17b5aa49260d"
+  }
+}

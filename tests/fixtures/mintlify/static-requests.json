@@ -1,0 +1,460 @@
+{
+  "provenance": {
+    "revision": "85bde5e19f7fa0b8687732c33c4f7c3a39fd83e0",
+    "sourceRoot": "docs/content",
+    "method": "Extracted from legacy source, never from native output."
+  },
+  "rendererSourceRoot": "src/components/Docs/SnippetViewer/",
+  "languageSourceSha256": "6e0e8588c65b622fa219d1f888291fe584ec48a8e27fecbda8c4f5c79ad8a2d3",
+  "languageLabels": {
+    "CLI": "CLI",
+    "JS_SDK": "Node.js",
+    "GO_SDK": "Go",
+    "DOTNET_SDK": ".NET",
+    "PYTHON_SDK": "Python",
+    "JAVA_SDK": "Java",
+    "CURL": "curl",
+    "RPC": "Pseudocode",
+    "PLAYGROUND": "Playground"
+  },
+  "modelId": "01HVMMBCMGZNT3SED4Z17ECXCA",
+  "timestamp": "2021-10-06T15:32:11.128Z",
+  "renderers": {
+    "ReadRequestViewer": {
+      "defaultLanguages": [
+        "JS_SDK",
+        "GO_SDK",
+        "DOTNET_SDK",
+        "PYTHON_SDK",
+        "JAVA_SDK",
+        "CLI",
+        "CURL",
+        "RPC"
+      ],
+      "sha256": "7c3fb640192e7591266fa1f43808baf85ca9ee8857653e749bfc70a4e32e1256"
+    },
+    "ExpandRequestViewer": {
+      "defaultLanguages": [
+        "JS_SDK",
+        "GO_SDK",
+        "DOTNET_SDK",
+        "PYTHON_SDK",
+        "JAVA_SDK",
+        "CLI",
+        "CURL",
+        "RPC"
+      ],
+      "sha256": "c62befeba367064e319d28e91e357cf120237fa0a7f31974456b1c889a7d3bcf"
+    },
+    "WriteAuthzModelViewer": {
+      "defaultLanguages": [
+        "JS_SDK",
+        "GO_SDK",
+        "DOTNET_SDK",
+        "PYTHON_SDK",
+        "JAVA_SDK",
+        "CLI",
+        "CURL"
+      ],
+      "sha256": "d2f8189ae9139a9efebc12d56da0b5f68baf469a5c636a04fd59bcba0c5b463b"
+    },
+    "ReadChangesRequestViewer": {
+      "defaultLanguages": [
+        "JS_SDK",
+        "GO_SDK",
+        "DOTNET_SDK",
+        "PYTHON_SDK",
+        "JAVA_SDK",
+        "CLI",
+        "CURL"
+      ],
+      "sha256": "d86164115c18f0bb30f05a0b44336ec473e91c52957eb5dcd52e4b5a16b79ad4"
+    }
+  },
+  "pages": {
+    "interacting/relationship-queries": {
+      "ReadRequestViewer": [
+        {
+          "user": "user:bob",
+          "relation": "writer",
+          "object": "document:planning",
+          "tuples": [
+            {
+              "user": "user:bob",
+              "relation": "writer",
+              "object": "document:planning"
+            }
+          ]
+        },
+        {
+          "user": "user:bob",
+          "relation": "writer",
+          "object": "document:",
+          "tuples": [
+            {
+              "user": "user:bob",
+              "relation": "writer",
+              "object": "document:planning"
+            }
+          ]
+        },
+        {
+          "user": "user:bob",
+          "object": "document:planning",
+          "tuples": [
+            {
+              "user": "user:bob",
+              "relation": "writer",
+              "object": "document:planning"
+            }
+          ]
+        },
+        {
+          "user": "user:bob",
+          "object": "document:",
+          "tuples": [
+            {
+              "user": "user:bob",
+              "relation": "writer",
+              "object": "document:planning"
+            }
+          ]
+        },
+        {
+          "relation": "writer",
+          "object": "document:planning",
+          "tuples": [
+            {
+              "user": "user:bob",
+              "relation": "writer",
+              "object": "document:planning"
+            }
+          ]
+        },
+        {
+          "object": "document:planning",
+          "tuples": [
+            {
+              "user": "user:bob",
+              "relation": "writer",
+              "object": "document:planning"
+            }
+          ]
+        },
+        {
+          "tuples": [
+            {
+              "user": "user:bob",
+              "relation": "writer",
+              "object": "document:planning"
+            }
+          ]
+        },
+        {
+          "user": "user:bob",
+          "relation": "reader",
+          "object": "document:",
+          "tuples": []
+        }
+      ],
+      "ExpandRequestViewer": [
+        {
+          "relation": "reader",
+          "object": "document:planning"
+        },
+        {
+          "relation": "writer",
+          "object": "document:planning"
+        }
+      ],
+      "RelationshipTuplesViewer": [
+        {
+          "relationshipTuples": [
+            {
+              "_description": "Bob has writer relationship with planning document",
+              "user": "user:bob",
+              "relation": "writer",
+              "object": "document:planning"
+            }
+          ]
+        }
+      ],
+      "WriteAuthzModelViewer": [],
+      "ReadChangesRequestViewer": []
+    },
+    "modeling/migrating/migrating-relations": {
+      "ReadRequestViewer": [
+        {
+          "tuples": [
+            {
+              "user": "user:anne",
+              "relation": "editor",
+              "object": "document:planning"
+            },
+            {
+              "user": "user:charles",
+              "relation": "editor",
+              "object": "document:planning"
+            }
+          ]
+        }
+      ],
+      "ExpandRequestViewer": [],
+      "RelationshipTuplesViewer": [
+        {
+          "relationshipTuples": [
+            {
+              "user": "user:anne",
+              "relation": "editor",
+              "object": "document:roadmap"
+            },
+            {
+              "user": "user:charles",
+              "relation": "editor",
+              "object": "document:roadmap"
+            }
+          ]
+        }
+      ],
+      "WriteAuthzModelViewer": [],
+      "ReadChangesRequestViewer": []
+    },
+    "modeling/conditions": {
+      "ReadRequestViewer": [],
+      "ExpandRequestViewer": [],
+      "RelationshipTuplesViewer": [],
+      "WriteAuthzModelViewer": [
+        {
+          "authorizationModel": {
+            "schema_version": "1.1",
+            "type_definitions": [
+              {
+                "type": "user"
+              },
+              {
+                "type": "document",
+                "relations": {
+                  "viewer": {
+                    "this": {}
+                  }
+                },
+                "metadata": {
+                  "relations": {
+                    "viewer": {
+                      "directly_related_user_types": [
+                        {
+                          "type": "user",
+                          "condition": "non_expired_grant"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ],
+            "conditions": {
+              "non_expired_grant": {
+                "name": "non_expired_grant",
+                "expression": "current_time < grant_time + grant_duration",
+                "parameters": {
+                  "current_time": {
+                    "type_name": "TYPE_NAME_TIMESTAMP"
+                  },
+                  "grant_duration": {
+                    "type_name": "TYPE_NAME_DURATION"
+                  },
+                  "grant_time": {
+                    "type_name": "TYPE_NAME_TIMESTAMP"
+                  }
+                }
+              }
+            }
+          },
+          "skipSetup": true,
+          "allowedLanguages": [
+            "JS_SDK",
+            "GO_SDK",
+            "DOTNET_SDK",
+            "PYTHON_SDK",
+            "JAVA_SDK",
+            "CLI",
+            "CURL"
+          ]
+        }
+      ],
+      "ReadChangesRequestViewer": []
+    },
+    "getting-started/configure-model": {
+      "ReadRequestViewer": [],
+      "ExpandRequestViewer": [],
+      "RelationshipTuplesViewer": [],
+      "WriteAuthzModelViewer": [
+        {
+          "authorizationModel": {
+            "schema_version": "1.1",
+            "type_definitions": [
+              {
+                "type": "user"
+              },
+              {
+                "type": "document",
+                "relations": {
+                  "reader": {
+                    "this": {}
+                  },
+                  "writer": {
+                    "this": {}
+                  },
+                  "owner": {
+                    "this": {}
+                  }
+                },
+                "metadata": {
+                  "relations": {
+                    "reader": {
+                      "directly_related_user_types": [
+                        {
+                          "type": "user"
+                        }
+                      ]
+                    },
+                    "writer": {
+                      "directly_related_user_types": [
+                        {
+                          "type": "user"
+                        }
+                      ]
+                    },
+                    "owner": {
+                      "directly_related_user_types": [
+                        {
+                          "type": "user"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "allowedLanguages": [
+            "JS_SDK",
+            "GO_SDK",
+            "DOTNET_SDK",
+            "PYTHON_SDK",
+            "JAVA_SDK",
+            "CLI",
+            "CURL"
+          ]
+        }
+      ],
+      "ReadChangesRequestViewer": []
+    },
+    "interacting/read-tuple-changes": {
+      "ReadRequestViewer": [],
+      "ExpandRequestViewer": [],
+      "RelationshipTuplesViewer": [],
+      "WriteAuthzModelViewer": [],
+      "ReadChangesRequestViewer": [
+        {
+          "pageSize": 25,
+          "skipSetup": true,
+          "allowedLanguages": [
+            "JS_SDK",
+            "GO_SDK",
+            "DOTNET_SDK",
+            "PYTHON_SDK",
+            "JAVA_SDK",
+            "CLI",
+            "CURL"
+          ]
+        },
+        {
+          "pageSize": 25,
+          "continuationToken": "eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ==",
+          "skipSetup": true,
+          "allowedLanguages": [
+            "JS_SDK",
+            "GO_SDK",
+            "DOTNET_SDK",
+            "PYTHON_SDK",
+            "JAVA_SDK",
+            "CLI",
+            "CURL"
+          ]
+        },
+        {
+          "pageSize": 25,
+          "type": "folder",
+          "skipSetup": true,
+          "allowedLanguages": [
+            "JS_SDK",
+            "GO_SDK",
+            "DOTNET_SDK",
+            "PYTHON_SDK",
+            "JAVA_SDK",
+            "CLI",
+            "CURL"
+          ]
+        },
+        {
+          "pageSize": 25,
+          "type": "folder",
+          "continuationToken": "eyJwayI6IkxBVEVTVF9OU0NPTkZJR19hdXRoMHN0b3JlIiwic2siOiIxem1qbXF3MWZLZExTcUoyN01MdTdqTjh0cWgifQ==",
+          "skipSetup": true,
+          "allowedLanguages": [
+            "JS_SDK",
+            "GO_SDK",
+            "DOTNET_SDK",
+            "PYTHON_SDK",
+            "JAVA_SDK",
+            "CLI",
+            "CURL"
+          ]
+        }
+      ]
+    }
+  },
+  "expandResponses": [
+    {
+      "tree": {
+        "root": {
+          "type": "document:planning#reader",
+          "leaf": {
+            "computed": {
+              "userset": "document:planning#writer"
+            }
+          }
+        }
+      }
+    },
+    {
+      "tree": {
+        "root": {
+          "type": "document:planning#writer",
+          "leaf": {
+            "users": {
+              "users": [
+                "user:bob"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "writeModelOutputs": {
+    "Node.js": "id = \"01HVMMBCMGZNT3SED4Z17ECXCA\"",
+    "Go": "data.AuthorizationModelId = \"01HVMMBCMGZNT3SED4Z17ECXCA\"",
+    ".NET": "response.AuthorizationModelId = \"01HVMMBCMGZNT3SED4Z17ECXCA\"",
+    "Python": "response.authorization_model_id = \"01HVMMBCMGZNT3SED4Z17ECXCA\""
+  },
+  "sdkInstalls": {
+    "js-sdk": "@openfga/sdk@0.9.7",
+    "go-sdk": "github.com/openfga/go-sdk@v0.8.2",
+    "dotnet-sdk": "OpenFGA.Sdk --version 0.10.4",
+    "python-sdk": "openfga_sdk==0.10.4",
+    "java-sdk": "<version>0.10.0</version>"
+  },
+  "conditionDsl": "model\n  schema 1.1\n\ntype user\n\ntype document\n  relations\n    define viewer: [user with non_expired_grant]\n\ncondition non_expired_grant(current_time: timestamp, grant_time: timestamp, grant_duration: duration) {\n  current_time < grant_time + grant_duration\n}"
+}

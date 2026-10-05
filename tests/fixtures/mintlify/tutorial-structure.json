@@ -1,0 +1,185 @@
+{
+  "provenance": {
+    "revision": "85bde5e19f7fa0b8687732c33c4f7c3a39fd83e0",
+    "sourceRoot": "docs/content",
+    "method": "Extracted from legacy source, never from native output."
+  },
+  "task": {
+    "source": "modeling/agents/task-based-authorization.mdx",
+    "models": [
+      {
+        "language": "dsl.openfga",
+        "code": "model\n  schema 1.1\ntype task\ntype tool\n  relations\n    define can_call: [task, task:*]\ntype tool_resource\n  relations\n    define tool: [tool]\n    define can_call: [task] or can_call from tool",
+        "headings": [
+          "Modeling Task-Based Authorization for Agents",
+          "Tool authorization"
+        ],
+        "steps": []
+      },
+      {
+        "language": "dsl.openfga",
+        "code": "model\n  schema 1.1\ntype user\ntype task\ntype organization\n  relations\n    define admin: [user]\n    define member: [user]\ntype project\n  relations\n    define organization: [organization]\n    # relations for users\n    define owner: [user]\n    define member: [user]\n    # relations for tasks\n    define read: [task]\n    define write: [task]\n    define delete: [task]\n    # permissions for users\n    define can_delete: delete or owner or admin from organization\n    define can_edit: write or owner or admin from organization\n    define can_read: read or can_edit or member from organization\n    define can_create_ticket: can_edit\ntype ticket\n  relations\n    define project: [project]\n    define owner: [user]\n    # relations for tasks\n    define read: [task]\n    define write: [task]\n    define delete: [task]\n    define can_delete: owner or delete or can_delete from project\n    define can_edit: owner or write or can_edit from project\n    define can_read: read or write or can_read from project",
+        "headings": [
+          "Modeling Task-Based Authorization for Agents",
+          "Domain-specific models"
+        ],
+        "steps": []
+      },
+      {
+        "language": "dsl.openfga",
+        "code": "model\n  schema 1.1\ntype task\ntype agent\n  relations\n    define task: [task]\ntype session\n  relations\n    define task: [task]\ntype tool\n  relations\n    define can_call: [task, session#task, agent#task]",
+        "headings": [
+          "Modeling Task-Based Authorization for Agents",
+          "Scoping permissions to sessions and agents"
+        ],
+        "steps": []
+      },
+      {
+        "language": "dsl.openfga",
+        "code": "model\n  schema 1.1\ntype task\ntype tool\n  relations\n    define can_call: [task, task with expiration, task with max_call_count]\ncondition expiration(grant_time: timestamp, grant_duration: duration, current_time: timestamp) {\n  current_time < grant_time + grant_duration\n}\ncondition max_call_count(max_tool_calls: int, current_tool_count: int) {\n  current_tool_count < max_tool_calls\n}",
+        "headings": [
+          "Modeling Task-Based Authorization for Agents",
+          "Expiration and call count"
+        ],
+        "steps": []
+      },
+      {
+        "language": "dsl.openfga",
+        "code": "model\n  schema 1.1\ntype task\ntype agent\n  relations\n    define task: [task]\ntype tool\n  relations\n    define calling_agent: [agent]\n    define can_call: [task] and task from calling_agent",
+        "headings": [
+          "Modeling Task-Based Authorization for Agents",
+          "Binding agents to tasks"
+        ],
+        "steps": []
+      }
+    ],
+    "tupleSections": [
+      "Tool authorization",
+      "Scoping permissions to sessions and agents",
+      "Expiration and call count",
+      "Binding agents to tasks"
+    ],
+    "checks": [
+      {
+        "user": "task:2",
+        "relation": "can_call",
+        "object": "tool_resource:slack_send_message/XGA14FG",
+        "allowed": true,
+        "skipSetup": true,
+        "contextualTuples": [
+          {
+            "_description": "Link the tool_resource to its parent tool",
+            "user": "tool:slack_send_message",
+            "relation": "tool",
+            "object": "tool_resource:slack_send_message/XGA14FG"
+          }
+        ]
+      },
+      {
+        "user": "task:1",
+        "relation": "can_call",
+        "object": "tool:slack_send_message",
+        "allowed": true,
+        "skipSetup": true,
+        "contextualTuples": [
+          {
+            "_description": "The agent making the call",
+            "user": "agent:1",
+            "relation": "calling_agent",
+            "object": "tool:slack_send_message"
+          }
+        ]
+      },
+      {
+        "user": "task:1",
+        "relation": "can_call",
+        "object": "tool:slack_send_message",
+        "allowed": false,
+        "skipSetup": true,
+        "contextualTuples": [
+          {
+            "_description": "A different agent making the call",
+            "user": "agent:2",
+            "relation": "calling_agent",
+            "object": "tool:slack_send_message"
+          }
+        ]
+      }
+    ]
+  },
+  "designPrinciples": [
+    {
+      "title": "What to avoid: The overly generic model",
+      "content": [
+        {
+          "text": "The model below can technically represent any organization hierarchy, any resource hierarchy, and any role hierarchy:"
+        },
+        {
+          "dsl": "model\n  schema 1.1\n\ntype user\n\ntype role\n  relations\n    define assignee: [user, role#assignee]\n\ntype entity\n  relations\n    define parent: [entity]\n    define editor: [role#assignee] or editor from parent\n    define viewer: [role#assignee] or editor or viewer from parent\n\ntype resource\n  relations\n    define entity: [entity]\n    define parent: [resource]\n    define editor: [role#assignee] or editor from entity or editor from parent\n    define viewer: [role#assignee] or editor or viewer from parent"
+        },
+        {
+          "text": "While flexible, this approach creates problems:"
+        },
+        {
+          "text": "The model doesn't communicate what your application actually does"
+        },
+        {
+          "text": "To understand the actual relationships you need to rely on tuples, e.g., the fact that a project can have documents."
+        },
+        {
+          "text": "Generic recursive relations are slower to evaluate"
+        },
+        {
+          "text": "You can't use modules to isolate different resource types"
+        },
+        {
+          "text": "ListObjects returns mixed results (all \"resources\" instead of just \"documents\")"
+        }
+      ]
+    },
+    {
+      "title": "What to avoid: The generic resource type",
+      "content": [
+        {
+          "dsl": "type resource\n  relations\n    define entity: [entity]\n    define parent: [resource]\n    define editor: [role#assignee] or editor from entity or editor from parent\n    define viewer: [role#assignee] or editor or viewer from parent"
+        },
+        {
+          "text": "Problems with this approach:"
+        },
+        {
+          "text": "ListObjects returns mixed results (folders, documents, and everything else)"
+        },
+        {
+          "text": "You end up with a superset of all permissions, making it unclear which apply to what"
+        },
+        {
+          "text": "No way to use modules for team ownership"
+        },
+        {
+          "text": "Harder to understand and audit"
+        }
+      ]
+    }
+  ],
+  "conceptTitles": [
+    "What Is A Type?",
+    "What Is A Type Definition?",
+    "What Is An Authorization Model?",
+    "What Is A Store?",
+    "What Is An Object?",
+    "What Is A User?",
+    "What Is A Relation?",
+    "What Is A Relation Definition?",
+    "What Is A Directly Related User Type?",
+    "What is a Condition?",
+    "What Is A Relationship Tuple?",
+    "What Is A Conditional Relationship Tuple?",
+    "What Is A Relationship?",
+    "What Are Direct And Implied Relationships?",
+    "What Is A Check Request?",
+    "What Is A List Objects Request?",
+    "What Is A List Users Request?",
+    "What Are Contextual Tuples?",
+    "What Is Type Bound Public Access?"
+  ]
+}

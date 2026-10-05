@@ -3,121 +3,107 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fopenfga%2Fopenfga.dev.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fopenfga%2Fopenfga.dev?ref=badge_shield)
 
 ## About OpenFGA
-<!-- markdown-link-check-disable -->
-[OpenFGA](https://github.com/openfga/openfga) is an open source Fine-Grained Authorization solution based on Google's Zanzibar. It was created by the Auth0 FGA team and welcomes community contribution. OpenFGA is designed to make it easy for application builders to quickly add fine-grained authorization to their applications. It offers an HTTP API and has SDKs for programming languages including [JavaScript](https://github.com/openfga/js-sdk), [GoLang](https://github.com/openfga/go-sdk) and [.NET](https://github.com/openfga/dotnet-sdk). More SDKs and integrations such as Rego are planned for the future. OpenFGA is designed and optimized for reliability and low latency at a high scale.
-<!-- markdown-link-check-enable-->
+
+[OpenFGA](https://github.com/openfga/openfga) is an open source fine-grained authorization solution based on Google's Zanzibar. This repository contains the website and documentation for [openfga.dev](https://openfga.dev).
 
 ## About OpenFGA docs
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+| Content | Source | Publishing |
+| --- | --- | --- |
+| Product documentation | [`docs-site/`](docs-site/README.md) | Mintlify at `/docs/...` |
+| Read-only API reference | [`docs-site/docs.json`](docs-site/docs.json) and the upstream OpenAPI schema | Mintlify at `/docs/api/service/...` |
+| Home, Project, Community, and Blog | `src/`, `blog/`, and `static/` | Docusaurus on GitHub Pages |
 
-### Agent-readable documentation
+The Mintlify URLs above describe the planned `/docs` deployment. Legacy `/api/service` URLs and Swagger bookmarks remain supported through the website compatibility page and redirects.
 
-Production builds publish a curated AI-agent entry point at `/llms.txt`, an exhaustive documentation index at `/docs/llms.txt`, an optional single-file bundle at `/llms-full.txt`, and a clean Markdown representation beside each current documentation URL (for example, `/docs/fga.md`). Documentation pages advertise these resources with `rel="alternate"` and `rel="describedby"` links.
-
-`npm run build` validates that the generated indexes, Markdown pages, FAQ content, and discovery links stay in sync.
+See the [Mintlify contributor guide](docs-site/README.md) for authoring, API samples, media, and migration requirements. The [maintenance scripts guide](scripts/README.md) covers generated files, sitemaps, LLM resources, and upstream updates.
 
 ## Getting Started
 
-### Setup and Installation
+Use Node.js 22. Git, Bash, Python 3, and curl are also required for the repository quality checks.
 
-#### Clone the repo locally
-
-Run `git clone https://github.com/openfga/openfga.dev.git` to clone the repo to your machine.
-
-#### Setup Git LFS (Large File Storage)
-
-* Follow the instructions [here](https://git-lfs.github.com/) to install git lfs on your system.
-* If you haven't done so yet, run `git lfs install` to set up git lfs for your account.
-* Run `git lfs pull`
-* Run `git lfs checkout`
-
-Currently `mp4`, `webm` and `svg` files are tracked. If you need to track more media formats, run: `git lfs track "*.extension"`
-
-#### Install Dependencies
-
-To run the docs locally you will need to first install dependencies:
-
-```
-npm install
+```bash
+git clone https://github.com/openfga/openfga.dev.git
+cd openfga.dev
+npm ci
 ```
 
-#### Running in Development
+### Setup Git LFS (Large File Storage)
 
-You can then run 
+Install [Git LFS](https://git-lfs.github.com/) and hydrate website/Blog media before rendering the website:
 
+```bash
+git lfs install
+git lfs pull
 ```
+
+If objects are already downloaded but files still contain pointers, run `git lfs checkout`. Assets under `docs-site/` intentionally use ordinary Git files; see the [asset-storage policy](docs-site/README.md#asset-storage-and-git-lfs).
+
+### Product docs and API preview
+
+Run the Mintlify CLI from `docs-site/`:
+
+```bash
+cd docs-site
+npx mint dev --port 3333
+```
+
+Open `http://localhost:3333/`. Local pages use source-root paths such as `/fga` and `/api/service`; Mintlify adds `/docs` on the configured hosted deployment.
+
+### Website and Blog preview
+
+From the repository root:
+
+```bash
 npm run dev
 ```
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+Open `http://localhost:3000/`. This runs Docusaurus, not the Mintlify docs. Website previews link to docs/API pages at their public URLs.
 
-#### Building for Production
+### Mintlify repository quality checks
 
-To generate a production build
+After editing native sources, run from the repository root:
 
-##### NPM
-`npm run build` # Generated files will be in the ./build directory
-
-To launch a server with the build files, run 
-
+```bash
+npm run generate:mintlify-deployment
+npm run check:mintlify
 ```
+
+Commit the updated fingerprint in `docs-site/docs.json` with native-source changes. API checks require network access and reject an upstream schema that differs from the recorded digest.
+
+The [quality workflow](.github/workflows/mintlify-quality.yml) runs repository checks, not Mintlify CLI or hosted acceptance. See [validation details and limits](docs-site/README.md#validating-authoring-changes).
+
+## Building and deployment
+
+Build and serve the Docusaurus website from the repository root:
+
+```bash
+npm run build
 npm run serve
 ```
 
-<!-- markdown-link-check-disable -->
-You will then be able to browse the documentation at http://localhost:3000/   
-<!-- markdown-link-check-enable-->
+Output goes to `build/`; Mintlify deploys `docs-site/` separately. GitHub Pages continues publishing `gh-pages`. Hosting Mintlify at `/docs` does not require changing the repository's default branch.
 
-#### Docker
-
-
-##### Build
-
-To build in development mode
-
-```
-docker build --target development . -t fga-docs-dev
-```
-
-To run in development mode
-
-```
-docker run --init --rm -p 3000:3000 fga-docs-dev
-```
-
-The generated webpages will be available in http://localhost:3000.
-
-##### Production
-
-To build in production mode
-
-
-```
-docker build . -t fga-docs
-```
-
-Run
-
-```
-docker run --init --rm -p 3000:80 fga-docs
-```
+The planned public setup uses Mintlify's dashboard-provided Cloudflare Worker; this repository does not maintain a Worker. Deployment settings, workflow changes, and public cutover remain owner-managed. Follow the [deployment guide](docs-site/README.md#split-site-deployment) before publishing the migrated website.
 
 ## PR Preview
-GitHub Action [Deploy PR Preview](https://github.com/marketplace/actions/deploy-pr-preview) allows previewing of proposed changes. The URL for the changes can be previewed via
-```
-https://openfga.dev/pr-preview/pr-[number]
+
+Website previews use:
+
+```text
+https://openfga.dev/pr-preview/pr-[number]/
 ```
 
-For example, previewing changes on PR-589 for changes on docs/modeling/public-access is available via
-```
-https://openfga.dev/pr-preview/pr-589/docs/modeling/public-access
-```
+Use the separate Mintlify deployment preview for product docs and the API reference; they are not included in the Docusaurus preview.
 
 ## Contributing
+
 Please review the [Contributing Guidelines](https://github.com/openfga/.github/blob/main/CONTRIBUTING.md) before sending a PR or opening an issue.
 
+Migration pull requests target `docs-next`. Preserve existing article content and navigation during migration; propose editorial changes separately. See the [migration review checklist](docs-site/README.md#migration-review-checklist).
+
 ## Issue Reporting
+
 If you find a bug or inaccuracy in the documentation content, please report it in this repository's [issues section](https://github.com/openfga/openfga.dev/issues). Please do not report security vulnerabilities on the public GitHub issue tracker. Refer to [the security policy](https://github.com/openfga/.github/blob/main/SECURITY.md) for disclosing security issues.
 
 <!-- markdown-link-check-disable -->
