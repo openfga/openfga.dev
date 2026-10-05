@@ -131,22 +131,6 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
       style-src 'unsafe-inline' 'self' https://fonts.googleapis.com https://hcaptcha.com https://*.hcaptcha.com;`,
   },
 
-  themes: [
-    [
-      require.resolve('@easyops-cn/docusaurus-search-local'),
-      {
-        // ... Your options.
-        // `hashed` is recommended as long-term-cache of index file is possible.
-        hashed: true,
-        // For Docs using Chinese, The `language` is recommended to set to:
-        // ```
-        // language: ["en", "zh"],
-        // ```
-        docsDir: 'docs/content',
-        docsRouteBasePath: '/',
-      },
-    ],
-  ],
   plugins: [
     require.resolve('./webpack-overrides.docusaurus-plugin'),
     [
@@ -179,7 +163,6 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
           includeDocs: true,
           includeVersionedDocs: false,
           includeGeneratedIndex: false,
-          excludeRoutes: [agentRoute('/search')],
           remarkStringify: {
             bullet: '-',
             emphasis: '_',

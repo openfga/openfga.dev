@@ -142,7 +142,6 @@ jobs:
             --root-dir "${{ github.workspace }}/build"
             --remap "https://openfga\\.dev/(.*) file://${{ github.workspace }}/build/\$1"
             --exclude "^file://${{ github.workspace }}/build/api/service"
-            --exclude "^file://${{ github.workspace }}/build/search"
             --no-progress
             --files-from build/lychee-inputs.txt
           fail: true
