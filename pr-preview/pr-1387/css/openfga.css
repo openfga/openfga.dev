@@ -82,6 +82,13 @@ a:visited {
   transition: all 0.2s ease;
 }
 
+.community-page p a,
+.community-page li a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+
 .container__no-padding {
   margin: 0 auto;
   max-width: var(--ifm-container-width);
