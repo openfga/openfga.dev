@@ -14,7 +14,7 @@
     "build:docusaurus": "docusaurus build",
     "build:config-page": "node scripts/update-config-page.mjs",
     "test:config-page": "node --test scripts/update-config-page.test.mjs",
-    "test:workflows": "node --test scripts/workflow-syntax.test.mjs scripts/docs-check-scope.test.mjs",
+    "test:workflows": "node --test scripts/workflow-syntax.test.mjs",
     "update:api-samples": "node scripts/update-api-samples.mjs",
     "report:api-samples": "node scripts/report-api-samples.mjs",
     "test:update-api-samples": "node --test scripts/update-api-samples.test.mjs scripts/report-api-samples.test.mjs",

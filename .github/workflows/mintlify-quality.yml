@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -28,7 +29,6 @@ jobs:
         with:
           lfs: false
           persist-credentials: false
-          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
@@ -41,16 +41,51 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Validate workflows and docs-check scoping
+      - name: Validate workflow syntax and docs filters
         run: npm run test:workflows
 
-      - name: Determine documentation impact
-        id: docs-scope
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: node scripts/docs-check-scope.mjs
+      - name: Detect documentation changes
+        id: changes
+        # Larger PRs bypass filtering because GitHub lists at most 3,000 changed files.
+        if: >-
+          github.event_name != 'workflow_dispatch' &&
+          github.event.before != '0000000000000000000000000000000000000000' &&
+          (github.event_name != 'pull_request' || github.event.pull_request.changed_files < 3000)
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        with:
+          base: ${{ github.event.before }}
+          filters: |
+            docs:
+              - '{docs-site,docs,mintlify-native,patches}{,/**}'
+              - 'tests/fixtures/{mintlify,configuration-generator}/**'
+              - 'src/components/{Docs,SwaggerUI}{,/**}'
+              - '{package.json,package-lock.json,tsconfig.json,docusaurus.config.js}'
+              - '{.gitattributes,.gitignore,.prettierrc,.prettierignore}'
+              - '.github/workflows/{mintlify-quality,update-docs,update-api-samples}.yml'
+              - 'scripts/README.md'
+              - 'scripts/{agent-content,clean-agent-markdown,prepare-agent-content,validate-agent-content}{,.test}.mjs'
+              - 'scripts/{deployment-verification,native-deployment-fingerprint,native-routes,verify-docs-deployment}{,.test}.mjs'
+              - 'scripts/{generate-legacy-api-routes,legacy-api-routes,report-api-samples,update-api-samples}{,.test}.mjs'
+              - 'scripts/{prepare-site-sitemap,site-boundary,site-sitemap,validate-site-boundary,update-config-page}{,.test}.mjs'
+              - 'src/data/legacy-api-routes.json'
+              - 'src/utils/legacy-api-redirect.mjs'
+              - 'src/pages/{api/service.tsx,community.mdx}'
+              - 'src/features/LandingPage/QuickStartSection/index.tsx'
+              - 'src/theme/Root.tsx'
+              - deleted:
+                  - 'src/pages/index.tsx'
+                  - 'src/pages/project.mdx'
+                  - 'blog/ignore-duplicate-writes-announcement.md'
 
       - name: Run repository quality checks
-        if: steps.docs-scope.outputs.docs_changed == 'true'
+        if: >-
+          github.event_name == 'workflow_dispatch' ||
+          github.event.before == '0000000000000000000000000000000000000000' ||
+          github.event.pull_request.changed_files >= 3000 ||
+          steps.changes.outputs.docs == 'true'
         run: npm run check:mintlify
+
+      - name: Report skipped docs checks
+        if: steps.changes.outputs.docs == 'false'
+        run: |
+          echo "No docs-related changes: skipped the docs-quality suite. Workflow syntax validation still ran." >> "$GITHUB_STEP_SUMMARY"

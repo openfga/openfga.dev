@@ -24,24 +24,20 @@ shells are explicitly reported as skipped for shell validation; their YAML is
 still checked. This is syntax validation, not a replacement for GitHub's workflow
 schema, expression validation, or runtime checks.
 
-Docs-content checks run only when changed files affect documentation.
-[`docs-check-scope.mjs`](./docs-check-scope.mjs) owns the scope: native/legacy docs,
-explicit docs-maintenance scripts, docs fixtures, docs-specific workflows,
-dependencies, build/formatting/Git source controls, and the website inputs covered
-by docs navigation and site-boundary contracts. Unrelated website components,
-assets, blog posts, and repository-maintenance scripts/files skip the full docs suite.
-Add new docs inputs/helpers to the classifier and its regression cases. The
-workflow still completes its existing check and records the decision in the run
-summary; it does not use event-level path filters that could leave a required
-check pending.
+The quality workflow uses a pinned `dorny/paths-filter` action and a step-level
+`if` to run docs-content checks only for docs sources and supporting tooling,
+fixtures, dependencies, configuration, and navigation/boundary inputs. The
+filters live directly in the workflow; add new docs inputs there and in the
+filter regression cases. Unrelated changes get an explicit skip summary while
+the existing required check completes, without event-level path filters.
 
-PRs compare their merge base to the PR head; pushes compare the complete
-before/after range. Deleted files and both sides of renames count, including
-docs moved outside the docs directories. Manual runs and new-branch pushes run
-the full docs suite. Invalid or unavailable comparison revisions fail explicitly
-rather than silently skipping checks. Nightly/manual source updaters remain
-independent of repository file changes, since upstream releases can change
-without a docs commit.
+Deleting or moving the required Home/Project pages or the preserved duplicate-write
+announcement triggers the boundary checks; ordinary content edits still skip.
+Both sides of renames count. PRs use GitHub's changed-file list; pushes compare
+the complete before/after range. Manual runs, new-branch pushes, and PRs with
+3,000 or more changed files run the full suite (GitHub's PR-files API is capped
+at 3,000 files). Nightly/manual source updaters remain independent of repository
+file changes, since upstream releases can change without a docs commit.
 
 | Files | Role and root commands |
 | --- | --- |
@@ -151,7 +147,7 @@ It never approves or auto-merges PRs, and never force-pushes outside its reserve
 ## Regression tests
 
 All root `*.test.mjs` files remain wired into package commands:
-- `npm run test:workflows`: all workflow YAML/Bash syntax, docs-impact scoping, change ranges, renames/deletions, and CI gates.
+- `npm run test:workflows`: all workflow YAML/Bash syntax, declared docs-path filters, required-file deletion/move rules, and CI gates.
 - `npm run test:site-boundary`: agent content, site boundary, sitemap, and legacy API routes.
 - `npm run test:config-page`: configuration generation, including preservation/error cases.
 - `npm run test:update-api-samples`: offline source updates, no-change/incompatibility/transport handling, no partial incompatible writes, issue deduplication, and workflow gates.
