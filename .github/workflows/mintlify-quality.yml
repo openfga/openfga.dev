@@ -28,6 +28,7 @@ jobs:
         with:
           lfs: false
           persist-credentials: false
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
@@ -40,5 +41,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate workflows and docs-check scoping
+        run: npm run test:workflows
+
+      - name: Determine documentation impact
+        id: docs-scope
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/docs-check-scope.mjs
+
       - name: Run repository quality checks
+        if: steps.docs-scope.outputs.docs_changed == 'true'
         run: npm run check:mintlify

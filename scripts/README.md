@@ -17,6 +17,32 @@ workflows use it. `npm run check:mintlify`, run by the
 [quality workflow](../.github/workflows/mintlify-quality.yml), includes the root
 regression suites and freshness checks; it does not build or deploy edge infrastructure.
 
+The quality workflow always runs `npm run test:workflows` on PRs to `main` or
+`docs-next` and pushes to `docs-next`. This parses every workflow YAML file and
+checks Bash/sh run-block syntax without executing the scripts. Other declared
+shells are explicitly reported as skipped for shell validation; their YAML is
+still checked. This is syntax validation, not a replacement for GitHub's workflow
+schema, expression validation, or runtime checks.
+
+Docs-content checks run only when changed files affect documentation.
+[`docs-check-scope.mjs`](./docs-check-scope.mjs) owns the scope: native/legacy docs,
+explicit docs-maintenance scripts, docs fixtures, docs-specific workflows,
+dependencies, build/formatting/Git source controls, and the website inputs covered
+by docs navigation and site-boundary contracts. Unrelated website components,
+assets, blog posts, and repository-maintenance scripts/files skip the full docs suite.
+Add new docs inputs/helpers to the classifier and its regression cases. The
+workflow still completes its existing check and records the decision in the run
+summary; it does not use event-level path filters that could leave a required
+check pending.
+
+PRs compare their merge base to the PR head; pushes compare the complete
+before/after range. Deleted files and both sides of renames count, including
+docs moved outside the docs directories. Manual runs and new-branch pushes run
+the full docs suite. Invalid or unavailable comparison revisions fail explicitly
+rather than silently skipping checks. Nightly/manual source updaters remain
+independent of repository file changes, since upstream releases can change
+without a docs commit.
+
 | Files | Role and root commands |
 | --- | --- |
 | `prepare-agent-content.mjs`, `agent-content.mjs`, `validate-agent-content.mjs` | Prepare/check the curated root LLM index, website-only bundle, and Home/Project/Community Markdown: `npm run build:agent-content`, `npm run check:agent-content`. |
@@ -124,7 +150,8 @@ It never approves or auto-merges PRs, and never force-pushes outside its reserve
 
 ## Regression tests
 
-All nine `*.test.mjs` files remain wired into package commands:
+All root `*.test.mjs` files remain wired into package commands:
+- `npm run test:workflows`: all workflow YAML/Bash syntax, docs-impact scoping, change ranges, renames/deletions, and CI gates.
 - `npm run test:site-boundary`: agent content, site boundary, sitemap, and legacy API routes.
 - `npm run test:config-page`: configuration generation, including preservation/error cases.
 - `npm run test:update-api-samples`: offline source updates, no-change/incompatibility/transport handling, no partial incompatible writes, issue deduplication, and workflow gates.
