@@ -72,15 +72,36 @@ test('native paths include docs sources and supporting inputs', () => {
   }
 });
 
-test('native paths exclude unrelated website, blog, asset, and maintenance changes', () => {
+test('native paths cover entire supporting directories instead of individual files', () => {
+  for (const directory of ['src', 'scripts', 'tests', '.github/workflows']) {
+    assert.deepEqual(
+      quality.on.pull_request.paths.filter((path) => path.startsWith(`${directory}/`)),
+      [`${directory}/**`],
+    );
+    for (const file of [
+      `${directory}/new-file.mjs`, `${directory}/nested/new-file.mjs`, `${directory}/.hidden/new-file.mjs`,
+    ]) {
+      assert.equal(matchesDocs(file), true, file);
+    }
+  }
   for (const file of [
-    'src/components/AdoptersCarousel/index.tsx', 'static/img/adopters/supabase.svg',
-    'src/features/LandingPage/HeroSection/index.tsx', 'src/css/custom.css', 'src/components/icons/index.ts',
+    'src/components/AdoptersCarousel/index.tsx', 'src/features/LandingPage/HeroSection/index.tsx',
+    'src/css/custom.css', 'src/components/icons/index.ts', 'src/pages/index.tsx', 'src/pages/project.mdx',
+    'scripts/workflow-syntax.test.mjs', 'scripts/repository-maintenance.mjs',
+    'tests/new-suite/example.test.mjs', '.github/workflows/scorecard.yml', '.github/workflows/deploy.yml',
+  ]) {
+    assert.equal(matchesDocs(file), true, file);
+  }
+});
+
+test('native paths exclude blog, static assets, and unrelated root configuration', () => {
+  for (const file of [
+    'static/img/adopters/supabase.svg',
     'blog/news.md', 'blog/authors.yml', 'README.md', 'LICENSE', '.github/CODEOWNERS',
-    '.github/dependabot.yaml', '.github/workflows/scorecard.yml', '.github/workflows/deploy.yml',
-    'eslint.config.js', 'scripts/workflow-syntax.test.mjs', 'scripts/repository-maintenance.mjs',
+    '.github/dependabot.yaml', 'eslint.config.js',
     'docs-site-backup/example.mdx', 'scripts-backup/update.mjs',
-    'src/pages/index.tsx', 'src/pages/project.mdx', 'blog/ignore-duplicate-writes-announcement.md',
+    'src-backup/components/Docs/index.ts', 'tests-backup/example.test.mjs',
+    '.github/workflows-backup/example.yml', 'blog/ignore-duplicate-writes-announcement.md',
   ]) {
     assert.equal(matchesDocs(file), false, file);
   }

@@ -18,9 +18,11 @@ workflows use it. `npm run check:mintlify`, run by the
 regression suites and freshness checks; it does not build or deploy edge infrastructure.
 
 The quality workflow uses GitHub's native `paths` filters for PRs and pushes.
-Only docs sources and supporting tooling, fixtures, dependencies, configuration,
-and navigation/boundary inputs trigger it. The shared path list lives directly
-in the workflow; update it and its regression cases when adding docs inputs.
+Directory-wide patterns cover docs sources, `patches/`, `src/`, `scripts/`,
+`tests/`, and `.github/workflows/`, alongside the listed root dependencies and
+configuration. This intentionally includes non-docs edits within those directories
+so new inputs are covered without maintaining per-file lists. The shared path
+list lives directly in the workflow.
 Manual runs remain unfiltered. GitHub's native diff limits apply; use a manual
 run for unusually large changes. Keep this path-filtered status optional, since
 GitHub leaves skipped workflow checks pending.
@@ -31,7 +33,7 @@ workflow YAML and checks Bash/sh syntax without executing the scripts; other
 declared shells are explicitly skipped for shell validation, not YAML validation.
 It also runs the existing file-preservation contract, so deleting or moving
 required website files cannot bypass the check when docs quality is skipped.
-Ordinary website content edits do not trigger the full docs suite.
+Blog and static-asset-only changes do not trigger the full docs suite.
 Nightly/manual source updaters remain unchanged.
 
 | Files | Role and root commands |
