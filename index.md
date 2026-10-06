@@ -39,11 +39,15 @@ Adopted by teams at
 
 ![EarthScope logo - OpenFGA Adopter](/img/adopters/earthscope.svg)
 
+![Eternal logo - OpenFGA Adopter](/img/adopters/eternal.svg)
+
 ![Flex logo - OpenFGA Adopter](/img/adopters/flex.svg)
 
 ![Grafana logo - OpenFGA Adopter](/img/adopters/grafana.svg)
 
 ![Headspace logo - OpenFGA Adopter](/img/adopters/headspace.svg)
+
+![Linux Foundation logo - OpenFGA Adopter](/img/adopters/linuxfoundation.svg)
 
 ![Okta logo - OpenFGA Adopter](/img/adopters/okta.svg)
 
@@ -53,9 +57,13 @@ Adopted by teams at
 
 ![ReadAI logo - OpenFGA Adopter](/img/adopters/readai.svg)
 
+![SigNoz logo - OpenFGA Adopter](/img/adopters/signoz.svg)
+
 ![Skyral logo - OpenFGA Adopter](/img/adopters/skyral.svg)
 
 ![Sourcegraph logo - OpenFGA Adopter](/img/adopters/sourcegraph.svg)
+
+![Supabase logo - OpenFGA Adopter](/img/adopters/supabase.svg)
 
 ![Zuplo logo - OpenFGA Adopter](/img/adopters/zuplo.svg)
 
@@ -73,11 +81,15 @@ Adopted by teams at
 
 ![](/img/adopters/earthscope.svg)
 
+![](/img/adopters/eternal.svg)
+
 ![](/img/adopters/flex.svg)
 
 ![](/img/adopters/grafana.svg)
 
 ![](/img/adopters/headspace.svg)
+
+![](/img/adopters/linuxfoundation.svg)
 
 ![](/img/adopters/okta.svg)
 
@@ -87,9 +99,13 @@ Adopted by teams at
 
 ![](/img/adopters/readai.svg)
 
+![](/img/adopters/signoz.svg)
+
 ![](/img/adopters/skyral.svg)
 
 ![](/img/adopters/sourcegraph.svg)
+
+![](/img/adopters/supabase.svg)
 
 ![](/img/adopters/zuplo.svg)
 
