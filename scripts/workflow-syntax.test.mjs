@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { readdir, readFile } from 'node:fs/promises';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 import picomatch from 'picomatch';
 import { parse as parseYaml } from 'yaml';
 
@@ -50,18 +51,9 @@ test('rejects broken Bash blocks and non-string run blocks', () => {
 });
 
 const quality = parseYaml(await readFile(new URL('../.github/workflows/mintlify-quality.yml', import.meta.url), 'utf8'));
-const job = quality.jobs['mintlify-quality'];
-const changes = job.steps.find((step) => step.id === 'changes');
-const rules = parseYaml(changes.with.filters).docs.flatMap((rule) => typeof rule === 'string'
-  ? [{ match: picomatch(rule, { dot: true }) }]
-  : Object.entries(rule).map(([status, patterns]) => ({
-    status,
-    match: picomatch(patterns, { dot: true }),
-  })));
-const matchesDocs = (file, status) => rules.some((rule) =>
-  (!rule.status || rule.status === status) && rule.match(file));
+const matchesDocs = picomatch(quality.on.pull_request.paths, { dot: true });
 
-test('workflow filters include docs sources and supporting inputs', () => {
+test('native paths include docs sources and supporting inputs', () => {
   for (const file of [
     'docs-site', 'docs-site/page.mdx', 'docs-site/images/example.svg', 'docs/content/intro.mdx',
     'mintlify-native/docs.json', 'patches/example.patch', 'src/components/Docs/Link/index.ts',
@@ -76,11 +68,11 @@ test('workflow filters include docs sources and supporting inputs', () => {
     'src/utils/legacy-api-redirect.mjs', 'src/pages/api/service.tsx', 'src/pages/community.mdx',
     'src/features/LandingPage/QuickStartSection/index.tsx', 'src/theme/Root.tsx',
   ]) {
-    for (const status of ['added', 'modified', 'deleted']) assert.equal(matchesDocs(file, status), true, file);
+    assert.equal(matchesDocs(file), true, file);
   }
 });
 
-test('workflow filters exclude unrelated website, blog, asset, and maintenance changes', () => {
+test('native paths exclude unrelated website, blog, asset, and maintenance changes', () => {
   for (const file of [
     'src/components/AdoptersCarousel/index.tsx', 'static/img/adopters/supabase.svg',
     'src/features/LandingPage/HeroSection/index.tsx', 'src/css/custom.css', 'src/components/icons/index.ts',
@@ -88,47 +80,60 @@ test('workflow filters exclude unrelated website, blog, asset, and maintenance c
     '.github/dependabot.yaml', '.github/workflows/scorecard.yml', '.github/workflows/deploy.yml',
     'eslint.config.js', 'scripts/workflow-syntax.test.mjs', 'scripts/repository-maintenance.mjs',
     'docs-site-backup/example.mdx', 'scripts-backup/update.mjs',
+    'src/pages/index.tsx', 'src/pages/project.mdx', 'blog/ignore-duplicate-writes-announcement.md',
   ]) {
-    for (const status of ['added', 'modified', 'deleted']) assert.equal(matchesDocs(file, status), false, file);
+    assert.equal(matchesDocs(file), false, file);
   }
 });
 
-test('required website files trigger docs checks for deletions and moves, not ordinary edits', () => {
+test('docs quality uses native paths with an unrestricted manual trigger', () => {
+  assert.deepEqual(quality.on.pull_request.branches, ['main', 'docs-next']);
+  assert.deepEqual(quality.on.push.paths, quality.on.pull_request.paths);
+  assert.ok(Object.hasOwn(quality.on, 'workflow_dispatch'));
+  const job = quality.jobs['mintlify-quality'];
+  assert.equal(job.if, undefined);
+  assert.equal(job.steps.find((step) => step.run === 'npm run check:mintlify').if, undefined);
+  assert.ok(job.steps.every((step) => !step.uses?.startsWith('dorny/paths-filter@')));
+});
+
+test('every PR validates syntax and required-file preservation even when docs quality is skipped', async () => {
+  const deployment = parseYaml(await readFile(new URL('../.github/workflows/test-deploy.yml', import.meta.url), 'utf8'));
+  assert.deepEqual(deployment.on.pull_request.branches, ['main', 'docs-next']);
+  assert.equal(deployment.on.pull_request.paths, undefined);
+  assert.equal(deployment.on.pull_request['paths-ignore'], undefined);
+  const job = deployment.jobs['test-deploy'];
+  assert.equal(job.name, 'Test deployment');
+  const validation = job.steps.findIndex((step) => step.run?.includes('npm run test:workflows'));
+  const build = job.steps.findIndex((step) => step.run === 'npm run build');
+  assert.ok(validation > 0 && validation < build);
+  assert.equal(job.steps[validation].if, undefined);
+  assert.equal(job.steps[validation]['continue-on-error'], undefined);
+  assert.match(job.steps[validation].run,
+    /node --test --test-name-pattern='repository retains' scripts\/site-boundary\.test\.mjs/);
+});
+
+test('the preservation contract rejects deleted or moved required website files', () => {
+  const env = { ...process.env };
+  // Run a fresh test runner, not another instance of the parent test worker.
+  delete env.NODE_TEST_CONTEXT;
   for (const file of [
     'src/pages/index.tsx', 'src/pages/project.mdx', 'blog/ignore-duplicate-writes-announcement.md',
   ]) {
-    assert.equal(matchesDocs(file, 'added'), false, file);
-    assert.equal(matchesDocs(file, 'modified'), false, file);
-    assert.equal(matchesDocs(file, 'deleted'), true, file);
-    const moved = [{ file, status: 'deleted' }, { file: `archive/${file}`, status: 'added' }];
-    assert.equal(matchesDocs(moved[1].file, moved[1].status), false);
-    assert.ok(moved.some((entry) => matchesDocs(entry.file, entry.status)), `Move-out must count: ${file}`);
+    const missing = new URL(`../${file}`, import.meta.url).href;
+    const mock = `import fs from 'node:fs';
+      import { syncBuiltinESMExports } from 'node:module';
+      const exists = fs.existsSync;
+      fs.existsSync = (path) => String(path) === ${JSON.stringify(missing)} ? false : exists(path);
+      syncBuiltinESMExports();`;
+    const result = spawnSync(process.execPath, [
+      '--import', `data:text/javascript,${encodeURIComponent(mock)}`,
+      '--test', '--test-name-pattern=repository retains',
+      fileURLToPath(new URL('./site-boundary.test.mjs', import.meta.url)),
+    ], { env, encoding: 'utf8', timeout: 20_000 });
+    assert.ifError(result.error);
+    assert.notEqual(result.status, 0, result.stdout + result.stderr);
+    assert.ok((result.stdout + result.stderr).includes(`${file} must remain available`), result.stdout + result.stderr);
   }
-});
-
-test('CI always validates syntax and keeps required status while gating docs checks', () => {
-  assert.deepEqual(quality.on.pull_request.branches, ['main', 'docs-next']);
-  assert.ok(Object.hasOwn(quality.on, 'workflow_dispatch'));
-  for (const event of [quality.on.pull_request, quality.on.push]) {
-    assert.equal(event.paths, undefined);
-    assert.equal(event['paths-ignore'], undefined);
-  }
-  assert.equal(quality.permissions['pull-requests'], 'read');
-  assert.equal(job.name, 'Check repository-owned Mintlify content');
-  assert.match(changes.uses, /^dorny\/paths-filter@[a-f0-9]{40}$/);
-  assert.equal(changes.with.base, '${{ github.event.before }}');
-  const syntax = job.steps.findIndex((step) => step.run === 'npm run test:workflows');
-  const detection = job.steps.indexOf(changes);
-  const full = job.steps.findIndex((step) => step.run === 'npm run check:mintlify');
-  assert.ok(syntax > 0 && syntax < detection && detection < full);
-  assert.equal(job.steps[syntax].if, undefined);
-  assert.equal(job.steps[syntax]['continue-on-error'], undefined);
-  assert.equal(changes.if,
-    "github.event_name != 'workflow_dispatch' && github.event.before != '0000000000000000000000000000000000000000' && (github.event_name != 'pull_request' || github.event.pull_request.changed_files < 3000)");
-  assert.equal(job.steps[full].if,
-    "github.event_name == 'workflow_dispatch' || github.event.before == '0000000000000000000000000000000000000000' || github.event.pull_request.changed_files >= 3000 || steps.changes.outputs.docs == 'true'");
-  assert.ok(job.steps.some((step) => step.if === "steps.changes.outputs.docs == 'false'"
-    && step.run.includes('GITHUB_STEP_SUMMARY')));
 });
 
 const directory = new URL('../.github/workflows/', import.meta.url);

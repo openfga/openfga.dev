@@ -17,27 +17,22 @@ workflows use it. `npm run check:mintlify`, run by the
 [quality workflow](../.github/workflows/mintlify-quality.yml), includes the root
 regression suites and freshness checks; it does not build or deploy edge infrastructure.
 
-The quality workflow always runs `npm run test:workflows` on PRs to `main` or
-`docs-next` and pushes to `docs-next`. This parses every workflow YAML file and
-checks Bash/sh run-block syntax without executing the scripts. Other declared
-shells are explicitly reported as skipped for shell validation; their YAML is
-still checked. This is syntax validation, not a replacement for GitHub's workflow
-schema, expression validation, or runtime checks.
+The quality workflow uses GitHub's native `paths` filters for PRs and pushes.
+Only docs sources and supporting tooling, fixtures, dependencies, configuration,
+and navigation/boundary inputs trigger it. The shared path list lives directly
+in the workflow; update it and its regression cases when adding docs inputs.
+Manual runs remain unfiltered. GitHub's native diff limits apply; use a manual
+run for unusually large changes. Keep this path-filtered status optional, since
+GitHub leaves skipped workflow checks pending.
 
-The quality workflow uses a pinned `dorny/paths-filter` action and a step-level
-`if` to run docs-content checks only for docs sources and supporting tooling,
-fixtures, dependencies, configuration, and navigation/boundary inputs. The
-filters live directly in the workflow; add new docs inputs there and in the
-filter regression cases. Unrelated changes get an explicit skip summary while
-the existing required check completes, without event-level path filters.
-
-Deleting or moving the required Home/Project pages or the preserved duplicate-write
-announcement triggers the boundary checks; ordinary content edits still skip.
-Both sides of renames count. PRs use GitHub's changed-file list; pushes compare
-the complete before/after range. Manual runs, new-branch pushes, and PRs with
-3,000 or more changed files run the full suite (GitHub's PR-files API is capped
-at 3,000 files). Nightly/manual source updaters remain independent of repository
-file changes, since upstream releases can change without a docs commit.
+The always-running [deployment workflow](../.github/workflows/test-deploy.yml)
+runs `npm run test:workflows` on every PR to `main` or `docs-next`. This parses all
+workflow YAML and checks Bash/sh syntax without executing the scripts; other
+declared shells are explicitly skipped for shell validation, not YAML validation.
+It also runs the existing file-preservation contract, so deleting or moving
+required website files cannot bypass the check when docs quality is skipped.
+Ordinary website content edits do not trigger the full docs suite.
+Nightly/manual source updaters remain unchanged.
 
 | Files | Role and root commands |
 | --- | --- |
@@ -147,7 +142,7 @@ It never approves or auto-merges PRs, and never force-pushes outside its reserve
 ## Regression tests
 
 All root `*.test.mjs` files remain wired into package commands:
-- `npm run test:workflows`: all workflow YAML/Bash syntax, declared docs-path filters, required-file deletion/move rules, and CI gates.
+- `npm run test:workflows`: all workflow YAML/Bash syntax, native docs-path filters, and unconditional PR syntax/preservation gates.
 - `npm run test:site-boundary`: agent content, site boundary, sitemap, and legacy API routes.
 - `npm run test:config-page`: configuration generation, including preservation/error cases.
 - `npm run test:update-api-samples`: offline source updates, no-change/incompatibility/transport handling, no partial incompatible writes, issue deduplication, and workflow gates.
