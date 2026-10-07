@@ -27,5 +27,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate workflows and preserved site files
+        run: |
+          npm run test:workflows
+          node --test --test-name-pattern='repository retains' scripts/site-boundary.test.mjs
+
       - name: Test build website
         run: npm run build
