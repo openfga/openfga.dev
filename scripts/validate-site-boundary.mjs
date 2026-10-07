@@ -5,7 +5,7 @@ import { loadCanonical } from '../docs-site/scripts/api-code-samples.mjs';
 import { normalizeBasePath, readAttribute, siteOrigin } from './agent-content.mjs';
 import { apiRoutesFromSchema, inspectNativePage, validateNativeLink } from './site-boundary.mjs';
 import { nativeSitemapRoutes, sitemapFiles, validateCompositeSitemap } from './site-sitemap.mjs';
-import { publicDocsRoute } from './native-routes.mjs';
+import { publicDocsRoute, unmountedDocRoutes } from './native-routes.mjs';
 import { createLegacyApiRoutes } from './generate-legacy-api-routes.mjs';
 
 const nativeDirectory = path.resolve('docs-site');
@@ -64,6 +64,15 @@ for (const file of compatibilityAliases) {
   const html = await fs.readFile(path.join(buildDirectory, file), 'utf8');
   const canonical = (html.match(/<link\b[^>]*>/gi) ?? []).find((tag) => readAttribute(tag, 'rel') === 'canonical');
   assert.equal(readAttribute(canonical ?? '', 'href'), `${basePath}/api/service`, 'HTML alias must lead to the compatibility page');
+}
+for (const route of unmountedDocRoutes(config)) {
+  const file = [`${route.slice(1)}.html`, `${route.slice(1)}/index.html`].find((candidate) => files.includes(candidate));
+  assert.ok(file, `Missing Docusaurus redirect for unmounted docs route: ${route}`);
+  const html = await fs.readFile(path.join(buildDirectory, file), 'utf8');
+  const canonical = (html.match(/<link\b[^>]*>/gi) ?? []).find((tag) => readAttribute(tag, 'rel') === 'canonical');
+  assert.equal(readAttribute(canonical ?? '', 'href'), `${siteOrigin}${publicDocsRoute(route)}`,
+    `Unmounted docs route must redirect to its /docs page: ${file}`);
+  assert.match(html, /window\.location\.search \+ window\.location\.hash/, 'Docs aliases must preserve query and fragment');
 }
 const compatibilityHtml = await fs.readFile(path.join(buildDirectory, compatibilityFiles[0]), 'utf8');
 assert.match(compatibilityHtml, /data-legacy-api-compatibility/);

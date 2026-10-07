@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 import { apiRoutesFromSchema, inspectNativePage, isNativeRoute, validateNativeLink } from './site-boundary.mjs';
-import { nativeDocPages, publicDocsRoute } from './native-routes.mjs';
+import { nativeDocPages, publicDocsRoute, unmountedDocRoutes } from './native-routes.mjs';
 import { parseOriginalContent } from '../docs-site/scripts/original-content-parity.mjs';
 
 const config = {
@@ -33,6 +33,30 @@ test('source pages mount once while the website keeps every legacy API URL', () 
   }
   assert.deepEqual(validateNativeLink('/docs/api/service', options), { api: '/docs/api/service/stores/list-all-stores' });
   assert.deepEqual(validateNativeLink('/api/service/stores/list-all-stores', options), { api: '/docs/api/service/stores/list-all-stores' });
+});
+test('documentation pages requested without the /docs mount redirect without claiming website routes', () => {
+  const native = JSON.parse(readFileSync(new URL('../docs-site/docs.json', import.meta.url), 'utf8'));
+  const routes = unmountedDocRoutes(native);
+  for (const page of nativeDocPages(native)) assert.ok(routes.includes(`/${page}`), page);
+  for (const route of ['/getting-started/setup-openfga/configure-openfga', '/modeling/agents/mcp-authorization',
+    '/modeling', '/modeling/agents', '/learn', '/use-cases']) {
+    assert.ok(routes.includes(route), route);
+  }
+  for (const route of routes) {
+    assert.ok(!isNativeRoute(route), route);
+    assert.doesNotMatch(route, /^\/(?:$|api(?:-reference)?(?:\/|$)|project|community|blog)(?:\/|$)/, route);
+    assert.equal(publicDocsRoute(route), `/docs${route}`);
+  }
+  assert.deepEqual(unmountedDocRoutes({
+    navigation: { anchors: [{ anchor: 'Docs', pages: ['fga', { group: 'Modeling', pages: ['modeling/overview'] }] }] },
+    redirects: [
+      { source: '/', destination: '/fga' },
+      { source: '/community', destination: 'https://openfga.dev/community' },
+      { source: '/api', destination: '/api/service' },
+      { source: '/modeling', destination: '/modeling/overview' },
+      { source: '/modeling/:slug*', destination: '/modeling/overview' },
+    ],
+  }), ['/fga', '/modeling', '/modeling/overview']);
 });
 test('ownership matches complete path segments', () => {
   assert.ok(isNativeRoute('/docs') && isNativeRoute('/docs/fga') && isNativeRoute('/docs/api/service/stores'));
