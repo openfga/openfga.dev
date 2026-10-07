@@ -4,6 +4,7 @@
 import { themes } from "prism-react-renderer";
 import * as path from "path";
 import cleanAgentMarkdown from './scripts/clean-agent-markdown.mjs';
+import { publicDocsRoute, unmountedDocRoutes } from './scripts/native-routes.mjs';
 import { readFileSync } from 'node:fs';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -15,6 +16,11 @@ const basePath = baseUrl === '/' ? '' : baseUrl.slice(0, -1);
 const agentRoute = (route) => `${basePath}${route}`;
 const legacyApiRoutes = JSON.parse(readFileSync(new URL('./src/data/legacy-api-routes.json', import.meta.url), 'utf8'));
 const apiRedirects = [...new Set(Object.values(legacyApiRoutes).flatMap((operations) => Object.values(operations)))];
+const nativeDocsConfig = JSON.parse(readFileSync(new URL('./docs-site/docs.json', import.meta.url), 'utf8'));
+const unmountedDocRedirects = unmountedDocRoutes(nativeDocsConfig).map((route) => ({
+  from: route,
+  to: `https://openfga.dev${publicDocsRoute(route)}`,
+}));
 
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').Config} */
@@ -187,6 +193,7 @@ import dev.openfga.sdk.api.configuration.ClientConfiguration;`,
             from: [route.replace(/^\/docs/, ''), route.replace(/^\/docs\/api\/service/, '/api-reference')].map(decodeURIComponent),
             to: `https://openfga.dev${decodeURIComponent(route)}`,
           })),
+          ...unmountedDocRedirects,
         ],
       }),
     ],

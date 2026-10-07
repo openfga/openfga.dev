@@ -14,7 +14,7 @@
 | Read-only API reference | [`docs-site/docs.json`](docs-site/docs.json) and the upstream OpenAPI schema | Mintlify at `/docs/api/service/...` |
 | Home, Project, Community, and Blog | `src/`, `blog/`, and `static/` | Docusaurus on GitHub Pages |
 
-The Mintlify URLs above describe the planned `/docs` deployment. Legacy `/api/service` URLs and Swagger bookmarks remain supported through the website compatibility page and redirects.
+The Mintlify URLs above describe the planned `/docs` deployment. Legacy `/api/service` URLs and Swagger bookmarks remain supported through the website compatibility page and redirects. Documentation paths requested without `/docs` (for example, `/modeling/overview`) redirect to their `/docs/...` pages.
 
 See the [Mintlify contributor guide](docs-site/README.md) for authoring, API samples, media, and migration requirements. The [maintenance scripts guide](scripts/README.md) covers generated files, sitemaps, LLM resources, and upstream updates.
 
