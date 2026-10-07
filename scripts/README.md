@@ -23,7 +23,7 @@ regression suites and freshness checks; it does not build or deploy edge infrast
 | `clean-agent-markdown.mjs` | Docusaurus config imports this Markdown-export plugin to remove framework markup; it runs within the website build, not as a standalone command. |
 | `prepare-site-sitemap.mjs`, `site-sitemap.mjs` | Build a sitemap index with separate website/native children from the actual page inventory and digest-checked live API schema: `npm run build:site-sitemap`. |
 | `validate-site-boundary.mjs`, `site-boundary.mjs` | Check cross-site links/anchors, redirects, sitemaps, retired-route ownership, and local search removal; export native external links for CI's Lychee check: `npm run check:site-boundary`. |
-| `native-routes.mjs` | Map source-root page IDs to public `/docs/...` routes without repeating the deployment mount. |
+| `native-routes.mjs` | Map source-root page IDs to public `/docs/...` routes without repeating the deployment mount. List the unmounted page/section routes (such as `/modeling/overview`) that the website redirects to `/docs/...`. |
 
 These commands require preceding build outputs; normally run the complete `npm run build`.
 Generated files under `build/` include
@@ -45,6 +45,14 @@ already-mounted `/docs/...` URLs. Docusaurus generates legacy aliases from
 API summary changes. Add old-to-new source-root redirects in `docs-site/docs.json`,
 not a separate Cloudflare redirect table. Browser fragments are
 resolved by `src/pages/api/service.tsx`; they are not visible to an HTTP redirect.
+
+Mintlify's rendered pages expose source-root paths such as
+`/getting-started/overview` (for example, in its client navigation payload), and
+crawlers request them on the website origin. Docusaurus therefore emits a redirect
+page from every Docs-navigation page and `docs.json` section redirect source to the
+same path under `/docs`, using `unmountedDocRoutes` in `native-routes.mjs`. These
+aliases follow navigation automatically; `npm run check:site-boundary` verifies each
+one exists and reaches a real `/docs` page.
 
 ## Explicit updates to committed generated content
 
