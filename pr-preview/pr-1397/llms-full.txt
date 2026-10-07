@@ -1,0 +1,296 @@
+# OpenFGA
+
+> OpenFGA is a CNCF open source authorization system for fine-grained, relationship-based access control.
+
+Use product documentation for current behavior and the OpenAPI specification for exact HTTP request and response shapes.
+
+## Start Here
+
+- [Introduction to OpenFGA](https://openfga.dev/docs/fga.md)
+- [Getting Started](https://openfga.dev/docs/getting-started.md)
+- [Set Up OpenFGA](https://openfga.dev/docs/getting-started/setup-openfga/overview.md)
+- [Get Started with Modeling](https://openfga.dev/docs/modeling/getting-started.md)
+
+## FAQs and Concepts
+
+- [Authorization Concepts](https://openfga.dev/docs/authorization-concepts.md)
+- [OpenFGA Concepts](https://openfga.dev/docs/concepts.md)
+- [Fine-Grained Authorization](https://openfga.dev/docs/learn/fine-grained-authorization.md)
+- [Relationship-Based Access Control](https://openfga.dev/docs/learn/rebac.md)
+- [RBAC vs. ReBAC](https://openfga.dev/docs/learn/rbac-vs-rebac.md)
+- [ABAC vs. ReBAC](https://openfga.dev/docs/learn/abac-vs-rebac.md)
+- [Policy Engines](https://openfga.dev/docs/learn/policy-engine.md)
+- [Zanzibar](https://openfga.dev/docs/learn/zanzibar.md)
+
+## API
+
+- [OpenFGA API reference](https://openfga.dev/docs/api/service)
+- [OpenFGA API specification](https://raw.githubusercontent.com/openfga/api/refs/heads/main/docs/openapiv3/apidocs.openapi.json)
+- [Relationship Queries](https://openfga.dev/docs/interacting/relationship-queries.md)
+- [Install SDK Client](https://openfga.dev/docs/getting-started/install-sdk.md)
+- [OpenFGA CLI](https://openfga.dev/docs/getting-started/cli.md)
+
+## Documentation Indexes
+
+- [Complete documentation index](https://openfga.dev/docs/llms.txt)
+- [Complete documentation bundle](https://openfga.dev/docs/llms-full.txt)
+
+## Website
+
+- [OpenFGA homepage](https://openfga.dev/pr-preview/pr-1397/index.md)
+- [OpenFGA Project](https://openfga.dev/pr-preview/pr-1397/project.md)
+- [OpenFGA Community](https://openfga.dev/pr-preview/pr-1397/community.md)
+- [OpenFGA Blog](https://openfga.dev/pr-preview/pr-1397/blog)
+- [Website content bundle](https://openfga.dev/pr-preview/pr-1397/llms-full.txt)
+
+The website bundle contains Home, Project, and Community content, not a second copy of the product documentation.
+
+## Optional
+
+- [OpenFGA source repository](https://github.com/openfga/openfga)
+- [OpenFGA SDK repositories](https://github.com/orgs/openfga/repositories?q=topic%3Asdk)
+
+# Full Website Content
+
+# OpenFGA Community
+
+## Slack (CNCF Community)
+
+The OpenFGA community has a channel in the [CNCF](https://cncf.io) Slack.
+
+If you don't have access to the CNCF Slack you can request an invitation [here](https://slack.cncf.io). You can join the community in the [#openfga](https://cloud-native.slack.com/archives/C06G1NNH47N) channel.
+
+## GitHub Discussions
+
+You can also use [GitHub discussions](https://github.com/orgs/openfga/discussions) to ask questions and submit product ideas.
+
+## X (formerly Twitter)
+
+Follow us on X to get the latest updates on all things OpenFGA. [@OpenFGA](https://twitter.com/OpenFGA).
+
+## YouTube
+
+Subscribe to [the OpenFGA YouTube Channel](https://www.youtube.com/@OpenFGA) to see our latest videos and recordings.
+
+## LinkedIn
+
+Follow us on [LinkedIn](https://www.linkedin.com/company/openfga/) for the latest updates, community highlights, and insights into fine-grained authorization.
+
+## Mastodon
+
+For the Fediverse fans among you, follow us on Mastodon at [@openfga@mastodon.social](https://mastodon.social/@openfga)!
+
+## Monthly Community Meetings
+
+We hold a monthly community meeting on the second Thursday of every month @ [11am Eastern Time (US)](https://www.worldtimebuddy.com/?qm=1\&lid=12,100,5,6,8\&h=5\&sln=11-12\&hf=1).
+
+- [Calendar](https://zoom-lfx.platform.linuxfoundation.org/meetings/openfga)
+- [Agenda](https://docs.google.com/document/d/1Y6rbD0xpGLVl-7CmeMgxi56_a0ibIQ_RojvWBbT9MZk/edit#)
+- [Zoom Link](https://zoom-lfx.platform.linuxfoundation.org/meetings/openfga)
+- [Recordings of Previous Meetings](https://www.youtube.com/playlist?list=PLUR5l-oTFZqUneyHz-h4WzaJssgxBXdxB)
+
+Read more details [here](https://github.com/openfga/community/blob/main/community-meetings.md)
+
+
+---
+
+# OpenFGA Project
+
+OpenFGA is an open source, [CNCF Incubating project](https://www.cncf.io/projects/openfga/) for building fine-grained authorization systems.
+
+## Why OpenFGA exists
+
+Modern applications need permissions that can express relationships between users and resources, adapt as products evolve, and remain consistent across services. OpenFGA provides a centralized authorization system with an easy-to-read modeling language and consistent APIs, so application teams do not have to build and maintain a separate permissions system for every product.
+
+OpenFGA was inspired by [Google's Zanzibar paper](https://research.google/pubs/zanzibar-googles-consistent-global-authorization-system/). It was originally developed by Auth0/Okta, open sourced in June 2022, and donated to the Cloud Native Computing Foundation. OpenFGA joined CNCF as a Sandbox project in 2022 and moved to the Incubating maturity level on October 28, 2025. Read more about the project's history in the [Incubation announcement](https://openfga.dev/pr-preview/pr-1397/pr-preview/pr-1397/blog/incubation-announcement).
+
+## Where project work happens
+
+| Area                      | Repository or resource                                               | What you will find there                                                                |
+| ------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Server                    | [`openfga/openfga`](https://github.com/openfga/openfga)              | The OpenFGA server, release artifacts, runtime issues, and feature development.         |
+| API                       | [`openfga/api`](https://github.com/openfga/api)                      | The API definition shared by the server, SDKs, and other tooling.                       |
+| Website and documentation | [`openfga/openfga.dev`](https://github.com/openfga/openfga.dev)      | This website, guides, modeling examples, and API documentation.                         |
+| Design proposals          | [`openfga/rfcs`](https://github.com/openfga/rfcs)                    | Requests for Comments for significant changes to OpenFGA.                               |
+| Community and governance  | [`openfga/community`](https://github.com/openfga/community)          | Governance, maintainers, adopters, community projects, and meeting information.         |
+| Roadmap                   | [OpenFGA roadmap](https://github.com/orgs/openfga/projects/1)        | Planned and in-progress project work.                                                   |
+| SDKs and tools            | [OpenFGA repositories](https://github.com/orgs/openfga/repositories) | Official SDKs, the CLI, IDE extensions, the Terraform provider, and other integrations. |
+| Example models            | [`openfga/sample-stores`](https://github.com/openfga/sample-stores)  | Sample authorization models and a list of models used by open source projects.          |
+
+## Get OpenFGA
+
+Follow the [OpenFGA setup guide](https://openfga.dev/docs/getting-started/setup-openfga/overview) to run the server with Docker, Docker Compose, or Kubernetes. You can also download a binary from the [OpenFGA releases](https://github.com/openfga/openfga/releases) page.
+
+## Ask questions and give feedback
+
+Use the kapa.ai-powered **Ask AI** widget in the site navigation to ask questions about OpenFGA. For AI-assisted implementation, install the [OpenFGA Best Practices Skill](https://github.com/openfga/agent-skills) or connect an MCP-compatible client to the [OpenFGA kapa.ai MCP server](https://openfga.mcp.kapa.ai). AI-generated answers may be inaccurate, so verify them against the project documentation and code.
+
+- Ask usage questions and suggest product ideas in [GitHub Discussions](https://github.com/orgs/openfga/discussions).
+- Join the [`#openfga` channel in CNCF Slack](https://openfga.dev/community) to talk with users and maintainers or attend a community meeting.
+- Report server bugs in the [`openfga/openfga` issue tracker](https://github.com/openfga/openfga/issues), and report website or documentation problems in the [`openfga/openfga.dev` issue tracker](https://github.com/openfga/openfga.dev/issues).
+
+When reporting a problem, include a minimal example or [FGA Playground](https://play.fga.dev/) link, the result you expected, the result you observed, and the steps you already tried.
+
+## Contribute
+
+Contributions of code, documentation, issue triage, RFC feedback, examples, and community support are all welcome.
+
+1. Read the [contribution guide](https://github.com/openfga/.github/blob/main/CONTRIBUTING.md) and [Code of Conduct](https://github.com/openfga/.github/blob/main/CODE_OF_CONDUCT.md).
+2. Look for an issue in the relevant repository, including issues labeled [`good first issue`](https://github.com/search?q=org%3Aopenfga+is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22\&type=issues).
+3. For a substantial design change, start a discussion with the maintainers and review the [RFC process](https://github.com/openfga/rfcs).
+4. Fork the affected repository, make and test the change, and open a pull request.
+
+## Report a security vulnerability
+
+Do not disclose security vulnerabilities in a public issue or discussion. Email <security@openfga.dev> and review the [OpenFGA security policy](https://github.com/openfga/.github/blob/main/SECURITY.md) for scope and reporting guidance. The project strives to reply within five business days.
+
+## Thank you
+
+OpenFGA was created by the Auth0 FGA team with support from Auth0 Labs and Auth0's Office of the CTO, and its development continued at Okta before the project was donated to CNCF. We are grateful to the people who shaped the project there, to the CNCF community, and to every maintainer, contributor, early design partner, and adopter who has shared code and feedback.
+
+The [Incubation announcement](https://openfga.dev/pr-preview/pr-1397/pr-preview/pr-1397/blog/incubation-announcement#thank-you) recognizes many of the people and organizations that helped OpenFGA reach this milestone. The community repository maintains the broader list of [OpenFGA adopters](https://github.com/openfga/community/blob/main/ADOPTERS.md).
+
+
+---
+
+## Quick Start
+
+Trying OpenFGA is as easy as...
+
+Run the following snippet in a terminal in an environment with Docker installed:
+
+```
+docker pull openfga/openfga && \
+docker run -p 8080:8080 -p 8081:8081 \
+-p 3000:3000 openfga/openfga run
+```
+
+OpenFGA will be running at localhost:8080 on your machine. Learn about other options and next steps in the project [README.md](https://github.com/openfga/openfga) or [Getting Started](https://openfga.dev/docs/getting-started) guides.
+
+Learn how to use sample authorization models and create your own with the project’s extensive [documentation](https://openfga.dev/docs/modeling).
+
+[![](/pr-preview/pr-1397/assets/images/terminal-beeca3a53258f5076350c9fe9924d782.png)](/pr-preview/pr-1397/assets/medias/terminal-6773f514460e24a9550af5e15596b3ee.webm)
+
+Adopted by teams at
+
+![Agicap logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/agicap.svg)
+
+![Appscode logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/appscode.svg)
+
+![Auth0 logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/auth0.svg)
+
+![Canonical logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/canonical.svg)
+
+![Distyl logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/distyl.svg)
+
+![Docker logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/docker.svg)
+
+![EarthScope logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/earthscope.svg)
+
+![Eternal logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/eternal.svg)
+
+![Flex logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/flex.svg)
+
+![Grafana logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/grafana.svg)
+
+![Headspace logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/headspace.svg)
+
+![Linux Foundation logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/linuxfoundation.svg)
+
+![Okta logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/okta.svg)
+
+![OpenObserve logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/openobserve.svg)
+
+![PlatformMesh logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/platformmesh.svg)
+
+![ReadAI logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/readai.svg)
+
+![SigNoz logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/signoz.svg)
+
+![Skyral logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/skyral.svg)
+
+![Sourcegraph logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/sourcegraph.svg)
+
+![Supabase logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/supabase.svg)
+
+![Zuplo logo - OpenFGA Adopter](/pr-preview/pr-1397/img/adopters/zuplo.svg)
+
+![](/pr-preview/pr-1397/img/adopters/agicap.svg)
+
+![](/pr-preview/pr-1397/img/adopters/appscode.svg)
+
+![](/pr-preview/pr-1397/img/adopters/auth0.svg)
+
+![](/pr-preview/pr-1397/img/adopters/canonical.svg)
+
+![](/pr-preview/pr-1397/img/adopters/distyl.svg)
+
+![](/pr-preview/pr-1397/img/adopters/docker.svg)
+
+![](/pr-preview/pr-1397/img/adopters/earthscope.svg)
+
+![](/pr-preview/pr-1397/img/adopters/eternal.svg)
+
+![](/pr-preview/pr-1397/img/adopters/flex.svg)
+
+![](/pr-preview/pr-1397/img/adopters/grafana.svg)
+
+![](/pr-preview/pr-1397/img/adopters/headspace.svg)
+
+![](/pr-preview/pr-1397/img/adopters/linuxfoundation.svg)
+
+![](/pr-preview/pr-1397/img/adopters/okta.svg)
+
+![](/pr-preview/pr-1397/img/adopters/openobserve.svg)
+
+![](/pr-preview/pr-1397/img/adopters/platformmesh.svg)
+
+![](/pr-preview/pr-1397/img/adopters/readai.svg)
+
+![](/pr-preview/pr-1397/img/adopters/signoz.svg)
+
+![](/pr-preview/pr-1397/img/adopters/skyral.svg)
+
+![](/pr-preview/pr-1397/img/adopters/sourcegraph.svg)
+
+![](/pr-preview/pr-1397/img/adopters/supabase.svg)
+
+![](/pr-preview/pr-1397/img/adopters/zuplo.svg)
+
+## Features
+
+### Model any authorization system
+
+OpenFGA takes the best ideas from Google's Zanzibar paper for Relationship-Based Access Control, and also solves problems for Role-based Access Control and Attribute-Based Access Control use cases. The modeling language is powerful enough for engineers, but friendly enough for other stakeholders on your team as well.
+
+### Works with your code
+
+SDKs for the most popular languages have already been written, making it easy to integrate and grow alongside your applications. OpenFGA also makes it trivial to contribute new SDKs to support your project's language.
+
+### Blazing fast
+
+OpenFGA is designed to answer authorization check calls in milliseconds, which lets it scale with projects of any size. It works just as well for small startups and hobby programmers building single applications as it does for enterprise companies building platforms on a global scale.
+
+### Built in the open
+
+Transparency and peer review are important for building secure, stable, and sustainable software. OpenFGA's [RFC process](https://github.com/openfga/rfcs/blob/main/README.md) and [governance model](https://github.com/openfga/.github/blob/main/CONTRIBUTING.md) invite anyone to become a contributor, and collaboratively develop the [public roadmap](https://github.com/orgs/openfga/projects/1). Come create the next standard for authorization with us!
+
+### CNCF Incubation Project
+
+We are a [Cloud Native Computing Foundation](https://www.cncf.io/) incubating project.
+
+### Get Involved
+
+Join OpenFGA's active [Slack and GitHub community](https://openfga.dev/community), check out existing [RFCs](https://github.com/openfga/rfcs) to understand where the project is headed, and learn more about how to take part by reading our [CONTRIBUTING.md](https://github.com/openfga/.github/blob/main/CONTRIBUTING.md).
+
+[Learn how to get involved →](https://github.com/openfga/.github/blob/main/CONTRIBUTING.md#contribution-process)
+
+## Since you're here, you might be interested in some ReBAC resources:
+
+- [Zanzibar Academy →](https://zanzibar.academy/)
+- [Auth0 FGA Playground →](https://play.fga.dev/)
+- [Podcast - Authorization in Software →](https://podcastindex.org/podcast/4368675)
+
+
+---
+
