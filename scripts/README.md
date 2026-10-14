@@ -28,11 +28,9 @@ run for unusually large changes. Keep this path-filtered status optional, since
 GitHub leaves skipped workflow checks pending.
 
 The always-running [deployment workflow](../.github/workflows/test-deploy.yml)
-runs `npm run test:workflows` on every PR to `main` or `docs-next`. This parses all
-workflow YAML and checks Bash/sh syntax without executing the scripts; other
-declared shells are explicitly skipped for shell validation, not YAML validation.
-It also runs the existing file-preservation contract, so deleting or moving
-required website files cannot bypass the check when docs quality is skipped.
+runs the existing file-preservation test from `site-boundary.test.mjs` on every
+PR to `main` or `docs-next`, so deleting or moving required website files cannot
+bypass the check when docs quality is skipped.
 Blog and static-asset-only changes do not trigger the full docs suite.
 Nightly/manual source updaters remain unchanged.
 
@@ -151,8 +149,7 @@ It never approves or auto-merges PRs, and never force-pushes outside its reserve
 
 ## Regression tests
 
-All root `*.test.mjs` files remain wired into package commands:
-- `npm run test:workflows`: all workflow YAML/Bash syntax, native docs-path filters, and unconditional PR syntax/preservation gates.
+All nine `*.test.mjs` files remain wired into package commands:
 - `npm run test:site-boundary`: agent content, site boundary, sitemap, and legacy API routes.
 - `npm run test:config-page`: configuration generation, including preservation/error cases.
 - `npm run test:update-api-samples`: offline source updates, no-change/incompatibility/transport handling, no partial incompatible writes, issue deduplication, and workflow gates.
