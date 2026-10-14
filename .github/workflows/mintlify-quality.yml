@@ -5,9 +5,31 @@ on:
     branches:
       - main
       - docs-next
+    paths: &docs-paths
+      - 'docs-site'
+      - 'docs-site/**'
+      - 'docs'
+      - 'docs/**'
+      - 'mintlify-native'
+      - 'mintlify-native/**'
+      - 'patches'
+      - 'patches/**'
+      - 'tests/**'
+      - 'src/**'
+      - 'scripts/**'
+      - '.gitattributes'
+      - '.gitignore'
+      - '.prettierrc'
+      - '.prettierignore'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.json'
+      - 'docusaurus.config.js'
+      - '.github/workflows/**'
   push:
     branches:
       - docs-next
+    paths: *docs-paths
   workflow_dispatch:
 
 permissions:

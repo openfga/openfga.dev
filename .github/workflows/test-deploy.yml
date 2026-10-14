@@ -27,5 +27,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Check preserved site files
+        run: node --test --test-name-pattern='repository retains' scripts/site-boundary.test.mjs
+
       - name: Test build website
         run: npm run build

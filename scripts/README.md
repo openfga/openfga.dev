@@ -17,6 +17,23 @@ workflows use it. `npm run check:mintlify`, run by the
 [quality workflow](../.github/workflows/mintlify-quality.yml), includes the root
 regression suites and freshness checks; it does not build or deploy edge infrastructure.
 
+The quality workflow uses GitHub's native `paths` filters for PRs and pushes.
+Directory-wide patterns cover docs sources, `patches/`, `src/`, `scripts/`,
+`tests/`, and `.github/workflows/`, alongside the listed root dependencies and
+configuration. This intentionally includes non-docs edits within those directories
+so new inputs are covered without maintaining per-file lists. The shared path
+list lives directly in the workflow.
+Manual runs remain unfiltered. GitHub's native diff limits apply; use a manual
+run for unusually large changes. Keep this path-filtered status optional, since
+GitHub leaves skipped workflow checks pending.
+
+The always-running [deployment workflow](../.github/workflows/test-deploy.yml)
+runs the existing file-preservation test from `site-boundary.test.mjs` on every
+PR to `main` or `docs-next`, so deleting or moving required website files cannot
+bypass the check when docs quality is skipped.
+Blog and static-asset-only changes do not trigger the full docs suite.
+Nightly/manual source updaters remain unchanged.
+
 | Files | Role and root commands |
 | --- | --- |
 | `prepare-agent-content.mjs`, `agent-content.mjs`, `validate-agent-content.mjs` | Prepare/check the curated root LLM index, website-only bundle, and Home/Project/Community Markdown: `npm run build:agent-content`, `npm run check:agent-content`. |
