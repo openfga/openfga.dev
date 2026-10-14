@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkopenfga_dev=globalThis.webpackChunkopenfga_dev||[]).push([[1235],{8552(e){e.exports=JSON.parse('{"name":"docusaurus-plugin-content-pages","id":"default"}')}}]);
