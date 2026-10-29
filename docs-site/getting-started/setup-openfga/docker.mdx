@@ -12,9 +12,9 @@ If you want to run OpenFGA locally as a Docker container, follow these steps:
 
 1. [Install Docker](https://docs.docker.com/get-docker/) (if not already installed).
 2. Run `docker pull openfga/openfga` to get the latest docker image.
-3. Run `docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 openfga/openfga run`.
+3. Run `docker run -p 8080:8080 -p 8081:8081 openfga/openfga run`.
 
-This will start an HTTP server and gRPC server with the default configuration options. Port 8080 is used to serve the HTTP API, 8081 is used to serve the gRPC API, and 3000 is used for the [Playground](./playground).
+This will start an HTTP server and gRPC server with the default configuration options. Port 8080 is used to serve the HTTP API and 8081 is used to serve the gRPC API. The [Playground](./playground) is disabled by default.
 
 ## Using Postgres
 
@@ -44,7 +44,7 @@ docker run --rm --network=openfga openfga/openfga migrate \
 Finally, start OpenFGA:
 
 ```bash
-docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
+docker run --name openfga --network=openfga -p 8080:8080 -p 8081:8081 openfga/openfga run \
     --datastore-engine postgres \
     --datastore-uri 'postgres://postgres:password@postgres:5432/postgres?sslmode=disable'
 ```
@@ -106,8 +106,6 @@ services:
       - "8080:8080"
       # Needed for the grpc server (if used)
       - "8081:8081"
-      # Needed for the playground (Do not enable in prod!)
-      - "3000:3000"
 ```
 
 In a terminal, navigate to that directory and run:
@@ -149,7 +147,7 @@ docker run --rm --network=openfga openfga/openfga migrate \
 Finally, start OpenFGA:
 
 ```bash
-docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
+docker run --name openfga --network=openfga -p 8080:8080 -p 8081:8081 openfga/openfga run \
     --datastore-engine mysql \
     --datastore-uri 'root:secret@tcp(mysql:3306)/openfga?parseTime=true'
 ```
@@ -210,8 +208,6 @@ services:
       - "8080:8080"
       # Needed for the grpc server (if used)
       - "8081:8081"
-      # Needed for the playground (Do not enable in prod!)
-      - "3000:3000"
 ```
 
 In a terminal, navigate to that directory and run:
@@ -257,7 +253,7 @@ Finally, start OpenFGA:
 
 ```bash
 docker run --name openfga --network=openfga \
-    -p 3000:3000 -p 8080:8080 -p 8081:8081 \
+    -p 8080:8080 -p 8081:8081 \
     -v openfga:/home/nonroot \
     -u nonroot \
     openfga/openfga run \
@@ -312,8 +308,6 @@ services:
       - "8080:8080"
       # Needed for the grpc server (if used)
       - "8081:8081"
-      # Needed for the playground (Do not enable in prod!)
-      - "3000:3000"
 ```
 
 In a terminal, navigate to that directory and run:
@@ -335,7 +329,7 @@ To configure with pre-shared authentication and enabling TLS in http server with
 2. Run with the following command:
 
 ```bash
-docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
+docker run --name openfga --network=openfga -p 8080:8080 -p 8081:8081 openfga/openfga run \
     --authn-method=preshared \
     --authn-preshared-keys="key1,key2" \
     --http-tls-enabled=true \
@@ -351,7 +345,7 @@ To configure with OIDC authentication and enabling TLS in http server with Docke
 2. Run the following command
 
 ```bash
-docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:8081 openfga/openfga run \
+docker run --name openfga --network=openfga -p 8080:8080 -p 8081:8081 openfga/openfga run \
     --authn-method=oidc \
     --authn-oidc-issuer="oidc-issuer" \
     --authn-oidc-audience="oidc-audience" \
@@ -365,7 +359,7 @@ docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:80
 If you are enabling profiling, make sure you enable the corresponding port in docker. The default port is `3001`, but if you need to serve the profiler on a different port, you can do so by specifying the `--profiler-addr` flag. For example:
 
 ```bash
-docker run -p 8080:8080 -p 8081:8081 -p 3000:3000 -p 3002:3002 openfga/openfga run --profiler-enabled --profiler-addr :3002
+docker run -p 8080:8080 -p 8081:8081 -p 3002:3002 openfga/openfga run --profiler-enabled --profiler-addr :3002
 ```
 
 ## Related sections

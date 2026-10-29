@@ -4,35 +4,58 @@ description: Setting up an OpenFGA server
 sidebarTitle: "Playground"
 ---
 
-The Playground facilitates rapid development by allowing you to visualize and model your application's authorization models and manage relationship tuples with a locally running OpenFGA instance.
+<Warning>
+The built-in Playground is deprecated and will be removed in a future release. It has been disabled by default since v1.14.0. For ongoing modeling and testing, use the [OpenFGA CLI](https://github.com/openfga/cli), the [Visual Studio Code integration](https://github.com/openfga/vscode-ext), and [.fga.yaml](https://github.com/openfga/cli#run-tests-on-an-authorization-model) tests.
+</Warning>
 
-It is enabled on port 3000 by default and accessible at http://localhost:3000/playground.
+The Playground facilitates rapid development by allowing you to visualize and model your application's authorization models and manage relationship tuples with a locally running OpenFGA instance.
 
 The Playground is designed for early prototyping and learning. It has several limitations:
 
 - It works by embedding the public [Playground website](https://play.fga.dev) in an `<iframe>`. To do this securely, the public Playground configures its Content Security Policies to enable running it from `localhost`. **You can't run the Playground in a host different than `localhost`.**
-- It does not support OIDC authentication.
+- It only works when the server's authentication method is `none`.
 - It loads up to 100 tuples.
 - It does not support conditional tuples or contextual tuples.
+- Browser restrictions can prevent it from reaching your local server. See [Browser restrictions](#browser-restrictions).
 
-We have [the intention](https://github.com/openfga/roadmap/issues/7) to rewrite the Playground code and open source it, which will make it possible to overcome some of those limitations.
+## Enabling the Playground
 
-However, we recommend that for managing a production OpenFGA deployment, you use the [Visual Studio Code integration](https://github.com/openfga/vscode-ext), [OpenFGA CLI](https://github.com/openfga/cli), combined with the ability to specify a model + tuples + assertions in [.fga.yaml](https://github.com/openfga/cli#run-tests-on-an-authorization-model) files.
+To run OpenFGA with the Playground enabled, provide the `--playground-enabled` flag. The Playground is then available at http://localhost:3000/playground.
+
+```bash
+openfga run --playground-enabled
+```
+
+### Running the Playground in Docker
+
+Unless you set an address, the Playground listens on `127.0.0.1` inside the container, so it can't be reached through a published port. Use the `--playground-addr` flag to listen on all interfaces, and publish both the HTTP API port and the Playground port:
+
+```bash
+docker run -p 8080:8080 -p 3000:3000 openfga/openfga run --playground-enabled --playground-addr 0.0.0.0:3000
+```
 
 ## Running the Playground in a different port
 
-You can change the playground port using the `--playground-port` flag. For example,
+You can change the address the Playground listens on using the `--playground-addr` flag. For example,
 
 ```bash
-openfga run --playground-enabled --playground-port 3001
+openfga run --playground-enabled --playground-addr 127.0.0.1:3001
 ```
+
+The `--playground-port` flag is deprecated. Use `--playground-addr` instead.
+
+## Browser restrictions
+
+Chrome may block the embedded Playground from reaching your local OpenFGA server. The browser console shows an error like:
+
+```text
+...has been blocked by CORS policy: Permission was denied for this request to access the loopback address space
+```
+
+Despite the wording, this is not caused by the OpenFGA server's CORS configuration. Chrome's [Local Network Access](https://developer.chrome.com/blog/local-network-access) restriction blocks the `play.fga.dev` iframe from calling your local server. See [openfga/openfga#3318](https://github.com/openfga/openfga/issues/3318) for details.
+
+If your browser blocks third-party storage, the Playground can also keep returning you to the create store dialog.
 
 ## Disabling the Playground
 
-As the Playground allows performing any action in the OpenFGA server, it's not recommended to have it enabled in production deployments.
-
-To run OpenFGA with the Playground disabled, provide the `--playground-enabled=false` flag.
-
-```bash
-openfga run --playground-enabled=false
-```
+The Playground is disabled unless you provide the `--playground-enabled` flag. As it allows performing any action in the OpenFGA server, don't enable it in production deployments.
