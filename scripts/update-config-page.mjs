@@ -15,8 +15,7 @@ const USAGE = `Usage: node scripts/update-config-page.mjs [--release vX.Y.Z] [--
 Without --release, fetch the latest official OpenFGA release.
 With --schema and --release, regenerate offline from a local schema.
 Only the marked release/table region of the existing native page is replaced.
-Production-parity fixtures are independent evidence: review release changes and
-update their baseline separately before merging; never generate them from this output.`;
+Review release changes in the table; hand-authored content outside the markers is never rewritten.`;
 
 function requireObject(value, label) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {

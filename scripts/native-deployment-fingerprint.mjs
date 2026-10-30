@@ -60,7 +60,7 @@ export function checkNativeFingerprint(sources) {
   assert.equal(
     config.seo?.metatags?.[fingerprintMeta],
     expected,
-    'Native deployment fingerprint is stale; run npm run generate:mintlify-deployment and commit docs.json with the source changes',
+    'Native deployment fingerprint is stale; run npm run generate:mintlify-deployment and commit docs.json before verifying a deployment',
   );
   return expected;
 }
@@ -88,8 +88,18 @@ export async function readNativeSources(root = fileURLToPath(repositoryRoot)) {
 }
 
 export async function main(args = process.argv.slice(2)) {
-  const { values } = parseArgs({ args, options: { check: { type: 'boolean', default: false } } });
+  const { values } = parseArgs({
+    args,
+    options: {
+      check: { type: 'boolean', default: false },
+      'sources-only': { type: 'boolean', default: false },
+    },
+  });
   const sources = await readNativeSources();
+  if (values['sources-only']) {
+    console.log(`Native sources are ordinary Git files: ${sources.size} checked`);
+    return;
+  }
   if (values.check) {
     console.log(`Native deployment fingerprint: ${checkNativeFingerprint(sources)}`);
     return;

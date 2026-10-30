@@ -13,10 +13,9 @@ Most files run locally or in CI. Documentation pages load the generated browser 
 | `api-operation-*.mjs`, `api-sdk-support.mjs` | Generate operation-specific SDK/cURL requests and track the SDK methods and versions that actually support each operation. Shared with the viewer runtime. |
 | `api-code-samples.mjs`, `api-request-validation.mjs` | Fetch the canonical OpenAPI schema from `main`, verify sample freshness, validate example inputs, and generate or check the additive SDK sample overlay. |
 | `validate-*.mjs`, `navigation-structure.mjs` | Check MDX, component props, DSL blocks, navigation, API routes, and coverage of the original docs. |
-| `*.test.mjs`, `component-fixtures.mjs`, `regression-fixtures.mjs`, `original-content-parity.mjs` | Guard examples, viewer behavior, reader controls, and preservation of original titles, prose, headings, and navigation using independent fixtures. |
-| `capture-original-content.mjs` | Reproduce the original-content fixture from its pinned historical Git revision. This is a manual provenance tool, not a normal build step. |
+| `*.test.mjs`, `component-fixtures.mjs`, `regression-fixtures.mjs` | Guard examples, viewer behavior, reader controls, rendering structure, heading anchors, and historical URL coverage. They don't freeze article content. |
 
-The build, package commands, and tests use these modules. Keep the manual capture tool so reviewers can reproduce the baseline; do not run it to make changed content pass, or regenerate independent expectations from the migrated docs.
+The build, package commands, and tests use these modules.
 
 ## Source paths and hosted routes
 
@@ -24,9 +23,7 @@ Article paths are relative to `docs-site/`: use `fga.mdx` or `modeling/overview.
 
 Repository tools that need public URLs use [`native-routes.mjs`](../../scripts/native-routes.mjs) to add the mount once. Do not prepend `/docs` in source mappings, native navigation, or API generator inputs.
 
-Historical `docs/content/` paths and the old destination metadata in frozen fixtures remain provenance. `relocateNativeFixture` adapts source locations and internal-link prefixes when reading those fixtures; it does not authorize regenerating their prose, examples, or digests.
-
-The parent-child heading correction from [upstream commit `aa6248ff1`](https://github.com/openfga/openfga.dev/commit/aa6248ff1d0c85361e9b4cb58a6756f22863704b) is an explicit, page-scoped expectation in `regression-fixtures.mjs`. Its updated prose digest was verified by matching the pre-edit guide at `18c8ff991` to the frozen digest, then applying only the upstream heading edit. The parity readers require the corrected wording while retaining the old `athorization` fragment ID; fixtures and their original provenance remain unchanged. Other headings, prose, examples, and anchors still use the original contracts.
+Historical `docs/content/` paths in `historical-source-inventory.json` remain provenance for URL coverage; they are not files required in the current checkout.
 
 ## Common commands
 
@@ -37,9 +34,10 @@ The parent-child heading correction from [upstream commit `aa6248ff1`](https://g
 | Check browser helper freshness and regressions | `npm run check:mintlify-codegen` |
 | Regenerate API examples after changing inputs or generators | `npm run generate:mintlify-api-samples` |
 | Check API overlay freshness | `npm run check:mintlify-api-samples` |
-| Refresh the source marker after any `docs-site/` change | `npm run generate:mintlify-deployment` |
+| Check native sources for Git LFS pointers | `npm run check:mintlify-sources` |
+| Refresh the deployment marker before verifying a deployment (maintainers) | `npm run generate:mintlify-deployment` |
 
-API generation and API navigation checks fetch `main` and require its digest to match the last sample generation. Commit changed source, generated output, and the refreshed source marker together. Do not hand-edit generated bundles or the overlay.
+API generation and API navigation checks fetch `main` and require its digest to match the last sample generation. Commit changed source and generated output together; content changes don't need a refreshed deployment marker. Do not hand-edit generated bundles or the overlay.
 
 ## Why keep `api-samples.json`?
 
