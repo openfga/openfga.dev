@@ -1,6 +1,6 @@
 # OpenFGA documentation
 
-This directory contains the Mintlify source for 110 product documentation pages and a read-only reference for 24 API operations. The homepage, Project, Community, and Blog stay on Docusaurus.
+This directory contains the Mintlify source for the product documentation pages and a read-only reference for 24 API operations. The homepage, Project, Community, and Blog stay on Docusaurus.
 
 Target `docs-next`, the repository's default branch and Mintlify's production branch, with documentation pull requests. Deployment and GitHub Actions configuration remain separate [owner actions](#split-site-deployment).
 

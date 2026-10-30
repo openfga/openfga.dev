@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 import { apiRoutesFromSchema, inspectNativePage, isNativeRoute, validateNativeLink } from './site-boundary.mjs';
 import { nativeDocPages, publicDocsRoute, unmountedDocRoutes } from './native-routes.mjs';
+import { validateSourceCoverage } from '../docs-site/scripts/validate-source-coverage.mjs';
 
 const config = {
   redirects: [
@@ -24,7 +25,8 @@ test('source pages mount once while the website keeps every legacy API URL', () 
   assert.equal(publicDocsRoute('/'), '/docs');
   assert.equal(publicDocsRoute('fga'), '/docs/fga');
   assert.equal(publicDocsRoute('/api/service'), '/docs/api/service');
-  assert.equal(nativeDocPages(native).length, 110);
+  const { ownedPages } = validateSourceCoverage({ logger: () => {} });
+  assert.deepEqual(nativeDocPages(native).map((page) => `${page}.mdx`).sort(), ownedPages);
   for (const source of nativeDocPages(native)) assert.ok(!source.startsWith('docs/'));
   assert.throws(() => publicDocsRoute('/docs/fga'), /must not repeat/);
   for (const route of ['/api', '/api-reference', '/api/service', '/api/service/stores/list-all-stores']) {
