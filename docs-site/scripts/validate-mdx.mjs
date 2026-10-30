@@ -21,7 +21,7 @@ function diagnostic(file, line, column, kind, message) {
   return `${file}:${line}:${column} [${kind}] ${message}`;
 }
 
-function maskFrontmatter(source, file) {
+export function maskFrontmatter(source, file) {
   const opening = /^(?:\uFEFF)?---[ \t]*(?:\r\n|\n|\r|$)/.exec(source);
   if (!opening) return source;
 

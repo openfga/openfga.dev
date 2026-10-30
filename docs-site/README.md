@@ -394,7 +394,7 @@ Ordinary website builds do not run this generator. The nightly workflow produces
 
 ### Deployment fingerprint
 
-`docs.json` stores a hidden `openfga:native-source-fingerprint` marker: the SHA-256 fingerprint of the `docs-site/` source inventory and file contents, excluding its own metadata value. Deployment verification requires the same marker in every advertised docs and API page, which proves Mintlify is serving the checked-out sources.
+`docs.json` stores a hidden `openfga:docs-source-sha256` marker: the SHA-256 fingerprint of the `docs-site/` source inventory and file contents, excluding its own metadata value. Deployment verification requires the same marker in every advertised docs and API page, which proves Mintlify is serving the checked-out sources.
 
 **Content pull requests don't refresh the marker.** Pull request checks and builds run `npm run check:mintlify-sources`, which rejects Git LFS pointers under `docs-site/` in both the Git index and working tree, without comparing the marker. A locally hydrated asset still cannot hide a committed pointer.
 

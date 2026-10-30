@@ -4,6 +4,7 @@ import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { createProcessor } from '@mdx-js/mdx';
+import { maskFrontmatter } from './validate-mdx.mjs';
 
 const nativeRoot = fileURLToPath(new URL('../', import.meta.url));
 const processor = createProcessor();
@@ -12,12 +13,8 @@ function descendants(node) {
   return [node, ...(node.children ?? []).flatMap(descendants)];
 }
 
-function nodes(source) {
-  // Blank frontmatter so it is not parsed as body content; keep offsets for line numbers.
-  const body = source.replace(/^---\r?\n[\s\S]*?\r?\n---(?=\r?\n|$)/, (frontmatter) =>
-    frontmatter.replace(/[^\r\n]/g, ' '),
-  );
-  return descendants(processor.parse(body));
+function nodes(source, file = '<mdx>') {
+  return descendants(processor.parse(maskFrontmatter(source, file)));
 }
 
 function attribute(node, name) {
@@ -41,7 +38,7 @@ function componentAncestors(allNodes, node) {
 
 function assertInlineExamples(source, route) {
   if (route.startsWith('api/')) return;
-  const allNodes = nodes(source);
+  const allNodes = nodes(source, route);
   for (const node of allNodes) {
     const location = `${route}:${node.position.start.line}`;
     assert.ok(
@@ -71,7 +68,7 @@ function assertInlineExamples(source, route) {
 }
 
 function assertRenderableStructure(source, route) {
-  const allNodes = nodes(source);
+  const allNodes = nodes(source, route);
   for (const node of allNodes) {
     const location = `${route}:${node.position.start.line}`;
     assert.ok(
@@ -84,6 +81,11 @@ function assertRenderableStructure(source, route) {
     );
     if (node.type === 'heading' && node.depth > 4) {
       const span = node.children.find((child) => child.name === 'span');
+      assert.match(
+        String(attribute(span ?? {}, 'id') ?? ''),
+        /\S/,
+        `${location}: deep headings need a nonempty <span id="..."> fragment target`,
+      );
       assert.match(
         String(attribute(span ?? {}, 'style') ?? ''),
         /scrollMarginTop:\s*['"]7rem['"]/,
@@ -175,10 +177,22 @@ test('renderable structure accepts frontmatter titles, fenced comments, and anch
   );
 });
 
+for (const [name, frontmatter] of [
+  ['a ... closing delimiter', '---\ntitle: Page\n# metadata note\n...\n'],
+  ['trailing delimiter spaces', '--- \ntitle: Page\n# metadata note\n---  \n'],
+  ['CRLF line endings', '---\r\ntitle: Page\r\n# metadata note\r\n---\r\n'],
+]) {
+  test(`renderable structure ignores frontmatter comments with ${name}`, () => {
+    assert.doesNotThrow(() => assertRenderableStructure(`${frontmatter}\n## Section\n`, 'fixture.mdx'));
+  });
+}
+
 for (const [name, page, expected] of [
   ['a body H1', '# Duplicate headline\n', /do not add a body H1/],
   ['a JSX h1', '<h1>Duplicate headline</h1>\n', /do not add a body H1/],
   ['a raw JSX h5', '<h5 id="general-channel">General</h5>\n', /Mintlify drops raw JSX h5/],
+  ['a deep heading without a fragment ID', `${deepHeading.replace(' id="general-channel"', '')}\n`, /fragment target/],
+  ['a deep heading with an empty fragment ID', `${deepHeading.replace('general-channel', ' ')}\n`, /fragment target/],
   [
     'a deep heading without scroll clearance',
     `${deepHeading.replace(" style={{ scrollMarginTop: '7rem' }}", '')}\n`,
