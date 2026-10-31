@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { spawn, spawnSync } from 'node:child_process';
 import { test } from 'node:test';
@@ -13,7 +12,6 @@ import {
   renderJsonValue,
 } from './operation-codegen.mjs';
 import { buildSdkExample } from './viewer-runtime.mjs';
-import { readRegressionFixture } from './regression-fixtures.mjs';
 
 const tuple = { user: 'user:anne', relation: 'reader', object: 'document:planning' };
 const fixtures = {
@@ -313,63 +311,6 @@ test('native caller parsing preserves comment-like attribute data and accepts MD
 test('native caller parsing rejects unsupported HTML comments instead of rewriting them', () => {
   assert.throws(() => calls('<!-- legacy comment -->\n<CheckRequestViewer />'), /Unexpected character/);
   assert.throws(() => calls('<!<!---->-->\n<CheckRequestViewer />'), /Unexpected character/);
-});
-
-test('every existing source operation caller keeps its exact request, expectations and language restriction', () => {
-  const manifest = JSON.parse(readFileSync(new URL('../source-pages.json', import.meta.url)));
-  const excluded = new Set(manifest.exclusions.map((entry) => entry.source));
-  const overrides = new Map(manifest.overrides.map((entry) => [entry.source, entry.destination]));
-  let compared = 0;
-  const errors = [];
-  const baseline = readRegressionFixture('operation-callers').pages;
-  assert.deepEqual(Object.keys(baseline).sort(), manifest.sources.filter((path) => !excluded.has(path)).sort());
-  for (const [source, original] of Object.entries(baseline)) {
-    try {
-      const migrated = calls(
-        readFileSync(new URL(`../${overrides.get(source) ?? source}`, import.meta.url), 'utf8'),
-      );
-      // CreateStore was an ordinary source code group, not a source viewer.
-      const expected = original.filter((call) => call.component !== 'CreateStoreViewer');
-      const actual = migrated.filter((call) => call.component !== 'CreateStoreViewer');
-      assert.equal(actual.length, expected.length, `${source}: operation callers`);
-      for (let i = 0; i < expected.length; i++) {
-        const operation = Object.keys(operationComponents).find(
-          (key) => operationComponents[key] === expected[i].component,
-        );
-        assert.equal(actual[i].component, expected[i].component, `${source} #${i}`);
-        assert.deepEqual(
-          buildOperationRequest(operation, actual[i].props),
-          buildOperationRequest(operation, expected[i].props),
-          `${source} #${i}: request`,
-        );
-        for (const key of [
-          'allowed',
-          'expectedResults',
-          'checks',
-          'relationshipTuples',
-          'deleteRelationshipTuples',
-          'headers',
-          'skipSetup',
-        ]) {
-          assert.deepEqual(actual[i].props[key], expected[i].props[key], `${source} #${i}: ${key}`);
-        }
-        const languages = expected[i].props.pseudoCodeMode ? ['rpc'] : expected[i].props.allowedLanguages;
-        if (languages) assert.deepEqual(actual[i].props.allowedLanguages, languages, `${source} #${i}: languages`);
-        for (const language of actual[i].props.allowedLanguages ?? defaultLanguages[actual[i].component]) {
-          assert.equal(
-            buildOperationCode(operation, language, actual[i].props),
-            buildOperationCode(operation, language, expected[i].props),
-            `${source} #${i}: ${language}`,
-          );
-        }
-        compared++;
-      }
-    } catch (error) {
-      errors.push(`${source}: ${error.message}`);
-    }
-  }
-  assert.deepEqual(errors, []);
-  assert.equal(compared, 215, 'the independent oracle must cover every historical operation caller');
 });
 
 test('full Python and Node samples parse with their real language parsers', () => {

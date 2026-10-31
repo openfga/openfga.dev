@@ -9,7 +9,6 @@ import { metadataUrl, overlayUrl, languagesForOperation } from './api-code-sampl
 import { buildApiExample } from './viewer-runtime.mjs';
 import { apiOperation, paginatedOperations } from './api-operation-contract.mjs';
 import { sdkVersions, apiSdkSupport, validateSdkCoverage } from './api-sdk-support.mjs';
-import { readRegressionFixture } from './regression-fixtures.mjs';
 
 const metadata = JSON.parse(await readFile(metadataUrl, 'utf8'));
 const overlay = JSON.parse(await readFile(overlayUrl, 'utf8'));
@@ -88,9 +87,8 @@ test('installed Node SDK matches the exact audited version', () => {
   assert.equal(require('@openfga/sdk/package.json').version, sdkVersions['js-sdk'].version);
 });
 
-test('historical and native installation instructions name the audited SDK versions', async () => {
+test('native installation instructions name the audited SDK versions', async () => {
   const source = await readFile(new URL('../getting-started/install-sdk.mdx', import.meta.url), 'utf8');
-  const historicalInstalls = readRegressionFixture('static-requests').sdkInstalls;
   for (const [language, { version }] of Object.entries(sdkVersions)) {
     const install = {
       'js-sdk': `@openfga/sdk@${version}`,
@@ -99,7 +97,6 @@ test('historical and native installation instructions name the audited SDK versi
       'python-sdk': `openfga_sdk==${version}`,
       'java-sdk': `<version>${version}</version>`,
     }[language];
-    assert.equal(historicalInstalls[language], install, `Historical installation pins must match the audited ${language}`);
     assert.ok(source.includes(install), `Native instructions must install the audited ${language} ${version}`);
   }
 });

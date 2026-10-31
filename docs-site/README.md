@@ -1,8 +1,8 @@
 # OpenFGA documentation
 
-This directory contains the Mintlify source for 110 product documentation pages and a read-only reference for 24 API operations. The homepage, Project, Community, and Blog stay on Docusaurus.
+This directory contains the Mintlify source for the product documentation pages and a read-only reference for 24 API operations. The homepage, Project, Community, and Blog stay on Docusaurus.
 
-Target `docs-next` for migration and follow-up pull requests. It is the planned temporary default/production branch; deployment and GitHub Actions configuration remain separate [owner actions](#split-site-deployment).
+Target `docs-next`, the repository's default branch and Mintlify's production branch, with documentation pull requests. Deployment and GitHub Actions configuration remain separate [owner actions](#split-site-deployment).
 
 The [hosted Mintlify site](https://fga.mintlify.site/docs/fga) must be configured for the `/docs` base path. Both articles and `/docs/api/service` belong to that mount. Publishing this directory does not configure the [public deployment](#split-site-deployment).
 
@@ -15,7 +15,7 @@ The [hosted Mintlify site](https://fga.mintlify.site/docs/fga) must be configure
 - [Update generated files](#generated-files)
 - [Add media safely](#asset-storage-and-git-lfs)
 - [Validate changes](#validating-authoring-changes)
-- [Understand migration limits](#migration-contracts-and-known-differences)
+- [Understand platform differences](#known-platform-differences)
 - [Understand deployment](#split-site-deployment)
 
 ## Running locally
@@ -48,7 +48,7 @@ All `npm run` commands in this guide run from the repository root. Mintlify CLI 
 | [`scripts/`](./scripts/)                                  | Validators, browser-helper source, SDK generators, and tests        |
 | [`api-samples.json`](./api-samples.json)                  | Canonical schema identity and reviewed API sample inputs            |
 | [`source-pages.json`](./source-pages.json)                | Historical page mappings and registration of new native pages       |
-| [`tests/fixtures/mintlify/`](../tests/fixtures/mintlify/) | Independent content expectations and the unpublished viewer fixture |
+| [`tests/fixtures/mintlify/`](../tests/fixtures/mintlify/) | Historical URL inventory and the unpublished viewer fixture         |
 
 The root browser bundles and [`openapi/sdk-samples.overlay.json`](./openapi/sdk-samples.overlay.json) are generated files. Edit their source or inputs, then regenerate them.
 
@@ -56,7 +56,7 @@ On desktop, `global.css` centers navigation, content, and the right-hand rail in
 
 ## Authoring pages
 
-During the migration, keep existing content and navigation unchanged apart from the platform adaptations below. Propose editorial changes, new introductions, renamed categories, and content moves in a separate follow-up.
+Edit prose, headings, titles, examples, and navigation through normal review. Repository checks guard MDX syntax, components, rendering structure, navigation, and URL preservation. They don't compare content with a captured baseline, so content changes don't need fixture, contract, or deployment-fingerprint updates.
 
 ### Add, rename, or retire a page
 
@@ -71,7 +71,7 @@ During the migration, keep existing content and navigation unchanged apart from 
 }
 ```
 
-Add independent content or behavioral expectations with the page. Do not generate the expected content from the page being tested.
+Then run the [repository checks](#validating-authoring-changes).
 
 For a historical page rename, update its `overrides` entry and navigation, and preserve the old URL with a redirect. Do not edit the frozen `sources` list. Retiring a page requires an explicit exclusion and reason; a Docusaurus-owned page also needs its owner, route, and existing `ownerPage`. Community remains at `/community`, not in the native docs tree.
 
@@ -79,14 +79,14 @@ The two hidden navigation anchors separate Docs and API Reference sidebars. They
 
 Raw JSX anchors in reusable snippets are not Mintlify Markdown links. Keep their explicit public destinations, such as `https://openfga.dev/docs/getting-started/install-sdk`, rather than relying on the renderer to add the mount. Generated API pages do not need checked-in MDX files under `api/service/`.
 
-The Docs anchor uses `pages` to mix the four original ungrouped introduction pages with the original categories. Do not add an Overview wrapper or regroup pages to suit the new theme. API Reference uses `groups` for its canonical operations.
+The Docs anchor uses `pages` to mix ungrouped introduction pages with its categories. The navigation check pins the top-level category names and order in `expectedDocsGroups` ([`scripts/navigation-structure.mjs`](./scripts/navigation-structure.mjs)); update that list in the same pull request when you intentionally add, rename, or reorder a category. API Reference uses `groups` for its canonical operations.
 
 ### Write MDX that renders reliably
 
 | Situation                           | Use                                                                           |
 | ----------------------------------- | ----------------------------------------------------------------------------- |
 | Page headline                       | Frontmatter `title`; do not repeat it as a body H1                            |
-| Different sidebar label             | `sidebarTitle`, preserving the existing navigation wording                    |
+| Different sidebar label             | `sidebarTitle`                                                                |
 | Existing SEO description            | Keep `description` as metadata; shared CSS hides it below article titles      |
 | Literal placeholders                | Inline code such as `{object types}`, or escaped braces `\{object types\}`    |
 | Expandable tutorial content         | Native `Accordion`, with rich introductory text outside it when needed        |
@@ -95,9 +95,9 @@ The Docs anchor uses `pages` to mix the four original ungrouped introduction pag
 
 Braces in prose are JavaScript expressions. `{user}` can parse successfully and still fail at runtime if `user` is not bound. Imports and expression bindings must be explicit.
 
-Do not use raw HTML `details` or `summary`: Mintlify can omit their bodies. Keep examples inside the instructional section they explain, rather than collecting them elsewhere just to satisfy a content check.
+Do not use raw HTML `details` or `summary`: Mintlify can omit their bodies. Keep examples inside the instructional section they explain.
 
-Keep the original worked-example boundaries. The `openfga-modeling-example` class restores the filled containers and compact list typography used by the modeling guides. Put a blank line around the container's Markdown content so lists render as lists; keep explanatory rules outside the example. Preserve the existing highlight wording, colors, and typography.
+The `openfga-modeling-example` class restores the filled containers and compact list typography used by the modeling guides. Put a blank line around the container's Markdown content so lists render as lists; keep explanatory rules outside the example. Preserve the existing highlight wording, colors, and typography.
 
 ### Preserve heading links
 
@@ -291,7 +291,7 @@ Generation is deterministic for the recorded schema bytes but requires network a
 
 ### Automatic upstream updates
 
-The [API update workflow](../.github/workflows/update-api-samples.yml) runs nightly and by manual dispatch. Compatible upstream changes update the sample metadata, SDK overlay, and deployment fingerprint in a draft PR. It preserves hand-reviewed sample inputs, historical API aliases, and independent parity fixtures; it does not auto-merge. Summary changes that rename operation URLs require explicit old-to-new redirects in `docs.json` before the updater can accept them.
+The [API update workflow](../.github/workflows/update-api-samples.yml) runs nightly and by manual dispatch. Compatible upstream changes update the sample metadata, SDK overlay, and deployment fingerprint in a draft PR. It preserves hand-reviewed sample inputs and historical API aliases; it does not auto-merge. Summary changes that rename operation URLs require explicit old-to-new redirects in `docs.json` before the updater can accept them.
 
 If the schema is incompatible with the current operation contracts or SDK generators, the workflow reports the source URL, old/new digests, operation changes, and validation failure in a deduplicated issue instead of proposing incomplete generated output. Maintainers resolve the incompatibility and rerun the workflow. Network failures fail the workflow without pretending to be a schema incompatibility.
 
@@ -390,22 +390,24 @@ npm run build:config-page
 npm run build:config-page -- --release v1.20.0 --schema /path/to/schema.json
 ```
 
-Ordinary website builds do not run this generator. Review release changes against the independent content fixtures; never regenerate expected fixtures from the generated table just to make checks pass. The nightly workflow produces draft updates that still require this review.
+Ordinary website builds do not run this generator. The nightly workflow produces draft updates: review the release changes in the generated table, and update hand-written examples and cards outside the generated markers when the release requires it.
 
 ### Deployment fingerprint
 
-After editing native sources or regenerating their outputs, refresh the hidden deployment marker:
+`docs.json` stores a hidden `openfga:docs-source-sha256` marker: the SHA-256 fingerprint of the `docs-site/` source inventory and file contents, excluding its own metadata value. Deployment verification requires the same marker in every advertised docs and API page, which proves Mintlify is serving the checked-out sources.
+
+**Content pull requests don't refresh the marker.** Pull request checks and builds run `npm run check:mintlify-sources`, which rejects Git LFS pointers under `docs-site/` in both the Git index and working tree, without comparing the marker. A locally hydrated asset still cannot hide a committed pointer.
+
+Before [verifying a deployment](#release-sequence), a maintainer refreshes and commits the marker, then waits for Mintlify to deploy it:
 
 ```bash
 npm run generate:mintlify-deployment
 npm run check:mintlify-deployment
 ```
 
-Commit the resulting `docs.json` change with the source changes. The marker is the SHA-256 fingerprint of the `docs-site/` source inventory and file contents, excluding its own metadata value. It covers pages, snippets, configuration, runtime assets, media, and authoring sources; it is not a timestamp or a Git commit ID. Ignored local files are excluded, new nonignored files are included, and tracked deletions must be staged before regeneration.
+The marker covers pages, snippets, configuration, runtime assets, media, and authoring sources; it is not a timestamp or a Git commit ID. Ignored local files are excluded, new nonignored files are included, and tracked deletions must be staged before regeneration. A previous hosted deployment with the same route inventory cannot pass verification. Commits with identical native sources intentionally share a fingerprint.
 
-Ordinary checks never refresh the marker: they fail if it is stale. Source reads also reject LFS pointers under `docs-site/` in both the Git index and working tree, so a locally hydrated asset cannot hide a committed pointer. Deployment acceptance recomputes the marker from the selected checkout, then requires the same marker in every advertised docs and API page. A previous hosted deployment with the same route inventory cannot pass. Wait for Mintlify to finish deploying the matching sources rather than bypassing this gate. Commits with identical native sources intentionally share a fingerprint.
-
-The nightly configuration-update workflow refreshes and commits the marker with its generated table; it does not regenerate independent content expectations.
+The nightly configuration and API-sample updaters refresh and commit the marker with their generated output.
 
 ## Asset storage and Git LFS
 
@@ -424,7 +426,7 @@ git check-attr --cached filter -- docs-site/images/img/openfga_logo.svg
 
 A native asset should report `filter: unset`. Inspect the staged blob, not just the working copy. A file beginning with `version https://git-lfs.github.com/spec/v1` is a pointer, not image data.
 
-After staging asset changes, run `npm run check:mintlify-deployment`; regenerate the fingerprint first if the actual bytes changed. The check reads the staged blobs as well as working files and rejects unresolved pointers.
+After staging asset changes, run `npm run check:mintlify-sources`. The check reads the staged blobs as well as working files and rejects unresolved pointers.
 
 Keep native overrides after the global LFS patterns. Attribute changes do not repair an already committed pointer: retrieve the original object, restage its bytes, and verify the asset renders. Do not remove global LFS rules or rewrite history to fix a native asset.
 
@@ -432,10 +434,9 @@ Keep inline assets deployable throughout the `docs-next` period. The eventual re
 
 ## Validating authoring changes
 
-Refresh the deployment fingerprint after source changes, then run the full repository-owned gate before submitting:
+Run the full repository-owned gate before submitting:
 
 ```bash
-npm run generate:mintlify-deployment
 npm run check:mintlify
 ```
 
@@ -449,11 +450,11 @@ During development, use the checks relevant to the change:
 | Pages, navigation, and redirects | `npm run validate:mintlify-navigation`                    |
 | Viewer imports and props         | `npm run validate:mintlify-components`                    |
 | Viewer behavior and fixture      | `npm run test:mintlify-components`                        |
-| Captured content expectations    | `npm run test:mintlify-content-parity`                    |
+| Rendering structure and anchors  | `npm run test:mintlify-codegen`                           |
 | Configuration generator          | `npm run test:config-page`                                |
 | Split-site ownership contracts   | `npm run test:site-boundary`                              |
 
-The full gate checks the deployment fingerprint, generated artifacts, MDX, DSL, navigation, API samples, independent content fixtures, component contracts, configuration generation, and site boundaries. API checks fetch the canonical schema from `main` and require its digest to match the generated examples. See the [repository CI guide](../README.md#mintlify-repository-quality-checks) for prerequisites and workflow details.
+The full gate checks native sources for LFS pointers, generated artifacts, MDX, DSL, rendering structure, navigation, URL coverage, API samples, component contracts, configuration generation, and site boundaries. It doesn't compare prose, headings, titles, or examples with a captured baseline. API checks fetch the canonical schema from `main` and require its digest to match the generated examples. See the [repository CI guide](../README.md#mintlify-repository-quality-checks) for prerequisites and workflow details.
 
 Know what each result proves:
 
@@ -461,7 +462,7 @@ Know what each result proves:
 | ----------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | MDX validation          | Syntax and supported expression bindings are valid                     | Imports resolve or all expressions render at runtime             |
 | Component validation    | Inspectable imports, props, languages, and data shapes match contracts | Deferred expressions or browser interactions work                |
-| Source/content fixtures | Inventory and independently captured semantics are preserved           | Pixel equivalence or correct authorization against a real server |
+| Source coverage         | Every historical page keeps a native destination or redirect           | Content accuracy or correct authorization against a real server  |
 | SDK wire tests          | Executed Node.js/cURL requests match fixture expectations              | Every SDK, authentication mode, or live model was tested         |
 | Source-only CI          | Repository checks passed                                               | LFS assets render or the hosted deployment works                 |
 
@@ -469,63 +470,19 @@ After changing viewers or runtime helpers, inspect representative pages in Mintl
 
 Repository checks do not run the Mintlify CLI or replace its build validation and hosted acceptance.
 
-## Migration contracts and known differences
+## Known platform differences
 
-### Migration review checklist
+The Docusaurus-to-Mintlify migration is complete. Content evolves through normal review; repository checks no longer compare articles with the pre-migration baseline.
 
-Apply these requirements to every migrated page, not only the examples raised in review:
+### URL preservation
 
-- Preserve the original visible article titles and section headings. Mintlify's frontmatter `title` is reader-visible, not an SEO-only field. SEO title adjustments may use supported non-visible metadata such as `og:title` and `twitter:title`, but must not change the article headline or navigation. Visible copy improvements belong in a separate follow-up PR.
-- Keep original sidebar labels, category names, hierarchy, ordering, and overview entries. Use `sidebarTitle` when the original sidebar label differs from the article headline.
-- Keep article wording, examples, and sections in their original order and on their original pages. Do not combine migration work with summaries, factual updates, recategorization, or cross-page content moves. Retain only the technical exceptions listed below.
-- Preserve frontmatter descriptions for SEO without presenting them as new introductions. The shared article-header rule does not hide native API operation descriptions.
-- Keep LLM indexes, bundles, per-page Markdown, and machine discovery available without visible LLM footer links.
-- Keep navigation links directly after the OpenFGA logo. Group the GitHub star badge, search, and theme control on the right, with the badge immediately before search. Hide desktop/mobile Ask AI navbar buttons, floating prompts, and code-block assistant buttons. Preserve native search and the responsive menu.
-- Keep the approved native Copy page menu and its six [page actions](#page-actions) in the article header. Do not add Ask Assistant or extra providers to that menu. Check copied Markdown and generated MCP/editor targets as part of release acceptance.
-- Compare worked examples with the original page. Preserve grouping, list boundaries, highlights, diagrams, and fragment targets in light and dark themes at desktop and mobile widths.
+`source-pages.json` keeps a frozen inventory of 111 historical sources: 110 native pages and the Docusaurus-owned Community page. [`historical-source-inventory.json`](../tests/fixtures/mintlify/historical-source-inventory.json) records their original paths and public slugs. Coverage checks require every historical page to keep a destination, so rename or retire pages through `overrides`, exclusions, and redirects rather than editing that inventory. Its `docs/content/` paths are provenance, not files required in the current checkout.
 
-Structural checks cannot prove rendering parity. Include the affected pages in browser review, and record unavoidable platform differences below rather than silently accepting content drift.
-
-### Retained technical exceptions
-
-The migration is not an editorial update. These existing differences are retained because they preserve source content or help readers run the examples correctly:
-
-| Exception                              | Scope and reason                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| SDK setup guidance and code repairs    | Keep the environment-variable, authentication, client-scope, and Read/Expand setup instructions already present in Create a Store, Configure Authorization Model, Relationship Queries, and Migrating Relations. For example, creating a store does not require an existing store ID, and Python requests must run inside the client's `async with` block. Preserve the necessary SDK code repairs without changing example inputs, authorization behavior, or expected results. |
-| SDK installation requirements          | Keep the pinned versions, matching Go/Java/.NET requirements, and HTTP-only AuthZen guidance on Install SDK Client. These explain the constraints of the working API examples, not a new tutorial.                                                                                                                                                                                                                                                                               |
-| Original contextual-tuple descriptions | Keep the three source tuple descriptions beside the examples in Task-Based Authorization. They originated in the old component props and are not new explanatory claims.                                                                                                                                                                                                                                                                                                         |
-| Rendering repairs                      | Keep the recorded malformed-Markdown and JSON-quoting repairs. Do not use this exception to rewrite source wording or correct unrelated typos.                                                                                                                                                                                                                                                                                                                                   |
-| Published server configuration         | Keep the independently captured production v1.20.0 configuration table instead of reverting it to the older Git-source table. This preserves the earlier production baseline, not a new server-version update.                                                                                                                                                                                                                                                                   |
-
-The exact prose and heading exceptions are page-scoped in `scripts/live-original-parity.test.mjs`. All other article wording, heading order, navigation, and page ownership must match the original baseline. New or expanded exceptions need separate review; general editorial improvements belong in a follow-up PR.
-
-### Independent regression fixtures
-
-`source-pages.json` preserves a frozen inventory of 111 historical sources: 110 native pages and the Docusaurus-owned Community page. Its `docs/content/` paths are provenance, not files required in the current checkout. The legacy corpus and Git history are not needed to run the checks.
-
-The fixtures under [`tests/fixtures/mintlify/`](../tests/fixtures/mintlify/) preserve:
-
-| Fixture                                                   | Expected content                                                                   |
-| --------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `historical-source-inventory.json`                        | Original paths, public slugs, and source digests                                   |
-| `original-content.json`                                   | Original sidebar hierarchy, labels, headlines, and ordered prose for all 110 pages |
-| `operation-callers.json`                                  | Operation props, expectations, descriptions, and language restrictions             |
-| `tuple-examples.json`                                     | Tuple values, conditions, descriptions, and ordering                               |
-| `tutorial-structure.json`                                 | Models, headings, instructional placement, and disclosures                         |
-| `static-requests.json`                                    | Static request/response examples, setup defaults, and SDK installation pins        |
-| `prerequisite-models.json`                                | Configuration-expression structure and literal semantics                           |
-| `live-foundations/`, `live-modeling/`, `live-operations/` | Captured production headlines, prose, links, headings, and examples                |
-
-The original source/component fixtures were extracted from `85bde5e19f7fa0b8687732c33c4f7c3a39fd83e0`, independently of native output. The review baseline in `original-content.json` uses the original `docs/sidebars.js` and `docs/content/` at `2dbd2be1145e5656d340816cd72d20192edcfe23`. Explicit sidebar labels take precedence over frontmatter titles.
-
-`live-original-parity.test.mjs` checks every page against that baseline and rejects title/sidebar rewrites (including body headlines), added, removed, rewritten, reordered, or cross-page prose, and reordered section headings. SEO-only metadata does not waive the visible-title contract. It enforces the exact page-specific technical exceptions above, including the retained setup instructions, instead of allowing arbitrary SDK-related additions. The capture script reads only the pinned original Git revision; ordinary checks use the committed fixture and do not need Git history.
-
-Do not overwrite expectations with current output to silence failures. Intentional changes need a reviewed update to the contract; migration restorations must first match the independent original-source baseline.
+[`viewers.mdx`](../tests/fixtures/mintlify/viewers.mdx) is the [non-production component fixture](#non-production-component-fixture); it must stay unpublished.
 
 ### Native behavior is not identical to Docusaurus
 
-The migration preserves instructional content, URLs, examples, and image bytes where contracted. It does not promise identical styling, metadata, or execution of every SDK example.
+The native site does not reproduce Docusaurus styling, metadata, or execution of every SDK example.
 
 - Cards, callouts, language tabs, copy controls, and themes use Mintlify's native presentation. Concepts keep rich definitions visible and put supporting examples in disclosures.
 - Eleven historical H5 subsections use H4: nine in Modeling Getting Started and two in Organization Context. Their wording and fragment targets remain intact.
@@ -534,8 +491,6 @@ The migration preserves instructional content, URLs, examples, and image bytes w
 - Accepted SDK fixes can differ from older production snippets. Native fenced-code copying also omits a renderer-added terminal newline.
 
 Read, Expand, ReadChanges, StreamedListObjects, and model-write tutorial examples are static native conversions, not reusable viewers. Unsupported source-only exports and layout props have not been recreated merely to match the old component inventory.
-
-Content acceptance and source retirement do not authorize a production traffic switch.
 
 ## Split-site deployment
 
@@ -581,9 +536,11 @@ The root support routes are required even though all documentation content is un
 
 ### Release sequence
 
+The initial cutover followed this sequence. Reuse it for later routing changes or a rollback.
+
 1. Name cutover/rollback owners, save the current Pages revision and Cloudflare/Mintlify settings, and hold website publishing, including push, scheduled, manual, already-running, and queued publishers.
 2. Merge the reviewed PR into `docs-next`, keep native media as ordinary Git, and coordinate the protected default/source branch change. Do not publish the migrated Docusaurus build yet.
-3. Apply the Mintlify settings above, wait for the matching source fingerprint, and run `npm run verify:docs-origin`. Recheck edit links against the flattened files. **Mintlify-only staging stops here**, with the current website and public routing unchanged.
+3. Apply the Mintlify settings above, [refresh and commit the source fingerprint](#deployment-fingerprint), wait for Mintlify to deploy it, and run `npm run verify:docs-origin`. Recheck edit links against the flattened files. **Mintlify-only staging stops here**, with the current website and public routing unchanged.
 4. Activate the scoped provider Worker routes and exact-entry redirect, then publish the matching Docusaurus build in the agreed window.
 5. Run `npm run verify:docs-deployment -- --origin https://openfga.dev`. Verify navigation, old API bookmarks, images, search, page Markdown, MCP/editor actions, canonical URLs, and unchanged website routes in a browser. Source checks alone are not hosted acceptance.
 
