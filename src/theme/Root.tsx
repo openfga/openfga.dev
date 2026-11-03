@@ -147,14 +147,6 @@ const SITE_JSON_LD = JSON.stringify({
       url: 'https://openfga.dev/',
       inLanguage: 'en-US',
       publisher: { '@id': 'https://openfga.dev/#organization' },
-      potentialAction: {
-        '@type': 'SearchAction',
-        target: {
-          '@type': 'EntryPoint',
-          urlTemplate: 'https://openfga.dev/search?q={search_term_string}',
-        },
-        'query-input': 'required name=search_term_string',
-      },
     },
   ],
 }).replace(/</g, '\\u003c');

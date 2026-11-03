@@ -17,13 +17,30 @@ workflows use it. `npm run check:mintlify`, run by the
 [quality workflow](../.github/workflows/mintlify-quality.yml), includes the root
 regression suites and freshness checks; it does not build or deploy edge infrastructure.
 
+The quality workflow uses GitHub's native `paths` filters for PRs and pushes.
+Directory-wide patterns cover docs sources, `patches/`, `src/`, `scripts/`,
+`tests/`, and `.github/workflows/`, alongside the listed root dependencies and
+configuration. This intentionally includes non-docs edits within those directories
+so new inputs are covered without maintaining per-file lists. The shared path
+list lives directly in the workflow.
+Manual runs remain unfiltered. GitHub's native diff limits apply; use a manual
+run for unusually large changes. Keep this path-filtered status optional, since
+GitHub leaves skipped workflow checks pending.
+
+The always-running [deployment workflow](../.github/workflows/test-deploy.yml)
+runs the existing file-preservation test from `site-boundary.test.mjs` on every
+PR to `main` or `docs-next`, so deleting or moving required website files cannot
+bypass the check when docs quality is skipped.
+Blog and static-asset-only changes do not trigger the full docs suite.
+Nightly/manual source updaters remain unchanged.
+
 | Files | Role and root commands |
 | --- | --- |
 | `prepare-agent-content.mjs`, `agent-content.mjs`, `validate-agent-content.mjs` | Prepare/check the curated root LLM index, website-only bundle, and Home/Project/Community Markdown: `npm run build:agent-content`, `npm run check:agent-content`. |
 | `clean-agent-markdown.mjs` | Docusaurus config imports this Markdown-export plugin to remove framework markup; it runs within the website build, not as a standalone command. |
 | `prepare-site-sitemap.mjs`, `site-sitemap.mjs` | Build a sitemap index with separate website/native children from the actual page inventory and digest-checked live API schema: `npm run build:site-sitemap`. |
-| `validate-site-boundary.mjs`, `site-boundary.mjs` | Check cross-site links/anchors, redirects, search, sitemaps, and retired-route ownership; export native external links for CI's Lychee check: `npm run check:site-boundary`. |
-| `native-routes.mjs` | Map source-root page IDs to public `/docs/...` routes without repeating the deployment mount. |
+| `validate-site-boundary.mjs`, `site-boundary.mjs` | Check cross-site links/anchors, redirects, sitemaps, retired-route ownership, and local search removal; export native external links for CI's Lychee check: `npm run check:site-boundary`. |
+| `native-routes.mjs` | Map source-root page IDs to public `/docs/...` routes without repeating the deployment mount. List the unmounted page/section routes (such as `/modeling/overview`) that the website redirects to `/docs/...`. |
 
 These commands require preceding build outputs; normally run the complete `npm run build`.
 Generated files under `build/` include
@@ -46,20 +63,28 @@ API summary changes. Add old-to-new source-root redirects in `docs-site/docs.jso
 not a separate Cloudflare redirect table. Browser fragments are
 resolved by `src/pages/api/service.tsx`; they are not visible to an HTTP redirect.
 
+Mintlify's rendered pages expose source-root paths such as
+`/getting-started/overview` (for example, in its client navigation payload), and
+crawlers request them on the website origin. Docusaurus therefore emits a redirect
+page from every Docs-navigation page and `docs.json` section redirect source to the
+same path under `/docs`, using `unmountedDocRoutes` in `native-routes.mjs`. These
+aliases follow navigation automatically; `npm run check:site-boundary` verifies each
+one exists and reaches a real `/docs` page.
+
 ## Explicit updates to committed generated content
 
 | File | When to run; generated output |
 | --- | --- |
 | `generate-legacy-api-routes.mjs` | `npm run check:legacy-api-routes` verifies that every historical Swagger/path alias reaches the same current operation, following explicit Mintlify redirects. `npm run generate:legacy-api-routes` preserves existing aliases rather than overwriting them with new summary slugs; operation additions/removals require manual review. |
-| `native-deployment-fingerprint.mjs` | After native-source changes, run `npm run generate:mintlify-deployment`; commit the hidden source marker in `docs-site/docs.json`. `npm run check:mintlify-deployment` rejects stale markers. The digest covers tracked and unignored files under `docs-site/`, excluding the marker itself. |
+| `native-deployment-fingerprint.mjs` | Before verifying a deployment, run `npm run generate:mintlify-deployment` and commit the hidden source marker in `docs-site/docs.json`; `npm run check:mintlify-deployment` rejects stale markers. Ordinary pull requests don't refresh it: builds and `check:mintlify` run `npm run check:mintlify-sources`, which only rejects Git LFS pointers. The digest covers tracked and unignored files under `docs-site/`, excluding the marker itself. |
 | `update-config-page.mjs` | Run `npm run build:config-page` to fetch the latest official server release/schema and replace only the marked version/table region of `docs-site/getting-started/setup-openfga/configuration.mdx`, preserving authored content. |
 | `update-api-samples.mjs`, `report-api-samples.mjs` | Run `npm run update:api-samples -- --report .api-samples-report.json` to fetch the exact live API URL once, validate unchanged reviewed sample inputs and historical aliases, and prepare compatible metadata/overlay/fingerprint updates. Reports must stay outside `docs-site/`; remove local reports after review. Reporting to GitHub is a separate, explicitly invoked command. |
 
 Ordinary builds check freshness; they do not regenerate those committed outputs
 or fetch the latest server release. The [nightly updater](../.github/workflows/update-docs.yml)
 creates/updates **draft PRs** for configuration changes and refreshes the fingerprint.
-Manual configuration updates also need a fingerprint refresh. Review release changes
-against independent parity fixtures; never regenerate those fixtures from this output.
+Review release changes in the generated table and update hand-authored content outside
+the markers when needed.
 API-dependent checks fetch the live schema and verify its last-generated digest,
 so builds are not fully offline and deliberately fail if upstream has moved.
 
@@ -69,7 +94,7 @@ The exact source is
 `https://raw.githubusercontent.com/openfga/api/refs/heads/main/docs/openapiv3/apidocs.openapi.json`.
 The stored SHA-256 identifies the last successfully generated snapshot, not an
 immutable hosting revision. The updater never derives sample inputs from defaults,
-changes SDK support decisions, or regenerates independent fixtures.
+or changes SDK support decisions.
 
 The [API workflow](../.github/workflows/update-api-samples.yml) runs nightly at
 05:30 UTC and through `workflow_dispatch`, always starting from the explicit

@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 import { apiRoutesFromSchema, inspectNativePage, isNativeRoute, validateNativeLink } from './site-boundary.mjs';
-import { nativeDocPages, publicDocsRoute } from './native-routes.mjs';
-import { parseOriginalContent } from '../docs-site/scripts/original-content-parity.mjs';
+import { nativeDocPages, publicDocsRoute, unmountedDocRoutes } from './native-routes.mjs';
+import { validateSourceCoverage } from '../docs-site/scripts/validate-source-coverage.mjs';
 
 const config = {
   redirects: [
@@ -25,7 +25,8 @@ test('source pages mount once while the website keeps every legacy API URL', () 
   assert.equal(publicDocsRoute('/'), '/docs');
   assert.equal(publicDocsRoute('fga'), '/docs/fga');
   assert.equal(publicDocsRoute('/api/service'), '/docs/api/service');
-  assert.equal(nativeDocPages(native).length, 110);
+  const { ownedPages } = validateSourceCoverage({ logger: () => {} });
+  assert.deepEqual(nativeDocPages(native).map((page) => `${page}.mdx`).sort(), ownedPages);
   for (const source of nativeDocPages(native)) assert.ok(!source.startsWith('docs/'));
   assert.throws(() => publicDocsRoute('/docs/fga'), /must not repeat/);
   for (const route of ['/api', '/api-reference', '/api/service', '/api/service/stores/list-all-stores']) {
@@ -33,6 +34,30 @@ test('source pages mount once while the website keeps every legacy API URL', () 
   }
   assert.deepEqual(validateNativeLink('/docs/api/service', options), { api: '/docs/api/service/stores/list-all-stores' });
   assert.deepEqual(validateNativeLink('/api/service/stores/list-all-stores', options), { api: '/docs/api/service/stores/list-all-stores' });
+});
+test('documentation pages requested without the /docs mount redirect without claiming website routes', () => {
+  const native = JSON.parse(readFileSync(new URL('../docs-site/docs.json', import.meta.url), 'utf8'));
+  const routes = unmountedDocRoutes(native);
+  for (const page of nativeDocPages(native)) assert.ok(routes.includes(`/${page}`), page);
+  for (const route of ['/getting-started/setup-openfga/configure-openfga', '/modeling/agents/mcp-authorization',
+    '/modeling', '/modeling/agents', '/learn', '/use-cases']) {
+    assert.ok(routes.includes(route), route);
+  }
+  for (const route of routes) {
+    assert.ok(!isNativeRoute(route), route);
+    assert.doesNotMatch(route, /^\/(?:$|api(?:-reference)?(?:\/|$)|project|community|blog)(?:\/|$)/, route);
+    assert.equal(publicDocsRoute(route), `/docs${route}`);
+  }
+  assert.deepEqual(unmountedDocRoutes({
+    navigation: { anchors: [{ anchor: 'Docs', pages: ['fga', { group: 'Modeling', pages: ['modeling/overview'] }] }] },
+    redirects: [
+      { source: '/', destination: '/fga' },
+      { source: '/community', destination: 'https://openfga.dev/community' },
+      { source: '/api', destination: '/api/service' },
+      { source: '/modeling', destination: '/modeling/overview' },
+      { source: '/modeling/:slug*', destination: '/modeling/overview' },
+    ],
+  }), ['/fga', '/modeling', '/modeling/overview']);
 });
 test('ownership matches complete path segments', () => {
   assert.ok(isNativeRoute('/docs') && isNativeRoute('/docs/fga') && isNativeRoute('/docs/api/service/stores'));
@@ -49,7 +74,7 @@ test('the Mintlify origin root redirect does not take ownership of the public we
   const nativeOptions = { ...options, config: native };
   for (const href of [
     '/', 'https://openfga.dev/', 'https://openfga.dev/?utm_source=docs#quick-start',
-    '/project', '/community', '/blog', '/search', '/llms.txt', '/llms-full.txt', '/sitemap.xml',
+    '/project', '/community', '/blog', '/llms.txt', '/llms-full.txt', '/sitemap.xml',
   ]) {
     assert.equal(validateNativeLink(href, nativeOptions), false, `${href} must remain website-owned`);
   }
@@ -170,29 +195,21 @@ test('the repository retains only a small legacy API compatibility page, not the
   assert.equal(pkg.dependencies['swagger-ui-react'], undefined);
 });
 
-test('the website-owned Community page preserves original copy, headings, metadata, and links', () => {
-  const root = new URL('../', import.meta.url);
-  // Snapshot of docs/content/community.mdx at 2dbd2be1145e5656d340816cd72d20192edcfe23, not the migrated output.
-  const original = readFileSync(new URL('tests/fixtures/mintlify/community.mdx', root), 'utf8');
-  const source = readFileSync(new URL('src/pages/community.mdx', root), 'utf8');
-  const { metadata: originalMetadata, ...expected } = parseOriginalContent(original, { legacy: true });
-  const { metadata, ...actual } = parseOriginalContent(source);
-  assert.deepEqual(actual, expected, 'Docusaurus ownership does not waive the content-preservation contract');
-  assert.deepEqual(metadata, { title: originalMetadata.title, description: originalMetadata.description });
-  assert.deepEqual(inspectNativePage(source), inspectNativePage(original));
-});
-
-test('website search uses an unmodified dependency with legacy docs disabled', () => {
+test('website search stays disabled while Ask AI remains available', () => {
   const root = new URL('../', import.meta.url);
   const pkg = JSON.parse(readFileSync(new URL('package.json', root), 'utf8'));
-  assert.ok(pkg.dependencies['@easyops-cn/docusaurus-search-local']);
+  const lock = JSON.parse(readFileSync(new URL('package-lock.json', root), 'utf8'));
+  assert.equal(pkg.dependencies['@easyops-cn/docusaurus-search-local'], undefined);
+  assert.equal(lock.packages['node_modules/@easyops-cn/docusaurus-search-local'], undefined);
   assert.equal(pkg.dependencies['patch-package'], undefined);
   assert.equal(pkg.devDependencies['patch-package'], undefined);
   assert.equal(pkg.scripts.postinstall, undefined);
   assert.ok(!existsSync(new URL('patches', root)), 'Dependency patches must not be reintroduced');
   const websiteConfig = readFileSync(new URL('docusaurus.config.js', root), 'utf8');
   assert.match(websiteConfig, /docs: false/);
-  assert.match(websiteConfig, /indexDocs: false/);
-  assert.match(websiteConfig, /indexBlog: true/);
-  assert.match(websiteConfig, /indexPages: true/);
+  assert.doesNotMatch(websiteConfig, /docusaurus-search-local/);
+  assert.match(websiteConfig, /className: 'ask-ai-nav-item'/);
+  assert.match(websiteConfig, /"data-modal-override-open-selector": "\.ask-ai-button"/);
+  assert.match(websiteConfig, /"data-modal-open-on-command-k": "true"/);
+  assert.doesNotMatch(readFileSync(new URL('src/theme/Root.tsx', root), 'utf8'), /SearchAction/);
 });

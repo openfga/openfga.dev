@@ -18,3 +18,13 @@ export function nativeDocPages(config) {
   visit(config.navigation.anchors.find(({ anchor }) => anchor === 'Docs').pages);
   return pages;
 }
+
+// Mintlify exposes source-root paths (for example in its client navigation payload), so crawlers
+// also request documentation pages without the /docs mount. The website redirects these to /docs.
+export function unmountedDocRoutes(config) {
+  const pages = nativeDocPages(config);
+  const sections = new Set(pages.map((page) => page.split('/')[0]));
+  const redirectSources = config.redirects.map(({ source }) => source)
+    .filter((source) => !source.includes(':') && sections.has(source.split('/')[1]));
+  return [...new Set([...pages.map((page) => `/${page}`), ...redirectSources])].sort();
+}
