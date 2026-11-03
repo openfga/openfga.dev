@@ -314,34 +314,28 @@ test('import and help are side-effect-free and never fetch latest', () => {
   assert.equal(imported.stdout, '');
   const result = cli(['--help']);
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /independent evidence/);
+  assert.match(result.stdout, /hand-authored/);
 });
 
-test('nightly hard-stops invalid generation, creates drafts, and fails on independent parity after PR creation', async () => {
+test('nightly hard-stops invalid generation and opens a draft PR for review', async () => {
   const workflow = parseYaml(await readFile(new URL('../.github/workflows/update-docs.yml', import.meta.url), 'utf8'));
   const job = workflow.jobs['update-docs'];
   const steps = job.steps;
   const generate = steps.findIndex((step) => step.run === 'npm run build:config-page');
   const validate = steps.findIndex((step) => step.run?.includes('validate-mdx.mjs'));
   const fingerprint = steps.findIndex((step) => step.run === 'npm run generate:mintlify-deployment');
-  const parity = steps.findIndex((step) => step.id === 'parity');
   const commit = steps.findIndex((step) => step.run?.includes('git commit'));
-  const report = steps.findIndex((step) => step.run?.includes('exit 1'));
-  assert.ok(generate > 0 && generate < validate && validate < parity && parity < commit && commit < report);
-  assert.ok(validate < fingerprint && fingerprint < parity);
+  assert.ok(generate > 0 && generate < validate && validate < fingerprint && fingerprint < commit);
   assert.equal(steps[fingerprint].if, "steps.changes.outputs.changed == 'true'");
-  assert.notEqual(steps[fingerprint]['continue-on-error'], true);
-  assert.notEqual(steps[generate]['continue-on-error'], true);
-  assert.notEqual(steps[validate]['continue-on-error'], true);
-  assert.equal(steps[parity]['continue-on-error'], true);
-  assert.equal(steps[parity].run, 'npm run test:mintlify-content-parity');
-  assert.equal(steps[report].if, "steps.parity.outcome == 'failure'");
+  for (const step of [generate, validate, fingerprint, commit]) {
+    assert.notEqual(steps[step]['continue-on-error'], true, steps[step].name);
+  }
   assert.equal(job.env.UPDATE_FILE, 'docs-site/getting-started/setup-openfga/configuration.mdx');
   assert.equal(job.env.DEPLOYMENT_FILE, 'docs-site/docs.json');
   assert.match(steps[commit].run, /git add "\$UPDATE_FILE" "\$DEPLOYMENT_FILE"/);
   assert.match(steps[commit].run, /--draft/);
   assert.match(steps[commit].run, /--force-with-lease="refs\/heads\/\$\{UPDATE_BRANCH\}:\$\{remote_sha\}"/);
-  assert.match(steps[commit].run, /expectations were NOT regenerated/);
+  assert.match(steps[commit].run, /Review the release schema changes/);
   assert.ok(steps.find((step) => step.id === 'app-token').uses.startsWith('actions/create-github-app-token@'));
   for (const step of steps.filter((step) => step.run)) {
     const checked = spawnSync('bash', ['-n'], { input: step.run, encoding: 'utf8' });
