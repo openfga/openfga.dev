@@ -14,9 +14,9 @@
 | Read-only API reference | [`docs-site/docs.json`](docs-site/docs.json) and the upstream OpenAPI schema | Mintlify at `/docs/api/service/...` |
 | Home, Project, Community, and Blog | `src/`, `blog/`, and `static/` | Docusaurus on GitHub Pages |
 
-The Mintlify URLs above describe the planned `/docs` deployment. Legacy `/api/service` URLs and Swagger bookmarks remain supported through the website compatibility page and redirects. Documentation paths requested without `/docs` (for example, `/modeling/overview`) redirect to their `/docs/...` pages.
+Mintlify serves the documentation and API reference at `https://openfga.dev/docs`. Legacy `/api/service` URLs and Swagger bookmarks remain supported through the website compatibility page and redirects. Documentation paths requested without `/docs` (for example, `/modeling/overview`) redirect to their `/docs/...` pages.
 
-See the [Mintlify contributor guide](docs-site/README.md) for authoring, API samples, media, and migration requirements. The [maintenance scripts guide](scripts/README.md) covers generated files, sitemaps, LLM resources, and upstream updates.
+See the [Mintlify contributor guide](docs-site/README.md) for authoring, API samples, media, and deployment. The [maintenance scripts guide](scripts/README.md) covers generated files, sitemaps, LLM resources, and upstream updates.
 
 ## Getting Started
 
@@ -65,11 +65,10 @@ Open `http://localhost:3000/`. This runs Docusaurus, not the Mintlify docs. Webs
 After editing native sources, run from the repository root:
 
 ```bash
-npm run generate:mintlify-deployment
 npm run check:mintlify
 ```
 
-Commit the updated fingerprint in `docs-site/docs.json` with native-source changes. API checks require network access and reject an upstream schema that differs from the recorded digest.
+Content changes don't need fixture, contract, or deployment-fingerprint updates. API checks require network access and reject an upstream schema that differs from the recorded digest.
 
 The [quality workflow](.github/workflows/mintlify-quality.yml) runs repository checks, not Mintlify CLI or hosted acceptance. See [validation details and limits](docs-site/README.md#validating-authoring-changes).
 
@@ -84,7 +83,7 @@ npm run serve
 
 Output goes to `build/`; Mintlify deploys `docs-site/` separately. GitHub Pages continues publishing `gh-pages`. Hosting Mintlify at `/docs` does not require changing the repository's default branch.
 
-The planned public setup uses Mintlify's dashboard-provided Cloudflare Worker; this repository does not maintain a Worker. Deployment settings, workflow changes, and public cutover remain owner-managed. Follow the [deployment guide](docs-site/README.md#split-site-deployment) before publishing the migrated website.
+Public routing uses Mintlify's dashboard-provided Cloudflare Worker; this repository does not maintain a Worker. Deployment settings and workflow changes remain owner-managed. See the [deployment guide](docs-site/README.md#split-site-deployment).
 
 ## PR Preview
 
@@ -100,7 +99,7 @@ Use the separate Mintlify deployment preview for product docs and the API refere
 
 Please review the [Contributing Guidelines](https://github.com/openfga/.github/blob/main/CONTRIBUTING.md) before sending a PR or opening an issue.
 
-Migration pull requests target `docs-next`. Preserve existing article content and navigation during migration; propose editorial changes separately. See the [migration review checklist](docs-site/README.md#migration-review-checklist).
+Pull requests target `docs-next`, the default branch. Content edits, new pages, and fixes follow normal review; they don't need fixture, contract, or deployment-fingerprint updates. See [Authoring pages](docs-site/README.md#authoring-pages).
 
 ## Issue Reporting
 

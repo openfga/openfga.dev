@@ -4,6 +4,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import test from 'node:test';
 import { prepareSiteSitemap } from './prepare-site-sitemap.mjs';
+import { validateSourceCoverage } from '../docs-site/scripts/validate-source-coverage.mjs';
 import {
   createCompositeSitemap,
   nativeSitemapRoutes,
@@ -196,7 +197,7 @@ const deployedPunctuationRoutes = [
   '/docs/api/service/authzenservice/[experimental]-search-for-subjects-with-access-to-a-resource',
 ];
 
-test('repository navigation and source files contribute exactly 110 docs and all 24 generated API pages offline', async () => {
+test('repository navigation and source files contribute every owned doc and all 24 generated API pages offline', async () => {
   assert.equal(metadata.canonical.sha256, 'b2cdbdf0878ea278d198ab8bf21a8c3dc0bd6381f412e1f0a9d543791693fc3e',
     'Review the offline canonical summary fixture when adopting API changes');
   const config = JSON.parse(await fs.readFile(new URL('../docs-site/docs.json', import.meta.url), 'utf8'));
@@ -208,11 +209,12 @@ test('repository navigation and source files contribute exactly 110 docs and all
     schema.paths[path][method] = { summary: canonicalSummaries[operationId] };
   }
   const inventory = nativeSitemapRoutes({ config, schema, docFiles: files.filter((file) => file.endsWith('.mdx')) });
-  assert.equal(inventory.docsRoutes.size, 110);
+  const { ownedPages } = validateSourceCoverage({ logger: () => {} });
+  assert.equal(inventory.docsRoutes.size, ownedPages.length);
   assert.equal(inventory.apiRoutes.size, 24);
-  assert.equal(inventory.routes.size, 134);
+  assert.equal(inventory.routes.size, ownedPages.length + 24);
   const composite = createCompositeSitemap({ websiteXml, nativeRoutes: inventory.routes });
-  assert.equal(parseSitemap(composite.docsXml).locations.length, 134);
+  assert.equal(parseSitemap(composite.docsXml).locations.length, ownedPages.length + 24);
   for (const { source, destination } of config.redirects.filter(({ source }) => source.startsWith('/api/service/'))) {
     assert.ok(!inventory.apiRoutes.has(`/docs${source}`), `Historical URL must not enter the sitemap: ${source}`);
     assert.ok(inventory.apiRoutes.has(`/docs${destination}`), `Missing renamed canonical API URL: ${destination}`);

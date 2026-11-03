@@ -76,15 +76,15 @@ one exists and reaches a real `/docs` page.
 | File | When to run; generated output |
 | --- | --- |
 | `generate-legacy-api-routes.mjs` | `npm run check:legacy-api-routes` verifies that every historical Swagger/path alias reaches the same current operation, following explicit Mintlify redirects. `npm run generate:legacy-api-routes` preserves existing aliases rather than overwriting them with new summary slugs; operation additions/removals require manual review. |
-| `native-deployment-fingerprint.mjs` | After native-source changes, run `npm run generate:mintlify-deployment`; commit the hidden source marker in `docs-site/docs.json`. `npm run check:mintlify-deployment` rejects stale markers. The digest covers tracked and unignored files under `docs-site/`, excluding the marker itself. |
+| `native-deployment-fingerprint.mjs` | Before verifying a deployment, run `npm run generate:mintlify-deployment` and commit the hidden source marker in `docs-site/docs.json`; `npm run check:mintlify-deployment` rejects stale markers. Ordinary pull requests don't refresh it: builds and `check:mintlify` run `npm run check:mintlify-sources`, which only rejects Git LFS pointers. The digest covers tracked and unignored files under `docs-site/`, excluding the marker itself. |
 | `update-config-page.mjs` | Run `npm run build:config-page` to fetch the latest official server release/schema and replace only the marked version/table region of `docs-site/getting-started/setup-openfga/configuration.mdx`, preserving authored content. |
 | `update-api-samples.mjs`, `report-api-samples.mjs` | Run `npm run update:api-samples -- --report .api-samples-report.json` to fetch the exact live API URL once, validate unchanged reviewed sample inputs and historical aliases, and prepare compatible metadata/overlay/fingerprint updates. Reports must stay outside `docs-site/`; remove local reports after review. Reporting to GitHub is a separate, explicitly invoked command. |
 
 Ordinary builds check freshness; they do not regenerate those committed outputs
 or fetch the latest server release. The [nightly updater](../.github/workflows/update-docs.yml)
 creates/updates **draft PRs** for configuration changes and refreshes the fingerprint.
-Manual configuration updates also need a fingerprint refresh. Review release changes
-against independent parity fixtures; never regenerate those fixtures from this output.
+Review release changes in the generated table and update hand-authored content outside
+the markers when needed.
 API-dependent checks fetch the live schema and verify its last-generated digest,
 so builds are not fully offline and deliberately fail if upstream has moved.
 
@@ -94,7 +94,7 @@ The exact source is
 `https://raw.githubusercontent.com/openfga/api/refs/heads/main/docs/openapiv3/apidocs.openapi.json`.
 The stored SHA-256 identifies the last successfully generated snapshot, not an
 immutable hosting revision. The updater never derives sample inputs from defaults,
-changes SDK support decisions, or regenerates independent fixtures.
+or changes SDK support decisions.
 
 The [API workflow](../.github/workflows/update-api-samples.yml) runs nightly at
 05:30 UTC and through `workflow_dispatch`, always starting from the explicit
