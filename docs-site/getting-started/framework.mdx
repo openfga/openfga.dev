@@ -289,13 +289,14 @@ Before we can call OpenFGA to protect the `/read/{document}` route, we need to v
     const { OpenFgaClient } = require('@openfga/sdk'); // OR import { OpenFgaClient } from '@openfga/sdk';
 
     module.exports = fp(async function (fastify, opts) {
+      // configure the openfga api client once and reuse it across requests
+      const fgaClient = new OpenFgaClient({
+        apiUrl: process.env.FGA_API_URL, // required, e.g. https://api.fga.example
+        storeId: process.env.FGA_STORE_ID,
+      });
+
       fastify.decorate('authorize', async function (request, reply) {
         try {
-          // configure the openfga api client
-          const fgaClient = new OpenFgaClient({
-            apiUrl: process.env.FGA_API_URL, // required, e.g. https://api.fga.example
-            storeId: process.env.FGA_STORE_ID,
-          });
           const { allowed } = await fgaClient.check({
             user: request.user,
             relation: request.relation,
@@ -403,9 +404,19 @@ Before we can call OpenFGA to protect the `/read/{document}` route, we need to v
         SigningKey:    privateKey.Public(),
       }))
 
+      // Configure the OpenFGA client once and reuse it across requests
+      fgaClient, err := NewSdkClient(&ClientConfiguration{
+        ApiUrl:               os.Getenv("FGA_API_URL"), // required, e.g. https://api.fga.example
+        StoreId:              os.Getenv("FGA_STORE_ID"), // optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
+        AuthorizationModelId: os.Getenv("FGA_MODEL_ID"),  // optional, can be overridden per request
+      })
+      if err != nil {
+        log.Fatalf("NewSdkClient: %v", err)
+      }
+
       app.Use("/read/:document", preauthorize)
 
-      app.Use(checkAuthorization)
+      app.Use(checkAuthorization(fgaClient))
 
       app.Get("/read/:document", read)
 
@@ -444,34 +455,26 @@ Before we can call OpenFGA to protect the `/read/{document}` route, we need to v
     }
 
     // Middleware to check whether user is authorized to access document
-    func checkAuthorization(c *fiber.Ctx) error {
-      fgaClient, err := NewSdkClient(&ClientConfiguration{
-        ApiUrl:               os.Getenv("FGA_API_URL"), // required, e.g. https://api.fga.example
-        StoreId:              os.Getenv("FGA_STORE_ID"), // optional, not needed for `CreateStore` and `ListStores`, required before calling for all other methods
-        AuthorizationModelId: os.Getenv("FGA_MODEL_ID"),  // optional, can be overridden per request
-      })
+    func checkAuthorization(fgaClient *OpenFgaClient) fiber.Handler {
+      return func(c *fiber.Ctx) error {
+        body := ClientCheckRequest{
+          User:     c.Locals("username").(string),
+          Relation: c.Locals("relation").(string),
+          Object:   c.Locals("object").(string),
+        }
+        data, err := fgaClient.Check(context.Background()).Body(body).Execute()
 
-      if err != nil {
-        return fiber.NewError(fiber.StatusServiceUnavailable, "Unable to build OpenFGA client")
+        if err != nil {
+          return fiber.NewError(fiber.StatusServiceUnavailable, "Unable to check for authorization")
+        }
+
+        if !(*data.Allowed) {
+          return fiber.NewError(fiber.StatusForbidden, "Forbidden to access document")
+        }
+
+        // Go to the next middleware
+        return c.Next()
       }
-
-      body := ClientCheckRequest{
-        User:     c.Locals("username").(string),
-        Relation: c.Locals("relation").(string),
-        Object:   c.Locals("object").(string),
-      }
-      data, err := fgaClient.Check(context.Background()).Body(body).Execute()
-
-      if err != nil {
-        return fiber.NewError(fiber.StatusServiceUnavailable, "Unable to check for authorization")
-      }
-
-      if !(*data.Allowed) {
-        return fiber.NewError(fiber.StatusForbidden, "Forbidden to access document")
-      }
-
-      // Go to the next middleware
-      return c.Next()
     }
     ```
   </Tab>
