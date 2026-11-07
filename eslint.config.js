@@ -1,7 +1,7 @@
 import js from '@eslint/js';
 import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
-import react from 'eslint-plugin-react';
+import reactPlugin from '@eslint-react/eslint-plugin';
 import globals from 'globals';
 
 export default [
@@ -28,23 +28,38 @@ export default [
       },
     },
     plugins: {
-      react,
       '@typescript-eslint': tseslint,
     },
     rules: {
       ...tseslint.configs.recommended.rules,
       ...tseslint.configs['eslint-recommended'].rules,
-      ...react.configs.recommended.rules,
-      ...react.configs['jsx-runtime'].rules,
       'require-jsdoc': 0,
-      'react/jsx-key': [0],
       'object-curly-spacing': ['error', 'always'],
       'no-useless-escape': 'off',
     },
-    settings: {
-      react: {
-        version: 'detect',
-      },
+  },
+  {
+    // Same intent as eslint-plugin-react `recommended` + `jsx-runtime`.
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    plugins: { '@eslint-react': reactPlugin },
+    rules: {
+      '@eslint-react/jsx-no-comment-textnodes': 'error',
+      '@eslint-react/jsx-no-children-prop': 'error',
+      '@eslint-react/dom-no-unsafe-target-blank': 'error',
+      '@eslint-react/dom-no-unknown-property': 'error',
+      '@eslint-react/dom-no-dangerously-set-innerhtml-with-children': 'error',
+      '@eslint-react/dom-no-find-dom-node': 'error',
+      '@eslint-react/dom-no-render-return-value': 'error',
+      '@eslint-react/dom-no-render': 'error',
+      '@eslint-react/dom-no-hydrate': 'error',
+      '@eslint-react/no-direct-mutation-state': 'error',
+      '@eslint-react/no-component-will-mount': 'error',
+      '@eslint-react/no-component-will-receive-props': 'error',
+      '@eslint-react/no-component-will-update': 'error',
+      '@eslint-react/no-unsafe-component-will-mount': 'error',
+      '@eslint-react/no-unsafe-component-will-receive-props': 'error',
+      '@eslint-react/no-unsafe-component-will-update': 'error',
+      '@eslint-react/no-missing-component-display-name': 'error',
     },
   },
   {
@@ -74,10 +89,8 @@ export default [
       },
     },
     rules: {
-      'react/jsx-no-undef': 'off',
-      'react/prop-types': 'off',
       // Mintlify consumes filename on CodeGroup children as the accessible tab label.
-      'react/no-unknown-property': ['error', { ignore: ['filename'] }],
+      '@eslint-react/dom-no-unknown-property': ['error', { ignore: ['filename'] }],
     },
   },
   {
