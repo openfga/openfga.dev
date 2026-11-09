@@ -474,10 +474,10 @@ test('viewer semantic classes and centralized palettes cover DSL and JSON states
   const jsonTypes = ['json-key', 'json-string', 'json-number', 'json-keyword', 'json-punctuation'];
 
   for (const type of [...dslTypes, ...jsonTypes]) {
-    assert.match(css, new RegExp(`data-token=['\"]${type}['\"]`), `${type} CSS selector`);
+    assert.match(css, new RegExp(`data-token=['"]${type}['"]`), `${type} CSS selector`);
   }
   for (const type of jsonTypes) {
-    assert.match(authzViewer, new RegExp(`['\"]${type}['\"]`), `${type} emitted by JSON tokenizer`);
+    assert.match(authzViewer, new RegExp(`['"]${type}['"]`), `${type} emitted by JSON tokenizer`);
   }
   for (const source of [authzViewer, codeBlock]) {
     assert.match(source, /className="openfga-code-viewer"/);

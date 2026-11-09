@@ -146,7 +146,7 @@ export const AuthzModelSnippetViewer = ({
     }
 
     // Punctuation
-    const puncRe = /[{}\[\]:,]/g;
+    const puncRe = /[{}[\]:,]/g;
     while ((m = puncRe.exec(text))) {
       const s = m.index;
       if (!inStr(s, s + 1)) claims.push({ s, e: s + 1, type: 'json-punctuation' });
