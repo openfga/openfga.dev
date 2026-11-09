@@ -152,6 +152,13 @@ An **object** represents an entity in the system. Users' relationships to it are
   * `organization:org_ajUc9kJ`
   * `document:new-roadmap`
 
+  An object is written as `<type>:<id>`. The identifier can contain most characters, such as `/`, `|`, `@`, `.` and non-ASCII characters, with the following restrictions:
+
+  * It can't be empty.
+  * It can't contain `:`, `#` or whitespace.
+  * It can't be `*`, because `<type>:*` represents [type bound public access](#what-is-type-bound-public-access).
+  * The whole object, including the type and the `:`, can be at most 256 characters long.
+
   [User](#what-is-a-user), [relation](#what-is-a-relation) and object are the building blocks for [relationship tuples](#what-is-a-relationship-tuple).
 
   For an example, see [Direct Access](/modeling/direct-access).
@@ -170,6 +177,12 @@ A **user** is an entity in the system that can be related to an object.
   * any object: e.g. `workspace:fb83c013-3060-41f4-9590-d3233a67938f`, `repository:auth0/express-jwt` or `organization:org_ajUc9kJ`
   * a group or a set of users (also called a **userset**): e.g. `organization:org_ajUc9kJ#members`, which represents the set of users related to the object `organization:org_ajUc9kJ` as `member`
   * everyone, using the special syntax: `*`
+
+  A user is written as `<type>:<id>`, or as `<type>:<id>#<relation>` for a userset. The identifier follows the same rules as an [object](#what-is-an-object) identifier, with these differences:
+
+  * It can be `*` to represent [type bound public access](#what-is-type-bound-public-access) (for example, `user:*`), if the authorization model allows it.
+  * In a userset, it can't contain `*`.
+  * The whole user, including the type and any relation, can be at most 512 bytes long.
 
   User, [relation](#what-is-a-relation) and [object](#what-is-an-object) are the building blocks for [relationship tuples](#what-is-a-relationship-tuple).
 
