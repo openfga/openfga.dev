@@ -331,6 +331,13 @@ This will create a new `openfga` volume to store the SQLite database, run `openf
 
 To configure with pre-shared authentication and enabling TLS in http server with Docker.
 
+<Note>
+The OpenFGA image runs as a non-root user (UID `65532`), which must be able to read the certificate and key files. If the key file is only readable by its owner (for example, mode `0600`), the server fails to start with a `permission denied` error. To fix this, make that user the owner of the key file on the host, for example with `sudo chown 65532 server.key`.
+</Note>
+
+<Tabs>
+  <Tab title="Docker">
+
 1. Copy the certificate and key files to your Docker container.
 2. Run with the following command:
 
@@ -342,6 +349,44 @@ docker run --name openfga --network=openfga -p 3000:3000 -p 8080:8080 -p 8081:80
     --http-tls-cert="/Users/myuser/key/server.crt" \
     --http-tls-key="/Users/myuser/key/server.key"
 ```
+
+  </Tab>
+  <Tab title="Docker Compose">
+
+1. Place the certificate and key files in a `certs` directory next to your `docker-compose.yaml` file. The directory is mounted read-only into the container at `/certs`.
+2. Copy the below code block into a local file named: `docker-compose.yaml`
+
+```yaml
+services:
+  openfga:
+    image: openfga/openfga:latest
+    container_name: openfga
+    command: run
+    environment:
+      - OPENFGA_AUTHN_METHOD=preshared
+      - OPENFGA_AUTHN_PRESHARED_KEYS=key1,key2
+      - OPENFGA_HTTP_TLS_ENABLED=true
+      - OPENFGA_HTTP_TLS_CERT=/certs/server.crt
+      - OPENFGA_HTTP_TLS_KEY=/certs/server.key
+    volumes:
+      - ./certs:/certs:ro
+    ports:
+      # Needed for the http server
+      - "8080:8080"
+      # Needed for the grpc server (if used)
+      - "8081:8081"
+```
+
+3. In a terminal, navigate to that directory and run:
+
+```bash
+docker-compose up
+```
+
+  </Tab>
+</Tabs>
+
+Requests to OpenFGA must then include one of the configured keys in an `Authorization: Bearer <YOUR-KEY-HERE>` header. To use pre-shared keys with a database, add the same settings to the `openfga` service of one of the Docker Compose examples above.
 
 ## OIDC authentication
 
