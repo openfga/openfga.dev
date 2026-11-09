@@ -11,6 +11,10 @@ export default defineConfig([
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     extends: [tseslint.configs.recommended],
+    rules: {
+      // The preset defers this to tsc, which only reports it with allowUnreachableCode: false (unset here).
+      'no-unreachable': 'error',
+    },
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -33,9 +37,13 @@ export default defineConfig([
     //   no-find-dom-node        -> dom-no-find-dom-node
     //   no-render-return-value  -> dom-no-render-return-value
     //   no-unknown-property     -> dom-no-unknown-property
-    //   no-unsafe, no-deprecated (React 18 lifecycle and legacy DOM APIs) -> no-*component-will-*, dom-no-render, dom-no-hydrate
-    //   display-name            -> no-missing-component-display-name
-    // Not carried over: no-is-mounted, require-render-return, no-unescaped-entities (no equivalent);
+    //   no-deprecated (React 18 lifecycle, render, hydrate) -> no-component-will-*, dom-no-render, dom-no-hydrate
+    //   display-name            -> no-missing-component-display-name (memo/forwardRef only)
+    // Narrower: dom-no-unsafe-target-blank skips dynamic hrefs. Stricter: no-unsafe-component-will-* (react/no-unsafe was off).
+    // jsx-no-undef and jsx-uses-vars are covered by no-undef, no-unused-vars and tsc.
+    // No equivalent: no-is-mounted, require-render-return, no-unescaped-entities, no-string-refs, prop-types,
+    // jsx-no-duplicate-props (tsc still catches it in .tsx), and no-deprecated for createClass, PropTypes,
+    // unmountComponentAtNode, renderToNodeStream.
     // jsx-key stays off as before, so no-missing-key is intentionally not enabled.
     files: ['**/*.{js,jsx,ts,tsx}'],
     plugins: { '@eslint-react': reactPlugin },
@@ -74,6 +82,8 @@ export default defineConfig([
       '@eslint-react/dom-no-unknown-property': ['error', { ignore: ['filename'] }],
     },
   },
-  // Must stay last: turns off any rule that conflicts with Prettier.
+  // Must stay last apart from the override below: turns off any rule that conflicts with Prettier.
   eslintConfigPrettier,
+  // format:check only covers src/**, so keep this ASI guard for docs-site/ and scripts/.
+  { rules: { 'no-unexpected-multiline': 'error' } },
 ]);
