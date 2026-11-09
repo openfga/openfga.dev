@@ -20,7 +20,7 @@ See the [Mintlify contributor guide](docs-site/README.md) for authoring, API sam
 
 ## Getting Started
 
-Use Node.js 22. Git, Bash, Python 3, and curl are also required for the repository quality checks.
+Use Node.js 22.13 or later. Git, Bash, Python 3, and curl are also required for the repository quality checks.
 
 ```bash
 git clone https://github.com/openfga/openfga.dev.git

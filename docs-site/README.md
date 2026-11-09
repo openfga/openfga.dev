@@ -20,7 +20,7 @@ The [hosted Mintlify site](https://fga.mintlify.site/docs/fga) must be configure
 
 ## Running locally
 
-Use Node.js 22 and the repository's lockfile. Git, Bash, Python 3, and curl are also needed for the full quality checks.
+Use Node.js 22.13 or later and the repository's lockfile. Git, Bash, Python 3, and curl are also needed for the full quality checks.
 
 ```bash
 # From the repository root
