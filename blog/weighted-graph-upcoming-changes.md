@@ -320,7 +320,7 @@ type document
     define viewer: [user] or viewer from parent
 ```
 
-To fix it, add a `viewer` relation to `group`. Here it aliases `member`, per Fix 1 of [Missing Relation](#1-missing-relation):
+To fix it, add a `viewer` relation to `group`. To keep current results unchanged, use `define viewer: [user]`. The example below aliases `member`, per Fix 1 of [Missing Relation](#1-missing-relation), which also makes group members viewers of documents whose parent is that group:
 
 ```dsl.openfga
 model
