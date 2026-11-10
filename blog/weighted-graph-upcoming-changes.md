@@ -3,7 +3,7 @@ title: "OpenFGA's Move to Weighted Graph Resolution: What's Changing"
 description: "OpenFGA is transitioning to a weighted graph-based resolution algorithm. Learn what's changing, why, and how to migrate your models."
 slug: weighted-graph-upcoming-changes
 date: 2026-07-21
-last_update: { date: '2026-07-21' }
+last_update: { date: '2026-11-10' }
 authors: tylernix
 tags: [announcement, check, migration]
 image: https://openfga.dev/img/og-rich-embed.png
@@ -12,7 +12,7 @@ hide_table_of_contents: false
 
 # OpenFGA's Move to Weighted Graph Resolution: What's Changing
 
-OpenFGA is continuing to roll out a **weighted graph-based resolution algorithm** across its core query endpoints — Check, BatchCheck, ListObjects, Expand, and ListUsers. ListObjects already runs on this updated algorithm, and Check is next. As a precaution, all core query endpoints currently fall back to the legacy algorithm for models that are incompatible with the weighted graph, but **that fallback option will be removed soon**. A date for the final changeover has not been set at this time. 
+OpenFGA is continuing to roll out a **weighted graph-based resolution algorithm** across its core query endpoints — Check, BatchCheck, ListObjects, Expand, and ListUsers. Check, BatchCheck, and ListObjects already run on this updated algorithm, and ListUsers and Expand are next. As a precaution, all core query endpoints currently fall back to the legacy algorithm for models that are incompatible with the weighted graph, but **that fallback option will be removed soon**. A date for the final changeover has not been set at this time. 
 
 This post explains which modeling and check patterns are incompatible with the weighted graph algorithm, and how to migrate before the fallback is removed. 
 
@@ -284,16 +284,76 @@ listUsers("document:d1", "viewer") → [user:alice, user:bob]
 
 > **Migration impact:** This self-referential userset pattern (asking whether a group defined on an object has access to that same object) is uncommon. Search your application for check calls  where the user field is a group reference and the object and the group reference share the same type and ID. If you find any, replace them with checks against specific users, or use ListUsers to find who actually has the relation.
 
+## How to validate weighted-graph compatibility using the CLI
+
+To check a current or future model for weighted-graph compatibility, validate it using the OpenFGA CLI. Save the model as `model.fga` and run both commands:
+
+```bash
+fga model validate --file model.fga
+fga model validate --file model.fga --weighted-graph
+```
+
+The first command runs normal model validation. 
+The second runs normal model validation + checks for weighted-graph compatibility.
+
+If a model is incompatible, the command exits with an error and describes the issue to fix. 
+
+For example, this model passes normal validation but fails the weighted-graph validation: `weighted-graph: invalid model: Model cannot be parsed. group type does not have defined viewer relation`. It has a [Missing Relation](#1-missing-relation): `document.parent` allows both `project` and `group`, but only `project` defines a `viewer` relation.
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type project
+  relations
+    define viewer: [user]
+
+type group
+  relations
+    define member: [user]
+
+type document
+  relations
+    define parent: [project, group]
+    define viewer: [user] or viewer from parent
+```
+
+To fix it, add a `viewer` relation to `group`. Here it aliases `member`, per Fix 1 of [Missing Relation](#1-missing-relation):
+
+```dsl.openfga
+model
+  schema 1.1
+
+type user
+
+type project
+  relations
+    define viewer: [user]
+
+type group
+  relations
+    define member: [user]
+    define viewer: member # added to pass weighted-graph validation
+
+type document
+  relations
+    define parent: [project, group]
+    define viewer: [user] or viewer from parent
+```
+
+Run weighted-graph validation again. Now it returns `"is_valid": true`.
+
 ---
 
 ## Timeline
 
 **Now**: 
-- ListObjects runs on the weighted graph algorithm, with a fallback to the legacy algorithm for incompatible models. 
+- Check/BatchCheck and ListObjects runs on the weighted graph algorithm, with a fallback to the legacy algorithm for incompatible models.
 
 **Next**: 
-- All core query endpoints will transition to the weighted graph algorithm as default, with a fallback available for a period of time.
-- A CLI command `fga model validate` to test if your model contains any issues and needs a migration will be coming soon.
+- All core query endpoints (ListUsers/Expand) will transition to the weighted graph algorithm as default, with a fallback available for a period of time.
 - We will be announcing a final deadline for migrating incompatible models, after which new OpenFGA versions will only support the weighted graph algorithm. 
 
 **Later**: 
