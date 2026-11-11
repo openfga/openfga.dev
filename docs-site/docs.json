@@ -105,6 +105,7 @@
                   "getting-started/setup-openfga/configuration",
                   "getting-started/setup-openfga/docker",
                   "getting-started/setup-openfga/kubernetes",
+                  "getting-started/setup-openfga/go-library",
                   "getting-started/setup-openfga/access-control",
                   "getting-started/setup-openfga/playground",
                   "getting-started/setup-openfga/reporting-runtime-issues"

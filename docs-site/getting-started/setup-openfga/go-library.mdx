@@ -1,0 +1,201 @@
+---
+title: Use OpenFGA as a Go Library
+description: Embed the OpenFGA server in a Go application and call its API in-process, without running a separate service.
+sidebarTitle: "Use as a Go Library"
+---
+
+OpenFGA is written in Go, and its server can also be imported as a library. The [`server`](https://pkg.go.dev/github.com/openfga/openfga/pkg/server) package runs OpenFGA inside your own Go process: your code calls the same API methods that the standalone server exposes over HTTP and gRPC, but as regular function calls, without the networking layer.
+
+This is useful when you want to ship authorization within a single Go binary, for example in a self-hosted product, a CLI, or in tests.
+
+<Note>
+When you embed OpenFGA, only your process can call it. The library doesn't start the HTTP and gRPC APIs, the Playground, or the metrics and profiling endpoints, and it doesn't authenticate callers, so the [SDKs](/getting-started/install-sdk) and the [CLI](/getting-started/cli) cannot connect to it. Run the [standalone server](/getting-started/setup-openfga/configure-openfga) if other services or tools need to reach OpenFGA.
+</Note>
+
+## Before you start
+
+1. You have a Go module for your application, using at least the Go version required by the [`github.com/openfga/openfga`](https://pkg.go.dev/github.com/openfga/openfga) module.
+2. You are familiar with the [OpenFGA concepts](/concepts) and know how to [configure an authorization model](/getting-started/configure-model).
+
+## Step by step
+
+### 01. Add the dependencies
+
+Add OpenFGA to your module:
+
+```bash
+go get github.com/openfga/openfga@latest
+```
+
+The examples below also use the API request and response types from `github.com/openfga/api/proto` and the DSL transformer from `github.com/openfga/language/pkg/go`. OpenFGA already depends on both modules; run `go mod tidy` after adding the imports so that your `go.mod` lists them at the versions OpenFGA requires.
+
+### 02. Create a datastore
+
+OpenFGA needs a datastore to store authorization models and relationship tuples. The library supports the same storage engines as the standalone server.
+
+<Tabs>
+  <Tab title="Memory">
+    The memory datastore needs no setup, but all data is lost when your process exits. Use it for tests and experiments only.
+
+    ```go
+    import "github.com/openfga/openfga/pkg/storage/memory"
+
+    datastore := memory.New()
+    ```
+  </Tab>
+
+  <Tab title="Postgres">
+    Run the database migrations before you create the datastore. This is the equivalent of the `openfga migrate` command: it creates the tables the first time and upgrades them when you update the OpenFGA dependency. Migrations that were already applied are skipped, so you can run them every time your application starts.
+
+    ```go
+    import (
+        "log"
+        "time"
+
+        "github.com/openfga/openfga/pkg/storage/migrate"
+        "github.com/openfga/openfga/pkg/storage/postgres"
+        "github.com/openfga/openfga/pkg/storage/sqlcommon"
+    )
+
+    uri := "postgres://postgres:password@localhost:5432/postgres?sslmode=disable"
+
+    err := migrate.RunMigrations(migrate.MigrationConfig{
+        Engine:      "postgres",
+        URI:         uri,
+        Timeout:     time.Minute,     // how long to retry connecting to the database
+        PingTimeout: 5 * time.Second, // timeout of each connection attempt
+    })
+    if err != nil {
+        log.Fatalf("failed to run the OpenFGA migrations: %v", err)
+    }
+
+    datastore, err := postgres.New(uri, sqlcommon.NewConfig())
+    if err != nil {
+        log.Fatalf("failed to create the OpenFGA datastore: %v", err)
+    }
+    ```
+
+    Set both `Timeout` and `PingTimeout`. With a zero `PingTimeout`, every connection attempt times out immediately, and with a zero `Timeout`, `RunMigrations` keeps retrying until the database is reachable. `RunMigrations` uses the database driver registered by the datastore package, so import the datastore package (here, `postgres`) in the same program.
+
+    For MySQL and SQLite, use the `mysql` and `sqlite` packages from `github.com/openfga/openfga/pkg/storage` instead, which provide a `New` function with the same signature, and set `Engine` to `mysql` or `sqlite`. The `sqlcommon.NewConfig` options, such as `sqlcommon.WithMaxOpenConns`, correspond to the `--datastore-*` [configuration options](/getting-started/setup-openfga/configuration) of the standalone server. Options you don't set keep the defaults of the database driver, which can differ from the standalone server's defaults: for example, the standalone server allows up to 30 open connections by default.
+  </Tab>
+</Tabs>
+
+### 03. Create the server
+
+Pass the datastore to [`server.NewServerWithOpts`](https://pkg.go.dev/github.com/openfga/openfga/pkg/server#NewServerWithOpts). Create the server once when your application starts and reuse it for every request.
+
+```go
+import (
+    "log"
+
+    "github.com/openfga/openfga/pkg/server"
+)
+
+fga, err := server.NewServerWithOpts(
+    server.WithDatastore(datastore),
+    // more options, for example:
+    server.WithCheckQueryCacheEnabled(true),
+)
+if err != nil {
+    datastore.Close()
+    log.Fatalf("failed to create the OpenFGA server: %v", err)
+}
+defer fga.Close()
+```
+
+`server.WithDatastore` is the only required option. The other `With...` options correspond to the [configuration options](/getting-started/setup-openfga/configuration) of the standalone server; see the [package documentation](https://pkg.go.dev/github.com/openfga/openfga/pkg/server#OpenFGAServiceV1Option) for the full list.
+
+`fga.Close()` stops the server's background work and also closes the datastore, so you don't need to close the datastore separately once the server has been created.
+
+### 04. Call the API
+
+The server has a method for each [API endpoint](/api/service), such as `CreateStore`, `WriteAuthorizationModel`, `Write`, `Check`, `ListObjects` and `ListUsers`. They take and return the same messages as the gRPC API, defined in the `openfgav1` package.
+
+```go
+import (
+    "context"
+    "fmt"
+    "log"
+
+    openfgav1 "github.com/openfga/api/proto/openfga/v1"
+    "github.com/openfga/language/pkg/go/transformer"
+)
+
+ctx := context.Background()
+
+// Create a store
+store, err := fga.CreateStore(ctx, &openfgav1.CreateStoreRequest{Name: "demo"})
+if err != nil {
+    log.Fatal(err)
+}
+
+// Write an authorization model, converted from the DSL
+model, err := transformer.TransformDSLToProto(`model
+  schema 1.1
+
+type user
+
+type document
+  relations
+    define reader: [user]`)
+if err != nil {
+    log.Fatal(err)
+}
+
+modelResponse, err := fga.WriteAuthorizationModel(ctx, &openfgav1.WriteAuthorizationModelRequest{
+    StoreId:         store.GetId(),
+    SchemaVersion:   model.GetSchemaVersion(),
+    TypeDefinitions: model.GetTypeDefinitions(),
+    Conditions:      model.GetConditions(),
+})
+if err != nil {
+    log.Fatal(err)
+}
+
+// Write a relationship tuple
+_, err = fga.Write(ctx, &openfgav1.WriteRequest{
+    StoreId:              store.GetId(),
+    AuthorizationModelId: modelResponse.GetAuthorizationModelId(),
+    Writes: &openfgav1.WriteRequestWrites{
+        TupleKeys: []*openfgav1.TupleKey{
+            {User: "user:anne", Relation: "reader", Object: "document:budget"},
+        },
+    },
+})
+if err != nil {
+    log.Fatal(err)
+}
+
+// Check whether anne can read the budget document
+checkResponse, err := fga.Check(ctx, &openfgav1.CheckRequest{
+    StoreId:              store.GetId(),
+    AuthorizationModelId: modelResponse.GetAuthorizationModelId(),
+    TupleKey: &openfgav1.CheckRequestTupleKey{
+        User:     "user:anne",
+        Relation: "reader",
+        Object:   "document:budget",
+    },
+})
+if err != nil {
+    log.Fatal(err)
+}
+
+fmt.Println(checkResponse.GetAllowed()) // true
+```
+
+Requests are validated in the same way as in the standalone server. Errors are returned as gRPC status errors that carry the same codes as the API responses, so you can inspect them with [`status.FromError`](https://pkg.go.dev/google.golang.org/grpc/status#FromError).
+
+In a real application, create the store and the authorization model once and save their IDs. Reuse them in later requests instead of creating a new store every time your application starts.
+
+## Related sections
+
+<CardGroup cols={2}>
+  <Card title="Configuration Options" href="/getting-started/setup-openfga/configuration">
+    Learn about the options available to configure an OpenFGA server.
+  </Card>
+
+  <Card title="Running OpenFGA in Production" href="/best-practices/running-in-production">
+    Learn the best practices of running OpenFGA in a production environment.
+  </Card>
+</CardGroup>

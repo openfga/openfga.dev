@@ -1,6 +1,11 @@
 {
   "version": 2,
-  "nativePages": [],
+  "nativePages": [
+    {
+      "destination": "getting-started/setup-openfga/go-library.mdx",
+      "reason": "Explain how to embed the OpenFGA server in a Go application as a library"
+    }
+  ],
   "sources": [
     "adopters/agicap.mdx",
     "adopters/docker.mdx",
