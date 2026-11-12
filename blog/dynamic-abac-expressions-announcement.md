@@ -180,7 +180,7 @@ If you are building agentic applications, MCP gateways, or dynamic authorization
 
 ## Known issue: the `inline_expressions` flag only controls writes
 
-The `inline_expressions` experimental flag currently governs only whether new `$expression` tuples can be **written** (`Write` and `WriteAuthorizationModel`). It does not govern evaluation. If you restart OpenFGA **without** the flag, tuples with `$expression` conditions that were already stored will still be evaluated:
+The `inline_expressions` experimental flag currently governs only writes: when disabled, `Write` rejects new `$expression` tuples and `WriteAuthorizationModel` rejects models whose type restrictions reference `$expression`. It does not govern evaluation. If you restart OpenFGA **without** the flag while continuing to use a model that permits `$expression`, tuples with `$expression` conditions that were already stored will still be evaluated:
 
 - `Check`, `BatchCheck`, `ListObjects`, and `ListUsers` continue to evaluate existing `$expression` tuples.
 - Contextual tuples with `$expression` conditions are accepted and evaluated.
