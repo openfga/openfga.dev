@@ -188,4 +188,4 @@ The `inline_expressions` experimental flag currently governs only whether new `$
 
 This also affects exclusions: in a model such as `define viewer: base but not blocked`, where `blocked` allows `[user with $expression]`, a stored `$expression` deny rule keeps applying after the flag is turned off.
 
-This behavior is intentional. It avoids adding inline expression logic to the tuple iterators. If you disable the flag, you should not use a model with dynamic conditions. See [openfga/openfga#3415](https://github.com/openfga/openfga/issues/3415) for the discussion.
+This behavior is intentional. It avoids adding inline expression logic to the tuple iterators. If you disable the flag, you should not use a model with dynamic conditions.
