@@ -177,3 +177,15 @@ Dynamic policies will also create new requirements for the tools used to author 
 We are exploring how common expression patterns can be integrated into OpenFGA SDKs and surrounding tooling.
 
 If you are building agentic applications, MCP gateways, or dynamic authorization workflows, we would love for you to try Dynamic Conditions and share your feedback with the [OpenFGA community](https://openfga.dev/community).
+
+## Known issue: the `inline_expressions` flag only controls writes
+
+The `inline_expressions` experimental flag currently governs only whether new `$expression` tuples can be **written** (`Write` and `WriteAuthorizationModel`). It does not govern evaluation. If you restart OpenFGA **without** the flag, tuples with `$expression` conditions that were already stored will still be evaluated:
+
+- `Check`, `BatchCheck`, `ListObjects`, and `ListUsers` continue to evaluate existing `$expression` tuples.
+- Contextual tuples with `$expression` conditions are accepted and evaluated.
+- Writing new `$expression` tuples is rejected, while deletes still succeed.
+
+This also affects exclusions: in a model such as `define viewer: base but not blocked`, where `blocked` allows `[user with $expression]`, a stored `$expression` deny rule keeps applying after the flag is turned off.
+
+This behavior is intentional. It avoids adding inline expression logic to the tuple iterators. Do not rely on turning off the flag to disable `$expression` tuples that already exist; delete those tuples if you need to stop them from being evaluated. See [openfga/openfga#3415](https://github.com/openfga/openfga/issues/3415) for the discussion.
