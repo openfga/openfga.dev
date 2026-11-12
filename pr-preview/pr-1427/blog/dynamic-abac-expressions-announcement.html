@@ -15,7 +15,7 @@
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><link rel="stylesheet" href="/pr-preview/pr-1427/assets/css/styles.6746a6f4.css">
-<script src="/pr-preview/pr-1427/assets/js/runtime~main.67f9fa96.js" defer="defer"></script>
+<script src="/pr-preview/pr-1427/assets/js/runtime~main.9043d370.js" defer="defer"></script>
 <script src="/pr-preview/pr-1427/assets/js/main.f36d29d2.js" defer="defer"></script>
 </head>
 <body>
@@ -82,7 +82,7 @@
 <p>We are exploring how common expression patterns can be integrated into OpenFGA SDKs and surrounding tooling.</p>
 <p>If you are building agentic applications, MCP gateways, or dynamic authorization workflows, we would love for you to try Dynamic Conditions and share your feedback with the <a href="https://openfga.dev/community" target="_blank" rel="noopener noreferrer" class="">OpenFGA community</a>.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="known-issue-the-inline_expressions-flag-only-controls-writes">Known issue: the <code>inline_expressions</code> flag only controls writes<a href="#known-issue-the-inline_expressions-flag-only-controls-writes" class="hash-link" aria-label="Direct link to known-issue-the-inline_expressions-flag-only-controls-writes" title="Direct link to known-issue-the-inline_expressions-flag-only-controls-writes" translate="no">​</a></h2>
-<p>The <code>inline_expressions</code> experimental flag currently governs only whether new <code>$expression</code> tuples can be <strong>written</strong> (<code>Write</code> and <code>WriteAuthorizationModel</code>). It does not govern evaluation. If you restart OpenFGA <strong>without</strong> the flag, tuples with <code>$expression</code> conditions that were already stored will still be evaluated:</p>
+<p>The <code>inline_expressions</code> experimental flag currently governs only writes: when disabled, <code>Write</code> rejects new <code>$expression</code> tuples and <code>WriteAuthorizationModel</code> rejects models whose type restrictions reference <code>$expression</code>. It does not govern evaluation. If you restart OpenFGA <strong>without</strong> the flag while continuing to use a model that permits <code>$expression</code>, tuples with <code>$expression</code> conditions that were already stored will still be evaluated:</p>
 <ul>
 <li class=""><code>Check</code>, <code>BatchCheck</code>, <code>ListObjects</code>, and <code>ListUsers</code> continue to evaluate existing <code>$expression</code> tuples.</li>
 <li class="">Contextual tuples with <code>$expression</code> conditions are accepted and evaluated.</li>
