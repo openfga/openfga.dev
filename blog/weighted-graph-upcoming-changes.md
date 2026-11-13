@@ -12,7 +12,7 @@ hide_table_of_contents: false
 
 # OpenFGA's Move to Weighted Graph Resolution: What's Changing
 
-OpenFGA is continuing to roll out a **weighted graph-based resolution algorithm** across its core query endpoints — Check, BatchCheck, ListObjects, Expand, and ListUsers. Check, BatchCheck, and ListObjects already run on this updated algorithm, and ListUsers and Expand are next. As a precaution, all core query endpoints currently fall back to the legacy algorithm for models that are incompatible with the weighted graph, but **that fallback option will be removed soon**. A date for the final changeover has not been set at this time. 
+OpenFGA is continuing to roll out a **weighted graph-based resolution algorithm** across its core query endpoints — Check, BatchCheck, ListObjects, Expand, and ListUsers. ListObjects already runs on this updated algorithm by default, and Check and BatchCheck can opt in with the `weighted_graph_check` experimental flag. As a precaution, all core query endpoints currently fall back to the legacy algorithm for models that are incompatible with the weighted graph, but **that fallback option will be removed soon**. A date for the final changeover has not been set at this time. 
 
 This post explains which modeling and check patterns are incompatible with the weighted graph algorithm, and how to migrate before the fallback is removed. 
 
@@ -293,8 +293,7 @@ fga model validate --file model.fga
 fga model validate --file model.fga --weighted-graph
 ```
 
-The first command runs normal model validation. 
-The second runs normal model validation + checks for weighted-graph compatibility.
+The first command runs normal model validation. The second only checks weighted-graph compatibility and skips normal validation, so run both.
 
 If a model is incompatible, the command exits with an error and describes the issue to fix. 
 
@@ -320,7 +319,7 @@ type document
     define viewer: [user] or viewer from parent
 ```
 
-To fix it, add a `viewer` relation to `group`. Here it aliases `member`, per Fix 1 of [Missing Relation](#1-missing-relation). Be careful with this alias: every member of the group now gets `viewer` access to each document whose `parent` is that group. If you don't want that, define the group's `viewer` as `define viewer: [user]` instead, so only users you write tuples for get access:
+To fix it, add a `viewer` relation to `group`. To keep current results unchanged, use `define viewer: [user]`. The example below aliases `member`, per Fix 1 of [Missing Relation](#1-missing-relation), which also makes group members viewers of documents whose parent is that group:
 
 ```dsl.openfga
 model
@@ -350,10 +349,10 @@ Run weighted-graph validation again. Now it returns `"is_valid": true`.
 ## Timeline
 
 **Now**: 
-- Check, BatchCheck, and ListObjects run on the weighted graph algorithm, with a fallback to the legacy algorithm for incompatible models.
+- ListObjects runs on the weighted graph algorithm by default. Check and BatchCheck run on it with the `weighted_graph_check` experimental flag. Each falls back to the legacy algorithm for incompatible models.
 
 **Next**: 
-- All core query endpoints (ListUsers/Expand) will transition to the weighted graph algorithm as default, with a fallback available for a period of time.
+- Check, BatchCheck, ListUsers, and Expand will transition to the weighted graph algorithm as default, with a fallback available for a period of time.
 - We will be announcing a final deadline for migrating incompatible models, after which new OpenFGA versions will only support the weighted graph algorithm. 
 
 **Later**: 
