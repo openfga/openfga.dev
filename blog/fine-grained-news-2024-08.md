@@ -59,7 +59,7 @@ We’ve added a new section within the Adopters list for those offering OpenFGA 
 
 * **OpenFGA Joins Docker-Sponsored Open Source Program:** We’re excited to share that OpenFGA has been accepted into the Docker-Sponsored Open Source Program! This partnership allows us to distribute [our container image](https://hub.docker.com/r/openfga/openfga) more efficiently and securely, ensuring that our community can easily access and trust the latest versions of OpenFGA on Docker Hub with higher rate limits.
 * **2024 Community Survey Participation:** A huge thank you to everyone who participated in the 2024 Community Survey! Your insights are invaluable in helping us shape the future of OpenFGA. We truly appreciate the time and thought you put into sharing your experiences and suggestions. Remember, we always welcome feedback across our [community channels](https://openfga.dev/community) — your input is what drives us forward.  
-* **Monthly Community Meeting:** Join us for our monthly Community Meetings, held on the second Thursday of every month at 11 AM Eastern Time (US). Our next meeting is on Thursday, September 12, 2024. These meetings are a fantastic opportunity to stay updated with the latest developments, ask questions, and engage with the OpenFGA community. You can find the link to the meeting invite [here](https://openfga.dev/docs/community#monthly-community-meetings). We look forward to seeing you there!
+* **Monthly Community Meeting:** Join us for our monthly Community Meetings, held on the second Thursday of every month at 11 AM Eastern Time (US). Our next meeting is on Thursday, September 12, 2024. These meetings are a fantastic opportunity to stay updated with the latest developments, ask questions, and engage with the OpenFGA community. You can find the link to the meeting invite [here](https://openfga.dev/community#monthly-community-meetings). We look forward to seeing you there!
 
 ## See You Next Month!
 
@@ -69,4 +69,4 @@ Fine-Grained News is published every month. Although we have transitioned from D
 * **GitHub Discussions:** Share your feedback, ask questions, and engage with the community on [GitHub Discussions](https://github.com/orgs/openfga/discussions).  
 * **Twitter:** Follow us [@openfga](https://twitter.com/openfga) for updates and news.
 
-Visit our [community page](https://openfga.dev/docs/community) for more details and to join these channels. We look forward to your contributions and conversations!  
+Visit our [community page](https://openfga.dev/community) for more details and to join these channels. We look forward to your contributions and conversations!

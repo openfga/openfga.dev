@@ -1,0 +1,68 @@
+{
+  "properties": {
+    "zFirst": {
+      "type": "integer",
+      "description": "First in source order, not alphabetic order.",
+      "default": 0,
+      "x-env-variable": "OPENFGA_Z_FIRST"
+    },
+    "service": { "$ref": "#/definitions/service" },
+    "secondService": { "$ref": "#/definitions/service" },
+    "mode": {
+      "$ref": "#/definitions/mode",
+      "description": "The local description overrides the referenced annotation.",
+      "default": "a|b",
+      "x-env-variable": "OPENFGA_MODE"
+    },
+    "labels": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/mode" },
+      "default": ["plain", "a|b"],
+      "x-env-variable": "OPENFGA_LABELS"
+    },
+    "duration": {
+      "type": "string",
+      "format": "duration",
+      "default": "0s",
+      "x-env-variable": "OPENFGA_DURATION"
+    },
+    "booleanWithoutDefault": { "type": "boolean" },
+    "stringFalse": { "type": "boolean", "default": "false" },
+    "emptyString": { "type": "string", "default": "" },
+    "emptyArray": { "type": "array", "items": { "type": "integer" }, "default": [] },
+    "object": { "type": "object", "default": { "limit": 0, "enabled": false } },
+    "text": {
+      "type": "string",
+      "description": "Use **bold**, [docs](https://openfga.dev), `iss`, and ``a`b``. Compare x < 1 > 0 & {value} | choice.\nNext <Component /> and `a|b <tag> {value}`.",
+      "default": "`quoted` | <tag> & {value}"
+    },
+    "escaped|key`": { "type": "string", "default": "space\nand [links] * _ \\" },
+    "nullable": { "type": ["string", "null"], "default": null },
+    "traceAliases": {
+      "type": "string",
+      "x-env-variable": ["OPENFGA_TRACE_OTLP_ENDPOINT", "OTEL_EXPORTER_OTLP_TRACES_ENDPOINT", "OTEL_EXPORTER_OTLP_ENDPOINT"]
+    },
+    "traceAttributes": { "type": "string", "x-env-variable": "OTEL_RESOURCE_ATTRIBUTES" }
+  },
+  "definitions": {
+    "service": {
+      "type": "object",
+      "properties": {
+        "enabled": { "$ref": "#/definitions/false~1default~0" },
+        "nested": {
+          "type": "object",
+          "properties": {
+            "size": { "$ref": "#/definitions/zero%20default" }
+          }
+        }
+      }
+    },
+    "false/default~": { "type": "boolean", "default": false },
+    "zero default": { "type": "number", "default": 0 },
+    "mode": {
+      "type": "string",
+      "enum": ["plain", "a|b", "`tick`", "<tag>", "{value}"],
+      "description": "The referenced description."
+    }
+  }
+}

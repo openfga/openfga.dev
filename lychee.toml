@@ -1,10 +1,11 @@
 # Configuration for the lychee link checker (see .github/workflows/checks.yaml).
 #
 # Links are checked against the *built* site (the ./build output produced by
-# `npm run build`). Internal links (e.g. /docs/…, ./foo, ../bar) resolve to the
-# generated pages on disk via --root-dir + fallback_extensions, so a link to a
-# page added in the same PR is validated rather than skipped — nothing here
-# excludes internal links. External links are checked over the network.
+# `npm run build`). Website links resolve on disk via --root-dir and
+# fallback_extensions. Cross-site docs/API links are checked against this PR's
+# native pages, anchors, redirects and API schema by check:site-boundary before
+# Lychee runs. Native external links are extracted into .link-check/ and checked
+# over the network alongside website links.
 #
 # The `exclude` list below is EXTERNAL hosts only: placeholders used in docs,
 # endpoints that aren't browsable pages, and sites that reject automated
@@ -18,8 +19,7 @@ accept = [200, 206]
 max_retries = 3
 retry_wait_time = 8
 
-# `trailingSlash: false` means the route /docs/x is written to disk as
-# build/docs/x.html — let lychee find it by trying the .html extension.
+# `trailingSlash: false` means /project is written to build/project.html.
 fallback_extensions = ["html"]
 
 # A browser-like UA reduces spurious bot blocks.
@@ -32,10 +32,10 @@ exclude = [
 
   # Absolute self-domain links are remapped to the local build via --remap in
   # checks.yaml (https://openfga.dev/... -> file://.../build/...) so they
-  # validate against the PR build rather than the live site. Two remapped paths
-  # are excluded via --exclude in checks.yaml because they cannot be statically
-  # validated: /api/service (Swagger UI, JS-rendered anchors) and /search
-  # (template URL). No pattern is needed here for the self-domain.
+  # validate against the PR build rather than the live site. Mintlify-owned
+  # /docs and /api/service plus the earlier /api-reference aliases are validated by
+  # check:site-boundary, not excluded from validation entirely. /search has a
+  # template query URL. No self-domain pattern is needed in this list.
 
   # Machine endpoints (not browsable HTML pages) — return 406 to normal clients.
   "^https://mcp\\.openfga\\.dev",
@@ -61,6 +61,9 @@ exclude = [
   "^https://(www\\.)?medium\\.com",
   "^https://[a-z0-9-]+\\.medium\\.com",
   "^https://levelup\\.gitconnected\\.com",
+  # This live article returns 202 to GitHub's checker. Preserve the exact
+  # markdown-link-check exemption in blog/fine-grained-news-2024-11.md.
+  "^https://towardsdatascience\\.com/overcoming-security-challenges-in-protecting-shared-generative-ai-environments-1ffb27da1bde/?$",
   # Gartner — 403 to bots.
   "^https://(www\\.)?gartner\\.com",
 

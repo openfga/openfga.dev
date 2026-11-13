@@ -88,14 +88,6 @@ table td {
   gap: 12px;
 }
 
-.navbar__items--right .navbarSearchContainer_Bca1 {
-  order: 1;
-}
-
-.navbar__items--right .ask-ai-nav-item {
-  order: 2;
-}
-
 .snippet-mode-toggle-wrapper {
   position: relative;
 }
@@ -230,43 +222,15 @@ table td {
     display: none;
   }
 
-  .navbar__items--right {
-    position: relative;
-    --ask-ai-mobile-width: 92px;
-  }
-
   .navbar__items--right > .ask-ai-nav-item {
     display: block;
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 0;
   }
 
   .navbar__items--right .ask-ai-nav-button {
-    width: var(--ask-ai-mobile-width);
+    width: 92px;
     padding: 0.45rem 0.75rem;
     font-size: 0.85rem;
     margin: 0;
-  }
-
-  .navbar__items--right [class*='navbarSearchContainer'] {
-    order: 1;
-    margin-right: calc(var(--ask-ai-mobile-width) + 20px);
-    flex: 1 1 auto;
-    min-width: 0;
-    position: static;
-  }
-
-  .navbar__items--right .searchBar_RVTs {
-    width: 100%;
-    min-width: 0;
-  }
-
-  .navbar__items--right .navbar__search-input {
-    width: 100%;
-    min-width: 0;
   }
 
   .tuple-viewer__grid {

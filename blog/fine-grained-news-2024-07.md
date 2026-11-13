@@ -91,7 +91,7 @@ We’re happy to share that [Bump](https://www.bump-charge.com/) is now an OpenF
 ## Announcements
 
 
-Join us for our monthly Community Meetings, held on the second Thursday of every month at 11am Eastern Time (US). Our next meeting is on Thursday, August 8, 2024. These meetings are a fantastic opportunity to stay updated with the latest developments, ask questions, and engage with the OpenFGA community. You can find the link to the meeting invite [here](https://openfga.dev/docs/community#monthly-community-meetings). We look forward to seeing you there!
+Join us for our monthly Community Meetings, held on the second Thursday of every month at 11am Eastern Time (US). Our next meeting is on Thursday, August 8, 2024. These meetings are a fantastic opportunity to stay updated with the latest developments, ask questions, and engage with the OpenFGA community. You can find the link to the meeting invite [here](https://openfga.dev/community#monthly-community-meetings). We look forward to seeing you there!
 
 
 ## Transitioning from Discord to CNCF's Slack
