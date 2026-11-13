@@ -286,7 +286,7 @@ listUsers("document:d1", "viewer") → [user:alice, user:bob]
 
 ## How to validate weighted-graph compatibility using the CLI
 
-To check a current or future model for weighted-graph compatibility, validate it using the OpenFGA CLI. Save the model as `model.fga` and run both commands:
+To check a current or future model for weighted-graph compatibility, validate it using the OpenFGA CLI. The `--weighted-graph` flag requires CLI v0.9.0 or later. Save the model as `model.fga` and run both commands:
 
 ```bash
 fga model validate --file model.fga
@@ -320,7 +320,7 @@ type document
     define viewer: [user] or viewer from parent
 ```
 
-To fix it, add a `viewer` relation to `group`. Here it aliases `member`, per Fix 1 of [Missing Relation](#1-missing-relation):
+To fix it, add a `viewer` relation to `group`. Here it aliases `member`, per Fix 1 of [Missing Relation](#1-missing-relation). Be careful with this alias: every member of the group now gets `viewer` access to each document whose `parent` is that group. If you don't want that, define the group's `viewer` as `define viewer: [user]` instead, so only users you write tuples for get access:
 
 ```dsl.openfga
 model
@@ -350,7 +350,7 @@ Run weighted-graph validation again. Now it returns `"is_valid": true`.
 ## Timeline
 
 **Now**: 
-- Check/BatchCheck and ListObjects runs on the weighted graph algorithm, with a fallback to the legacy algorithm for incompatible models.
+- Check, BatchCheck, and ListObjects run on the weighted graph algorithm, with a fallback to the legacy algorithm for incompatible models.
 
 **Next**: 
 - All core query endpoints (ListUsers/Expand) will transition to the weighted graph algorithm as default, with a fallback available for a period of time.
