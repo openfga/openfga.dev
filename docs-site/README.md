@@ -242,7 +242,7 @@ An explicit [OpenAPI overlay](https://www.mintlify.com/docs/api-playground/opena
 
 There are **90 SDK samples across 18 operations, plus cURL for all 24 operations**. The six AuthZen operations are HTTP-only in the audited SDK versions; generic HTTP requests are not presented as SDK support.
 
-| Operation               | Node.js 0.9.7             | Go 0.8.2                  | .NET 0.10.4               | Python 0.10.4               | Java 0.10.0               | curl |
+| Operation               | Node.js 0.9.8             | Go 0.8.2                  | .NET 0.10.4               | Python 0.10.4               | Java 0.10.0               | curl |
 | ----------------------- | ------------------------- | ------------------------- | ------------------------- | --------------------------- | ------------------------- | ---- |
 | Check                   | `check`                   | `Check`                   | `Check`                   | `check`                     | `check`                   | Yes  |
 | BatchCheck              | `batchCheck`              | `BatchCheck`              | `BatchCheck`              | `batch_check`               | `batchCheck`              | Yes  |
