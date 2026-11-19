@@ -2,9 +2,9 @@ import { apiOperations } from './api-operation-contract.mjs';
 
 export const sdkVersions = {
   'js-sdk': {
-    version: '0.9.7',
-    clientSource: 'https://github.com/openfga/js-sdk/blob/ff0a9f54631700f98349662746e0d6b3cae52993/client.ts',
-    apiSource: 'https://github.com/openfga/js-sdk/blob/ff0a9f54631700f98349662746e0d6b3cae52993/api.ts',
+    version: '0.9.8',
+    clientSource: 'https://github.com/openfga/js-sdk/blob/80f32b1141e85e615af3bc6884623386a5a6af72/client.ts',
+    apiSource: 'https://github.com/openfga/js-sdk/blob/80f32b1141e85e615af3bc6884623386a5a6af72/api.ts',
   },
   'go-sdk': {
     version: '0.8.2',
