@@ -852,7 +852,7 @@ test('actionable file:line:column diagnostics and parse failures are returned ra
   assert.equal(malformed.counts.checked, 0);
 });
 
-test('production pages and the external fixture check all 410 components without errors or deferrals', () => {
+test('production pages and the external fixture check all 422 components without errors or deferrals', () => {
   const diagnostics = [];
   const totals = validateCorpus({
     paths: [resolve('docs-site'), readComponentFixture().file],
@@ -862,8 +862,8 @@ test('production pages and the external fixture check all 410 components without
   assert.equal(totals.warnings, 0, diagnostics.join('\n'));
   assert.equal(totals.deferred, 0);
   assert.equal(totals.invalid, 0);
-  assert.equal(totals.components, 410);
-  assert.equal(totals.checked, 410);
+  assert.equal(totals.components, 422);
+  assert.equal(totals.checked, 422);
 });
 
 test('corpus runner reports separate deferred counts and CLI exits nonzero for errors', (t) => {
