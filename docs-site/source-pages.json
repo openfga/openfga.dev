@@ -1,6 +1,11 @@
 {
   "version": 2,
-  "nativePages": [],
+  "nativePages": [
+    {
+      "destination": "modeling/object-creation.mdx",
+      "reason": "Explain where to define create permissions and how to create top-level objects with a system type"
+    }
+  ],
   "sources": [
     "adopters/agicap.mdx",
     "adopters/docker.mdx",

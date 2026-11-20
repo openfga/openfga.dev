@@ -1,0 +1,272 @@
+---
+title: "Object Creation"
+sidebarTitle: "Object Creation"
+description: Modeling who can create objects, and creating top-level objects with a system type
+---
+
+import { CheckRequestViewer } from '/snippets/CheckRequestViewer.jsx';
+import { ListObjectsRequestViewer } from '/snippets/ListObjectsRequestViewer.jsx';
+import { OpenFGACodeBlock } from '/snippets/OpenFGACodeBlock.jsx';
+import { WriteRequestViewer } from '/snippets/WriteRequestViewer.jsx';
+
+In this guide you will learn where to define a permission such as `can_create_document`, how to grant access to an object once your application has created it, and how to authorize creating objects that have no parent, such as organizations.
+
+<Note>
+**When to use**
+
+This guide is useful when your application needs to answer questions like:
+
+- can a user create a `document` in a certain `folder`?
+- can a user create a `project` in a certain `organization`?
+- can a user sign up and create a new `organization`?
+</Note>
+
+## Before You Start
+
+In order to understand this guide correctly you must be familiar with some [OpenFGA Concepts](/concepts) and know how to develop the things that we will list below.
+
+<Accordion title="Prerequisites">
+
+<h3 id="parent-child-objects">Parent-Child Objects</h3>
+
+You need to know how to model access that is inherited from a parent object, such as a document inheriting access from its folder. [Learn more →](/modeling/parent-child)
+
+<h3 id="public-access">Public Access</h3>
+
+You need to know how to grant every user of a type access to an object using type bound public access. [Learn more →](/modeling/public-access)
+
+<h3 id="-concepts">OpenFGA Concepts</h3>
+
+- A **[Type](/concepts#what-is-a-type)**: a class of objects that have similar characteristics
+- A **[Relation](/concepts#what-is-a-relation)**: is a string defined in the type definition of an authorization model that defines the possibility of a relationship between an object of the same type as the type definition and a user in the system
+- An **[Object](/concepts#what-is-an-object)**: represents an entity in the system. Users' relationships to it can be defined through relationship tuples and the authorization model
+- A **[Relationship Tuple](/concepts#what-is-a-relationship-tuple)**: a grouping consisting of a user, a relation and an object stored in OpenFGA
+- A **[Check Request](/concepts#what-is-a-check-request)**: is a call to the OpenFGA check endpoint that returns whether the user has a certain relationship with an object
+
+</Accordion>
+
+<Warning>
+Make sure to use unique ids for each object and user within your application domain when creating relationship tuples for OpenFGA. We are using first names and simple ids to just illustrate an easy-to-follow example.
+</Warning>
+
+## Where To Define The Create Permission
+
+A [check request](/concepts#what-is-a-check-request) asks whether a user has a relation with a specific object. Before a document is created, there is no document to ask about: your application has not assigned it an id yet, and no relationship tuples refer to it. Type bound public access can't help either, because `document:*` is not valid in the object field of a tuple or a check request.
+
+Objects are usually created in the context of another object: a document in a folder, a project in an organization, or a photo in an album. Who can create the object depends on that context. For example, an editor of one folder can create documents in it, but not in a folder they can only view.
+
+For this reason, define the create permission on the parent type, and check it against the object the new one will be created in. Define `can_create_document` on `folder` and ask "can bob create a document in `folder:planning`?" instead of trying to define it on `document`.
+
+## Step By Step
+
+The steps below show how to:
+
+1. Define `can_create_document` on the `folder` type and check it before creating a document
+2. Write the relationship tuples for the new document once your application has created it
+3. Define a `system` type to authorize creating organizations, which have no parent
+
+### 01. Add The Create Permission To The Parent Type
+
+Start with a model with `folder` and `document` types. A `document` inherits its editors and viewers from its `parent` folder, and the folder's editors can create documents in it:
+
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
+
+type user
+
+type folder
+\x20 relations
+\x20   define owner: [user]
+\x20   define editor: [user] or owner
+\x20   define viewer: [user] or editor
+\x20   define can_create_document: editor
+
+type document
+\x20 relations
+\x20   define parent: [folder]
+\x20   define owner: [user]
+\x20   define editor: [user] or owner or editor from parent
+\x20   define viewer: [user] or editor or viewer from parent`} />
+
+Bob owns `folder:planning` and Charlie can view it:
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      user: 'user:bob',
+      relation: 'owner',
+      object: 'folder:planning',
+    },
+    {
+      user: 'user:charlie',
+      relation: 'viewer',
+      object: 'folder:planning',
+    },
+  ]}
+/>
+
+Before your application creates a document in `folder:planning`, it checks whether the user has the `can_create_document` permission on the folder. Bob is an owner of the folder, and therefore an editor, so Bob can create documents in it:
+
+<CheckRequestViewer user={'user:bob'} relation={'can_create_document'} object={'folder:planning'} allowed={true} />
+
+Charlie can only view the folder, so Charlie can't create documents in it:
+
+<CheckRequestViewer user={'user:charlie'} relation={'can_create_document'} object={'folder:planning'} allowed={false} />
+
+Because the permission is defined on the folder, you can also use [ListObjects](/getting-started/perform-list-objects) to find every folder a user can create documents in, for example to populate a folder picker:
+
+<ListObjectsRequestViewer
+  user="user:bob"
+  relation="can_create_document"
+  objectType="folder"
+  expectedResults={['folder:planning']}
+/>
+
+### 02. Write The Relationship Tuples For The New Object
+
+OpenFGA does not create objects; your application does. An object exists in OpenFGA only through the relationship tuples that refer to it. Once your application has created the document, it needs to write the tuples that grant access to it.
+
+When Bob creates `document:roadmap` in `folder:planning`, write a tuple that makes Bob the `owner` of the document, and one that makes the folder its `parent`. Write both tuples in a single request, so that either both or neither are written. The CLI writes each tuple with a separate request, so the example below shows only the SDKs and the API:
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: 'Bob created the document, so Bob is its owner',
+      user: 'user:bob',
+      relation: 'owner',
+      object: 'document:roadmap',
+    },
+    {
+      _description: 'The document was created in folder:planning',
+      user: 'folder:planning',
+      relation: 'parent',
+      object: 'document:roadmap',
+    },
+  ]}
+  allowedLanguages={['js-sdk', 'go-sdk', 'dotnet-sdk', 'python-sdk', 'java-sdk', 'curl', 'rpc']}
+/>
+
+Bob is now an editor of the document because Bob owns it, and Charlie can view it because Charlie is a viewer of its parent folder:
+
+<CheckRequestViewer user={'user:charlie'} relation={'viewer'} object={'document:roadmap'} allowed={true} />
+
+<Note>
+If OpenFGA rejects the write request, neither tuple is written and nobody has access to the new object. Fix the cause and write the tuples again, or treat the creation as failed and remove the object.
+
+If the request fails without a response, for example because it timed out, the tuples might have been written. Retry the request with [`on_duplicate: "ignore"`](/getting-started/update-tuples#05-ignoring-duplicate-or-missing-tuples), so that the retry succeeds even if the first attempt wrote the tuples.
+</Note>
+
+### 03. Create Top-Level Objects With A System Type
+
+Some objects are not created in the context of another object. For example, a user who signs up for your application creates a new `organization`, and organizations have no parent.
+
+For these objects, add a top-level `system` type to your model, and define the create permission on it. Your application uses a single object of that type, such as `system:global`, to represent the whole system:
+
+<OpenFGACodeBlock code={`model
+\x20 schema 1.1
+
+type user
+
+type system
+\x20 relations
+\x20   define admin: [user]
+\x20   define organization_creator: [user, user:*]
+\x20   define can_create_organization: organization_creator or admin
+
+type organization
+\x20 relations
+\x20   define system: [system]
+\x20   define admin: [user] or admin from system
+\x20   define member: [user] or admin
+\x20   define can_create_folder: member
+
+type folder
+\x20 relations
+\x20   define organization: [organization]
+\x20   define owner: [user]
+\x20   define editor: [user] or owner or admin from organization
+\x20   define viewer: [user] or editor or member from organization
+\x20   define can_create_document: editor
+
+type document
+\x20 relations
+\x20   define parent: [folder]
+\x20   define owner: [user]
+\x20   define editor: [user] or owner or editor from parent
+\x20   define viewer: [user] or editor or viewer from parent`} />
+
+In this model:
+
+- `can_create_organization` on `system` controls who can create organizations
+- `can_create_folder` on `organization` controls who can create folders in an organization, following the same pattern as `can_create_document` on `folder`
+- the `admin` relation on `system` lets you define system administrators, who are also administrators of every organization linked to the system object
+
+If anyone who signs up can create an organization, grant `organization_creator` to every user with type bound public access. Also make Maria a system administrator:
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: 'Every user can create organizations',
+      user: 'user:*',
+      relation: 'organization_creator',
+      object: 'system:global',
+    },
+    {
+      user: 'user:maria',
+      relation: 'admin',
+      object: 'system:global',
+    },
+  ]}
+/>
+
+Before Anne creates a new organization, your application checks whether Anne can create organizations:
+
+<CheckRequestViewer user={'user:anne'} relation={'can_create_organization'} object={'system:global'} allowed={true} />
+
+If you later need to limit who can create organizations, for example during a private beta, delete the `user:*` tuple and grant `organization_creator` to individual users instead. Your application code does not need to change.
+
+Once Anne has created `organization:acme`, write a tuple that makes Anne an `admin` of the organization, and one that links the organization to `system:global`:
+
+<WriteRequestViewer
+  relationshipTuples={[
+    {
+      _description: 'Anne created the organization, so Anne is its admin',
+      user: 'user:anne',
+      relation: 'admin',
+      object: 'organization:acme',
+    },
+    {
+      _description: 'Link the organization to the system object',
+      user: 'system:global',
+      relation: 'system',
+      object: 'organization:acme',
+    },
+  ]}
+  allowedLanguages={['js-sdk', 'go-sdk', 'dotnet-sdk', 'python-sdk', 'java-sdk', 'curl', 'rpc']}
+/>
+
+The tuple that links the organization to `system:global` must be written for every organization. Without it, system administrators get no access to the organization. With it, Maria is an administrator of `organization:acme` without a tuple that relates Maria to it directly:
+
+<CheckRequestViewer user={'user:maria'} relation={'admin'} object={'organization:acme'} allowed={true} />
+
+Objects created inside the organization follow the pattern from the previous steps: check `can_create_folder` on `organization:acme`, and once the folder is created, write the tuples that relate it to its creator and to `organization:acme`.
+
+<Tip>
+A `system` type is useful for more than creating top-level objects. You can also use it for other system-wide permissions, such as calling an administrative API. The [OpenFGA access control model](/getting-started/setup-openfga/access-control) defines `can_call_create_stores` on a `system` type, and the [super-admin sample store](https://github.com/openfga/sample-stores/tree/main/stores/superadmin) uses one for system administrators.
+</Tip>
+
+## Related Sections
+
+Check the following sections for more on how to model with OpenFGA.
+
+<CardGroup>
+  <Card title="Modeling: Parent-Child Objects" href="/modeling/parent-child">
+    Learn how to model access that objects inherit from their parents.
+  </Card>
+  <Card title="Modeling: Public Access" href="/modeling/public-access">
+    Learn how to grant every user access to an object.
+  </Card>
+  <Card title="Authorization Model Design Principles" href="/best-practices/modeling-design-principles">
+    Learn best practices for creating clear, performant, and maintainable authorization models.
+  </Card>
+</CardGroup>

@@ -137,6 +137,7 @@
               "modeling/parent-child",
               "modeling/blocklists",
               "modeling/public-access",
+              "modeling/object-creation",
               "modeling/multiple-restrictions",
               "modeling/custom-roles",
               "modeling/conditions",
