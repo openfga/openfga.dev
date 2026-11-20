@@ -1,6 +1,11 @@
 {
   "version": 2,
-  "nativePages": [],
+  "nativePages": [
+    {
+      "destination": "getting-started/setup-openfga/verify-release-artifacts.mdx",
+      "reason": "Explain how to verify the signatures and SLSA provenance of OpenFGA release artifacts"
+    }
+  ],
   "sources": [
     "adopters/agicap.mdx",
     "adopters/docker.mdx",
