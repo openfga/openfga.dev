@@ -126,7 +126,7 @@ Because the permission is defined on the folder, you can also use [ListObjects](
 
 OpenFGA does not create objects; your application does. An object exists in OpenFGA only through the relationship tuples that refer to it. Once your application has created the document, it needs to write the tuples that grant access to it.
 
-When Bob creates `document:roadmap` in `folder:planning`, write a tuple that makes Bob the `owner` of the document, and one that makes the folder its `parent`. Write both tuples in a single request, so that either both or neither are written:
+When Bob creates `document:roadmap` in `folder:planning`, write a tuple that makes Bob the `owner` of the document, and one that makes the folder its `parent`. Write both tuples in a single request, so that either both or neither are written. The CLI writes each tuple with a separate request, so the example below shows only the SDKs and the API:
 
 <WriteRequestViewer
   relationshipTuples={[
@@ -143,6 +143,7 @@ When Bob creates `document:roadmap` in `folder:planning`, write a tuple that mak
       object: 'document:roadmap',
     },
   ]}
+  allowedLanguages={['js-sdk', 'go-sdk', 'dotnet-sdk', 'python-sdk', 'java-sdk', 'curl', 'rpc']}
 />
 
 Bob is now an editor of the document because Bob owns it, and Charlie can view it because Charlie is a viewer of its parent folder:
@@ -150,7 +151,9 @@ Bob is now an editor of the document because Bob owns it, and Charlie can view i
 <CheckRequestViewer user={'user:charlie'} relation={'viewer'} object={'document:roadmap'} allowed={true} />
 
 <Note>
-If your application creates the object but fails to write the tuples, nobody has access to the object. Retry the write, or treat the creation as failed and remove the object.
+If OpenFGA rejects the write request, neither tuple is written and nobody has access to the new object. Fix the cause and write the tuples again, or treat the creation as failed and remove the object.
+
+If the request fails without a response, for example because it timed out, the tuples might have been written. Retry the request with [`on_duplicate: "ignore"`](/getting-started/update-tuples#05-ignoring-duplicate-or-missing-tuples), so that the retry succeeds even if the first attempt wrote the tuples.
 </Note>
 
 ### 03. Create Top-Level Objects With A System Type
@@ -239,6 +242,7 @@ Once Anne has created `organization:acme`, write a tuple that makes Anne an `adm
       object: 'organization:acme',
     },
   ]}
+  allowedLanguages={['js-sdk', 'go-sdk', 'dotnet-sdk', 'python-sdk', 'java-sdk', 'curl', 'rpc']}
 />
 
 The tuple that links the organization to `system:global` must be written for every organization. Without it, system administrators get no access to the organization. With it, Maria is an administrator of `organization:acme` without a tuple that relates Maria to it directly:
