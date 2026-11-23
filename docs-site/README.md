@@ -240,7 +240,7 @@ An explicit [OpenAPI overlay](https://www.mintlify.com/docs/api-playground/opena
 
 ### Coverage
 
-There are **90 SDK samples across 18 operations, plus cURL for all 24 operations**. The six AuthZen operations are HTTP-only in the audited SDK versions; generic HTTP requests are not presented as SDK support.
+There are **90 SDK samples across 18 operations, plus cURL for all 24 operations**. The six AuthZen operations are HTTP-only in the SDKs; generic HTTP requests are not presented as SDK support. Column headers show the SDK versions the samples were checked against; install instructions are unpinned except Java.
 
 | Operation               | Node.js 0.9.8             | Go 0.8.2                  | .NET 0.10.4               | Python 0.10.4               | Java 0.10.0               | curl |
 | ----------------------- | ------------------------- | ------------------------- | ------------------------- | --------------------------- | ------------------------- | ---- |
@@ -269,7 +269,7 @@ There are **90 SDK samples across 18 operations, plus cURL for all 24 operations
 | ResourceSearch          | No                        | No                        | No                        | No                          | No                        | Yes  |
 | SubjectSearch           | No                        | No                        | No                        | No                          | No                        | Yes  |
 
-[`api-sdk-support.mjs`](./scripts/api-sdk-support.mjs) records the versions, named methods, immutable source evidence, and unsupported cases. The documentation matrix is checked against that registry.
+[`api-sdk-support.mjs`](./scripts/api-sdk-support.mjs) records the SDK versions the samples were checked against, named methods, immutable source evidence, and unsupported cases. The documentation matrix is checked against that registry.
 
 ### Update a sample
 

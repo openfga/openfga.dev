@@ -3,9 +3,9 @@ title: "Install SDK Client"
 description: "Installing SDK client"
 ---
 
-To get started, install the OpenFGA SDK packages. These commands select the exact versions used by the API reference samples.
+To get started, install the OpenFGA SDK packages. These commands install the latest release of each SDK, except Java, which is pinned to the version the API reference samples use.
 
-The API reference provides SDK programs for 18 standard operations and cURL for all 24 operations. The six experimental AuthZen endpoints are **HTTP-only** in these SDK versions: `GetConfiguration`, `Evaluation`, `Evaluations`, `ActionSearch`, `ResourceSearch`, and `SubjectSearch`. Use their cURL samples; no named SDK methods are available for these endpoints.
+The API reference provides SDK programs for 18 standard operations and cURL for all 24 operations. The six experimental AuthZen endpoints are **HTTP-only** in the SDKs: `GetConfiguration`, `Evaluation`, `Evaluations`, `ActionSearch`, `ResourceSearch`, and `SubjectSearch`. Use their cURL samples; no named SDK methods are available for these endpoints.
 
 <Tabs>
   <Tab title="Node.js">
@@ -14,24 +14,24 @@ The API reference provides SDK programs for 18 standard operations and cURL for 
     Using [npm](https://www.npmjs.com/):
 
     ```bash
-    npm install @openfga/sdk@0.9.8
+    npm install @openfga/sdk
     ```
 
     Using [yarn](https://yarnpkg.com):
 
     ```bash
-    yarn add @openfga/sdk@0.9.8
+    yarn add @openfga/sdk
     ```
   </Tab>
 
   <Tab title="Go" id="go-sdk">
     You can find the Go package on GitHub at: [@openfga/go-sdk](https://github.com/openfga/go-sdk).
-    This SDK version requires Go 1.25 or newer.
+    The Go SDK requires Go 1.25 or newer.
 
     To install:
 
     ```bash
-    go get github.com/openfga/go-sdk@v0.8.2
+    go get github.com/openfga/go-sdk
     ```
 
     In your code, import the module and use it:
@@ -69,13 +69,13 @@ The API reference provides SDK programs for 18 standard operations and cURL for 
     - The [dotnet CLI](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-dotnet-cli):
 
     ```bash
-    dotnet add package OpenFGA.Sdk --version 0.10.4
+    dotnet add package OpenFGA.Sdk
     ```
 
     - The [Package Manager Console](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-powershell) inside Visual Studio:
 
     ```powershell
-    Install-Package OpenFGA.Sdk -Version 0.10.4
+    Install-Package OpenFGA.Sdk
     ```
 
     - [Visual Studio](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio), [Visual Studio for Mac](https://docs.microsoft.com/en-us/visualstudio/mac/nuget-walkthrough) and [IntelliJ Rider](https://www.jetbrains.com/help/rider/Using_NuGet.html): Search for and install `OpenFGA.Sdk` in each of their respective package manager UIs.
@@ -87,7 +87,7 @@ The API reference provides SDK programs for 18 standard operations and cURL for 
     To install:
 
     ```bash
-    pip3 install openfga_sdk==0.10.4
+    pip3 install openfga_sdk
     ```
 
     In your code, import the module and use it:
@@ -99,7 +99,7 @@ The API reference provides SDK programs for 18 standard operations and cURL for 
 
   <Tab title="Java">
     You can find the Java package on [Maven Central](https://central.sonatype.com/artifact/dev.openfga/openfga-sdk).
-    This SDK version requires Java 17 or newer.
+    The Java SDK requires Java 17 or newer.
 
     Using [Maven](https://maven.apache.org/):
 

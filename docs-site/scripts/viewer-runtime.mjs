@@ -213,6 +213,6 @@ export function buildApiExample(language, operationId, props = {}) {
   const { code, imports } = buildApiOperationCode(operationId, language, props);
   const httpOnly =
     language === LANG.CURL && Object.values(apiSdkSupport[operationId]).every(({ method }) => method === null);
-  const setup = `${httpOnly ? '# HTTP only: no named client or generated low-level operation in the audited SDK versions.\n' : ''}${sdkSetup(language, undefined, scope, imports)}`;
+  const setup = `${httpOnly ? '# HTTP only: the OpenFGA SDKs have no named client or generated low-level operation for this endpoint.\n' : ''}${sdkSetup(language, undefined, scope, imports)}`;
   return composeSdkExample(language, setup, code);
 }

@@ -226,5 +226,5 @@ ${o}`,8)}
     }
 }`}return`${e}
 
-${o}`}function Ne(t,e,o={}){let{viewer:n,scope:i}=L(e);if(S(e,o),t!==c.CURL&&!ee[e]?.[t]?.method)throw new Error(`No named SDK operation for ${e}/${t} in the audited version`);if(n)return te(t,n,o);let{code:r,imports:s}=me(e,t,o),l=`${t===c.CURL&&Object.values(ee[e]).every(({method:d})=>d===null)?`# HTTP only: no named client or generated low-level operation in the audited SDK versions.
+${o}`}function Ne(t,e,o={}){let{viewer:n,scope:i}=L(e);if(S(e,o),t!==c.CURL&&!ee[e]?.[t]?.method)throw new Error(`No named SDK operation for ${e}/${t} in the audited version`);if(n)return te(t,n,o);let{code:r,imports:s}=me(e,t,o),l=`${t===c.CURL&&Object.values(ee[e]).every(({method:d})=>d===null)?`# HTTP only: the OpenFGA SDKs have no named client or generated low-level operation for this endpoint.
 `:""}${$e(t,void 0,i,s)}`;return be(t,l,r)}globalThis.openfgaViewer=ne;})();
