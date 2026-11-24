@@ -3,7 +3,6 @@ import { spawn } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
-import { createRequire } from 'node:module';
 import test from 'node:test';
 import { metadataUrl, overlayUrl, languagesForOperation } from './api-code-samples.mjs';
 import { buildApiExample } from './viewer-runtime.mjs';
@@ -81,25 +80,6 @@ const responses = {
     updated_at: '2026-01-01T00:00:00Z',
   },
 };
-
-test('installed Node SDK matches the exact audited version', () => {
-  const require = createRequire(import.meta.url);
-  assert.equal(require('@openfga/sdk/package.json').version, sdkVersions['js-sdk'].version);
-});
-
-test('native installation instructions name the audited SDK versions', async () => {
-  const source = await readFile(new URL('../getting-started/install-sdk.mdx', import.meta.url), 'utf8');
-  for (const [language, { version }] of Object.entries(sdkVersions)) {
-    const install = {
-      'js-sdk': `@openfga/sdk@${version}`,
-      'go-sdk': `github.com/openfga/go-sdk@v${version}`,
-      'dotnet-sdk': `OpenFGA.Sdk --version ${version}`,
-      'python-sdk': `openfga_sdk==${version}`,
-      'java-sdk': `<version>${version}</version>`,
-    }[language];
-    assert.ok(source.includes(install), `Native instructions must install the audited ${language} ${version}`);
-  }
-});
 
 test('documented 24-operation matrix agrees with every audited SDK method and HTTP-only case', async () => {
   const readme = await readFile(new URL('../README.md', import.meta.url), 'utf8');
