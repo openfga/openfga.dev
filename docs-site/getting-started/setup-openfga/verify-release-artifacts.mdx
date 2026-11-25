@@ -1,0 +1,175 @@
+---
+title: "Verify OpenFGA Release Artifacts"
+sidebarTitle: "Verify Release Artifacts"
+description: Verifying the signatures and SLSA provenance of OpenFGA container images, binaries and SBOMs
+---
+
+Every [OpenFGA release](https://github.com/openfga/openfga/releases) is built and published by the [release workflow](https://github.com/openfga/openfga/blob/main/.github/workflows/release.yaml) in the `openfga/openfga` GitHub repository. The workflow signs the container images and the checksums of the release archives with [cosign](https://docs.sigstore.dev/cosign/signing/overview/), and generates [SLSA](https://slsa.dev/) Level 3 provenance for the container images, binary archives and SBOMs.
+
+This article explains how to use these signatures and provenance to verify that the artifacts you deploy were built by the OpenFGA project from the expected release tag, and that they have not been modified since.
+
+## Release artifacts
+
+Each release publishes the following artifacts:
+
+| Artifact | Description | Example |
+| --- | --- | --- |
+| `openfga/openfga:v<version>` | Container image on Docker Hub, signed with cosign and with SLSA provenance | `openfga/openfga:v1.22.1` |
+| `ghcr.io/openfga/openfga:v<version>` | The same container image on the GitHub Container Registry, signed with cosign | `ghcr.io/openfga/openfga:v1.22.1` |
+| `openfga_<version>_<os>_<arch>.tar.gz` | OpenFGA binary archive | `openfga_1.22.1_linux_amd64.tar.gz` |
+| `openfga_<version>_<os>_<arch>.tar.gz.sbom.json` | Software Bill of Materials (SBOM) for a binary archive | `openfga_1.22.1_linux_amd64.tar.gz.sbom.json` |
+| `openfga.intoto.jsonl` | SLSA provenance for the binary archives and SBOMs | |
+| `checksums.txt` | SHA-256 checksums of the binary archives and SBOMs | |
+| `checksums.txt.sig` | cosign signature of `checksums.txt` | |
+| `checksums.txt.pem` | Certificate cosign used to sign `checksums.txt` | |
+
+## Prerequisites
+
+Install the following tools, either locally or in your deployment pipeline:
+
+- [cosign](https://docs.sigstore.dev/cosign/system_config/installation/) `v2.2.0` or later, to verify signatures
+- [slsa-verifier](https://github.com/slsa-framework/slsa-verifier#installation), to verify SLSA provenance
+- [crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/README.md), to resolve the digest of a container image
+
+The examples below verify release `v1.22.1`. Set `VERSION` to the release you want to verify:
+
+```bash
+VERSION=1.22.1
+```
+
+## Verify a container image
+
+Container images are referenced by tags, and a tag can be moved to a different image after you verify it. Resolve the tag to the immutable digest of the image first, then verify and deploy that digest:
+
+```bash
+IMAGE="openfga/openfga:v${VERSION}"
+IMAGE="${IMAGE}@$(crane digest "${IMAGE}")"
+```
+
+### Verify the SLSA provenance
+
+The images published to Docker Hub have SLSA provenance, generated with the [slsa-github-generator](https://github.com/slsa-framework/slsa-github-generator). Verify that the image was built from the `openfga/openfga` repository at the expected release tag. Passing the tag also prevents rollback attacks, where an older, vulnerable image is presented as a newer one:
+
+```bash
+slsa-verifier verify-image "${IMAGE}" \
+  --source-uri github.com/openfga/openfga \
+  --source-tag "v${VERSION}"
+```
+
+When the verification succeeds, the output ends with:
+
+```
+PASSED: SLSA verification passed
+```
+
+To verify the major or minor version of the release tag instead of the full tag, use `--source-versioned-tag`, which performs semantic versioning verification:
+
+```bash
+slsa-verifier verify-image "${IMAGE}" \
+  --source-uri github.com/openfga/openfga \
+  --source-versioned-tag v1 # or v1.22 to verify the minor version
+```
+
+To view the provenance, add `--print-provenance` to the commands above:
+
+```bash
+slsa-verifier verify-image "${IMAGE}" \
+  --source-uri github.com/openfga/openfga \
+  --source-tag "v${VERSION}" \
+  --print-provenance | jq
+```
+
+### Verify the signature
+
+The images published to both Docker Hub and the GitHub Container Registry are signed by the release workflow using cosign keyless signing. Verify that the signing certificate was issued to the release workflow for the expected tag:
+
+```bash
+cosign verify "${IMAGE}" \
+  --certificate-identity "https://github.com/openfga/openfga/.github/workflows/release.yaml@refs/tags/v${VERSION}" \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
+
+To verify an image from the GitHub Container Registry, set `IMAGE` to `ghcr.io/openfga/openfga:v${VERSION}` and resolve its digest before running the same command. The images on the GitHub Container Registry don't have SLSA provenance, so `slsa-verifier verify-image` fails for them.
+
+## Verify a binary archive
+
+Download the archive for your platform, together with `checksums.txt`, `checksums.txt.sig`, `checksums.txt.pem` and `openfga.intoto.jsonl`, from the [release page](https://github.com/openfga/openfga/releases). The examples below use the `linux_amd64` archive.
+
+### Verify the checksums
+
+First, verify that `checksums.txt` was signed by the release workflow for the expected tag:
+
+```bash
+cosign verify-blob checksums.txt \
+  --certificate checksums.txt.pem \
+  --signature checksums.txt.sig \
+  --certificate-identity "https://github.com/openfga/openfga/.github/workflows/release.yaml@refs/tags/v${VERSION}" \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
+
+When the verification succeeds, the output ends with `Verified OK`. Newer cosign releases also print warnings that the `--certificate` and `--signature` flags are deprecated; the verification still works.
+
+Then, check the archives you downloaded against the signed checksums:
+
+<Tabs>
+  <Tab title="Linux">
+
+```bash
+sha256sum --ignore-missing -c checksums.txt
+```
+
+  </Tab>
+  <Tab title="macOS">
+
+```bash
+shasum -a 256 --ignore-missing -c checksums.txt
+```
+
+  </Tab>
+</Tabs>
+
+Each downloaded file is reported as `OK`. `--ignore-missing` skips the files for the other platforms, which you didn't download.
+
+### Verify the SLSA provenance
+
+The `openfga.intoto.jsonl` provenance covers every binary archive and SBOM in the release. Verify that the archive was built from the `openfga/openfga` repository at the expected release tag:
+
+```bash
+slsa-verifier verify-artifact "openfga_${VERSION}_linux_amd64.tar.gz" \
+  --provenance-path openfga.intoto.jsonl \
+  --source-uri github.com/openfga/openfga \
+  --source-tag "v${VERSION}"
+```
+
+As with container images, you can use `--source-versioned-tag` to verify only the major or minor version, and `--print-provenance` to view the provenance.
+
+## Verify an SBOM
+
+Each binary archive has an SBOM, which lists the dependencies the binary was built with. Use the same provenance file to verify that the SBOM was generated by the release workflow:
+
+```bash
+slsa-verifier verify-artifact "openfga_${VERSION}_linux_amd64.tar.gz.sbom.json" \
+  --provenance-path openfga.intoto.jsonl \
+  --source-uri github.com/openfga/openfga \
+  --source-tag "v${VERSION}"
+```
+
+The SBOMs are also listed in `checksums.txt`, so the checksum verification above covers them too.
+
+## Verify images in Kubernetes
+
+To make sure only images built by the OpenFGA project are deployed to your Kubernetes cluster, verify their signatures and provenance with an admission or policy controller. For example, the Sigstore [policy-controller](https://docs.sigstore.dev/policy-controller/overview/) can verify cosign signatures, and the [slsa-github-generator documentation](https://github.com/slsa-framework/slsa-github-generator/blob/main/internal/builders/container/README.md#verification) shows how to verify SLSA provenance with Kyverno and the policy-controller.
+
+## Related Sections
+
+<CardGroup>
+  <Card title="Docker Setup Guide" href="/getting-started/setup-openfga/docker">
+    How to setup an OpenFGA server with Docker.
+  </Card>
+  <Card title="Kubernetes Setup Guide" href="/getting-started/setup-openfga/kubernetes">
+    How to setup an OpenFGA server with Kubernetes.
+  </Card>
+  <Card title="Production Best Practices" href="/best-practices/running-in-production">
+    Learn the best practices for running OpenFGA in a production environment.
+  </Card>
+</CardGroup>
